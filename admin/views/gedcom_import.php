@@ -386,7 +386,7 @@ elseif ($trees['step'] == '2') {
         $db_functions->update_settings('gedcom_read_commit_records', $_POST['commit_records']);
     }
 
-    if (isset($_POST['time_out'])) {
+    if (isset($_POST['time_out']) && is_numeric($_POST['time_out'])) {
         $db_functions->update_settings('gedcom_read_time_out', $_POST['time_out']);
     }
 
@@ -395,31 +395,43 @@ elseif ($trees['step'] == '2') {
         $_SESSION['add_tree'] = false;
         $limit = 2500;
     ?>
-        <b><?= __('STEP 2) Remove old family tree:'); ?></b><br>
+        <b><?= __('STEP 2) Remove old family tree:'); ?></b><br><br>
 
         <!-- Time out button -->
-        <br>
         <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
             <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
+            <input type="hidden" name="add_tree" value="no">
+            <input type="hidden" name="step" value="2">
+
             <?php
-            // TODO also check values.
             if (isset($_POST['check_processed'])) {
-                echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
+                echo '<input type="hidden" name="check_processed" value="1">';
             }
+            /* TODO: change all variables (move to model)
+            if ($trees['check_processed']) {
+            ?>
+                <input type="hidden" name="check_processed" value="1">
+            <?php
+            }
+            */
+
             if (isset($_POST['show_gedcomnumbers'])) {
-                echo '<input type="hidden" name="show_gedcomnumbers" value="' . $_POST['show_gedcomnumbers'] . '">';
+            ?>
+                <input type="hidden" name="show_gedcomnumbers" value="1">
+            <?php
             }
             if (isset($_POST['debug_mode'])) {
-                echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
-            }
-            if (isset($_POST['time_out'])) {
-                echo '<input type="hidden" name="time_out" value="' . $_POST['time_out'] . '">';
-            }
-            echo '<input type="hidden" name="add_tree" value="no">';
             ?>
+                <input type="hidden" name="debug_mode" value="1">
+            <?php
+            }
+            if (isset($_POST['time_out']) && is_numeric($_POST['time_out'])) {
+            ?>
+                <input type="hidden" name="time_out" value="<?= $_POST['time_out']; ?>">
+            <?php } ?>
+
             <?= __('ONLY use in case of a time-out, to continue click:'); ?>
-            <input type="hidden" name="step" value="2">
             <input type="submit" name="submit" value="<?= __('Step'); ?> 2" class="btn btn-sm btn-secondary">
         </form><br>
     <?php } ?>
@@ -590,15 +602,15 @@ elseif ($trees['step'] == '2') {
         <?php
         // TODO check values
         if (isset($_POST['check_processed'])) {
-            echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
+            echo '<input type="hidden" name="check_processed" value="1">';
         }
         if (isset($_POST['show_gedcomnumbers'])) {
-            echo '<input type="hidden" name="show_gedcomnumbers" value="' . $_POST['show_gedcomnumbers'] . '">';
+            echo '<input type="hidden" name="show_gedcomnumbers" value="1">';
         }
         if (isset($_POST['debug_mode'])) {
-            echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
+            echo '<input type="hidden" name="debug_mode" value="1">';
         }
-        if (isset($_POST['time_out'])) {
+        if (isset($_POST['time_out']) && is_numeric($_POST['time_out'])) {
             echo '<input type="hidden" name="time_out" value="' . $_POST['time_out'] . '">';
         }
 
@@ -613,6 +625,7 @@ elseif ($trees['step'] == '2') {
         <?php } else { ?>
             <input type="hidden" name="add_tree" value="no">
         <?php } ?>
+
         <input type="hidden" name="step" value="3">
         <input type="submit" id="button_step3" name="submit" value="<?= __('Step'); ?> 3" class="btn btn-sm btn-success" <?= (!isset($_POST['add_tree']) || isset($_POST['add_tree']) && $_POST['add_tree'] == 'no') ? 'disabled' : ''; ?>>
     </form>
@@ -746,13 +759,13 @@ elseif ($trees['step'] == '3') {
             <?php
             // TODO check values
             if (isset($_POST['check_processed'])) {
-                echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
+                echo '<input type="hidden" name="check_processed" value="1">';
             }
             if (isset($_POST['show_gedcomnumbers'])) {
-                echo '<input type="hidden" name="show_gedcomnumbers" value="' . $_POST['show_gedcomnumbers'] . '">';
+                echo '<input type="hidden" name="show_gedcomnumbers" value="1">';
             }
             if (isset($_POST['debug_mode'])) {
-                echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
+                echo '<input type="hidden" name="debug_mode" value="1">';
             }
             ?>
             <?= __('ONLY use in case of a time-out, to continue click:'); ?> <input type="submit" name="timeout" value="<?= __('Restart'); ?>" class="btn btn-sm btn-secondary">
@@ -1192,7 +1205,9 @@ elseif ($trees['step'] == '3') {
 
         // *** Controlled time-out ***
         $time_out = 0;
-        if (is_numeric($_POST['time_out'])) $time_out = $_POST['time_out'];
+        if (is_numeric($_POST['time_out'])) {
+            $time_out = $_POST['time_out'];
+        }
         if ($time_out > 0) {
             if (($process_time - $_SESSION['save_start_timeout']) > $time_out) {
 
@@ -1212,13 +1227,13 @@ elseif ($trees['step'] == '3') {
                     <input type="hidden" name="gedcom_accent" value="<?= $_POST['gedcom_accent']; ?>">
                     <?php
                     if (isset($_POST['check_processed'])) {
-                        echo '<input type="hidden" name="check_processed" value="' . $_POST['check_processed'] . '">';
+                        echo '<input type="hidden" name="check_processed" value="1">';
                     }
                     if (isset($_POST['show_gedcomnumbers'])) {
-                        echo '<input type="hidden" name="show_gedcomnumbers" value="' . $_POST['show_gedcomnumbers'] . '">';
+                        echo '<input type="hidden" name="show_gedcomnumbers" value="1">';
                     }
                     if (isset($_POST['debug_mode'])) {
-                        echo '<input type="hidden" name="debug_mode" value="' . $_POST['debug_mode'] . '">';
+                        echo '<input type="hidden" name="debug_mode" value="1">';
                     }
                     ?>
                     <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">

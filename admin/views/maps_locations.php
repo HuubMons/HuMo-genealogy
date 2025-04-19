@@ -596,7 +596,7 @@ if (isset($_POST['check_new'])) {
                         });
                     }
                 </script>
-            <?php }; ?>
+            <?php } ?>
 
             <div class="row mb-2">
                 <div class="col-md-6">

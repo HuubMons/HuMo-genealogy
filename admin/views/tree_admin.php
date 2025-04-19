@@ -87,8 +87,8 @@
                 </div>
             </li>
 
-        <?php }; ?>
-    <?php }; ?>
+        <?php } ?>
+    <?php } ?>
 </ul>
 
 <!-- Order items using drag and drop using jquery and jqueryui -->

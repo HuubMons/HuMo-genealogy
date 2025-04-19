@@ -30,7 +30,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
             <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
         </form>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <div class="row me-1">
     <div class="col-auto">

@@ -11,8 +11,9 @@ class GedcomCls
     private $nrsource, $source;
     private $nraddress2, $address_order, $address_array;
     private $connect_nr, $connect;
+
     private $event_nr, $event;
-    private $event2_nr, $event2;
+    private $event_nr1, $event_nr2; // $event_nr1 = for 1st event level, $event_nr2 = for 2nd event level.
 
     private $calculated_event_id;
     private $calculated_connect_id;
@@ -30,7 +31,10 @@ class GedcomCls
 
         $this->connect_nr = 0;
         $this->event_nr = 0;
-        $this->event2_nr = 0;
+        //$this->event2_nr = 0;
+
+        $this->event_nr1 = 0;
+        $this->event_nr2 = 0;
 
         /* Insert a temporary line into database to get latest id.
         *  Must be done because table can be empty when reloading GEDCOM file...
@@ -122,7 +126,7 @@ class GedcomCls
 
         // *** For event table ***
         $this->event_nr = 0;
-        $this->event2_nr = 0;
+        //$this->event2_nr = 0;
 
         // *** Save addresses in a seperate table ***
         $this->nraddress2 = 0;
@@ -276,18 +280,25 @@ class GedcomCls
                                 $pers_famc2 = $this->reassign_ged($pers_famc2, 'F');
                             }
                             $this->event_nr++;
+                            $this->event_nr1 = $this->event_nr;
+
                             $this->calculated_event_id++;
-                            $this->event['connect_kind'][$this->event_nr] = 'person';
-                            $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                            $this->event['connect_kind2'][$this->event_nr] = '';
-                            $this->event['connect_id2'][$this->event_nr] = '';
-                            $this->event['kind'][$this->event_nr] = 'adoption';
-                            $this->event['event'][$this->event_nr] = $pers_famc2;
-                            $this->event['event_extra'][$this->event_nr] = '';
-                            $this->event['gedcom'][$this->event_nr] = 'FAMC';
-                            $this->event['date'][$this->event_nr] = '';
-                            $this->event['text'][$this->event_nr] = '';
-                            $this->event['place'][$this->event_nr] = '';
+                            // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                            $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                            $this->event['level'][$this->event_nr1] = '1';
+
+                            $this->event['connect_kind'][$this->event_nr1] = 'person';
+                            $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                            $this->event['connect_kind2'][$this->event_nr1] = '';
+                            $this->event['connect_id2'][$this->event_nr1] = '';
+                            $this->event['kind'][$this->event_nr1] = 'adoption';
+                            $this->event['event'][$this->event_nr1] = $pers_famc2;
+                            $this->event['event_extra'][$this->event_nr1] = '';
+                            $this->event['gedcom'][$this->event_nr1] = 'FAMC';
+                            $this->event['date'][$this->event_nr1] = '';
+                            $this->event['text'][$this->event_nr1] = '';
+                            $this->event['place'][$this->event_nr1] = '';
                         }
                     } else {
                         // *** Normal parents ***
@@ -314,19 +325,26 @@ class GedcomCls
                         $pers_famc2 = $this->reassign_ged($famc, 'F');
                     }
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'adoption_by_person';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'adoption_by_person';
                     // *** BE AWARE: in gedcom_import.php step 4 further processing is done, famc is converted into a person number!!! ***
-                    $this->event['event'][$this->event_nr] = $pers_famc2;
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = substr($buffer, 7); // *** adopted, steph, legal or foster. ***
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['event'][$this->event_nr1] = $pers_famc2;
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = substr($buffer, 7); // *** adopted, steph, legal or foster. ***
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
 
                     if ($pers_famc == $famc) {
                         $pers_famc = '';
@@ -452,18 +470,25 @@ class GedcomCls
 
                             $this->processed = true;
                             $this->event_nr++;
+                            $this->event_nr1 = $this->event_nr;
+
                             $this->calculated_event_id++;
-                            $this->event['connect_kind'][$this->event_nr] = 'person';
-                            $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                            $this->event['connect_kind2'][$this->event_nr] = '';
-                            $this->event['connect_id2'][$this->event_nr] = '';
-                            $this->event['kind'][$this->event_nr] = 'name';
-                            $this->event['event'][$this->event_nr] = $pers_aka;
-                            $this->event['event_extra'][$this->event_nr] = '';
-                            $this->event['gedcom'][$this->event_nr] = 'NICK';
-                            $this->event['date'][$this->event_nr] = '';
-                            $this->event['text'][$this->event_nr] = '';
-                            $this->event['place'][$this->event_nr] = '';
+                            // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                            $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                            $this->event['level'][$this->event_nr1] = '1';
+
+                            $this->event['connect_kind'][$this->event_nr1] = 'person';
+                            $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                            $this->event['connect_kind2'][$this->event_nr1] = '';
+                            $this->event['connect_id2'][$this->event_nr1] = '';
+                            $this->event['kind'][$this->event_nr1] = 'name';
+                            $this->event['event'][$this->event_nr1] = $pers_aka;
+                            $this->event['event_extra'][$this->event_nr1] = '';
+                            $this->event['gedcom'][$this->event_nr1] = 'NICK';
+                            $this->event['date'][$this->event_nr1] = '';
+                            $this->event['text'][$this->event_nr1] = '';
+                            $this->event['place'][$this->event_nr1] = '';
                         }
                     } else {
                         $position = strpos($name, "/");
@@ -533,18 +558,27 @@ class GedcomCls
                     //$pers_aka=str_replace("  ", " ", $pers_aka);
                     //$pers_aka=rtrim($pers_aka);
 
-                    //$this->processed = true; $this->event_nr++; $this->calculated_event_id++;
-                    //$this->event['connect_kind'][$this->event_nr]='person';
-                    //$this->event['connect_id'][$this->event_nr]=$pers_gedcomnumber;
-                    //$this->event['connect_kind2'][$this->event_nr] = '';
-                    //$this->event['connect_id2'][$this->event_nr] = '';   
-                    //$this->event['kind'][$this->event_nr]='name';
-                    //$this->event['event'][$this->event_nr]=$pers_aka;
-                    //$this->event['event_extra'][$this->event_nr]='';
-                    $this->event['gedcom'][$this->event_nr] = '_AKA';
-                    //$this->event['date'][$this->event_nr]='';
-                    //$this->event['text'][$this->event_nr]='';
-                    //$this->event['place'][$this->event_nr]='';
+                    //$this->processed = true;
+                    //$this->event_nr++;
+                    //$this->event_nr1 = $this->event_nr;
+
+                    //$this->calculated_event_id++;
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    //$this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    //$this->event['level'][$this->event_nr1] = '1'; 
+
+                    //$this->event['connect_kind'][$this->event_nr1]='person';
+                    //$this->event['connect_id'][$this->event_nr1]=$pers_gedcomnumber;
+                    //$this->event['connect_kind2'][$this->event_nr1] = '';
+                    //$this->event['connect_id2'][$this->event_nr1] = '';   
+                    //$this->event['kind'][$this->event_nr1]='name';
+                    //$this->event['event'][$this->event_nr1]=$pers_aka;
+                    //$this->event['event_extra'][$this->event_nr1]='';
+                    $this->event['gedcom'][$this->event_nr1] = '_AKA';
+                    //$this->event['date'][$this->event_nr1]='';
+                    //$this->event['text'][$this->event_nr1]='';
+                    //$this->event['place'][$this->event_nr1]='';
 
                     // *** Empty original pers_call_name ***
                     //$pers_callname=$pers_callname_org;
@@ -561,36 +595,50 @@ class GedcomCls
                 if ($buffer6 === '2 NPFX') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'NPFX';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'NPFX';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'NPFX';
+                    $this->event['event'][$this->event_nr1] = substr($buffer, 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'NPFX';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // *** GEDCOM 5.5 name addition: 2 NSFX Jr. ***
                 if ($buffer6 === '2 NSFX') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'NSFX';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = $this->level[1];
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'NSFX';
+                    $this->event['event'][$this->event_nr1] = substr($buffer, 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = $this->level[1];
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
 
@@ -685,34 +733,41 @@ class GedcomCls
                 if ($process_event) {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'name';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'name';
 
                     // *** $buffer[7] = check 8th character.***
                     // *** There maybe is a problem for texts like: "1 tekst" or "A text". ***
                     // *** 2 _AKA Also known as ***
                     if (isset($buffer[6]) && $buffer[6] === ' ') {
-                        $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                        $this->event['event'][$this->event_nr1] = substr($buffer, 7);
                     }
                     // *** 2 _ALIA Alias ***
                     elseif (isset($buffer[7]) && $buffer[7] === ' ') {
-                        $this->event['event'][$this->event_nr] = substr($buffer, 8);
+                        $this->event['event'][$this->event_nr1] = substr($buffer, 8);
                     }
                     // *** X _MARNM ??  MyHeritage ***
                     elseif (isset($buffer[8]) && $buffer[8] === ' ') {
-                        $this->event['event'][$this->event_nr] = substr($buffer, 9);
+                        $this->event['event'][$this->event_nr1] = substr($buffer, 9);
                     }
-                    //elseif (isset($buffer[10]) AND $buffer[10]==' ') {$this->event['event'][$this->event_nr]=substr($buffer,11);}
+                    //elseif (isset($buffer[10]) AND $buffer[10]==' ') {$this->event['event'][$this->event_nr1]=substr($buffer,11);}
 
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = trim(substr($buffer, 2, 5));
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = trim(substr($buffer, 2, 5));
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // Proces name-source and name-date (BK)
@@ -723,12 +778,13 @@ class GedcomCls
                 //  4 CONT 3rd line
                 if ($buffer6 === '3 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($buffer, 7);
                 }
 
                 // *** Source by person event (name) ***
                 if ($this->level[3] == 'SOUR') {
-                    $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '3');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_sources('person', 'pers_event_source', $event_id, $buffer, '3');
                 }
 
                 if ($this->level[3] == 'NOTE') {
@@ -738,8 +794,8 @@ class GedcomCls
                     // 2 GIVN Wilhelmina
                     // 2 SURN Brink
                     // 3 NOTE Naam kan ook zijn: Brink
-                    if (isset($this->event['text'][$this->event_nr])) {
-                        $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '3');
+                    if (isset($this->event['text'][$this->event_nr1])) {
+                        $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], $buffer, '3');
                     } else {
                         $pers_name_text = $this->process_texts($pers_name_text, $buffer, '3');
                     }
@@ -787,18 +843,25 @@ class GedcomCls
 
                 $this->processed = true;
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
+
                 $this->calculated_event_id++;
-                $this->event['connect_kind'][$this->event_nr] = 'person';
-                $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                $this->event['connect_kind2'][$this->event_nr] = '';
-                $this->event['connect_id2'][$this->event_nr] = '';
-                $this->event['kind'][$this->event_nr] = 'name';
-                $this->event['event'][$this->event_nr] = $pers_aka;
-                $this->event['event_extra'][$this->event_nr] = '';
-                $this->event['gedcom'][$this->event_nr] = 'NICK';
-                $this->event['date'][$this->event_nr] = '';
-                $this->event['text'][$this->event_nr] = '';
-                $this->event['place'][$this->event_nr] = '';
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                $this->event['level'][$this->event_nr1] = '1';
+
+                $this->event['connect_kind'][$this->event_nr1] = 'person';
+                $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                $this->event['connect_kind2'][$this->event_nr1] = '';
+                $this->event['connect_id2'][$this->event_nr1] = '';
+                $this->event['kind'][$this->event_nr1] = 'name';
+                $this->event['event'][$this->event_nr1] = $pers_aka;
+                $this->event['event_extra'][$this->event_nr1] = '';
+                $this->event['gedcom'][$this->event_nr1] = 'NICK';
+                $this->event['date'][$this->event_nr1] = '';
+                $this->event['text'][$this->event_nr1] = '';
+                $this->event['place'][$this->event_nr1] = '';
             }
 
             // *** December 2021: now processed as event **
@@ -947,41 +1010,47 @@ class GedcomCls
                         $buffer = str_replace("  ", " ", $buffer);
                         $buffer = trim($buffer);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
+
                         $this->calculated_event_id++;
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'birth_declaration';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        $this->event['level'][$this->event_nr1] = '1';
 
-                        //$this->event['kind'][$this->event_nr] = 'birth_declaration';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'birth_declaration';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
+
+                        //$this->event['kind'][$this->event_nr1] = 'birth_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
                         if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($buffer, 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($buffer, 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
                     if ($buffer6 === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                     if ($buffer6 === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                 }
@@ -1084,32 +1153,38 @@ class GedcomCls
                         $buffer = str_replace("  ", " ", $buffer);
                         $buffer = trim($buffer);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
+
                         $this->calculated_event_id++;
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'CHR';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        $this->event['level'][$this->event_nr1] = '1';
 
-                        //$this->event['kind'][$this->event_nr] = 'baptism_witness';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'CHR';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
+
+                        //$this->event['kind'][$this->event_nr1] = 'baptism_witness';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
                         if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($buffer, 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($buffer, 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
 
                     // Haza-data uses "i.p.v." (instead of).
@@ -1118,17 +1193,17 @@ class GedcomCls
                     // 2 WITN Doopgetuige2//
                     if (substr($buffer, 0, 12) === '3 TYPE locum') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= " i.p.v. ";
+                        $this->event['event'][$this->event_nr1] .= " i.p.v. ";
                     }
 
                     if ($buffer6 === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                     if ($buffer6 === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                 }
@@ -1145,65 +1220,8 @@ class GedcomCls
                 // 2 ASSO @I7@
                 // 3 ROLE GODP (only use GEDCOM 7.x. defined list: WITN, CLERGY, etc.)
 
-                /*
+                // *** Oct. 2024: New function to process ASSO ***
                 if ($this->level[2] == 'ASSO') {
-                    if (substr($buffer, 0, 6) === '2 ASSO') {
-                        $this->processed = true;
-                        $this->event_nr++;
-                        $this->calculated_event_id++;
-
-                        // Jan 2024: Database example
-                        // event_connect_id = I1 (main person)
-                        // event_connect_id2 = I2012 (witness)
-
-                        //$this->event['connect_kind'][$this->event_nr] = $this->level[1]; // CHR, BAPT
-                        $this->event['connect_kind'][$this->event_nr] = 'CHR';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
-
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = '';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
-
-                        // *** oct 2024: if there is @VOID@, the name should be in: 2 PHRASE Mr Stockdale.
-                        if (substr($buffer, 7, 1) == '@') {
-                            // 2 ASSO @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
-                        } else {
-                            // NOT tested, probably not needed for geneweb.
-                            // 2 ASSO Godfather//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                        }
-                    }
-
-                    // GEDCOM 5.x
-                    if (substr($buffer, 0, 11) === '3 TYPE INDI') {
-                        $this->processed = true;
-                    }
-                    // GEDCOM 5.x
-                    if (substr($buffer, 0, 11) === '3 RELA GODP') {
-                        $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['gedcom'][$this->event_nr] = 'GODP';
-                    }
-
-                    // GEDCOM 7.x
-                    if ($buffer6 == '3 ROLE') {
-                        $this->processed = true;
-                        $this->event['gedcom'][$this->event_nr] = substr($buffer, 7);
-                    }
-                }
-                */
-                // TODO: use this new function to process ASSO. Check script first.
-                // Oct. 2024: New function to process ASSO.
-                if ($this->level[2] == 'ASSO') {
-                    //process_association($buffer, $buffer6, $buffer8, $gedcomnumber, $connect_kind = 'person');
                     $this->process_association($buffer, $buffer6, $buffer8, $pers_gedcomnumber, 'CHR');
                 }
 
@@ -1297,41 +1315,47 @@ class GedcomCls
                         $buffer = str_replace("  ", " ", $buffer);
                         $buffer = trim($buffer);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
+
                         $this->calculated_event_id++;
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'death_declaration';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        $this->event['level'][$this->event_nr1] = '1';
 
-                        //$this->event['kind'][$this->event_nr] = 'death_declaration';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'death_declaration';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
+
+                        //$this->event['kind'][$this->event_nr1] = 'death_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
                         if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($buffer, 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($buffer, 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
                     if ($buffer6 === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                     if ($buffer6 === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                 }
@@ -1433,48 +1457,53 @@ class GedcomCls
                         $buffer = str_replace("  ", " ", $buffer);
                         $buffer = trim($buffer);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
+
                         $this->calculated_event_id++;
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'BURI';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        $this->event['level'][$this->event_nr1] = '1';
 
-                        //$this->event['kind'][$this->event_nr] = 'burial_witness';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'BURI';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
+
+                        //$this->event['kind'][$this->event_nr1] = 'burial_witness';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
                         if (substr($buffer, 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($buffer, 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($buffer, 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
                     if ($buffer6 === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                     if ($buffer6 === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($buffer, 7));
                         $buffer = ""; // to prevent use of this text in other text!
                     }
                 }
 
                 // Oct. 2024: New function to process ASSO.
                 if ($this->level[2] == 'ASSO') {
-                    //process_association($buffer, $buffer6, $buffer8, $gedcomnumber, $connect_kind = 'person')
                     $this->process_association($buffer, $buffer6, $buffer8, $pers_gedcomnumber, 'BURI');
                 }
 
@@ -1561,7 +1590,13 @@ class GedcomCls
                 if ($buffer6 === '1 ASSO') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
 
                     // *** Changed in jan. 2023 ***
                     // Jan 2024: Database example
@@ -1575,96 +1610,96 @@ class GedcomCls
                     // TODO check for GEDCOM 5 or 7 AND check for Aldfaer GEDCOM.
 
                     // TODO if this code is used for GEDCOM 7: switch connect_id and connect_id2.
-                    //$this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_kind'][$this->event_nr] = 'BURI';
-                    $this->event['connect_id'][$this->event_nr] = substr($buffer, 8, -1);
+                    //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_kind'][$this->event_nr1] = 'BURI';
+                    $this->event['connect_id'][$this->event_nr1] = substr($buffer, 8, -1);
 
-                    $this->event['connect_kind2'][$this->event_nr] = 'person';
-                    $this->event['connect_id2'][$this->event_nr] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                    $this->event['connect_id2'][$this->event_nr1] = $pers_gedcomnumber;
                     //}
                     // *** This code isn't needed? OR: use this code for HuMo-gen. ***
                     //else{
-                    //$this->event['connect_kind'][$this->event_nr] = 'person';
-                    //$this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    //$this->event['connect_kind2'][$this->event_nr] = 'person';
-                    //$this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                    //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                    //$this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    //$this->event['connect_kind2'][$this->event_nr1] = 'person';
+                    //$this->event['connect_id2'][$this->event_nr1] = substr($buffer, 8, -1);
                     //}
 
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
-                    $this->event['event'][$this->event_nr] = '';
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'WITN';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
+                    $this->event['event'][$this->event_nr1] = '';
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 TYPE INDI') {
                     $this->processed = true;
                     if ($add_tree == true || $reassign == true) {
-                        $this->event['connect_id'][$this->event_nr] = $this->reassign_ged($this->event['connect_id'][$this->event_nr], 'I');
+                        $this->event['connect_id'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id'][$this->event_nr1], 'I');
 
                         //TODO this line isn't tested yet.
-                        $this->event['connect_id2'][$this->event_nr] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr], 'I');
+                        $this->event['connect_id2'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr1], 'I');
                     }
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 TYPE FAM') {
                     $this->processed = true;
-                    //$this->event['connect_kind'][$this->event_nr] = 'family';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR';
+                    //$this->event['connect_kind'][$this->event_nr1] = 'family';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR';
                     if ($add_tree == true || $reassign == true) {
-                        $this->event['connect_id'][$this->event_nr] = $this->reassign_ged($this->event['connect_id'][$this->event_nr], 'F');
+                        $this->event['connect_id'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id'][$this->event_nr1], 'F');
 
                         //TODO this line isn't tested yet.
-                        $this->event['connect_id2'][$this->event_nr] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr], 'F');
+                        $this->event['connect_id2'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr1], 'F');
                     }
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 RELA birth registration') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'birth_declaration';
-                    $this->event['connect_kind'][$this->event_nr] = 'birth_declaration';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'birth_declaration';
+                    $this->event['connect_kind'][$this->event_nr1] = 'birth_declaration';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 RELA baptize') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'baptism_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'CHR';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'baptism_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'CHR';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 RELA death registration') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'death_declaration';
-                    $this->event['connect_kind'][$this->event_nr] = 'death_declaration';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'death_declaration';
+                    $this->event['connect_kind'][$this->event_nr1] = 'death_declaration';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 RELA burial') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'burial_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'BURI';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'burial_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'BURI';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 RELA civil') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'marriage_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR';
+                    //$this->event['kind'][$this->event_nr1] = 'marriage_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR';
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 RELA witness') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'marriage_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR';
+                    //$this->event['kind'][$this->event_nr1] = 'marriage_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR';
                 }
                 // GEDCOM 5.x
                 if ($buffer == '2 RELA religious') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'marriage_witness_rel';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR_REL';
+                    //$this->event['kind'][$this->event_nr1] = 'marriage_witness_rel';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR_REL';
                 }
             }
 
@@ -1674,18 +1709,25 @@ class GedcomCls
                 if ($buffer6 === '1 OCCU') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'profession';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'OCCU';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'profession';
+                    $this->event['event'][$this->event_nr1] = substr($buffer, 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'OCCU';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // *** Occupation, Haza-21 uses empty OCCU events... Isn't strange? ***
@@ -1693,22 +1735,22 @@ class GedcomCls
                 if ($this->level[1] == 'OCCU') {
                     if ($buffer6 === '1 OCCU' && substr($buffer, 7)) {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                        $this->event['event'][$this->event_nr1] = substr($buffer, 7);
                     }
                     // *** Long occupation ***
                     if ($buffer6 === '2 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($buffer, 7));
                     }
                     if ($buffer6 === '2 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($buffer, 7));
                     }
                 }
 
                 // *** Text by occupation ***
                 if ($this->level[2] == 'NOTE') {
-                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '2'); // BK
+                    $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], $buffer, '2'); // BK
                 }
 
                 // *** Occupation in iFamily program ***
@@ -1716,21 +1758,22 @@ class GedcomCls
                 // 2 TYPE baas van de herberg
                 if ($buffer6 === '2 TYPE') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= substr($buffer, 7);
+                    $this->event['event'][$this->event_nr1] .= substr($buffer, 7);
                 }
 
                 if ($buffer6 === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($buffer, 7);
                 } // BK
                 if ($buffer6 === '2 PLAC') {
                     $this->processed = true;
-                    $this->event['place'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['place'][$this->event_nr1] = substr($buffer, 7);
                 }
 
                 // *** Source by person occupation ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '2');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_sources('person', 'pers_event_source', $event_id, $buffer, '2');
                 }
             }
 
@@ -1742,48 +1785,56 @@ class GedcomCls
 
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'religion';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'RELI';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'religion';
+                    $this->event['event'][$this->event_nr1] = substr($buffer, 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'RELI';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 if ($buffer6 === '2 CONT') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                    $this->event['event'][$this->event_nr1] .= $this->cont(substr($buffer, 7));
                     $buffer = ""; // to prevent use of this text in other text!
                 }
                 if ($buffer6 === '2 CONC') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                    $this->event['event'][$this->event_nr1] .= $this->conc(substr($buffer, 7));
                     $buffer = ""; // to prevent use of this text in other text!
                 }
 
                 // *** Text by occupation ***
                 if ($this->level[2] == 'NOTE') {
-                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '2');
+                    $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], $buffer, '2');
                 }
 
                 if ($buffer6 === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($buffer, 7);
                 }
                 if ($buffer6 === '2 PLAC') {
                     $this->processed = true;
-                    $this->event['place'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['place'][$this->event_nr1] = substr($buffer, 7);
                 }
 
                 // *** Source by person occupation ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '2');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_sources('person', 'pers_event_source', $event_id, $buffer, '2');
                 }
             }
 
@@ -1822,26 +1873,33 @@ class GedcomCls
                     $photo = $this->humo_basename($photo);
 
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'picture';
-                    $this->event['event'][$this->event_nr] = $photo;
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'PHOTO';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'picture';
+                    $this->event['event'][$this->event_nr1] = $photo;
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'PHOTO';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
                 if ($buffer6 === '2 DSCR' || $buffer6 === '2 NAME') {
                     $this->processed = true;
-                    $this->event['text'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['text'][$this->event_nr1] = substr($buffer, 7);
                 }
                 if ($buffer6 === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($buffer, 7);
                 }
             }
 
@@ -1862,18 +1920,25 @@ class GedcomCls
             if ($buffer8 === '1 _COLOR') {
                 $this->processed = true;
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
+
                 $this->calculated_event_id++;
-                $this->event['connect_kind'][$this->event_nr] = 'person';
-                $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                $this->event['connect_kind2'][$this->event_nr] = '';
-                $this->event['connect_id2'][$this->event_nr] = '';
-                $this->event['kind'][$this->event_nr] = 'person_colour_mark';
-                $this->event['event'][$this->event_nr] = substr($buffer, 9);
-                $this->event['event_extra'][$this->event_nr] = '';
-                $this->event['gedcom'][$this->event_nr] = '_COLOR';
-                $this->event['date'][$this->event_nr] = '';
-                $this->event['text'][$this->event_nr] = '';
-                $this->event['place'][$this->event_nr] = '';
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                $this->event['level'][$this->event_nr1] = '1';
+
+                $this->event['connect_kind'][$this->event_nr1] = 'person';
+                $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                $this->event['connect_kind2'][$this->event_nr1] = '';
+                $this->event['connect_id2'][$this->event_nr1] = '';
+                $this->event['kind'][$this->event_nr1] = 'person_colour_mark';
+                $this->event['event'][$this->event_nr1] = substr($buffer, 9);
+                $this->event['event_extra'][$this->event_nr1] = '';
+                $this->event['gedcom'][$this->event_nr1] = '_COLOR';
+                $this->event['date'][$this->event_nr1] = '';
+                $this->event['text'][$this->event_nr1] = '';
+                $this->event['place'][$this->event_nr1] = '';
             }
 
             // *******************
@@ -2359,7 +2424,7 @@ class GedcomCls
                 // 2 PLAC Amsterdam
                 // 2 ADDR Damrak 1
                 if (substr($buffer, 0, 24) === '2 TYPE Militairy service') {
-                    $this->event['gedcom'][$this->event_nr] = 'MILI';
+                    $this->event['gedcom'][$this->event_nr1] = 'MILI';
                 }
             }
 
@@ -2367,32 +2432,39 @@ class GedcomCls
                 if ($event_start) {
                     $event_start = '';
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'event';
-                    $this->event['event'][$this->event_nr] = '';
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = $this->level[1];
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr1] = '1';
+
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'event';
+                    $this->event['event'][$this->event_nr1] = '';
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = $this->level[1];
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
 
                     // *** Aldfaer, title by name: 1 TITL Ir. ***
                     if ($this->level[1] == 'TITL') {
-                        $this->event['kind'][$this->event_nr] = 'title';
+                        $this->event['kind'][$this->event_nr1] = 'title';
                     }
 
                     // Text by GEDCOM TAG of event:
                     //1 _MILT militaire dienst  Location: Amsterdam
                     if (isset($event_temp)) {
-                        //$this->event['text'][$this->event_nr]=$this->merge_texts ($this->event['text'][$this->event_nr],', ',$event_temp);
-                        $this->event['event'][$this->event_nr] = $this->merge_texts($this->event['text'][$this->event_nr], ', ', $event_temp);
+                        //$this->event['text'][$this->event_nr1]=$this->merge_texts ($this->event['text'][$this->event_nr1],', ',$event_temp);
+                        $this->event['event'][$this->event_nr1] = $this->merge_texts($this->event['text'][$this->event_nr1], ', ', $event_temp);
                         $event_temp = '';
                     }
 
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // *** Save event type ***
@@ -2402,7 +2474,7 @@ class GedcomCls
                     // 2 TYPE Hebrew Name
                     if (isset($fact)) {
                         $this->processed = true;
-                        $this->event['text'][$this->event_nr] = substr($buffer, 7);
+                        $this->event['text'][$this->event_nr1] = substr($buffer, 7);
                     }
 
                     // *** For Aldfaer ***
@@ -2412,11 +2484,11 @@ class GedcomCls
                     // 2 SOUR @S9@
                     if ($buffer == '2 TYPE birth registration') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'birth_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'birth_declaration';
                     }
                     if ($buffer == '2 TYPE death registration') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'death_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'death_declaration';
                     }
 
                     // *** Aldfaer nobility (predikaat) by name ***
@@ -2424,25 +2496,25 @@ class GedcomCls
                     // 2 TYPE predikaat
                     if ($buffer == '2 TYPE predikaat') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'nobility';
+                        $this->event['kind'][$this->event_nr1] = 'nobility';
                     }
 
                     // *** Aldfaer, lordship (heerlijkheid) after a name: 1 PROP Heerlijkheid ***
                     if ($buffer == '2 TYPE heerlijkheid') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'lordship';
+                        $this->event['kind'][$this->event_nr1] = 'lordship';
                     }
 
                     // *** HZ-21, ash dispersion ***
                     if ($buffer == '2 TYPE ash dispersion') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'ash dispersion';
+                        $this->event['kind'][$this->event_nr1] = 'ash dispersion';
                     }
 
                     // *** Legacy ***
                     if ($buffer == '2 TYPE Property') {
                         $this->processed = true;
-                        $this->event['gedcom'][$this->event_nr] = 'PROP';
+                        $this->event['gedcom'][$this->event_nr1] = 'PROP';
                     }
 
                     // *** Aldfaer if 1 EVEN has no text, but 2 TYPE has text, use that for title of event  ***
@@ -2453,9 +2525,9 @@ class GedcomCls
                     // 1 EVEN
                     // 2 TYPE Telefoon
                     // 2 NOTE @N456@
-                    if (substr($buffer, 7) && $this->level[1] == 'EVEN' && $this->event['kind'][$this->event_nr] == 'event' && $this->event['event'][$this->event_nr] == '') {
+                    if (substr($buffer, 7) && $this->level[1] == 'EVEN' && $this->event['kind'][$this->event_nr1] == 'event' && $this->event['event'][$this->event_nr1] == '') {
                         $this->processed = true;
-                        $this->event['gedcom'][$this->event_nr] = substr($buffer, 7) . ":";
+                        $this->event['gedcom'][$this->event_nr1] = substr($buffer, 7) . ":";
                     }
                 }
 
@@ -2472,15 +2544,15 @@ class GedcomCls
 
                 if ($buffer6 === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($buffer, 7);
                 }
                 if ($buffer6 === '2 PLAC') {
                     $this->processed = true;
-                    $this->event['place'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['place'][$this->event_nr1] = substr($buffer, 7);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '2');
+                    $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], $buffer, '2');
                 }
 
                 // *** Ancestry FTM: Normally there is a 2 NOTE > 3 CONC/ 3 CONT structure... ***
@@ -2488,23 +2560,23 @@ class GedcomCls
                 //2 CONC John.
                 if ($this->level[2] == 'CONT') {
                     $this->processed = true;
-                    $this->event['text'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                    $this->event['text'][$this->event_nr1] .= $this->cont(substr($buffer, 7));
                 }
                 if ($this->level[2] == 'CONC') {
                     $this->processed = true;
-                    $this->event['text'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                    $this->event['text'][$this->event_nr1] .= $this->conc(substr($buffer, 7));
                 }
 
                 // *** Aldfaer has source by event: 2 SOUR @S9@
                 // *** Source by person event ***
                 if ($this->level[2] == 'SOUR') {
-                    if ($this->event['kind'][$this->event_nr] == 'birth_declaration') {
+                    if ($this->event['kind'][$this->event_nr1] == 'birth_declaration') {
                         $this->process_sources('person', 'birth_decl_source', $pers_gedcomnumber, $buffer, '2');
-                    } elseif ($this->event['kind'][$this->event_nr] == 'death_declaration') {
+                    } elseif ($this->event['kind'][$this->event_nr1] == 'death_declaration') {
                         $this->process_sources('person', 'death_decl_source', $pers_gedcomnumber, $buffer, '2');
                     } else {
-
-                        $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '2');
+                        $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                        $this->process_sources('person', 'pers_event_source', $event_id, $buffer, '2');
                     }
                 }
 
@@ -2517,7 +2589,8 @@ class GedcomCls
                 // 3 _TYPE PHOTO
                 // *** Picture is connected to event_id column (=$this->calculated_event_id) ***
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('person', $pers_gedcomnumber, 'picture_event_' . $this->calculated_event_id, $buffer);
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_event_' . $event_id, $buffer);
                 }
             }
 
@@ -2800,11 +2873,23 @@ class GedcomCls
         if ($this->event_nr > 0) {
             $event_order = 0;
             $check_event_kind = $this->event['kind']['1'];
+            // Oct 2024
+            $check_event_connect_kind = $this->event['connect_kind']['1'];
             for ($i = 1; $i <= $this->event_nr; $i++) {
                 $event_order++;
-                if ($check_event_kind != $this->event['kind'][$i]) {
-                    $event_order = 1;
-                    $check_event_kind = $this->event['kind'][$i];
+
+                // *** Level 2 event (picture or association) ***
+                if ($this->event['level'][$i] == '1') {
+                    if ($check_event_kind != $this->event['kind'][$i]) {
+                        $event_order = 1;
+                        $check_event_kind = $this->event['kind'][$i];
+                    }
+                } else {
+                    if ($check_event_kind != $this->event['kind'][$i] || $check_event_connect_kind != $this->event['connect_kind'][$i]) {
+                        $event_order = 1;
+                        $check_event_kind = $this->event['kind'][$i];
+                        $check_event_connect_kind = $this->event['connect_kind'][$i];
+                    }
                 }
                 $gebeurtsql = "INSERT IGNORE INTO humo_events SET
                     event_tree_id='" . $this->tree_id . "',
@@ -2817,6 +2902,13 @@ class GedcomCls
                     event_connect_kind2='" . $this->text_process($this->event['connect_kind2'][$i]) . "',
                     event_connect_id2='" . $this->text_process($this->event['connect_id2'][$i]) . "',";
                 }
+                /* Used to be part of previous code.
+                if (isset($this->event2['connect_kind2'][$i])) {
+                    $gebeurtsql .= "
+                    event_connect_kind2='" . $this->text_process($this->event2['connect_kind2'][$i]) . "',
+                    event_connect_id2='" . $this->text_process($this->event2['connect_id2'][$i]) . "',";
+                }
+                */
 
                 $gebeurtsql .= "
                     event_kind='" . $this->text_process($this->event['kind'][$i]) . "',
@@ -2827,52 +2919,16 @@ class GedcomCls
                     event_text='" . $this->text_process($this->event['text'][$i]) . "',
                     event_place='" . $this->text_process($this->event['place'][$i]) . "'";
                 $this->dbh->query($gebeurtsql);
+
+                //TEST LINES to check calculated_event_id.
+                //echo $this->event['calculated_event_id'][$i] . ' ';
+                //echo $this->dbh->lastInsertId() . ' ' . $this->event['kind'][$i] . '<br>';
             }
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->event);
             //echo ' '.memory_get_usage().'@ ';
-        }
-
-        // *** Save events CONNECTED TO EVENTS (e.g. picture by event) in seperate table ***
-        if ($this->event2_nr > 0) {
-            $event_order = 0;
-            $check_event_kind = $this->event2['kind']['1'];
-            // Oct 2024
-            $check_event_connect_kind = $this->event2['connect_kind']['1'];
-            for ($i = 1; $i <= $this->event2_nr; $i++) {
-                $this->calculated_event_id++;
-                $event_order++;
-                if ($check_event_kind != $this->event2['kind'][$i] || $check_event_connect_kind != $this->event2['connect_kind'][$i]) {
-                    $event_order = 1;
-                    $check_event_kind = $this->event2['kind'][$i];
-                    $check_event_connect_kind = $this->event2['connect_kind'][$i];
-                }
-                $gebeurtsql = "INSERT IGNORE INTO humo_events SET
-                event_tree_id='" . $this->tree_id . "',
-                event_order='" . $event_order . "',
-
-                event_connect_kind='" . $this->text_process($this->event2['connect_kind'][$i]) . "',
-                event_connect_id='" . $this->text_process($this->event2['connect_id'][$i]) . "',";
-
-                if (isset($this->event2['connect_kind2'][$i])) {
-                    $gebeurtsql .= "
-                    event_connect_kind2='" . $this->text_process($this->event2['connect_kind2'][$i]) . "',
-                    event_connect_id2='" . $this->text_process($this->event2['connect_id2'][$i]) . "',";
-                }
-
-                $gebeurtsql .= "event_kind='" . $this->text_process($this->event2['kind'][$i]) . "',
-                event_event='" . $this->text_process($this->event2['event'][$i]) . "',
-                event_event_extra='" . $this->text_process($this->event2['event_extra'][$i]) . "',
-                event_gedcom='" . $this->text_process($this->event2['gedcom'][$i]) . "',
-                event_date='" . $this->process_date($this->text_process($this->event2['date'][$i])) . "',
-                event_text='" . $this->text_process($this->event2['text'][$i]) . "',
-                event_place='" . $this->text_process($this->event2['place'][$i]) . "'";
-                $this->dbh->query($gebeurtsql);
-            }
-            //$this->event2=null;
-            unset($this->event2);
         }
 
         // *** Add a general source to all persons in this GEDCOM file (source_id is temporary number!) ***
@@ -2935,7 +2991,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($connect);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -3165,15 +3221,21 @@ class GedcomCls
             }
 
             // *** Witnesses ***
-            // 1 WITN Doeko/Mons/
-            // 1 WITN Rene/Mansveld/
+            // 1 WITN John/Doe/
+            // 1 WITN Jane/Doe/
             if ($buffer6 === '1 WITN') {
                 $this->processed = true;
                 $buffer = str_replace("/", " ", $buffer);
                 $buffer = str_replace("  ", " ", $buffer);
                 $buffer = trim($buffer);
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
+
                 $this->calculated_event_id++;
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+
+                $this->event['level'][$this->event_nr] = '1';
 
                 //$this->event['connect_kind'][$this->event_nr] = 'family';
                 $this->event['connect_kind'][$this->event_nr] = 'MARR';
@@ -3253,7 +3315,15 @@ class GedcomCls
                     $this->processed = true;
                     $child_array=explode(";",$fam_children); $count_children=count($child_array);
 
-                    $this->event_nr++; $this->calculated_event_id++;
+                    $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
+                    $this->calculated_event_id++;
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr] = '1';
+
                     $this->event['connect_kind'][$this->event_nr]='person';
                     $this->event['connect_id'][$this->event_nr]=$child_array[$count_children-1];
                     $this->event['connect_kind2'][$this->event_nr] = '';
@@ -3500,7 +3570,13 @@ class GedcomCls
                 if ($buffer6 === '2 WITN') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr] = '1';
 
                     //$this->event['connect_kind'][$this->event_nr] = 'family';
                     $this->event['connect_kind'][$this->event_nr] = 'MARR';
@@ -4021,7 +4097,14 @@ class GedcomCls
                 if ($event_start) {
                     $event_start = '';
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr] = '1';
+
                     $this->event['connect_kind'][$this->event_nr] = 'family';
                     $this->event['connect_id'][$this->event_nr] = $gedcomnumber;
                     $this->event['connect_kind2'][$this->event_nr] = '';
@@ -4062,7 +4145,8 @@ class GedcomCls
 
                 // *** Source by family event ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_event_source', $this->calculated_event_id, $buffer, '2');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr];
+                    $this->process_sources('family', 'fam_event_source', $event_id, $buffer, '2');
                 }
             }
 
@@ -4396,7 +4480,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->event);
             //$event=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -4556,7 +4640,7 @@ class GedcomCls
             2 SOUR @S16@
             2 SOUR @S16@
             2 SOUR @S20@
-        */
+            */
             if ($this->level[2] === 'SOUR') {
                 //echo $buffer.'<br>';
                 $this->process_sources('ref_text', 'ref_text_source', $text['text_gedcomnr'], $buffer, '2');
@@ -4680,7 +4764,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($connect);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -4834,11 +4918,9 @@ class GedcomCls
                 $source["source_status"] = 'restricted';
             }
 
-            if (substr($buffer, 2, 4) === 'DATE') {
-                if ($this->level[1] != '_NEW' && $this->level[1] != 'CHAN') {
-                    $this->processed = true;
-                    $source["source_date"] = substr($buffer, 7);
-                }
+            if ($buffer6 == '1 DATE') {
+                $this->processed = true;
+                $source["source_date"] = substr($buffer, 7);
             }
 
             if ($this->level[1] === 'TITL') {
@@ -4939,7 +5021,14 @@ class GedcomCls
                     $photo = $this->humo_basename($photo);
 
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+
                     $this->calculated_event_id++;
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+
+                    $this->event['level'][$this->event_nr] = '1';
+
                     $this->event['connect_kind'][$this->event_nr] = 'source';
                     $this->event['connect_id'][$this->event_nr] = $source["id"];
                     $this->event['kind'][$this->event_nr] = 'picture';
@@ -5121,7 +5210,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->event);
             //$event=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5166,7 +5255,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($connect);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5226,24 +5315,27 @@ class GedcomCls
         $buffer = $line2[0];
 
         unset($repo);  //Reset array
-        // TODO: change array variable names $repo["repo_gedcomnr"] -> $repo["gedcomnr"]
-        $repo["repo_gedcomnr"] = "";
-        $repo["repo_name"] = "";
-        $repo["repo_address"] = "";
-        $repo["repo_zip"] = "";
-        $repo["repo_place"] = "";
-        $repo["repo_phone"] = "";
-        $repo["repo_date"] = "";
-        $repo["repo_text"] = "";
-        $repo["repo_mail"] = "";
-        $repo["repo_url"] = "";
-        $repo["repo_unprocessed_tags"] = "";
-        $repo["repo_new_date"] = "1970-01-01";
-        $repo["repo_new_time"] = "00:00:01";
-        $repo["repo_new_user_id"] = "";
-        $repo["repo_changed_date"] = "";
-        $repo["repo_changed_time"] = "";
-        $repo["repo_changed_user_id"] = "";
+        // TODO: change array variable names repo_gedcomnr -> gedcomnr
+        $repo = array(
+            "repo_gedcomnr" => "",
+            "repo_name" => "",
+            "repo_address" => "",
+            "repo_zip" => "",
+            "repo_place" => "",
+            "repo_phone" => "",
+            "repo_date" => "",
+            "repo_text" => "",
+            "repo_mail" => "",
+            "repo_url" => "",
+            "repo_unprocessed_tags" => "",
+            "repo_new_date" => '1970-01-01',
+            "repo_new_time" => '00:00:01',
+            "repo_new_user_id" => "",
+            "repo_changed_date" => '',
+            "repo_changed_time" => '',
+            "repo_changed_user_id" => ""
+        );
+
         /*
         Example of repository record in GEDCOM file:
         0 @R2@ REPO
@@ -5328,6 +5420,11 @@ class GedcomCls
                 $this->level[4] = substr($buffer, 2, 4);
             }
 
+            if ($this->level[1] === 'DATE') {
+                $this->processed = true;
+                $repo["repo_date"] = substr($buffer, 7);
+            }
+
             if (substr($buffer, 2, 4) === 'NAME') {
                 $this->processed = true;
                 $repo["repo_name"] = substr($buffer, 7);
@@ -5353,6 +5450,10 @@ class GedcomCls
                 $repo["repo_zip"] = substr($buffer, 7);
             }
 
+            if (substr($buffer, 2, 4) === 'PLAC') {
+                $this->processed = true;
+                $repo["repo_place"] = substr($buffer, 7);
+            }
             if (substr($buffer, 2, 4) === 'CITY') {
                 $this->processed = true;
                 $repo["repo_place"] = substr($buffer, 7);
@@ -5380,11 +5481,6 @@ class GedcomCls
                 $repo["repo_phone"] = substr($buffer, 7);
             }
 
-            if (substr($buffer, 2, 4) === 'DATE') {
-                $this->processed = true;
-                $repo["repo_date"] = substr($buffer, 7);
-            }
-
             //SOURCE
 
             //2 NOTE They have birth records dating from July 1, 1907.  They hav
@@ -5404,34 +5500,26 @@ class GedcomCls
             // 1 _EMAIL fhl@ldschurch.org
             if (substr($buffer, 2, 6) === '_EMAIL') {
                 $this->processed = true;
-                $repo["repo_email"] = substr($buffer, 7);
+                $repo["repo_mail"] = substr($buffer, 8);
+            }
+            // GEDCOM 7
+            if (substr($buffer, 2, 5) === 'EMAIL') {
+                $this->processed = true;
+                $repo["repo_mail"] = substr($buffer, 8);
             }
 
             // 1 _URL http://www.familysearch.org
             if (substr($buffer, 2, 4) === '_URL') {
                 $this->processed = true;
-                $repo["repo_email"] = substr($buffer, 7);
+                $repo["repo_url"] = substr($buffer, 7);
+            }
+            // GEDCOM 7
+            if (substr($buffer, 2, 3) === 'WWW') {
+                $this->processed = true;
+                $repo["repo_url"] = substr($buffer, 6);
             }
 
             // *** New date/ time ***
-            //1 _NEW
-            //2 DATE 04 AUG 2004
-            /*
-            if ($this->level[1] === '_NEW') {
-                if ($buffer6 === '1 _NEW') {
-                    $this->processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $this->processed = true;
-                    $repo["repo_new_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $this->processed = true;
-                    $repo["repo_new_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
@@ -5661,24 +5749,6 @@ class GedcomCls
             //	$this->processed = true; $address["address_photo"]=$this->merge_texts($address["address_photo"], ';', substr($buffer,11,-5)); }
 
             // *** New date/ time ***
-            //1 _NEW
-            //2 DATE 04 AUG 2004
-            /*
-            if ($this->level[1] === '_NEW') {
-                if ($buffer6 === '1 _NEW') {
-                    $this->processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $this->processed = true;
-                    $address["new_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $this->processed = true;
-                    $address["new_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
@@ -5785,7 +5855,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($connect);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5944,7 +6014,6 @@ class GedcomCls
                     $this->event["new_user_id"] = $created_changed["user_id"];
                 }
             }
-
 
             // *** Changed date/ time ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
@@ -6591,17 +6660,18 @@ class GedcomCls
 
             // *** Texts by living places for BK, Aldfaer ***
             if ($this->level[2] == 'NOTE') {
-                if ($this->address_array["text"][$this->nraddress2]) {
-                    $this->address_array["text"][$this->nraddress2] .= '. ';
-                }
+                // TODO check this code.
+                //if ($this->address_array["text"][$this->nraddress2]) {
+                //    $this->address_array["text"][$this->nraddress2] .= '. ';
+                //}
                 $this->address_array["text"][$this->nraddress2] = $this->process_texts($this->address_array["text"][$this->nraddress2], $buffer, '2');
             }
 
             // *** Texts by living place for SukuJutut ***
             if ($gen_program == "SukuJutut") {
-                if ($this->address_array["text"][$this->nraddress2]) {
-                    $this->address_array["text"][$this->nraddress2] .= '. ';
-                }
+                //if ($this->address_array["text"][$this->nraddress2]) {
+                //    $this->address_array["text"][$this->nraddress2] .= '. ';
+                //}
                 $this->address_array["text"][$this->nraddress2] = $this->process_texts($this->address_array["text"][$this->nraddress2], $buffer, '3');
             }
 
@@ -7005,20 +7075,34 @@ class GedcomCls
             $this->processed = true;
             if ($event_picture == true) {
                 // *** Process picture by event ***
+                $this->event_nr++;
+                $this->event_nr2 = $this->event_nr;
+
                 $this->calculated_event_id++;
-                $this->event2_nr++;
-                $this->event2['connect_kind'][$this->event2_nr] = $connect_kind;
-                $this->event2['connect_id'][$this->event2_nr] = $connect_id;
-                $this->event2['kind'][$this->event2_nr] = $picture; // picture = person or family picture.
-                $this->event2['event'][$this->event2_nr] = '';
-                $this->event2['event_extra'][$this->event2_nr] = '';
-                $this->event2['gedcom'][$this->event2_nr] = 'OBJE';
-                $this->event2['date'][$this->event2_nr] = '';
-                $this->event2['text'][$this->event2_nr] = '';
-                $this->event2['place'][$this->event2_nr] = '';
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr2] = $this->calculated_event_id;
+
+                $this->event['level2'][$this->event_nr2] = '2';
+
+                $this->event['connect_kind'][$this->event_nr2] = $connect_kind;
+                $this->event['connect_id'][$this->event_nr2] = $connect_id;
+                $this->event['kind'][$this->event_nr2] = $picture; // picture = person or family picture.
+                $this->event['event'][$this->event_nr2] = '';
+                $this->event['event_extra'][$this->event_nr2] = '';
+                $this->event['gedcom'][$this->event_nr2] = 'OBJE';
+                $this->event['date'][$this->event_nr2] = '';
+                $this->event['text'][$this->event_nr2] = '';
+                $this->event['place'][$this->event_nr2] = '';
             } else {
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
+
                 $this->calculated_event_id++;
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+
+                $this->event['level'][$this->event_nr] = '1';
+
                 $this->event['connect_kind'][$this->event_nr] = $connect_kind;
                 $this->event['connect_id'][$this->event_nr] = $connect_id;
                 $this->event['kind'][$this->event_nr] = $picture; // picture = person or family picture.
@@ -7036,7 +7120,7 @@ class GedcomCls
                 $photo = substr($buffer, 7);
                 $photo = $this->humo_basename($photo);
                 if ($event_picture == true) {
-                    $this->event2['event'][$this->event2_nr] = $photo;
+                    $this->event['event'][$this->event_nr2] = $photo;
                 } else {
                     $this->event['event'][$this->event_nr] = $photo;
                 }
@@ -7051,7 +7135,7 @@ class GedcomCls
         if (substr($buffer, 0, 10) === $test_number2 . ' FORM URL') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['kind'][$this->event2_nr] = 'URL';
+                $this->event['kind'][$this->event_nr2] = 'URL';
             } else {
                 $this->event['kind'][$this->event_nr] = 'URL';
             }
@@ -7063,7 +7147,7 @@ class GedcomCls
             // *** Aldfaer sometimes uses: 2 FILE \bestand.jpg ***
             $photo = $this->humo_basename($photo);
             if ($event_picture == true) {
-                $this->event2['event'][$this->event2_nr] = $photo;
+                $this->event['event'][$this->event_nr2] = $photo;
             } else {
                 $this->event['event'][$this->event_nr] = $photo;
             }
@@ -7076,7 +7160,7 @@ class GedcomCls
         if ($this->level[$test_number2] == 'TITL') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['text'][$this->event2_nr] = $this->process_texts($this->event2['text'][$this->event2_nr], $buffer, $test_number2);
+                $this->event['text'][$this->event_nr2] = $this->process_texts($this->event['text'][$this->event_nr2], $buffer, $test_number2);
             } else {
                 $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, $test_number2);
             }
@@ -7087,7 +7171,7 @@ class GedcomCls
         if ($this->level[$test_number2] == 'FORM') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['event_extra'][$this->event2_nr] = substr($buffer, 7);
+                $this->event['event_extra'][$this->event_nr2] = substr($buffer, 7);
             } else {
                 $this->event['event_extra'][$this->event_nr] = substr($buffer, 7);
             }
@@ -7096,7 +7180,7 @@ class GedcomCls
         // *** Text by photo Haza-21 ***
         if ($this->level[2] == 'NOTE') {
             if ($event_picture == true) {
-                $this->event2['text'][$this->event2_nr] = $this->process_texts($this->event2['text'][$this->event2_nr], $buffer, $test_number2);
+                $this->event['text'][$this->event_nr2] = $this->process_texts($this->event['text'][$this->event_nr2], $buffer, $test_number2);
             } else {
                 $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, $test_number2);
             }
@@ -7105,7 +7189,7 @@ class GedcomCls
         if ($buffer6 === $test_number2 . ' DATE') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['date'][$this->event2_nr] = substr($buffer, 7);
+                $this->event['date'][$this->event_nr2] = substr($buffer, 7);
             } else {
                 $this->event['date'][$this->event_nr] = substr($buffer, 7);
             }
@@ -7117,7 +7201,8 @@ class GedcomCls
         } elseif ($this->level[2] == 'SOUR' && $this->level[3] != 'OBJE') {
             //if ($this->level[2]=='SOUR'){
             // *** Don't process a source by a object by a source. The script will stop with error ***
-            $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, $test_number2);
+            $event_id = $this->event['calculated_event_id'][$this->event_nr];
+            $this->process_sources('person', 'pers_event_source', $event_id, $buffer, $test_number2);
         }
     }
 
@@ -7168,17 +7253,17 @@ class GedcomCls
     {
         // *** Sept. 2024: Aldfaer GEDCOM 7 ***
         // CHECK FOR GEDCOM 7.
-        // 1 EVEN
+        // 1 EVEN ==>> EVENT level 1
         // 2 TYPE birth registration
         // 2 DATE 2 JAN 1980
         // 2 SOUR @S5@
         // 2 _OBJE
         // 3 FILE 0d0d3dfdf7eb5ec8d94609dc49079b2a.jpg
-        // 2 ASSO @I4@
+        // 2 ASSO @I4@ ==>> EVENT level 2
         // 3 ROLE OFFICIATOR
         // 2 ASSO @I3@
         // 3 ROLE WITN
-        // 2 ASSO @I5@
+        // 2 ASSO @I5@ ==>> EVENT level 2
         // 3 ROLE OTHER
         // 4 PHRASE informant
 
@@ -7197,7 +7282,6 @@ class GedcomCls
 
         if ($buffer6 === '2 ASSO') {
             $this->processed = true;
-            $this->calculated_event_id++;
 
             // Database example
             // event_connect_id = I1 (main person)
@@ -7205,30 +7289,44 @@ class GedcomCls
 
             // *** Remark: date, place, text, source isn't needed for ASSO's (and not supported in GEDCOM 7). These items are stored in one "birth/ death declaration event ***
             if ($this->level[1] == 'EVEN') {
-                $this->event2_nr++;
+                $this->event_nr++;
+                $this->event_nr2 = $this->event_nr;
 
-                $this->event2['connect_kind'][$this->event2_nr] = '';
-                if ($this->event['kind'][$this->event_nr] == 'birth_declaration') {
-                    $this->event2['connect_kind'][$this->event2_nr] = 'birth_declaration';
+                $this->calculated_event_id++;
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr2] = $this->calculated_event_id;
+
+                $this->event['level'][$this->event_nr2] = '2';
+
+                $this->event['connect_kind'][$this->event_nr2] = '';
+                if ($this->event['kind'][$this->event_nr1] == 'birth_declaration') {
+                    $this->event['connect_kind'][$this->event_nr2] = 'birth_declaration';
                 }
-                if ($this->event['kind'][$this->event_nr] == 'death_declaration') {
-                    $this->event2['connect_kind'][$this->event2_nr] = 'death_declaration';
+                if ($this->event['kind'][$this->event_nr1] == 'death_declaration') {
+                    $this->event['connect_kind'][$this->event_nr2] = 'death_declaration';
                 }
-                $this->event2['connect_id'][$this->event2_nr] = $gedcomnumber;
+                $this->event['connect_id'][$this->event_nr2] = $gedcomnumber;
 
-                $this->event2['connect_kind2'][$this->event2_nr] = 'person';
-                $this->event2['connect_id2'][$this->event2_nr] = substr($buffer, 8, -1);
+                $this->event['connect_kind2'][$this->event_nr2] = 'person';
+                $this->event['connect_id2'][$this->event_nr2] = substr($buffer, 8, -1);
 
-                $this->event2['kind'][$this->event2_nr] = 'ASSO';
-                $this->event2['event'][$this->event2_nr] = '';
-                $this->event2['event_extra'][$this->event2_nr] = '';
-                $this->event2['gedcom'][$this->event2_nr] = '';
+                $this->event['kind'][$this->event_nr2] = 'ASSO';
+                $this->event['event'][$this->event_nr2] = '';
+                $this->event['event_extra'][$this->event_nr2] = '';
+                $this->event['gedcom'][$this->event_nr2] = '';
 
-                $this->event2['date'][$this->event2_nr] = '';
-                $this->event2['place'][$this->event2_nr] = '';
-                $this->event2['text'][$this->event2_nr] = '';
+                $this->event['date'][$this->event_nr2] = '';
+                $this->event['place'][$this->event_nr2] = '';
+                $this->event['text'][$this->event_nr2] = '';
             } else {
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
+
+                $this->calculated_event_id++;
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+
+                $this->event['level'][$this->event_nr] = '1';
 
                 $this->event['connect_kind'][$this->event_nr] = $connect_kind;
                 $this->event['connect_id'][$this->event_nr] = $gedcomnumber;
@@ -7252,8 +7350,8 @@ class GedcomCls
                 $this->processed = true;
 
                 if ($this->level[1] == 'EVEN') {
-                    $this->event2['connect_kind2'][$this->event2_nr] = '';
-                    $this->event2['connect_id2'][$this->event2_nr] = '';
+                    $this->event['connect_kind2'][$this->event_nr2] = '';
+                    $this->event['connect_id2'][$this->event_nr2] = '';
                 } else {
                     $this->event['connect_kind2'][$this->event_nr] = '';
                     $this->event['connect_id2'][$this->event_nr] = '';
@@ -7268,9 +7366,9 @@ class GedcomCls
             $this->processed = true;
 
             if ($this->level[1] == 'EVEN') {
-                $this->event2['event'][$this->event2_nr] = substr($buffer, 9);
+                $this->event['event'][$this->event_nr2] = substr($buffer, 9);
             } else {
-                $this->event['event'][$this->event_nr] = substr($buffer, 9);
+                $this->event['event'][$this->event_nr1] = substr($buffer, 9);
             }
         }
 
@@ -7280,9 +7378,9 @@ class GedcomCls
             //CHIL, CLERGY, FATH, FRIEND, GODP, HUSB, MOTH, MULTIPLE, NGHBR, OFFICIATOR, PARENT, SPOU, WIFE, WITN, OTHER.
             $this->processed = true;
             if ($this->level[1] == 'EVEN') {
-                $this->event2['gedcom'][$this->event2_nr] = substr($buffer, 7);
+                $this->event['gedcom'][$this->event_nr2] = substr($buffer, 7);
             } else {
-                $this->event['gedcom'][$this->event_nr] = substr($buffer, 7);
+                $this->event['gedcom'][$this->event_nr1] = substr($buffer, 7);
             }
         }
 
@@ -7291,9 +7389,9 @@ class GedcomCls
             //if ($event_gedcom == 'OTHER'  && $buffer8 == '4 PHRASE'){
             $this->processed = true;
             if ($this->level[1] == 'EVEN') {
-                $this->event2['event_extra'][$this->event2_nr] = substr($buffer, 9);
+                $this->event['event_extra'][$this->event_nr2] = substr($buffer, 9);
             } else {
-                $this->event['event_extra'][$this->event_nr] = substr($buffer, 9);
+                $this->event['event_extra'][$this->event_nr1] = substr($buffer, 9);
             }
         }
     }

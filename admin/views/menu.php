@@ -50,7 +50,7 @@ if ($popup == false) {
 
                         <?php if (isset($_SESSION["user_name_admin"])) {; ?>
                             <li><a class="dropdown-item" href="<?= $menu_path_logoff ?>"><?= __('Logoff'); ?></a></li>
-                        <?php }; ?>
+                        <?php } ?>
                     </ul>
                 </li>
 
@@ -89,7 +89,7 @@ if ($popup == false) {
                                 <li><a class="dropdown-item <?php if ($page == 'statistics') echo 'active'; ?>" href="<?= $path_tmp; ?>page=statistics"><?= __('Statistics'); ?></a></li>
                             </ul>
                         </li>
-                    <?php }; ?>
+                    <?php } ?>
 
                     <!-- Editor -->
                     <li class="nav-item dropdown">
@@ -115,8 +115,8 @@ if ($popup == false) {
                                 <li><a class="dropdown-item <?php if ($page == 'log') echo 'active'; ?>" href="<?= $path_tmp; ?>page=log"><?= __('Log'); ?></a></li>
                             </ul>
                         </li>
-                    <?php }; ?>
-                <?php }; ?>
+                    <?php } ?>
+                <?php } ?>
 
                 <!-- Select language using country flags -->
                 <li class="nav-item dropdown">

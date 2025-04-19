@@ -419,7 +419,5 @@ if (isset($_POST['remove'])) {
             <td></td>
             <td>ok</td>
         </tr>
-    <?php
-    }
-    ?>
+    <?php } ?>
 </table>

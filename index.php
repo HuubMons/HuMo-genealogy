@@ -118,7 +118,6 @@ $index = $controllerObj->detail($dbh, $humo_option, $user);
 
 // TODO dec. 2024 for now: use old variable names.
 $db_functions = $index['db_functions'];
-$visitor_ip = $index['visitor_ip'];
 $person_cls = $index['person_cls'];
 $bot_visit = $index['bot_visit'];
 $language_file = $index['language_file']; // Array including all languages files.

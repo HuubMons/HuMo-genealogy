@@ -40,6 +40,7 @@ class TreesController
 
             $gedcomModel = new GedcomModel($dbh);
             $trees['step'] = $gedcomModel->get_step();
+            //$trees['check_processed'] = get_check_processed();
 
             if ($trees['step'] == '1') {
                 $upload_status = $gedcomModel->upload_gedcom();
@@ -47,7 +48,7 @@ class TreesController
 
                 $trees['gedcom_directory'] = $gedcomModel->get_gedcom_directory();
             }
-            $trees['removed_filenames'] = $gedcomModel->remove_gedcon_files($trees);
+            $trees['removed_filenames'] = $gedcomModel->remove_gedcom_files($trees);
 
             //if ($trees['step'] == '2') {
             //

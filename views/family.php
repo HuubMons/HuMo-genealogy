@@ -362,7 +362,7 @@ else {
 
                         $update_sql = "INSERT INTO humo_stat_date SET
                             stat_easy_id='" . $stat_easy_id . "',
-                            stat_ip_address='" . $visitor_ip . "',
+                            stat_ip_address='" . $index['visitor_ip'] . "',
                             stat_user_agent='" . $stat_user_agent . "',
                             stat_tree_id='" . $familyDb->fam_tree_id . "',
                             stat_gedcom_fam='" . $familyDb->fam_gedcomnumber . "',
@@ -377,7 +377,7 @@ else {
                         $sql = "SELECT stat_country_ip_address FROM humo_stat_country WHERE stat_country_ip_address = :stat_country_ip_address";
                         try {
                             $qry = $dbh->prepare($sql);
-                            $qry->bindValue(':stat_country_ip_address', $visitor_ip, PDO::PARAM_STR);
+                            $qry->bindValue(':stat_country_ip_address', $index['visitor_ip'], PDO::PARAM_STR);
                             $qry->execute();
                         } catch (PDOException $e) {
                             //echo $e->getMessage() . '<br>';
@@ -386,11 +386,11 @@ else {
 
                         // *** Get country code ***
                         if (!isset($record->stat_country_ip_address)) {
-                            if (strlen($visitor_ip) > 6) {
+                            if (strlen($index['visitor_ip']) > 6) {
                                 $stat_country_code = '';
 
                                 // *** Test only ***
-                                //$visitor_ip = '8.8.8.8';
+                                //$index['visitor_ip'] = '8.8.8.8';
 
                                 // *** Geoplugin without key (old method in 2025) ***
                                 if ($humo_option['ip_api_geoplugin_old'] == 'ena') {
@@ -402,14 +402,14 @@ else {
 
                                 // *** GeoPlugin using key ***
                                 if ($humo_option['geoplugin_checked'] == 'ena') {
-                                    $url = "https://api.geoplugin.com?ip=" . $visitor_ip . "&auth=" . $humo_option['geoplugin_key'];
+                                    $url = "https://api.geoplugin.com?ip=" . $index['visitor_ip'] . "&auth=" . $humo_option['geoplugin_key'];
                                     $response = file_get_contents($url);
                                     $ip_data = json_decode($response);
                                     $stat_country_code = $ip_data->geoplugin_countryCode;
                                 }
 
                                 // *** IP-API ***
-                                $url = "http://ip-api.com/json/$visitor_ip";
+                                $url = "http://ip-api.com/json/".$index['visitor_ip'];
                                 $response = file_get_contents($url);
                                 $ip_data = json_decode($response, true);
                                 if (isset($ip_data['countryCode'])) {
@@ -419,7 +419,7 @@ else {
                                 // *** FreeIPAPI ***
                                 if ($humo_option['freeipapi_checked'] == 'ena') {
                                     // *** FreeIPAPI without key ***
-                                    $url = "https://freeipapi.com/api/json/$visitor_ip";
+                                    $url = "https://freeipapi.com/api/json/".$index['visitor_ip'];
                                     $response = file_get_contents($url);
                                     $ip_data = json_decode($response, true);
                                     if (isset($ip_data->countryCode)) {
@@ -430,7 +430,7 @@ else {
 
                                     /*
                                     // *** FreeIPAPI could use a key using a bearer token. Example from internet: ***
-                                    $apiUrl = "https://freeipapi.com/api/json/$visitor_ip";
+                                    $apiUrl = "https://freeipapi.com/api/json/".$index['visitor_ip'];
 
                                     // Initialize cURL session
                                     $ch = curl_init($apiUrl);
@@ -453,7 +453,7 @@ else {
                                 if ($stat_country_code) {
                                     try {
                                         $qry = $dbh->prepare("INSERT INTO humo_stat_country SET stat_country_ip_address = :stat_country_ip_address, stat_country_code =:stat_country_code");
-                                        $qry->bindValue(':stat_country_ip_address', $visitor_ip, PDO::PARAM_STR);
+                                        $qry->bindValue(':stat_country_ip_address', $index['visitor_ip'], PDO::PARAM_STR);
                                         $qry->bindValue(':stat_country_code', $stat_country_code, PDO::PARAM_STR);
                                         $qry->execute();
                                     } catch (PDOException $e) {

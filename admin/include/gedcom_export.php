@@ -1445,71 +1445,71 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         }
 
         if ($gedcom_sources == 'yes') {
-            $family_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
-            while ($family = $family_qry->fetch(PDO::FETCH_OBJ)) {
-                if ($export["part_tree"] == 'part'  && !in_array($family->source_gedcomnr, $source_array)) {
+            $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'");
+            while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
+                if ($export["part_tree"] == 'part'  && !in_array($sourceDb->source_gedcomnr, $source_array)) {
                     continue;
                 }
 
                 // 0 @I1181@ INDI *** Gedcomnumber ***
-                $buffer = '0 @' . $family->source_gedcomnr . "@ SOUR\r\n";
+                $buffer = '0 @' . $sourceDb->source_gedcomnr . "@ SOUR\r\n";
 
-                if (isset($_POST['gedcom_status']) && $_POST['gedcom_status'] == 'yes') echo $family->source_gedcomnr . ' ';
-                if ($family->source_title) {
-                    $buffer .= '1 TITL ' . $family->source_title . "\r\n";
+                if (isset($_POST['gedcom_status']) && $_POST['gedcom_status'] == 'yes') echo $sourceDb->source_gedcomnr . ' ';
+                if ($sourceDb->source_title) {
+                    $buffer .= '1 TITL ' . $sourceDb->source_title . "\r\n";
                 }
-                if ($family->source_abbr) {
-                    $buffer .= '1 ABBR ' . $family->source_abbr . "\r\n";
+                if ($sourceDb->source_abbr) {
+                    $buffer .= '1 ABBR ' . $sourceDb->source_abbr . "\r\n";
                 }
-                if ($family->source_date) {
-                    $buffer .= '1 DATE ' . process_date($gedcom_version, $family->source_date) . "\r\n";
+                if ($sourceDb->source_date) {
+                    $buffer .= '1 DATE ' . process_date($gedcom_version, $sourceDb->source_date) . "\r\n";
                 }
-                if ($family->source_place) {
-                    $buffer .= '1 PLAC ' . $family->source_place . "\r\n";
+                if ($sourceDb->source_place) {
+                    $buffer .= '1 PLAC ' . $sourceDb->source_place . "\r\n";
                 }
-                if ($family->source_publ) {
-                    $buffer .= '1 PUBL ' . $family->source_publ . "\r\n";
+                if ($sourceDb->source_publ) {
+                    $buffer .= '1 PUBL ' . $sourceDb->source_publ . "\r\n";
                 }
-                if ($family->source_refn) {
-                    $buffer .= '1 REFN ' . $family->source_refn . "\r\n";
+                if ($sourceDb->source_refn) {
+                    $buffer .= '1 REFN ' . $sourceDb->source_refn . "\r\n";
                 }
-                if ($family->source_auth) {
-                    $buffer .= '1 AUTH ' . $family->source_auth . "\r\n";
+                if ($sourceDb->source_auth) {
+                    $buffer .= '1 AUTH ' . $sourceDb->source_auth . "\r\n";
                 }
-                if ($family->source_subj) {
-                    $buffer .= '1 SUBJ ' . $family->source_subj . "\r\n";
+                if ($sourceDb->source_subj) {
+                    $buffer .= '1 SUBJ ' . $sourceDb->source_subj . "\r\n";
                 }
-                if ($family->source_item) {
-                    $buffer .= '1 ITEM ' . $family->source_item . "\r\n";
+                if ($sourceDb->source_item) {
+                    $buffer .= '1 ITEM ' . $sourceDb->source_item . "\r\n";
                 }
-                if ($family->source_kind) {
-                    $buffer .= '1 KIND ' . $family->source_kind . "\r\n";
+                if ($sourceDb->source_kind) {
+                    $buffer .= '1 KIND ' . $sourceDb->source_kind . "\r\n";
                 }
-                if ($family->source_text) {
-                    $buffer .= '1 NOTE ' . process_text(2, $family->source_text);
+                if ($sourceDb->source_text) {
+                    $buffer .= '1 NOTE ' . process_text(2, $sourceDb->source_text);
                 }
-                if (isset($family->source_status) && $family->source_status == 'restricted') {
+                if (isset($sourceDb->source_status) && $sourceDb->source_status == 'restricted') {
                     $buffer .= '1 RESN privacy' . "\r\n";
                 }
 
                 // *** Source pictures ***
-                $sourceqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                    AND event_connect_kind='source' AND event_connect_id='" . $family->source_gedcomnr . "'
+                $source_pic_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
+                    AND event_connect_kind='source' AND event_connect_id='" . $sourceDb->source_gedcomnr . "'
                     AND event_kind='picture' ORDER BY event_order");
-                while ($sourceDb = $sourceqry->fetch(PDO::FETCH_OBJ)) {
+                while ($source_picDb = $source_pic_qry->fetch(PDO::FETCH_OBJ)) {
                     $buffer .= "1 OBJE\r\n";
                     $buffer .= "2 FORM jpg\r\n";
-                    $buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
-                    if ($sourceDb->event_date) {
-                        $buffer .= '2 DATE ' . process_date($gedcom_version, $sourceDb->event_date) . "\r\n";
+                    $buffer .= '2 FILE ' . $source_picDb->event_event . "\r\n";
+                    if ($source_picDb->event_date) {
+                        $buffer .= '2 DATE ' . process_date($gedcom_version, $source_picDb->event_date) . "\r\n";
                     }
 
-                    if ($gedcom_texts == 'yes' && $sourceDb->event_text) {
-                        $buffer .= '2 NOTE ' . process_text(3, $sourceDb->event_text);
+                    if ($gedcom_texts == 'yes' && $source_picDb->event_text) {
+                        $buffer .= '2 NOTE ' . process_text(3, $source_picDb->event_text);
                     }
 
                     //if ($gedcom_sources=='yes'){
-                    //	sources_export('source','source_event_source',$sourceDb->event_id,2);
+                    //	sources_export('source','source_event_source',$source_picDb->event_id,2);
                     //}
                 }
 
@@ -1519,12 +1519,12 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 // 1_NEW
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                $buffer .= process_datetime($gedcom_version, 'new', $family->source_new_datetime, $family->source_new_user_id);
+                $buffer .= process_datetime($gedcom_version, 'new', $sourceDb->source_new_datetime, $sourceDb->source_new_user_id);
                 // *** Datetime changed in database ***
                 // 1_CHAN
                 // 2 DATE 04 AUG 2004
                 // 3 TIME 13:39:58
-                $buffer .= process_datetime($gedcom_version, 'changed', $family->source_changed_datetime, $family->source_changed_user_id);
+                $buffer .= process_datetime($gedcom_version, 'changed', $sourceDb->source_changed_datetime, $sourceDb->source_changed_user_id);
 
 
                 // *** Write source data ***
@@ -1545,6 +1545,14 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
             while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) {
                 $buffer = '0 @' . $repoDb->repo_gedcomnr . "@ REPO\r\n";
+
+                if ($repoDb->repo_date) {
+                    $buffer .= '1 DATE ' . process_date($gedcom_version, $repoDb->repo_date) . "\r\n";
+                }
+                if ($repoDb->repo_place) {
+                    $buffer .= process_place($repoDb->repo_place, 1);
+                }
+
                 if ($repoDb->repo_name) {
                     $buffer .= '1 NAME ' . $repoDb->repo_name . "\r\n";
                 }
@@ -1554,6 +1562,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 if ($repoDb->repo_address) {
                     $buffer .= '1 ADDR ' . process_text(2, $repoDb->repo_address);
                 }
+
                 if ($repoDb->repo_zip) {
                     $buffer .= '2 POST ' . $repoDb->repo_zip . "\r\n";
                 }
@@ -1561,9 +1570,11 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                     $buffer .= '1 PHON ' . $repoDb->repo_phone . "\r\n";
                 }
                 if ($repoDb->repo_mail) {
+                    // *** GEDCOM 7 ***
                     $buffer .= '1 EMAIL ' . $repoDb->repo_mail . "\r\n";
                 }
                 if ($repoDb->repo_url) {
+                    // *** GEDCOM 7 ***
                     $buffer .= '1 WWW ' . $repoDb->repo_url . "\r\n";
                 }
 
@@ -1578,7 +1589,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 // 3 TIME 13:39:58
                 $buffer .= process_datetime($gedcom_version, 'changed', $repoDb->repo_changed_datetime, $repoDb->repo_changed_user_id);
 
-                // *** Write repoitory data ***
+                // *** Write repository data ***
                 $buffer = decode($buffer);
                 fwrite($fh, $buffer);
 
@@ -1600,31 +1611,31 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         $export_addresses = true;
         if (isset($_POST['gedcom_shared_addresses']) && $_POST['gedcom_shared_addresses'] == 'standard') $export_addresses = false;
         if ($export_addresses) {
-            $family_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
-            while ($family = $family_qry->fetch(PDO::FETCH_OBJ)) {
+            $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
+            while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) {
                 // 0 @R1@ RESI *** Gedcomnumber ***
-                $buffer = '0 @' . $family->address_gedcomnr . "@ RESI\r\n";
+                $buffer = '0 @' . $addressDb->address_gedcomnr . "@ RESI\r\n";
 
-                if ($family->address_address) {
-                    $buffer .= '1 ADDR ' . $family->address_address . "\r\n";
+                if ($addressDb->address_address) {
+                    $buffer .= '1 ADDR ' . $addressDb->address_address . "\r\n";
                 }
-                if ($family->address_zip) {
-                    $buffer .= '1 ZIP ' . $family->address_zip . "\r\n";
+                if ($addressDb->address_zip) {
+                    $buffer .= '1 ZIP ' . $addressDb->address_zip . "\r\n";
                 }
-                if ($family->address_date) {
-                    $buffer .= '1 DATE ' . process_date($gedcom_version, $family->address_date) . "\r\n";
+                if ($addressDb->address_date) {
+                    $buffer .= '1 DATE ' . process_date($gedcom_version, $addressDb->address_date) . "\r\n";
                 }
-                if ($family->address_place) {
-                    $buffer .= '1 PLAC ' . $family->address_place . "\r\n";
+                if ($addressDb->address_place) {
+                    $buffer .= '1 PLAC ' . $addressDb->address_place . "\r\n";
                 }
-                if ($family->address_phone) {
-                    $buffer .= '1 PHON ' . $family->address_phone . "\r\n";
+                if ($addressDb->address_phone) {
+                    $buffer .= '1 PHON ' . $addressDb->address_phone . "\r\n";
                 }
                 if ($gedcom_sources == 'yes') {
-                    sources_export('address', 'address_source', $family->address_gedcomnr, 2);
+                    sources_export('address', 'address_source', $addressDb->address_gedcomnr, 2);
                 }
-                if ($family->address_text) {
-                    $buffer .= '1 NOTE ' . process_text(2, $family->address_text);
+                if ($addressDb->address_text) {
+                    $buffer .= '1 NOTE ' . process_text(2, $addressDb->address_text);
                 }
 
                 // photo

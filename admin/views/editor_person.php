@@ -16,8 +16,7 @@
         }
     ?>
 
-        <!-- Archives ->
-        <!-- <div class="p-3 m-2 genealogy_search"> -->
+        <!-- Archives -->
         <div class="p-2 m-2 genealogy_search">
             <div class="row">
 
@@ -317,31 +316,25 @@
         </div>
     <?php } ?>
 
-
-
     <table class="table table-light" id="table_editor">
         <?php if ($editor['add_person'] == false) { ?>
             <?php
             // *** Show message if age < 0 or > 120 ***
-            $error_color = '';
-            $show_message = '&nbsp;';
+            $show_age_message = '';
             if (($person->pers_bapt_date || $person->pers_birth_date) && $person->pers_death_date) {
                 $process_age = new CalculateDates;
                 $age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
                 if ($age && ($age < 0 || $age > 120)) {
-                    $error_color = 'background-color:#FFAA80;';
-                    $show_message = '&nbsp;' . __('age') . ' ' . $age . ' ' . __('year');
+                    $show_age_message = $age;
                 }
             }
             ?>
 
-            <!-- TODO improve layout of message, use bootstrap message? -->
-            <?php if ($show_message) { ?>
-                <div style="<?= $error_color; ?>">
-                    <?= $show_message; ?>
+            <?php if ($show_age_message) { ?>
+                <div class="alert alert-danger my-4" role="alert">
+                    &nbsp;<?= ucfirst(__('age')); ?> <?= $age; ?> <?= __('year'); ?>
                 </div>
             <?php } ?>
-
         <?php } ?>
 
         <thead class="table-primary">
@@ -396,7 +389,9 @@
                         <b>
                             <?php
                             echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
-                            if ($pers_name_text) echo ' <img src="images/text.png" height="16">';
+                            if ($pers_name_text) {
+                                echo ' <img src="images/text.png" height="16">';
+                            }
                             echo ' ' . $check_sources_text;
                             ?>
                         </b>
@@ -546,26 +541,17 @@
         }
 
         // *** Alive ***
-
         // *** Disable radio boxes if person is deceased ***
         $disabled = '';
         if ($pers_death_date || $pers_death_place || $pers_buried_date || $pers_buried_place) {
             $disabled = ' disabled';
         }
-
-        if ($pers_alive == 'deceased') {
-            $selected_alive = '';
-            $selected_deceased = ' checked';
-        } else {
-            $selected_alive = ' checked';
-            $selected_deceased = '';
-        }
         ?>
         <tr>
             <td><?= __('Privacy filter'); ?></td>
             <td colspan="2">
-                <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
-                <input type="radio" name="pers_alive" value="deceased" <?= $selected_deceased . $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
+                <input type="radio" name="pers_alive" value="alive" <?= $pers_alive == 'alive' ? 'checked' : ''; ?> <?= $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
+                <input type="radio" name="pers_alive" value="deceased" <?= $pers_alive == 'deceased' ? 'checked' : ''; ?> <?= $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
                 <?= $disabled ? '<input type="hidden" name="pers_alive" value="deceased">' : ''; ?>
 
                 <!-- Estimated/ calculated (birth) date, can be used for privacy filter -->
@@ -579,24 +565,13 @@
                 <?php
                 /*
                 <?= edit_privacyfilter('pers_alive', ''); ?>
-*/
+                */
                 ?>
-
-
             </td>
         </tr>
 
         <?php
         // *** Sexe ***
-        $colour = '';
-        // *** If sexe = unknown then show a red line (new person = other colour). ***
-        if ($pers_sexe == '') {
-            $colour = ' bgcolor="#FFAA80"';
-        }
-        if ($editor['add_person'] == true && $pers_sexe == '') {
-            $colour = ' bgcolor="#FFAA80"';
-        }
-
         $check_sources_text = '';
         if ($pers_gedcomnumber) {
             $check_sources_text = check_sources('person', 'pers_sexe_source', $pers_gedcomnumber);
@@ -604,7 +579,7 @@
         ?>
         <tr>
             <td><a name="sex"></a><?= __('Sex'); ?></td>
-            <td <?= $colour; ?> colspan="2">
+            <td <?= $pers_sexe == '' ? 'class="table-danger"' : ''; ?> colspan="2">
                 <input type="radio" name="pers_sexe" value="M" <?= $pers_sexe == 'M' ? 'checked' : '' ?> class="form-check-input"> <?= __('male'); ?>
                 <input type="radio" name="pers_sexe" value="F" <?= $pers_sexe == 'F' ? 'checked' : ''; ?> class="form-check-input"> <?= __('female'); ?>
                 <input type="radio" name="pers_sexe" value="" <?= $pers_sexe == '' ? 'checked' : ''; ?> class="form-check-input"> ?
@@ -622,7 +597,6 @@
                 <?= edit_sexe('pers_sexe2', $pers_sexe); ?>
                 */
                 ?>
-
             </td>
         </tr>
 
@@ -738,8 +712,8 @@
 
                 <input type="hidden" name="birth_decl_id" value="<?= $birth_decl_id; ?>">
             </td>
-            <td colspan="2">
 
+            <td colspan="2">
                 <?php
                 $hideshow_text = hideshow_date_place($birth_decl_date, $birth_decl_place);
                 if ($pers_gedcomnumber) {
@@ -807,7 +781,6 @@
             //show_event($event_connect_kind, $event_connect_id, $event_kind)
             echo $EditorEvent->show_event('birth_declaration', $pers_gedcomnumber, 'witness');
         }
-
 
         // **** BRIT MILA ***
         if ($humo_option['admin_brit'] == "y" && $pers_sexe != "F") {
@@ -923,13 +896,7 @@
 
             <tr>
                 <td>
-                    <?php
-                    if ($pers_sexe == "F") {
-                        echo __('Bat Mitzvah');
-                    } else {
-                        echo __('Bar Mitzvah');
-                    }
-                    ?>
+                    <?= $pers_sexe == "F" ? __('Bat Mitzvah') : __('Bar Mitzvah'); ?>
                 </td>
 
                 <td colspan="2">
@@ -981,11 +948,8 @@
                                     ?>
                                 </div>
                             </div>
-                        <?php
-                        }
-
-                        echo '<i>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"') . '</i>';
-                        ?>
+                        <?php } ?>
+                        <i><?= __('To display this, the option "Show events" has to be checked in "Users -> Groups"'); ?></i>
                     </span>
                 </td>
             </tr>
@@ -1067,8 +1031,7 @@
                                 ?>
                             </div>
                         </div>
-                    <?php
-                    } ?>
+                    <?php } ?>
 
                 </span>
             </td>
@@ -1086,7 +1049,6 @@
         $hideshow = '4';
         // *** If items are missing show all editor fields ***
         $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
-
         ?>
         <tr>
             <td><a name="died"></a>
@@ -1446,10 +1408,9 @@
         if ($editor['add_person'] == false) {
             echo $EditorEvent->show_event('BURI', $pers_gedcomnumber, 'ASSO');
         }
-
-
-        // *** General text by person ***
         ?>
+
+        <!-- General text by person -->
         <tr>
             <td><a name="text_person"></a><?= __('Text for person'); ?></td>
             <td colspan="2">
@@ -1498,9 +1459,9 @@
             </tr>
         <?php
         }
-
-        // *** Own code ***
         ?>
+
+        <!-- Own code -->
         <tr>
             <td><?= ucfirst(__('own code')); ?></td>
             <td colspan="2">
@@ -1536,7 +1497,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
         if (!isset($_GET['add_person'])) {
             // *** Show and edit places by person ***
-            $connect_kind= 'person';
+            $connect_kind = 'person';
             $connect_sub_kind = 'person_address';
             $connect_connect_id = $pers_gedcomnumber;
             include_once __DIR__ . '/partial/editor_addresses.php';
@@ -1616,11 +1577,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
             <tr class="table_header_large">
                 <td>
+                    <?php if ($num_rows) { ?>
+                        <a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a>
+                    <?php } ?>
+                    <?= __('User notes'); ?>
+                </td>
+                <td colspan="2">
                     <?php
-                    if ($num_rows) {
-                        echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a> ';
-                    }
-                    echo __('User notes') . '</td><td colspan="2">';
                     if ($num_rows) {
                         printf(__('There are %d user added notes.'), $num_rows);
                     } else {

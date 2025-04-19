@@ -79,7 +79,7 @@ class GedcomModel
         return $trees;
     }
 
-    public function remove_gedcon_files($trees)
+    public function remove_gedcom_files($trees)
     {
         $removed_filenames = [];
         if (isset($_POST['remove_gedcom_files2']) && isset($_POST['remove_confirm'])) {
@@ -114,4 +114,16 @@ class GedcomModel
         }
         return $removed_filenames;
     }
+
+    /*
+    public function get_check_processed()
+    {
+        if (isset($_POST['check_processed']) && $_POST['check_processed'] == '1') {
+            $check_processed = true;
+        } else {
+            $check_processed = false;
+        }
+        return $check_processed;
+    }
+    */
 }

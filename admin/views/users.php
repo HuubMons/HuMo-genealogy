@@ -26,7 +26,7 @@ $user = $dbh->query($usersql);
     <div class="alert alert-warning">
         <strong><?= $edit_users['alert']; ?></strong>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <?php if ($edit_users['check_admin_user'] && $edit_users['check_admin_pw']) { ?>
     <div class="alert alert-danger">

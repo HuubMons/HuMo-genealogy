@@ -108,7 +108,7 @@ $tmp_path = '';
 // OF: PHP_SELF: /url_test/index.php
 // REQUEST_URI: /url_test/index/1abcd2345/
 // REQUEST_URI: /url_test/index.php?variabele=1
-$base_href = '';
+$base_href = ''; // TODO: $base_href probably not needed for PDF.
 if ($humo_option["url_rewrite"] == "j" && $tmp_path) {
     // *** url_rewrite ***
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {

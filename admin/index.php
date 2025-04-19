@@ -679,7 +679,7 @@ if ($popup == false) {
                             <li><a href="index.php?page=backup"><?= __('Database backup'); ?></a></li>
                             <li><a href="index.php?page=statistics"><?= __('Statistics'); ?></a></li>
                         </ul>
-                    <?php }; ?>
+                    <?php } ?>
 
                     <!-- Editor -->
                     <ul>
@@ -704,8 +704,8 @@ if ($popup == false) {
                                 </ul>
                             </li>
                         </ul>
-                    <?php }; ?>
-                <?php }; ?>
+                    <?php } ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -800,12 +800,10 @@ if ($popup == false) {
             include_once(__DIR__ . "/include/select_tree.php");
 
             $controllerObj = new TreeCheckController();
-            $tree_check = $controllerObj->detail($dbh);
+            $tree_check = $controllerObj->detail($dbh, $db_functions, $tree_id);
             include_once(__DIR__ . "/views/tree_check.php");
         } elseif ($page === 'latest_changes') {
             include_once(__DIR__ . "/views/tree_check.php");
-            //} elseif ($page === 'gedcom') {
-            //    include_once(__DIR__ . "/views/gedcom_import.php");
         } elseif ($page === 'settings') {
             $controllerObj = new AdminSettingsController();
             $settings = $controllerObj->detail($dbh, $db_functions, $humo_option);

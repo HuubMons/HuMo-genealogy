@@ -283,7 +283,7 @@ function show_person($familyDb)
         <tr>
             <td colspan="7"><b><?= $dirmark2 . $familyDb->place_order; ?></b></td>
         </tr>
-    <?php }; ?>
+    <?php } ?>
     <?php $selected_place = $familyDb->place_order; ?>
     <tr>
         <td valign="top" style="white-space:nowrap;width:90px">

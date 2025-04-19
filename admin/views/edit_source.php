@@ -72,7 +72,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
     <div class="alert alert-success">
         <?= __('Source is removed!'); ?>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <?php if (isset($_POST['source_remove'])) { ?>
     <div class="alert alert-danger">
@@ -84,7 +84,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
             <input type="submit" name="dummy5" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
         </form>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <div class="p-3 my-md-2 genealogy_search container-md">
     <form method="POST" action="index.php?page=edit_sources" style="display : inline;">

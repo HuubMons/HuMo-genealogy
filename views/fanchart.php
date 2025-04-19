@@ -595,7 +595,7 @@ $path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
             <select name="fontsize">
                 <?php for ($i = 5; $i <= 12; $i++) {; ?>
                     <option value="<?= $i; ?>" <?php if ($i == $data["fontsize"]) echo ' selected'; ?>><?= $i; ?></option>
-                <?php }; ?>
+                <?php } ?>
             </select><br>
         </div>
         <div class="col">

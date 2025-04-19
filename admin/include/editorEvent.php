@@ -554,51 +554,7 @@ class EditorEvent
                             }
                         }
                     }
-
-                    /*
-                    $text.= '
-                    <script>
-                    $(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
-                        var mediastring = ""; 
-                        var media_arr = document.getElementsByClassName("mediamove"); 
-                        for (var z = 0; z < media_arr.length; z++) { 
-                            // create the new order after dragging to store in database with ajax
-                            mediastring = mediastring + media_arr[z].id + ";"; 
-                            // change the order numbers of the pics in the pulldown (that was generated before the drag
-                            // so that if one presses on delete before refresh the right pic will be deleted !!
-                        }
-                        mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-
-                        var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
-                        //var picdomclass = document.getElementsByClassName("pic_row2");
-                        //var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
-                        var nextnode = document.getElementById(\'pic_main_\' + media_arr[1].id); 
-
-                        for(var d=media_arr.length-1; d >=0 ; d--) {
-                            //parnode.insertBefore(document.getElementById(\'pic_row2_\' + media_arr[d].id),nextnode);
-                            //nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
-
-                            //parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
-                            //nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
-
-                            parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
-                            nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
-                        }
-
-                        $.ajax({ 
-                            url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
-                            success: function(data){
-                            } ,
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                alert(xhr.status);
-                                alert(thrownError);
-                            }
-                        });
-                    });
-                    </script>';
-                    */
                     ?>
-
                 </td>
             </tr>
             <?php
@@ -713,32 +669,6 @@ class EditorEvent
                                             <a href="index.php?page=<?= $page . $newpers; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?>&amp;event_drop=<?= $data_listDb->event_order; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>">
                                                 <img src="images/button_drop.png" border="0" alt="down">
                                             </a>
-
-                                            <?php
-                                            /*
-                                        // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
-                                        if ($data_listDb->event_order < $count_event) {
-                                        ?>
-                                            <a href="index.php?page=<?= $page; ?>&amp;event_down=<?= $data_listDb->event_order; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>&amp;dummy=<?= $data_listDb->event_id . $internal_link; ?>">
-                                                <img src="images/arrow_down.gif" border="0" alt="down">
-                                            </a>
-                                        <?php
-                                        } else {
-                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                        }
-
-                                        // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
-                                        if ($data_listDb->event_order > 1) {
-                                        ?>
-                                            <a href="index.php?page=<?= $page; ?>&amp;event_up=<?= $data_listDb->event_order; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>&amp;dummy=<?= $data_listDb->event_id . $internal_link; ?>">
-                                                <img src="images/arrow_up.gif" border="0" alt="down">
-                                            </a>
-                                        <?php
-                                        } else {
-                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                        }
-                                        */
-                                            ?>
                                         </div>
 
                                         <div class="col-md-11">
@@ -804,11 +734,11 @@ class EditorEvent
                                                 </div>
 
                                                 <!--
-                                            <div class="row">
-                                                <div class="col-3"></div>
-                                                <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
-                                            </div>
-                                            -->
+                                                <div class="row">
+                                                    <div class="col-3"></div>
+                                                    <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
+                                                </div>
+                                                -->
 
                                                 <div class="row mb-2">
                                                     <!-- <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label> -->
@@ -1540,77 +1470,10 @@ class EditorEvent
     <?php
         }
 
-        // *** Show events if save or arrow links are used ***
-        // Deels al vervangen door $_POST...
-        /*
-        if (isset($_GET['event_person']) OR isset($_GET['event_family']) OR isset($_GET['event_add'])){
-        // *** Script voor expand and collapse of items ***
-
-        $link_id='';
-        if (isset($_GET['event_person']) AND $_GET['event_person']=='1') $link_id='51';
-        if (isset($_GET['event_family']) AND $_GET['event_family']=='1') $link_id='52';
-        if (isset($_GET['event_kind'])){
-            if ($_GET['event_kind']=='name') $link_id='1';
-            if ($_GET['event_kind']=='npfx') $link_id='1';
-            if ($_GET['event_kind']=='nsfx') $link_id='1';
-            if ($_GET['event_kind']=='nobility') $link_id='1';
-            if ($_GET['event_kind']=='title') $link_id='1';
-            if ($_GET['event_kind']=='lordship') $link_id='1';
-            if ($_GET['event_kind']=='birth_declaration') $link_id='2';
-            if ($_GET['event_kind']=='baptism_witness') $link_id='3';
-            if ($_GET['event_kind']=='death_declaration') $link_id='4';
-            if ($_GET['event_kind']=='burial_witness') $link_id='5';
-            if ($_GET['event_kind']=='profession') $link_id='13';
-            if ($_GET['event_kind']=='religion') $link_id='14';
-            if ($_GET['event_kind']=='picture') $link_id='53';
-            if ($_GET['event_kind']=='marriage_witness') $link_id='8';
-            if ($_GET['event_kind']=='marriage_witness_rel') $link_id='10';
-        }
-
-        if (isset($_GET['event_add'])){
-//			if ($_GET['event_add']=='add_name') $link_id='1';
-//			if ($_GET['event_add']=='add_npfx') $link_id='1';
-//			if ($_GET['event_add']=='add_nsfx') $link_id='1';
-//			if ($_GET['event_add']=='add_nobility') $link_id='1';
-//			if ($_GET['event_add']=='add_title') $link_id='1';
-//			if ($_GET['event_add']=='add_lordship') $link_id='1';
-//			if ($_GET['event_add']=='add_birth_declaration') $link_id='2';
-//			if ($_GET['event_add']=='add_baptism_witness') $link_id='3';
-//			if ($_GET['event_add']=='add_death_declaration') $link_id='4';
-//			if ($_GET['event_add']=='add_burial_witness') $link_id='5';
-//			if ($_GET['event_add']=='add_profession') $link_id='13';
-//			if ($_GET['event_add']=='add_religion') $link_id='14';
-            if ($_GET['event_add']=='add_picture') $link_id='53';
-            if ($_GET['event_add']=='add_source_picture') $link_id='53';
-            if ($_GET['event_add']=='add_marriage_picture') $link_id='53';
-//			if ($_GET['event_add']=='add_marriage_witness') $link_id='8';
-//			if ($_GET['event_add']=='add_marriage_witness_rel') $link_id='10';
-        }
-
-        $text.='
-        <script>
-        function Show(el_id){
-            // *** Hide or show item ***
-            var arr = document.getElementsByClassName(\'row\'+el_id);
-            for (i=0; i<arr.length; i++){
-                arr[i].style.display="";
-            }
-            // *** Change [+] into [-] ***
-            document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
-        }
-        </script>';
-
-        $text.='<script>
-            Show("'.$link_id.'");
-        </script>';
-    }
-*/
-
         // TODO check return (no longer needed?).
         return $text;
     }   // end function show_event
-
-}   // end class
+}
 
 
 function event_selection($event_gedcom)
@@ -1656,27 +1519,6 @@ function event_selection($event_gedcom)
     </optgroup>
 <?php
 }
-
-// *** Javascript for "search by file name of picture" feature ***
-// March 2022: no longer in use
-/*
-echo '<script>
-    function Search_pic(idnum, picnr, picarr){
-        var searchval = document.getElementById("inp_text_event" + idnum).value;
-        searchval = searchval.toLowerCase();
-        var countarr = 0;
-        // *** delete existing full list ***
-        document.getElementById("text_event" + idnum).options.length=0; 
-        for (var countpics=0; countpics<picnr; countpics++){
-            var picname = picarr[countpics].toLowerCase();
-            if(picname.indexOf(searchval) != -1) {
-                document.getElementById("text_event" + idnum).options[countarr]=new Option(picarr[countpics], picarr[countpics], true, false);
-                countarr++;
-            }
-        }
-    }
-    </script>';
-*/
 
 // *** If profession is added, jump to profession part of screen ***
 if (isset($_POST['event_event_profession']) && $_POST['event_event_profession'] != '') {

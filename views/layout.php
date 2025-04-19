@@ -574,7 +574,7 @@ $menu_top = getActiveTopMenu($page);
                                 <!-- Names -->
                                 <?php if ($user['group_menu_names'] == "j") {; ?>
                                     <li><a class="dropdown-item <?php if ($page == 'list_names') echo 'active'; ?>" href="<?= $menu_path_names; ?>"><?= __('Names'); ?></a></li>
-                                <?php }; ?>
+                                <?php } ?>
 
                                 <!-- Places -->
                                 <?php if ($user['group_menu_places'] == "j") {; ?>
@@ -878,7 +878,7 @@ $menu_top = getActiveTopMenu($page);
 
                 <?php if (!$bot_visit) { ?>
                     | <a href="<?= $menu_path_cookies; ?>"><?php echo ucfirst(str_replace('%s ', '', __('%s cookie information'))); ?></a>
-                <?php }; ?>
+                <?php } ?>
             </div>
         </footer>
     <?php } ?>

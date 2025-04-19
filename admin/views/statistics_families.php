@@ -1,17 +1,19 @@
 <?php
 // **********************
-// *** OLD statistics ***
+// *** Family statistics ***
 // **********************
 
 include_once(__DIR__ . "/../../include/show_tree_date.php");
+?>
 
+<h2><?= __('Family statistics (numbers since last GEDCOM update)'); ?></h2>
+
+<?php
 // *** Select database ***
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
 $num_rows = $datasql->rowCount();
 if ($num_rows > 1) {
 ?>
-    <h2><?= __('Old statistics (numbers since last GEDCOM update)'); ?></h2>
-
     <b><?= __('Select family tree'); ?></b><br>
     <?php
     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
@@ -22,7 +24,7 @@ if ($num_rows > 1) {
     ?>
             <b><?= $treetext['name']; ?></b>
         <?php } else { ?>
-            <a href="index.php?page=statistics&amp;&amp;tab=statistics_old&amp;tree_id=<?= $dataDb->tree_id; ?>"><?= $treetext['name']; ?></a>
+            <a href="index.php?page=statistics&amp;&amp;tab=statistics_families&amp;tree_id=<?= $dataDb->tree_id; ?>"><?= $treetext['name']; ?></a>
         <?php } ?>
         <font size=-1>
             (<?= $tree_date; ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?>)
