@@ -11,7 +11,7 @@ class MarriageCls
     public $privacy = false;  // Relation privacy filter
 
     private $marriage_check = false;
-    private $relation_kind = ''; // Living together, non mariatal, etc.
+    private $relation_kind = ''; // Living together, non marital, etc.
     private $relation_check = false; // true = relation/ not married.
     private $addition = ''; // Add (married) "to" in marriage text.
 
@@ -210,7 +210,7 @@ class MarriageCls
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_notice_date || $marriageDb->fam_marr_notice_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_notice_date_hebnight;
             }
@@ -275,7 +275,7 @@ class MarriageCls
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_date || $marriageDb->fam_marr_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_date_hebnight;
             }
@@ -413,7 +413,7 @@ class MarriageCls
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_church_notice_date || $marriageDb->fam_marr_church_notice_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_church_notice_date_hebnight;
             }
@@ -480,7 +480,7 @@ class MarriageCls
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_church_date || $marriageDb->fam_marr_church_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_church_date_hebnight;
             }

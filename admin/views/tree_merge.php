@@ -362,7 +362,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 elseif (isset($_POST['duplicate'])) {
     echo __('Please wait while duplicate list is generated');
 
-    $famname_search = "";
+    $famname_search = '';
     if (isset($_POST['famname_search']) && $_POST['famname_search'] != "") {
         $famname_search = " AND pers_lastname = '" . $_POST['famname_search'] . "'";
     }
@@ -577,7 +577,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
                     $len = 230;  // length of name pulldown box
 
                     if (isset($_SESSION["search1"]) && $_SESSION["search1"] == 1) {
-                        $indi_string = "";
+                        $indi_string = '';
                         if (isset($_SESSION["search_indi"]) && $_SESSION["search_indi"] != "") {
                             // make sure it works with "I436", "i436" and "436"
                             $indi = (substr($search_indi, 0, 1) === "I" || substr($search_indi, 0, 1) === "i") ? strtoupper($search_indi) : "I" . $search_indi;
@@ -647,7 +647,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
                 <td>
                     <?php
                     if (isset($_SESSION["search2"]) && $_SESSION["search2"] == 1) {
-                        $indi_string2 = "";
+                        $indi_string2 = '';
                         if (isset($_SESSION["search_indi2"]) && $_SESSION["search_indi2"] != "") {
                             // make sure it works with "I436", "i436" and "436"
                             $indi2 = (substr($search_indi2, 0, 1) === "I" || substr($search_indi2, 0, 1) === "i") ? strtoupper($search_indi2) : "I" . $search_indi2;
@@ -1605,7 +1605,7 @@ function show_sources($left_ged, $right_ged)
                                 $title = $result->source_title;
                             }
                         } else {
-                            $title = "";
+                            $title = '';
                         }
                         //echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>('.str_replace('_source',' ',$left_sourcesDb->connect_sub_kind).') '.$title.'<br>';
                         echo '<input type="checkbox" name="l_source_' . $left_sourcesDb->connect_id . '" ' . 'checked' . '>' . $title . '<br>';
@@ -1631,7 +1631,7 @@ function show_sources($left_ged, $right_ged)
                             $title = $result->source_title;
                         }
                     } else {
-                        $title = "";
+                        $title = '';
                     }
                     //echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
                     echo '<input type="checkbox" name="r_source_' . $right_sourcesDb->connect_id . '" ' . $checked . '>' . $title . '<br>';
@@ -2537,7 +2537,7 @@ function merge_them($left, $right, $mode)
     // remove from the relatives-to-merge pairs in the database any pairs that contain the deleted right person
     if (isset($trees['relatives_merge'])) {
         $temp_rel_arr = explode(";", $trees['relatives_merge']);
-        $new_rel_string = "";
+        $new_rel_string = '';
         for ($x = 0; $x < count($temp_rel_arr); $x++) {
             // one array piece is I354@I54. We DONT want to match "I35" or "I5" 
             // so to make sure we find the complete number we look for I354@ or for I345;

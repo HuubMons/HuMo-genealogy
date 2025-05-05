@@ -4,6 +4,7 @@
  * July 2023: refactor editor to MVC
  */
 
+// *** These lines are also used for seperate source pages! ***
 include_once(__DIR__ . "/../../include/language_date.php");
 include_once(__DIR__ . "/../../include/date_place.php");
 include_once(__DIR__ . "/../../include/language_event.php");
@@ -11,15 +12,11 @@ include_once(__DIR__ . "/../../include/language_event.php");
 class EditorModel
 {
     private $dbh, $db_functions;
-    private $tree_id, $tree_prefix;
-    private $new_tree = false;
-    private $pers_gedcomnumber, $person;
+    private $tree_id, $tree_prefix, $new_tree = false;
+    private $pers_gedcomnumber, $person, $pers_alive = '', $add_person;
     private $search_id, $search_name;
-    private $add_person;
     private $marriage; // TODO check $marriage. Not in use for all $marriage variables yet.
-    private $editor_cls;
-    private $humo_option;
-    private $userid;
+    private $editor_cls, $humo_option, $userid;
 
     public function __construct($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option)
     {
@@ -34,6 +31,18 @@ class EditorModel
         if (is_numeric($_SESSION['user_id_admin'])) {
             $this->userid = $_SESSION['user_id_admin'];
         }
+    }
+
+    // TODO: not used yet (because of other lines to calculate pers_alive status)
+    public function set_pers_alive()
+    {
+        $this->pers_alive = '';
+        if (isset($_POST["pers_alive"])) {
+            $this->pers_alive = safe_text_db($_POST["pers_alive"]);
+        }
+        //if ($_POST["pers_death_date"] || $_POST["pers_death_place"] || $_POST["pers_buried_date"] || $_POST["pers_buried_place"]) {
+        //    $this->pers_alive = 'deceased';
+        //}
     }
 
     public function set_hebrew_night(): void
@@ -531,7 +540,10 @@ class EditorModel
 
         if ($save_person_data) {
             // *** Manual alive setting ***
-            $pers_alive = safe_text_db($_POST["pers_alive"]);
+            $pers_alive = '';
+            if (isset($_POST["pers_alive"])) {
+                $pers_alive = safe_text_db($_POST["pers_alive"]);
+            }
             // *** Only change alive setting if birth or bapise date is changed ***
             if ($_POST["pers_birth_date_previous"] != $_POST["pers_birth_date"] && is_numeric(substr($_POST["pers_birth_date"], -4))) {
                 if (date("Y") - substr($_POST["pers_birth_date"], -4) > 120) {
@@ -674,9 +686,9 @@ class EditorModel
 
             // *** Extra UPDATE queries if jewish dates is enabled ***
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $per_bir_heb = "";
-                $per_bur_heb = "";
-                $per_dea_heb = "";
+                $per_bir_heb = '';
+                $per_bur_heb = '';
+                $per_dea_heb = '';
                 if (isset($_POST["pers_birth_date_hebnight"])) {
                     $per_bir_heb = $_POST["pers_birth_date_hebnight"];
                 }
@@ -792,7 +804,10 @@ class EditorModel
             $new_gedcomnumber = 'I' . $this->db_functions->generate_gedcomnr($this->tree_id, 'person');
 
             // *** If person is deceased, set alive setting ***
-            $pers_alive = safe_text_db($_POST["pers_alive"]);
+            $pers_alive = '';
+            if (isset($_POST["pers_alive"])) {
+                $pers_alive = safe_text_db($_POST["pers_alive"]);
+            }
             if ($_POST["pers_death_date"] || $_POST["pers_death_place"] || $_POST["pers_buried_date"] || $_POST["pers_buried_place"]) {
                 $pers_alive = 'deceased';
             }
@@ -939,9 +954,9 @@ class EditorModel
                 $event_event = $_POST['event_event_name_new'];
                 $event_date = '';
 
-                $event_place = "";
+                $event_place = '';
                 //if (isset($_POST["event_place_name"])) $event_place = $_POST["event_place_name"];
-                $event_text = "";
+                $event_text = '';
                 //if (isset($_POST["event_text_name"]))  $event_text = $_POST["event_text_name"];
 
                 // *** Add event. If event is new, use: $new_event=true. ***
@@ -952,11 +967,11 @@ class EditorModel
             // *** New person: add profession ***
             if (isset($_POST["event_profession"]) && $_POST["event_profession"] != "" && $_POST["event_profession"] != "Profession") {
                 //$event_date = '';
-                $event_place = "";
+                $event_place = '';
                 if (isset($_POST["event_place_profession"])) {
                     $event_place = $_POST["event_place_profession"];
                 }
-                $event_text = "";
+                $event_text = '';
                 if (isset($_POST["event_text_profession"])) {
                     $event_text = $_POST["event_text_profession"];
                 }
@@ -969,11 +984,11 @@ class EditorModel
 
             // *** New person: add religion ***
             if (isset($_POST["event_religion"]) && $_POST["event_religion"] != "" && $_POST["event_religion"] != "Religion") {
-                $event_place = "";
+                $event_place = '';
                 if (isset($_POST["event_place_religion"])) {
                     $event_place = $_POST["event_place_religion"];
                 }
-                $event_text = "";
+                $event_text = '';
                 if (isset($_POST["event_text_religion"])) {
                     $event_text = $_POST["event_text_religion"];
                 }
@@ -1195,9 +1210,9 @@ class EditorModel
                 $event_event = $_POST['event_event_name1'];
                 $event_date = '';
 
-                $event_place = "";
+                $event_place = '';
                 //if (isset($_POST["event_place_name"])) $event_place = $_POST["event_place_name"];
-                $event_text = "";
+                $event_text = '';
                 //if (isset($_POST["event_text_name"]))  $event_text = $_POST["event_text_name"];
 
                 // *** Add event. If event is new, use: $new_event=true. ***
@@ -1207,11 +1222,11 @@ class EditorModel
 
             // *** Add profession ***
             if (isset($_POST["event_profession1"]) && $_POST["event_profession1"] != "" && $_POST["event_profession1"] != "Profession") {
-                $event_place = "";
+                $event_place = '';
                 if (isset($_POST["event_place_profession1"])) {
                     $event_place = $_POST["event_place_profession1"];
                 }
-                $event_text = "";
+                $event_text = '';
                 if (isset($_POST["event_text_profession1"])) {
                     $event_text = $_POST["event_text_profession1"];
                 }
@@ -1282,9 +1297,9 @@ class EditorModel
                 $event_event = $_POST['event_event_name2'];
                 $event_date = '';
 
-                $event_place = "";
+                $event_place = '';
                 //if (isset($_POST["event_place_name"])) $event_place = $_POST["event_place_name"];
-                $event_text = "";
+                $event_text = '';
                 //if (isset($_POST["event_text_name"]))  $event_text = $_POST["event_text_name"];
 
                 // *** Add event. If event is new, use: $new_event=true. ***
@@ -1294,11 +1309,11 @@ class EditorModel
 
             // *** Add profession ***
             if (isset($_POST["event_profession2"]) && $_POST["event_profession2"] != "" && $_POST["event_profession2"] != "Profession") {
-                $event_place = "";
+                $event_place = '';
                 if (isset($_POST["event_place_profession2"])) {
                     $event_place = $_POST["event_place_profession2"];
                 }
-                $event_text = "";
+                $event_text = '';
                 if (isset($_POST["event_text_profession2"])) {
                     $event_text = $_POST["event_text_profession2"];
                 }
@@ -1741,10 +1756,10 @@ class EditorModel
 
             // only needed for jewish settings
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $f_m_n_d_h = "";
-                $f_m_d_h = "";
-                $f_m_c_d_h = "";
-                $f_m_c_n_d_h = "";
+                $f_m_n_d_h = '';
+                $f_m_d_h = '';
+                $f_m_c_d_h = '';
+                $f_m_c_n_d_h = '';
                 if (isset($_POST["fam_marr_notice_date_hebnight"])) {
                     $f_m_n_d_h = $_POST["fam_marr_notice_date_hebnight"];
                 }

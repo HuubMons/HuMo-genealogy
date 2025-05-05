@@ -36,7 +36,6 @@ if ($popup == false) {
         </button>
 
         <div class="collapse navbar-collapse" id="main_nav">
-
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle <?php if ($page == 'admin') echo 'active'; ?>" href="<?= $path_tmp; ?>page=admin" data-bs-toggle="dropdown">
@@ -129,6 +128,13 @@ if ($popup == false) {
                     <?= show_country_flags($selected_language, '../', 'language_choice', $language_path); ?>
                 </li>
 
+                <?php if ($main_admin['show_menu'] == true and $page != 'login') {; ?>
+                    <div class="pt-2 ms-3">
+                        <!-- Extra link: Add person -->
+                        &nbsp;&nbsp;&nbsp;<a href="index.php?page=editor&amp;add_person=1">
+                            <img src="images/person_connect.gif" border="0" title="<?= __('Add person'); ?>" alt="<?= __('Add person'); ?>"> <?= __('Add person'); ?></a>
+                    </div>
+                <?php } ?>
             </ul>
 
             <!-- Button to open the offcanvas sidebar -->

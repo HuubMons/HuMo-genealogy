@@ -125,7 +125,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
     if ($export['submit_address'] != '') {
         $buffer .= "1 ADDR " . $export['submit_address'] . "\r\n";
-        if ($export['submit_country'] != '') $buffer .= "2 CTRY " . $export['submit_country'] . "\r\n";
+        if ($export['submit_country'] != '') {
+            $buffer .= "2 CTRY " . $export['submit_country'] . "\r\n";
+        }
     }
 
     if ($export['submit_mail'] != '') {
@@ -245,12 +247,10 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
     //$record_nr++;
     //$perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
 
-
     // *** To reduce use of memory, first read pers_id only ***
     $persons_qry = "SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
     $persons_result = $dbh->query($persons_qry);
     while ($persons = $persons_result->fetch(PDO::FETCH_OBJ)) {
-
         // *** Now read all person items ***
         $person = $db_functions->get_person_with_id($persons->pers_id);
 
@@ -261,14 +261,18 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         // 0 @I1181@ INDI *** Gedcomnumber ***
         $buffer = '0 @' . $person->pers_gedcomnumber . "@ INDI\r\n";
 
-        if (isset($_POST['gedcom_status']) && $_POST['gedcom_status'] == 'yes') echo $person->pers_gedcomnumber . ' ';
+        if (isset($_POST['gedcom_status']) && $_POST['gedcom_status'] == 'yes') {
+            echo $person->pers_gedcomnumber . ' ';
+        }
 
         // 1 RIN 1181
         // Not really necessary, so disabled this line...
         //$buffer.='1 RIN '.substr($person->pers_gedcomnumber,1)."\r\n";
 
         // 1 REFN Code *** Own code ***
-        if ($person->pers_own_code) $buffer .= '1 REFN ' . $person->pers_own_code . "\r\n";
+        if ($person->pers_own_code) {
+            $buffer .= '1 REFN ' . $person->pers_own_code . "\r\n";
+        }
 
         // *** Name, add a space after first name if first name is present ***
         // 1 NAME Firstname /Lastname/
@@ -281,14 +285,23 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         $buffer .= $person->pers_lastname . "/\r\n";
 
         // *** december 2021: pers_callname no longer in use ***
-        //if ($person->pers_callname) $buffer.='2 NICK '.$person->pers_callname."\r\n";
+        //if ($person->pers_callname){
+        //  $buffer.='2 NICK '.$person->pers_callname."\r\n";
+        //}
 
         // Prefix is exported by name!
-        //if ($person->pers_prefix) $buffer.='2 SPFX '.$person->pers_prefix."\r\n";
+        //if ($person->pers_prefix){
+        //  $buffer.='2 SPFX '.$person->pers_prefix."\r\n";
+        //}
+
+        // *** Create general person_events array ***
+        $event_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
+            AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
+            ORDER BY event_kind, event_order");
+        $person_events = $event_qry->fetchAll(PDO::FETCH_ASSOC);
 
         // PMB if 'minimal' option selected don't export this
         if ($_POST['export_type'] == 'normal') {
-
             // *** Text and source by name ***
             if ($gedcom_sources == 'yes') {
                 sources_export('person', 'pers_name_source', $person->pers_gedcomnumber, 2);
@@ -299,22 +312,93 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             }
 
             // *** Export all name items, like 2 _AKAN etc. ***
-            $nameqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
-                AND event_kind='name' ORDER BY event_order");
-            while ($nameDb = $nameqry->fetch(PDO::FETCH_OBJ)) {
-                $eventgedcom = $nameDb->event_gedcom;
-                // *** 2 _RUFNAME is only used in BK, HuMo-genealogy uses 2 _RUFN ***
-                //if($nameDb->event_gedcom == "_RUFN") $eventgedcom = '_RUFNAME';
-                $buffer .= '2 ' . $eventgedcom . ' ' . $nameDb->event_event . "\r\n";
-                if ($nameDb->event_date) $buffer .= '3 DATE ' . process_date($gedcom_version, $nameDb->event_date) . "\r\n";
-                if ($gedcom_sources == 'yes')
-                    sources_export('person', 'pers_event_source', $nameDb->event_id, 3);
-                if ($gedcom_texts == 'yes' && $nameDb->event_text) {
-                    $buffer .= '3 NOTE ' . process_text(4, $nameDb->event_text);
+            foreach ($person_events as $person_event) {
+                if ($person_event['event_kind'] == 'name' or $person_event['event_kind'] == 'NPFX' or $person_event['event_kind'] == 'NSFX') {
+                    $eventgedcom = $person_event['event_gedcom'];
+                    // *** 2 _RUFNAME is only used in BK, HuMo-genealogy uses 2 _RUFN ***
+                    //if($nameDb->event_gedcom == "_RUFN"){
+                    //  $eventgedcom = '_RUFNAME';
+                    //}
+                    $buffer .= '2 ' . $eventgedcom . ' ' . $person_event['event_event'] . "\r\n";
+                    if ($person_event['event_date']) {
+                        $buffer .= '3 DATE ' . process_date($gedcom_version, $person_event['event_date']) . "\r\n";
+                    }
+                    if ($gedcom_sources == 'yes') {
+                        sources_export('person', 'pers_event_source', $person_event['event_id'], 3);
+                    }
+                    if ($gedcom_texts == 'yes' && $person_event['event_text']) {
+                        $buffer .= '3 NOTE ' . process_text(4, $person_event['event_text']);
+                    }
+                }
+            }
+
+            // *** Export of person titles ***
+            // 1 TITL Ir.
+            foreach ($person_events as $person_event) {
+                if ($person_event['event_kind'] == 'title') {
+                    $eventgedcom = $person_event['event_gedcom'];
+                    $buffer .= '1 TITL ' . $person_event['event_event'] . "\r\n";
+                    if ($person_event['event_date']) {
+                        $buffer .= '2 DATE ' . process_date($gedcom_version, $person_event['event_date']) . "\r\n";
+                    }
+                    if ($gedcom_sources == 'yes') {
+                        sources_export('person', 'pers_event_source', $person_event['event_id'], 2);
+                    }
+                    if ($gedcom_texts == 'yes' && $person_event['event_text']) {
+                        $buffer .= '2 NOTE ' . process_text(4, $person_event['event_text']);
+                    }
                 }
             }
         }
+
+        // TODO check event ADOP (to be removed?).
+        // *** Adoption ***
+        // 1 ADOP
+        // 2 DATE 15 MAR 2025
+        // 2 FAMC @F2@
+        foreach ($person_events as $person_event) {
+            if ($person_event['event_kind'] == 'adoption') {
+                $buffer .= '1 ADOP'."\r\n";
+                if ($person_event['event_event']) {
+                    $buffer .= '2 FAMC @' . $person_event['event_event'] . '@' . "\r\n";
+                }
+                if ($person_event['event_date']) {
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $person_event['event_date']) . "\r\n";
+                }
+                if ($gedcom_sources == 'yes') {
+                    sources_export('person', 'pers_event_source', $person_event['event_id'], 2);
+                }
+                if ($gedcom_texts == 'yes' && $person_event['event_text']) {
+                    $buffer .= '2 NOTE ' . process_text(4, $person_event['event_text']);
+                }
+            }
+        }
+ 
+        // TODO (see also GEDCOM 7 specification):
+        // event_kind = adoption_by_person
+        // *** Aldfaer adopted/ steph/ legal/ foster childs ***
+        // 1 FAMC @F2@
+        // 2 PEDI adopted
+        // 2 PEDI steph
+        // 2 PEDI legal
+        // 2 PEDI foster
+        // 2 PEDI birth     is in use in Aldfaer 8.
+        // 3 PHRASE
+        // 2 NOTE
+
+        // TODO (check GEDCOM 7 specification):
+        // event_kind = nobility
+        // 1 EVEN Jhr.
+        // 2 TYPE predikaat
+
+        // TODO (GEDCOM 7 specification: there is 1 PROP):
+        // event_kind = lordship
+        // 1 PROP Heerlijkheid
+        // 2 TYPE heerlijkheid
+
+        // TODO (check GEDCOM 7 specification):
+        // event_kind = ash dispersion.
+        // 2 TYPE ash dispersion
 
         if ($person->pers_patronym) {
             $buffer .= '1 _PATR ' . $person->pers_patronym . "\r\n";
@@ -322,6 +406,8 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
         // *** Sex ***
         $buffer .= '1 SEX ' . $person->pers_sexe . "\r\n";
+        // TODO source
+
 
         // *** Birth data ***
         // TODO: if there are only witnesses, the witnesses are missing in export. But normally there should be a date or place?
@@ -389,7 +475,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         //  *** NEW oct. 2024: seperate event for Birth registration ***
         if ($gedcom_version != '551') {
             $birth_registrationqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber' AND event_kind='birth_declaration'");
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "' AND event_kind='birth_declaration'");
             $birth_declarationDb = $birth_registrationqry->fetch(PDO::FETCH_OBJ);
             $birth_decl_witnesses = export_witnesses($gedcom_version, 'birth_declaration', $person->pers_gedcomnumber, 'ASSO');
 
@@ -426,9 +512,10 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             }
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
-
                 // *** Person religion. This is 1 CHR -> 2 RELI! 1 RELI is exported as event (after profession) ***
-                if ($person->pers_religion) $buffer .= '2 RELI ' . $person->pers_religion . "\r\n";
+                if ($person->pers_religion) {
+                    $buffer .= '2 RELI ' . $person->pers_religion . "\r\n";
+                }
 
                 if ($gedcom_sources == 'yes') {
                     sources_export('person', 'pers_bapt_source', $person->pers_gedcomnumber, 2);
@@ -455,12 +542,15 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                     $buffer .= '2 _HNIT y' . "\r\n";
                 }
             }
-            if ($person->pers_death_place) $buffer .= process_place($person->pers_death_place, 2);
-            if ($person->pers_death_time) $buffer .= '2 TIME ' . $person->pers_death_time . "\r\n";
+            if ($person->pers_death_place) {
+                $buffer .= process_place($person->pers_death_place, 2);
+            }
+            if ($person->pers_death_time) {
+                $buffer .= '2 TIME ' . $person->pers_death_time . "\r\n";
+            }
 
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
-
                 if ($gedcom_sources == 'yes') {
                     sources_export('person', 'pers_death_source', $person->pers_gedcomnumber, 2);
                 }
@@ -486,7 +576,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         //  *** NEW oct. 2024: seperate event for death registration ***
         if ($gedcom_version != '551') {
             $death_registrationqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber' AND event_kind='death_declaration'");
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "' AND event_kind='death_declaration'");
             $death_declarationDb = $death_registrationqry->fetch(PDO::FETCH_OBJ);
             $death_decl_witnesses = export_witnesses($gedcom_version, 'death_declaration', $person->pers_gedcomnumber, 'ASSO');
 
@@ -521,11 +611,12 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                     $buffer .= '2 _HNIT y' . "\r\n";
                 }
             }
-            if ($person->pers_buried_place) $buffer .= process_place($person->pers_buried_place, 2);
+            if ($person->pers_buried_place) {
+                $buffer .= process_place($person->pers_buried_place, 2);
+            }
 
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
-
                 if ($gedcom_sources == 'yes') {
                     sources_export('person', 'pers_buried_source', $person->pers_gedcomnumber, 2);
                 }
@@ -556,7 +647,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
         // PMB if 'minimal' option selected don't export this
         if ($_POST['export_type'] == 'normal') {
-
             // *** Addresses (shared addresses are no valid GEDCOM 5.5.1 but is used in some genealogical programs) ***
             // *** Living place ***
             // 1 RESI
@@ -567,7 +657,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
             // *** Occupation ***
             $professionqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
                 AND event_kind='profession' ORDER BY event_order");
             while ($professionDb = $professionqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= '1 OCCU ' . $professionDb->event_event . "\r\n";
@@ -590,7 +680,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
             // *** Religion. REMARK: this is religion event 1 RELI. Baptise religion is saved as 1 CHR -> 2 RELI. ***
             $professionqry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
+                AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
                 AND event_kind='religion' ORDER BY event_order");
             while ($professionDb = $professionqry->fetch(PDO::FETCH_OBJ)) {
                 $buffer .= '1 RELI ' . $professionDb->event_event . "\r\n";
@@ -624,7 +714,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 $buffer .= "1 OBJE\r\n";
                 $buffer .= "2 FORM jpg\r\n";
                 $buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
-                if ($sourceDb->event_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $sourceDb->event_date) . "\r\n";
+                if ($sourceDb->event_date) {
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $sourceDb->event_date) . "\r\n";
+                }
 
                 if ($gedcom_texts == 'yes' && $sourceDb->event_text) {
                     $buffer .= '2 NOTE ' . process_text(3, $sourceDb->event_text);
@@ -657,213 +749,65 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
                 AND event_kind='event' ORDER BY event_order");
             while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
+                // TODO: Check: ADOP, no longer in use?
+                $eventMapping = [
+                    'ADOP' => '1 ADOP',
+                    '_ADPF' => '1 _ADPF',
+                    '_ADPM' => '1 _ADPM',
+                    'AFN' => '1 AFN',
+                    'ARVL' => '1 ARVL',
+                    'BAPM' => '1 BAPM',
+                    'BAPL' => '1 BAPL',
+                    'BARM' => '1 BARM',
+                    'BASM' => '1 BASM',
+                    'BLES' => '1 BLES',
+                    '_BRTM' => '1 _BRTM',
+                    'CAST' => '1 CAST',
+                    'CENS' => '1 CENS',
+                    'CHRA' => '1 CHRA',
+                    'CONF' => '1 CONF',
+                    'CONL' => '1 CONL',
+                    'DPRT' => '1 DPRT',
+                    'EDUC' => '1 EDUC',
+                    'EMIG' => '1 EMIG',
+                    'ENDL' => '1 ENDL',
+                    'EVEN' => '1 EVEN',
+                    '_EYEC' => '1 _EYEC',
+                    'FCOM' => '1 FCOM',
+                    '_FNRL' => '1 _FNRL',
+                    'GRAD' => '1 GRAD',
+                    '_HAIR' => '1 _HAIR',
+                    '_HEIG' => '1 _HEIG',
+                    'IDNO' => '1 IDNO',
+                    'IMMI' => '1 IMMI',
+                    '_INTE' => '1 _INTE',
+                    'LEGI' => '1 LEGI',
+                    '_MEDC' => '1 _MEDC',
+                    'MILI' => '1 _MILT',
+                    'NATU' => '1 NATU',
+                    'NATI' => '1 NATI',
+                    'NCHI' => '1 NCHI',
+                    '_NMAR' => '1 _NMAR',
+                    'ORDN' => '1 ORDN',
+                    'PROB' => '1 PROB',
+                    'PROP' => '1 PROP',
+                    'RETI' => '1 RETI',
+                    'SLGC' => '1 SLGC',
+                    'SLGL' => '1 SLGL',
+                    'SSN' => '1 SSN',
+                    'TXPY' => '1 TXPY',
+                    '_WEIG' => '1 _WEIG',
+                    'WILL' => '1 WILL',
+                    '_YART' => '1 _YART',
+                ];
                 $process_event = false;
-                $process_event2 = false;
-                if ($eventDb->event_gedcom == 'ADOP') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 ADOP';
+                if (array_key_exists($eventDb->event_gedcom, $eventMapping)) {
+                    $process_event = true;
+                    $event_gedcom = $eventMapping[$eventDb->event_gedcom];
                 }
-                if ($eventDb->event_gedcom == '_ADPF') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _ADPF';
-                }
-                if ($eventDb->event_gedcom == '_ADPM') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _ADPM';
-                }
-                if ($eventDb->event_gedcom == 'AFN') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 AFN';
-                }
-                if ($eventDb->event_gedcom == 'ARVL') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 ARVL';
-                }
-                if ($eventDb->event_gedcom == 'BAPM') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 BAPM';
-                }
-                if ($eventDb->event_gedcom == 'BAPL') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 BAPL';
-                }
-                if ($eventDb->event_gedcom == 'BARM') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 BARM';
-                }
-                if ($eventDb->event_gedcom == 'BASM') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 BASM';
-                }
-                if ($eventDb->event_gedcom == 'BLES') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 BLES';
-                }
-                if ($eventDb->event_gedcom == '_BRTM') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _BRTM';
-                }
-                if ($eventDb->event_gedcom == 'CAST') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 CAST';
-                }
-                if ($eventDb->event_gedcom == 'CENS') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 CENS';
-                }
-                if ($eventDb->event_gedcom == 'CHRA') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 CHRA';
-                }
-                if ($eventDb->event_gedcom == 'CONF') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 CONF';
-                }
-                if ($eventDb->event_gedcom == 'CONL') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 CONL';
-                }
-                if ($eventDb->event_gedcom == 'DPRT') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 DPRT';
-                }
-                if ($eventDb->event_gedcom == 'EDUC') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 EDUC';
-                }
-                if ($eventDb->event_gedcom == 'EMIG') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 EMIG';
-                }
-                if ($eventDb->event_gedcom == 'ENDL') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 ENDL';
-                }
-                if ($eventDb->event_gedcom == 'EVEN') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 EVEN';
-                }
-                if ($eventDb->event_gedcom == '_EYEC') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _EYEC';
-                }
-                if ($eventDb->event_gedcom == 'FCOM') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 FCOM';
-                }
-                if ($eventDb->event_gedcom == '_FNRL') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _FNRL';
-                }
-                if ($eventDb->event_gedcom == 'GRAD') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 GRAD';
-                }
-                if ($eventDb->event_gedcom == '_HAIR') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _HAIR';
-                }
-                if ($eventDb->event_gedcom == '_HEIG') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _HEIG';
-                }
-                if ($eventDb->event_gedcom == 'IDNO') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 IDNO';
-                }
-                if ($eventDb->event_gedcom == 'IMMI') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 IMMI';
-                }
-                if ($eventDb->event_gedcom == '_INTE') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _INTE';
-                }
-                if ($eventDb->event_gedcom == 'LEGI') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 LEGI';
-                }
-                if ($eventDb->event_gedcom == '_MEDC') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _MEDC';
-                }
-                //if ($eventDb->event_gedcom=='MILI'){ $process_event=true; $event_gedcom='1 _MILT'; }
-                if ($eventDb->event_gedcom == 'MILI') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _MILT';
-                }
-                if ($eventDb->event_gedcom == 'NATU') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 NATU';
-                }
-                if ($eventDb->event_gedcom == 'NATI') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 NATI';
-                }
-                if ($eventDb->event_gedcom == 'NCHI') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 NCHI';
-                }
-                if ($eventDb->event_gedcom == '_NMAR') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _NMAR';
-                }
-                if ($eventDb->event_gedcom == 'ORDN') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 ORDN';
-                }
-                if ($eventDb->event_gedcom == 'PROB') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 PROB';
-                }
-                if ($eventDb->event_gedcom == 'PROP') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 PROP';
-                }
-                if ($eventDb->event_gedcom == 'RETI') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 RETI';
-                }
-                if ($eventDb->event_gedcom == 'SLGC') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 SLGC';
-                }
-                if ($eventDb->event_gedcom == 'SLGL') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 SLGL';
-                }
-                if ($eventDb->event_gedcom == 'SSN') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 SSN';
-                }
-                if ($eventDb->event_gedcom == 'TXPY') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 TXPY';
-                }
-                if ($eventDb->event_gedcom == '_WEIG') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _WEIG';
-                }
-                if ($eventDb->event_gedcom == 'WILL') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 WILL';
-                }
-                if ($eventDb->event_gedcom == '_YART') {
-                    $process_event2 = true;
-                    $event_gedcom = '1 _YART';
-                }
-
-                /* No longer in use
-                // *** Text is added in the first line: 1 _MILT military items. ***
-                if ($process_event){
-                    if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
-                    if ($eventDb->event_date) $buffer.='2 DATE '.process_date($gedcom_version,$eventDb->event_date)."\r\n";
-                    if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
-                }
-                */
 
                 // *** No text behind first line, add text at second NOTE line ***
-                if ($process_event2) {
+                if ($process_event) {
                     $buffer .= $event_gedcom;
                     // *** Add text behind GEDCOM tag ***
                     if ($eventDb->event_event) {
@@ -907,8 +851,8 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         // *** FAMC ***
         if ($person->pers_famc) {
             if ($export["part_tree"] == 'part' && !in_array($person->pers_famc, $famsids)) {
-            } // don't export FAMC
-            else {
+                // don't export FAMC
+            } else {
                 $buffer .= '1 FAMC @' . $person->pers_famc . "@\r\n";
             }
         }
@@ -948,17 +892,14 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             $buffer .= process_datetime($gedcom_version, 'changed', $person->pers_changed_datetime, $person->pers_changed_user_id);
         }
 
-
         // *** Write person data ***
         $buffer = decode($buffer);
         fwrite($fh, $buffer);
-
 
         // *** Update processed lines ***
         $record_nr++;
         $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
         //flush();
-
 
         // *** Show person data on screen ***
         //$buffer = str_replace("\r\n", "<br>", $buffer);
@@ -986,7 +927,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
     // *** To reduce use of memory, first read fam_id only ***
     $families_qry = $dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
     while ($families = $families_qry->fetch(PDO::FETCH_OBJ)) {
-
         // *** Now read all family items ***
         $family_qry = $dbh->query("SELECT * FROM humo_families WHERE fam_id='" . $families->fam_id . "'");
         $family = $family_qry->fetch(PDO::FETCH_OBJ);
@@ -998,7 +938,32 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         // 0 @I1181@ INDI *** Gedcomnumber ***
         $buffer = '0 @' . $family->fam_gedcomnumber . "@ FAM\r\n";
 
-        if (isset($_POST['gedcom_status']) && $_POST['gedcom_status'] == 'yes') echo $family->fam_gedcomnumber . ' ';
+        if (isset($_POST['gedcom_status']) && $_POST['gedcom_status'] == 'yes') {
+            echo $family->fam_gedcomnumber . ' ';
+        }
+
+
+
+        /* TODO (used twice for family events)
+        // *** Create general family_events array ***
+        $event_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
+            AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
+            ORDER BY event_kind, event_order");
+        $family_events = $event_qry->fetchAll(PDO::FETCH_ASSOC);
+        */
+        /*
+        // Test lines
+        foreach ($family_events as $family_event) {
+            echo $family_event['event_id'] . ' ';
+            echo $family_event['event_connect_id'] . ' ';
+            echo $family_event['event_kind'] . ' ';
+            echo $family_event['event_order'] . ' ';
+            echo $family_event['event_event'] . ' ';
+            echo '<br>';
+        }
+        */
+
+
 
         if ($family->fam_man) {
             if ($export["part_tree"] == 'part' && !in_array($family->fam_man, $persids)) {
@@ -1041,7 +1006,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
         // PMB if 'minimal' option selected don't export this
         if ($_POST['export_type'] == 'normal') {
-
             // *** Marriage notice ***
             if ($family->fam_marr_notice_date || $family->fam_marr_notice_place || $family->fam_marr_notice_text) {
                 $buffer .= "1 MARB\r\n";
@@ -1161,7 +1125,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
             // PMB if 'minimal' option selected don't export this
             if ($_POST['export_type'] == 'normal') {
-
                 if ($gedcom_sources == 'yes') {
                     sources_export('family', 'fam_marr_church_source', $family->fam_gedcomnumber, 2);
                 }
@@ -1180,7 +1143,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
         // PMB if 'minimal' option selected don't export this
         if ($_POST['export_type'] == 'normal') {
-
             // *** Divorced ***
             if ($family->fam_div_date || $family->fam_div_place || $family->fam_div_text) {
                 $buffer .= "1 DIV\r\n";
@@ -1212,7 +1174,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
         // PMB if 'minimal' option selected don't export this
         if ($_POST['export_type'] == 'normal') {
-
             // *** Family source ***
             if ($gedcom_sources == 'yes') {
                 sources_export('family', 'family_source', $family->fam_gedcomnumber, 1);
@@ -1254,59 +1215,59 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 AND event_kind='event' ORDER BY event_order");
             while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                 $process_event = false;
-                $process_event2 = false;
                 if ($eventDb->event_gedcom == 'ANUL') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 ANUL';
                 }
                 if ($eventDb->event_gedcom == 'CENS') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 CENS';
                 }
                 if ($eventDb->event_gedcom == 'DIVF') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 DIVF';
                 }
                 if ($eventDb->event_gedcom == 'ENGA') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 ENGA';
                 }
                 if ($eventDb->event_gedcom == 'EVEN') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 EVEN';
                 }
                 if ($eventDb->event_gedcom == 'MARC') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 MARC';
                 }
                 if ($eventDb->event_gedcom == 'MARL') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 MARL';
                 }
                 if ($eventDb->event_gedcom == 'MARS') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 MARS';
                 }
                 if ($eventDb->event_gedcom == 'SLGS') {
-                    $process_event2 = true;
+                    $process_event = true;
                     $event_gedcom = '1 SLGS';
                 }
 
-                // *** Text is added in the first line: 1 _MILT military items. ***
-                //if ($process_event){
-                //	if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
-                //	if ($eventDb->event_date) $buffer.='2 DATE '.process_date($gedcom_version,$eventDb->event_date)."\r\n";
-                //	if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
-                //}
-
                 // *** No text behind first line, add text at second NOTE line ***
-                if ($process_event2) {
+                if ($process_event) {
                     $buffer .= $event_gedcom;
-                    if ($eventDb->event_event) $buffer .= ' ' . $eventDb->event_event;
+                    if ($eventDb->event_event) {
+                        $buffer .= ' ' . $eventDb->event_event;
+                    }
                     $buffer .= "\r\n";
-                    if ($eventDb->event_text) $buffer .= '2 NOTE ' . process_text(3, $eventDb->event_text);
-                    if ($eventDb->event_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $eventDb->event_date) . "\r\n";
-                    if ($eventDb->event_place) $buffer .= '2 PLAC ' . $eventDb->event_place . "\r\n";
+                    if ($eventDb->event_text) {
+                        $buffer .= '2 NOTE ' . process_text(3, $eventDb->event_text);
+                    }
+                    if ($eventDb->event_date) {
+                        $buffer .= '2 DATE ' . process_date($gedcom_version, $eventDb->event_date) . "\r\n";
+                    }
+                    if ($eventDb->event_place) {
+                        $buffer .= '2 PLAC ' . $eventDb->event_place . "\r\n";
+                    }
                 }
             }
 
@@ -1385,8 +1346,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             }
             // Third: back in the connections table, find the previously found address id numbers and get the associated source ged number ($23)
             $address_connect2_qry = $dbh->query("SELECT connect_connect_id, connect_source_id
-                FROM humo_connections
-                WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind = 'address_source'");
+                FROM humo_connections WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind = 'address_source'");
             while ($address_connect2_qry_qryDb = $address_connect2_qry->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($address_connect2_qry_qryDb->connect_connect_id, $resi_id_array)) {
                     $source_array[] = $address_connect2_qry_qryDb->connect_source_id;
@@ -1394,8 +1354,7 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             }
             // "direct" addresses
             $addressqry = $dbh->query("SELECT address_id, address_connect_sub_kind, address_connect_id
-                FROM humo_addresses
-                WHERE address_tree_id='" . $tree_id . "'");
+                FROM humo_addresses WHERE address_tree_id='" . $tree_id . "'");
             $source_address_array = array();
             while ($addressqryDb = $addressqry->fetch(PDO::FETCH_OBJ)) {
                 if ($addressqryDb->address_connect_sub_kind == 'person' && in_array($addressqryDb->address_connect_id, $persids)) {
@@ -1609,7 +1568,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         // 1 PLAC Plaats
         // 1 PHON
         $export_addresses = true;
-        if (isset($_POST['gedcom_shared_addresses']) && $_POST['gedcom_shared_addresses'] == 'standard') $export_addresses = false;
+        if (isset($_POST['gedcom_shared_addresses']) && $_POST['gedcom_shared_addresses'] == 'standard') {
+            $export_addresses = false;
+        }
         if ($export_addresses) {
             $address_qry = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='" . $tree_id . "' AND address_shared='1'");
             while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) {
@@ -1714,8 +1675,9 @@ function decode($buffer)
 {
     //$buffer = html_entity_decode($buffer, ENT_NOQUOTES, 'ISO-8859-15');
     //$buffer = html_entity_decode($buffer, ENT_QUOTES, 'ISO-8859-15');
-    if (isset($_POST['gedcom_char_set']) && $_POST['gedcom_char_set'] == 'ANSI')
+    if (isset($_POST['gedcom_char_set']) && $_POST['gedcom_char_set'] == 'ANSI') {
         $buffer = iconv("UTF-8", "windows-1252", $buffer);
+    }
     return $buffer;
 }
 
@@ -1863,14 +1825,18 @@ function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
 
         $export_addresses = false;
         if ($addressDb->address_shared == '1') $export_addresses = true;
-        if (isset($_POST['gedcom_shared_addresses']) && $_POST['gedcom_shared_addresses'] == 'standard') $export_addresses = false;
+        if (isset($_POST['gedcom_shared_addresses']) && $_POST['gedcom_shared_addresses'] == 'standard') {
+            $export_addresses = false;
+        }
         if ($export_addresses) {
             // *** Shared address ***
             // 1 RESI @R210@
             // 2 DATE 1 JAN 2021
             // 2 ROLE ROL
             $buffer .= '1 RESI @' . $connectDb->connect_item_id . "@\r\n";
-            if ($connectDb->connect_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
+            if ($connectDb->connect_date) {
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
+            }
             if ($connectDb->connect_role) {
                 $buffer .= '2 ROLE ' . $connectDb->connect_role . "\r\n";
             }
@@ -1925,8 +1891,12 @@ function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
             if ($addressDb->address_phone) {
                 $buffer .= '2 PHON ' . $addressDb->address_phone . "\r\n";
             }
-            //if ($addressDb->address_date){ $buffer.='2 DATE '.process_date($gedcom_version,$addressDb->address_date)."\r\n"; }
-            if ($connectDb->connect_date) $buffer .= '2 DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
+            //if ($addressDb->address_date){
+            //  $buffer.='2 DATE '.process_date($gedcom_version,$addressDb->address_date)."\r\n";
+            //}
+            if ($connectDb->connect_date) {
+                $buffer .= '2 DATE ' . process_date($gedcom_version, $connectDb->connect_date) . "\r\n";
+            }
             if ($addressDb->address_text) {
                 $buffer .= '2 NOTE ' . process_text(3, $addressDb->address_text);
             }

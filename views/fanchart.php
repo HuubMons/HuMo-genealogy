@@ -41,7 +41,7 @@ $maxperson = pow(2, $data["chosengen"]);
 // initialize array
 for ($i = 0; $i < $maxperson; $i++) {
     for ($n = 0; $n < 6; $n++) {
-        $data["fanchart_item"][$i][$n] = "";
+        $data["fanchart_item"][$i][$n] = '';
     }
 }
 
@@ -114,15 +114,15 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
     $lines = explode("\n", $data);
     // more than 1 line : recursive calls
     if (count($lines) > 1) {
-        $text = "";
+        $text = '';
         foreach ($lines as $indexval => $line) $text .= split_align_text($line, $maxlen, $rtlflag, $nameflag, $gennr) . "\n";
         return $text;
     }
 
     // process current line word by word
     $split = explode(" ", $data);
-    $text = "";
-    $line = "";
+    $text = '';
+    $line = '';
 
     if ($rtlflag == 1 && $nameflag == 1) {    // rtl name has to be re-positioned
         if ($data["fan_style"] == 2 && ($gennr == 1 || $gennr == 2)) {
@@ -243,27 +243,27 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
     }
 
     // *** Border colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#6E6E6E";
     $grey = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Text colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#000000";
     $color = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Background colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#EEEEEE";
     $bgcolor = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Man colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#B2DFEE";
     $bgcolorM = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** wife colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#FFE4C4";
     $bgcolorF = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
@@ -353,7 +353,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                 }
 
                 $text = $name; // names
-                $text2 = ""; // dates
+                $text2 = ''; // dates
                 if ($data["date_display"] == 1) {  // don't show dates
                 } else if ($data["date_display"] == 2) { //show years only
                     // years only chosen but we also do this if no place in outer circles
@@ -466,7 +466,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                 //}
 
                 // *** Add first spouse to base person's tooltip ***
-                $spousename = "";
+                $spousename = '';
                 if ($gen == 0 && $data["fanchart_item"][1][2] != "") {
                     // base person and has spouse
                     $spouse = $data["fanchart_item"][1][5] == "F" ? "fam_man" : "fam_woman";

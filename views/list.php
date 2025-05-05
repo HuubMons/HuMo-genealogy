@@ -134,7 +134,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         <input type="hidden" name="index_list" value="quicksearch">
                         <?php
                         if ($humo_option['min_search_chars'] == 1) {
-                            $pattern = "";
+                            $pattern = '';
                             $min_chars = " 1 ";
                         } else {
                             $pattern = 'pattern=".{' . $humo_option['min_search_chars'] . ',}"';
@@ -592,7 +592,7 @@ if ($list["person_result"]->rowCount() > 0) {
 </div>
 
 <?php
-$dir = "";
+$dir = '';
 if ($language["dir"] == "rtl") {
     $dir = "rtl"; // loads the proper CSS for rtl display (rtlindex_list2):
 }
@@ -607,7 +607,7 @@ $listnr = "2";      // default 20% margin
 //*** Show persons ******************************************************************
 $privcount = 0; // *** Count privacy persons ***
 
-$selected_place = "";
+$selected_place = '';
 
 // TODO Allready added in model. But needed for spouse in this script for now...
 // *** Search for (part of) first or lastname ***
@@ -808,7 +808,7 @@ function name_qry($search_name, $search_part)
         $parent_status_found = '1';
         if ($list["adv_search"] == true && $selection['parent_status'] != "allpersons" && $selection['parent_status'] != "noparents") {
             $parent_status_found = '0';
-            $par_famc = "";
+            $par_famc = '';
             if (isset($personDb->pers_famc)) {
                 $par_famc = $personDb->pers_famc;
             }
@@ -1105,7 +1105,7 @@ function show_person($personDb)
         </td>
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_bapt_date) {
                 $info = __('~') . ' ' . date_place($personDb->pers_bapt_date, '');
             }
@@ -1120,7 +1120,7 @@ function show_person($personDb)
         </td>
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_bapt_place) {
                 $info = __('~') . ' ' . $personDb->pers_bapt_place;
             }
@@ -1135,7 +1135,7 @@ function show_person($personDb)
         </td>
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_buried_date) {
                 $info = __('[]') . ' ' . date_place($personDb->pers_buried_date, '');
             }
@@ -1150,7 +1150,7 @@ function show_person($personDb)
         </td>
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_buried_place) {
                 $info = __('[]') . ' ' . $personDb->pers_buried_place;
             }

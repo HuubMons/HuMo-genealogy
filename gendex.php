@@ -65,7 +65,7 @@ foreach ($datasql as $dataDb) {
                 $text .= $personDb->pers_firstname . ' /' . $pers_lastname . '/|';
 
                 if (!$privacy) { // Privacy restricted person
-                    $birth_bapt_date = "";
+                    $birth_bapt_date = '';
                     if ($personDb->pers_bapt_date) {
                         $birth_bapt_date = $personDb->pers_bapt_date;
                     }
@@ -74,7 +74,7 @@ foreach ($datasql as $dataDb) {
                     }
                     $text .= $birth_bapt_date . '|';
 
-                    $birth_bapt_place = "";
+                    $birth_bapt_place = '';
                     if ($personDb->pers_bapt_place) {
                         $birth_bapt_place = $personDb->pers_bapt_place;
                     }
@@ -83,7 +83,7 @@ foreach ($datasql as $dataDb) {
                     }
                     $text .= $birth_bapt_place . '|';
 
-                    $died_bur_date = "";
+                    $died_bur_date = '';
                     if ($personDb->pers_death_date) {
                         $died_bur_date = $personDb->pers_death_date;
                     }
@@ -92,7 +92,7 @@ foreach ($datasql as $dataDb) {
                     }
                     $text .= $died_bur_date . '|';
 
-                    $died_bur_place = "";
+                    $died_bur_place = '';
                     if ($personDb->pers_death_place) {
                         $died_bur_place = $personDb->pers_death_place;
                     }

@@ -745,6 +745,11 @@ if ($popup == false) {
             // *** Used for person color selection for descendants and ancestors, etc. ***
             include_once(__DIR__ . "/../include/ancestors_descendants.php");
 
+            // *** Not in use yet because of seperate source pages ***
+            //include_once(__DIR__ . "/../include/language_date.php");
+            //include_once(__DIR__ . "/../include/date_place.php");
+            //include_once(__DIR__ . "/../include/language_event.php");
+
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
             if (isset($tree_id) && $tree_id) {
@@ -882,6 +887,11 @@ if ($popup == false) {
             include_once(__DIR__ . "/include/select_tree.php");
             // *** Used for person color selection for descendants and ancestors, etc. ***
             include_once(__DIR__ . "/../include/ancestors_descendants.php");
+
+            // *** Not in use yet because of seperate source pages ***
+            //include_once(__DIR__ . "/../include/language_date.php");
+            //include_once(__DIR__ . "/../include/date_place.php");
+            //include_once(__DIR__ . "/../include/language_event.php");
 
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***

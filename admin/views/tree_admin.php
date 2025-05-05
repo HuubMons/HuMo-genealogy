@@ -67,7 +67,10 @@
 
                     <div class="col-md-6">
                         <?php if ($dataDb->tree_prefix != 'EMPTY') { ?>
+                            <?php /*
                             <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $dataDb->tree_id; ?>&tree_prefix=<?= $dataDb->tree_prefix; ?>&step1=read_gedcom">
+                            */ ?>
+                            <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $dataDb->tree_id; ?>&amp;step1=read_gedcom">
                                 <img src="images/import.jpg" title="gedcom import" alt="gedcom import">
                             </a>
                         <?php

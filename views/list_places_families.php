@@ -190,7 +190,7 @@ if ($person_result->rowCount() == 0) {
 </div>
 
 <?php
-$dir = "";
+$dir = '';
 if ($language["dir"] == "rtl") {
     $dir = "rtl"; // loads the proper CSS for rtl display (rtlindex_list2):
 }
@@ -201,7 +201,7 @@ $listnr = "2";      // default 20% margin
 //*** Show persons ******************************************************************
 $privcount = 0; // *** Count privacy persons ***
 
-$selected_place = "";
+$selected_place = '';
 ?>
 <!-- Table to hold left sort date column (when necessary) and right person list column -->
 <table class="table table-sm">
@@ -412,7 +412,7 @@ function show_person($familyDb)
 
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_notice_date) {
                 $info = __('o') . ' ' . date_place($familyDb->fam_marr_church_notice_date, '');
             }
@@ -430,7 +430,7 @@ function show_person($familyDb)
 
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_notice_place) {
                 $info = __('o') . ' ' . $familyDb->fam_marr_church_notice_place;
             }
@@ -447,7 +447,7 @@ function show_person($familyDb)
 
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_date) {
                 $info = __('x') . ' ' . date_place($familyDb->fam_marr_church_date, '');
             }
@@ -464,7 +464,7 @@ function show_person($familyDb)
 
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_place) {
                 $info = __('x') . ' ' . $familyDb->fam_marr_church_place;
             }

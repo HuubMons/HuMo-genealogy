@@ -49,7 +49,7 @@ function language_date($date_text)
     }
 
     if ($humo_option["date_display"] == "us" || $humo_option["date_display"] == "ch" || $selected_language == "hu") {
-        $prfx = ""; // prefix
+        $prfx = ''; // prefix
         if (strpos($date_text, "EST ABT") !== false) {
             $prfx = __('estimated &#177;');
             $date_text = str_replace("EST ABT ", "", $date_text);
@@ -134,7 +134,7 @@ function language_date($date_text)
 function chinese_date($date_text)
 {
     $date_arr = explode(" ", $date_text);
-    $date_text = "";
+    $date_text = '';
     for ($i = count($date_arr) - 1; $i >= 0; $i--) {
         if (mb_strlen($date_arr[$i]) === 1) {
             $date_arr[$i] = "0" . $date_arr[$i];
@@ -147,7 +147,7 @@ function chinese_date($date_text)
 function american_date($date_text)
 {
     $date_arr = explode(" ", $date_text);
-    $date_text = "";
+    $date_text = '';
     if (count($date_arr) == 1) {
         $date_text = $date_arr[0];
     } // only year: 1998
@@ -163,7 +163,7 @@ function american_date($date_text)
 function hungarian_date($date_text)
 {
     $date_arr = explode(" ", $date_text);
-    $date_text = "";
+    $date_text = '';
     if (count($date_arr) == 1) {
         $date_text = $date_arr[0];
     } // only year: 1998

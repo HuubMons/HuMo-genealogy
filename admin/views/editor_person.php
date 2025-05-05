@@ -701,9 +701,9 @@
             $birth_decl_text = $birth_declDb->event_text;
         } else {
             $birth_decl_id = '';
-            $birth_decl_date = "";
-            $birth_decl_place = "";
-            $birth_decl_text = "";
+            $birth_decl_date = '';
+            $birth_decl_place = '';
+            $birth_decl_text = '';
         }
         ?>
         <tr>
@@ -800,9 +800,9 @@
                 $brittext = $britDb->event_text;
             } else {
                 $britid = '';
-                $britdate = "";
-                $britplace = "";
-                $brittext = "";
+                $britdate = '';
+                $britplace = '';
+                $brittext = '';
             }
             //$britDb = $result->fetch(PDO::FETCH_OBJ);
         ?>
@@ -887,10 +887,10 @@
                 $barplace =  $barmDb->event_place;
                 $bartext =  $barmDb->event_text;
             } else {
-                $barid = "";
-                $bardate = "";
-                $barplace = "";
-                $bartext = "";
+                $barid = '';
+                $bardate = '';
+                $barplace = '';
+                $bartext = '';
             }
         ?>
 
@@ -1239,9 +1239,9 @@
             $death_decl_text = $death_declDb->event_text;
         } else {
             $death_decl_id = '';
-            $death_decl_date = "";
-            $death_decl_place = "";
-            $death_decl_text = "";
+            $death_decl_date = '';
+            $death_decl_place = '';
+            $death_decl_text = '';
         }
         ?>
         <tr>

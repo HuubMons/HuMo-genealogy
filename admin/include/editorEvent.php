@@ -196,7 +196,7 @@ class EditorEvent
                 " . $hebtext . "
                 ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'name') {
-            $hebclause = "";
+            $hebclause = '';
             if ($humo_option['admin_hebname'] == 'y') {
                 $hebclause = " AND event_gedcom!='_HEBN' ";
             }
@@ -229,8 +229,8 @@ class EditorEvent
         } elseif ($event_kind == 'religion') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='religion' ORDER BY event_order";
         } elseif ($event_kind == 'picture') {
-            $search_picture = "";
-            $searchpic = "";
+            $search_picture = '';
+            $searchpic = '';
             if (isset($_POST['searchpic'])) {
                 $search_picture = $_POST['searchpic'];
             }
@@ -661,7 +661,7 @@ class EditorEvent
 
                                             <?php
                                             // *** Show name of event and [+] link ***
-                                            $newpers = "";
+                                            $newpers = '';
                                             if (isset($_GET['add_person'])) {
                                                 $newpers = "&amp;add_person=1";
                                             }
@@ -1312,7 +1312,7 @@ class EditorEvent
                                 $('#sortable_events<?= $sortable_id; ?>').sortable({
                                     handle: '.handle'
                                 }).bind('sortupdate', function() {
-                                    var orderstring = "";
+                                    var orderstring = '';
                                     var order_arr = document.getElementsByClassName("handle");
                                     for (var z = 0; z < order_arr.length; z++) {
                                         orderstring = orderstring + order_arr[z].id + ";";

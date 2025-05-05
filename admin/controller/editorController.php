@@ -12,6 +12,7 @@ class EditorController
     {
         $editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $this->editor_cls, $humo_option);
 
+        //$editorModel->set_pers_alive();
         $editorModel->set_hebrew_night();
         $editorModel->set_pers_gedcomnumber($db_functions);
         $editorModel->set_search_name();

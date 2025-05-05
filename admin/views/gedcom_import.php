@@ -774,8 +774,8 @@ elseif ($trees['step'] == '3') {
     <?php
     }
 
-    $process_gedcom = "";
-    $buffer2 = "";
+    $process_gedcom = '';
+    $buffer2 = '';
 
     // *** PREPARE PROGRESS BAR ***
     $progress2 = $_SESSION['save_progress2'];
@@ -1034,8 +1034,8 @@ elseif ($trees['step'] == '3') {
             if ($process_gedcom === "person") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_person($buffer2);
-                $process_gedcom = "";
-                $buffer2 = "";
+                $process_gedcom = '';
+                $buffer2 = '';
 
                 // TEST: show memory usage
                 //if (!isset($memory)) $memory=memory_get_usage();
@@ -1049,65 +1049,65 @@ elseif ($trees['step'] == '3') {
             } elseif ($process_gedcom === "family") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_family($buffer2, 0, 0);
-                $process_gedcom = "";
-                $buffer2 = "";
+                $process_gedcom = '';
+                $buffer2 = '';
             } elseif ($process_gedcom === "text") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_text($buffer2);
-                $process_gedcom = "";
-                $buffer2 = "";
+                $process_gedcom = '';
+                $buffer2 = '';
             } elseif ($process_gedcom === "source") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_source($buffer2);
-                $process_gedcom = "";
-                $buffer2 = "";
+                $process_gedcom = '';
+                $buffer2 = '';
             }
 
             // *** Repository ***
             elseif ($process_gedcom === "repository") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_repository($buffer2);
-                $process_gedcom = "";
-                $buffer2 = "";
+                $process_gedcom = '';
+                $buffer2 = '';
             } elseif ($process_gedcom === "address") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_address($buffer2);
-                $process_gedcom = "";
-                $buffer2 = "";
+                $process_gedcom = '';
+                $buffer2 = '';
             } elseif ($process_gedcom === "object") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
                 $gedcom_cls->process_object($buffer2);
-                $process_gedcom = "";
-                $buffer2 = "";
+                $process_gedcom = '';
+                $buffer2 = '';
             }
         }
 
         // *** CHECK ***
         if (substr($buffer, -6, 6) === '@ INDI') {
             $process_gedcom = "person";
-            $buffer2 = "";
+            $buffer2 = '';
         } elseif (substr($buffer, -5, 5) === '@ FAM') {
             $process_gedcom = "family";
-            $buffer2 = "";
+            $buffer2 = '';
         } elseif (substr($buffer, 0, 3) === '0 @') {
             // *** Aldfaer text: 0 @N954@ NOTE ***
             if (strpos($buffer, '@ NOTE') > 1) {
                 $process_gedcom = "text";
-                $buffer2 = "";
+                $buffer2 = '';
             }
 
             if (substr($buffer, -6, 6) === '@ SOUR') {
                 $process_gedcom = "source";
-                $buffer2 = "";
+                $buffer2 = '';
             } elseif (substr($buffer, -6, 6) === '@ REPO') {
                 $process_gedcom = "repository";
-                $buffer2 = "";
+                $buffer2 = '';
             } elseif (substr($buffer, -6, 6) === '@ RESI') {
                 $process_gedcom = "address";
-                $buffer2 = "";
+                $buffer2 = '';
             } elseif (substr($buffer, -6, 6) === '@ OBJE') {
                 $process_gedcom = "object";
-                $buffer2 = "";
+                $buffer2 = '';
             }
         }
 
@@ -1972,9 +1972,9 @@ elseif ($trees['step'] == '4') {
 
         $all_loc = $dbh->query("SELECT location_location FROM humo_location");
         while ($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {
-            $loca_array[$all_locDb->location_location] = "";
+            $loca_array[$all_locDb->location_location] = '';
         }
-        $status_string = "";
+        $status_string = '';
 
         $tree_id_string = " AND ( ";
         $id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ;

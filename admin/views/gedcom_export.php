@@ -74,17 +74,14 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 ?>
     <?= __('GEDCOM file is generated'); ?><br>
 
-    <form method="POST" action="include/gedcom_download.php" target="_blank">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="include/gedcom_download.php?page=export" target="_blank">
         <input type="hidden" name="file_name" value="<?= $export['path'] . $export['file_name']; ?>">
         <input type="hidden" name="file_name_short" value="<?= $export['file_name']; ?>">
         <input type="submit" name="something" value="<?= __('Download GEDCOM file'); ?>" class="btn btn-sm btn-success">
     </form><br>
 <?php } ?>
 
-<form method="POST" id="gedcom_export" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-
+<form method="POST" id="gedcom_export" action="index.php?page=export">
     <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row mb-2 p-2 bg-primary-subtle">
             <div class="col-md-7"><?= __('Select family tree to export and click "Start export"'); ?></div>

@@ -1860,7 +1860,7 @@ $own_code=0;
                 $temp_previous = $temp;
 
                 if ($personDb->pers_birth_date || $personDb->pers_birth_place) {
-                    $nightfall = "";
+                    $nightfall = '';
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_birth_date_hebnight;
                     }
@@ -2126,7 +2126,7 @@ $own_code=0;
                 $temp_previous = $temp;
 
                 if ($personDb->pers_death_date || $personDb->pers_death_place) {
-                    $nightfall = "";
+                    $nightfall = '';
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_death_date_hebnight;
                     }
@@ -2336,7 +2336,7 @@ $own_code=0;
                 $temp_previous = $temp;
 
                 if ($personDb->pers_buried_date || $personDb->pers_buried_place) {
-                    $nightfall = "";
+                    $nightfall = '';
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_buried_date_hebnight;
                     }

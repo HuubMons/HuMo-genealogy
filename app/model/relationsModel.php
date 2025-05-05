@@ -352,7 +352,7 @@ class RelationsModel
         //$total_arr = array();
 
         if (isset($_POST["extended"]) && !isset($_POST["next_path"])) {
-            $_SESSION["couple"] = "";
+            $_SESSION["couple"] = '';
             // session[couple] flags that persons A & B are a couple. consequences: 
             // 1. don't display that (has already been done in regular calculator)
             // 2. in the extended_calculator function don't search thru the fam of the couple, since this gives errors.
@@ -1697,7 +1697,7 @@ class RelationsModel
             $this->relation['rel_text'] .= '是';
         } elseif ($this->selected_language == "fr") {
             if ($this->relation['sexe1'] == 'M') {
-                $gend = "";
+                $gend = '';
             } else {
                 $gend = "e";
             }
@@ -2084,7 +2084,7 @@ class RelationsModel
         } elseif ($this->selected_language == "fr") {
             if ($this->relation['sexe1'] == 'M') {
                 $nephniece = __('nephew');
-                $gend = "";
+                $gend = '';
             } else {
                 $nephniece = __('niece');
                 $gend = "e";
@@ -2874,7 +2874,7 @@ class RelationsModel
             }
             $gendiff = abs($generX - $generY);
             if ($gendiff == 0) {
-                $removenr = "";
+                $removenr = '';
             } elseif ($gendiff == 1) {
                 $removenr = 'בהפרש ' . __('once removed');
             } else {
@@ -3357,7 +3357,7 @@ class RelationsModel
         } else {
             $gendiff = abs($generX - $generY);
             if ($gendiff == 0) {
-                $removenr = "";
+                $removenr = '';
             } elseif ($gendiff == 1) {
                 $removenr = ' ' . __('once removed');
             } elseif ($gendiff == 2) {
@@ -3818,13 +3818,13 @@ class RelationsModel
 
         // now turn around the second trail and adjust par, chd, spo values accordingly
         $secpath = explode(";", $path2);
-        $new_path2 = "";
+        $new_path2 = '';
         $changepath = array();
         $commonpers = ";" . $fstcommon . $pers2;
         if ($ref == "par" && $fstcommon == "par") {
             // the common person is a child of both sides - discard child and make right person spouse of left!
             $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
-            $commonpers = "";
+            $commonpers = '';
             $_SESSION['next_path'] .= substr($secpath[count($secpath) - 1], 3) . "@"; // add parent from side B to ignore string for next path
             $par1str = substr($path1, 0, strrpos($path1, ";"));  // first take off last (=common) person
             $_SESSION['next_path'] .= substr($par1str, strrpos($par1str, ";") + 4) . "@";     // add parent from side A to ignore string for next path

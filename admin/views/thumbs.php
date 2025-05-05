@@ -644,13 +644,13 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 if ($_POST['new_cat_prefix'] != "") {
                     $new_cat_prefix = $_POST['new_cat_prefix'];
                     $new_cat_name = $_POST['new_cat_name'];
-                    $warning_prefix = "";
-                    $warning_invalid_prefix = "";
+                    $warning_prefix = '';
+                    $warning_invalid_prefix = '';
                     if (preg_match('/^[a-z][a-z]_$/', $_POST['new_cat_prefix']) !== 1) {
                         $warning_invalid_prefix = __('Prefix has to be 2 letters and _');
                         $warning_prefix = $_POST['new_cat_prefix'];
                     } else {
-                        $warning_exist_prefix = "";
+                        $warning_exist_prefix = '';
                         $check_exist = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . safe_text_db($new_cat_prefix) . "'");
                         if ($check_exist->rowCount() == 0) {
                             if ($_POST['new_cat_name'] == "") {
@@ -701,7 +701,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     </tr>
 
                     <?php
-                    $add = "";
+                    $add = '';
                     if (isset($_POST['add_new_cat'])) {
                         $add = "&amp;add_new_cat=1";
                     }
@@ -755,7 +755,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 $nameDb = $name->fetch(PDO::FETCH_OBJ);
                                 $catname = $nameDb->photocat_name;
                             } else {  // no name at all
-                                $catname = "";
+                                $catname = '';
                             }
                         }
 
@@ -804,7 +804,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <?php
                     }
 
-                    $content = "";
+                    $content = '';
                     if (isset($warning_prefix)) {
                         $content = $warning_prefix;
                     }

@@ -52,7 +52,10 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
         <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_data') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_data&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Family tree data'); ?></a>
     </li>
     <li class="nav-item me-1">
+        <?php /*
         <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_gedcom') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $trees['tree_id']; ?>&amp;tree_prefix=<?= $data2Db->tree_prefix; ?>"><?= __('Import Gedcom file'); ?></a>
+        */ ?>
+        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_gedcom') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Import Gedcom file'); ?></a>
     </li>
     <li class="nav-item me-1">
         <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_text') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_text&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Family tree texts (per language)'); ?></a>

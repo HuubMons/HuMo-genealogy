@@ -56,11 +56,11 @@ if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10)
         </script>
     ';
 } else {
-    $pers_status = "";
-    $childnr = "";
-    $trname = "";
-    $searnr = "";
-    $chnr = "";
+    $pers_status = '';
+    $childnr = '';
+    $trname = '';
+    $searnr = '';
+    $chnr = '';
     if ($_GET['person_item'] == 'add_partner') {
         $pers_status = "partner";
         $trname = "pmain";
@@ -179,7 +179,7 @@ if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10)
             $dateself = substr($person->pers_birth_date, strpos($person->pers_birth_date, " ") + 1);
         } else {
             $dateself = $person->pers_birth_date;
-            $dateprefix = "";
+            $dateprefix = '';
         }
 
         $ddate_arr = explode(" ", $person->pers_death_date);
@@ -188,7 +188,7 @@ if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10)
             $dateself2 = substr($person->pers_death_date, strpos($person->pers_death_date, " ") + 1);
         } else {
             $dateself2 = $person->pers_death_date;
-            $dateprefix2 = "";
+            $dateprefix2 = '';
         }
 
         $pgn = $person->pers_gedcomnumber;
