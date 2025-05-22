@@ -125,10 +125,10 @@ if ($humo_option["url_rewrite"] == "j") {
                 $picture_text = substr($filename, 0, -4);
             }
             while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                $person_cls = new PersonCls;
                 $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                $person_cls = new PersonCls($personDb);
+                $privacy = $person_cls->get_privacy();
                 $name = $person_cls->person_name($personDb);
-                $privacy = $person_cls->set_privacy($personDb);
                 if (!$privacy) {
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
@@ -160,10 +160,10 @@ if ($humo_option["url_rewrite"] == "j") {
                 $connect_qry = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
                     AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
                 while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
-                    $person_cls = new PersonCls;
                     $personDb = $db_functions->get_person($connectDb->connect_connect_id);
+                    $person_cls = new PersonCls($personDb);
+                    $privacy = $person_cls->get_privacy();
                     $name = $person_cls->person_name($personDb);
-                    $privacy = $person_cls->set_privacy($personDb);
                     if (!$privacy) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                         $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);

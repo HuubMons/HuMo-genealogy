@@ -69,7 +69,7 @@ $groupresult = $dbh->query($groupsql);
 <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
     <form method="POST" action="index.php?page=groups" style="display : inline;">
         <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
-        <input type="submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
+        <input type="submit" name="submit" value="<?= $groupDb->group_name == '' ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
     </form>
 <?php } ?>
 

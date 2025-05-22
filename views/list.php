@@ -113,7 +113,6 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
             <!-- Standard search box -->
             <?php if ($list["adv_search"] == false) { ?>
-
                 <div class="row">
                     <div class="col-sm-2"></div>
 
@@ -168,7 +167,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
             <!-- Advanced search box -->
             <?php if ($list["adv_search"] == true) { ?>
                 <div class="row ms-md-1">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['pers_firstname'] ? ' bg-primary-subtle' : '';?>">
                         <?= __('First name'); ?>:
 
                         <div class="input-group mb-3">
@@ -429,8 +428,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         </div>
                     </div>
                 </div>
-                    -->
-
+                -->
 
                 <div class="row mb-3 ms-md-1">
                     <?php if ($num_rows2 > 1 && $humo_option['one_name_study'] == 'n') { ?>
@@ -814,7 +812,6 @@ function name_qry($search_name, $search_part)
             }
             if ($par_famc != "") {
                 $parDb = $db_functions->get_family($par_famc, 'man-woman');
-
                 if (
                     $selection['parent_status'] == "fatheronly" && substr($parDb->fam_man, 0, 1) === "I" && substr($parDb->fam_woman, 0, 1) !== "I"
                 ) {
@@ -831,7 +828,7 @@ function name_qry($search_name, $search_part)
         if ($spouse_found == true && ($parent_status_found === '1' || $parent_status_found !== '1' && !isset($_POST['adv_search']))) {
             $pers_counter++; // needed for spouses search and mother/father only search
             $person_cls = new PersonCls($personDb);
-            $privacy = $person_cls->privacy;
+            $privacy = $person_cls->get_privacy();
 
             if ($privacy and ($selection['birth_place'] != '' or $selection['birth_year'] != '' or $selection['death_place'] != '' or $selection['death_year'] != '')) {
                 $privcount++;

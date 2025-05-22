@@ -154,7 +154,8 @@ $limit = 500; // *** Limit results ***
                                             $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
                                         }
                                         $search1_cls = new PersonCls($searchDb);
-                                        if ($search1_cls->privacy) {
+                                        $search1_privacy = $search1_cls->get_privacy();
+                                        if ($search1_privacy) {
                                             $birth = '';
                                         }
 
@@ -264,7 +265,8 @@ $limit = 500; // *** Limit results ***
                                             $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
                                         }
                                         $search2_cls = new PersonCls($searchDb2);
-                                        if ($search2_cls->privacy) {
+                                        $search2_privacy = $search2_cls->get_privacy();
+                                        if ($search2_privacy) {
                                             $birth = '';
                                         }
 

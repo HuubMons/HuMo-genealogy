@@ -150,7 +150,7 @@ function mapbirthplace($place)
             <?php
             while ($maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
                 $man_cls = new PersonCls($maplistDb);
-                $privacy_man = $man_cls->privacy;
+                $privacy_man = $man_cls->get_privacy();
                 $name = $man_cls->person_name($maplistDb);
                 if ($name["show_name"] == true) {
                     $pers_family = '';

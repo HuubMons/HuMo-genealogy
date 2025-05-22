@@ -430,7 +430,7 @@ if (isset($_POST['descmap'])) {
                             $selected = '';
                             //if($desc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
                             $man_cls = new PersonCls($desc_searchDb);
-                            $privacy_man = $man_cls->privacy;
+                            $privacy_man = $man_cls->get_privacy();
                             $date = '';
                             if (!$privacy_man) {
                                 // if a person has privacy set (even if only for data, not for name,
@@ -561,7 +561,7 @@ if (isset($_POST['ancmap'])) {
                             $selected = '';
                             //if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
                             $man_cls = new PersonCls($anc_searchDb);
-                            $privacy_man = $man_cls->privacy;
+                            $privacy_man = $man_cls->get_privacy();
                             $date = '';
                             if (!$privacy_man) { // don't show dates if privacy is set for this person
                                 // if a person has privacy set (even if only for data, not for name,

@@ -350,14 +350,16 @@ class DescendantModel extends FamilyModel
                         $parent1Db = $db_functions->get_person($parent1);
                         // *** Proces parent1 using a class ***
                         $parent1_cls = new PersonCls($parent1Db);
+                        $parent1_privacy = $parent1_cls->get_privacy();
 
                         $parent2Db = $db_functions->get_person($parent2);
                         // *** Proces parent2 using a class ***
                         $parent2_cls = new PersonCls($parent2Db);
+                        $parent2_privacy = $parent2_cls->get_privacy();
 
                         // *** Proces marriage using a class ***
-                        $marriage_cls = new MarriageCls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
-                        $family_privacy = $marriage_cls->privacy;
+                        $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
+                        $family_privacy = $marriage_cls->get_privacy();
 
 
                         // *************************************************************

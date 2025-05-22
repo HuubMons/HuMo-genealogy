@@ -963,10 +963,37 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             echo $EditorEvent->show_event('family', $marriage, 'marriage_picture');
 
             // *** Family event editor ***
+            ?>
+            <tr class="table_header_large" id="event_family_link">
+                <td><?= __('Events'); ?></td>
+                <td colspan="2">
+                    <div class="row">
+                        <!-- Add relation event -->
+                        <div class="col-4">
+                            <select size="1" name="event_kind" class="form-select form-select-sm">
+                                <option value="event"><?= __('Event'); ?></option>
+                                <option value="URL"><?= __('URL/ Internet link'); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="col-3">
+                            <input type="submit" name="marriage_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-outline-primary">
+
+                            <!-- Help popover for events -->
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide"
+                                data-bs-content="<?= __('For items like:') . ' ' . __('Event') . ', ' . __('Marriage contract') . ', ' . __('Marriage license') . ', ' . __('etc.'); ?>">
+                                ?
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <?php
             echo $EditorEvent->show_event('family', $marriage, 'family');
 
             // *** Show and edit addresses by family ***
-            $connect_kind= 'family';
+            $connect_kind = 'family';
             $connect_sub_kind = 'family_address';
             $connect_connect_id = $marriage;
             include_once __DIR__ . '/partial/editor_addresses.php';

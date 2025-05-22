@@ -1,10 +1,6 @@
 <?php
 header('Content-type: text/plain; charset=iso-8859-1');
 
-// **************************************************
-// *** Privacy person                             ***
-// **************************************************
-
 include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . "/include/safe.php"); //Variabelen
 
@@ -21,9 +17,8 @@ $db_functions = new DbFunctions($dbh);
 
 // *** Database ***
 $datasql = $db_functions->get_trees();
-//$num_rows=count($datasql);
 foreach ($datasql as $dataDb) {
-    // *** Check is family tree is shown or hidden for user group ***
+    // *** Check if family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
         $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $dataDb->tree_id . "' ORDER BY pers_lastname");
@@ -31,17 +26,14 @@ foreach ($datasql as $dataDb) {
         //person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
         //Birthdate|Birthplace|Deathdate|Deathplace|
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
-            // *** Use class for privacy filter ***
             $person_cls = new PersonCls($personDb);
-            $privacy = $person_cls->privacy;
-
+            $privacy = $person_cls->get_privacy();
             // *** Completely filter person ***
             if (
                 $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
             ) {
                 // *** Don't show person ***
             } else {
-
                 $person_url = '';
                 if ($personDb->pers_famc) {
                     $person_url = $personDb->pers_famc;
@@ -56,15 +48,13 @@ foreach ($datasql as $dataDb) {
                 }
                 $text = $person_url . '&database=' . $dataDb->tree_prefix . '|';
 
-                //$pers_lastname=strtoupper(str_replace("_", " ", $personDb->pers_prefix));
-                //$pers_lastname.=strtoupper($personDb->pers_lastname);
                 $pers_lastname = mb_strtoupper(str_replace("_", " ", $personDb->pers_prefix), 'iso-8859-1');
                 $pers_lastname .= mb_strtoupper($personDb->pers_lastname, 'iso-8859-1');
 
                 $text .= $pers_lastname . '|';
                 $text .= $personDb->pers_firstname . ' /' . $pers_lastname . '/|';
 
-                if (!$privacy) { // Privacy restricted person
+                if (!$privacy) {
                     $birth_bapt_date = '';
                     if ($personDb->pers_bapt_date) {
                         $birth_bapt_date = $personDb->pers_bapt_date;
@@ -109,5 +99,4 @@ foreach ($datasql as $dataDb) {
             }
         }
     } // *** End of hidden family tree ***
-
 } // *** End of multiple family trees ***

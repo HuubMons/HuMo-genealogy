@@ -1,5 +1,5 @@
 <?php
-class PhotoalbumModel
+class PhotoalbumModel extends BaseModel
 {
     public function get_show_pictures()
     {
@@ -21,7 +21,7 @@ class PhotoalbumModel
         return $show_pictures;
     }
 
-    public function get_search_media()
+    public function get_search_media(): string
     {
         // *** Photo search ***
         $search_media = '';
@@ -39,23 +39,23 @@ class PhotoalbumModel
         return $search_media;
     }
 
-    public function get_categories($dbh, $user, $selected_language)
+    public function get_categories($selected_language): array
     {
         // *** Check if user has permission to view categories ***
-        $hide_photocat_array = explode(";", $user['group_hide_photocat']);
+        $hide_photocat_array = explode(";", $this->user['group_hide_photocat']);
 
         $photoalbum['category'] = [];
         $photoalbum['category_id'] = [];
         $photoalbum['category_enabled'] = [];
         // *** Check if photocat table exists ***
-        $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+        $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_photocat'");
         if ($temp->rowCount()) {
             // *** Get array of categories ***
-            $temp2 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
+            $temp2 = $this->dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
             // the table contains more than the default category (otherwise display regular photoalbum)
             if ($temp2->rowCount() >= 1) {
                 $qry = "SELECT photocat_id, photocat_prefix FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
-                $result = $dbh->query($qry);
+                $result = $this->dbh->query($qry);
                 $result_arr = $result->fetchAll();
                 foreach ($result_arr as $row) {
                     if (!in_array($row['photocat_id'], $hide_photocat_array)) {
@@ -66,14 +66,14 @@ class PhotoalbumModel
                         $photoalbum['category_name'][$row['photocat_prefix']] = __('NO NAME');
                         // check if name for this category exists for this language
                         $qry2 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $row['photocat_prefix'] . "' AND photocat_language ='" . $selected_language . "'";
-                        $result2 = $dbh->query($qry2);
+                        $result2 = $this->dbh->query($qry2);
                         if ($result2->rowCount() != 0) {
                             $catnameDb = $result2->fetch(PDO::FETCH_OBJ);
                             $photoalbum['category_name'][$row['photocat_prefix']] = $catnameDb->photocat_name;
                         } else {
                             // check if default name exists for this category
                             $qry3 = "SELECT * FROM humo_photocat WHERE photocat_prefix ='" . $row['photocat_prefix'] . "' AND photocat_language ='default'";
-                            $result3 = $dbh->query($qry3);
+                            $result3 = $this->dbh->query($qry3);
                             if ($result3->rowCount() != 0) {
                                 $catnameDb = $result3->fetch(PDO::FETCH_OBJ);
                                 $photoalbum['category_name'][$row['photocat_prefix']] = $catnameDb->photocat_name;
@@ -86,7 +86,7 @@ class PhotoalbumModel
         return $photoalbum;
     }
 
-    public function get_chosen_tab($category)
+    public function get_chosen_tab($category): string
     {
         $chosen_tab = 'none';
         if (isset($_SESSION['save_chosen_tab'])) {
@@ -107,16 +107,16 @@ class PhotoalbumModel
         return $chosen_tab;
     }
 
-    public function get_media_files($dbh, $tree_id, $db_functions, $chosen_tab, $search_media, $category)
+    public function get_media_files($chosen_tab, $search_media, $category): array
     {
         $photoalbum['media_files'] = [];
 
         // *** Create an array of all pics with person_id's. Also check for OBJECT (Family Tree Maker GEDCOM file) ***
         $qry = "SELECT event_event, event_kind, event_connect_kind, event_connect_id, event_gedcomnr FROM humo_events
-            WHERE (event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_kind='picture' AND event_connect_id NOT LIKE '')
-            OR (event_tree_id='" . $tree_id . "' AND event_kind='object')
+            WHERE (event_tree_id='" . $this->tree_id . "' AND event_connect_kind='person' AND event_kind='picture' AND event_connect_id NOT LIKE '')
+            OR (event_tree_id='" . $this->tree_id . "' AND event_kind='object')
             ORDER BY event_event";
-        $picqry = $dbh->query($qry);
+        $picqry = $this->dbh->query($qry);
         while ($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
             $picname = $picqryDb->event_event;
 
@@ -156,9 +156,9 @@ class PhotoalbumModel
             if ($search_media) {
                 $quicksearch = str_replace(" ", "%", $search_media);
                 $querie = "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
-                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $picqryDb->event_connect_id . "'
+                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $picqryDb->event_connect_id . "'
                     AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
-                $persoon = $dbh->query($querie);
+                $persoon = $this->dbh->query($querie);
                 $personDb = $persoon->fetch(PDO::FETCH_OBJ);
                 if (!$personDb) {
                     $process_picture = false;
@@ -169,11 +169,9 @@ class PhotoalbumModel
             if ($process_picture) {
                 if ($picqryDb->event_connect_id) {
                     // *** Check privacy filter ***
-                    // TODO: use the person_cls constructor (adding personDb).
-                    $person_cls = new PersonCls;
-                    $personDb = $db_functions->get_person($picqryDb->event_connect_id);
-                    // TODO check $privacy. This line isn't needed anymore?
-                    $privacy = $person_cls->set_privacy($personDb);
+                    $personDb = $this->db_functions->get_person($picqryDb->event_connect_id);
+                    $person_cls = new PersonCls($personDb);
+                    $privacy = $person_cls->get_privacy();
                     if ($privacy) {
                         $process_picture = false;
                     }
@@ -184,12 +182,12 @@ class PhotoalbumModel
                     //$picture_text2.=$name["standard_name"];
                 } else {
                     // *** OBJECTS: Family Tree Maker GEDCOM file ***
-                    $connect_qry = $dbh->query("SELECT connect_connect_id FROM humo_connections
-                        WHERE connect_tree_id='" . $tree_id . "' AND connect_sub_kind='pers_object' AND connect_source_id='" . $picqryDb->event_gedcomnr . "'");
+                    $connect_qry = $this->dbh->query("SELECT connect_connect_id FROM humo_connections
+                        WHERE connect_tree_id='" . $this->tree_id . "' AND connect_sub_kind='pers_object' AND connect_source_id='" . $picqryDb->event_gedcomnr . "'");
                     while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
-                        $person_cls = new PersonCls;
-                        $personDb = $db_functions->get_person($connectDb->connect_connect_id);
-                        $privacy = $person_cls->set_privacy($personDb);
+                        $personDb = $this->db_functions->get_person($connectDb->connect_connect_id);
+                        $person_cls = new PersonCls($personDb);
+                        $privacy = $person_cls->get_privacy();
                         if ($privacy) {
                             $process_picture = false;
                         }
@@ -239,12 +237,12 @@ class PhotoalbumModel
         return $photoalbum;
     }
 
-    public function calculate_pages($photoalbum, $tree_id, $uri_path, $link_cls)
+    public function calculate_pages($photoalbum, $uri_path, $link_cls): array
     {
         // *** Calculate pages ***
         $nr_pictures = count($photoalbum['media_files']);
 
-        $albumpath = $link_cls->get_link($uri_path, 'photoalbum', $tree_id, true);
+        $albumpath = $link_cls->get_link($uri_path, 'photoalbum', $this->tree_id, true);
 
         $item = 0;
         if (isset($_GET['item'])) {

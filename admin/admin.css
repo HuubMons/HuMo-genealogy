@@ -306,3 +306,8 @@ div.photobooktext {
     font-style: italic;
     margin: 2px;
 }
+
+/* Bootstrap popover, custom class */
+.popover-wide {
+    --bs-popover-max-width: 800px;
+}

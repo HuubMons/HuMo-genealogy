@@ -258,7 +258,7 @@ for ($w = 0; $w < count($genarray); $w++) {
     if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"]) {
         $man = $db_functions->get_person($genarray[$w]["gednr"]);
         $man_cls = new PersonCls($man);
-        $man_privacy = $man_cls->privacy;
+        $man_privacy = $man_cls->get_privacy();
     }
 
     //echo '<div style="position:absolute; background-color:'.$bkcolor.';height:'.$data["vsize"].'px; width:'.$data["hsize"].'px; border:1px brown solid; left:'.$xvalue.'px; top:'.$yvalue.'px">';
@@ -392,7 +392,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                 if (isset($genarray[$w]["spgednr"]) && $genarray[$w]["spgednr"]) {
                     $woman = $db_functions->get_person($genarray[$w]["spgednr"]);
                     $woman_cls = new PersonCls($woman);
-                    $woman_privacy = $woman_cls->privacy;
+                    $woman_privacy = $woman_cls->get_privacy();
                 }
 
                 // *** Marriage data ***

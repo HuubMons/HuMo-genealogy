@@ -55,7 +55,7 @@ function fillarray($nr, $famid)
         $personmnDb = $db_functions->get_person($famid);
 
         $man_cls = new PersonCls($personmnDb);
-        $man_privacy = $man_cls->privacy;
+        $man_privacy = $man_cls->get_privacy();
 
         $name = $man_cls->person_name($personmnDb);
         //$data["fanchart_item"][$nr][0]=$name["standard_name"];
@@ -648,7 +648,7 @@ $china_message = 0;
 </div>
 
 <?php
-// TODO check download link. Use sourceforge?
+// TODO check download link. Use Sourceforge or Github?
 if ($china_message == 1) {
 ?>
     <!-- <div style="border:2px solid red;background-color:white;padding:5px;position:relative;length:300px;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;font-size:120%;text-align:center;"> -->

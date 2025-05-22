@@ -8,7 +8,7 @@ $personDb = $db_functions->get_person($id);
 
 // *** Check privacy filter ***
 $person_cls = new PersonCls($personDb);
-$privacy = $person_cls->privacy;
+$privacy = $person_cls->get_privacy();
 if ($privacy) {
     echo '<br><br>' . __('PRIVACY FILTER');
     exit();

@@ -434,18 +434,18 @@ class RelationsModel
                     $person_manDb = $this->db_functions->get_person($ancestor_id[$i], 'famc-fams');
                     /*
                     $man_cls = new PersonCls($person_manDb);
-                    $man_privacy=$man_cls->privacy;
+                    $man_privacy=$man_cls->get_privacy();
                     if (strtolower($person_manDb->pers_sexe)=='m' && $ancestor_number[$i]>1){
                         $familyDb=$this->db_functions->get_family($marriage_number[$i]);
 
                         // *** Use privacy filter of woman ***
                         $person_womanDb=$this->db_functions->get_person($familyDb->fam_woman);
                         $woman_cls = new PersonCls($person_womanDb);
-                        $woman_privacy=$woman_cls->privacy;
+                        $woman_privacy=$woman_cls->get_privacy();
 
                         // *** Use class for marriage ***
                         $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
-                        $family_privacy=$marriage_cls->privacy;
+                        $family_privacy=$marriage_cls->get_privacy();
                     }
                     */
 

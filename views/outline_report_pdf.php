@@ -154,14 +154,14 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         // *** Privacy filter man and woman ***
         $person_manDb = $db_functions->get_person($familyDb->fam_man);
         $man_cls = new PersonCls($person_manDb);
-        $privacy_man = $man_cls->privacy;
+        $privacy_man = $man_cls->get_privacy();
 
         $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
         $woman_cls = new PersonCls($person_womanDb);
-        $privacy_woman = $woman_cls->privacy;
+        $privacy_woman = $woman_cls->get_privacy();
 
         $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
-        $family_privacy = $marriage_cls->privacy;
+        $family_privacy = $marriage_cls->get_privacy();
 
         // *************************************************************
         // *** Parent1 (normally the father)                         ***
@@ -284,7 +284,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 }
 
                 $child_cls = new PersonCls($childDb);
-                $child_privacy = $child_cls->privacy;
+                $child_privacy = $child_cls->get_privacy();
 
                 // *** Build descendant_report ***
                 if ($childDb->pers_fams) {

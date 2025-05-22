@@ -7,6 +7,8 @@ class TreeIndexModel
 {
     // Can't be used in all functions yet. Refactor is needed.
     private $dbh, $humo_option;
+    //private object $dbh;
+    //private array $humo_option;
 
     public function __construct($dbh, $humo_option)
     {
@@ -231,7 +233,7 @@ class TreeIndexModel
     }
 
     // *** Show name of selected family tree ***
-    public function selected_family_tree()
+    public function selected_family_tree(): string
     {
         global $dbh, $num_rows, $selected_language;
         $text = '';
@@ -244,7 +246,7 @@ class TreeIndexModel
     }
 
     // *** List family trees ***
-    public function tree_list($datasql)
+    public function tree_list($datasql): string
     {
         global $dbh, $humo_option, $uri_path, $user, $language, $selected_language, $link_cls;
         $text = '';
@@ -279,14 +281,14 @@ class TreeIndexModel
     }
 
     // *** Family tree data ***
-    public function tree_data()
+    public function tree_data(): string
     {
         global $dataDb;
         return __('Latest update:') . ' ' . show_tree_date($dataDb->tree_date, true) . ', ' . $dataDb->tree_persons . ' ' . __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families');
     }
 
     // *** Owner family tree ***
-    public function owner()
+    public function owner(): string
     {
         global $dataDb, $humo_option;
         $tree_owner = '';
@@ -305,7 +307,7 @@ class TreeIndexModel
     }
 
     //*** Most frequent names ***
-    public function last_names($columns, $rows)
+    public function last_names($columns, $rows): string
     {
         global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $maxcols, $text;
 
@@ -383,7 +385,7 @@ class TreeIndexModel
                 $cache_exists = false;
                 $cache_check = false; // *** Use cache for large family trees ***
                 $cacheqry = $dbh->query("SELECT * FROM humo_settings
-                WHERE setting_variable='cache_surnames' AND setting_tree_id='" . $tree_id . "'");
+                    WHERE setting_variable='cache_surnames' AND setting_tree_id='" . $tree_id . "'");
                 $cacheDb = $cacheqry->fetch(PDO::FETCH_OBJ);
                 if ($cacheDb) {
                     $cache_exists = true;
@@ -523,7 +525,7 @@ class TreeIndexModel
     }
 
     // *** Search field ***
-    public function search_box()
+    public function search_box(): string
     {
         global $language, $dbh, $humo_option, $link_cls, $uri_path, $tree_id;
         $text = '';
@@ -641,7 +643,7 @@ class TreeIndexModel
     }
 
     // *** Random photo ***
-    public function random_photo()
+    public function random_photo(): string
     {
         global $dataDb, $tree_id, $dbh, $db_functions, $humo_option;
         // adding static table for displayed photos storage
@@ -692,7 +694,8 @@ class TreeIndexModel
                 if ($pic_conn_kind == 'person') {
                     $personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
                     $man_cls = new PersonCls($personmnDb);
-                    if ($man_cls->privacy == '') {
+                    $man_cls_privacy = $man_cls->get_privacy();
+                    if (!$man_cls_privacy) {
                         $is_privacy = false;
 
                         $name = $man_cls->person_name($personmnDb);
@@ -707,12 +710,14 @@ class TreeIndexModel
 
                     $personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
                     $man_cls = new PersonCls($personmnDb2);
+                    $man_cls_privacy = $man_cls->get_privacy();
 
                     $personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
                     $woman_cls = new PersonCls($personmnDb3);
+                    $woman_cls_privacy = $woman_cls->get_privacy();
 
                     // *** Only use this picture if both man and woman have disabled privacy options ***
-                    if ($man_cls->privacy == '' && $woman_cls->privacy == '') {
+                    if (!$man_cls_privacy && !$woman_cls_privacy) {
                         $is_privacy = false;
 
                         $name = $man_cls->person_name($personmnDb2);
@@ -773,7 +778,7 @@ class TreeIndexModel
     }
 
     // *** Favourites ***
-    public function extra_links()
+    public function extra_links(): string
     {
         global $dbh, $tree_id, $humo_option, $uri_path;
         $text = '';
@@ -818,7 +823,7 @@ class TreeIndexModel
     }
 
     // *** Alphabet line ***
-    public function alphabet()
+    public function alphabet(): string
     {
         global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $link_cls;
         $text = '';
@@ -920,7 +925,7 @@ class TreeIndexModel
         return $text;
     }
 
-    public function today_in_history($view = 'with_table')
+    public function today_in_history($view = 'with_table'): string
     {
         global $dbh, $dataDb;
         // *** Backwards compatible, value is empty ***
@@ -958,7 +963,8 @@ class TreeIndexModel
         while ($record = $birth_qry->fetch(PDO::FETCH_OBJ)) {
             $person_cls = new PersonCls($record);
             $name = $person_cls->person_name($record);
-            if (!$person_cls->privacy) {
+            $person_cls_privacy = $person_cls->get_privacy();
+            if (!$person_cls_privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) === $today || substr($record->pers_birth_date, 0, 6) === $today2) {
                     //$history['order'][]=substr($record->pers_birth_date,-4);
                     // *** First order birth, using C ***

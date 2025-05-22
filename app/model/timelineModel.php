@@ -172,7 +172,7 @@ class TimelineModel
                 $privacy = true;
                 if ($spouse2Db) {
                     $person_cls = new PersonCls($spouse2Db);
-                    $privacy = $person_cls->privacy;
+                    $privacy = $person_cls->get_privacy();
                     $name = $person_cls->person_name($spouse2Db);
                 }
                 if (!$privacy) {
@@ -258,7 +258,7 @@ class TimelineModel
                         }
 
                         $person2_cls = new PersonCls($chldDb);
-                        $privacy = $person2_cls->privacy;
+                        $privacy = $person2_cls->get_privacy();
                         $name = $person2_cls->person_name($chldDb);
 
                         if (!$privacy) {
@@ -311,7 +311,7 @@ class TimelineModel
                                 $chspouse = $chldDb->pers_gedcomnumber == $chfamilyDb->fam_man ? $chfamilyDb->fam_woman : $chfamilyDb->fam_man;
                                 $chspouse2Db = $db_functions->get_person($chspouse);
                                 $person_cls = new PersonCls($chspouse2Db);
-                                $privacy = $person_cls->privacy;
+                                $privacy = $person_cls->get_privacy();
                                 $name = $person_cls->person_name($chspouse2Db);
                                 if (!$privacy) {
                                     if ($chfamilyDb->fam_marr_date) {
@@ -359,7 +359,7 @@ class TimelineModel
                                     for ($g = 0; $g < $count_grchildren; $g++) {
                                         $grchldDb = $db_functions->get_person($data["grchildren"][$i][$m][$p][$g]);
                                         $person3_cls = new PersonCls($grchldDb);
-                                        $privacy = $person3_cls->privacy;
+                                        $privacy = $person3_cls->get_privacy();
                                         $name = $person3_cls->person_name($grchldDb);
                                         if (!$privacy) {
                                             $data["grchbornyear"][$i][$m][$p][$g] = '';

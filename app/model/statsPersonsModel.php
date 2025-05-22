@@ -1,7 +1,7 @@
 <?php
 class StatsPersonsModel
 {
-    public function get_data($dbh, $db_functions, $tree_id)
+    public function get_data($dbh, $db_functions, $tree_id): array
     {
         $statistics['countman'] = 0;
         $statistics['countwoman'] = 0;
@@ -366,10 +366,10 @@ class StatsPersonsModel
         return $year . $month . $day;
     }
 
-    private function get_person($row, $date = 'EMPTY')
+    private function get_person($row, $date = 'EMPTY'): array
     {
         $person_cls = new PersonCls($row);
-        $privacy = $person_cls->privacy;
+        $privacy = $person_cls->get_privacy();
         if (!$privacy) {
             $person['date'] = '';
             if ($date != 'EMPTY') {

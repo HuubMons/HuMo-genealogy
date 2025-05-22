@@ -1,23 +1,22 @@
 <?php
 class CmsPagesController
 {
-    private $dbh, $user;
+    private $config;
 
-    public function __construct($dbh, $user)
+    public function __construct($config)
     {
-        $this->dbh = $dbh;
-        $this->user = $user;
+        $this->config = $config;
     }
 
-    public function list()
+    public function list(): array
     {
-        $CMS_pagesModel = new CmsPagesModel($this->dbh);
+        $CMS_pagesModel = new CmsPagesModel($this->config);
 
-        $authorised = $CMS_pagesModel->getCMS_pagesAuthorised($this->user);
-        $pages = $CMS_pagesModel->getPages($this->dbh);
-        $menu = $CMS_pagesModel->getMenu($this->dbh);
-        $pages_menu = $CMS_pagesModel->getPages_menu($this->dbh);
-        $page = $CMS_pagesModel->getPage($this->dbh);
+        $authorised = $CMS_pagesModel->getCMS_pagesAuthorised();
+        $pages = $CMS_pagesModel->getPages();
+        $menu = $CMS_pagesModel->getMenu();
+        $pages_menu = $CMS_pagesModel->getPages_menu();
+        $page = $CMS_pagesModel->getPage();
         return array(
             "authorised" => $authorised,
             "pages" => $pages,

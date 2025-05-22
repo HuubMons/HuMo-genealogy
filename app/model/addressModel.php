@@ -1,38 +1,18 @@
 <?php
-class AddressModel
+class AddressModel extends BaseModel
 {
-    private $db_functions;
-
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-
-    public function getAddressAuthorised($user)
+    public function getAddressAuthorised(): string
     {
         $authorised = '';
-        if ($user['group_addresses'] != 'j') {
+        if ($this->user['group_addresses'] != 'j') {
             $authorised = __('You are not authorised to see this page.');
         }
         return $authorised;
     }
 
-    /*
-    public function getId()
-    {
-        return $this->id;
-    }
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-    */
-
-    public function getById($id)
+    public function getById($id): object
     {
         $addressDb = $this->db_functions->get_address($id);
-
-        //$this->Connection = null;
         return $addressDb;
     }
 
@@ -40,20 +20,18 @@ class AddressModel
     {
         // *** Show source by addresss ***
         $source_array = show_sources2("address", "address_source", $id);
-        //$this->Connection = null;
         if ($source_array) {
             return $source_array['text'];
         }
         return null;
     }
 
-    public function getAddressConnectedPersons($id)
+    public function getAddressConnectedPersons($id): string
     {
         $text = '';
         $person_cls = new PersonCls;
         // *** Search address in connections table ***
-        //$event_qry = $db_functions->get_connections('person_address', $_GET['gedcomnumber']);
-        $event_qry = $this->db_functions->get_connections('person_address', $_GET['id']);
+        $event_qry = $this->db_functions->get_connections('person_address', $id);
         foreach ($event_qry as $eventDb) {
             // *** Person address ***
             if ($eventDb->connect_connect_id) {
@@ -71,8 +49,6 @@ class AddressModel
             }
         }
         unset($event_qry);
-
-        //$this->Connection = null;
         return $text;
     }
 }

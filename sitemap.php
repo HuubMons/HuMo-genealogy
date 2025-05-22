@@ -52,7 +52,7 @@ $filenumber = 0;
 // *** Family trees ***
 $datasql = $db_functions->get_trees();
 foreach ($datasql as $dataDb) {
-    // *** Check is family tree is shown or hidden for user group ***
+    // *** Check if family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
         // *** Get all family pages ***
@@ -60,7 +60,7 @@ foreach ($datasql as $dataDb) {
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             //$person_cls = new PersonCls($personDb);
-            //$privacy=$person_cls->privacy;
+            //$privacy=$person_cls->get_privacy;
 
             // *** Completely filter person ***
             //if ($user["group_pers_hide_totally_act"]=='j'
@@ -108,7 +108,7 @@ foreach ($datasql as $dataDb) {
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Use class for privacy filter ***
             //$person_cls = new PersonCls($personDb);
-            //$privacy=$person_cls->privacy;
+            //$privacy=$person_cls->get_privacy;
 
             // *** Completely filter person ***
             if (

@@ -997,7 +997,7 @@ function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
 }
 
 // *** Show link to sources (mar. 2024 version 3) ***
-function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id)
+function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id): void
 {
     // TODO improve this unique_id.
     $unique_id = $connect_kind . $connect_sub_kind . $connect_connect_id;
@@ -1041,7 +1041,7 @@ function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id)
 }
 
 // *** Person edit lines (in use for adding person/ parents/ children) ***
-function edit_firstname($name, $value)
+function edit_firstname($name, $value): void
 {
 ?>
     <div class="row mb-2">
@@ -1051,7 +1051,7 @@ function edit_firstname($name, $value)
 <?php
 }
 
-function edit_prefix($name, $value)
+function edit_prefix($name, $value): void
 {
 ?>
     <div class="row mb-2">
@@ -1064,7 +1064,7 @@ function edit_prefix($name, $value)
 <?php
 }
 
-function edit_lastname($name, $value)
+function edit_lastname($name, $value): void
 {
 ?>
     <div class="row mb-2">
@@ -1076,7 +1076,7 @@ function edit_lastname($name, $value)
 <?php
 }
 
-function edit_patronymic($name, $value)
+function edit_patronymic($name, $value): void
 {
 ?>
     <div class="row mb-2">
@@ -1088,7 +1088,7 @@ function edit_patronymic($name, $value)
 <?php
 }
 
-function edit_event_name($name_select, $name_text, $value)
+function edit_event_name($name_select, $name_text, $value): void
 {
 ?>
     <div class="row mb-2">
@@ -1105,7 +1105,7 @@ function edit_event_name($name_select, $name_text, $value)
 <?php
 }
 
-function edit_privacyfilter($name, $value)
+function edit_privacyfilter($name, $value): void
 {
 ?>
     <div class="row mb-2">
@@ -1121,7 +1121,7 @@ function edit_privacyfilter($name, $value)
 <?php
 }
 
-function edit_sexe($name, $checked)
+function edit_sexe($name, $checked): void
 {
 ?>
     <div class="row mb-2">
@@ -1140,7 +1140,7 @@ function edit_sexe($name, $checked)
 <?php
 }
 
-function edit_profession($name, $value)
+function edit_profession($name, $value): void
 {
 ?>
     <div class="row mb-2">

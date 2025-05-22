@@ -8,19 +8,19 @@
 
 class PersonCls
 {
-    public $personDb = null;  // Database record
-    public $privacy = false;  // Person privacy
+    private $personDb = null;  // Database record.
+    private bool $privacy = false;  // Person privacy
 
     public function __construct($personDb = null)
     {
-        $this->personDb = $personDb;    // Database record        
+        $this->personDb = $personDb;    // Database record
         $this->privacy = $this->set_privacy($personDb); // Set privacy
     }
 
     // ***************************************************
     // *** Privacy person                              ***
     // ***************************************************
-    public function set_privacy($personDb)
+    public function set_privacy($personDb): bool
     {
         global $user, $dataDb;
         $privacy_person = false;  // *** Standard: show all persons ***
@@ -172,13 +172,19 @@ class PersonCls
         return $privacy_person;
     }
 
+    // *** Added may 2025 ***
+    public function get_privacy(): bool
+    {
+        return $this->privacy;
+    }
+
     /*	*** Get person url ***
     *	16-07-2021: Removed variable: pers_indexnr.
     *	29-02-2020: URL construction in person_cls
     *	*** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
     *	$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
     */
-    public function person_url2($pers_tree_id, $pers_famc, $pers_fams, $pers_gedcomnumber = '')
+    public function person_url2($pers_tree_id, $pers_famc, $pers_fams, $pers_gedcomnumber = ''): string
     {
         global $humo_option, $uri_path, $link_cls;
 
@@ -199,7 +205,7 @@ class PersonCls
     }
 
     // *** Show nicknames (shown as "Nickname") ***
-    function get_nickname($db_functions, $pers_gedcomnumber)
+    function get_nickname($db_functions, $pers_gedcomnumber): string
     {
         $nickname = '';
         $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'name');
@@ -215,7 +221,7 @@ class PersonCls
     }
 
     // *** Aldfaer: nobility (predikaat) by name ***
-    function get_nobility($db_functions, $pers_gedcomnumber, $show_name_texts)
+    function get_nobility($db_functions, $pers_gedcomnumber, $show_name_texts): string
     {
         $nobility = '';
         $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'nobility');
@@ -233,7 +239,7 @@ class PersonCls
     }
 
     // *** Aldfaer: lordship (heerlijkheid) after name ***
-    function get_lordship($db_functions, $pers_gedcomnumber, $show_name_texts)
+    function get_lordship($db_functions, $pers_gedcomnumber, $show_name_texts): string
     {
         $lordship = '';
         $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'lordship');
@@ -251,7 +257,7 @@ class PersonCls
     }
 
     // *** Gedcom 5.5 title: NPFX ***
-    function get_title_before($db_functions, $pers_gedcomnumber, $show_name_texts)
+    function get_title_before($db_functions, $pers_gedcomnumber, $show_name_texts): string
     {
         $title_before = '';
         $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'NPFX');
@@ -269,7 +275,7 @@ class PersonCls
     }
 
     // *** Gedcom 5.5 title: NSFX ***
-    function get_title_after($db_functions, $pers_gedcomnumber, $show_name_texts)
+    function get_title_after($db_functions, $pers_gedcomnumber, $show_name_texts): string
     {
         $title_after = '';
         $name_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'NSFX');
@@ -297,7 +303,7 @@ class PersonCls
     Title AFTER name:
         All other titles.
     */
-    function get_title_aldfaer($db_functions, $pers_gedcomnumber, $show_name_texts)
+    function get_title_aldfaer($db_functions, $pers_gedcomnumber, $show_name_texts): array
     {
         $title['before'] = '';
         $title['between'] = '';
@@ -855,6 +861,7 @@ class PersonCls
         $text_start = '';
         $text = '';
         $popover_content = '';
+        // TODO change $privacy to $this->privacy
         $privacy = $this->privacy;
 
         // *** Show pop-up menu ***
@@ -1199,6 +1206,7 @@ class PersonCls
     // ************************************************************************
     public function name_extended($person_kind, $show_name_texts = false)
     {
+        // TODO check globals
         global $dbh, $db_functions, $humo_option, $uri_path, $user, $language;
         global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
         global $selected_language, $bot_visit;
@@ -1215,6 +1223,7 @@ class PersonCls
         $child_marriage = '';
 
         $personDb = $this->personDb;
+        // TODO change $privacy to $this->privacy
         $privacy = $this->privacy;
         if (!$personDb) {
             // *** Show unknown person N.N. ***
@@ -1651,37 +1660,37 @@ class PersonCls
 
 
     /*
-//TEST
-//$process_text.=$this->html_display($templ_person);
+    //TEST
+    //$process_text.=$this->html_display($templ_person);
 
 
-//TEST to show HTML:
-public function html_display($templ_person){
-    global $pdf;
-    $text='';
-    if (isset($templ_person)){
-$own_code=0;
-        foreach ($templ_person as $key => $value) {
-//			$own_code=0;
+    //TEST to show HTML:
+    public function html_display($templ_person){
+        global $pdf;
+        $text='';
+        if (isset($templ_person)){
+    $own_code=0;
+            foreach ($templ_person as $key => $value) {
+    //          $own_code=0;
 
-            if(strpos($key,"own_code_start")!==false) continue;
-            if(!$own_code AND strpos($key,"own_code")!==false) {
-                $text='<b>'.$templ_person["own_code_start"].'</b>';
-                $own_code=1;
+                if(strpos($key,"own_code_start")!==false) continue;
+                if(!$own_code AND strpos($key,"own_code")!==false) {
+                    $text='<b>'.$templ_person["own_code_start"].'</b>';
+                    $own_code=1;
+                }
+
+                // for now, only process own_code
+                if(strpos($key,"own_code")!==false) {
+                    if(strpos($key,"text")!==false) {  $text.='<b>'; }
+                    $text.=$key;
+                    if(strpos($key,"text")!==false) {  $text.='</b>'; }
+                }
+
             }
-
-            // for now, only process own_code
-            if(strpos($key,"own_code")!==false) {
-                if(strpos($key,"text")!==false) {  $text.='<b>'; }
-                $text.=$key;
-                if(strpos($key,"text")!==false) {  $text.='</b>'; }
-            }
-
         }
+        return $text;
     }
-    return $text;
-}
-*/
+    */
 
 
 
@@ -1694,6 +1703,7 @@ $own_code=0;
     // ***************************************************************************************
     public function person_data($person_kind, $id)
     {
+        // TODO check globals
         global $dbh, $db_functions, $tree_id, $dataDb, $user, $language, $humo_option, $family_id, $uri_path;
         global $swap_parent1_parent2;
         global $childnr, $screen_mode, $dirmark1, $dirmark2;
@@ -1703,6 +1713,7 @@ $own_code=0;
         global $data;
 
         $personDb = $this->personDb;
+        // TODO change $privacy to $this->privacy
         $privacy = $this->privacy;
 
         // *** Settings for mobile version, show details in multiple lines ***

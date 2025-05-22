@@ -311,8 +311,8 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                 $buffer .= '2 NOTE ' . process_text(3, $person->pers_name_text);
             }
 
-            // *** Export all name items, like 2 _AKAN etc. ***
             foreach ($person_events as $person_event) {
+                // *** Export all name items, like 2 _AKAN etc. ***
                 if ($person_event['event_kind'] == 'name' or $person_event['event_kind'] == 'NPFX' or $person_event['event_kind'] == 'NSFX') {
                     $eventgedcom = $person_event['event_gedcom'];
                     // *** 2 _RUFNAME is only used in BK, HuMo-genealogy uses 2 _RUFN ***
@@ -330,11 +330,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                         $buffer .= '3 NOTE ' . process_text(4, $person_event['event_text']);
                     }
                 }
-            }
 
-            // *** Export of person titles ***
-            // 1 TITL Ir.
-            foreach ($person_events as $person_event) {
+                // *** Export of person titles ***
+                // 1 TITL Ir.
                 if ($person_event['event_kind'] == 'title') {
                     $eventgedcom = $person_event['event_gedcom'];
                     $buffer .= '1 TITL ' . $person_event['event_event'] . "\r\n";
@@ -351,14 +349,15 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
             }
         }
 
-        // TODO check event ADOP (to be removed?).
-        // *** Adoption ***
-        // 1 ADOP
-        // 2 DATE 15 MAR 2025
-        // 2 FAMC @F2@
+
         foreach ($person_events as $person_event) {
+            // TODO check event ADOP (to be removed?).
+            // *** Adoption ***
+            // 1 ADOP
+            // 2 DATE 15 MAR 2025
+            // 2 FAMC @F2@
             if ($person_event['event_kind'] == 'adoption') {
-                $buffer .= '1 ADOP'."\r\n";
+                $buffer .= '1 ADOP' . "\r\n";
                 if ($person_event['event_event']) {
                     $buffer .= '2 FAMC @' . $person_event['event_event'] . '@' . "\r\n";
                 }
@@ -372,8 +371,25 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
                     $buffer .= '2 NOTE ' . process_text(4, $person_event['event_text']);
                 }
             }
+
+            // *** Nobility (used by Aldfaer & HuMo-genealogy program) added may 2025. Use event tag, there is no tag nobility in GEDCOM 7. ***
+            // 1 EVEN Predikaat naam
+            // 2 TYPE predikaat
+            if ($person_event['event_kind'] == 'nobility') {
+                $buffer .= '1 EVEN ' . $person_event['event_event'] . "\r\n";
+                $buffer .= '2 TYPE predikaat' . "\r\n";
+                if ($person_event['event_date']) {
+                    $buffer .= '2 DATE ' . process_date($gedcom_version, $person_event['event_date']) . "\r\n";
+                }
+                if ($gedcom_sources == 'yes') {
+                    sources_export('person', 'pers_event_source', $person_event['event_id'], 2);
+                }
+                if ($gedcom_texts == 'yes' && $person_event['event_text']) {
+                    $buffer .= '2 NOTE ' . process_text(4, $person_event['event_text']);
+                }
+            }
         }
- 
+
         // TODO (see also GEDCOM 7 specification):
         // event_kind = adoption_by_person
         // *** Aldfaer adopted/ steph/ legal/ foster childs ***
@@ -385,11 +401,6 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
         // 2 PEDI birth     is in use in Aldfaer 8.
         // 3 PHRASE
         // 2 NOTE
-
-        // TODO (check GEDCOM 7 specification):
-        // event_kind = nobility
-        // 1 EVEN Jhr.
-        // 2 TYPE predikaat
 
         // TODO (GEDCOM 7 specification: there is 1 PROP):
         // event_kind = lordship
@@ -406,8 +417,9 @@ if (isset($tree_id) && isset($_POST['submit_button'])) {
 
         // *** Sex ***
         $buffer .= '1 SEX ' . $person->pers_sexe . "\r\n";
-        // TODO source
-
+        if ($gedcom_sources == 'yes') {
+            sources_export('person', 'pers_sexe_source', $person->pers_gedcomnumber, 2);
+        }
 
         // *** Birth data ***
         // TODO: if there are only witnesses, the witnesses are missing in export. But normally there should be a date or place?

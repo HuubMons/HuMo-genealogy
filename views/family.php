@@ -475,14 +475,16 @@ else {
                 $parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
                 $parent1_cls = new PersonCls($parent1Db);
+                $parent1_privacy = $parent1_cls->get_privacy();
 
                 $parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
                 $parent2_cls = new PersonCls($parent2Db);
+                $parent2_privacy = $parent2_cls->get_privacy();
 
                 // *** Proces marriage using a class ***
-                $marriage_cls = new MarriageCls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
-                $family_privacy = $marriage_cls->privacy;
+                $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
+                $family_privacy = $marriage_cls->get_privacy();
 
 
                 // *******************************************************************
@@ -811,7 +813,7 @@ else {
 
 
                     // BIRTH man
-                    if (!$parent1_cls->privacy) {
+                    if (!$parent1_privacy) {
                         $location_var = $parent1Db->pers_birth_place;
                         if ($location_var != '') {
                             $short = __('BORN_SHORT');
@@ -835,7 +837,7 @@ else {
                     }
 
                     // BIRTH woman
-                    if ($parent2Db && !$parent2_cls->privacy) {
+                    if ($parent2Db && !$parent2_privacy) {
                         $location_var = $parent2Db->pers_birth_place;
                         if ($location_var != '') {
                             $short = __('BORN_SHORT');
@@ -863,7 +865,7 @@ else {
                     }
 
                     // DEATH man
-                    if ($parent1Db && !$parent1_cls->privacy) {
+                    if ($parent1Db && !$parent1_privacy) {
                         $location_var = $parent1Db->pers_death_place;
                         $short = __('DIED_SHORT');
                         if ($location_var == '') {
@@ -893,7 +895,7 @@ else {
                     }
 
                     // DEATH woman
-                    if ($parent2Db && !$parent2_cls->privacy) {
+                    if ($parent2Db && !$parent2_privacy) {
                         $location_var = $parent2Db->pers_death_place;
                         $short = __('DIED_SHORT');
                         if ($location_var == '') {
@@ -936,7 +938,7 @@ else {
                             $name = $parent2_cls->person_name($parent2Db);
                             $google_name .= ' & ' . $name["standard_name"];
 
-                            if (!$parent1_cls->privacy && !$parent2_cls->privacy) {
+                            if (!$parent1_privacy && !$parent2_privacy) {
                                 $key = array_search($familyDb->fam_marr_place, $location_array);
                                 if (isset($key) && $key > 0) {
                                     $text_array[$key] .= $newline . addslashes($google_name . ", " . __('married') . ' ' . $familyDb->fam_marr_place);
@@ -957,7 +959,8 @@ else {
                         if ($childDb !== false) {  // no error in query
                             // *** Use person class ***
                             $person_cls = new PersonCls($childDb);
-                            if (!$person_cls->privacy) {
+                            $child_privacy = $person_cls->get_privacy();
+                            if (!$child_privacy) {
 
                                 // *** Child birth ***
                                 $location_var = $childDb->pers_birth_place;

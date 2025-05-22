@@ -877,7 +877,7 @@ $menu_top = getActiveTopMenu($page);
                 <a href="<?= $menu_path_help; ?>"><?= __('Help'); ?></a>
 
                 <?php if (!$bot_visit) { ?>
-                    | <a href="<?= $menu_path_cookies; ?>"><?php echo ucfirst(str_replace('%s ', '', __('%s cookie information'))); ?></a>
+                    | <a href="<?= $menu_path_cookies; ?>"><?= ucfirst(str_replace('%s ', '', __('%s cookie information'))); ?></a>
                 <?php } ?>
             </div>
         </footer>

@@ -3,10 +3,6 @@
  * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
-// **************************
-// *** Generate indexlist ***
-// **************************
-
 // *** Show number of persons and pages ***
 $item = 0;
 if (isset($_GET['item'])) {
@@ -220,15 +216,17 @@ $selected_place = '';
         $personDb = $db_functions->get_person($familyDb->fam_man);
         // *** Person class used for name and person pop-up data ***
         $man_cls = new PersonCls($personDb);
+        $man_privacy = $man_cls->get_privacy();
 
         // *** Woman privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_woman);
         // *** Person class used for name and person pop-up data ***
         $woman_cls = new PersonCls($personDb);
+        $woman_privacy = $woman_cls->get_privacy();
 
         // *** Proces marriage using a class ***
-        $marriage_cls = new MarriageCls($familyDb, $man_cls->privacy, $woman_cls->privacy);
-        $family_privacy = $marriage_cls->privacy;
+        $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
+        $family_privacy = $marriage_cls->get_privacy();
 
         // *** $family_privacy=true => filter ***
         if ($family_privacy) {
@@ -261,7 +259,7 @@ function show_person($familyDb)
 
     // *** Person class used for name and person pop-up data ***
     $person_cls = new PersonCls($personDb);
-    $privacy = $person_cls->privacy;
+    $privacy = $person_cls->get_privacy();
 
     $name = $person_cls->person_name($personDb);
 
@@ -373,8 +371,8 @@ function show_person($familyDb)
                     if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
 
-                        $partner_cls = new PersonCls;
-                        $privacy2 = $person_cls->privacy;
+                        $partner_cls = new PersonCls($partnerDb);
+                        //$privacy2 = $partner_cls->get_privacy();
                         $name = $partner_cls->person_name($partnerDb);
                     } else {
                         $name["standard_name"] = __('N.N.');

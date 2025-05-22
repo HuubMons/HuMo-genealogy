@@ -44,7 +44,7 @@ if ($humo_option["url_rewrite"] == "j") {
                 <td class="text-nowrap"><?= $data["changed_date"][$i]; ?></td>
                 <td class="text-nowrap"><?= $data["new_date"][$i]; ?></td>
             </tr>
-            <?php $i++;; ?>
+            <?php $i++; ?>
         <?php } ?>
 
     </table>

@@ -7,25 +7,25 @@
 
 class MarriageCls
 {
-    public $cls_marriage_Db = null;  // Database relation record
-    public $privacy = false;  // Relation privacy filter
+    private $cls_marriage_Db = null;  // Database relation record
+    private bool $privacy = false;  // Relation privacy filter
 
-    private $marriage_check = false;
+    private bool $marriage_check = false;
     private $relation_kind = ''; // Living together, non marital, etc.
-    private $relation_check = false; // true = relation/ not married.
+    private bool $relation_check = false; // true = relation/ not married.
     private $addition = ''; // Add (married) "to" in marriage text.
 
     public function __construct($familyDb = null, $privacy_man = null, $privacy_woman = null)
     {
-        $this->cls_marriage_Db = $familyDb; // Database relation record
-        $this->privacy = $this->set_privacy($privacy_man, $privacy_woman); // Set relation privacy
+        $this->cls_marriage_Db = $familyDb;
+        $this->privacy = $this->set_privacy($privacy_man, $privacy_woman);
     }
 
     /**
      * Relation privacy filter
      * If man OR woman privacy filter is set
      */
-    public function set_privacy($privacy_man, $privacy_woman)
+    public function set_privacy($privacy_man, $privacy_woman): bool
     {
         global $user;
         $privacy_marriage = false;
@@ -40,7 +40,12 @@ class MarriageCls
         return $privacy_marriage;
     }
 
-    private function check_relation_type($fam_kind)
+    public function get_privacy(): bool
+    {
+        return $this->privacy;
+    }
+
+    private function check_relation_type($fam_kind): void
     {
         if ($fam_kind == 'living together') {
             $this->relation_check = true;
@@ -92,7 +97,7 @@ class MarriageCls
         }
     }
 
-    private function get_living_together($marriageDb, $user, $presentation, $screen_mode)
+    private function get_living_together($marriageDb, $user, $presentation, $screen_mode): void
     {
         // TODO check globals
         global $temp;
@@ -199,7 +204,7 @@ class MarriageCls
         }
     }
 
-    private function get_married_notice($marriageDb, $humo_option, $user,  $presentation, $screen_mode)
+    private function get_married_notice($marriageDb, $humo_option, $user,  $presentation, $screen_mode): void
     {
         // TODO check globals
         global $temp;
@@ -264,7 +269,7 @@ class MarriageCls
         }
     }
 
-    private function get_marriage($marriageDb, $humo_option, $parent1Db, $user, $presentation, $screen_mode)
+    private function get_marriage($marriageDb, $humo_option, $parent1Db, $user, $presentation, $screen_mode): void
     {
         // TODO check globals
         global $temp;
@@ -402,7 +407,7 @@ class MarriageCls
         }
     }
 
-    private function get_married_church_notice($marriageDb, $humo_option, $user, $presentation, $screen_mode)
+    private function get_married_church_notice($marriageDb, $humo_option, $user, $presentation, $screen_mode): void
     {
         // TODO check globals
         global $temp;
@@ -469,7 +474,7 @@ class MarriageCls
         }
     }
 
-    private function get_married_church($marriageDb, $humo_option, $user, $presentation, $screen_mode)
+    private function get_married_church($marriageDb, $humo_option, $user, $presentation, $screen_mode): void
     {
         // TODO check globals
         global $temp;
@@ -567,7 +572,7 @@ class MarriageCls
         }
     }
 
-    private function get_divorce($marriageDb, $user, $presentation, $screen_mode)
+    private function get_divorce($marriageDb, $user, $presentation, $screen_mode): void
     {
         // TODO check globals
         global $temp;

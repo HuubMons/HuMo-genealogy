@@ -50,14 +50,13 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
     $media_qry = $dbh->query($qry);
     $media_qryDb = $media_qry->fetch(PDO::FETCH_OBJ);
 
-    //default var declaration
     $file_allowed = false;
 
     if ($media_qryDb && $media_qryDb->event_connect_kind === 'person') {
-        // echo 'person';
         $personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
         $man_cls = new PersonCls($personmnDb);
-        if (is_object($man_cls->personDb) && !$man_cls->privacy) {
+        $man_privacy = $man_cls->get_privacy();
+        if ($personmnDb && !$man_privacy) {
             $file_allowed = true;
         } else {
             $file_allowed = false;
@@ -73,9 +72,10 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
 
         $personmnDb3 = $db_functions->get_person($family_qryDb2->fam_woman);
         $woman_cls = new PersonCls($personmnDb3);
+        $woman_privacy = $woman_cls->get_privacy();
 
         // *** Only use this picture if both man and woman have disabled privacy options ***
-        if ($man_cls2->privacy == '' && $woman_cls->privacy == '') {
+        if ($man_privacy == '' && $woman_privacy == '') {
             $file_allowed = true;
         } else {
             $file_allowed = false;

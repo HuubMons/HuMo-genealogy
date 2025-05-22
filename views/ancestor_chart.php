@@ -147,7 +147,7 @@ function ancestor_chart_person($id, $box_appearance)
     if ($data["gedcomnumber"][$id]) {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new PersonCls($personDb);
-        $pers_privacy = $person_cls->privacy;
+        $pers_privacy = $person_cls->get_privacy();
         $name = $person_cls->person_name($personDb);
         $name2 = $name["name"];
         $name2 = $dirmark2 . $name2 . $name["colour_mark"] . $dirmark2;

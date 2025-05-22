@@ -90,7 +90,7 @@ function data_array($id, $width, $height)
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $person_cls = new PersonCls($personDb);
-        $pers_privacy = $person_cls->privacy;
+        $pers_privacy = $person_cls->get_privacy();
         // get length of original name, birth, death strings
         $names = $person_cls->person_name($personDb);
         $name = $names["name"];
@@ -240,14 +240,14 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             if ($data["gedcomnumber"][$m] != '') {
                 $personDb = $db_functions->get_person($data["gedcomnumber"][$m]);
                 $person_cls = new PersonCls($personDb);
-                $pers_privacy = $person_cls->privacy;
+                $pers_privacy = $person_cls->get_privacy();
             } else {
                 $pers_privacy = false;
             }
             if ($data["gedcomnumber"][$m + 1] != '') {
                 $womanDb = $db_functions->get_person($data["gedcomnumber"][$m + 1]);
                 $woman_cls = new PersonCls($womanDb);
-                $woman_privacy = $person_cls->privacy;
+                $woman_privacy = $woman_cls->get_privacy();
             } else {
                 $woman_privacy = false;
             }

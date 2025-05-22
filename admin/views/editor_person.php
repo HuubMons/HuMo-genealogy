@@ -444,55 +444,54 @@
                     </div>
 
                     <?php
-
                     //TEST Ajax script
                     /*
-?>
-<script>
-    $(document).ready(function() {
-        $("#submit_ajax").click(function() {
-            var tree_id='<?= $tree_id;?>';
-            var pers_gedcomnumber='<?= $pers_gedcomnumber;?>';
-            var pers_firstname = $("#pers_firstname").val();
-            var pers_lastname = $("#pers_lastname").val();
-            //if (name == '' || email == '' || contact == '' || gender == '' || msg == '') {
-            //	alert("Insertion Failed Some Fields are Blank....!!");
-            //} else {
-                // Returns successful data submission message when the entered information is stored in database.
-                $.post("include/editor_ajax.php", {
-                    tree_id1: tree_id,
-                    pers_gedcomnumber1: pers_gedcomnumber,
-                    pers_firstname1: pers_firstname,
-                    pers_lastname1: pers_lastname,
-                }, function(data) {
-                    alert(data);
-                    //$('#form_ajax')[0].reset(); // To reset form fields
-                });
-            //}
+                    ?>
+                    <script>
+                        $(document).ready(function() {
+                            $("#submit_ajax").click(function() {
+                                var tree_id='<?= $tree_id;?>';
+                                var pers_gedcomnumber='<?= $pers_gedcomnumber;?>';
+                                var pers_firstname = $("#pers_firstname").val();
+                                var pers_lastname = $("#pers_lastname").val();
+                                //if (name == '' || email == '' || contact == '' || gender == '' || msg == '') {
+                                //	alert("Insertion Failed Some Fields are Blank....!!");
+                                //} else {
+                                    // Returns successful data submission message when the entered information is stored in database.
+                                    $.post("include/editor_ajax.php", {
+                                        tree_id1: tree_id,
+                                        pers_gedcomnumber1: pers_gedcomnumber,
+                                        pers_firstname1: pers_firstname,
+                                        pers_lastname1: pers_lastname,
+                                    }, function(data) {
+                                        alert(data);
+                                        //$('#form_ajax')[0].reset(); // To reset form fields
+                                    });
+                                //}
 
-            // Show name in <div>
-            document.getElementById("ajax_pers_firstname").innerHTML = pers_firstname;
-            document.getElementById("ajax_pers_lastname").innerHTML = pers_lastname;
+                                // Show name in <div>
+                                document.getElementById("ajax_pers_firstname").innerHTML = pers_firstname;
+                                document.getElementById("ajax_pers_lastname").innerHTML = pers_lastname;
 
-            // TEST for hideshow of item.
-            hideShow(1);
-        });
-    });
-</script>
+                                // TEST for hideshow of item.
+                                hideShow(1);
+                            });
+                        });
+                    </script>
 
-<br><br>
-<div id="ajax_pers_fullname"><?= $pers_firstname.' '.$pers_lastname; ?></div>
-<div id="ajax_pers_firstname"><?= $pers_firstname; ?></div>
-<div id="ajax_pers_lastname"><?= $pers_lastname; ?></div>
+                    <br><br>
+                    <div id="ajax_pers_fullname"><?= $pers_firstname.' '.$pers_lastname; ?></div>
+                    <div id="ajax_pers_firstname"><?= $pers_firstname; ?></div>
+                    <div id="ajax_pers_lastname"><?= $pers_lastname; ?></div>
 
-<label>Name:</label>
-<input id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" type="text">
-<label>Name:</label>
-<input id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" type="text">
-<input id="submit_ajax" type="button" value="Submit" class="btn btn-sm btn-success">
-    <?php
-// END TEST SCRIPT
-*/
+                    <label>Name:</label>
+                    <input id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" type="text">
+                    <label>Name:</label>
+                    <input id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" type="text">
+                    <input id="submit_ajax" type="button" value="Submit" class="btn btn-sm btn-success">
+                    <?php
+                    // END TEST SCRIPT
+                    */
 
 
                     // *** Source by name ***
@@ -516,13 +515,31 @@
 
         <?php
         if ($editor['add_person'] == false) {
-            // *** Event name (also show ADD line for prefix, suffix, title etc. ***
+            // *** Event name (also show ADD line for prefix, suffix, title etc.) ***
+            // TODO SEE ALSO: function edit_event_name in editor.php.
+            // *** Nickname, alias, adopted name, hebrew name, etc. ***
+            // *** Remark: in editorModel.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
+        ?>
+            <tr class="table_header_large">
+                <td></td>
+                <td colspan="2">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <select size="1" name="event_gedcom_add" id="event_gedcom_add" class="form-select form-select-sm">
+                                <?php event_selection(''); ?>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="event_event_name" id="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" name="event_add_name" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <?php
             echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'name');
-
-            //TEST if editing is done in table, Ajax could be used.
-            //echo '<tr><td></td><td colspan="2"><table class="humo">';
-            //echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'name');
-            //echo '</table></td></tr>';
 
             // *** NPFX Name prefix like: Lt. Cmndr. ***
             echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'NPFX');
@@ -1250,8 +1267,8 @@
 
                 <input type="hidden" name="death_decl_id" value="<?= $death_decl_id; ?>">
             </td>
-            <td colspan="2">
 
+            <td colspan="2">
                 <?php
                 $hideshow_text = hideshow_date_place($death_decl_date, $death_decl_place);
                 if ($pers_gedcomnumber) {
@@ -1457,9 +1474,7 @@
                     <?php } ?>
                 </td>
             </tr>
-        <?php
-        }
-        ?>
+        <?php } ?>
 
         <!-- Own code -->
         <tr>
@@ -1470,29 +1485,155 @@
                     <div class="col-md-7">
                         <div class="input-group">
                             <input type="text" name="pers_own_code" value="<?= htmlspecialchars($pers_own_code); ?>" class="form-control form-control-sm">
-                            <!-- HELP POPUP for own code -->
-                            &nbsp;&nbsp;
-                            <div class=" <?= $rtlmarker; ?>sddm" style="display:inline;">
-                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu3',100,400)" onmouseout="mclosetime()">
-                                    <img src="../images/help.png" height="16" width="16">
-                                </a>
-                                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                    <b><?= __('Use own code for your own remarks.<br>
-It\'s possible to use own code for special privacy options, see Admin > Users > Groups.<br>
-It\'s also possible to add your own icons by a person! Add the icon in the images folder e.g. \'person.gif\', and add \'person\' in the own code field.'); ?></b><br>
-                                </div>
-                            </div>
+
+                            <!-- Help popover for own code -->
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                data-bs-toggle="popover" data-bs-placement="bottom" data-bs-custom-class="popover-wide" data-bs-html="true"
+                                data-bs-title="<?= ucfirst(__('own code')); ?>"
+                                data-bs-content="
+                                <ul>
+                                    <li>
+                                        <?= __('Use own code for your own remarks.'); ?>
+                                    </li>
+                                    <li>
+                                        <?= __('It\'s possible to use own code for special privacy options, see Admin > Users > Groups.'); ?>
+                                    </li>
+                                    <li>
+                                        <?= __('You can add your own icons by a person! Add the icon in the images folder e.g. \'person.gif\', and add \'person\' in the own code field.'); ?>
+                                        </li>
+                                </ul>
+                                ">
+                                ?
+                            </button>
+
                         </div>
                     </div>
                 </div>
             </td>
         </tr>
+
         <?php
+        // TODO SEE ALSO: function edit_event_profession in editor.php. 
+        ?>
+        <!-- Profession(s) -->
+        <tr class="table_header_large" id="profession">
+            <td style="border-right:0px;">
+                <b><?= __('Profession'); ?></b>
+            </td>
+            <td colspan="2">
+                <?php
+                // *** Skip for newly added person ***
+                // *** Remark: in editorModel.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
+                if (!isset($_GET['add_person'])) {
+                ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="text" name="event_event_profession" value="" size="35" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" name="event_add_profession" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
+                        </div>
+                    </div>
+                <?php } ?>
+            </td>
+        </tr>
 
-        // *** Profession(s) ***
-        echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'profession');
+        <?php if (isset($_GET['add_person'])) { ?>
+            <!-- Directly add a first profession for new person -->
+            <tr>
+                <td style="border-right:0px;"><?= __('Profession'); ?></td>
+                <td colspan="2">
+                    <div class="row mb-2">
+                        <label for="event_profession" class="col-md-3 col-form-label"><?= __('Profession'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_profession" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
 
-        // *** Religion ***
+                    <div class="row mb-2">
+                        <label for="event_date_profession" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show("", "event_date_profession", ""); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_place_profession" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_place_profession" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_text_profession" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" name="event_text_profession" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <?php } ?>
+
+        <?= $EditorEvent->show_event('person', $pers_gedcomnumber, 'profession'); ?>
+
+        <!-- Religion -->
+        <tr class="table_header_large" id="religion">
+            <td style="border-right:0px;"><?= __('Religion'); ?></td>
+            <td colspan="2">
+                <?php
+                // *** Skip for newly added person ***
+                if (!isset($_GET['add_person'])) {
+                    // *** Remark: in editorModel.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
+                ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="text" name="event_event_religion" value="" size="35" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" name="event_add_religion" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
+                        </div>
+                    </div>
+                <?php } ?>
+            </td>
+        </tr>
+
+        <?php if (isset($_GET['add_person'])) { ?>
+            <!-- Directly add a religion for new person -->
+            <tr>
+                <td style="border-right:0px;"><?= __('Religion'); ?></td>
+                <td colspan="2">
+                    <div class="row mb-2">
+                        <label for="event_religion" class="col-md-3 col-form-label"><?= __('Religion'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_religion" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_date_religion" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show("", "event_date_religion", ""); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_place_religion" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_place_religion" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_text_religion" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" name="event_text_religion" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <?php } ?>
+
+        <?php
         echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'religion');
 
         if (!isset($_GET['add_person'])) {
@@ -1504,7 +1645,36 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
         }
 
         if (!isset($_GET['add_person'])) {
-            // *** Person event editor ***
+        ?>
+            <!-- Person events -->
+            <tr class="table_header_large" id="event_person_link">
+                <td><?= __('Events'); ?></td>
+                <td colspan="2">
+                    <div class="row">
+                        <!-- Add person event -->
+                        <div class="col-4">
+                            <select size="1" name="event_kind" class="form-select form-select-sm">
+                                <option value="event"><?= __('Event'); ?></option>
+                                <option value="adoption"><?= __('Adoption'); ?></option>
+                                <option value="URL"><?= __('URL/ Internet link'); ?></option>
+                                <option value="person_colour_mark"><?= __('Colour mark by person'); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="col-3">
+                            <input type="submit" name="person_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-outline-primary">
+
+                            <!-- Help popover for events -->
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide"
+                                data-bs-content="<?= __('For items like:') . ' ' . __('Event') . ', ' . __('baptized as child') . ', ' . __('depart') . ' ' . __('etc.'); ?>">
+                                ?
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <?php
             echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'person');
 
             // *** Picture ***
@@ -1539,7 +1709,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             if (isset($tagDb->tag_tag)) {
                 $tags_array = explode('<br>', $tagDb->tag_tag);
                 $num_rows = count($tags_array);
-        ?>
+            ?>
                 <tr class="humo_tags_pers">
                     <td>
                         <a href="#humo_tags_pers" onclick="hideShow(61);"><span id="hideshowlink61">[+]</span></a>

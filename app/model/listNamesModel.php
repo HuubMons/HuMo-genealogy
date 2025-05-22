@@ -1,15 +1,15 @@
 <?php
-class listNamesModel
+class listNamesModel extends BaseModel
 {
-    public function getAlphabetArray($dbh, $tree_id, $user)
+    public function getAlphabetArray(): array
     {
-        $person_qry = "SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
+        $person_qry = "SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' GROUP BY first_character ORDER BY first_character";
 
         // *** Search pers_prefix for names like: "van Mons" ***
-        if ($user['group_kindindex'] == "j") {
-            $person_qry = "SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY first_character ORDER BY first_character";
+        if ($this->user['group_kindindex'] == "j") {
+            $person_qry = "SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' GROUP BY first_character ORDER BY first_character";
         }
-        $person_result = $dbh->query($person_qry);
+        $person_result = $this->dbh->query($person_qry);
         $alphabet = [];
         while ($personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
             $alphabet[] = $personDb->first_character;
@@ -17,7 +17,7 @@ class listNamesModel
         return $alphabet;
     }
 
-    public function getMaxCols()
+    public function getMaxCols(): int
     {
         $maxcols = 2; // number of name & nr colums in table. For example 3 means 3x name col + nr col
         if (isset($_POST['maxcols']) && is_numeric($_POST['maxcols'])) {
@@ -43,7 +43,7 @@ class listNamesModel
         return $maxnames;
     }
 
-    public function get_last_name($last_name)
+    public function get_last_name($last_name): string
     {
         if (!isset($last_name)) {
             $last_name = 'a'; // *** Default first_character ***
@@ -54,7 +54,7 @@ class listNamesModel
         return $last_name;
     }
 
-    public function get_item()
+    public function get_item(): int
     {
         $item = 0;
         if (isset($_GET['item'])) {
@@ -63,7 +63,7 @@ class listNamesModel
         return $item;
     }
 
-    public function get_start()
+    public function get_start(): int
     {
         $start = 0;
         if (isset($_GET["start"])) {
@@ -72,52 +72,52 @@ class listNamesModel
         return $start;
     }
 
-    public function get_names($dbh, $tree_id, $user, $list_names)
+    public function get_names($list_names): array
     {
         // *** Get names from database ***
         $list_names['number_high'] = 0;
 
         // Mons, van or: van Mons
-        if ($user['group_kindindex'] == "j") {
+        if ($this->user['group_kindindex'] == "j") {
             // *** Order names as: van Mons
             // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
             $personqry = "SELECT pers_prefix, pers_lastname, count(pers_lastname) as count_last_names
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(pers_prefix,pers_lastname) LIKE '" . $list_names["last_name"] . "%'
+                FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND CONCAT(pers_prefix,pers_lastname) LIKE '" . $list_names["last_name"] . "%'
                 GROUP BY pers_prefix, pers_lastname ORDER BY CONCAT(pers_prefix, pers_lastname)";
 
             // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
             $count_qry = "SELECT pers_lastname, pers_prefix
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND CONCAT(pers_prefix,pers_lastname) LIKE '" . $list_names["last_name"] . "%'
+                FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND CONCAT(pers_prefix,pers_lastname) LIKE '" . $list_names["last_name"] . "%'
                 GROUP BY pers_prefix, pers_lastname";
 
             if ($list_names["last_name"] == 'all') {
                 // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
                 $personqry = "SELECT pers_prefix, pers_lastname, count(pers_lastname) as count_last_names
-                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_prefix, pers_lastname ORDER BY CONCAT(pers_prefix, pers_lastname)";
+                    FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' GROUP BY pers_prefix, pers_lastname ORDER BY CONCAT(pers_prefix, pers_lastname)";
 
                 // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-                $count_qry = "SELECT pers_prefix, pers_lastname FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_prefix, pers_lastname";
+                $count_qry = "SELECT pers_prefix, pers_lastname FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' GROUP BY pers_prefix, pers_lastname";
             }
         } else {
             // Order names as: Mons, van
             // *** Select alphabet first_character ***
             // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
             $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname LIKE '" . $list_names["last_name"] . "%'
+                FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_lastname LIKE '" . $list_names["last_name"] . "%'
                 GROUP BY pers_lastname, pers_prefix ORDER BY CONCAT(pers_lastname, pers_prefix)";
 
             // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
             $count_qry = "SELECT pers_lastname, pers_prefix
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_lastname LIKE '" . $list_names["last_name"] . "%'
+                FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_lastname LIKE '" . $list_names["last_name"] . "%'
                 GROUP BY pers_lastname, pers_prefix";
 
             if ($list_names["last_name"] == 'all') {
                 // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
                 $personqry = "SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_lastname, pers_prefix ORDER BY CONCAT(pers_lastname, pers_prefix)";
+                    FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' GROUP BY pers_lastname, pers_prefix ORDER BY CONCAT(pers_lastname, pers_prefix)";
 
                 // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-                $count_qry = "SELECT pers_lastname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_lastname, pers_prefix";
+                $count_qry = "SELECT pers_lastname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' GROUP BY pers_lastname, pers_prefix";
             }
         }
 
@@ -127,13 +127,13 @@ class listNamesModel
         }
 
         //$list_names['show_name'] = [];
-        $person = $dbh->query($personqry);
+        $person = $this->dbh->query($personqry);
         while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
             if ($personDb->pers_lastname == '') {
                 $personDb->pers_lastname = '...';
             }
 
-            if ($user['group_kindindex'] == "j") {
+            if ($this->user['group_kindindex'] == "j") {
                 $show_name = '';
                 if ($personDb->pers_prefix) {
                     $show_name = str_replace("_", " ", $personDb->pers_prefix);
@@ -169,7 +169,7 @@ class listNamesModel
         }
 
         // *** Total number of persons for multiple pages ***
-        $result = $dbh->query($count_qry);
+        $result = $this->dbh->query($count_qry);
         $list_names['count_persons'] = $result->rowCount();
 
         // *** If number of displayed surnames is "ALL" change value into number of surnames ***
@@ -183,7 +183,7 @@ class listNamesModel
         return $list_names;
     }
 
-    function get_pagination($tree_id, $humo_option, $uri_path, $list_names)
+    function get_pagination($uri_path, $list_names): array
     {
         //*** Show number of persons and pages ***
         $list_names['show_pagination'] = false;
@@ -191,8 +191,8 @@ class listNamesModel
         //if ($list_names['person']->rowCount() > 0) {
 
         if ($list_names["person"] > 0) {
-            if ($humo_option["url_rewrite"] == "j") {
-                $uri_path_string = $uri_path . 'list_names/' . $tree_id . '/' . $list_names["last_name"] . '?';
+            if ($this->humo_option["url_rewrite"] == "j") {
+                $uri_path_string = $uri_path . 'list_names/' . $this->tree_id . '/' . $list_names["last_name"] . '?';
             } else {
                 $uri_path_string = 'index.php?page=list_names&amp;last_name=' . $list_names["last_name"] . '&amp;';
             }

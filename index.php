@@ -191,13 +191,17 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 $link_cls = new ProcessLinks($uri_path);
 
 /**
- * General config array.
- * In function: use $this->config['dbh'], $this->config['db_functions'], etc, or use:
- * $dbh = $this->config['dbh'];
- * $db_functions = $this->config['db_functions'];
- * $tree_id = $this->config['tree_id'];
- * $user = $this->config['user'];
- * $humo_option = $this->config['humo_option'];
+ * General config array. May 2025: added baseModel.php.
+ * 
+ * In controller:
+ * private $config;
+ *   public function __construct($config)
+ *   {
+ *       $this->config = $config;
+ *   }
+ *
+ * In model: class listNamesModel extends BaseModel.
+ * Then use: $this->dbh, $this->db_functions, $this->tree_id, $this->user, $this->humo_option.
  */
 $config = array(
     "dbh" => $dbh,
@@ -206,20 +210,17 @@ $config = array(
     "user" => $user,
     "humo_option" => $humo_option
 );
-// *** General config class. Usage: $controllerObj = new AddressController($config); ***
-// *** Allready tested in sourceController.php & photoalbumController.php ***
-//$config = new Config($dbh, $db_functions, $tree_id, $user, $humo_option);
 
 if ($index['page'] == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/show_sources.php");
     include_once(__DIR__ . "/include/showMedia.php");
 
-    $controllerObj = new AddressController($db_functions, $user);
+    $controllerObj = new AddressController($config);
     $data = $controllerObj->detail();
 } elseif ($index['page'] == 'addresses') {
-    $controllerObj = new AddressesController($dbh, $user, $tree_id, $link_cls, $uri_path, $humo_option);
-    $data = $controllerObj->list();
+    $controllerObj = new AddressesController($config);
+    $data = $controllerObj->list($link_cls, $uri_path);
 } elseif ($index['page'] == 'ancestor_report') {
     $controllerObj = new AncestorReportController($dbh);
     $data = $controllerObj->list($tree_id);
@@ -239,7 +240,7 @@ if ($index['page'] == 'address') {
     $controllerObj = new AnniversaryController();
     $data = $controllerObj->anniversary();
 } elseif ($index['page'] == 'cms_pages') {
-    $controllerObj = new CmsPagesController($dbh, $user);
+    $controllerObj = new CmsPagesController($config);
     $data = $controllerObj->list();
 } elseif ($index['page'] == 'cookies') {
     //
@@ -273,8 +274,8 @@ if ($index['page'] == 'address') {
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
-    $controllerObj = new ListController();
-    $list = $controllerObj->list_names($dbh, $tree_id, $user, $humo_option);
+    $controllerObj = new ListController($config);
+    $list = $controllerObj->list_names();
 } elseif ($index['page'] == 'list_places_families') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");

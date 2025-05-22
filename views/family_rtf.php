@@ -227,14 +227,16 @@ else {
                 $parent1Db = $db_functions->get_person($parent1);
                 // *** Proces parent1 using a class ***
                 $parent1_cls = new PersonCls($parent1Db);
+                $parent1_privacy = $parent1_cls->get_privacy();
 
                 $parent2Db = $db_functions->get_person($parent2);
                 // *** Proces parent2 using a class ***
                 $parent2_cls = new PersonCls($parent2Db);
+                $parent2_privacy = $parent2_cls->get_privacy();
 
                 // *** Proces marriage using a class ***
-                $marriage_cls = new MarriageCls($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
-                $family_privacy = $marriage_cls->privacy;
+                $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
+                $family_privacy = $marriage_cls->get_privacy();
 
 
                 // *******************************************************************
@@ -278,7 +280,7 @@ else {
                         $sect->writeText($rtf_text, $arial12, $parSimple);
 
                         // *** Show RTF media ***
-                        if (!$parent1_cls->privacy) {
+                        if (!$parent1_privacy) {
                             show_rtf_media('person', $parent1Db->pers_gedcomnumber);
                         }
                         //$family_nr++;
@@ -346,7 +348,7 @@ else {
                 $sect->writeText($rtf_text, $arial12, $parSimple);
 
                 // *** Show RTF media ***
-                if (!$parent2_cls->privacy) {
+                if (!$parent2_privacy) {
                     show_rtf_media('person', $parent2Db->pers_gedcomnumber);
                 }
 
@@ -410,6 +412,7 @@ else {
                         $childDb = $db_functions->get_person($child_array[$i]);
                         // *** Use person class ***
                         $child_cls = new PersonCls($childDb);
+                        $child_privacy = $child_cls->get_privacy();
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
@@ -451,7 +454,7 @@ else {
                             $rtf_text = strip_tags($child_cls->person_data("child", $id), '<b><i>');
                             $sect->writeText($rtf_text, $arial12, $par_child_text);
                             // *** Show RTF media ***
-                            if (!$child_cls->privacy) {
+                            if (!$child_privacy) {
                                 show_rtf_media('person', $childDb->pers_gedcomnumber);
                             }
                         }

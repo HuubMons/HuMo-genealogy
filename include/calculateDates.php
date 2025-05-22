@@ -372,7 +372,7 @@ class CalculateDates
                             } else {
                                 if ($special_text != -1) {
                                     $calculated_age = $death_year - $birth_year;
-                                    $age = $special_text . $calculated_age . " " . __('years');;
+                                    $age = $special_text . $calculated_age . " " . __('years');
                                 }
                             }
                         }
@@ -498,7 +498,7 @@ class CalculateDates
                             } else {
                                 if ($special_text != -1) {
                                     $calculated_age = $end_year - $start_year;
-                                    $age = $special_text . $calculated_age . " " . __('years');;
+                                    $age = $special_text . $calculated_age . " " . __('years');
                                 }
                             }
                         }

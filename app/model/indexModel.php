@@ -13,7 +13,7 @@ class IndexModel
         return $this->page301;
     }
 
-    public function login($dbh, $db_functions, $visitor_ip)
+    public function login($dbh, $db_functions, $visitor_ip): array
     {
         // *** Log in ***
         $valid_user = false;
@@ -101,7 +101,7 @@ class IndexModel
         return $index;
     }
 
-    public function get_model_route($humo_option)
+    public function get_model_route($humo_option): array
     {
         // *** New routing script sept. 2023. Search route, return match or not found ***
         $index['page'] = 'index';
@@ -154,7 +154,7 @@ class IndexModel
         return $index;
     }
 
-    public function process_ltr_rtl($language)
+    public function process_ltr_rtl($language): array
     {
         // *** Process LTR and RTL variables ***
         $index['dirmark1'] = "&#x200E;";  //ltr marker
@@ -178,7 +178,7 @@ class IndexModel
         return $index;
     }
 
-    public function get_family_tree($dbh, $db_functions, $user)
+    public function get_family_tree($dbh, $db_functions, $user): array
     {
         $check_tree_id = 0; // *** Check new selected tree_id ***
         if (isset($_SESSION['tree_id']) && $_SESSION['tree_id']) {

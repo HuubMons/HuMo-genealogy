@@ -12,7 +12,7 @@ class GedcomCls
     private $nraddress2, $address_order, $address_array;
     private $connect_nr, $connect;
 
-    private $event_nr, $event;
+    private $event_nr, $event, $event_status;
     private $event_nr1, $event_nr2; // $event_nr1 = for 1st event level, $event_nr2 = for 2nd event level.
 
     private $calculated_event_id;
@@ -43,6 +43,7 @@ class GedcomCls
         $dbh->query("INSERT INTO humo_events SET event_tree_id='" . $tree_id . "'");
         $this->calculated_event_id = $dbh->lastInsertId();
         $dbh->query("DELETE FROM humo_events WHERE event_id='" . $this->calculated_event_id . "'");
+        // TODO: try query "SELECT LAST_INSERT_ID()"
 
         $dbh->query("INSERT INTO humo_connections SET connect_tree_id='" . $tree_id . "'");
         $this->calculated_connect_id = $dbh->lastInsertId();
@@ -122,7 +123,7 @@ class GedcomCls
         //  $pers_alive='deceased';
         //}
 
-        $event_status = false;
+        $this->event_status = false;
 
         $surname_processed = false;
 
@@ -189,12 +190,7 @@ class GedcomCls
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            // TODO: use function to create buffer.
-            $this->buffer[1] = $this->buffer[0][0]; // *** first character ***
-            $this->buffer[5] = substr($this->buffer[0], 0, 5);
-            $this->buffer[6] = substr($this->buffer[0], 0, 6);
-            $this->buffer[7] = substr($this->buffer[0], 0, 7);
-            $this->buffer[8] = substr($this->buffer[0], 0, 8);
+            $this->set_buffer();
 
             //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
@@ -207,7 +203,7 @@ class GedcomCls
                 }
 
                 $this->level['1a'] = rtrim($this->buffer[0]);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
-                $event_status = false;
+                $this->event_status = false;
                 $event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
@@ -1938,260 +1934,6 @@ class GedcomCls
                 $this->level[1] = '_NMAR';
             }
 
-
-
-            // TODO: build function to save events in database (also for family events).
-            /*
-            if ($this->buffer[6] === '1 ADOP') {
-                // *** Adoption ***
-                // 1 ADOP
-                // 2 DATE 15 MAR 2025
-                // 2 FAMC @F2@
-                $event_temp = check_event(7);
-            }
-            elseif ($this->buffer[7] === '1 _ADPF') {
-                // Adopted by father
-                $event_temp = check_event(8);
-            }
-            elseif ($this->buffer[7] === '1 _ADPM') {
-                // Adopted by mother
-                $event_temp = check_event(8);
-            }
-            elseif ($this->buffer[6] === '1 BAPL') {
-                // LDS baptised
-                $event_temp = check_event(7);
-            }
-            elseif ($this->buffer[6] === '1 BARM') {
-                $event_temp = check_event(7);
-            }
-            elseif ($this->buffer[6] === '1 BASM') {
-                $event_temp = check_event(7);
-            }
-
-            function check_event($length){
-                $this->processed = true;
-                $event_status = true;
-                $event_temp = '';
-                if (substr($this->buffer[0], $length)) {
-                    $event_temp = substr($this->buffer[0], $length);
-                }
-                return $event_temp;
-            }
-            */
-
-
-
-            // ALL ITEMS: process text by item, like: if (substr($this->buffer[0], 7)) $event_temp=substr($this->buffer[0], 7);
-            if ($this->buffer[6] === '1 ADOP') {
-                // *** Adoption ***
-                // 1 ADOP
-                // 2 DATE 15 MAR 2025
-                // 2 FAMC @F2@
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[7] === '1 _ADPF') {
-                // Adopted by father
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _ADPM') {
-                // Adopted by mother
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[6] === '1 BAPL') {
-                // LDS baptised
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 BARM') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 BASM') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 BLES') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 CENS') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 CHRA') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 CONF') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 CONL') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 EMIG') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 ENDL') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 FCOM') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[7] === '1 _FNRL') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[6] === '1 GRAD') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 IMMI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 NATU') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 ORDN') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 PROB') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 RETI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 SLGC') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 WILL') { // Will
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[7] === '1 _YART') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _INTE') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _BRTM') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _NLIV') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _NMAR') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[6] === '1 NCHI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
             // BK
             //1 _MILT militaire dienst  Location: Amsterdam
             //2 DATE 3 APR 1996
@@ -2203,194 +1945,137 @@ class GedcomCls
                 $this->buffer[6] = '1 MILI';
                 $this->level[1] = 'MILI';
             }
-            if ($this->buffer[6] === '1 MILI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            // RELI Religion
-            if ($this->buffer[6] === '1 EDUC') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 NATI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 CAST') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            // REFN Ref. nr. (own code)
-            if ($this->buffer[5] === '1 AFN') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 6)) {
-                    $event_temp = substr($this->buffer[0], 6);
-                }
-            }
-            if ($this->buffer[5] === '1 SSN') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 6)) {
-                    $event_temp = substr($this->buffer[0], 6);
-                }
-            }
-            if ($this->buffer[7] === '1 _PRMN') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[6] === '1 IDNO') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[7] === '1 _HEIG') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _WEIG') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _EYEC') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[7] === '1 _HAIR') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[6] === '1 DSCR') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[7] === '1 _MEDC') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 8)) {
-                    $event_temp = substr($this->buffer[0], 8);
-                }
-            }
-            if ($this->buffer[6] === '1 NCHI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 ANCI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 DESI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 PROP') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
 
-            // *** Other events (no BK?) ***
-            if ($this->buffer[6] === '1 ARVL') { // arrived
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 BAPM') { // baptised as child
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 DIVF') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 DPRT') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-
-            if ($this->buffer[6] === '1 LEGI') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 SLGL') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-            if ($this->buffer[6] === '1 TXPY') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
-            }
-
-            // *** Aldfaer, title by name: 1 TITL Ir. ***
-            if ($this->buffer[6] === '1 TITL') {
-                $this->processed = true;
-                $event_status = true;
-                if (substr($this->buffer[0], 7)) {
-                    $event_temp = substr($this->buffer[0], 7);
-                }
+            // *** Check for event ***
+            if ($this->buffer[6] === '1 ADOP') {
+                // *** Adoption ***
+                // 1 ADOP
+                // 2 DATE 15 MAR 2025
+                // 2 FAMC @F2@
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[7] === '1 _ADPF') {
+                // Adopted by father
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _ADPM') {
+                // Adopted by mother
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 BAPL') {
+                // LDS baptised
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BARM') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BASM') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BLES') {
+                // LDS blessed
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CENS') {
+                // Census
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CHRA') {
+                // LDS christened
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CONF') {
+                // LDS confirmed
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CONL') {
+                // LDS confirmation
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 EMIG') {
+                // Emigration
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 ENDL') {
+                // LDS endowment
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 FCOM') {
+                // LDS first communion
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[7] === '1 _FNRL') {
+                // LDS funeral
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 GRAD') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 IMMI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 NATU') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 ORDN') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 PROB') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 RETI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 SLGC') {
+                // LDS sealing to spouse
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 WILL') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[7] === '1 _YART') {
+                // Yahrzeit
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _INTE') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _BRTM') {
+                // Brit Milah
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _NLIV') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _NMAR') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 NCHI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 MILI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 EDUC') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 NATI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CAST') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 AFN') {
+                $event_temp = $this->check_event(6);
+            } elseif ($this->buffer[6] === '1 SSN') {
+                $event_temp = $this->check_event(6);
+            } elseif ($this->buffer[6] === '1 _PRMN') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 IDNO') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 _HEIG') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 _WEIG') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 _EYEC') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 _HAIR') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 DSCR') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 _MEDC') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 ANCI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 DESI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 PROP') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 ARVL') {
+                // Arrived
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BAPM') {
+                // Baptised as child
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 DIVF') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 DPRT') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 LEGI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 SLGL') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 TXPY') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 TITL') {
+                $event_temp = $this->check_event(7);
             }
 
             // *** Aldfaer ***
@@ -2419,7 +2104,7 @@ class GedcomCls
                     if (substr($this->buffer[0], 7)) {
                         $event_temp = substr($this->buffer[0], 7);
                         $this->processed = true;
-                        $event_status = true;
+                        $this->event_status = true;
                     }
                 }
 
@@ -2429,7 +2114,7 @@ class GedcomCls
                 if (substr($this->buffer[0], 0, 13) === '2 TYPE living') {
                     $this->processed = true;
                     $pers_alive = 'alive';
-                    $event_status = false;
+                    $this->event_status = false;
                     $this->level[1] = '';
                 }
 
@@ -2439,7 +2124,7 @@ class GedcomCls
                 if (substr($this->buffer[0], 0, 15) === '2 TYPE deceased') {
                     $this->processed = true;
                     $pers_alive = 'deceased';
-                    $event_status = false;
+                    $this->event_status = false;
                     $this->level[1] = '';
                 }
 
@@ -2454,7 +2139,7 @@ class GedcomCls
                 }
             }
 
-            if ($event_status) {
+            if ($this->event_status) {
                 if ($event_start) {
                     $event_start = '';
                     $this->event_nr++;
@@ -2630,7 +2315,7 @@ class GedcomCls
             // Process here because of: 2 TYPE living
             if ($this->buffer[0] == '1 EVEN') {
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
 
             //*** Person source ***
@@ -3107,7 +2792,7 @@ class GedcomCls
         $fam_man = 0;
         $fam_woman = 0;
 
-        $event_status = false;
+        $this->event_status = false;
         $this->event_nr = 0;
 
         // *** Save addresses in a seperate table ***
@@ -3160,11 +2845,7 @@ class GedcomCls
             $this->buffer[0] = $line2[$z];
             $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  //newline strippen
 
-            $this->buffer[1] = $this->buffer[0][0]; // *** first character ***
-            $this->buffer[5] = substr($this->buffer[0], 0, 5);
-            $this->buffer[6] = substr($this->buffer[0], 0, 6);
-            $this->buffer[7] = substr($this->buffer[0], 0, 7);
-            $this->buffer[8] = substr($this->buffer[0], 0, 8);
+            $this->set_buffer();
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
@@ -3178,7 +2859,7 @@ class GedcomCls
                 $this->level[1] = rtrim(substr($this->buffer[0], 2, 5));  //rtrim for DIV_/ CHR_
                 $this->level['1a'] = rtrim($this->buffer[0]);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
 
-                $event_status = false;
+                $this->event_status = false;
                 $event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
@@ -4005,19 +3686,22 @@ class GedcomCls
             //2 PLAC Alkmaar
             //2 NOTE gebeurtenis
 
+            // TODO use function check_event.
+            //$event_temp = check_event(7);
+
             if ($this->buffer[7] == '1 _MBON') {
                 if (substr($this->buffer[0], 8)) {
                     $event_temp = substr($this->buffer[0], 8);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 MARC') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             // *** Aldfaer: MARL = marriage license! ***
             if ($this->buffer[6] == '1 MARL' and $gen_program != 'ALDFAER') {
@@ -4025,49 +3709,49 @@ class GedcomCls
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 MARS') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 DIVF') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 ANUL') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 ENGA') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 SLGS') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 CENS') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             // *** Code _NMR is twice in this file ***
             if ($this->buffer[6] == '1 _NMR') {
@@ -4075,53 +3759,56 @@ class GedcomCls
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[7] == '1 _COML') {
                 if (substr($this->buffer[0], 8)) {
                     $event_temp = substr($this->buffer[0], 8);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 NCHI') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[5] == '1 RFN') {
                 if (substr($this->buffer[0], 6)) {
                     $event_temp = substr($this->buffer[0], 6);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
             if ($this->buffer[6] == '1 REFN') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
 
             // Other events (no BK?)
-            //if ($this->buffer[0]=='1 EVEN'){$this->processed = true; $event_status = true;}
+            //if ($this->buffer[0]=='1 EVEN'){
+            //  $this->processed = true;
+            //  $this->event_status = true;
+            //}
             if ($this->buffer[6] == '1 EVEN') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
 
             if ($this->buffer[0] == '1 SLGL') {
                 $this->processed = true;
-                $event_status = true;
+                $this->event_status = true;
             }
 
-            if ($event_status) {
+            if ($this->event_status) {
                 if ($event_start) {
                     $event_start = '';
                     $this->event_nr++;
@@ -4384,7 +4071,7 @@ class GedcomCls
             $this->dbh->query($sql);
         }
 
-        //echo '!!!!'.$this->nrsource.'<br>';;
+        //echo '!!!!'.$this->nrsource.'<br>';
         // *** Save sources ***
         if ($this->nrsource > 0) {
             for ($i = 1; $i <= $this->nrsource; $i++) {
@@ -4615,17 +4302,13 @@ class GedcomCls
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $this->buffer[1] = $this->buffer[0][0]; // *** First character ***
-            $this->buffer[5] = substr($this->buffer[0], 0, 5);
-            $this->buffer[6] = substr($this->buffer[0], 0, 6);
-            $this->buffer[7] = substr($this->buffer[0], 0, 7);
-            $this->buffer[8] = substr($this->buffer[0], 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
             if ($this->buffer[1] === '1') {
                 $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
-                $event_status = false;
-                $event_start = '1';
+                //$this->event_status = false;
+                //$event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
                 $this->level[4] = '';
@@ -4869,18 +4552,14 @@ class GedcomCls
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $this->buffer[1] = $this->buffer[0][0]; // *** First character ***
-            $this->buffer[5] = substr($this->buffer[0], 0, 5);
-            $this->buffer[6] = substr($this->buffer[0], 0, 6);
-            $this->buffer[7] = substr($this->buffer[0], 0, 7);
-            $this->buffer[8] = substr($this->buffer[0], 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
             if ($this->buffer[1] === '1') {
                 //$this->level[1]=rtrim(substr($this->buffer[0],2,4));  //rtrim for CHR_
                 $this->level[1] = rtrim(substr($this->buffer[0], 2, 5));  //rtrim voor CHR_
-                $event_status = false;
-                $event_start = '1';
+                //$this->event_status = false;
+                //$event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
                 $this->level[4] = '';
@@ -5406,17 +5085,13 @@ class GedcomCls
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $this->buffer[1] = $this->buffer[0][0]; // *** First character ***
-            $this->buffer[5] = substr($this->buffer[0], 0, 5);
-            $this->buffer[6] = substr($this->buffer[0], 0, 6);
-            $this->buffer[7] = substr($this->buffer[0], 0, 7);
-            $this->buffer[8] = substr($this->buffer[0], 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
             if ($this->buffer[1] === '1') {
                 $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
-                $event_status = false;
-                $event_start = '1';
+                //$this->event_status = false;
+                //$event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
                 $this->level[4] = '';
@@ -5705,17 +5380,13 @@ class GedcomCls
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $this->buffer[1] = $this->buffer[0][0]; // *** First character ***
-            $this->buffer[5] = substr($this->buffer[0], 0, 5);
-            $this->buffer[6] = substr($this->buffer[0], 0, 6);
-            $this->buffer[7] = substr($this->buffer[0], 0, 7);
-            $this->buffer[8] = substr($this->buffer[0], 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
             if ($this->buffer[1] === '1') {
                 $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
-                $event_status = false;
-                $event_start = '1';
+                //$this->event_status = false;
+                //$event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
                 $this->level[4] = '';
@@ -5973,17 +5644,13 @@ class GedcomCls
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $this->buffer[1] = $this->buffer[0][0]; // *** First character ***
-            $this->buffer[5] = substr($this->buffer[0], 0, 5);
-            $this->buffer[6] = substr($this->buffer[0], 0, 6);
-            $this->buffer[7] = substr($this->buffer[0], 0, 7);
-            $this->buffer[8] = substr($this->buffer[0], 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
             if ($this->buffer[1] === '1') {
                 $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
-                $event_status = false;
-                $event_start = '1';
+                //$this->event_status = false;
+                //$event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
                 $this->level[4] = '';
@@ -7385,5 +7052,25 @@ class GedcomCls
     public function get_not_processed()
     {
         return $this->not_processed;
+    }
+
+    function check_event($length)
+    {
+        $this->processed = true;
+        $this->event_status = true;
+        $event_temp = '';
+        if (substr($this->buffer[0], $length)) {
+            $event_temp = substr($this->buffer[0], $length);
+        }
+        return $event_temp;
+    }
+
+    function set_buffer(): void
+    {
+        $this->buffer[1] = $this->buffer[0][0]; // *** first character ***
+        $this->buffer[5] = substr($this->buffer[0], 0, 5);
+        $this->buffer[6] = substr($this->buffer[0], 0, 6);
+        $this->buffer[7] = substr($this->buffer[0], 0, 7);
+        $this->buffer[8] = substr($this->buffer[0], 0, 8);
     }
 }
