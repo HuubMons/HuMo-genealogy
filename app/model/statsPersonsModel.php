@@ -1,7 +1,7 @@
 <?php
-class StatsPersonsModel
+class StatsPersonsModel extends BaseModel
 {
-    public function get_data($dbh, $db_functions, $tree_id): array
+    public function get_data(): array
     {
         $statistics['countman'] = 0;
         $statistics['countwoman'] = 0;
@@ -59,8 +59,8 @@ class StatsPersonsModel
 
         $livingcalc = new CalculateDates;
 
-        $persqr = $dbh->query("SELECT pers_sexe, pers_gedcomnumber, pers_birth_date, pers_death_date, pers_bapt_date, pers_fams
-        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'");
+        $persqr = $this->dbh->query("SELECT pers_sexe, pers_gedcomnumber, pers_birth_date, pers_death_date, pers_bapt_date, pers_fams
+        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'");
         while ($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
             if ($persstatDb->pers_sexe == "M") {
                 $statistics['countman']++;
@@ -175,7 +175,7 @@ class StatsPersonsModel
         if ($longest_living_man == 0) {
             $longest_living_man = null;
         } else {
-            $row = $db_functions->get_person($longest_living_man_ged);
+            $row = $this->db_functions->get_person($longest_living_man_ged);
             $statistics['longest_living_man'] = $this->get_person($row, $longest_living_man);
 
             $statistics['average_living_man'] = $total_age_man / $man_age_count;
@@ -185,7 +185,7 @@ class StatsPersonsModel
         if ($longest_living_woman == 0) {
             $longest_living_woman = null;
         } else {
-            $row = $db_functions->get_person($longest_living_woman_ged);
+            $row = $this->db_functions->get_person($longest_living_woman_ged);
             $statistics['longest_living_woman'] = $this->get_person($row, $longest_living_woman);
 
             $statistics['average_living_woman'] = $total_age_woman / $woman_age_count;
@@ -195,84 +195,84 @@ class StatsPersonsModel
         if ($oldest_man_bir_date == '30003112') {
             $oldest_man_bir_date = null;
         } else {
-            $row = $db_functions->get_person($oldest_man_bir_ged);
+            $row = $this->db_functions->get_person($oldest_man_bir_ged);
             $statistics['oldest_man_bir_date'] = $this->get_person($row, $row->pers_birth_date);
         }
 
         if ($oldest_man_dea_date == '30003112') {
             $oldest_man_dea_date = null;
         } else {
-            $row = $db_functions->get_person($oldest_man_dea_ged);
+            $row = $this->db_functions->get_person($oldest_man_dea_ged);
             $statistics['oldest_man_dea_date'] = $this->get_person($row, $row->pers_death_date);
         }
 
         if ($oldest_man_bap_date == '30003112') {
             $oldest_man_bap_date = null;
         } else {
-            $row = $db_functions->get_person($oldest_man_bap_ged);
+            $row = $this->db_functions->get_person($oldest_man_bap_ged);
             $statistics['oldest_man_bap_date'] = $this->get_person($row, $row->pers_bapt_date);
         }
 
         if ($oldest_woman_bir_date == '30003112') {
             $oldest_woman_bir_date = null;
         } else {
-            $row = $db_functions->get_person($oldest_woman_bir_ged);
+            $row = $this->db_functions->get_person($oldest_woman_bir_ged);
             $statistics['oldest_woman_bir_date'] = $this->get_person($row, $row->pers_birth_date);
         }
 
         if ($oldest_woman_dea_date == '30003112') {
             $oldest_woman_dea_date = null;
         } else {
-            $row = $db_functions->get_person($oldest_woman_dea_ged);
+            $row = $this->db_functions->get_person($oldest_woman_dea_ged);
             $statistics['oldest_woman_dea_date'] = $this->get_person($row, $row->pers_death_date);
         }
 
         if ($oldest_woman_bap_date == '30003112') {
             $oldest_woman_bap_date = null;
         } else {
-            $row = $db_functions->get_person($oldest_woman_bap_ged);
+            $row = $this->db_functions->get_person($oldest_woman_bap_ged);
             $statistics['oldest_woman_bap_date'] = $this->get_person($row, $row->pers_bapt_date);
         }
 
         if ($latest_man_bir_date == '0') {
             $latest_man_bir_date = null;
         } else {
-            $row = $db_functions->get_person($latest_man_bir_ged);
+            $row = $this->db_functions->get_person($latest_man_bir_ged);
             $statistics['latest_man_bir_date'] = $this->get_person($row, $row->pers_birth_date);
         }
 
         if ($latest_man_dea_date == '0') {
             $latest_man_dea_date = null;
         } else {
-            $row = $db_functions->get_person($latest_man_dea_ged);
+            $row = $this->db_functions->get_person($latest_man_dea_ged);
             $statistics['latest_man_dea_date'] = $this->get_person($row, $row->pers_death_date);
         }
 
         if ($latest_man_bap_date == '0') {
             $latest_man_bap_date = null;
         } else {
-            $row = $db_functions->get_person($latest_man_bap_ged);
+            $row = $this->db_functions->get_person($latest_man_bap_ged);
             $statistics['latest_man_bap_date'] = $this->get_person($row, $row->pers_bapt_date);
         }
 
         if ($latest_woman_bir_date == '0') {
             $latest_woman_bir_date = null;
         } else {
-            $row = $db_functions->get_person($latest_woman_bir_ged);
+            $row = $this->db_functions->get_person($latest_woman_bir_ged);
             $statistics['latest_woman_bir_date'] = $this->get_person($row, $row->pers_birth_date);
         }
 
         if ($latest_woman_dea_date == '0') {
             $latest_woman_dea_date = null;
         } else {
-            $row = $db_functions->get_person($latest_woman_dea_ged);
+            $row = $this->db_functions->get_person($latest_woman_dea_ged);
             $statistics['latest_woman_dea_date'] = $this->get_person($row, $row->pers_death_date);
         }
 
         if ($latest_woman_bap_date == '0') {
             $latest_woman_bap_date = null;
         } else {
-            $row = $db_functions->get_person($latest_woman_bap_ged);
+            $row = $this->db_functions->get_person($latest_woman_bap_ged);
             $statistics['latest_woman_bap_date'] = $this->get_person($row, $row->pers_bapt_date);
         }
 

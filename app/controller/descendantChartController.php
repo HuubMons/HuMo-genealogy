@@ -1,7 +1,7 @@
 <?php
 class DescendantChartController
 {
-    public function getFamily($dbh, $tree_id)
+    public function getFamily($dbh, $tree_id): array
     {
         $descendantModel = new DescendantModel($dbh);
 

@@ -1,7 +1,7 @@
 <?php
 class RelationsController
 {
-    public function getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language)
+    public function getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language): array
     {
         $RelationsModel = new RelationsModel($db_functions, $selected_language);
 

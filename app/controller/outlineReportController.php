@@ -1,9 +1,10 @@
 <?php
 class OutlineReportController
 {
-    public function getOutlineReport($dbh, $tree_id, $humo_option)
+    public function getOutlineReport($dbh, $tree_id, $humo_option): array
     {
         $OutlineReportModel = new OutlineReportModel($dbh);
+
         $family_id = $OutlineReportModel->getFamilyId();
         $main_person = $OutlineReportModel->getMainPerson();
 
@@ -45,9 +46,5 @@ class OutlineReportController
 
             "title" => __('Family')
         );
-
-        // TODO use array merge
-        // *** Add array $person_data:
-        //$data = array_merge($data, $person_data);
     }
 }

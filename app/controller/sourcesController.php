@@ -1,19 +1,20 @@
 <?php
 class SourcesController
 {
-    private $dbh;
+    private $config;
 
-    public function __construct($dbh)
+    public function __construct($config)
     {
-        $this->dbh = $dbh;
+        $this->config = $config;
     }
 
-    public function list($dbh, $tree_id, $user, $humo_option, $link_cls, $uri_path)
+    public function list($link_cls, $uri_path): array
     {
-        $sourceModel = new SourcesModel($dbh);
+        $sourceModel = new SourcesModel($this->config);
+
         $sourceModel->process_variables();
-        $listsources = $sourceModel->listSources($dbh, $tree_id, $user, $humo_option);
-        $line_pages = $sourceModel->line_pages($tree_id, $link_cls, $uri_path);
+        $listsources = $sourceModel->listSources();
+        $line_pages = $sourceModel->line_pages($link_cls, $uri_path);
         $source_search = $sourceModel->get_source_search();
         $sort_desc = $sourceModel->get_sort_desc();
         $order_sources = $sourceModel->get_order_sources();

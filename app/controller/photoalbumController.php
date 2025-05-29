@@ -8,9 +8,10 @@ class PhotoalbumController
         $this->config = $config;
     }
 
-    public function detail($selected_language, $uri_path, $link_cls)
+    public function detail($selected_language, $uri_path, $link_cls): array
     {
         $photoalbumModel = new PhotoalbumModel($this->config);
+
         $photoalbum['show_pictures'] = $photoalbumModel->get_show_pictures();
         $photoalbum['search_media'] = $photoalbumModel->get_search_media();
 

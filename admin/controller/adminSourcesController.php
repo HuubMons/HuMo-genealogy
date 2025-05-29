@@ -1,9 +1,16 @@
 <?php
 class AdminSourcesController
 {
-    public function detail($dbh, $tree_id, $db_functions)
+    protected $admin_config;
+
+    public function __construct($admin_config)
     {
-        $editSourcesModel = new AdminSourcesModel($dbh);
+        $this->admin_config = $admin_config;
+    }
+
+    public function detail(): array
+    {
+        $editSourcesModel = new AdminSourcesModel($this->admin_config);
 
         $editSources['pers_gedcomnumber'] = $editSourcesModel->get_pers_gedcomnumber();
         $editSources['fam_gedcomnumber'] = $editSourcesModel->get_fam_gedcomnumber();

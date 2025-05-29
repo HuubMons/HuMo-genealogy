@@ -1309,6 +1309,7 @@ if ($data["descendant_report"] == false) {
             $link .= "main_person=" . $data["main_person"];
             $register_message .= __('User note by family') . ': <a href="' . $link . '">' . safe_text_db($name["standard_name"]) . '</a>';
 
+            //$humo_option = $this->humo_option; // Used in mail.php
             include_once(__DIR__ . '/../include/mail.php');
 
             // *** Set who the message is to be sent from ***

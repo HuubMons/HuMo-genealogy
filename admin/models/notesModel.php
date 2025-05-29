@@ -1,7 +1,7 @@
 <?php
-class NotesModel
+class NotesModel extends AdminBaseModel
 {
-    public function get_limit()
+    public function get_limit(): int
     {
         $limit = 50;
         if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
@@ -14,7 +14,7 @@ class NotesModel
         return $limit;
     }
 
-    public function get_user_notes()
+    public function get_user_notes(): bool
     {
         $user_notes = true;
         if (isset($_POST['note_settings'])) {
@@ -30,7 +30,7 @@ class NotesModel
         return $user_notes;
     }
 
-    public function get_editor_notes()
+    public function get_editor_notes(): bool
     {
         $editor_notes = true;
         if (isset($_POST['note_settings'])) {
@@ -46,7 +46,7 @@ class NotesModel
         return $editor_notes;
     }
 
-    public function update_note($dbh): void
+    public function update_note(): void
     {
         if (isset($_POST['note_status']) && is_numeric($_POST['note_id'])) {
             $note_status = '';
@@ -58,7 +58,7 @@ class NotesModel
             }
             if ($note_status) {
                 $sql = "UPDATE humo_user_notes SET note_status='" . $note_status . "' WHERE note_id='" . $_POST['note_id'] . "'";
-                $dbh->query($sql);
+                $this->dbh->query($sql);
             }
         }
     }

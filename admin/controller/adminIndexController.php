@@ -1,7 +1,7 @@
 <?php
 class AdminIndexController
 {
-    public function detail($database_check, $dbh)
+    public function detail($database_check, $dbh): array
     {
         $indexModel = new AdminIndexModel();
 

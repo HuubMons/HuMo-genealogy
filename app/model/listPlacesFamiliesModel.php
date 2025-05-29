@@ -1,7 +1,7 @@
 <?php
-class ListPlacesFamiliesModel
+class ListPlacesFamiliesModel extends BaseModel
 {
-    public function getSelection()
+    public function getSelection(): array
     {
         // *** For index places ***
         $data["place_name"] = '';
@@ -83,7 +83,7 @@ class ListPlacesFamiliesModel
 
     // *** Search for (part of) first or lastname ***
     // TODO this function is also used in script list.
-    private function name_qry($search_name, $search_part)
+    private function name_qry($search_name, $search_part): string
     {
         $text = "LIKE '%" . safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
         if ($search_part == 'equals') {
@@ -95,7 +95,7 @@ class ListPlacesFamiliesModel
         return $text;
     }
 
-    public function build_query($tree_id)
+    public function build_query(): string
     {
         $query = '';
 
@@ -114,9 +114,9 @@ class ListPlacesFamiliesModel
         if ($data["select_marriage"] == '1') {
             $query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_place LIKE '_%'";
             }
             $query .= ')';
             $start = true;
@@ -132,9 +132,9 @@ class ListPlacesFamiliesModel
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_church_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_place LIKE '_%'";
             }
             $query .= ')';
             $start = true;
@@ -150,9 +150,9 @@ class ListPlacesFamiliesModel
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_notice_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_notice_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_notice_place LIKE '_%'";
             }
             $query .= ')';
             $start = true;
@@ -168,9 +168,9 @@ class ListPlacesFamiliesModel
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_church_notice_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $tree_id . "' AND fam_marr_church_notice_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_notice_place LIKE '_%'";
             }
             $query .= ')';
             $start = true;

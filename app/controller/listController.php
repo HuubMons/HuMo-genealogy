@@ -8,7 +8,7 @@ class ListController
         $this->config = $config;
     }
 
-    public function list_names()
+    public function list_names(): array
     {
         $listModel = new ListModel($this->config);
 

@@ -1,19 +1,19 @@
 <?php
 class MailformController
 {
-    private $db_functions;
+    private $config;
 
-    public function __construct($db_functions)
+    public function __construct($config)
     {
-        $this->db_functions = $db_functions;
+        $this->config = $config;
     }
 
-    public function get_mail_data($humo_option, $dataDb, $selected_language)
+    public function get_mail_data($dataDb, $selected_language): array
     {
-        $mailformModel = new MailformModel($this->db_functions);
+        $mailformModel = new MailformModel($this->config);
 
         $mail_form = $mailformModel->getFormdata();
-        $mail_check = $mailformModel->mail_check($humo_option);
+        $mail_check = $mailformModel->mail_check();
 
         $mail_array = array_merge($mail_form, $mail_check);
 

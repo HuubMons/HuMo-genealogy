@@ -1,11 +1,19 @@
 <?php
 class TreesController
 {
-    public function detail($dbh, $tree_id, $db_functions, $selected_language)
+    protected $admin_config;
+
+    public function __construct($admin_config)
     {
-        $treesModel = new TreesModel($dbh);
-        $treesModel->set_tree_id($tree_id);
-        $treesModel->update_tree($dbh, $db_functions);
+        $this->admin_config = $admin_config;
+    }
+
+    public function detail($selected_language): array
+    {
+        $treesModel = new TreesModel($this->admin_config);
+
+        $treesModel->set_tree_id();
+        $treesModel->update_tree();
         $trees['tree_id'] = $treesModel->get_tree_id();
         $trees['language'] = $treesModel->get_language($selected_language);
         // *** Select language for texts at page ***
@@ -18,9 +26,9 @@ class TreesController
             include_once(__DIR__ . "/../../views/partial/select_language.php");
             include(__DIR__ . '/../../languages/' . $trees['language2'] . '/language_data.php');
 
-            $tree_adminModel = new TreeAdminModel($dbh);
-            $trees['count_trees'] = $tree_adminModel->count_trees($dbh);
-            $trees['collation'] = $tree_adminModel->get_collation($dbh);
+            $tree_adminModel = new TreeAdminModel($this->admin_config['dbh']);
+            $trees['count_trees'] = $tree_adminModel->count_trees($this->admin_config['dbh']);
+            $trees['collation'] = $tree_adminModel->get_collation($this->admin_config['dbh']);
 
             $trees['language_path'] = 'index.php?page=tree&amp;tree_id=' . $trees['tree_id'] . '&amp;';
         } elseif ($trees['menu_tab'] == 'tree_gedcom') {
@@ -38,7 +46,7 @@ class TreesController
 
             $_SESSION['debug_person'] = 1;
 
-            $gedcomModel = new GedcomModel($dbh);
+            $gedcomModel = new GedcomModel($this->admin_config['dbh']);
             $trees['step'] = $gedcomModel->get_step();
             //$trees['check_processed'] = get_check_processed();
 
@@ -54,7 +62,7 @@ class TreesController
             //
             //}
         } elseif ($trees['menu_tab'] == 'tree_data') {
-            $trees['tree_pict_path'] = $treesModel->get_tree_pict_path($dbh, $tree_id);
+            $trees['tree_pict_path'] = $treesModel->get_tree_pict_path($this->admin_config['dbh'], $this->admin_config['tree_id']);
 
             // *** Check for default path ***
             if (substr($trees['tree_pict_path'], 0, 1) === '|') {
@@ -65,20 +73,20 @@ class TreesController
             }
 
             //require_once __DIR__ . "/../models/tree_data.php";
-            //$tree_dataModel = new TreeDataModel($dbh);
-            //$trees['count_trees'] = $tree_dataModel->count_trees($dbh);
+            //$tree_dataModel = new TreeDataModel($this->admin_config['dbh']);
+            //$trees['count_trees'] = $tree_dataModel->count_trees($this->admin_config['dbh']);
         } elseif ($trees['menu_tab'] == 'tree_text') {
-            $tree_textModel = new TreeTextModel($dbh);
+            $tree_textModel = new TreeTextModel($this->admin_config['dbh']);
 
             // *** Select language for texts at page ***
             include(__DIR__ . '/../../languages/' . $trees['language2'] . '/language_data.php');
 
-            $tree_texts = $tree_textModel->get_tree_texts($dbh, $trees['tree_id'], $trees['language']);
+            $tree_texts = $tree_textModel->get_tree_texts($this->admin_config['dbh'], $trees['tree_id'], $trees['language']);
             $trees = array_merge($trees, $tree_texts);
         } elseif ($trees['menu_tab'] == 'tree_merge') {
-            $treeMergeModel = new TreeMergeModel($dbh);
-            $trees['relatives_merge'] = $treeMergeModel->get_relatives_merge($dbh, $trees['tree_id']);
-            $treeMergeModel->update_settings($db_functions); // *** Store and reset tree merge settings ***
+            $treeMergeModel = new TreeMergeModel($this->admin_config['dbh']);
+            $trees['relatives_merge'] = $treeMergeModel->get_relatives_merge($this->admin_config['dbh'], $trees['tree_id']);
+            $treeMergeModel->update_settings($this->admin_config['db_functions']); // *** Store and reset tree merge settings ***
         }
 
         return $trees;

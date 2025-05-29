@@ -1,23 +1,27 @@
 <?php
 class AdminAddressController
 {
+    protected $admin_config;
     private $editor_cls;
 
-    public function __construct()
+    public function __construct($admin_config)
     {
+        $this->admin_config = $admin_config;
+
         $this->editor_cls = new Editor_cls;
     }
 
-    public function detail($dbh, $tree_id, $db_functions)
+    public function detail(): array
     {
-        $editAddressModel = new AdminAddressModel($dbh);
+        $editAddressModel = new AdminAddressModel($this->admin_config);
+
         $editAddressModel->set_address_id();
-        $editAddressModel->update_address($dbh, $tree_id, $db_functions, $this->editor_cls);
+        $editAddressModel->update_address($this->editor_cls);
         $editAddress['address_id'] = $editAddressModel->get_address_id();
 
         $editAddress['editor_cls'] = $this->editor_cls;
 
-        $get_addresses = $editAddressModel->get_addresses($dbh, $tree_id);
+        $get_addresses = $editAddressModel->get_addresses();
         $editAddress = array_merge($editAddress, $get_addresses);
 
         return $editAddress;

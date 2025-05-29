@@ -8,9 +8,10 @@ class SourceController
         $this->config = $config;
     }
 
-    public function source($id)
+    public function source($id): array
     {
         $sourceModel = new SourceModel($this->config);
+
         $sourceDb = $sourceModel->GetSource($id);
         $get_source_connections = $sourceModel->GetSourceConnections($sourceDb->source_gedcomnr);
 

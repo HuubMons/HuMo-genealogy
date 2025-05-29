@@ -1,7 +1,7 @@
 <?php
-class ThumbsModel
+class ThumbsModel extends AdminBaseModel
 {
-    public function get_menu_tab()
+    public function get_menu_tab(): string
     {
         $menu_tab = 'picture_settings';
         if (isset($_POST['menu_tab'])) {
@@ -15,7 +15,7 @@ class ThumbsModel
     }
 
     // *** Save new/ changed picture path ***
-    public function save_picture_path($dbh, $tree_id)
+    public function save_picture_path(): void
     {
         if (isset($_POST['change_tree_data'])) {
             $tree_pict_path = $_POST['tree_pict_path'];
@@ -26,18 +26,18 @@ class ThumbsModel
             } elseif (isset($_POST['default_path']) && $_POST['default_path'] == 'yes') {
                 $tree_pict_path = '|' . $tree_pict_path;
             }
-            $dbh->query("UPDATE humo_trees SET tree_pict_path='" . safe_text_db($tree_pict_path) . "' WHERE tree_id=" . safe_text_db($tree_id));
+            $this->dbh->query("UPDATE humo_trees SET tree_pict_path='" . safe_text_db($tree_pict_path) . "' WHERE tree_id=" . safe_text_db($this->tree_id));
         }
     }
 
-    public function get_tree_pict_path($dbh, $tree_id)
+    public function get_tree_pict_path(): string
     {
-        $data2sql = $dbh->query("SELECT tree_pict_path FROM humo_trees WHERE tree_id=" . $tree_id);
+        $data2sql = $this->dbh->query("SELECT tree_pict_path FROM humo_trees WHERE tree_id=" . $this->tree_id);
         $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
         return $data2Db->tree_pict_path;
     }
 
-    public function get_default_path($tree_pict_path)
+    public function get_default_path($tree_pict_path): bool
     {
         // *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
         if (substr($tree_pict_path, 0, 1) === '|') {

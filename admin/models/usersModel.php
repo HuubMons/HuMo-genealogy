@@ -1,13 +1,12 @@
 <?php
-class UsersModel
+class UsersModel extends AdminBaseModel
 {
-
-    function update_user($dbh)
+    function update_user(): string
     {
         $alert = '';
         if (isset($_POST['change_user'])) {
             $usersql = "SELECT * FROM humo_users ORDER BY user_name";
-            $user = $dbh->query($usersql);
+            $user = $this->dbh->query($usersql);
             while ($userDb = $user->fetch(PDO::FETCH_OBJ)) {
                 if (is_numeric($_POST[$userDb->user_id . "group_id"]) && is_numeric($_POST[$userDb->user_id . "user_id"])) {
                     $username = $_POST[$userDb->user_id . "username"];
@@ -25,7 +24,7 @@ class UsersModel
                     $sql .= "user_group_id='" . safe_text_db($_POST[$userDb->user_id . "group_id"]);
                     $sql .= "' WHERE user_id=" . safe_text_db($_POST[$userDb->user_id . "user_id"]);
                     try {
-                        $dbh->query($sql);
+                        $this->dbh->query($sql);
                     } catch (PDOException $e) {
                         $alert = __('Error: user name probably allready exist.') . '<br>';
                     }
@@ -34,7 +33,7 @@ class UsersModel
         }
 
         if (isset($_POST['add_user']) && is_numeric($_POST["add_group_id"])) {
-            $user_prep = $dbh->prepare("INSERT INTO humo_users SET
+            $user_prep = $this->dbh->prepare("INSERT INTO humo_users SET
                 user_name=:add_username, user_mail=:add_usermail,
                 user_password_salted=:add_password_salted, user_group_id=:add_group_id");
             $user_prep->bindValue(':add_username', $_POST["add_username"], PDO::PARAM_STR);
@@ -52,24 +51,24 @@ class UsersModel
         if (isset($_POST['remove_user2']) && is_numeric($_POST['remove_user'])) {
             // *** Delete source connection ***
             $sql = "DELETE FROM humo_users WHERE user_id='" . safe_text_db($_POST['remove_user']) . "'";
-            $dbh->query($sql);
+            $this->dbh->query($sql);
         }
 
         if (isset($_GET['unblock_ip_address'])) {
             $sql = "DELETE FROM humo_user_log WHERE log_ip_address='" . safe_text_db($_GET['unblock_ip_address']) . "' AND log_status='failed'";
-            $dbh->query($sql);
+            $this->dbh->query($sql);
         }
 
         return $alert;
     }
 
-    public function check_username_password($dbh)
+    public function check_username_password(): array
     {
         // *** Check for standard admin username and password ***
         $user['check_admin_user'] = false;
         $user['check_admin_pw'] = false;
         $sql = "SELECT * FROM humo_users WHERE user_group_id='1'";
-        $check_login = $dbh->query($sql);
+        $check_login = $this->dbh->query($sql);
         while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
             if ($check_loginDb->user_name == 'admin') {
                 $user['check_admin_user'] = true;

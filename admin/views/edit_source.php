@@ -17,7 +17,7 @@ $editor_cls = $editSource['editor_cls'];
 
 // *** Process queries (needed to order and delete pictures) ***
 $editor_cls = new Editor_cls;
-$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
+$editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
 // TODO this picture remove confirm box is shown above the header.

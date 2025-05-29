@@ -1,15 +1,20 @@
 <?php
 class TimelineController
 {
-    public function getTimeline($db_functions, $id, $user, $dirmark1)
+    private $config;
+
+    public function __construct($config)
     {
-        $TimelineModel = new TimelineModel();
+        $this->config = $config;
+    }
 
-        $personDb = $db_functions->get_person($id);
+    public function getTimeline($id, $dirmark1): array
+    {
+        $TimelineModel = new TimelineModel($this->config);
 
+        $personDb = $this->config['db_functions']->get_person($id);
         $person_data = $TimelineModel->getPersonData($personDb);
-
-        $get_timeline_persons = $TimelineModel->getTimelinePersons($db_functions, $personDb, $user, $dirmark1);
+        $get_timeline_persons = $TimelineModel->getTimelinePersons($personDb, $dirmark1);
 
         //$data = array(
         //    "title" => __('Timeline')

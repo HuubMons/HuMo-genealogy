@@ -103,7 +103,8 @@ $GeneralSettings = new GeneralSettings();
 $user = $GeneralSettings->get_user_settings($dbh);
 $humo_option = $GeneralSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/include/get_visitor_ip.php"); // Statistics and option to block certain IP addresses.
+// Statistics and option to block certain IP addresses.
+include_once(__DIR__ . "/include/get_visitor_ip.php");
 
 include_once(__DIR__ . "/include/timezone.php");
 //include(__DIR__ . "/languages/languageCls.php");
@@ -141,16 +142,18 @@ if (isset($index['id'])) {
 }
 
 $tree_id = $index['tree_id'];
-$tree_prefix_quoted = $index['tree_prefix_quoted'];
+$tree_prefix_quoted = $index['tree_prefix_quoted']; // Still in use for maps.
 
 
 
 $db_functions->set_tree_id($index['tree_id']);
 
-// *** If an HuMo-gen upgrade is done, automatically update language files ***
-if ($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
+// *** If a HuMo-gen upgrade is done, automatically update language files ***
+if ($humo_option['death_char'] == "y") {
+    // User wants infinity instead of cross -> check if the language files comply
     $str = file_get_contents("languages/en/en.po");
-    if (strpos($str, 'msgstr "&#134;"') || strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
+    if (strpos($str, 'msgstr "&#134;"') || strpos($str, 'msgstr "&dagger;"')) {
+        // The cross is used (probably new upgrade) so this has to be changed to infinity
         include(__DIR__ . "/languages/change_all.php");
     }
 }
@@ -174,7 +177,6 @@ if (isset($_POST["hoofdpersoon"])) {
 $base_href = '';
 if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
     // *** url_rewrite. 26 jan. 2024 Ron: Added proxy check ***
-    //if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
     if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
         $uri_path = 'https://' . $_SERVER['SERVER_NAME'] . $index['tmp_path'];
     } else {
@@ -281,8 +283,8 @@ if ($index['page'] == 'address') {
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
-    $controllerObj = new ListPlacesFamiliesController();
-    $data = $controllerObj->list_places_names($tree_id);
+    $controllerObj = new ListPlacesFamiliesController($config);
+    $data = $controllerObj->list_places_names();
 } elseif ($index['page'] == 'list_names') {
     $controllerObj = new ListNamesController($config);
     $last_name = '';
@@ -293,16 +295,16 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'login') {
     //
 } elseif ($index['page'] == 'mailform') {
-    $controllerObj = new MailformController($db_functions);
-    $mail_data = $controllerObj->get_mail_data($humo_option, $dataDb, $selected_language);
+    $controllerObj = new MailformController($config);
+    $mail_data = $controllerObj->get_mail_data($dataDb, $selected_language);
 } elseif ($index['page'] == 'maps') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/ancestors_descendants.php");
 
-    $controllerObj = new MapsController($db_functions);
-    $maps = $controllerObj->detail($humo_option, $dbh, $tree_id, $tree_prefix_quoted);
+    $controllerObj = new MapsController($config);
+    $maps = $controllerObj->detail($tree_prefix_quoted);
 } elseif ($index['page'] == 'photoalbum') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
@@ -313,8 +315,8 @@ if ($index['page'] == 'address') {
     $controllerObj = new PhotoalbumController($config);
     $photoalbum = $controllerObj->detail($selected_language, $uri_path, $link_cls);
 } elseif ($index['page'] == 'register') {
-    $controllerObj = new RegisterController($db_functions);
-    $register = $controllerObj->get_register_data($dbh, $dataDb, $humo_option);
+    $controllerObj = new RegisterController($config);
+    $register = $controllerObj->get_register_data($dataDb);
 } elseif ($index['page'] == 'relations') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
@@ -323,8 +325,8 @@ if ($index['page'] == 'address') {
     $controllerObj = new RelationsController($dbh);
     $relation = $controllerObj->getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language);
 } elseif ($index['page'] == 'reset_password') {
-    $controllerObj = new ResetPasswordController();
-    $resetpassword = $controllerObj->detail($dbh, $humo_option);
+    $controllerObj = new ResetPasswordController($config);
+    $resetpassword = $controllerObj->detail();
 } elseif ($index['page'] == 'outline_report') {
     $controllerObj = new OutlineReportController();
     $data = $controllerObj->getOutlineReport($dbh, $tree_id, $humo_option);
@@ -333,8 +335,8 @@ if ($index['page'] == 'address') {
     include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
     //if (isset($_POST['update_settings'])) include_once(__DIR__ . '/include/mail.php');
 
-    $controllerObj = new UserSettingsController();
-    $data = $controllerObj->user_settings($dbh, $dataDb, $humo_option, $user);
+    $controllerObj = new UserSettingsController($config);
+    $data = $controllerObj->user_settings($dataDb);
 } elseif ($index['page'] == 'show_media_file') {
     // *** Show media file using secured folder ***
     // *** Skip layout.php ***
@@ -345,15 +347,15 @@ if ($index['page'] == 'address') {
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
-    $controllerObj = new StatisticsController();
-    $statistics = $controllerObj->detail($dbh, $db_functions, $tree_id);
+    $controllerObj = new StatisticsController($config);
+    $statistics = $controllerObj->detail();
 } elseif ($index['page'] == 'sources') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
-    $controllerObj = new SourcesController($dbh);
-    $data = $controllerObj->list($dbh, $tree_id, $user, $humo_option, $link_cls, $uri_path);
+    $controllerObj = new SourcesController($config);
+    $data = $controllerObj->list($link_cls, $uri_path);
 } elseif ($index['page'] == 'source') {
     // TODO refactor
     include_once(__DIR__ . "/include/date_place.php");
@@ -373,16 +375,16 @@ if ($index['page'] == 'address') {
     // TODO refactor
     require_once(__DIR__ . "/include/language_date.php");
 
-    $controllerObj = new TimelineController();
+    $controllerObj = new TimelineController($config);
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];
     }
-    $data = $controllerObj->getTimeline($db_functions, $id, $user, $dirmark1);
+    $data = $controllerObj->getTimeline($id, $dirmark1);
 } elseif ($index['page'] == 'tree_index') {
     //  *** TODO: first improve difference between tree_index and mainindex ***
-    //$controllerObj = new TreeIndexController();
-    //$tree_index["items"] = $controllerObj->get_items($dbh, $humo_option);
+    //$controllerObj = new TreeIndexController($config);
+    //$tree_index["items"] = $controllerObj->get_items();
 }
 
 /*
@@ -449,7 +451,6 @@ if ($error_page) {
     </head>
 
     <body>
-
         <div class="row mt-5"></div>
 
         <div class="row mt-5">
@@ -459,7 +460,6 @@ if ($error_page) {
             </div>
             <div class="col-md-3"></div>
         </div>
-
     </body>
 
     </html>

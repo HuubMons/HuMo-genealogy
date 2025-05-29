@@ -1,5 +1,5 @@
 <?php
-class GroupsModel
+class GroupsModel extends AdminBaseModel
 {
     private $group_id;
 
@@ -16,7 +16,7 @@ class GroupsModel
         return $this->group_id;
     }
 
-    public function update_group($dbh): void
+    public function update_group(): void
     {
         if (isset($_POST['group_add'])) {
             $sql = "INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',
@@ -33,9 +33,9 @@ class GroupsModel
             group_filter_death='n', group_filter_total='n', group_filter_name='j',
             group_filter_fam='j', group_filter_pers_show_act='j', group_filter_pers_show='*', group_filter_pers_hide_act='n',
             group_filter_pers_hide='#'";
-            $dbh->query($sql);
+            $this->dbh->query($sql);
 
-            $this->group_id = $dbh->lastInsertId();
+            $this->group_id = $this->dbh->lastInsertId();
         }
 
         if (isset($_POST['group_change'])) {
@@ -302,12 +302,12 @@ class GroupsModel
             group_pers_hide_totally='" . $_POST["group_pers_hide_totally"] . "',
             group_gen_protection='" . $group_gen_protection . "'
             WHERE group_id=" . $this->group_id;
-            $dbh->query($sql);
+            $this->dbh->query($sql);
         }
 
         if (isset($_POST['group_remove2'])) {
             $sql = "DELETE FROM humo_groups WHERE group_id='" . $this->group_id . "'";
-            $dbh->query($sql);
+            $this->dbh->query($sql);
 
             // *** Reset selected group id ***
             $this->group_id = 3;

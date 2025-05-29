@@ -1,13 +1,20 @@
 <?php
 class AdminStatisticsController
 {
-    public function detail($dbh)
+protected $admin_config;
+
+    public function __construct($admin_config)
     {
-        $statisticsModel = new AdminStatisticsModel($dbh);
+        $this->admin_config = $admin_config;
+    }
+
+    public function detail(): array
+    {
+        $statisticsModel = new AdminStatisticsModel($this->admin_config);
 
         $statistics['tab'] = $statisticsModel->get_tab();
 
-        $data = $statisticsModel->get_data($dbh);
+        $data = $statisticsModel->get_data();
         $statistics = array_merge($statistics, $data);
 
         return $statistics;

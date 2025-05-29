@@ -1,7 +1,7 @@
 <?php
 class IndexController
 {
-    public function detail($dbh, $humo_option, $user)
+    public function detail($dbh, $humo_option, $user): array
     {
         $indexModel = new IndexModel();
 

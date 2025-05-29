@@ -1,5 +1,5 @@
 <?php
-class TimelineModel
+class TimelineModel extends BaseModel
 {
     // TODO remove return_array check (and use array in all julgreg lines.).
     private function julgreg($process_date, $return_array = false)
@@ -26,7 +26,7 @@ class TimelineModel
         }
     }
 
-    public function getPersonData($personDb)
+    public function getPersonData($personDb): array
     {
         $process_age = new CalculateDates;
 
@@ -154,7 +154,7 @@ class TimelineModel
         return $data;
     }
 
-    public function getTimelinePersons($db_functions, $personDb, $user, $dirmark1)
+    public function getTimelinePersons($personDb, $dirmark1)
     {
         // *** MARRIAGES & CHILDREN ***
         if (isset($personDb->pers_fams) && $personDb->pers_fams) {
@@ -166,9 +166,9 @@ class TimelineModel
                 $data["children"][$i] = '';
                 $data["marryear"][$i] = '';
                 $marrdate[$i] = '';
-                $familyDb = $db_functions->get_family($data["marriages"][$i]);
+                $familyDb = $this->db_functions->get_family($data["marriages"][$i]);
                 $spouse = $personDb->pers_gedcomnumber == $familyDb->fam_man ? $familyDb->fam_woman : $familyDb->fam_man;
-                $spouse2Db = $db_functions->get_person($spouse);
+                $spouse2Db = $this->db_functions->get_person($spouse);
                 $privacy = true;
                 if ($spouse2Db) {
                     $person_cls = new PersonCls($spouse2Db);
@@ -240,11 +240,11 @@ class TimelineModel
                     $count_children = count($data["children"][$i]);
                     for ($m = 0; $m < $count_children; $m++) {
                         $data["chmarriages"][$i][$m] = ''; // enter value so we wont get error messages
-                        $chldDb = $db_functions->get_person($data["children"][$i][$m]);
+                        $chldDb = $this->db_functions->get_person($data["children"][$i][$m]);
 
                         // *** Check if child must be hidden ***
                         if (
-                            $user["group_pers_hide_totally_act"] == 'j' && isset($chldDb->pers_own_code) && strpos(' ' . $chldDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                            $this->user["group_pers_hide_totally_act"] == 'j' && isset($chldDb->pers_own_code) && strpos(' ' . $chldDb->pers_own_code, $this->user["group_pers_hide_totally"]) > 0
                         ) {
                             continue;
                         }
@@ -305,11 +305,11 @@ class TimelineModel
                                 $data["chmarryear"][$i][$m][$p] = '';
                                 $data["chmarrdate"][$i][$m][$p] = '';
                                 $temp = '';
-                                $chfamilyDb = $db_functions->get_family($data["chmarriages"][$i][$m][$p]);
+                                $chfamilyDb = $this->db_functions->get_family($data["chmarriages"][$i][$m][$p]);
 
                                 // CHILDREN'S MARRIAGES
                                 $chspouse = $chldDb->pers_gedcomnumber == $chfamilyDb->fam_man ? $chfamilyDb->fam_woman : $chfamilyDb->fam_man;
-                                $chspouse2Db = $db_functions->get_person($chspouse);
+                                $chspouse2Db = $this->db_functions->get_person($chspouse);
                                 $person_cls = new PersonCls($chspouse2Db);
                                 $privacy = $person_cls->get_privacy();
                                 $name = $person_cls->person_name($chspouse2Db);
@@ -357,7 +357,7 @@ class TimelineModel
                                     $data["grchildren"][$i][$m][$p] = explode(";", $chfamilyDb->fam_children);
                                     $count_grchildren = count($data["grchildren"][$i][$m][$p]);
                                     for ($g = 0; $g < $count_grchildren; $g++) {
-                                        $grchldDb = $db_functions->get_person($data["grchildren"][$i][$m][$p][$g]);
+                                        $grchldDb = $this->db_functions->get_person($data["grchildren"][$i][$m][$p][$g]);
                                         $person3_cls = new PersonCls($grchldDb);
                                         $privacy = $person3_cls->get_privacy();
                                         $name = $person3_cls->person_name($grchldDb);

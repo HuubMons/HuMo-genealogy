@@ -9,11 +9,11 @@ class AncestorChartController
         $this->db_functions = $db_functions;
     }
 
-    public function list($tree_id)
+    public function list($tree_id): array
     {
         $get_ancestorModel = new AncestorModel($this->dbh);
 
-        $main_person = $get_ancestorModel->getMainPerson();
+        $main_person = $get_ancestorModel->getMainPerson2();
         $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
         $get_ancestors = $get_ancestorModel->get_ancestors($this->db_functions, $main_person);
 

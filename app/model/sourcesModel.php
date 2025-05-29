@@ -1,13 +1,7 @@
 <?php
-class SourcesModel
+class SourcesModel extends BaseModel
 {
-    private $dbh;
     private $count_sources, $all_sources, $item, $source_search, $sort_desc, $order_sources;
-
-    public function __construct($dbh)
-    {
-        $this->dbh = $dbh;
-    }
 
     // *** Added feb 2025 ***
     public function process_variables(): void
@@ -56,7 +50,7 @@ class SourcesModel
         return $this->order_sources;
     }
 
-    public function listSources($dbh, $tree_id, $user, $humo_option)
+    public function listSources()
     {
         $desc_asc = " ASC ";
         $this->sort_desc = 0;
@@ -71,9 +65,9 @@ class SourcesModel
 
         if ($this->order_sources === "title") {
             // *** Default querie: order by title ***
-            $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
+            $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
             // *** Check user group is restricted sources can be shown ***
-            if ($user['group_show_restricted_source'] == 'n') {
+            if ($this->user['group_show_restricted_source'] == 'n') {
                 $querie .= " AND (source_status!='restricted' OR source_status IS NULL)";
             }
 
@@ -92,8 +86,8 @@ class SourcesModel
                     date_format( str_to_date( substring(source_date,-8,3),'%b' ) ,'%m'),
                     date_format( str_to_date( substring(source_date,-11,2),'%d' ) ,'%d'))
                     as year
-                FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
-            if ($user['group_show_restricted_source'] == 'n') {
+                FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
+            if ($this->user['group_show_restricted_source'] == 'n') {
                 $querie .= " AND (source_status!='restricted' OR source_status IS NULL)";
             }
 
@@ -104,9 +98,9 @@ class SourcesModel
             $querie .= " ORDER BY year" . $desc_asc;
         }
         if ($this->order_sources === "place") {
-            $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "'";
+            $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
             // *** Check user group is restricted sources can be shown ***
-            if ($user['group_show_restricted_source'] == 'n') {
+            if ($this->user['group_show_restricted_source'] == 'n') {
                 $querie .= " AND (source_status!='restricted' OR source_status IS NULL)";
             }
 
@@ -118,17 +112,17 @@ class SourcesModel
         }
 
         // *** Pages ***
-        $this->count_sources = $humo_option['show_persons'];    // *** Number of lines to show ***
+        $this->count_sources = $this->humo_option['show_persons'];    // *** Number of lines to show ***
 
         // *** All sources query ***
-        $this->all_sources = $dbh->query($querie);
+        $this->all_sources = $this->dbh->query($querie);
 
-        $source = $dbh->query($querie . " LIMIT " . safe_text_db($this->item) . "," . $this->count_sources);
+        $source = $this->dbh->query($querie . " LIMIT " . safe_text_db($this->item) . "," . $this->count_sources);
         return $source->fetchAll(PDO::FETCH_OBJ);
     }
 
     // TODO also used in addressesModel.php
-    private function process_link()
+    private function process_link(): string
     {
         $link = '';
         if ($this->order_sources != '') {
@@ -139,9 +133,10 @@ class SourcesModel
         }
         return $link;
     }
-    public function line_pages($tree_id, $link_cls, $uri_path)
+
+    public function line_pages($link_cls, $uri_path): array
     {
-        $path = $link_cls->get_link($uri_path, 'sources', $tree_id, true);
+        $path = $link_cls->get_link($uri_path, 'sources', $this->tree_id, true);
 
         $start = 0;
         if (isset($_GET["start"]) && is_numeric($_GET["start"])) {

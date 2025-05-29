@@ -1,7 +1,7 @@
 <?php
-class AdminStatisticsModel
+class AdminStatisticsModel extends AdminBaseModel
 {
-    public function get_tab()
+    public function get_tab(): string
     {
         $tab = 'general_statistics';
         if (isset($_POST['tab'])) {
@@ -13,10 +13,10 @@ class AdminStatisticsModel
         return $tab;
     }
 
-    public function get_data($dbh)
+    public function get_data(): array
     {
         // *** Search oldest record in database***
-        $datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
+        $datasql = $this->dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
         $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
         $statistics['first_year'] = '';
         if (isset($dataDb->stat_date_linux)) {

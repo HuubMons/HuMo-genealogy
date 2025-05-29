@@ -1,10 +1,10 @@
 <?php
 class FanchartController
 {
-    public function detail($dbh, $tree_id)
+    public function detail($dbh, $tree_id): array
     {
         $get_fanchartModel = new FanchartModel($dbh);
-        $main_person = $get_fanchartModel->getMainPerson();
+        $main_person = $get_fanchartModel->getMainPerson2();
         $ancestor_header = $get_fanchartModel->getAncestorHeader('Fanchart', $tree_id, $main_person);
 
         $chosengen = $get_fanchartModel->get_chosengen();

@@ -1,13 +1,22 @@
 <?php
 class TreeCheckController
 {
-    public function detail($dbh, $db_functions, $tree_id)
+    protected $admin_config;
+
+    public function __construct($admin_config)
     {
-        $tree_checkModel = new TreeCheckModel($dbh);
+        $this->admin_config = $admin_config;
+    }
+
+    public function detail(): array
+    {
+        $tree_checkModel = new TreeCheckModel($this->admin_config);
+
         $tree_check['tab'] = $tree_checkModel->menu_tab();
 
         if ($tree_check['tab'] == 'changes') {
-            $tree_check_changesModel = new TreeCheckChangesModel($dbh);
+            $tree_check_changesModel = new TreeCheckChangesModel($this->admin_config);
+
             $tree_check['editor'] = $tree_check_changesModel->get_editor();
             $tree_check['limit'] = $tree_check_changesModel->get_limit();
             $tree_check['show_persons'] = $tree_check_changesModel->get_show_persons();
@@ -18,8 +27,8 @@ class TreeCheckController
                 $tree_check['show_persons'] = true;
             }
 
-            $tree_check['changes'] = $tree_check_changesModel->get_changes($dbh, $db_functions, $tree_check, $tree_id);
-            $tree_check['list_editors'] = $tree_check_changesModel->get_editors($dbh, $tree_id, $tree_check);
+            $tree_check['changes'] = $tree_check_changesModel->get_changes($tree_check);
+            $tree_check['list_editors'] = $tree_check_changesModel->get_editors($tree_check);
         }
         /*
         elseif ($tree_check['tab'] == 'integrity') {

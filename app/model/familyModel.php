@@ -4,6 +4,11 @@
  * July 2023: refactor family script to MVC
  */
 
+// TODO check these includes. Move to controllers?
+// Or: add them in constructor? IN CLASS:
+//public function __construct() {
+//  include_once 'x.php'; // Include database configuration
+//}
 include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/language_event.php');
 include_once(__DIR__ . '/../../include/date_place.php');
@@ -23,7 +28,7 @@ class FamilyModel
         $this->dbh = $dbh;
     }
 
-    public function getFamilyId()
+    public function getFamilyId(): string
     {
         $family_id = 'F1'; // *** standard: show first family ***
         if (isset($_GET["id"])) {
@@ -42,7 +47,7 @@ class FamilyModel
         return $family_id;
     }
 
-    public function getMainPerson()
+    public function getMainPerson(): string
     {
         $main_person = ''; // *** Mainperson of a family ***
         if (isset($_GET["main_person"])) {
@@ -62,7 +67,7 @@ class FamilyModel
     }
 
     // *** Compact or expanded view ***
-    public function getFamilyExpanded()
+    public function getFamilyExpanded(): string
     {
         // TODO remove global
         global $user;
@@ -93,7 +98,7 @@ class FamilyModel
     }
 
     // *** Source presentation selected by user, only valid values are: title/ footnote/ hide ***
-    public function getSourcePresentation()
+    public function getSourcePresentation(): string
     {
         // TODO remove global
         global $user;
@@ -113,7 +118,7 @@ class FamilyModel
     }
 
     // *** Show/ hide pictures ***
-    public function getPicturePresentation()
+    public function getPicturePresentation(): string
     {
         $picture_presentation = 'show';
         $picture_presentation_array = array('show', 'hide');
@@ -128,7 +133,7 @@ class FamilyModel
     }
 
     // *** Show/ hide texts ***
-    public function getTextPresentation()
+    public function getTextPresentation(): string
     {
         // TODO remove global
         global $user;
@@ -145,21 +150,74 @@ class FamilyModel
     }
 
     // *** Define numbers (max. 60 generations) ***
-    //TODO this is also defined in ancestor script.
-    public function getNumberRoman()
+    public function getNumberRoman(): array
     {
         return array(
-            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X',
-            11 => 'XI', 12 => 'XII', 13 => 'XIII', 14 => 'XIV', 15 => 'XV', 16 => 'XVI', 17 => 'XVII', 18 => 'XVIII', 19 => 'XIX', 20 => 'XX',
-            21 => 'XXI', 22 => 'XXII', 23 => 'XXIII', 24 => 'XXIV', 25 => 'XXV', 26 => 'XXVII', 27 => 'XXVII', 28 => 'XXVIII', 29 => 'XXIX', 30 => 'XXX',
-            31 => 'XXXI', 32 => 'XXXII', 33 => 'XXXIII', 34 => 'XXXIV', 35 => 'XXXV', 36 => 'XXXVII', 37 => 'XXXVII', 38 => 'XXXVIII', 39 => 'XXXIX', 40 => 'XL',
-            41 => 'XLI', 42 => 'XLII', 43 => 'XLIII', 44 => 'XLIV', 45 => 'XLV', 46 => 'XLVII', 47 => 'XLVII', 48 => 'XLVIII', 49 => 'XLIX', 50 => 'L',
-            51 => 'LI',  52 => 'LII',  53 => 'LIII',  54 => 'LIV',  55 => 'LV',  56 => 'LVII',  57 => 'LVII',  58 => 'LVIII',  59 => 'LIX',  60 => 'LX',
+            1 => 'I',
+            2 => 'II',
+            3 => 'III',
+            4 => 'IV',
+            5 => 'V',
+            6 => 'VI',
+            7 => 'VII',
+            8 => 'VIII',
+            9 => 'IX',
+            10 => 'X',
+            11 => 'XI',
+            12 => 'XII',
+            13 => 'XIII',
+            14 => 'XIV',
+            15 => 'XV',
+            16 => 'XVI',
+            17 => 'XVII',
+            18 => 'XVIII',
+            19 => 'XIX',
+            20 => 'XX',
+            21 => 'XXI',
+            22 => 'XXII',
+            23 => 'XXIII',
+            24 => 'XXIV',
+            25 => 'XXV',
+            26 => 'XXVII',
+            27 => 'XXVII',
+            28 => 'XXVIII',
+            29 => 'XXIX',
+            30 => 'XXX',
+            31 => 'XXXI',
+            32 => 'XXXII',
+            33 => 'XXXIII',
+            34 => 'XXXIV',
+            35 => 'XXXV',
+            36 => 'XXXVII',
+            37 => 'XXXVII',
+            38 => 'XXXVIII',
+            39 => 'XXXIX',
+            40 => 'XL',
+            41 => 'XLI',
+            42 => 'XLII',
+            43 => 'XLIII',
+            44 => 'XLIV',
+            45 => 'XLV',
+            46 => 'XLVII',
+            47 => 'XLVII',
+            48 => 'XLVIII',
+            49 => 'XLIX',
+            50 => 'L',
+            51 => 'LI',
+            52 => 'LII',
+            53 => 'LIII',
+            54 => 'LIV',
+            55 => 'LV',
+            56 => 'LVII',
+            57 => 'LVII',
+            58 => 'LVIII',
+            59 => 'LIX',
+            60 => 'LX',
         );
     }
 
     // *** Generate array: a, b, c .. z, aa, ab .. zz
-    public function getNumberGeneration()
+    public function getNumberGeneration(): array
     {
         // a-z
         $number_generation[] = ''; // (1st number_generation is not used)
@@ -176,7 +234,7 @@ class FamilyModel
         return $number_generation;
     }
 
-    public function getDescendantReport()
+    public function getDescendantReport(): bool
     {
         $descendant_report = false;
         if (isset($_GET['descendant_report'])) {
@@ -188,7 +246,7 @@ class FamilyModel
         return $descendant_report;
     }
 
-    function getDescendantHeader($name, $tree_id, $family_id, $main_person)
+    function getDescendantHeader($name, $tree_id, $family_id, $main_person): string
     {
         // TODO remove global
         global $humo_option, $link_cls, $uri_path;
@@ -204,7 +262,7 @@ class FamilyModel
         $data['header_active'][] = $name == 'Descendant report' ? 'active' : '';
         $data['header_text'][] = __('Descendant report');
 
-        if (isset($_GET['dnachart'])) $name='DNA charts';
+        if (isset($_GET['dnachart'])) $name = 'DNA charts';
 
         if ($humo_option["url_rewrite"] == 'j') {
             $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person;
@@ -218,9 +276,9 @@ class FamilyModel
 
         // *** Added in july 2024 ***
         if ($humo_option["url_rewrite"] == 'j') {
-            $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person.'&amp;dnachart=mtdna';
+            $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person . '&amp;dnachart=mtdna';
         } else {
-            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person.'&amp;dnachart=mtdna';
+            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;dnachart=mtdna';
         }
         $data['header_link'][] = $link;
         $data['header_active'][] = $name == 'DNA charts' ? 'active' : '';
@@ -258,7 +316,7 @@ class FamilyModel
     }
 
     // *** Used in family script: show/ hide Google maps ***
-    function getMapsPresentation()
+    function getMapsPresentation(): string
     {
         // TODO remove global
         global $dbh, $user;

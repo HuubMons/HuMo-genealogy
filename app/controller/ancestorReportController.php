@@ -8,11 +8,11 @@ class AncestorReportController
         $this->dbh = $dbh;
     }
 
-    public function list($tree_id)
+    public function list($tree_id): array
     {
         $get_ancestorModel = new AncestorModel($this->dbh);
 
-        $main_person = $get_ancestorModel->getMainPerson();
+        $main_person = $get_ancestorModel->getMainPerson2();
         $rom_nr = $get_ancestorModel->getNumberRoman();
         $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor report', $tree_id, $main_person);
 

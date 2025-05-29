@@ -8,7 +8,7 @@ class AddressController
         $this->config = $config;
     }
 
-    public function detail()
+    public function detail(): array
     {
         $addressModel = new AddressModel($this->config);
 

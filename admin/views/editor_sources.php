@@ -19,7 +19,7 @@ if ($event_family) {
 
 // *** Process queries ***
 $editor_cls = new Editor_cls;
-$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
+$editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
 $db_functions->set_tree_id($tree_id);

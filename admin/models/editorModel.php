@@ -9,23 +9,20 @@ include_once(__DIR__ . "/../../include/language_date.php");
 include_once(__DIR__ . "/../../include/date_place.php");
 include_once(__DIR__ . "/../../include/language_event.php");
 
-class EditorModel
+class EditorModel extends AdminBaseModel
 {
-    private $dbh, $db_functions;
-    private $tree_id, $tree_prefix, $new_tree = false;
+    private $tree_prefix, $new_tree = false;
     private $pers_gedcomnumber, $person, $pers_alive = '', $add_person;
     private $search_id, $search_name;
     private $marriage; // TODO check $marriage. Not in use for all $marriage variables yet.
-    private $editor_cls, $humo_option, $userid;
+    private $editor_cls, $userid;
 
-    public function __construct($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option)
+    public function __construct($admin_config, $tree_prefix, $editor_cls)
     {
-        $this->dbh = $dbh;
-        $this->tree_id = $tree_id;
+        parent::__construct($admin_config);
+
         $this->tree_prefix = $tree_prefix;
-        $this->db_functions = $db_functions;
         $this->editor_cls = $editor_cls;
-        $this->humo_option = $humo_option;
 
         $this->userid = false;
         if (is_numeric($_SESSION['user_id_admin'])) {

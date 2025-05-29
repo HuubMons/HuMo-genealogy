@@ -138,6 +138,7 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
     $sql = $dbh->prepare("insert into humo_pw_retrieval(retrieval_userid, retrieval_pkey,retrieval_time,retrieval_status) values('$row->user_id','$key','$tm','pending')");
     $sql->execute();
 
+    //$humo_option = $this->humo_option; // Used in mail.php
     include_once(__DIR__ . '/../include/mail.php');
 
     // *** Get mail for password retrieval ***

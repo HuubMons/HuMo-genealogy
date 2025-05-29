@@ -324,6 +324,7 @@ class TreeIndexModel
 
         $text = '';
 
+        // TODO refactor
         if (!function_exists('tablerow')) {
             function tablerow($nr, $lastcol = false)
             {
@@ -374,6 +375,8 @@ class TreeIndexModel
             }
         }
 
+        // TODO refactor
+        // This is a function last_names() that is used in the last_names() function.
         if (!function_exists('last_names')) {
             function last_names($max)
             {

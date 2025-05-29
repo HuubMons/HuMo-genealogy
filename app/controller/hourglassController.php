@@ -1,7 +1,7 @@
 <?php
 class HourglassController
 {
-    public function getHourglass($dbh, $tree_id)
+    public function getHourglass($dbh, $tree_id): array
     {
         $descendantModel = new DescendantModel($dbh);
 

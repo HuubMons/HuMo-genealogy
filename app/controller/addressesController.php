@@ -8,7 +8,7 @@ class AddressesController
         $this->config = $config;
     }
 
-    public function list($link_cls, $uri_path)
+    public function list($link_cls, $uri_path): array
     {
         $addressesModel = new AddressesModel($this->config);
 

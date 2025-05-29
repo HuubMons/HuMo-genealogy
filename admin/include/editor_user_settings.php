@@ -1,4 +1,6 @@
 <?php
+// TODO: split into model & view files.
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;

@@ -1,5 +1,5 @@
 <?php
-class TreeCheckModel
+class TreeCheckModel extends AdminBaseModel
 {
     public function menu_tab()
     {

@@ -1,7 +1,7 @@
 <?php
 class FamilyController
 {
-    public function getFamily($dbh, $tree_id)
+    public function getFamily($dbh, $tree_id): array
     {
         $familyModel = new FamilyModel($dbh);
         $family_id = $familyModel->getFamilyId();

@@ -1,7 +1,7 @@
 <?php
 class AnniversaryController
 {
-    public function anniversary()
+    public function anniversary(): array
     {
         $anniversaryModel = new AnniversaryModel();
 

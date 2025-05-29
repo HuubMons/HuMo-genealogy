@@ -1,14 +1,7 @@
 <?php
-class MailformModel
+class MailformModel extends BaseModel
 {
-    private $db_functions;
-
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-
-    public function getFormdata()
+    public function getFormdata(): array
     {
         $mail_data["name"] = '';
         if (isset($_POST['mail_name'])) {
@@ -33,13 +26,13 @@ class MailformModel
         return $mail_data;
     }
 
-    public function mail_check($humo_option)
+    public function mail_check(): array
     {
         // *** Check block_spam_answer ***
         $mail_data["send_mail"] = false;
         $mail_data["correct_spam_answer"] = true;
         if (isset($_POST['send_mail'])) {
-            if (isset($_POST['mail_block_spam']) && strtolower($_POST['mail_block_spam']) == strtolower($humo_option["block_spam_answer"])) {
+            if (isset($_POST['mail_block_spam']) && strtolower($_POST['mail_block_spam']) == strtolower($this->humo_option["block_spam_answer"])) {
                 $mail_data["send_mail"] = true;
                 $mail_data["correct_spam_answer"] = true;
             } else {
@@ -57,7 +50,7 @@ class MailformModel
             }
         }
 
-        if ($humo_option["use_spam_question"] != 'y') {
+        if ($this->humo_option["use_spam_question"] != 'y') {
             $mail_data["send_mail"] = true;
         }
 
@@ -104,8 +97,7 @@ class MailformModel
             //echo __('Message: ').'<br>'.$_POST['mail_text'];
 
             // *** Use PhpMailer to send mail ***
-            //include_once(__DIR__ . '/../include/mail.php');
-            global $humo_option; // TODO improve code.
+            $humo_option = $this->humo_option; // Used in mail.php
             include_once(__DIR__ . '/../../include/mail.php');
 
             // *** Changed july 2024: Set who the message is to be sent from ***

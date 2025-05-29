@@ -1,7 +1,7 @@
 <?php
-class ResetPasswordModel
+class ResetPasswordModel extends BaseModel
 {
-    public function get_activation_key()
+    public function get_activation_key(): string
     {
         $activation_key = '';
         if (isset($_GET['ak']) && ctype_alnum($_GET['ak'])) {
@@ -13,9 +13,9 @@ class ResetPasswordModel
         return $activation_key;
     }
 
-    public function get_userid()
+    public function get_userid(): int
     {
-        $userid = '';
+        $userid = 0;
         if (isset($_GET['userid']) && is_numeric($_GET['userid'])) {
             $userid = $_GET['userid'];
         }
@@ -25,7 +25,7 @@ class ResetPasswordModel
         return $userid;
     }
 
-    public function check_input($dbh, $humo_option)
+    public function check_input(): string
     {
         $check_input_msg = '';
         if (isset($_POST['user_mail'])) {
@@ -35,13 +35,13 @@ class ResetPasswordModel
                 $check_input_msg = __('Your email address is not correct') . '<br>';
             }
 
-            if (isset($_POST['register_block_spam']) && strtolower($_POST['register_block_spam']) === strtolower($humo_option["block_spam_answer"])) {
+            if (isset($_POST['register_block_spam']) && strtolower($_POST['register_block_spam']) === strtolower($this->humo_option["block_spam_answer"])) {
                 //
             } else {
                 $check_input_msg .= __('Wrong answer to the block-spam question! Try again...') . '<br>';
             }
 
-            $countmail = $dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail=:email");
+            $countmail = $this->dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail=:email");
             $countmail->bindValue(':email', $email, PDO::PARAM_STR);
             $countmail->execute();
             $row = $countmail->fetch(PDO::FETCH_OBJ);
@@ -55,13 +55,13 @@ class ResetPasswordModel
         return $check_input_msg;
     }
 
-    public function check_clicked_link($dbh, $userid, $activation_key)
+    public function check_clicked_link($userid, $activation_key): bool
     {
         // *** Check clicked linked in mail ***
         $message_activation = false;
         if (isset($_GET['ak']) && $_GET['ak'] != '') {
             $tm = time() - 86400; // Duration within which the key is valid is 86400 sec (=24 hours) - can be adjusted here 
-            $sql = $dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
+            $sql = $this->dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
                 WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
             $sql->bindParam(':userid', $userid, PDO::PARAM_STR, 10);
             $sql->bindParam(':ak', $activation_key, PDO::PARAM_STR, 32);
@@ -75,10 +75,10 @@ class ResetPasswordModel
         return $message_activation;
     }
 
-    public function check_table($dbh)
+    public function check_table(): void
     {
         if (isset($_POST['user_mail'])) {
-            $pw_table = $dbh->prepare("CREATE TABLE IF NOT EXISTS `humo_pw_retrieval` (
+            $pw_table = $this->dbh->prepare("CREATE TABLE IF NOT EXISTS `humo_pw_retrieval` (
                 `retrieval_userid` varchar(20) NOT NULL,
                 `retrieval_pkey` varchar(32) NOT NULL,
                 `retrieval_time` varchar(10) NOT NULL,
@@ -88,7 +88,7 @@ class ResetPasswordModel
         }
     }
 
-    public function get_activation_url()
+    public function get_activation_url(): string
     {
         $site_url = '';
         if (isset($_POST['user_mail'])) {
@@ -100,7 +100,7 @@ class ResetPasswordModel
         return $site_url;
     }
 
-    public function check_new_password($dbh,$userid,$activation_key)
+    public function check_new_password($userid, $activation_key): string
     {
         $message_password = '';
         if (isset($_POST['password']) && $_POST['password'] != '') {
@@ -108,7 +108,7 @@ class ResetPasswordModel
             $password2 = safe_text_db($_POST['password2']);
             $tm = time() - 86400;
 
-            $sql = $dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
+            $sql = $this->dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
                 WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
             $sql->bindParam(':userid', $userid, PDO::PARAM_STR, 10);
             $sql->bindParam(':ak', $activation_key, PDO::PARAM_STR, 32);

@@ -1,11 +1,19 @@
 <?php
 class GroupsController
 {
-    public function detail($dbh)
+    protected $admin_config;
+
+    public function __construct($admin_config)
     {
-        $groupsModel = new GroupsModel($dbh);
+        $this->admin_config = $admin_config;
+    }
+
+    public function detail(): array
+    {
+        $groupsModel = new GroupsModel($this->admin_config);
+
         $groupsModel->set_group_id();
-        $groupsModel->update_group($dbh);
+        $groupsModel->update_group();
         $groups['group_id'] = $groupsModel->get_group_id();
 
         return $groups;
