@@ -1,11 +1,19 @@
 <?php
 class FanchartController
 {
-    public function detail($dbh, $tree_id): array
+    private $config;
+
+    public function __construct($config)
     {
-        $get_fanchartModel = new FanchartModel($dbh);
-        $main_person = $get_fanchartModel->getMainPerson2();
-        $ancestor_header = $get_fanchartModel->getAncestorHeader('Fanchart', $tree_id, $main_person);
+        $this->config = $config;
+    }
+
+    public function detail($id): array
+    {
+        $get_fanchartModel = new FanchartModel($this->config);
+
+        $main_person = $get_fanchartModel->getMainPerson2($id);
+        $ancestor_header = $get_fanchartModel->getAncestorHeader('Fanchart', $main_person);
 
         $chosengen = $get_fanchartModel->get_chosengen();
         $fontsize = $get_fanchartModel->get_fontsize();

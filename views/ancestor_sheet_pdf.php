@@ -18,15 +18,13 @@ include_once(__DIR__ . '/layout_pdf.php');
 
 
 // TODO create seperate controller script.
-require_once  __DIR__ . "/../app/model/familyModel.php";
-require_once  __DIR__ . "/../app/model/ancestorModel.php";
-$get_ancestor = new AncestorModel($dbh);
-$data["main_person"] = $get_ancestor->getMainPerson();
+$get_ancestor = new AncestorModel($config);
+$data["main_person"] = $get_ancestor->getMainPerson2('');
 $rom_nr = $get_ancestor->getNumberRoman();
 
 $db_functions->set_tree_id($tree_id);
 
-$get_ancestors = $get_ancestor->get_ancestors($db_functions, $data["main_person"]);
+$get_ancestors = $get_ancestor->get_ancestors($data["main_person"]);
 $data = array_merge($data, $get_ancestors);
 
 
@@ -39,7 +37,7 @@ $db_functions->check_person($data["main_person"]);
 // if given a value for $trunc (the max nr of lines) it will truncate the string when max lines are reached
 // $str = the input string
 // $width = width of box (in characters)
-function parse_line($str, $width, $trunc, $bold = "")
+function parse_line($str, $width, $trunc, $bold = ""): array
 {
     global $pdf;
     //$result_array = $array();
@@ -83,7 +81,7 @@ if (__('&#134;') == '&#134;' or __('&#134;') == "†") {
     $dsign = "†";
 } else $dsign = "~";
 
-function data_array($id, $width, $height)
+function data_array($id, $width, $height): void
 {
     global $dbh, $db_functions, $data_array, $data, $dsign;
 
@@ -212,7 +210,7 @@ function data_array($id, $width, $height)
     }
 }
 
-function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellwidth)
+function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellwidth): void
 {
     global $dbh, $db_functions, $pdf, $pdf_font, $data_array, $posy, $posx, $data;
 

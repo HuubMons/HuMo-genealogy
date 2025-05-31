@@ -64,7 +64,9 @@ class ListModel extends BaseModel
                 $selectsort = "sort_birthplace";
                 $_SESSION['sort'] = $selectsort;
             }
-            //if($_GET['sort']=="sort_baptdate") { $selectsort="sort_baptdate"; $_SESSION['sort']=$selectsort; }
+            //if($_GET['sort']=="sort_baptdate") {
+            //  $selectsort="sort_baptdate"; $_SESSION['sort']=$selectsort;
+            //}
             if ($_GET['sort'] == "sort_deathdate") {
                 $selectsort = "sort_deathdate";
                 $_SESSION['sort'] = $selectsort;
@@ -73,7 +75,9 @@ class ListModel extends BaseModel
                 $selectsort = "sort_deathplace";
                 $_SESSION['sort'] = $selectsort;
             }
-            //if($_GET['sort']=="sort_burieddate") { $selectsort="sort_burieddate"; $_SESSION['sort']=$selectsort; }
+            //if($_GET['sort']=="sort_burieddate") {
+            //  $selectsort="sort_burieddate"; $_SESSION['sort']=$selectsort;
+            //}
         }
         return $selectsort;
     }
@@ -106,6 +110,12 @@ class ListModel extends BaseModel
         $change = false;
 
         $selection['pers_firstname'] = '';
+
+        // Test to remember old extended search values (session is reset in ListController.php).
+        //if (isset($_SESSION["save_selection"])) {
+        //    $selection = $_SESSION["save_selection"];
+        //}
+
         if (isset($_POST['pers_firstname'])) {
             $selection['pers_firstname'] = $_POST['pers_firstname'];
             //$selection['pers_firstname']=htmlentities($_POST['pers_firstname'],ENT_QUOTES,'UTF-8');
@@ -185,7 +195,7 @@ class ListModel extends BaseModel
             $change = true;
         }
 
-        // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. *** //
+        // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. ***
         $selection['birth_place'] = '';
         if (isset($_POST['birth_place'])) {
             $selection['birth_place'] = $_POST['birth_place'];

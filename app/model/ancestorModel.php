@@ -2,17 +2,14 @@
 
 /**
  * July 2023: refactor ancestor.php to MVC
+ * 
+ * This model is used by multiple ancestor reports (report/ chart/ sheet)
  */
-
-// *** This model is used by multiple ancestor reports (report/ chart/ sheet) ***
 
 class AncestorModel extends FamilyModel
 {
-    public function getMainPerson2()
+    public function getMainPerson2($id): string
     {
-        // TODO this global will be removed.
-        global $id;
-
         $main_person = 'I1'; // *** Mainperson of a family ***
 
         //if (isset($_GET["main_person"])) {
@@ -36,17 +33,17 @@ class AncestorModel extends FamilyModel
     }
 
     // The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
-    public function get_ancestors($db_functions, $pers_gedcomnumber)
+    public function get_ancestors($pers_gedcomnumber): array
     {
         // person 01
-        $personDb = $db_functions->get_person($pers_gedcomnumber);
+        $personDb = $this->db_functions->get_person($pers_gedcomnumber);
         $data["gedcomnumber"][1] = $personDb->pers_gedcomnumber;
         $pers_famc[1] = $personDb->pers_famc;
         $data["sexe"][1] = $personDb->pers_sexe;
         $parent_array[2] = '';
         $parent_array[3] = '';
         if ($pers_famc[1]) {
-            $parentDb = $db_functions->get_family($pers_famc[1]);
+            $parentDb = $this->db_functions->get_family($pers_famc[1]);
             $parent_array[2] = $parentDb->fam_man;
             $parent_array[3] = $parentDb->fam_woman;
             $data["marr_date"][2] = $parentDb->fam_marr_date;
@@ -65,7 +62,7 @@ class AncestorModel extends FamilyModel
             $pers_famc[$counter] = '';
             $data["sexe"][$counter] = '';
             if ($parent_array[$counter]) {
-                $personDb = $db_functions->get_person($parent_array[$counter]);
+                $personDb = $this->db_functions->get_person($parent_array[$counter]);
                 $data["gedcomnumber"][$counter] = $personDb->pers_gedcomnumber;
                 $pers_famc[$counter] = $personDb->pers_famc;
                 $data["sexe"][$counter] = $personDb->pers_sexe;
@@ -78,7 +75,7 @@ class AncestorModel extends FamilyModel
             $data["marr_date"][$Mcounter] = '';
             $data["marr_place"][$Mcounter] = '';
             if ($pers_famc[$counter]) {
-                $parentDb = $db_functions->get_family($pers_famc[$counter]);
+                $parentDb = $this->db_functions->get_family($pers_famc[$counter]);
                 $parent_array[$Mcounter] = $parentDb->fam_man;
                 $parent_array[$Fcounter] = $parentDb->fam_woman;
                 $data["marr_date"][$Mcounter] = $parentDb->fam_marr_date;
@@ -88,18 +85,18 @@ class AncestorModel extends FamilyModel
         return $data;
     }
 
-    function getAncestorHeader($name, $tree_id, $main_person)
+    function getAncestorHeader($name, $main_person): string
     {
-        global $humo_option, $uri_path, $link_cls;
+        global $uri_path, $link_cls;
 
         $data['header_active'] = array();
         $data['header_link'] = array();
         $data['header_text'] = array();
 
         $vars['id'] = $main_person;
-        //$link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
+        //$link = $link_cls->get_link($uri_path, 'ancestor_report', $this->tree_id, true, $vars);
         //$link .= 'screen_mode=ancestor_chart';
-        $link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, false, $vars);
+        $link = $link_cls->get_link($uri_path, 'ancestor_report', $this->tree_id, false, $vars);
         //$link .= 'screen_mode=ancestor_chart';
 
         $data['header_link'][] = $link;
@@ -107,29 +104,29 @@ class AncestorModel extends FamilyModel
         $data['header_text'][] = __('Ancestor report');
 
         // TODO improve paths and variables.
-        if ($humo_option["url_rewrite"] == 'j') {
-            $path = 'ancestor_chart/' . $tree_id . '/' . $main_person;
+        if ($this->humo_option["url_rewrite"] == 'j') {
+            $path = 'ancestor_chart/' . $this->tree_id . '/' . $main_person;
         } else {
-            $path = 'index.php?page=ancestor_chart?tree_id=' . $tree_id . '&amp;id=' . $main_person;
+            $path = 'index.php?page=ancestor_chart?tree_id=' . $this->tree_id . '&amp;id=' . $main_person;
         }
         $data['header_link'][] = $path;
         $data['header_active'][] = $name == 'Ancestor chart' ? 'active' : '';
         $data['header_text'][] = __('Ancestor chart');
 
-        if ($humo_option["url_rewrite"] == 'j') {
-            $path = 'ancestor_sheet/' . $tree_id . '/' . $main_person;
+        if ($this->humo_option["url_rewrite"] == 'j') {
+            $path = 'ancestor_sheet/' . $this->tree_id . '/' . $main_person;
         } else {
-            $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $tree_id . '&amp;id=' . $main_person;
+            $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $this->tree_id . '&amp;id=' . $main_person;
         }
         $data['header_link'][] = $path;
         $data['header_active'][] = $name == 'Ancestor sheet' ? 'active' : '';
         $data['header_text'][] = __('Ancestor sheet');
 
         // *** Fanchart ***
-        //$path = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
+        //$path = $link_cls->get_link($uri_path, 'fanchart', $this->tree_id, true);
         //$path .= 'id=' . $main_person;
         $vars['id'] = $main_person;
-        $path = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
+        $path = $link_cls->get_link($uri_path, 'fanchart', $this->tree_id, false, $vars);
 
         $data['header_link'][] = $path;
         $data['header_active'][] = $name == 'Fanchart' ? 'active' : '';

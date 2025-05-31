@@ -3,43 +3,63 @@ session_start();
 
 // *** Seperate file for PDF scripts. Copy of layout.php ***
 
-/** Dec. 2024: Added autoload.
- *    Name of class = SomethingClass.
- *    Name of script: SomethingClass.php ***
+// TODO check if PDF exports can be generated using index.php, then use this file as PDF view file.
+
+// TODO CREATE GENERAL AUTOLOAD FUNCTION
+// COPY FROM INDEX.PHP (except extra ../)
+/**
+ *  Dec. 2024: Added autoload.
+ *  Name of class = SomethingClass
+ *  Name of script: somethingClass.php ***
  */
-/*
+// TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php, layout_pdf.php.
 function custom_autoload($class_name)
 {
     // Examples of autoload files:
+    // app/model/ All scripts are autoloading.
     // app/model/adresModel.php
 
-    // *** At this moment only a few classes are autoloaded. Under construction ***
-    //$classes = array('xxxxx');
-    // If all classes are autoloading, array check of classes will be removed.
-    //if (in_array($class_name, $classes) || substr($class_name, -5) == 'Model') {
-    // First start autoload using model scripts.
-    if (substr($class_name, -5) == 'Model') {
-        $dirs = array('../app/model', 'test');
-        foreach ($dirs as $dir) {
-            $file = __DIR__ . '/' . $dir . '/' . lcfirst($class_name) . '.php';
-            if (file_exists($file)) {
-                require $file;
-                break;
-            }
-        }
+    // controller/ All scripts are autoloading.
+    // controller/addressController.php
+
+    // include/dbFunctions.php
+    // include/marriage_cls
+    // include/personCls.php
+    // include/calculateDates.php
+    // include/processLinks.php
+    // include/validateDate.php
+
+    // languages/languageCls.php
+
+    $include = array(
+        'CalculateDates',
+        'DbFunctions',
+        'GeneralSettings',
+        'MarriageCls',
+        'PersonCls',
+        'ProcessLinks',
+        'ValidateDate',
+        'Config'
+    );
+
+    if ($class_name == 'LanguageCls') {
+        require __DIR__ . '/../languages/languageCls.php';
+    } elseif (substr($class_name, -10) == 'Controller') {
+        require __DIR__ . '/../app/controller/' . lcfirst($class_name) . '.php';
+    } elseif (substr($class_name, -5) == 'Model') {
+        require __DIR__ . '/../app/model/' . lcfirst($class_name) . '.php';
+    } elseif (in_array($class_name, $include)) {
+        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('custom_autoload');
-*/
 
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 include_once(__DIR__ . '/../include/show_tree_text.php');
-include_once(__DIR__ . "/../include/dbFunctions.php");
-$db_functions = new Dbfunctions($dbh);
+$db_functions = new DbFunctions($dbh);
 
 include_once(__DIR__ . "/../include/safe.php");
 
-include_once(__DIR__ . "/../include/generalSettings.php");
 $GeneralSettings = new GeneralSettings();
 $user = $GeneralSettings->get_user_settings($dbh);
 $humo_option = $GeneralSettings->get_humo_option($dbh);
@@ -47,11 +67,20 @@ $humo_option = $GeneralSettings->get_humo_option($dbh);
 include_once(__DIR__ . "/../include/get_visitor_ip.php");
 $visitor_ip = visitorIP();
 
-include_once(__DIR__ . '/../include/personCls.php');
-include_once(__DIR__ . '/../include/marriageCls.php');
-include_once(__DIR__ . '/../include/calculateDates.php');
+// *** Added in nov 2023 (used in outline_report_pdf.php) ***
+$tree_id = 0;
+if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
+    $tree_id = $_POST['tree_id'];
+}
 
-
+// TODO this is a copy from INDEX.PHP
+$config = array(
+    "dbh" => $dbh,
+    "db_functions" => $db_functions,
+    "tree_id" => $tree_id,
+    "user" => $user,
+    "humo_option" => $humo_option
+);
 
 // *** Debug HuMo-genealogy front pages ***
 if ($humo_option["debug_front_pages"] == 'y') {
@@ -124,7 +153,7 @@ if ($humo_option["url_rewrite"] == "j" && $tmp_path) {
 }
 
 // *** To be used to show links in several pages ***
-include_once(__DIR__ . '/../include/processLinks.php');
+//include_once(__DIR__ . '/../include/processLinks.php');
 $link_cls = new ProcessLinks($uri_path);
 
 // *** For PDF reports: remove html tags en decode ' characters ***
@@ -141,9 +170,3 @@ $pdf_font = 'DejaVu';
 //define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
 require(__DIR__ . '/../include/tfpdf/tfpdf.php');
 require(__DIR__ . '/../include/tfpdf/tfpdfextend.php');
-
-// *** Added in nov 2023 (used in outline_report_pdf.php) ***
-$tree_id = 0;
-if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
-    $tree_id = $_POST['tree_id'];
-}

@@ -2066,7 +2066,6 @@ class PersonCls
                     $temp = "bapt_add";
                 }
 
-
                 // *** Show baptise witnesses ***
                 if ($personDb->pers_gedcomnumber) {
                     //witness($gedcomnr, $event_kind, $event_connect_kind = 'person')

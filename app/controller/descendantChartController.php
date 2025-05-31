@@ -1,9 +1,16 @@
 <?php
 class DescendantChartController
 {
-    public function getFamily($dbh, $tree_id): array
+    private $config;
+
+    public function __construct($config)
     {
-        $descendantModel = new DescendantModel($dbh);
+        $this->config = $config;
+    }
+
+    public function getFamily(): array
+    {
+        $descendantModel = new DescendantModel($this->config);
 
         $descendantModel->setHourglass(false);
 
@@ -21,7 +28,7 @@ class DescendantChartController
         //$descendant_report = $descendantModel->getDescendantReport();
         $descendant_report = true;
 
-        $descendant_header = $descendantModel->getDescendantHeader('Descendant chart', $tree_id, $family_id, $main_person);
+        $descendant_header = $descendantModel->getDescendantHeader('Descendant chart', $family_id, $main_person);
 
         // Also add these variables for hourglass in descendant_chart.php
         $dna = $descendantModel->getDNA();
@@ -31,8 +38,9 @@ class DescendantChartController
         $direction = $descendantModel->getDirection();
 
         //TODO remove temp. global.
-        global $db_functions, $data, $user;
-        $genarray = $descendantModel->Prepare_genarray($db_functions, $data, $user);
+        //global $db_functions, $data, $user;
+        global $data;
+        $genarray = $descendantModel->Prepare_genarray($data);
         $genarray = $descendantModel->generate($genarray);
 
         $hsize = $descendantModel->getHsize();
@@ -48,7 +56,7 @@ class DescendantChartController
         $base_person_gednr = $descendantModel->getBasepersongednr($dna);
         */
 
-        $base_person = $descendantModel->getBasePerson($db_functions, $main_person);
+        $base_person = $descendantModel->getBasePerson($main_person);
 
         //"base_person_famc" => $base_person_famc,
         //"base_person_sexe" => $base_person_sexe,

@@ -64,6 +64,7 @@ function custom_autoload($class_name)
     $include = array(
         'CalculateDates',
         'DbFunctions',
+        'GeneralSettings',
         'MarriageCls',
         'PersonCls',
         'ProcessLinks',
@@ -98,7 +99,7 @@ include_once(__DIR__ . "/include/db_login.php"); // Connect to database
 include_once(__DIR__ . "/include/show_tree_text.php");
 include_once(__DIR__ . "/include/safe.php");
 
-include_once(__DIR__ . "/include/generalSettings.php");
+//include_once(__DIR__ . "/include/generalSettings.php");
 $GeneralSettings = new GeneralSettings();
 $user = $GeneralSettings->get_user_settings($dbh);
 $humo_option = $GeneralSettings->get_humo_option($dbh);
@@ -224,17 +225,17 @@ if ($index['page'] == 'address') {
     $controllerObj = new AddressesController($config);
     $data = $controllerObj->list($link_cls, $uri_path);
 } elseif ($index['page'] == 'ancestor_report') {
-    $controllerObj = new AncestorReportController($dbh);
-    $data = $controllerObj->list($tree_id);
+    $controllerObj = new AncestorReportController($config);
+    $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_report_rtf') {
-    $controllerObj = new AncestorReportController($dbh);
-    $data = $controllerObj->list($tree_id);
+    $controllerObj = new AncestorReportController($config);
+    $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_chart') {
-    $controllerObj = new AncestorChartController($dbh, $db_functions);
-    $data = $controllerObj->list($tree_id);
+    $controllerObj = new AncestorChartController($config);
+    $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_sheet') {
-    $controllerObj = new AncestorSheetController($dbh, $db_functions);
-    $data = $controllerObj->list($tree_id);
+    $controllerObj = new AncestorSheetController($config);
+    $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'anniversary') {
     //TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
@@ -247,19 +248,19 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'cookies') {
     //
 } elseif ($index['page'] == 'descendant_chart') {
-    $controllerObj = new DescendantChartController();
-    $data = $controllerObj->getFamily($dbh, $tree_id);
+    $controllerObj = new DescendantChartController($config);
+    $data = $controllerObj->getFamily();
 } elseif ($index['page'] == 'family_rtf') {
     //
 } elseif ($index['page'] == 'family') {
-    $controllerObj = new FamilyController();
-    $data = $controllerObj->getFamily($dbh, $tree_id);
+    $controllerObj = new FamilyController($config);
+    $data = $controllerObj->getFamily();
 } elseif ($index['page'] == 'fanchart') {
     // TODO refactor
     require_once(__DIR__ . "/include/fanchart/persian_log2vis.php");
 
-    $controllerObj = new FanchartController();
-    $data = $controllerObj->detail($dbh, $tree_id);
+    $controllerObj = new FanchartController($config);
+    $data = $controllerObj->detail($id);
 } elseif ($index['page'] == 'help') {
     //
 } elseif ($index['page'] == 'hourglass') {
@@ -328,8 +329,8 @@ if ($index['page'] == 'address') {
     $controllerObj = new ResetPasswordController($config);
     $resetpassword = $controllerObj->detail();
 } elseif ($index['page'] == 'outline_report') {
-    $controllerObj = new OutlineReportController();
-    $data = $controllerObj->getOutlineReport($dbh, $tree_id, $humo_option);
+    $controllerObj = new OutlineReportController($config);
+    $data = $controllerObj->getOutlineReport();
 } elseif ($index['page'] == 'user_settings') {
     // TODO refactor
     include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");

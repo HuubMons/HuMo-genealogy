@@ -167,7 +167,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
             <!-- Advanced search box -->
             <?php if ($list["adv_search"] == true) { ?>
                 <div class="row ms-md-1">
-                    <div class="col-sm-3 <?= $selection['pers_firstname'] ? ' bg-primary-subtle' : '';?>">
+                    <div class="col-sm-3 <?= $selection['pers_firstname'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('First name'); ?>:
 
                         <div class="input-group mb-3">
@@ -190,7 +190,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         }
                     ?>
 
-                        <div class="col-sm-auto">
+                        <div class="col-sm-auto <?= $pers_prefix ? ' bg-primary-subtle' : ''; ?>">
                             <?= ucfirst(__('prefix')); ?>:
                             <div class="input-group mb-3">
                                 <div class="input-group-text">
@@ -201,7 +201,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                             </div>
                         </div>
 
-                        <div class="col-sm-auto">
+                        <div class="col-sm-auto <?= $selection['pers_lastname'] ? ' bg-primary-subtle' : ''; ?>">
                             <?= __('Last name'); ?>:
                             <div class="input-group mb-3">
                                 <?php /*
@@ -225,7 +225,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     <?php } ?>
 
                     <!-- GEDCOM number -->
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 <?= $selection['gednr'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('gedcomnumber (ID)')); ?>:
                         <div class="input-group mb-3">
                             <select class="form-select form-select-sm" name="part_gednr" id="inputGroupGedcomnumber">
@@ -239,7 +239,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                 </div>
 
                 <div class="row ms-md-1">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['birth_year'] || $selection['birth_year_end'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:
                         <div class="input-group mb-3">
                             <input type="text" class="form-control form-control-sm" name="birth_year" value="<?= safe_text_show($selection['birth_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
@@ -247,7 +247,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['birth_place'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_birth_place" class="form-select form-select-sm">
@@ -259,7 +259,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         </div>
                     </div>
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 <?= $selection['death_year'] || $selection['death_year_end'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?>:
                         <div class="input-group mb-3">
                             <input type="text" class="form-control form-control-sm" name="death_year" value="<?= safe_text_show($selection['death_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
@@ -267,7 +267,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['death_place'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_death_place" class="form-select form-select-sm">
@@ -294,7 +294,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
                 <div class="row ms-md-1">
                     <!-- Research status -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['parent_status'] != '' && $selection['parent_status'] != 'allpersons' ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Research status:'); ?>
                         <select name="parent_status" class="form-select form-select-sm">
                             <option value="noparents" <?php if ($selection['parent_status'] == "noparents") echo 'selected'; ?>><?= __('parents unknown'); ?></option>
@@ -305,7 +305,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
 
                     <!-- Text -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['text'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Text'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_text" class="form-select form-select-sm">
@@ -318,7 +318,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
 
                     <!-- Profession -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['pers_profession'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Profession'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_profession" class="form-select form-select-sm">
@@ -331,7 +331,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
 
                     <!-- Own code -->
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 <?= $selection['own_code'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Own code'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_own_code" class="form-select form-select-sm">
@@ -345,7 +345,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                 </div>
 
                 <div class="row ms-md-1">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['sexe'] != '' && $selection['sexe'] != 'both' ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Choose sex:'); ?>
                         <select size="1" name="sexe" class="form-select form-select-sm">
                             <option value="both"><?= __('All'); ?></option>
@@ -356,7 +356,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
 
                     <!-- Living place -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['pers_place'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Place'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_place" class="form-select form-select-sm">
@@ -369,7 +369,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
 
                     <!-- Zip code -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['zip_code'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Zip code'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_zip_code" class="form-select form-select-sm">
@@ -385,7 +385,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
                 <div class="row ms-md-1">
                     <!-- Witness -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['witness'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('witness')); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_witness" class="form-select form-select-sm">
@@ -397,7 +397,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['spouse_firstname'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Partner firstname'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_spouse_firstname" class="form-select form-select-sm">
@@ -409,7 +409,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['spouse_lastname'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Partner lastname'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_spouse_lastname" class="form-select form-select-sm">

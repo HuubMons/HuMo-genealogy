@@ -39,11 +39,12 @@ class GedcomCls
         /* Insert a temporary line into database to get latest id.
         *  This is done because table can be empty when reloading GEDCOM file...
         *  Even in an empty table, latest id can be a high number...
+        *  And: LastInsertId() can't be used for 1 selected table (without insert).
+        *  May 2025: even AI suggested to do this.
         */
         $dbh->query("INSERT INTO humo_events SET event_tree_id='" . $tree_id . "'");
         $this->calculated_event_id = $dbh->lastInsertId();
         $dbh->query("DELETE FROM humo_events WHERE event_id='" . $this->calculated_event_id . "'");
-        // TODO: try query "SELECT LAST_INSERT_ID()"
 
         $dbh->query("INSERT INTO humo_connections SET connect_tree_id='" . $tree_id . "'");
         $this->calculated_connect_id = $dbh->lastInsertId();
@@ -4071,7 +4072,6 @@ class GedcomCls
             $this->dbh->query($sql);
         }
 
-        //echo '!!!!'.$this->nrsource.'<br>';
         // *** Save sources ***
         if ($this->nrsource > 0) {
             for ($i = 1; $i <= $this->nrsource; $i++) {
@@ -4099,7 +4099,6 @@ class GedcomCls
                     source_new_datetime = '" . date('Y-m-d H:i:s', strtotime($this->source['new_date'][$i] . ' ' . $this->source['new_time'][$i]))  . "'
                     " . $this->changed_datetime('source_changed_datetime', $this->source['changed_date'][$i], $this->source['changed_time'][$i]);
 
-                //echo $sql.' FAM<br>';
                 $this->dbh->query($sql);
             }
             //$source_id=$this->dbh->lastInsertId();

@@ -4,28 +4,22 @@
  * July 2023: refactor family script to MVC
  */
 
-// TODO check these includes. Move to controllers?
-// Or: add them in constructor? IN CLASS:
-//public function __construct() {
-//  include_once 'x.php'; // Include database configuration
-//}
-include_once(__DIR__ . '/../../include/language_date.php');
-include_once(__DIR__ . '/../../include/language_event.php');
-include_once(__DIR__ . '/../../include/date_place.php');
-include_once(__DIR__ . '/../../include/process_text.php');
-include_once(__DIR__ . '/../../include/show_sources.php');
-include_once(__DIR__ . '/../../include/witness.php');
-include_once(__DIR__ . '/../../include/show_addresses.php');
-include_once(__DIR__ . '/../../include/showMedia.php');
-include_once(__DIR__ . '/../../include/show_quality.php');
-
-class FamilyModel
+class FamilyModel extends BaseModel
 {
-    private $dbh;
-
-    public function __construct($dbh)
+    public function __construct($config)
     {
-        $this->dbh = $dbh;
+        parent::__construct($config);
+
+        // TODO check these includes. Move to controllers?
+        include_once(__DIR__ . '/../../include/language_date.php');
+        include_once(__DIR__ . '/../../include/language_event.php');
+        include_once(__DIR__ . '/../../include/date_place.php');
+        include_once(__DIR__ . '/../../include/process_text.php');
+        include_once(__DIR__ . '/../../include/show_sources.php');
+        include_once(__DIR__ . '/../../include/witness.php');
+        include_once(__DIR__ . '/../../include/show_addresses.php');
+        include_once(__DIR__ . '/../../include/showMedia.php');
+        include_once(__DIR__ . '/../../include/show_quality.php');
     }
 
     public function getFamilyId(): string
@@ -69,18 +63,15 @@ class FamilyModel
     // *** Compact or expanded view ***
     public function getFamilyExpanded(): string
     {
-        // TODO remove global
-        global $user;
-
         $family_expanded = 'compact'; // *** Default value ***
 
         // *** Default setting is selected by administrator ***
-        if ($user['group_family_presentation'] == 'compact') {
+        if ($this->user['group_family_presentation'] == 'compact') {
             $family_expanded = 'compact';
-        } elseif ($user['group_family_presentation'] == 'expanded' || $user['group_family_presentation'] == 'expanded1') {
+        } elseif ($this->user['group_family_presentation'] == 'expanded' || $this->user['group_family_presentation'] == 'expanded1') {
             // expanded = backwards compatible only.
             $family_expanded = 'expanded1';
-        } elseif ($user['group_family_presentation'] == 'expanded2') {
+        } elseif ($this->user['group_family_presentation'] == 'expanded2') {
             $family_expanded = 'expanded2';
         }
 
@@ -100,14 +91,12 @@ class FamilyModel
     // *** Source presentation selected by user, only valid values are: title/ footnote/ hide ***
     public function getSourcePresentation(): string
     {
-        // TODO remove global
-        global $user;
         $source_presentation_array = array('title', 'footnote', 'hide');
         if (isset($_GET['source_presentation']) && in_array($_GET['source_presentation'], $source_presentation_array)) {
             $_SESSION['save_source_presentation'] = $_GET["source_presentation"];
         }
         // *** Default setting is selected by administrator ***
-        $source_presentation = $user['group_source_presentation'];
+        $source_presentation = $this->user['group_source_presentation'];
         if (isset($_SESSION['save_source_presentation']) && in_array($_SESSION['save_source_presentation'], $source_presentation_array)) {
             $source_presentation = $_SESSION['save_source_presentation'];
         } else {
@@ -135,14 +124,12 @@ class FamilyModel
     // *** Show/ hide texts ***
     public function getTextPresentation(): string
     {
-        // TODO remove global
-        global $user;
         $text_presentation_array = array('show', 'hide', 'popup');
         if (isset($_GET['text_presentation']) && in_array($_GET['text_presentation'], $text_presentation_array)) {
             $_SESSION['save_text_presentation'] = $_GET["text_presentation"];
         }
         // *** Default setting is selected by administrator ***
-        $text_presentation = $user['group_text_presentation'];
+        $text_presentation = $this->user['group_text_presentation'];
         if (isset($_SESSION['save_text_presentation']) && in_array($_SESSION['save_text_presentation'], $text_presentation_array)) {
             $text_presentation = $_SESSION['save_text_presentation'];
         }
@@ -246,17 +233,17 @@ class FamilyModel
         return $descendant_report;
     }
 
-    function getDescendantHeader($name, $tree_id, $family_id, $main_person): string
+    function getDescendantHeader($name, $family_id, $main_person): string
     {
         // TODO remove global
-        global $humo_option, $link_cls, $uri_path;
+        global $link_cls, $uri_path;
 
         $data['header_active'] = array();
         $data['header_link'] = array();
         $data['header_text'] = array();
 
         $vars['pers_family'] = $family_id;
-        $path_tmp = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+        $path_tmp = $link_cls->get_link($uri_path, 'family', $this->tree_id, true, $vars);
         $path_tmp .= "main_person=" . $main_person . '&amp;descendant_report=1';
         $data['header_link'][] = $path_tmp;
         $data['header_active'][] = $name == 'Descendant report' ? 'active' : '';
@@ -264,27 +251,27 @@ class FamilyModel
 
         if (isset($_GET['dnachart'])) $name = 'DNA charts';
 
-        if ($humo_option["url_rewrite"] == 'j') {
-            $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person;
-            //$link = 'descendant_chart/' . $tree_id . '/' . $family_id . '/' . $main_person;
+        if ($this->humo_option["url_rewrite"] == 'j') {
+            $link = 'descendant_chart/' . $this->tree_id . '/' . $family_id . '?main_person=' . $main_person;
+            //$link = 'descendant_chart/' . $this->tree_id . '/' . $family_id . '/' . $main_person;
         } else {
-            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person;
+            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $this->tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person;
         }
         $data['header_link'][] = $link;
         $data['header_active'][] = $name == 'Descendant chart' ? 'active' : '';
         $data['header_text'][] = __('Descendant chart');
 
         // *** Added in july 2024 ***
-        if ($humo_option["url_rewrite"] == 'j') {
-            $link = 'descendant_chart/' . $tree_id . '/' . $family_id . '?main_person=' . $main_person . '&amp;dnachart=mtdna';
+        if ($this->humo_option["url_rewrite"] == 'j') {
+            $link = 'descendant_chart/' . $this->tree_id . '/' . $family_id . '?main_person=' . $main_person . '&amp;dnachart=mtdna';
         } else {
-            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;dnachart=mtdna';
+            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $this->tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;dnachart=mtdna';
         }
         $data['header_link'][] = $link;
         $data['header_active'][] = $name == 'DNA charts' ? 'active' : '';
         $data['header_text'][] = __('DNA Charts');
 
-        $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
+        $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $this->tree_id, true);
         $path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
         $data['header_link'][] = $path_tmp;
         $data['header_active'][] = $name == 'Outline report' ? 'active' : '';
@@ -318,11 +305,8 @@ class FamilyModel
     // *** Used in family script: show/ hide Google maps ***
     function getMapsPresentation(): string
     {
-        // TODO remove global
-        global $dbh, $user;
-
         // *** Default setting is selected by administrator ***
-        $maps_presentation = $user['group_maps_presentation'];
+        $maps_presentation = $this->user['group_maps_presentation'];
 
         $maps_presentation_array = array('show', 'hide');
         if (isset($_GET['maps_presentation']) && in_array($_GET['maps_presentation'], $maps_presentation_array)) {

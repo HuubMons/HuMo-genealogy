@@ -6,7 +6,7 @@
 
 class GeneralSettings
 {
-    public function get_humo_option($dbh)
+    public function get_humo_option($dbh): array
     {
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
@@ -578,7 +578,7 @@ class GeneralSettings
         return $userDb;
     }
 
-    public function get_user_settings($dbh)
+    public function get_user_settings($dbh): array
     {
         $userDb = $this->get_user($dbh);
 
