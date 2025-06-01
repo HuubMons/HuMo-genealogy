@@ -264,14 +264,14 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'help') {
     //
 } elseif ($index['page'] == 'hourglass') {
-    $controllerObj = new HourglassController();
-    $data = $controllerObj->getHourglass($dbh, $tree_id);
+    $controllerObj = new HourglassController($config);
+    $data = $controllerObj->getHourglass();
 } elseif ($index['page'] == 'latest_changes') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
 
-    $controllerObj = new LatestChangesController($dbh);
-    $data = $controllerObj->list($dbh, $tree_id);
+    $controllerObj = new LatestChangesController($config);
+    $data = $controllerObj->list();
 } elseif ($index['page'] == 'list') {
     // TODO refactor
     include_once(__DIR__ . "/include/language_date.php");
@@ -323,8 +323,8 @@ if ($index['page'] == 'address') {
     include_once(__DIR__ . "/include/language_date.php");
     include_once(__DIR__ . "/include/date_place.php");
 
-    $controllerObj = new RelationsController($dbh);
-    $relation = $controllerObj->getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language);
+    $controllerObj = new RelationsController($config);
+    $relation = $controllerObj->getRelations($person_cls, $link_cls, $uri_path, $selected_language);
 } elseif ($index['page'] == 'reset_password') {
     $controllerObj = new ResetPasswordController($config);
     $resetpassword = $controllerObj->detail();

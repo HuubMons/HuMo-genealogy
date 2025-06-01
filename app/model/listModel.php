@@ -111,7 +111,7 @@ class ListModel extends BaseModel
 
         $selection['pers_firstname'] = '';
 
-        // Test to remember old extended search values (session is reset in ListController.php).
+        // Test to remember old extended search values (session is unset in ListController.php).
         //if (isset($_SESSION["save_selection"])) {
         //    $selection = $_SESSION["save_selection"];
         //}
@@ -608,7 +608,7 @@ class ListModel extends BaseModel
     public function getAdvSearch($selection): bool
     {
         $adv_search = false;
-        // *** Link from "names" list, automatically use advanced search ***
+        // *** Link from "names" list, automatically uses advanced search ***
         if (isset($_GET['part_lastname'])) {
             $_GET['adv_search'] = '1';
             $_SESSION["save_selection"] = $selection;
@@ -755,10 +755,6 @@ class ListModel extends BaseModel
 
     public function build_query(): array
     {
-        // *******************
-        // *** BUILD QUERY ***
-        // *******************
-
         $query = '';
         $count_qry = '';
 

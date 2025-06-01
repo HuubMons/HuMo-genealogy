@@ -1,7 +1,7 @@
 <?php
-class LatestChangesModel
+class LatestChangesModel extends BaseModel
 {
-    public function listChanges($dbh, $tree_id)
+    public function listChanges(): array
     {
         // *** EXAMPLE of a UNION querie ***
         //$qry = "(SELECT * FROM humo1_person ".$query.') ';
@@ -9,19 +9,11 @@ class LatestChangesModel
         //$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
         //$qry.= " ORDER BY pers_lastname, pers_firstname";
 
-        /*
-        $person_qry = "(SELECT *, pers_changed_datetime AS changed_date FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL)
-            UNION (SELECT *, pers_new_datetime AS changed_date FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL)";
-        $person_qry .= " ORDER BY changed_date DESC LIMIT 0,100";
-        */
-
         // *** Only show persons if they have a changed or new datetime ***
         $person_qry = "(SELECT *, pers_changed_datetime AS changed_date FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NOT NULL)
+            WHERE pers_tree_id='" . $this->tree_id . "' AND pers_changed_datetime IS NOT NULL)
             UNION (SELECT *, pers_new_datetime AS changed_date FROM humo_persons
-            WHERE pers_tree_id='" . $tree_id . "' AND pers_changed_datetime IS NULL AND pers_new_datetime!='1970-01-01 00:00:01')";
+            WHERE pers_tree_id='" . $this->tree_id . "' AND pers_changed_datetime IS NULL AND pers_new_datetime!='1970-01-01 00:00:01')";
         $person_qry .= " ORDER BY changed_date DESC LIMIT 0,100";
 
         $search_name = '';
@@ -42,12 +34,11 @@ class LatestChangesModel
                 WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
                     OR event_event LIKE '%" . safe_text_db($search_name) . "%')
                     AND ((pers_changed_datetime IS NOT NULL) OR (pers_new_datetime IS NOT NULL))
-                    AND pers_tree_id='" . $tree_id . "'
+                    AND pers_tree_id='" . $this->tree_id . "'
                 GROUP BY pers_id
                 )
             ) as humo_persons1
-            ON humo_persons1.pers_id = humo_persons2.pers_id
-            ";
+            ON humo_persons1.pers_id = humo_persons2.pers_id";
 
             // *** Order by pers_changed_date or pers_new_date, also order by pers_changed_time or pers_new_time ***
             $person_qry .= " ORDER BY
@@ -55,7 +46,7 @@ class LatestChangesModel
                 humo_persons2.pers_changed_datetime, humo_persons2.pers_new_datetime) DESC LIMIT 0,100";
         }
 
-        $person_result = $dbh->query($person_qry);
+        $person_result = $this->dbh->query($person_qry);
         $i = 0;
         $changes = [];
         while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {

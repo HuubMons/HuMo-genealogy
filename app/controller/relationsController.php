@@ -1,9 +1,16 @@
 <?php
 class RelationsController
 {
-    public function getRelations($db_functions, $person_cls, $link_cls, $uri_path, $tree_id, $selected_language): array
+    private $config;
+
+    public function __construct($config)
     {
-        $RelationsModel = new RelationsModel($db_functions, $selected_language);
+        $this->config = $config;
+    }
+
+    public function getRelations($person_cls, $link_cls, $uri_path, $selected_language): array
+    {
+        $RelationsModel = new RelationsModel($this->config, $selected_language);
 
         $RelationsModel->resetValues();
         $RelationsModel->checkInput();
@@ -22,7 +29,7 @@ class RelationsController
         }
 
         // *** Process standard calculation ***
-        $RelationsModel->process_standard_calculation($tree_id, $link_cls, $uri_path);
+        $RelationsModel->process_standard_calculation($link_cls, $uri_path);
 
         // *** Process extended calculation ***
         if (isset($_POST["extended"]) || isset($_POST["next_path"])) {
@@ -41,8 +48,8 @@ class RelationsController
         $relation = array_merge($standard_extended, $relation);
 
         // http://localhost/HuMo-genealogy/family/3/F116?main_person=I202
-        $relation['fam_path'] = $link_cls->get_link($uri_path, 'family', $tree_id, true);
-        $relation['rel_path'] = $link_cls->get_link($uri_path, 'relations', $tree_id);
+        $relation['fam_path'] = $link_cls->get_link($uri_path, 'family', $this->config['tree_id'], true);
+        $relation['rel_path'] = $link_cls->get_link($uri_path, 'relations', $this->config['tree_id']);
 
         return $relation;
     }

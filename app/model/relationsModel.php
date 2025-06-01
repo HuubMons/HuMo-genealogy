@@ -1,7 +1,7 @@
 <?php
-class RelationsModel
+class RelationsModel extends BaseModel
 {
-    private $db_functions, $selected_language;
+    private $selected_language;
 
     private $search_name1 = '', $search_name2 = '';
     private $search_gednr1 = '', $search_gednr2 = '';
@@ -57,9 +57,9 @@ class RelationsModel
         'dutch_text' => ''
     ];
 
-    public function __construct($db_functions, $selected_language)
+    public function __construct($config, $selected_language)
     {
-        $this->db_functions = $db_functions;
+        parent::__construct($config);
         $this->selected_language = $selected_language;
     }
 
@@ -80,7 +80,7 @@ class RelationsModel
         }
     }
 
-    public function get_variables()
+    public function get_variables(): array
     {
         $relation = $this->relation;
 
@@ -117,7 +117,7 @@ class RelationsModel
     }
 
     // *** Several variables used double. For standard and marital relationship calculator. ***
-    public function get_variables_standard_extended()
+    public function get_variables_standard_extended(): array
     {
         // TODO jan. 2025 for now just add all variables to "standard_extended" array. Must be refactored.
         $relation['standard_extended'] = $this->relation;
@@ -154,7 +154,7 @@ class RelationsModel
         return $relation;
     }
 
-    public function set_control_variables()
+    public function set_control_variables(): void
     {
         //$this->start_calculation = isset($_POST["calculator"]) || isset($_POST["switch"]); // Jan. 2025: doesn't work properly.
         $this->start_calculation = isset($_POST["calculator"]);
@@ -179,7 +179,7 @@ class RelationsModel
         }
     }
 
-    public function getSelectedPersons($person_cls)
+    public function getSelectedPersons($person_cls): void
     {
         // *** GEDCOM number: must be pattern like: Ixxxx ***
         $pattern = '/^^[a-z,A-Z][0-9]{1,}$/';
@@ -232,7 +232,7 @@ class RelationsModel
         }
     }
 
-    public function getNames()
+    public function getNames(): void
     {
         // *** Person 1 ***
         if (isset($_POST["search_name"]) && !isset($_POST["switch"])) {
@@ -259,7 +259,7 @@ class RelationsModel
         }
     }
 
-    public function getGEDCOMnumbers()
+    public function getGEDCOMnumbers(): void
     {
         if (isset($_POST["search_gednr"]) && !isset($_POST["switch"])) {
             $this->search_gednr1 = strtoupper(safe_text_db($_POST['search_gednr']));
@@ -284,7 +284,7 @@ class RelationsModel
         }
     }
 
-    public function switchPersons()
+    public function switchPersons(): void
     {
         // *** Switch person 1 and 2 ***
         if (isset($_POST["switch"])) {
@@ -313,14 +313,14 @@ class RelationsModel
         }
     }
 
-    public function process_standard_calculation($tree_id, $link_cls, $uri_path)
+    public function process_standard_calculation($link_cls, $uri_path): void
     {
         if ($this->start_calculation && $this->search_results) {
             $vars['pers_family'] = $this->relation['family_id1'];
-            $this->link1 = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+            $this->link1 = $link_cls->get_link($uri_path, 'family', $this->tree_id, true, $vars);
 
             $vars['pers_family'] = $this->relation['family_id2'];
-            $this->link2 = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+            $this->link2 = $link_cls->get_link($uri_path, 'family', $this->tree_id, true, $vars);
 
             // *** Used in sentence: Firstname Lastname IS 2nd cousin 4 times removed of husband of Firstname Lastname ***
             $this->language_is = ' ' . __('is') . ' ';
@@ -341,7 +341,7 @@ class RelationsModel
         }
     }
 
-    public function process_extended_calculation()
+    public function process_extended_calculation(): void
     {
         $firstcall1 = array();
         $firstcall1[0] = $this->relation["person1"] . "@fst@fst@fst" . $this->relation["person1"];
@@ -375,7 +375,7 @@ class RelationsModel
         $this->extended_calculator($firstcall1, $firstcall2);
     }
 
-    public function process_marriage_relationship()
+    public function process_marriage_relationship(): void
     {
         /**
          * Marital relationship
@@ -752,7 +752,7 @@ class RelationsModel
         }
     }
 
-    private function spanish_degrees($pers)
+    private function spanish_degrees($pers): string
     {
         $spantext = '';
         //if ($pers == 2) {
@@ -833,7 +833,7 @@ class RelationsModel
         return $spantext;
     }
 
-    private function calculate_ancestor($pers)
+    private function calculate_ancestor($pers): void
     {
         $ancestortext = '';
         $parent = $this->relation['sexe1'] == 'M' ? __('father') : __('mother');
@@ -1259,7 +1259,7 @@ class RelationsModel
         }
     }
 
-    private function dutch_ancestors($gennr)
+    private function dutch_ancestors($gennr): string
     {
         $ancestortext = '';
         $rest = '';
@@ -1313,7 +1313,7 @@ class RelationsModel
         return $ancestortext . $rest;
     }
 
-    private function calculate_descendant($pers)
+    private function calculate_descendant($pers): void
     {
         $child = $this->relation['sexe1'] == 'M' ? __('son') : __('daughter');
 
@@ -1767,7 +1767,7 @@ class RelationsModel
         }
     }
 
-    private function calculate_nephews($generX)
+    private function calculate_nephews($generX): void
     {
         // handed generations x is removed from common ancestor
         // *** Greek***
@@ -2142,7 +2142,7 @@ class RelationsModel
     }
 
     // handed generations y is removed from common ancestor
-    private function calculate_uncles($generY)
+    private function calculate_uncles($generY): void
     {
         if ($this->relation['sexe1'] == 'M') {
             $uncleaunt = __('uncle');
@@ -2639,7 +2639,7 @@ class RelationsModel
         }
     }
 
-    private function calculate_cousins($generX, $generY)
+    private function calculate_cousins($generX, $generY): void
     {
         if ($this->selected_language == "es") {
             $gendiff = abs($generX - $generY);
@@ -3398,7 +3398,7 @@ class RelationsModel
     }
 
     // TODO function used once
-    private function search_marital()
+    private function search_marital(): void
     {
         $pers_cls = new PersonCls;
 
@@ -3504,7 +3504,6 @@ class RelationsModel
 
         $this->count++;
         if ($this->count > 400000) {
-            //echo "Database too large!";
             $this->show_extended_message = "Database too large!";
             exit;
         }
@@ -3800,7 +3799,7 @@ class RelationsModel
         }
     }
 
-    private function ext_calc_join_path($workarr, $path2, $pers2, $ref)
+    private function ext_calc_join_path($workarr, $path2, $pers2, $ref): string
     {
         // we have two trails. one from person A to the common person and one from person B to the common person (A ---> common <---- B)
         // we have to create one trail from A to B
