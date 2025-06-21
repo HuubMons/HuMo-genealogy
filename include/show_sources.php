@@ -2,21 +2,17 @@
 
 /**
  * Show sources at birth, baptise, marriage, etc.
- */
-
-/**
+ * 
  * function show_sources2
  * $connect_kind = person/ family/ address
  * $connect_sub_kind = birth/ baptise/ etc.
  * $connect_connect_id = id (gedcomnumber or direct table id)
  */
-function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
+function show_sources2(string $connect_kind, string $connect_sub_kind, string $connect_connect_id)
 {
     global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $family_id, $uri_path;
-    global $pdf_source;
-    global $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
-    global $source_footnote_connect_id;
-    global $source_combiner;
+    global $pdf_source, $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
+    global $source_footnote_connect_id, $source_combiner;
     global $temp, $templ_person, $templ_relation; // *** PDF export ***
     global $data;
     $source_array['text'] = '';
@@ -24,11 +20,6 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
     $data["source_presentation"] = 'title';
     if (isset($_SESSION['save_source_presentation'])) {
         $data["source_presentation"] = $_SESSION['save_source_presentation'];
-    }
-
-    // *** Hide sources in mobile version ***
-    if ($screen_mode == 'mobile') {
-        $data["source_presentation"] = 'hide';
     }
 
     if ($user['group_sources'] != 'n' && $data["source_presentation"] != 'hide' && $screen_mode != 'STAR') {
@@ -46,14 +37,12 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
             }
 
             // *** PDF export. Jan. 2021: all sources are exported (used to be: only shared sources) ***
-            //if ($screen_mode=='PDF' AND $connectDb->connect_source_id AND $source_status=='publish'){
             if ($screen_mode == 'PDF' && $source_status === 'publish') {
                 // *** Show sources as footnotes ***
                 if (!isset($source_footnotes)) {
                     $source_footnotes[] = $sourceDb->source_id;
                     $pdf_footnotes[] = $pdf->AddLink();
                     $pdf_source[safe_text_db($connectDb->connect_source_id)] = safe_text_db($connectDb->connect_source_id);
-                    //echo 'TEST'.$connectDb->connect_source_id;
                 }
 
                 // *** Show text "Source by person/Sources by person" ***
@@ -86,7 +75,9 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
 
                 // *** New source (in footnotes) ***
                 if ($data["source_presentation"] == 'footnote') {
-                    if ($source_array['text']) $source_array['text'] .= '~'; // delimiter
+                    if ($source_array['text']) {
+                        $source_array['text'] .= '~';
+                    }
                     $source_array['text'] .= $j;
                 } else {
                     // *** Texts for all sources, except person_source and family_source ***
@@ -329,15 +320,18 @@ function show_sources2($connect_kind, $connect_sub_kind, $connect_connect_id)
     } // *** End of show sources ***
 
     //return $source_array;
-    if ($source_array['text']) return $source_array;
-    else return '';
+    if ($source_array['text']) {
+        return $source_array;
+    } else {
+        return '';
+    }
 }
 
 
 /**
  * Show source list if footnotes are selected
  */
-function show_sources_footnotes()
+function show_sources_footnotes(): string
 {
     global $dbh, $db_functions, $tree_id, $source_footnotes, $language, $user;
     global $uri_path, $source_footnote_connect_id, $humo_option;

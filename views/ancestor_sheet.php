@@ -22,8 +22,11 @@ $db_functions->check_person($data["main_person"]);
 // box_appearance (large, medium, small, and some other boxes...)
 function ancestor_chart_person($id, $box_appearance)
 {
-    global $dbh, $db_functions, $humo_option, $user;
-    global $data, $language, $screen_mode, $dirmark1, $dirmark2;
+    global $db_functions, $user, $data, $dirmark1, $dirmark2;
+
+    $person_name = new PersonName;
+    $person_privacy = new PersonPrivacy;
+    $person_popup = new PersonPopup;
 
     include_once(__DIR__ . "/../admin/include/media_inc.php");
 
@@ -33,37 +36,15 @@ function ancestor_chart_person($id, $box_appearance)
     }
 
     $text = '';
-    $popup = '';
 
     if ($data["gedcomnumber"][$id]) {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
-        $person_cls = new PersonCls($personDb);
-        $pers_privacy = $person_cls->get_privacy();
-        $name = $person_cls->person_name($personDb);
-
-        if ($screen_mode == "ancestor_sheet" or $language["dir"] == "rtl") {
-            $name2 = $name["name"];
-        } else {
-            //$name2=$name["short_firstname"];
-            $name2 = $name["name"];
-        }
-        $name2 = $dirmark2 . $name2 . $name["colour_mark"] . $dirmark2;
+        $pers_privacy = $person_privacy->get_privacy($personDb);
+        $name = $person_name->get_person_name($personDb, $pers_privacy);
+        $name2 = $dirmark2 . $name["name"] . $name["colour_mark"] . $dirmark2;
 
         // *** Replace pop-up icon by a text box ***
-        $replacement_text = '';
-        if ($screen_mode == "ancestor_sheet") {  // *** Ancestor sheet: name bold, id not ***
-            //$replacement_text.=$id.' <b>'.$name2.'</b>';
-            $replacement_text .= '<b>' . $name2 . '</b>';
-        } else {
-            //$replacement_text.='<b>'.$id.'</b>';  // *** Ancestor number: id bold, name not ***
-            $replacement_text .= '<span class="anc_box_name">' . $name2 . '</span>';
-        }
-
-        // >>>>> link to show rest of ancestor chart
-        //if ($box_appearance=='small' AND isset($personDb->pers_gedcomnumber) AND $screen_mode!="ancestor_sheet"){
-        if ($box_appearance == 'small' && isset($personDb->pers_gedcomnumber) && $personDb->pers_famc && $screen_mode != "ancestor_sheet") {
-            $replacement_text .= ' &gt;&gt;&gt;' . $dirmark1;
-        }
+        $replacement_text = '<b>' . $name2 . '</b>';
 
         if ($pers_privacy) {
             if ($box_appearance != 'ancestor_sheet_marr') {
@@ -181,16 +162,16 @@ function ancestor_chart_person($id, $box_appearance)
         if ($box_appearance == 'ancestor_sheet_marr' or $box_appearance == 'ancestor_header') { // cause in that case there is no link
             $text .= $replacement_text;
         } else {
-            $text .= $person_cls->person_popup_menu($personDb, true, $replacement_text, $extra_popup_text);
+            $text .= $person_popup->person_popup_menu($personDb, $pers_privacy, true, $replacement_text, $extra_popup_text);
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            //$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+            //$person_link = new PersonLink();
+            //$url=$person_link->get_person_link($personDb);
             //$text .= '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
         }
     }
     return $text . "\n";
 }
-// *** End of function ancestor_chart_person ***
 
 // Specific code for ancestor SHEET:
 // print names and details for each row in the table
@@ -247,14 +228,19 @@ function check_gen($start, $end)
 
 <table class="ancestor_sheet">
     <tr>
-        <th class="ancestor_head" colspan="8"> <!-- adjusted for IE7 -->
+        <th class="ancestor_head" colspan="8">
             <?= __('Ancestor sheet') . __(' of ') . ancestor_chart_person(1, "ancestor_header"); ?>
 
             <!-- Show pdf button -->
             <?php if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") { ?>
-                &nbsp;&nbsp; <form method="POST" action="<?= $uri_path; ?>views/ancestor_sheet_pdf.php?show_sources=1" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                    <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
+                <?php
+                if ($humo_option["url_rewrite"] == "j") {
+                    $link = $uri_path . 'ancestor_sheet_pdf/' . $tree_id . '?main_person=' . $data["main_person"];
+                } else {
+                    $link = $uri_path . 'index.php?page=ancestor_sheet_pdf&amp;tree_id=' . $tree_id . '&amp;main_person=' . $data["main_person"];
+                }
+                ?>
+                &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $link; ?>" style="display:inline-block; vertical-align:middle;">
                     <input type="hidden" name="screen_mode" value="ASPDF">
                     <input type="submit" class="btn btn-sm btn-info" value="<?= __('PDF'); ?>" name="submit">
                 </form>
@@ -269,7 +255,7 @@ function check_gen($start, $end)
         kwname(16, 32, 2, "kw-small", 1, "medium");
         kwname(16, 32, 2, "kw-small", 1, "ancestor_sheet_marr");
         kwname(17, 33, 2, "kw-small", 1, "medium");
-        echo '<tr><td colspan=8 class="ancestor_devider">&nbsp;</td></tr>';  // adjusted for IE7
+        echo '<tr><td colspan=8 class="ancestor_devider">&nbsp;</td></tr>';
     }
     $gen = 0;
     $gen = check_gen(8, 16);

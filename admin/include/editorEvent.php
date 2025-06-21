@@ -1185,7 +1185,7 @@ class EditorEvent
 
         // TODO check return (no longer needed?).
         return $text;
-    }   // end function show_event
+    }
 }
 
 

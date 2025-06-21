@@ -1819,5 +1819,4 @@
         </tr>
 
     </table><br>
-    <!-- End of person form -->
 </form>

@@ -286,7 +286,6 @@ $person_found = true;
                 </form>
             </div>
         </div>
-        <!-- end of check for new tree -->
     <?php } ?>
 </div>
 
@@ -677,14 +676,14 @@ if ($check_person) {
 
             echo '</div>';
             echo '</div>';
-            // *** End of browse pop-up ***
 
             // *** Example of family screen in pop-up ***
             if ($person) {
-                // Onderstaande person_url2 werkt niet altijd goed!
+                // TODO: test these lines.
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                //$popup_cls = new PersonCls;
-                //$url=$popup_cls->person_url2($person->pers_tree_id,$person->pers_famc,$person->pers_fams,$person->pers_gedcomnumber);
+                //$uri_path = '../'; // *** Needed if url_rewrite is enabled ***
+                //$person_link = new PersonLink;
+                //$url=$popup_cls->person_link($person);
                 //echo " <a href=\"#\" onClick=\"window.open('".$url."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
 
                 $pers_family = '';
@@ -937,7 +936,7 @@ if ($check_person) {
         ?>
     </div>
 <?php
-} // End person check
+}
 
 
 

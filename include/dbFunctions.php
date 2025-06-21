@@ -84,7 +84,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_user_log WHERE log_ip_address=:log_ip_address ORDER BY log_date DESC LIMIT 0,11
      * RETURNS      : True/ false.
      */
-    public function check_visitor($ip_address, $block = 'total')
+    public function check_visitor($ip_address, string $block = 'total'): bool
     {
         $allowed = true;
         $check_fails = 0;
@@ -130,7 +130,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_users (user_name=:user_name OR user_mail=:user_name) AND user_password=:user_password
      * RETURNS      : user data.
      */
-    public function get_user($user_name, $user_password)
+    public function get_user(string $user_name, string $user_password)
     {
         // *** First check password method using salt ***
         $sql = "SELECT * FROM humo_users WHERE (user_name=:user_name OR user_mail=:user_name) AND user_password_salted!=''";
@@ -175,7 +175,7 @@ class DbFunctions
      * QUERY        : SELECT user_name FROM humo_users WHERE user_id=:user_id
      * RETURNS      : user name.
      */
-    public function get_user_name($user_id)
+    public function get_user_name(int $user_id): string
     {
         $user_name = '';
         if ($user_id && is_numeric($user_id)) {
@@ -251,9 +251,7 @@ class DbFunctions
      * QUERY 1      : SELECT pers_id FROM humo_persons WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
      * RETURNS      : Check for valid person.
      */
-    //public function check_person(string $pers_gedcomnumber)
-    // *** If string is used, script could stop if value is NULL ***
-    public function check_person($pers_gedcomnumber)
+    public function check_person(string|null $pers_gedcomnumber)
     {
         if ($pers_gedcomnumber != '') {
             try {
@@ -283,9 +281,7 @@ class DbFunctions
      * QUERY 2      : SELECT pers_famc, pers_fams FROM humo_persons WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
      * RETURNS      : a single person.
      */
-    //public function get_person(string $pers_gedcomnumber, string $item = '')
-    // *** If string is used, script could stop if value is NULL ***
-    public function get_person($pers_gedcomnumber, string $item = '')
+    public function get_person(string|null $pers_gedcomnumber, string $item = '')
     {
         try {
             if ($item === 'famc-fams') {
@@ -334,7 +330,7 @@ class DbFunctions
      * QUERY        : SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id=:pers_tree_id
      * RETURNS      : Number of persons in family tree.
      */
-    public function count_persons(int $tree_id)
+    public function count_persons(int $tree_id): int
     {
         $count = 0;
         try {
@@ -355,7 +351,7 @@ class DbFunctions
      * QUERY 1      : SELECT fam_id FROM humo_families WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber
      * RETURNS      : Check for valid family.
      */
-    public function check_family($fam_gedcomnumber)
+    public function check_family(string|null $fam_gedcomnumber)
     {
         if ($fam_gedcomnumber != '') {
             try {
@@ -386,7 +382,7 @@ class DbFunctions
      * USE          : get_family($fam_number,'man-woman') to get man and woman id.
      * RETURNS      : a single family.
      */
-    public function get_family($fam_gedcomnumber, $item = '')
+    public function get_family(string|null $fam_gedcomnumber, string $item = '')
     {
         $qryDb = false;
         try {
@@ -416,7 +412,7 @@ class DbFunctions
      * QUERY        : SELECT COUNT(*) FROM humo_families WHERE fam_tree_id=:fam_tree_id
      * RETURNS      : Number of families in family tree.
      */
-    public function count_families(int $tree_id)
+    public function count_families(int $tree_id): int
     {
         $count = 0;
         try {
@@ -437,7 +433,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_texts WHERE fam_tree_id=:fam_tree_id AND text_gedcomnr=:text_gedcomnr
      * RETURNS      : a single text.
      */
-    public function get_text($text_gedcomnr)
+    public function get_text(string|null $text_gedcomnr)
     {
         try {
             $sql = "SELECT * FROM humo_texts WHERE text_tree_id=:text_tree_id AND text_gedcomnr=:text_gedcomnr";
@@ -458,7 +454,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_events WHERE event_id=:event_id
      * RETURNS      : a single event.
      */
-    public function get_event($event_id)
+    public function get_event(int|null $event_id)
     {
         try {
             $sql = "SELECT * FROM humo_events WHERE event_id=:event_id";
@@ -478,7 +474,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_events WHERE event_tree_id=:event_tree_id AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order
      * RETURNS      : multiple selected events.
      */
-    public function get_events_kind($event_event, $event_kind)
+    public function get_events_kind(string $event_event, string $event_kind)
     {
         try {
             $sql = "SELECT * FROM humo_events
@@ -506,7 +502,7 @@ class DbFunctions
      *                AND event_connect_id=:event_connect_id AND event_kind=:event_kind ORDER BY event_order
      * RETURNS      : all selected events by a person.
      */
-    public function get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
+    public function get_events_connect(string $event_connect_kind, string $event_connect_id, string $event_kind)
     {
         try {
             $sql = "SELECT * FROM humo_events
@@ -558,7 +554,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr
      * RETURNS    : a single address.
      */
-    public function get_address($address_gedcomnr)
+    public function get_address(string|null $address_gedcomnr)
     {
         try {
             $sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr";
@@ -585,7 +581,7 @@ class DbFunctions
      *                  ORDER BY connect_order
      * RETURNS      : all places by a person, family etc.
      */
-    public function get_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
+    public function get_addresses(string $connect_kind, string $connect_sub_kind, string $connect_connect_id)
     {
         try {
             $sql = "SELECT * FROM humo_connections
@@ -614,7 +610,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id
      * RETURNS      : multiple connections.
      */
-    public function get_connections($connect_sub_kind, $connect_item_id)
+    public function get_connections(string $connect_sub_kind, string $connect_item_id)
     {
         try {
             $sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id";
@@ -639,7 +635,7 @@ class DbFunctions
      * RETURNS      : multiple connections.
      * EXAMPLE      : $connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
      */
-    public function get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id)
+    public function get_connections_connect_id(string $connect_kind, string $connect_sub_kind, string $connect_connect_id)
     {
         try {
             $sql = "SELECT * FROM humo_connections 
@@ -667,7 +663,7 @@ class DbFunctions
      * QUERY        : SELECT * FROM humo_repositories WHERE repo_tree_id=:repo_tree_id AND repo_gedcomnr=:repo_gedcomnr
      * RETURNS      : a single repository.
      */
-    public function get_repository($repo_gedcomnr)
+    public function get_repository(string|null $repo_gedcomnr)
     {
         try {
             $sql = "SELECT * FROM humo_repositories WHERE repo_tree_id=:repo_tree_id AND repo_gedcomnr=:repo_gedcomnr";
@@ -688,7 +684,7 @@ class DbFunctions
      * QUERY        : UPDATE humo_settings SET setting_value=:setting_value WHERE setting_variable=:setting_variable
      * RETURNS      : result.
      */
-    public function update_settings($setting_variable, $setting_value)
+    public function update_settings(string $setting_variable, string $setting_value): bool
     {
         try {
             $sql = "UPDATE humo_settings SET setting_value=:setting_value WHERE setting_variable=:setting_variable";
@@ -703,13 +699,13 @@ class DbFunctions
         return $isUpdated;
     }
 
-    /** 
+    /**
      * Generate new GEDCOM number for item (person, family, source, repo, address, etc.) ***
      * Generates new GEDCOM number (only numerical, like: 1234).
      * $sql = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id=:tree_id";
      * $sql = "SELECT fam_gedcomnumber FROM humo_families WHERE pers_tree_id=:tree_id";
      */
-    public function generate_gedcomnr($tree_id, $item)
+    public function generate_gedcomnr(int $tree_id, string $item): string
     {
         $qryDb = false;
         $new_gedcomnumber = 0;

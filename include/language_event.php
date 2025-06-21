@@ -1,5 +1,5 @@
 <?php
-function language_event($text_event)
+function language_event($text_event): string
 {
     $text_event = str_replace("ADOP", __('Adopted by both'), $text_event);
     $text_event = str_replace("_ADPF", __('Adopted by father'), $text_event);
@@ -73,7 +73,7 @@ function language_event($text_event)
     return $text_event;
 }
 
-function language_name($text)
+function language_name($text): string
 {
     $return_text = '';
     if ($text == '_ALIA') {

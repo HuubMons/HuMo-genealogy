@@ -13,13 +13,18 @@ $screen_mode = '';
 $last_visited = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $_SESSION['save_last_visitid'] = $last_visited;
 
+$person_privacy = new PersonPrivacy;
+$person_name_extended = new PersonNameExtended;
+$person_data = new PersonData;
+
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
 function topline($data)
 {
-    global $dataDb, $dbh, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker;
-    global $alignmarker, $language, $uri_path;
-    global $user, $tree_id, $humo_option, $link_cls;
-    global $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
+    global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $language, $uri_path;
+    global $user, $tree_id, $humo_option, $link_cls, $parent1Db, $parent2Db, $selected_language;
+
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
 
     $treetext = show_tree_text($dataDb->tree_id, $selected_language);
 ?>
@@ -118,16 +123,17 @@ function topline($data)
 
                 <!-- PDF button -->
                 <?php if ($user["group_pdf_button"] == 'y' && $language["dir"] != "rtl" && $language["name"] != "简体中文") { ?>
-                    &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $uri_path; ?>views/family_pdf.php" style="display:inline-block; vertical-align:middle;">
-                        <!-- TODO check variables in forms (database -> tree_id). -->
-                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                        <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
-                        <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                        <?php
-                        if ($data["descendant_report"] == true) { ?>
-                            <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
-                        <?php } ?>
-
+                    <?php
+                    if ($humo_option["url_rewrite"] == "j") {
+                        $link = $uri_path . 'family_pdf/' . $tree_id . '/' . $data["family_id"] . '?main_person=' . $data["main_person"];
+                    } else {
+                        $link = $uri_path . 'index.php?page=family_pdf&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"];
+                    }
+                    if ($data["descendant_report"] == true) {
+                        $link .= '&amp;descendant_report=1';
+                    }
+                    ?>
+                    &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $link; ?>" style="display:inline-block; vertical-align:middle;">
                         <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('PDF'); ?>">
                     </form>
                 <?php
@@ -135,33 +141,35 @@ function topline($data)
 
                 // *** RTF button ***
                 if ($user["group_rtf_button"] == 'y' && $language["dir"] != "rtl") {
+                    // TODO add tree_id, id etc. in links?
                     if ($humo_option["url_rewrite"] == "j") {
-                        echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'family_rtf" style="display:inline-block; vertical-align:middle;">';
+                        $link = $uri_path . 'family_rtf';
                     } else {
-                        echo '&nbsp;&nbsp;&nbsp;<form method="POST" action="' . $uri_path . 'index.php?page=family_rtf" style="display:inline-block; vertical-align:middle;">';
+                        $link = $uri_path . 'index.php?page=family_rtf';
                     }
                 ?>
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                    <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
-                    <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                    <input type="hidden" name="screen_mode" value="RTF">
-                    <?php if ($data["descendant_report"] == true) { ?>
-                        <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
-                    <?php } ?>
-
-                    <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('RTF'); ?>">
+                    &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $link; ?>" style="display:inline-block; vertical-align:middle;">
+                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                        <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
+                        <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
+                        <input type="hidden" name="screen_mode" value="RTF">
+                        <?php if ($data["descendant_report"] == true) { ?>
+                            <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
+                        <?php } ?>
+                        <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('RTF'); ?>">
+                    </form>
                 <?php
-
-                    echo '</form> ';
                 }
 
                 // *** Add family to favourite list ***
                 // If there is a N.N. father, then use mother in favourite icon.
                 if (!isset($parent1Db->pers_gedcomnumber)) {
-                    $name = $parent2_cls->person_name($parent2Db);
+                    $privacy = $person_privacy->get_privacy($parent2Db);
+                    $name = $person_name->get_person_name($parent2Db, $privacy);
                     $favorite_gedcomnumber = $parent2Db->pers_gedcomnumber;
                 } else {
-                    $name = $parent1_cls->person_name($parent1Db);
+                    $privacy = $person_privacy->get_privacy($parent1Db);
+                    $name = $person_name->get_person_name($parent1Db, $privacy);
                     $favorite_gedcomnumber = $parent1Db->pers_gedcomnumber;
                 }
 
@@ -214,19 +222,16 @@ $db_functions->check_family($data["family_id"]);
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-// **********************************************************
 // *** Maximum number of generations in descendant report ***
-// **********************************************************
 $max_generation = ($humo_option["descendant_generations"] - 1);
 
-// **************************
-// *** Show single person ***
-// **************************
+/**
+ * Show single person
+ */
 if (!$data["family_id"]) {
     // *** Privacy filter ***
     $parent1Db = $db_functions->get_person($data["main_person"]);
-    // *** Use class to show person ***
-    $parent1_cls = new PersonCls($parent1Db);
+    $parent1_privacy = $person_privacy->get_privacy($parent1Db);
 
     // *** Add tip in person screen ***
     if (!$bot_visit) {
@@ -248,8 +253,8 @@ if (!$data["family_id"]) {
             <td colspan="4">
                 <!--  Show person data -->
                 <span class="parent1">
-                    <?= $parent1_cls->name_extended("parent1"); ?>
-                    <?= $parent1_cls->person_data("parent1", $id); ?>
+                    <?= $person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"); ?>
+                    <?= $person_data->person_data($parent1Db, $parent1_privacy, "parent1", $id); ?>
                 </span>
             </td>
         </tr>
@@ -257,9 +262,9 @@ if (!$data["family_id"]) {
     <?php
 }
 
-// *******************
-// *** Show family ***
-// *******************
+/**
+ * Show family
+ */
 else {
     $descendant_family_id2[] = $data["family_id"];
     $descendant_main_person2[] = $data["main_person"];
@@ -344,7 +349,7 @@ else {
 
                 // *** Don't count search bots, crawlers etc. ***
                 if (!$bot_visit) {
-                    // *** Update (old) statistics counter ***
+                    // *** Update statistics counter ***
                     $fam_counter = $familyDb->fam_counter + 1;
                     $fam_counter_var = $fam_counter;
                     $fam_gednr_var = $id;
@@ -409,7 +414,7 @@ else {
                                 }
 
                                 // *** IP-API ***
-                                $url = "http://ip-api.com/json/".$index['visitor_ip'];
+                                $url = "http://ip-api.com/json/" . $index['visitor_ip'];
                                 $response = file_get_contents($url);
                                 $ip_data = json_decode($response, true);
                                 if (isset($ip_data['countryCode'])) {
@@ -419,7 +424,7 @@ else {
                                 // *** FreeIPAPI ***
                                 if ($humo_option['freeipapi_checked'] == 'ena') {
                                     // *** FreeIPAPI without key ***
-                                    $url = "https://freeipapi.com/api/json/".$index['visitor_ip'];
+                                    $url = "https://freeipapi.com/api/json/" . $index['visitor_ip'];
                                     $response = file_get_contents($url);
                                     $ip_data = json_decode($response, true);
                                     if (isset($ip_data->countryCode)) {
@@ -473,24 +478,18 @@ else {
                     $parent2 = $familyDb->fam_woman;
                 }
                 $parent1Db = $db_functions->get_person($parent1);
-                // *** Proces parent1 using a class ***
-                $parent1_cls = new PersonCls($parent1Db);
-                $parent1_privacy = $parent1_cls->get_privacy();
+                $parent1_privacy = $person_privacy->get_privacy($parent1Db);
 
                 $parent2Db = $db_functions->get_person($parent2);
-                // *** Proces parent2 using a class ***
-                $parent2_cls = new PersonCls($parent2Db);
-                $parent2_privacy = $parent2_cls->get_privacy();
+                $parent2_privacy = $person_privacy->get_privacy($parent2Db);
 
-                // *** Proces marriage using a class ***
                 $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                 $family_privacy = $marriage_cls->get_privacy();
 
 
-                // *******************************************************************
-                // *** Show family                                                 ***
-                // *******************************************************************
-
+                /**
+                 * Show family
+                 */
                 // *** Internal link for descendant_report ***
                 if ($data["descendant_report"] == true) {
                     // *** Internal link (Roman number_generation) ***
@@ -515,9 +514,9 @@ else {
 
                     echo '<tr><td colspan="4">';
 
-                    // *************************************************************
-                    // *** Parent1 (normally the father)                         ***
-                    // *************************************************************
+                    /**
+                     * Show parent1 (normally the father)
+                     */
                     if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
                         if ($family_nr == 1) {
                     ?>
@@ -530,12 +529,13 @@ else {
                                 }
 
                                 $show_name_texts = true;
-                                echo $parent1_cls->name_extended("parent1", $show_name_texts);
-                                echo $parent1_cls->person_data("parent1", $id);
+                                echo $person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1", $show_name_texts);
+                                echo $person_data->person_data($parent1Db, $parent1_privacy, "parent1", $id);
 
                                 // *** Change page title ***
                                 if ($descendant_loop == 0 && $descendant_loop2 == 0) {
-                                    $name = $parent1_cls->person_name($parent1Db);
+                                    $privacy = $person_privacy->get_privacy($parent1Db);
+                                    $name = $person_name->get_person_name($parent1Db, $privacy);
                                     $name["index_name"] = html_entity_decode($name["index_name"]);
                                 ?>
                                     <script>
@@ -552,16 +552,16 @@ else {
                             <div class="py-3">
                                 <?= $marriage_cls->marriage_data($familyDb, $family_nr, 'shorter'); ?>
                             </div>
-                            <?= $parent1_cls->name_extended("parent1"); ?><br>
+                            <?= $person_name_extended($parent1Db, $parent1_privacy, "parent1"); ?><br>
                         <?php
                         }
                         $family_nr++;
                     } // *** End check of PRO-GEN ***
 
 
-                    // *************************************************************
-                    // *** Marriage                                              ***
-                    // *************************************************************
+                    /**
+                     * Show marriage
+                     */
                     if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
                         // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                         if (
@@ -591,9 +591,9 @@ else {
                     <?php
                     }
 
-                    // *************************************************************
-                    // *** Parent2 (normally the mother)                         ***
-                    // *************************************************************
+                    /**
+                     * Show parent2 (normally the mother)
+                     */
                     ?>
                     <div class="parent2">
                         <?php
@@ -602,16 +602,16 @@ else {
                             echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         } else {
                             $show_name_texts = true;
-                            echo $parent2_cls->name_extended("parent2", $show_name_texts);
-                            echo $parent2_cls->person_data("parent2", $id);
+                            echo $person_name_extended->name_extended($parent2Db, $parent2_privacy, "parent2", $show_name_texts);
+                            echo $person_data->person_data($parent2Db, $parent2_privacy, "parent2", $id);
                         }
                         ?>
                     </div>
 
                     <?php
-                    // *************************************************************
-                    // *** Marriagetext                                          ***
-                    // *************************************************************
+                    /**
+                     * Show marriage text
+                     */
                     $temp = '';
 
                     if ($family_privacy) {
@@ -640,10 +640,9 @@ else {
                     }
 
 
-                    // *************************************************************
-                    // *** Children                                              ***
-                    // *************************************************************
-
+                    /**
+                     * Show children
+                     */
                     if ($familyDb->fam_children) {
                         $childnr = 1;
                         $child_array = explode(";", $familyDb->fam_children);
@@ -660,8 +659,7 @@ else {
                         <?php
                         foreach ($child_array as $i => $value) {
                             $childDb = $db_functions->get_person($child_array[$i]);
-                            // *** Use person class ***
-                            $child_cls = new PersonCls($childDb);
+                            $child_privacy = $person_privacy->get_privacy($childDb);
 
                             // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                             // *** Person must be totally hidden ***
@@ -672,12 +670,12 @@ else {
                                 $show_privacy_text = true;
                                 continue;
                             }
-
                         ?>
+
                             <div class="children">
                                 <div class="child_nr" id="person_<?= $childDb->pers_gedcomnumber; ?>"><?= $childnr; ?>.</div>
                                 <?php
-                                echo $child_cls->name_extended("child");
+                                echo $person_name_extended->name_extended($childDb, $child_privacy, "child");
 
                                 // *** Build descendant_report ***
                                 if ($data["descendant_report"] == true && $childDb->pers_fams && $descendant_loop < $max_generation) {
@@ -706,7 +704,7 @@ else {
                                     echo '<b><i>, ' . __('follows') . ': </i></b>';
                                     echo '<a href="' . str_replace("&", "&amp;", $_SERVER['REQUEST_URI']) . '#' . $follows_array[$search_nr] . '">' . $follows_array[$search_nr] . '</a>';
                                 } else {
-                                    echo $child_cls->person_data("child", $id);
+                                    echo $person_data->person_data($childDb, $child_privacy, "child", $id);
                                 }
                                 ?>
                             </div><br>
@@ -715,33 +713,31 @@ else {
                         }
                     }
 
-                    // *********************************************************************************************
-                    // *** Check for adoptive parents (just for sure: made it for multiple adoptive parents...) ***
-                    // *********************************************************************************************
+                    /**
+                     * Check for adoptive parent (just for sure: made it for multiple adoptive parents...)
+                     */
                     $famc_adoptive_qry_prep = $db_functions->get_events_kind($familyDb->fam_gedcomnumber, 'adoption');
                     foreach ($famc_adoptive_qry_prep as $famc_adoptiveDb) {
                         $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
-                        // *** Use person class ***
-                        $child_cls = new PersonCls($childDb);
+                        $child_privacy = $person_privacy->get_privacy($childDb);
                         ?>
                         <tr>
                             <td colspan="4">
                                 <div class="children">
-                                    <b><?= __('Adopted child:'); ?></b><?= $child_cls->name_extended("child"); ?>
+                                    <b><?= __('Adopted child:'); ?></b><?= $person_name_extended->name_extended($childDb, $child_privacy, "child"); ?>
                                 </div>
                             </td>
                         </tr>
                     <?php
                     }
 
-                    // *************************************************************
-                    // *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
-                    // *************************************************************
+                    /**
+                     * Check for adoptive parent ESPECIALLY MADE FOR ALDFAER
+                     */
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_man, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
                         $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
-                        // *** Use person class ***
-                        $child_cls = new PersonCls($childDb);
+                        $privacy_child = $person_privacy->get_privacy($childDb);
                     ?>
                         <tr>
                             <td colspan="4">
@@ -757,20 +753,20 @@ else {
                                             <?= __('Adopted child:'); ?>
                                         <?php } ?>
                                     </b>
-                                    <?= $child_cls->name_extended("child"); ?>
+                                    <?= $person_name_extended->name_extended($childDb, $child_privacy, "child"); ?>
                                 </div>
                             </td>
                         </tr>
                     <?php
                     }
-                    // *************************************************************
-                    // *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
-                    // *************************************************************
+
+                    /**
+                     * Check for adoptive parent ESPECIALLY MADE FOR ALDFAER
+                     */
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_woman, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
                         $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
-                        // *** Use person class ***
-                        $child_cls = new PersonCls($childDb);
+                        $child_privacy = $person_privacy->get_privacy($childDb);
                     ?>
                         <tr>
                             <td colspan="4">
@@ -786,7 +782,7 @@ else {
                                             <?= __('Adopted child:'); ?>
                                         <?php } ?>
                                     </b>
-                                    <?= $child_cls->name_extended("child"); ?>
+                                    <?= $person_name_extended->name_extended($childDb, $child_privacy, "child"); ?>
                                 </div>
                             </td>
                         </tr>
@@ -825,7 +821,8 @@ else {
                             $man_birth_result = $location_prep->rowCount();
                             if ($man_birth_result > 0) {
                                 $info = $location_prep->fetch();
-                                $name = $parent1_cls->person_name($parent1Db);
+                                $privacy = $person_privacy->get_privacy($parent1Db);
+                                $name = $person_name->get_person_name($parent1Db, $privacy);
                                 $google_name = $name["standard_name"];
 
                                 $location_array[] = $location_var;
@@ -849,7 +846,8 @@ else {
                             $woman_birth_result = $location_prep->rowCount();
                             if ($woman_birth_result > 0) {
                                 $info = $location_prep->fetch();
-                                $name = $parent2_cls->person_name($parent2Db);
+                                $privacy = $person_privacy->get_privacy($parent2Db);
+                                $name = $person_name->get_person_name($parent2Db, $privacy);
                                 $google_name = $name["standard_name"];
                                 $key = array_search($location_var, $location_array);
                                 if (isset($key) && $key > 0) {
@@ -879,7 +877,8 @@ else {
                             if ($man_death_result > 0) {
                                 $info = $location_prep->fetch();
 
-                                $name = $parent1_cls->person_name($parent1Db);
+                                $privacy = $person_privacy->get_privacy($parent1Db);
+                                $name = $person_name->get_person_name($parent1Db, $privacy);
                                 $google_name = $name["standard_name"];
                                 $key = array_search($location_var, $location_array);
                                 if (isset($key) && $key > 0) {
@@ -908,7 +907,8 @@ else {
                             if ($woman_death_result > 0) {
                                 $info = $location_prep->fetch();
 
-                                $name = $parent2_cls->person_name($parent2Db);
+                                $privacy = $person_privacy->get_privacy($parent2Db);
+                                $name = $person_name->get_person_name($parent2Db, $privacy);
                                 $google_name = $name["standard_name"];
                                 $key = array_search($location_var, $location_array);
                                 if (isset($key) && $key > 0) {
@@ -932,10 +932,12 @@ else {
                         if ($marriage_result > 0) {
                             $info = $location_prep->fetch();
 
-                            $name = $parent1_cls->person_name($parent1Db);
+                            $privacy = $person_privacy->get_privacy($parent1Db);
+                            $name = $person_name->get_person_name($parent1Db, $privacy);
                             $google_name = $name["standard_name"];
 
-                            $name = $parent2_cls->person_name($parent2Db);
+                            $privacy = $person_privacy->get_privacy($parent2Db);
+                            $name = $person_name->get_person_name($parent2Db, $privacy);
                             $google_name .= ' & ' . $name["standard_name"];
 
                             if (!$parent1_privacy && !$parent2_privacy) {
@@ -956,10 +958,8 @@ else {
                     $child_array = explode(";", $familyDb->fam_children);
                     for ($i = 0; $i <= substr_count($familyDb->fam_children, ";"); $i++) {
                         $childDb = $db_functions->get_person($child_array[$i]);
-                        if ($childDb !== false) {  // no error in query
-                            // *** Use person class ***
-                            $person_cls = new PersonCls($childDb);
-                            $child_privacy = $person_cls->get_privacy();
+                        if ($childDb !== false) {
+                            $child_privacy = $person_privacy->get_privacy($childDb);
                             if (!$child_privacy) {
 
                                 // *** Child birth ***
@@ -971,7 +971,8 @@ else {
                                     if ($child_result > 0) {
                                         $info = $location_prep->fetch();
 
-                                        $name = $person_cls->person_name($childDb);
+                                        $privacy = $person_privacy->get_privacy($childDb);
+                                        $name = $person_name->get_person_name($childDb, $privacy);
                                         $google_name = $name["standard_name"];
                                         $key = array_search($childDb->pers_birth_place, $location_array);
                                         if (isset($key) && $key > 0) {
@@ -993,7 +994,8 @@ else {
                                     if ($child_result > 0) {
                                         $info = $location_prep->fetch();
 
-                                        $name = $person_cls->person_name($childDb);
+                                        $privacy = $person_privacy->get_privacy($childDb);
+                                        $name = $person_name->get_person_name($childDb, $privacy);
                                         $google_name = $name["standard_name"];
                                         $key = array_search($childDb->pers_death_place, $location_array);
                                         if (isset($key) && $key > 0) {
@@ -1159,45 +1161,42 @@ else {
         } // Multiple families in 1 generation
 
     } // nr. of generations
-} // End of single person
+}
 
 // *** If source footnotes are selected, show them here ***
 if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
     echo show_sources_footnotes();
 }
 
-// *** Generate citations, that can be used as a source for this person/ page ***
-/* EXAMPLE:
-"Family Page: Bethel, Catherine Ann Charles." database, Dolly Mae Alpha Index - Wyannie Malone Historical Museum (http://subscriber.bahamasgenealogyrecor ... son=I52982 : accessed 17 April 2016, Catherine Anne Charles Bethel, born 19 feb 1809 at New Providence, Bahamas; citing Christ Church Cathedral - Baptismal Register. Book 2, Whites -Page 99, item 21. for period Feb. 7, 1802 to Dec. 22, 1840.
-*/
+/* Generate citations, that can be used as a source for this person/ page
+ *
+ * EXAMPLE:
+ * "Family Page: Bethel, Catherine Ann Charles." database, Dolly Mae Alpha Index - Wyannie Malone Historical Museum (http://subscriber.bahamasgenealogyrecor ... son=I52982 : accessed 17 April 2016, Catherine Anne Charles Bethel, born 19 feb 1809 at New Providence, Bahamas; citing Christ Church Cathedral - Baptismal Register. Book 2, Whites -Page 99, item 21. for period Feb. 7, 1802 to Dec. 22, 1840.
+ */
 if ($user['group_citation_generation'] == 'y') {
-    $name1 = $parent1_cls->person_name($parent1Db);
+    $privacy = $person_privacy->get_privacy($parent1Db);
+    $name1 = $person_name->get_person_name($parent1Db, $privacy);
     if (isset($parent2Db)) {
-        $name2 = $parent2_cls->person_name($parent2Db);
+        $privacy = $person_privacy->get_privacy($parent2Db);
+        $name2 = $person_name->get_person_name($parent2Db, $privacy);
+    }
+
+    // *** Link to family page ***
+    $vars['pers_family'] = $data["family_id"];
+    $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+    $link .= "main_person=" . $data["main_person"];
+    if ($humo_option["url_rewrite"] != "j") {
+        $link = 'http://' . $_SERVER['SERVER_NAME'] . $link;
     }
     ?>
     <br><b><?= __('Citation for:') . ' ' . __('Family Page'); ?></b><br>
-
     <span class="citation">
         <!-- Names -->
         "<?= __('Family Page'); ?>: <?= $name1['name']; ?> <?= (isset($name2['name']) && $name2['name']) ? '&amp; ' . $name2['name'] : ''; ?>"
 
-        <!-- Link to family page -->
+        HuMo-genealogy - <?= $humo_option["database_name"]; ?> (<?= $link; ?> : <?= __('accessed'); ?> <?= date("d F Y"); ?>)
+
         <?php
-        echo ' HuMo-genealogy - ' . $humo_option["database_name"] . ' (';
-
-        $vars['pers_family'] = $data["family_id"];
-        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
-        $link .= "main_person=" . $data["main_person"];
-        if ($humo_option["url_rewrite"] == "j") {
-            echo $link;
-        } else {
-            echo 'http://' . $_SERVER['SERVER_NAME'] . $link;
-        }
-
-        echo ' : ' . __('accessed') . ' ' . date("d F Y");
-        echo ')';
-
         // *** Name and GEDCOM number of main person ***
         if ($parent1Db) {
             echo ' ' . $name1['name'] . ' #' . $parent1Db->pers_gedcomnumber;
@@ -1271,11 +1270,13 @@ if ($data["descendant_report"] == false) {
         $userDb = $user_note->fetch(PDO::FETCH_OBJ);
 
         // *** Name of selected person in family tree ***
-        $name = $parent1_cls->person_name($parent1Db);
+        $privacy = $person_privacy->get_privacy($parent1Db);
+        $name = $person_name->get_person_name($parent1Db, $privacy);
         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
         $start_url = '';
         if (isset($parent1Db->pers_tree_id)) {
-            $start_url = $parent1_cls->person_url2($parent1Db->pers_tree_id, $parent1Db->pers_famc, $parent1Db->pers_fams, $parent1Db->pers_gedcomnumber);
+            $person_link = new PersonLink();
+            $start_url = $person_link->get_person_link($parent1Db);
         }
 
         if (isset($_POST['send_mail'])) {

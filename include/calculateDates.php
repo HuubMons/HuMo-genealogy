@@ -104,18 +104,18 @@ class CalculateDates
         } elseif (strlen(stristr($date1, "ABT")) > 0) {
             $date1_remark = "Abt";
         } elseif (strlen(stristr($date1, "EST")) > 0) {
+            // Calculate EST the same as ABT
             $date1_remark = "Abt";
-        }  // Calculate EST the same as ABT
-        elseif (strlen(stristr($date1, "CAL")) > 0) {
+        } elseif (strlen(stristr($date1, "CAL")) > 0) {
+            // calculate CAL the same as ABT
             $date1_remark = "Abt";
-        }  // calculate CAL the same as ABT
-        elseif (strlen(stristr($date1, "INT")) > 0) {
+        } elseif (strlen(stristr($date1, "INT")) > 0) {
+            // calculate INT the same as ABT
             $date1_remark = "Abt";
-        }  // calculate INT the same as ABT
-        elseif (strlen(stristr($date1, "BET")) > 0) {
+        } elseif (strlen(stristr($date1, "BET")) > 0) {
+            // Don't calculate BET text
             $date1_remark = "Bet";
-        }  // Don't calculate BET text
-        else {
+        } else {
             $date1_remark = null;
         }
 
@@ -126,41 +126,41 @@ class CalculateDates
         } elseif (strlen(stristr($date2, "ABT")) > 0) {
             $date2_remark = "Abt";
         } elseif (strlen(stristr($date2, "EST")) > 0) {
+            // Calculate EST the same as ABT
             $date2_remark = "Abt";
-        }  // Calculate EST the same as ABT
-        elseif (strlen(stristr($date2, "CAL")) > 0) {
+        } elseif (strlen(stristr($date2, "CAL")) > 0) {
+            // Calculate CAL the same as ABT
             $date2_remark = "Abt";
-        }  // Calculate CAL the same as ABT
-        elseif (strlen(stristr($date2, "INT")) > 0) {
+        } elseif (strlen(stristr($date2, "INT")) > 0) {
+            // calculate INT the same as ABT
             $date2_remark = "Abt";
-        }  // calculate INT the same as ABT
-        elseif (strlen(stristr($date2, "BET")) > 0) {
+        } elseif (strlen(stristr($date2, "BET")) > 0) {
+            // Don't calculate BET text
             $date2_remark = "Bet";
-        }  // Don't calculate BET text
-        else {
+        } else {
             $date2_remark = null;
         }
 
         if ($date1_remark || $date2_remark) { // there is at least 1 remark
             if ($date1_remark === "Bef") {
                 if ($date2_remark === "Bef" || $date2_remark === "Abt") {
+                    // Can't calculate age. flag -1
                     $text = -1;
-                }  // Can't calculate age. flag -1
-                elseif ($date2_remark === null || $date2_remark === "Aft") {
+                } elseif ($date2_remark === null || $date2_remark === "Aft") {
                     $text = __('at least') . " ";
                 }
             } elseif ($date1_remark === "Aft") {
                 if ($date2_remark === "Aft" || $date2_remark === "Abt") {
+                    // Can't calculate age. flag -1
                     $text = -1;
-                }  // Can't calculate age. flag -1
-                elseif ($date2_remark === null || $date2_remark === "Bef") {
+                } elseif ($date2_remark === null || $date2_remark === "Bef") {
                     $text = __('at most') . " ";
                 }
             } elseif ($date1_remark === "Abt") {
                 if ($date2_remark === "Bef" || $date2_remark === "Aft") {
+                    // Can't calculate age. flag -1
                     $text = -1;
-                }  // Can't calculate age. flag -1
-                elseif ($date2_remark === null || $date2_remark === "Abt") {
+                } elseif ($date2_remark === null || $date2_remark === "Abt") {
                     $text = __('approximately') . " ";
                 }
             } elseif ($date1_remark === null) {
@@ -172,8 +172,9 @@ class CalculateDates
                     $text = __('approximately') . " ";
                 }
             } elseif ($date1_remark === "Bet" || $date2_remark === "Bet") {
+                // Don't calculate age if text = BET, sorry...
                 $text = -1;
-            }   // Don't calculate age if text = BET, sorry...
+            }
         } else {
             // No remarks
             $text = null;
@@ -320,19 +321,31 @@ class CalculateDates
                             $days_remainder   = floor($days % 7); // *** Count resuming of days ***
 
                             if ($weeks > 0) {
-                                //if ($years OR $months) $age.=';';
-                                if ($years or $months) $age .= ' ' . __('and') . ' ';
+                                //if ($years OR $months){
+                                //  $age.=';';
+                                //}
+                                if ($years or $months) {
+                                    $age .= ' ' . __('and') . ' ';
+                                }
                                 $age .= $weeks . ' ';
-                                if ($weeks > 1) $age .= __('weeks');
-                                else $age .= __('week');
+                                if ($weeks > 1) {
+                                    $age .= __('weeks');
+                                } else {
+                                    $age .= __('week');
+                                }
                             }
 
                             if ($days_remainder > 0) {
                                 //if ($years OR $weeks) $age.=';';
-                                if ($years or $months or $weeks) $age .= ' ' . __('and') . ' ';
+                                if ($years or $months or $weeks) {
+                                    $age .= ' ' . __('and') . ' ';
+                                }
                                 $age .= $days_remainder . ' ';
-                                if ($days_remainder > 1) $age .= __('days');
-                                else $age .= __('day');
+                                if ($days_remainder > 1) {
+                                    $age .= __('days');
+                                } else {
+                                    $age .= __('day');
+                                }
                             }
                         } else {
                             // *** Dates not complete, so skip calculation of date. ***
@@ -342,7 +355,9 @@ class CalculateDates
                     }
 
                     // *** Don't show age if birthdate = deathdate ***
-                    if ($birth_date == $death_date) $age = '';
+                    if ($birth_date == $death_date) {
+                        $age = '';
+                    }
                 } else {
                     if ($special_text != -1) {
                         // *** Used for text like: approximately 1 years married ***
@@ -387,8 +402,10 @@ class CalculateDates
                             $age = $special_text . $calculated_age . " " . __('years');
                         }
                     }
-                } else { // Month is missing in 1 or 2 years.
-                    if (!$special_text) { // no EST ABT AFT BEF
+                } else {
+                    // Month is missing in 1 or 2 years.
+                    if (!$special_text) {
+                        // no EST ABT AFT BEF
                         $calculated_age = ($death_year - $birth_year) - 1;
                         $age = $calculated_age . " " . __('or') . " " . ($death_year - $birth_year) . " " . __('years');
                     } else {
@@ -462,7 +479,8 @@ class CalculateDates
         $calculated_age = ''; // *** Calculated age ***
         $age = "";
 
-        if (($start_year = $this->search_year($marr_date)) && ($end_year = $this->search_year($end_date))) { // there must be 2 dates...
+        // there must be 2 dates...
+        if (($start_year = $this->search_year($marr_date)) && ($end_year = $this->search_year($end_date))) {
 
             // Check for EST AFT ABT
             $special_text = $this->process_special_text($marr_date, $end_date, $baptism);
@@ -513,11 +531,13 @@ class CalculateDates
                             $age = $special_text . $calculated_age . " " . __('years');
                         }
                     }
-                } else { // Month is missing in 1 or 2 years
-                    if (!$special_text) { // no EST ABT AFT BEF
+                } else {
+                    // Month is missing in 1 or 2 years
+                    if (!$special_text) {
+                        // no EST ABT AFT BEF
                         $calculated_age = ($end_year - $start_year) - 1;
                         $age = $calculated_age . " " . __('or') . " " . ($end_year - $start_year) . " " . __('years');
-                    } else { //
+                    } else {
                         if ($special_text != -1) {
                             $calculated_age = $end_year - $start_year;
                             $age = $special_text . $calculated_age . " " . __('years');
@@ -527,14 +547,6 @@ class CalculateDates
             }
 
             if ($age) {
-                //OLD METHOD:
-                //if($selected_language=="sv" OR $selected_language=="no" OR $selected_language=="da") {
-                //	$age=' ('.__('married').' '.$age.')';
-                //}
-                //else {
-                //	$age=' ('.$age.' '.__('married').')';
-                //}
-
                 $age = ' (' . sprintf(__('married %s'), $age) . ')';
 
                 /*
@@ -554,9 +566,11 @@ class CalculateDates
             }
 
             // Not in use in marriage calulation
-            //if ($age_check==true){ $age=$calculated_age; }
+            //if ($age_check==true){
+            //  $age=$calculated_age;
+            //
 
             return ($age);
         }
     }
-} // *** End of class ***
+}

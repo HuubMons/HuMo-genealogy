@@ -6,10 +6,11 @@
  * 18 feb 2024 Huub: Moved class to view script.
  */
 
-//**************************************************************************************
-//******  tree_merge is the function that navigates all merge screens and options  *****
-//**************************************************************************************
+// *** tree_merge is the function that navigates all merge screens and options ***
 $db_functions->set_tree_id($trees['tree_id']);
+
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
 
 // the following creates the pages that cycle through all duplicates that are stored in the dupl_arr array
 // the pages themselves are presented with the "show_pair function"
@@ -439,9 +440,6 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
 
     <?php
     // ===== BEGIN SEARCH BOX SYSTEM
-
-    $pers_cls = new PersonCls;
-
     if (!isset($_POST["search1"]) && !isset($_POST["search2"]) && !isset($_POST["manual_compare"]) && !isset($_POST["switch"])) {
         // no button pressed: this is a fresh entry from frontpage link: start clean search form
         $_SESSION["search1"] = '';
@@ -594,7 +592,8 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
                                 <select size="1" name="left" style="width:<?= $len; ?>px">
                                     <?php
                                     while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
-                                        $name = $pers_cls->person_name($searchDb);
+                                        $privacy = $person_privacy->get_privacy($searchDb);
+                                        $name = $person_name->get_person_name($searchDb, $privacy);
                                         if ($name["show_name"]) {
                                             echo '<option';
                                             if (isset($left) && ($searchDb->pers_id == $left && !(isset($_POST["search1"]) && $search_lastname == '' && $search_firstname == ''))) {
@@ -664,7 +663,8 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
                                 <select size="1" name="right" style="width:<?= $len; ?>px">
                                     <?php
                                     while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                                        $name = $pers_cls->person_name($searchDb2);
+                                        $privacy = $person_privacy->get_privacy($searchDb2);
+                                        $name = $person_name->get_person_name($searchDb2, $privacy);
                                         if ($name["show_name"]) {
                                             echo '<option';
                                             if (isset($right) && ($searchDb2->pers_id == $right && !(isset($_POST["search2"]) && $search_lastname2 == '' && $search_firstname2 == ''))) {
@@ -1047,17 +1047,19 @@ After a merge you can switch to "relatives merge" and after that return to dupli
 <?php
 }
 
-//*********************************************************************************************
-//******  "show_pair" is the function that presents the data of two persons to be merged  *****
-//******  with the possibility to determine what information is passed from left to right *****
-//*********************************************************************************************
+/**
+ * "show_pair" is the function that presents the data of two persons to be merged
+ * with the possibility to determine what information is passed from left to right
+ */
 function show_pair($left_id, $right_id, $mode)
 {
-    global $dbh, $db_functions, $data2Db, $phpself;
-    global $trees, $language;
+    global $dbh, $db_functions, $trees;
 
     // get data for left person
     $leftDb = $db_functions->get_person_with_id($left_id);
+
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
 
     $spouses1 = '';
     $children1 = '';
@@ -1068,16 +1070,16 @@ function show_pair($left_id, $right_id, $mode)
 
             $spouse_ged = $famDb->fam_man == $leftDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $name_cls = new PersonCls;
-            $name = $name_cls->person_name($spouseDb);
+            $privacy = $person_privacy->get_privacy($spouseDb);
+            $name = $person_name->get_person_name($spouseDb, $privacy);
             $spouses1 .= $name["standard_name"] . '<br>';
 
             if ($famDb->fam_children) {
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $name_cls = new PersonCls;
-                    $name = $name_cls->person_name($childDb);
+                    $privacy = $person_privacy->get_privacy($childDb);
+                    $name = $person_name->get_person_name($childDb, $privacy);
                     $children1 .= $name["standard_name"] . '<br>';
                 }
             }
@@ -1094,13 +1096,13 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $name_cls = new PersonCls;
-        $name = $name_cls->person_name($fatherDb);
+        $privacy = $person_privacy->get_privacy($fatherDb);
+        $name = $person_name->get_person_name($fatherDb, $privacy);
         $father1 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $name_cls = new PersonCls;
-        $name = $name_cls->person_name($motherDb);
+        $privacy = $person_privacy->get_privacy($motherDb);
+        $name = $person_name->get_person_name($motherDb, $privacy);
         $mother1 .= $name["standard_name"] . '<br>';
     }
 
@@ -1115,16 +1117,16 @@ function show_pair($left_id, $right_id, $mode)
             $famDb = $db_functions->get_family($value);
             $spouse_ged = $famDb->fam_man == $rightDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $name_cls = new PersonCls;
-            $name = $name_cls->person_name($spouseDb);
+            $privacy = $person_privacy->get_privacy($spouseDb);
+            $name = $person_name->get_person_name($spouseDb, $privacy);
             $spouses2 .= $name["standard_name"] . '<br>';
 
             if ($famDb->fam_children) {
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $name_cls = new PersonCls;
-                    $name = $name_cls->person_name($childDb);
+                    $privacy = $person_privacy->get_privacy($childDb);
+                    $name = $person_name->get_person_name($childDb, $privacy);
                     $children2 .= $name["standard_name"] . '<br>';
                 }
             }
@@ -1141,13 +1143,13 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $name_cls = new PersonCls;
-        $name = $name_cls->person_name($fatherDb);
+        $privacy = $person_privacy->get_privacy($fatherDb);
+        $name = $person_name->get_person_name($fatherDb, $privacy);
         $father2 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $name_cls = new PersonCls;
-        $name = $name_cls->person_name($motherDb);
+        $privacy = $person_privacy->get_privacy($motherDb);
+        $name = $person_name->get_person_name($motherDb, $privacy);
         $mother2 .= $name["standard_name"] . '<br>';
     }
 ?>
@@ -1256,9 +1258,9 @@ function show_pair($left_id, $right_id, $mode)
     <?php
 }
 
-//************************************************************************************************************
-//****** show_regular is a function that places the regular items from humo_persons in the comparison table **
-//************************************************************************************************************
+/**
+ * show_regular is a function that places the regular items from humo_persons in the comparison table
+ */
 function show_regular($left_item, $right_item, $title, $name)
 {
     global $dbh, $language, $color;
@@ -1300,9 +1302,9 @@ function show_regular($left_item, $right_item, $title, $name)
     }
 }
 
-//***********************************************************************************************************************
-//****** show_regular_text is a function that places the regular text items from humoX_person in the comparison table **
-//***********************************************************************************************************************
+/**
+ * show_regular_text is a function that places the regular text items from humoX_person in the comparison table
+ */
 function show_regular_text($left_item, $right_item, $title, $name)
 {
     global $dbh, $trees, $language, $data2Db, $color;
@@ -1350,9 +1352,9 @@ function show_regular_text($left_item, $right_item, $title, $name)
     }
 }
 
-//***********************************************************************************
-//****** show_events is a function that places the events in the comparison table **
-//***********************************************************************************
+/**
+ * show_events is a function that places the events in the comparison table
+ */
 function show_events($left_ged, $right_ged)
 {
     global $dbh, $trees, $language, $data2Db, $color;
@@ -1491,9 +1493,9 @@ function show_events($left_ged, $right_ged)
     }
 }
 
-//*********************************************************************************************
-//******  "put_event" is a function to create the checkboxes for the event items          *****
-//*********************************************************************************************
+/**
+ * "put_event" is a function to create the checkboxes for the event items
+ */
 function put_event($this_event, $name_event, $l_ev, $r_ev)
 {
     global $color, $dbh, $trees, $language;
@@ -1562,9 +1564,9 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
     }
 }
 
-//**********************************************************************************************************************
-//******  "show_sources" is the function that places the sources in the comparison table (if right has a value)     ****
-//**********************************************************************************************************************
+/**
+ * "show_sources" is the function that places the sources in the comparison table (if right has a value)
+ */
 function show_sources($left_ged, $right_ged)
 {
     global $dbh, $trees, $language, $data2Db, $color;
@@ -1643,9 +1645,9 @@ function show_sources($left_ged, $right_ged)
     }
 }
 
-//**********************************************************************************************************************
-//******  "show_addresses" is the function that places the addresses in the comparison table (if right has a value) ****
-//**********************************************************************************************************************
+/**
+ * "show_addresses" is the function that places the addresses in the comparison table (if right has a value)
+ */
 function show_addresses($left_ged, $right_ged)
 {
     global $dbh, $trees, $language, $data2Db, $color;
@@ -1719,9 +1721,9 @@ function show_addresses($left_ged, $right_ged)
     }
 }
 
-//**********************************************************************************************************************
-//******  "merge_them" is the function that does the actual job of merging the data of two persons (left and right)*****
-//**********************************************************************************************************************
+/**
+ * "merge_them" is the function that does the actual job of merging the data of two persons (left and right)
+ */
 function merge_them($left, $right, $mode)
 {
     global $dbh, $db_functions, $trees, $data2Db, $phpself, $language;
@@ -2615,9 +2617,9 @@ This is the easiest way to make sure you don\'t forget anyone.');
     }
 }
 
-//*********************************************************************************************************************************
-//*********  function check_regular checks if data from the humo_person table was marked (checked) in the comparison table  *****
-//*********************************************************************************************************************************
+/**
+ * function check_regular checks if data from the humo_person table was marked (checked) in the comparison table
+ */
 function check_regular($post_var, $auto_var, $mysql_var)
 {
     global $dbh, $result1Db, $result2Db;
@@ -2627,9 +2629,9 @@ function check_regular($post_var, $auto_var, $mysql_var)
     }
 }
 
-// *********************************************************************************************************************************
-// ***  function check_regular_text checks if text data from the humo_person table was marked (checked) in the comparison table  *****
-// *********************************************************************************************************************************
+/**
+ * function check_regular_text checks if text data from the humo_person table was marked (checked) in the comparison table
+ */
 function check_regular_text($post_var, $auto_var, $mysql_var)
 {
     global $dbh, $trees, $result1Db, $result2Db;
@@ -2659,9 +2661,9 @@ function check_regular_text($post_var, $auto_var, $mysql_var)
     }
 }
 
-//********************************************************************************************************
-//*********  function popclean prepares a mysql output string for presentation with popup_merge.js *****
-//********************************************************************************************************
+/**
+ * function popclean prepares a mysql output string for presentation with popup_merge.js
+ */
 function popclean($input)
 {
     return str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br>", htmlentities(addslashes($input), ENT_QUOTES));

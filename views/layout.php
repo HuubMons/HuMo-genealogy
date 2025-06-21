@@ -186,10 +186,10 @@ $menu_top = getActiveTopMenu($page);
         echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
     }
 
+    /**
+     * Use these lines to show a background picture for EACH FAMILY TREE
+     */
     /*
-    // *****************************************************************
-    // Use these lines to show a background picture for EACH FAMILY TREE
-    // *****************************************************************
     echo '<style type="text/css">';
     $picture= "pictures/" . $tree_id . ".jpg";
     echo " body { background-image: url($picture);}";
@@ -436,6 +436,9 @@ $menu_top = getActiveTopMenu($page);
                     if (!$bot_visit) {
                         // *** Show favorites in selection list ***
                         $link = $link_cls->get_link($uri_path, 'family', $tree_id);
+
+                        $person_privacy = new PersonPrivacy;
+                        $person_name = new PersonName;
                     ?>
                         <div class="col-md-2">
 
@@ -454,13 +457,10 @@ $menu_top = getActiveTopMenu($page);
                                                 // *** Show only persons in selected family tree ***
                                                 if ($tree_id == $favorite_array2['0']) {
                                                     // *** Check if family tree is still the same family tree ***
-                                                    // *** Proces man using a class ***
                                                     $test_favorite = $db_functions->get_person($favorite_array2['2']);
                                                     if ($test_favorite) {
-                                                        //$name_cls = new PersonCls($favorite_array2['3']);
-                                                        //$name_cls = new PersonCls($favorite_array2['2']);
-                                                        $name_cls = new PersonCls($test_favorite);
-                                                        $name = $name_cls->person_name($test_favorite);
+                                                        $privacy = $person_privacy->get_privacy($test_favorite);
+                                                        $name = $person_name->get_person_name($test_favorite, $privacy);
                                                         echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['2'] . '">' . $name['name'] . ' [' . $favorite_array2['2'] . ']</option>';
                                                     }
                                                 }
@@ -779,9 +779,9 @@ $menu_top = getActiveTopMenu($page);
 
         // *** Include content ***
         if ($page == 'index') {
-            // ***********************************************************************************************
-            // ** Main index class ***
-            // ***********************************************************************************************
+            /**
+             * Main index class
+             */
 
             // *** Replace the main index by an own CMS page ***
             $text = '';
@@ -843,7 +843,7 @@ $menu_top = getActiveTopMenu($page);
         </div>
     <?php } ?>
 
-    </div> <!-- End of div: Content -->
+    </div>
 
     <?php if ($menu) { ?>
         <footer class="d-print-none">

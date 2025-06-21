@@ -1,21 +1,21 @@
 <?php
 
-/*****************************************************************************
- * fanchart.php                                                              *
- * Original fan plotting code from PhpGedView (GNU/GPL licence)              *
- *                                                                           *
- * Rewritten and adapted for HuMo-genealogy by Yossi Beck  -  October 2009   *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 2 of the License, or         *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
- * GNU General Public License for more details.                              *
- ****************************************************************************/
+/*
+ * fanchart.php
+ * Original fan plotting code from PhpGedView (GNU/GPL licence)
+ *
+ * Rewritten and adapted for HuMo-genealogy by Yossi Beck  -  October 2009
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 
 // *** Tab menu: ancestors ***
 echo $data['ancestor_header'];
@@ -43,17 +43,17 @@ for ($i = 0; $i < $maxperson; $i++) {
 // *** Recursive function to fill the array with person data ***
 function fillarray($nr, $pers_gedcomnumber): void
 {
-    global $dbh, $db_functions, $maxperson, $data, $indexnr;
+    global $db_functions, $maxperson, $data, $indexnr;
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
+
     if ($nr >= $maxperson) {
         return;
     }
     if ($pers_gedcomnumber) {
         $personmnDb = $db_functions->get_person($pers_gedcomnumber);
-
-        $man_cls = new PersonCls($personmnDb);
-        $man_privacy = $man_cls->get_privacy();
-
-        $name = $man_cls->person_name($personmnDb);
+        $man_privacy = $person_privacy->get_privacy($personmnDb);
+        $name = $person_name->get_person_name($personmnDb, $man_privacy);
         //$data["fanchart_item"][$nr]['standard_name']=$name["standard_name"];
         $data["fanchart_item"][$nr]['standard_name'] = html_entity_decode($name["standard_name"]);
 
@@ -181,8 +181,9 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr): string
  */
 function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 {
-    global $dbh, $tree_id, $db_functions, $language, $selected_language;
-    //global $china_message;
+    global $dbh, $tree_id, $db_functions;
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
 
     // check for GD 2.x library
     /*
@@ -457,10 +458,16 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                 $imagemap .= "$tx, $ty";
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $person_cls = new PersonCls;
-                $url = $person_cls->person_url2($tree_id, $data["fanchart_item"][$sosa]['pers_famc'], $data["fanchart_item"][$sosa]['pers_fams'], $data["fanchart_item"][$sosa]['pers_gedcomnumber']);
+                $person_linkDb = new stdClass();
+                $person_linkDb->pers_tree_id = $tree_id;
+                $person_linkDb->pers_famc = $data["fanchart_item"][$sosa]['pers_famc'];
+                $person_linkDb->pers_fams = $data["fanchart_item"][$sosa]['pers_fams'];
+                $person_linkDb->pers_gedcomnumber = $data["fanchart_item"][$sosa]['pers_gedcomnumber'];
+
+                $person_link = new PersonLink();
+                $url = $person_link->get_person_link($person_linkDb);
+
                 $imagemap .= "\" href=\"" . $url . "\"";
-                //}
 
                 // *** Add first spouse to base person's tooltip ***
                 $spousename = '';
@@ -478,10 +485,10 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                     $spouse_result = $dbh->query("SELECT " . $spouse . " FROM humo_families
                         WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $first_fam_gedcomnumber . "'");
                     $spouseDb = $spouse_result->fetch();
-                    $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
 
-                    $spouse_cls = new PersonCls($spouse2Db);
-                    $spname = $spouse_cls->person_name($spouse2Db);
+                    $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
+                    $privacy = $person_privacy->get_privacy($spouse2Db);
+                    $spname = $person_name->get_person_name($spouse2Db, $privacy);
                     $spouse_lan = $data["fanchart_item"][1]['pers_sexe'] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
                     if ($spname != "") {
                         $spousename = "\n(" . __($spouse_lan) . ": " . $spname["standard_name"] . ")";
@@ -658,8 +665,8 @@ if ($china_message == 1) {
 ?>
     <div style="border:2px solid red;background-color:white;padding:5px;position:relative;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;font-size:120%;text-align:center;">
         <?= __('No Chinese ttf font file found'); ?><br>
-        <?= __('Download link'); ?>: <a href="http://humogen.com/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>
-        <?= __('or'); ?> <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>
+        <?= __('Download link'); ?>: <a href="http://LINK_NO_LONGER_EXISTS/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>
+        <?= __('or'); ?> <a href="http://LINK_NO_LONGER_EXISTS/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>
         <?= __('Unzip and place in "include/fanchart/chinese/" folder'); ?>
     </div>
 <?php

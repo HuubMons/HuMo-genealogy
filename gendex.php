@@ -10,10 +10,13 @@ $GeneralSettings = new GeneralSettings();
 $user = $GeneralSettings->get_user_settings($dbh);
 $humo_option = $GeneralSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/include/personCls.php");
+include_once(__DIR__ . "/include/personData.php");
 
 include_once(__DIR__ . "/include/dbFunctions.php");
 $db_functions = new DbFunctions($dbh);
+
+include_once(__DIR__ . "/include/personPrivacy.php");
+$person_privacy = new PersonPrivacy;
 
 // *** Database ***
 $datasql = $db_functions->get_trees();
@@ -26,8 +29,7 @@ foreach ($datasql as $dataDb) {
         //person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
         //Birthdate|Birthplace|Deathdate|Deathplace|
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
-            $person_cls = new PersonCls($personDb);
-            $privacy = $person_cls->get_privacy();
+            $privacy = $person_privacy->get_privacy($personDb);
             // *** Completely filter person ***
             if (
                 $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0

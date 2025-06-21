@@ -147,4 +147,4 @@ function source_display_pdf($sourcenum)
     if ($repoDb) {
         // NO REPOSITORIES IN PDF YET...
     }
-} // end function source_display
+}

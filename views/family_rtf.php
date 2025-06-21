@@ -32,9 +32,7 @@ $db_functions->check_family($data["family_id"]);
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-// **********************************************************
 // *** Maximum number of generations in descendant report ***
-// **********************************************************
 $max_generation = ($humo_option["descendant_generations"] - 1);
 
 $data["descendant_report"] = false;
@@ -87,9 +85,15 @@ $par_child_text->setIndentRight(0.5);
 
 // *** Generate title of RTF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
-// *** Use class to process person ***
-$pers_cls = new PersonCls($persDb);
-$name = $pers_cls->person_name($persDb);
+
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
+$person_name_extended = new PersonNameExtended;
+$person_data = new PersonData;
+
+$privacy = $person_privacy->get_privacy($persDb);
+$name = $person_name->get_person_name($persDb, $privacy);
+
 if (!$data["descendant_report"] == false) {
     $title = __('Descendant report') . __(' of ') . $name["standard_name"];
 } else {
@@ -118,21 +122,19 @@ while (false !== ($filename = readdir($dh))) {
 }
 
 
-
-// **************************
-// *** Show single person ***
-// **************************
+/**
+ * Show single person
+ */
 if (!$data["family_id"]) {
     // starfieldchart is never called when there is no own fam so no need to mark this out
     // *** Privacy filter ***
     $parent1Db = $db_functions->get_person($data["main_person"]);
-    // *** Use class to show person ***
-    $parent1_cls = new PersonCls($parent1Db);
+    $parent1_privacy = $person_privacy->get_privacy($parent1Db);
 
-    $rtf_text = strip_tags($parent1_cls->name_extended("parent1"), "<b><i>");
+    $rtf_text = strip_tags($person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
     $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
     $id = '';
-    $rtf_text = strip_tags($parent1_cls->person_data("parent1", $id), "<b><i>");
+    $rtf_text = strip_tags($person_data->person_data($parent1Db, $parent1_privacy, "parent1", $id), "<b><i>");
     $sect->writeText($rtf_text, $arial12, $parSimple);
 }
 
@@ -221,23 +223,18 @@ else {
                     $parent2 = $familyDb->fam_woman;
                 }
                 $parent1Db = $db_functions->get_person($parent1);
-                // *** Proces parent1 using a class ***
-                $parent1_cls = new PersonCls($parent1Db);
-                $parent1_privacy = $parent1_cls->get_privacy();
+                $parent1_privacy = $person_privacy->get_privacy($parent1Db);
 
                 $parent2Db = $db_functions->get_person($parent2);
-                // *** Proces parent2 using a class ***
-                $parent2_cls = new PersonCls($parent2Db);
-                $parent2_privacy = $parent2_cls->get_privacy();
+                $parent2_privacy = $person_privacy->get_privacy($parent2Db);
 
-                // *** Proces marriage using a class ***
                 $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                 $family_privacy = $marriage_cls->get_privacy();
 
 
-                // *******************************************************************
-                // *** Show family                                                 ***
-                // *******************************************************************
+                /**
+                 * Show family
+                 */
                 // *** Internal link for descendant_report ***
                 if ($data["descendant_report"] == true) {
                     // *** Internal link (Roman number_generation) ***
@@ -255,31 +252,28 @@ else {
                     $sect->writeText(__('Family group sheet'), $arial14, $parHead);
                 }
 
-                // *************************************************************
-                // *** Parent1 (normally the father)                         ***
-                // *************************************************************
+                /**
+                 * Show parent1 (normally the father)
+                 */
                 if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
                     if ($family_nr == 1) {
                         //*** Show data of parent1 ***
                         $rtf_text = ' <b>' . $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1] . '</b> ';
-                        //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                         $sect->writeText($rtf_text, $arial12);
 
                         // *** Start new line ***
                         $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
-                        $rtf_text = strip_tags($parent1_cls->name_extended("parent1"), "<b><i>");
-                        //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+                        $rtf_text = strip_tags($person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
                         $sect->writeText($rtf_text, $arial12);
                         $id = '';
-                        $rtf_text = strip_tags($parent1_cls->person_data("parent1", $id), "<b><i>");
+                        $rtf_text = strip_tags($person_data->person_data($parent1Db, $parent1_privacy, "parent1", $id), "<b><i>");
                         $sect->writeText($rtf_text, $arial12, $parSimple);
 
                         // *** Show RTF media ***
                         if (!$parent1_privacy) {
                             show_rtf_media('person', $parent1Db->pers_gedcomnumber);
                         }
-                        //$family_nr++;
                     } else {
                         // *** Show standard marriage text and name in 2nd, 3rd, etc. marriage ***
                         $rtf_text = strip_tags($marriage_cls->marriage_data($familyDb, $family_nr, 'shorter'), "<b><i>");
@@ -291,17 +285,17 @@ else {
                         // *** Start new line ***
                         $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
-                        $rtf_text = strip_tags($parent1_cls->name_extended("parent1"), "<b><i>");
+                        $rtf_text = strip_tags($person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
                         //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                         $sect->writeText($rtf_text, $arial12);
                     }
                     $family_nr++;
-                } // *** End check of PRO-GEN ***
+                }
 
 
-                // *************************************************************
-                // *** Marriage                                              ***
-                // *************************************************************
+                /**
+                 * Show marriage
+                 */
                 if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
 
                     // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
@@ -329,18 +323,18 @@ else {
                     }
                 }
 
-                // *************************************************************
-                // *** Parent2 (normally the mother)                         ***
-                // *************************************************************
+                /**
+                 * Show parent2 (normally the mother)
+                 */
                 $sect->addEmptyParagraph($fontSmall, $parBlack);
 
                 // *** Start new line ***
                 $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
-                $rtf_text = strip_tags($parent2_cls->name_extended("parent2"), "<b><i>");
+                $rtf_text = strip_tags($person_name_extended->name_extended($parent2Db, $parent2_privacy, "parent2"), "<b><i>");
                 //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                 $sect->writeText($rtf_text, $arial12);
-                $rtf_text = strip_tags($parent2_cls->person_data("parent2", $id), "<b><i>");
+                $rtf_text = strip_tags($person_data->person_data($parent2Db, $parent2_privacy, "parent2", $id), "<b><i>");
                 $sect->writeText($rtf_text, $arial12, $parSimple);
 
                 // *** Show RTF media ***
@@ -349,9 +343,9 @@ else {
                 }
 
 
-                // *************************************************************
-                // *** Marriagetext                                          ***
-                // *************************************************************
+                /**
+                 * Show marriage text
+                 */
                 $temp = '';
 
                 if ($family_privacy) {
@@ -386,10 +380,9 @@ else {
                 }
 
 
-                // *************************************************************
-                // *** Children                                              ***
-                // *************************************************************
-
+                /**
+                 * Show children
+                 */
                 if ($familyDb->fam_children) {
                     $childnr = 1;
                     $child_array = explode(";", $familyDb->fam_children);
@@ -406,9 +399,7 @@ else {
                     $show_privacy_text = false;
                     foreach ($child_array as $i => $value) {
                         $childDb = $db_functions->get_person($child_array[$i]);
-                        // *** Use person class ***
-                        $child_cls = new PersonCls($childDb);
-                        $child_privacy = $child_cls->get_privacy();
+                        $child_privacy = $person_privacy->get_privacy($childDb);
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
@@ -420,7 +411,7 @@ else {
                         $rtf_text = $childnr . '. ';
                         $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 
-                        $rtf_text = strip_tags($child_cls->name_extended("child"), '<b><i>');
+                        $rtf_text = strip_tags($person_name_extended->name_extended($childDb, $child_privacy, "child"), '<b><i>');
                         $sect->writeText($rtf_text, $arial12);
 
                         // *** Build descendant_report ***
@@ -446,8 +437,8 @@ else {
                             $search_nr = array_search($child_family[0], $check_double);
                             $rtf_text = '<b><i>, ' . __('follows') . ': </i></b>' . $follows_array[$search_nr];
                             $sect->writeText($rtf_text, $arial12);
-                        } elseif ($child_cls->person_data("child", $id)) {
-                            $rtf_text = strip_tags($child_cls->person_data("child", $id), '<b><i>');
+                        } elseif ($child_cls->person_data($childDb, $child_privacy, "child", $id)) {
+                            $rtf_text = strip_tags($person_data->person_data($childDb, $child_privacy, "child", $id), '<b><i>');
                             $sect->writeText($rtf_text, $arial12, $par_child_text);
                             // *** Show RTF media ***
                             if (!$child_privacy) {
@@ -463,7 +454,7 @@ else {
         } // Multiple families in 1 generation
 
     } // nr. of generations
-} // End of single person
+}
 
 // *** If source footnotes are selected, show them here ***
 if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {

@@ -5,9 +5,12 @@ if ($user['group_pictures'] != 'j' || $user['group_photobook'] != 'j') {
     exit();
 }
 
+// TODO check autoload.
 include_once(__DIR__ . "/../admin/include/media_inc.php");
-
 $showMedia = new ShowMedia;
+
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
 
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
@@ -126,12 +129,13 @@ if ($humo_option["url_rewrite"] == "j") {
             }
             while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
                 $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                $person_cls = new PersonCls($personDb);
-                $privacy = $person_cls->get_privacy();
-                $name = $person_cls->person_name($personDb);
+                $privacy = $person_privacy->get_privacy($personDb);
+                $name = $person_name->get_person_name($personDb, $privacy);
+
                 if (!$privacy) {
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                    $person_link = new PersonLink();
+                    $url = $person_link->get_person_link($personDb);
                     $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
                     $picture_text2 .= $name["standard_name"];
                 } else {
@@ -161,12 +165,13 @@ if ($humo_option["url_rewrite"] == "j") {
                     AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
                 while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                     $personDb = $db_functions->get_person($connectDb->connect_connect_id);
-                    $person_cls = new PersonCls($personDb);
-                    $privacy = $person_cls->get_privacy();
-                    $name = $person_cls->person_name($personDb);
+                    $privacy = $person_privacy->get_privacy($personDb);
+                    $name = $person_name->get_person_name($personDb, $privacy);
+
                     if (!$privacy) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                        $person_link = new PersonLink();
+                        $url = $person_link->get_person_link($personDb);
                         if ($picture_text !== '' && $picture_text !== '0') {
                             $picture_text .= '<br>';
                         }

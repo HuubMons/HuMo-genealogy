@@ -67,9 +67,9 @@ function get_descendants($family_id, $main_person, $generation_number, $nr_gener
         // *** Progen: onecht kind, vrouw zonder man ***
         //if ($familyDb->fam_kind!='PRO-GEN') $family_nr++;
 
-        // *************************************************************
-        // *** Children                                              ***
-        // *************************************************************
+        /**
+         * Children
+         */
         if ($familyDb->fam_children) {
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {

@@ -3,6 +3,7 @@ include_once(__DIR__ . '/../../include/language_date.php');
 include_once(__DIR__ . '/../../include/date_place.php');
 include_once(__DIR__ . "/../../include/show_tree_date.php");
 
+
 class TreeIndexModel
 {
     // Can't be used in all functions yet. Refactor is needed.
@@ -10,10 +11,14 @@ class TreeIndexModel
     //private object $dbh;
     //private array $humo_option;
 
+    private PersonLink $person_link;
+
     public function __construct($dbh, $humo_option)
     {
         $this->dbh = $dbh;
         $this->humo_option = $humo_option;
+
+        $this->person_link = new PersonLink();
     }
 
     public function show_tree_index()
@@ -649,8 +654,13 @@ class TreeIndexModel
     public function random_photo(): string
     {
         global $dataDb, $tree_id, $dbh, $db_functions, $humo_option;
+
+        $person_name = new PersonName;
+        $person_privacy = new PersonPrivacy;
+
         // adding static table for displayed photos storage
         static $temp_pic_names_table = [];
+
         $text = '';
         // characters limit for rounding text below photo 100 looks good at photos inline, 200 should be good for lightbox desc
         //this for text without lightbox
@@ -696,15 +706,14 @@ class TreeIndexModel
 
                 if ($pic_conn_kind == 'person') {
                     $personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
-                    $man_cls = new PersonCls($personmnDb);
-                    $man_cls_privacy = $man_cls->get_privacy();
+                    $man_cls_privacy = $person_privacy->get_privacy($personmnDb);
                     if (!$man_cls_privacy) {
                         $is_privacy = false;
 
-                        $name = $man_cls->person_name($personmnDb);
+                        $name = $person_name->get_person_name($personmnDb, $man_cls_privacy);
                         $link_text = $name["standard_name"];
 
-                        $url = $man_cls->person_url2($personmnDb->pers_tree_id, $personmnDb->pers_famc, $personmnDb->pers_fams, $personmnDb->pers_gedcomnumber);
+                        $url = $this->person_link->get_person_link($personmnDb);
                     }
                 } elseif ($pic_conn_kind == 'family') {
                     $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $picqryDb->event_connect_id . "'";
@@ -712,21 +721,19 @@ class TreeIndexModel
                     $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
 
                     $personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
-                    $man_cls = new PersonCls($personmnDb2);
-                    $man_cls_privacy = $man_cls->get_privacy();
+                    $man_cls_privacy = $person_privacy->get_privacy($personmnDb2);
 
                     $personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
-                    $woman_cls = new PersonCls($personmnDb3);
-                    $woman_cls_privacy = $woman_cls->get_privacy();
+                    $woman_cls_privacy = $person_privacy->get_privacy($personmnDb3);
 
                     // *** Only use this picture if both man and woman have disabled privacy options ***
                     if (!$man_cls_privacy && !$woman_cls_privacy) {
                         $is_privacy = false;
 
-                        $name = $man_cls->person_name($personmnDb2);
+                        $name = $person_name->get_person_name($personmnDb2, $man_cls_privacy);
                         $man_name = $name["standard_name"];
 
-                        $name = $woman_cls->person_name($personmnDb3);
+                        $name = $person_name->get_person_name($personmnDb3, $woman_cls_privacy);
                         $woman_name =  $name["standard_name"];
 
                         $link_text = __('Family') . ': ' . $man_name . ' &amp; ' . $woman_name;
@@ -784,6 +791,8 @@ class TreeIndexModel
     public function extra_links(): string
     {
         global $dbh, $tree_id, $humo_option, $uri_path;
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName;
         $text = '';
 
         // *** Check if there are extra links ***
@@ -799,12 +808,10 @@ class TreeIndexModel
             $person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_own_code NOT LIKE ''");
             while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($personDb->pers_own_code, $pers_own_code)) {
-                    $person_cls = new PersonCls;
-                    //$person_cls = new PersonCls($personDb);
-
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $path_tmp = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
-                    $name = $person_cls->person_name($personDb);
+                    $path_tmp = $this->person_link->get_person_link($personDb);
+                    $privacy = $person_privacy->get_privacy($personDb);
+                    $name = $person_name->get_person_name($personDb, $privacy);
                     $text_nr = array_search($personDb->pers_own_code, $pers_own_code);
                     $link_order2 = $link_order[$text_nr];
                     // *** Only needed for PJCS, can't be used in other installations ***
@@ -931,6 +938,9 @@ class TreeIndexModel
     public function today_in_history($view = 'with_table'): string
     {
         global $dbh, $dataDb;
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName;
+
         // *** Backwards compatible, value is empty ***
         if ($view == '') {
             $view = 'with_table';
@@ -964,9 +974,9 @@ class TreeIndexModel
 
         // *** Save results in an array, so it's possible to order the results by date ***
         while ($record = $birth_qry->fetch(PDO::FETCH_OBJ)) {
-            $person_cls = new PersonCls($record);
-            $name = $person_cls->person_name($record);
-            $person_cls_privacy = $person_cls->get_privacy();
+            $person_cls_privacy = $person_privacy->get_privacy($record);
+            $name = $person_name->get_person_name($record, $person_cls_privacy);
+
             if (!$person_cls_privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) === $today || substr($record->pers_birth_date, 0, 6) === $today2) {
                     //$history['order'][]=substr($record->pers_birth_date,-4);
@@ -999,8 +1009,7 @@ class TreeIndexModel
                 }
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $url = $person_cls->person_url2($record->pers_tree_id, $record->pers_famc, $record->pers_fams, $record->pers_gedcomnumber);
-
+                $url = $this->person_link->get_person_link($record);
                 $history['name'][] = '<td><a href="' . $url . '">' . $name["standard_name"] . '</a></td>';
             } else {
                 $count_privacy++;

@@ -131,8 +131,11 @@ if (!isset($hourglass)) {
 // box_appearance (large, medium, small, and some other boxes...)
 function ancestor_chart_person($id, $box_appearance)
 {
-    global $dbh, $db_functions, $humo_option, $user;
-    global $data, $language, $dirmark1, $dirmark2;
+    global $db_functions, $user, $data, $dirmark1, $dirmark2;
+
+    $person_name = new PersonName;
+    $person_privacy = new PersonPrivacy;
+    $person_popup = new PersonPopup;
 
     include_once(__DIR__ . "/../admin/include/media_inc.php");
 
@@ -146,11 +149,9 @@ function ancestor_chart_person($id, $box_appearance)
 
     if ($data["gedcomnumber"][$id]) {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
-        $person_cls = new PersonCls($personDb);
-        $pers_privacy = $person_cls->get_privacy();
-        $name = $person_cls->person_name($personDb);
-        $name2 = $name["name"];
-        $name2 = $dirmark2 . $name2 . $name["colour_mark"] . $dirmark2;
+        $pers_privacy = $person_privacy->get_privacy($personDb);
+        $name = $person_name->get_person_name($personDb, $pers_privacy);
+        $name2 = $dirmark2 . $name["name"] . $name["colour_mark"] . $dirmark2;
 
         // *** Replace pop-up icon by a text box ***
         $replacement_text = '';
@@ -278,10 +279,11 @@ function ancestor_chart_person($id, $box_appearance)
         if ($box_appearance == 'ancestor_sheet_marr' || $box_appearance == 'ancestor_header') { // cause in that case there is no link
             $text .= $replacement_text;
         } else {
-            $text .= $person_cls->person_popup_menu($personDb, true, $replacement_text, $extra_popup_text);
+            $text .= $person_popup->person_popup_menu($personDb, $pers_privacy, true, $replacement_text, $extra_popup_text);
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            //$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+            //$person_link = new PersonLink();
+            //$url = $person_link->get_person_link($personDb);
             //$text .= '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
         }
     }

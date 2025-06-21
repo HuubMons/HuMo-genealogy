@@ -19,6 +19,10 @@ $path = $link_cls->get_link($uri_path, 'anniversary', $tree_id, true);
 $max_age = '110';
 $last_cal_day = 0;
 $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
+
+$person_link = new PersonLink;
+$person_name = new PersonName;
+$person_privacy = new PersonPrivacy;
 ?>
 
 <!-- *** Center page *** -->
@@ -102,15 +106,13 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                     while ($record = $qry->fetch(PDO::FETCH_OBJ)) {
                         $calendar_day = $record->birth_day;
                         $birth_day = $record->birth_day . ' ' . $data["month"];
-                        $person_cls = new PersonCls($record);
-                        $name = $person_cls->person_name($record);
-                        $person_cls_privacy = $person_cls->get_privacy();
+
+                        $person_cls_privacy = $person_privacy->get_privacy($record);
+                        $name = $person_name->get_person_name($record, $person_cls_privacy);
 
                         if (!$person_cls_privacy) {
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_cls->person_url2($record->pers_tree_id, $record->pers_famc, $record->pers_fams, $record->pers_gedcomnumber);
-
-                            $person_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            $url = $person_link->get_person_link($record);
 
                             $death_date = $record->pers_death_date;
                             $age = (date("Y") - $record->birth_year);
@@ -122,7 +124,6 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                             } else {
                                 $died = '  ';
                             }
-
                     ?>
                             <!-- Highlight present day -->
                             <tr <?= $birth_day == $data["today"] ? 'class="table-primary"' : ''; ?>>
@@ -131,7 +132,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 
                                 <td><?= $person_cls_privacy ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
 
-                                <td align="left"><?= $person_name; ?></td>
+                                <td align="left"><a href="<?= $url;?>"><?= $name["standard_name"];?></a></td>
 
                                 <td>
                                     <div class="pale"><?= $person_cls_privacy ? __(' PRIVACY FILTER') : $died; ?>
@@ -251,32 +252,28 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
                         foreach ($wed as $key => $value) {
                             // get husband
                             $manDb = $db_functions->get_person($value['man']);
-                            // *** Use class to process person ***
-                            $man_cls = new PersonCls($manDb);
-                            $man_cls_privacy = $man_cls->get_privacy();
+                            $man_cls_privacy = $person_privacy->get_privacy($manDb);
                             if (!$value['man']) {
                                 $man_name = 'N.N.';
                             } else {
-                                $name = $man_cls->person_name($manDb);
+                                $name = $person_name->get_person_name($manDb, $man_cls_privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $url = $man_cls->person_url2($manDb->pers_tree_id, $manDb->pers_famc, $manDb->pers_fams, $manDb->pers_gedcomnumber);
+                                $url = $person_link->get_person_link($manDb);
 
                                 $man_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
                             }
 
                             // get wife
                             $womanDb = $db_functions->get_person($value['woman']);
-                            // *** Use class to process person ***
-                            $woman_cls = new PersonCls($womanDb);
-                            $woman_cls_privacy = $woman_cls->get_privacy();
+                            $woman_cls_privacy = $woman_privacy->get_privacy($womanDb);
                             if (!$value['woman']) {
                                 $woman_name = 'N.N.';
                             } else {
-                                $name = $woman_cls->person_name($womanDb);
+                                $name = $person_name->get_person_name($womanDb, $woman_cls_privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $url = $woman_cls->person_url2($womanDb->pers_tree_id, $womanDb->pers_famc, $womanDb->pers_fams, $womanDb->pers_gedcomnumber);
+                                $url = $person_link->get_person_link($womanDb);
 
                                 $woman_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
                             }

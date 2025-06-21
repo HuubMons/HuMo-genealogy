@@ -1,10 +1,7 @@
 <?php
-function language_date($date_text)
+function language_date($date_text = '')
 {
-    global $language, $humo_option, $selected_language;
-    if (!isset($date_text)) {
-        $date_text = '';
-    } // *** To prevent errors in PHP 8.1 ***
+    global $humo_option, $selected_language;
     $date_text = strtoupper($date_text);
 
     if ($humo_option["date_display"] == "ch" && $selected_language != "hu") {
@@ -149,14 +146,15 @@ function american_date($date_text)
     $date_arr = explode(" ", $date_text);
     $date_text = '';
     if (count($date_arr) == 1) {
+        // only year: 1998
         $date_text = $date_arr[0];
-    } // only year: 1998
-    elseif (count($date_arr) == 2) {
+    } elseif (count($date_arr) == 2) {
+        // month and year: Dec 1998
         $date_text = $date_arr[0] . " " . $date_arr[1];
-    } // month and year: Dec 1998
-    else {
+    } else {
+        // full date: Dec 12, 1998
         $date_text = $date_arr[1] . " " . $date_arr[0] . ", " . $date_arr[2];
-    } // full date: Dec 12, 1998
+    }
     return $date_text;
 }
 
@@ -165,12 +163,13 @@ function hungarian_date($date_text)
     $date_arr = explode(" ", $date_text);
     $date_text = '';
     if (count($date_arr) == 1) {
+        // only year: 1998
         $date_text = $date_arr[0];
-    } // only year: 1998
-    elseif (count($date_arr) == 2) {
+    } elseif (count($date_arr) == 2) {
+        // month and year: 1998. április
         $date_text = $date_arr[1] . ". " . $date_arr[0];
-    } // month and year: 1998. április
-    else { // full date: 1998. április 12.
+    } else {
+        // full date: 1998. április 12.
         if ($date_arr[0] < 10) {
             $date_arr[0] = "0" . $date_arr[0];
         }

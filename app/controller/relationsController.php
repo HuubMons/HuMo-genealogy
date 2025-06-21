@@ -8,13 +8,13 @@ class RelationsController
         $this->config = $config;
     }
 
-    public function getRelations($person_cls, $link_cls, $uri_path, $selected_language): array
+    public function getRelations($link_cls, $uri_path, $selected_language): array
     {
         $RelationsModel = new RelationsModel($this->config, $selected_language);
 
         $RelationsModel->resetValues();
         $RelationsModel->checkInput();
-        $RelationsModel->getSelectedPersons($person_cls);
+        $RelationsModel->getSelectedPersons();
         $RelationsModel->getNames();
         $RelationsModel->getGEDCOMnumbers();
         $RelationsModel->switchPersons();

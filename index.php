@@ -42,7 +42,7 @@ session_start();
  *  Name of class = SomethingClass
  *  Name of script: somethingClass.php ***
  */
-// TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php, layout_pdf.php.
+// TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php.
 function custom_autoload($class_name)
 {
     // Examples of autoload files:
@@ -54,7 +54,7 @@ function custom_autoload($class_name)
 
     // include/dbFunctions.php
     // include/marriage_cls
-    // include/personCls.php
+    // include/personData.php
     // include/calculateDates.php
     // include/processLinks.php
     // include/validateDate.php
@@ -66,7 +66,12 @@ function custom_autoload($class_name)
         'DbFunctions',
         'GeneralSettings',
         'MarriageCls',
-        'PersonCls',
+        'PersonData',
+        'PersonLink',
+        'PersonName',
+        'PersonNameExtended',
+        'PersonPrivacy',
+        'PersonPopup',
         'ProcessLinks',
         'ValidateDate',
         'Config'
@@ -80,6 +85,9 @@ function custom_autoload($class_name)
         require __DIR__ . '/app/model/' . lcfirst($class_name) . '.php';
     } elseif (in_array($class_name, $include)) {
         require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
+    } elseif ($class_name == 'tFPDF' || $class_name == 'tFPDFextend') {
+        // *** No lcfirst used, because of name of class ***
+        require __DIR__ . '/include/tfpdf/' . $class_name . '.php';
     }
 }
 spl_autoload_register('custom_autoload');
@@ -120,7 +128,6 @@ $index = $controllerObj->detail($dbh, $humo_option, $user);
 
 // TODO dec. 2024 for now: use old variable names.
 $db_functions = $index['db_functions'];
-$person_cls = $index['person_cls'];
 $bot_visit = $index['bot_visit'];
 $language_file = $index['language_file']; // Array including all languages files.
 $language = $index['language']; // $language = array.
@@ -144,8 +151,6 @@ if (isset($index['id'])) {
 
 $tree_id = $index['tree_id'];
 $tree_prefix_quoted = $index['tree_prefix_quoted']; // Still in use for maps.
-
-
 
 $db_functions->set_tree_id($index['tree_id']);
 
@@ -206,13 +211,7 @@ $link_cls = new ProcessLinks($uri_path);
  * In model: class listNamesModel extends BaseModel.
  * Then use: $this->dbh, $this->db_functions, $this->tree_id, $this->user, $this->humo_option.
  */
-$config = array(
-    "dbh" => $dbh,
-    "db_functions" => $db_functions,
-    "tree_id" => $tree_id,
-    "user" => $user,
-    "humo_option" => $humo_option
-);
+include_once(__DIR__ . "/include/config.php");
 
 if ($index['page'] == 'address') {
     // TODO refactor
@@ -227,12 +226,22 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'ancestor_report') {
     $controllerObj = new AncestorReportController($config);
     $data = $controllerObj->list($id);
+} elseif ($index['page'] == 'ancestor_report_pdf') {
+    //$controllerObj = new AncestorReportController($config);
+    //$data = $controllerObj->list($id);
+    include_once(__DIR__ . "/views/ancestor_report_pdf.php");
+    exit; // Skip layout.php
 } elseif ($index['page'] == 'ancestor_report_rtf') {
     $controllerObj = new AncestorReportController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_chart') {
     $controllerObj = new AncestorChartController($config);
     $data = $controllerObj->list($id);
+} elseif ($index['page'] == 'ancestor_sheet_pdf') {
+    //$controllerObj = new AncestorSheetController($config);
+    //$data = $controllerObj->list($id);
+    include_once(__DIR__ . "/views/ancestor_sheet_pdf.php");
+    exit; // Skip layout.php
 } elseif ($index['page'] == 'ancestor_sheet') {
     $controllerObj = new AncestorSheetController($config);
     $data = $controllerObj->list($id);
@@ -250,6 +259,11 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'descendant_chart') {
     $controllerObj = new DescendantChartController($config);
     $data = $controllerObj->getFamily();
+} elseif ($index['page'] == 'family_pdf') {
+    //$controllerObj = new AncestorReportController($config);
+    //$data = $controllerObj->list($id);
+    include_once(__DIR__ . "/views/family_pdf.php");
+    exit; // Skip layout.php
 } elseif ($index['page'] == 'family_rtf') {
     //
 } elseif ($index['page'] == 'family') {
@@ -324,17 +338,24 @@ if ($index['page'] == 'address') {
     include_once(__DIR__ . "/include/date_place.php");
 
     $controllerObj = new RelationsController($config);
-    $relation = $controllerObj->getRelations($person_cls, $link_cls, $uri_path, $selected_language);
+    $relation = $controllerObj->getRelations($link_cls, $uri_path, $selected_language);
 } elseif ($index['page'] == 'reset_password') {
     $controllerObj = new ResetPasswordController($config);
     $resetpassword = $controllerObj->detail();
+} elseif ($index['page'] == 'outline_report_pdf') {
+    //$controllerObj = new OutlineReportController($config);
+    //$data = $controllerObj->getOutlineReport();
+    include_once(__DIR__ . "/views/outline_report_pdf.php");
+    exit; // Skip layout.php
 } elseif ($index['page'] == 'outline_report') {
     $controllerObj = new OutlineReportController($config);
     $data = $controllerObj->getOutlineReport();
 } elseif ($index['page'] == 'user_settings') {
     // TODO refactor
     include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
-    //if (isset($_POST['update_settings'])) include_once(__DIR__ . '/include/mail.php');
+    //if (isset($_POST['update_settings'])){
+    //  include_once(__DIR__ . '/include/mail.php');
+    //}
 
     $controllerObj = new UserSettingsController($config);
     $data = $controllerObj->user_settings($dataDb);

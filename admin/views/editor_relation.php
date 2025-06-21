@@ -128,9 +128,9 @@ if ($menu_tab != 'children') {
 </div>
 
 <?php
-// ***********************
-// *** Marriage editor ***
-// ***********************
+/**
+ * Marriage editor
+ */
 
 // *** Select marriage ***
 if ($menu_tab == 'marriage' && $person->pers_fams) {

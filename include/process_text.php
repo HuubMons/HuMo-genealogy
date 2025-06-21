@@ -1,5 +1,5 @@
 <?php
-function process_text($text_process, $text_sort = 'standard')
+function process_text($text_process, $text_sort = 'standard'): string
 {
     global $dbh, $tree_id, $user;
     global $screen_mode, $data, $link_cls, $uri_path;

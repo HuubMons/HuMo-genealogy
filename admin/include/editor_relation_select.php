@@ -4,6 +4,10 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+$editor_cls = new Editor_cls;
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName();
+
 // *** Used to select adoption parents ***
 $adoption_id = '';
 if (isset($_GET['adoption_id']) && is_numeric($_GET['adoption_id'])) {
@@ -20,8 +24,6 @@ if ($adoption_id) {
     $form = 'form1';
 }
 
-$editor_cls = new Editor_cls;
-
 echo '
     <script>
     function select_item(item){
@@ -32,28 +34,21 @@ echo '
     </script>
 ';
 
-//echo '<form method="POST" action="index.php?page=editor_relation_select" style="display : inline;">';
-$link = 'index.php?page=editor_relation_select';
-if ($adoption_id) {
-    $link .= '&amp;adoption_id=' . $adoption_id;
+$search_quicksearch_parent = '';
+if (isset($_POST['search_quicksearch_parent'])) {
+    $search_quicksearch_parent = safe_text_db($_POST['search_quicksearch_parent']);
+}
+
+$search_person_id = '';
+if (isset($_POST['search_person_id'])) {
+    $search_person_id = safe_text_db($_POST['search_person_id']);
 }
 ?>
-<form method="POST" action="<?= $link; ?>" style="display : inline;">
-    <?php
-    $search_quicksearch_parent = '';
-    if (isset($_POST['search_quicksearch_parent'])) {
-        $search_quicksearch_parent = safe_text_db($_POST['search_quicksearch_parent']);
-    }
-    echo '<input type="text" name="search_quicksearch_parent" placeholder="' . __('Name') . '" value="' . $search_quicksearch_parent . '" size="15">';
 
-    $search_person_id = '';
-    if (isset($_POST['search_person_id'])) {
-        $search_person_id = safe_text_db($_POST['search_person_id']);
-    }
-    echo ' ' . __('or ID:') . ' <input type="text" name="search_person_id" value="' . $search_person_id . '" size="5">';
-
-    echo ' <input type="submit" value="' . __('Search') . '">';
-    ?>
+<form method="POST" action="index.php?page=editor_relation_select<?= $adoption_id ? '&amp;adoption_id=' . $adoption_id : ''; ?>" style="display : inline;">
+    <input type="text" name="search_quicksearch_parent" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch_parent; ?>" size="15">
+    <?= __('or ID:'); ?> <input type="text" name="search_person_id" value="<?= $search_person_id; ?>" size="5">
+    <input type="submit" value="<?= __('Search'); ?>">
 </form><br>
 
 <?php
@@ -100,24 +95,23 @@ if ($search_quicksearch_parent != '') {
 
 while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $parent2_text = '';
+
     //*** Father ***
-    // *** Use class to process person ***
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_man);
 
-    $pers_cls = new PersonCls($persDb);
-    $name = $pers_cls->person_name($persDb);
+    $privacy = $person_privacy->get_privacy($persDb);
+    $name = $person_name->get_person_name($persDb, $privacy);
     $parent2_text .= $name["standard_name"];
 
     $parent2_text .= ' ' . __('and') . ' ';
 
     //*** Mother ***
-    // *** Use class to process person ***
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_woman);
 
-    $pers_cls = new PersonCls($persDb);
-    $name = $pers_cls->person_name($persDb);
+    $privacy = $person_privacy->get_privacy($persDb);
+    $name = $person_name->get_person_name($persDb, $privacy);
     $parent2_text .= $name["standard_name"];
 
     echo '<a href="" onClick=\'return select_item("' . str_replace("'", "&prime;", $parentsDb->fam_gedcomnumber) . '")\'>[' . $parentsDb->fam_gedcomnumber . '] ' . $parent2_text . '</a><br>';

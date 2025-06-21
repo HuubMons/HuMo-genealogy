@@ -7,9 +7,11 @@ class Router
         // *** Must be before address ***
         ['path' => 'addresses', 'title' => 'Addresses', 'page' => 'addresses', 'vars' => 'select_tree_id'],
         ['path' => 'address', 'title' => 'Address', 'page' => 'address', 'vars' => 'select_tree_id,id'],
+        ['path' => 'ancestor_report_pdf', 'title' => 'Ancestor report', 'page' => 'ancestor_report_pdf', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_report_rtf', 'title' => 'Ancestor report', 'page' => 'ancestor_report_rtf', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_report', 'title' => 'Ancestor report', 'page' => 'ancestor_report', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_chart', 'title' => 'Ancestor chart', 'page' => 'ancestor_chart', 'vars' => 'select_tree_id,id'],
+        ['path' => 'ancestor_sheet_pdf', 'title' => 'Ancestor sheet', 'page' => 'ancestor_sheet_pdf', 'vars' => 'select_tree_id,id'],
         ['path' => 'ancestor_sheet', 'title' => 'Ancestor sheet', 'page' => 'ancestor_sheet', 'vars' => 'select_tree_id,id'],
         ['path' => 'anniversary', 'title' => 'Birthday calendar', 'page' => 'anniversary'],
         ['path' => 'cms_pages', 'title' => 'Information', 'page' => 'cms_pages', 'vars' => 'id'],
@@ -17,6 +19,7 @@ class Router
         ['path' => 'descendant_report', 'title' => 'Descendants', 'page' => 'family', 'vars' => 'select_tree_id,id'],
         ['path' => 'descendant_chart', 'title' => 'Descendants', 'page' => 'descendant_chart', 'vars' => 'select_tree_id,id'],
         // *** Must be before family ***
+        ['path' => 'family_pdf', 'title' => 'Family Page', 'page' => 'family_pdf', 'vars' => 'select_tree_id,id'],
         ['path' => 'family_rtf', 'title' => 'Family Page', 'page' => 'family_rtf'],
         ['path' => 'family', 'title' => 'Family Page', 'page' => 'family', 'vars' => 'select_tree_id,id'],
         ['path' => 'fanchart', 'title' => 'Fanchart', 'page' => 'fanchart', 'vars' => 'select_tree_id,id'],
@@ -38,6 +41,7 @@ class Router
         ['path' => 'login', 'title' => 'Login', 'page' => 'login'],
         ['path' => 'mailform', 'title' => 'Mail form', 'page' => 'mailform'],
         ['path' => 'maps', 'title' => 'World map', 'page' => 'maps'],
+        ['path' => 'outline_report_pdf', 'title' => 'Outline Report', 'page' => 'outline_report_pdf'],
         ['path' => 'outline_report', 'title' => 'Outline Report', 'page' => 'outline_report'],
         ['path' => 'photoalbum', 'title' => 'Photobook', 'page' => 'photoalbum', 'vars' => 'select_tree_id'],
         ['path' => 'register', 'title' => 'Register', 'page' => 'register'],

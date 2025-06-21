@@ -4,9 +4,6 @@ class UpdateCls
 
     public function update_v3_1(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 1 (V3.1) ***
-        // ********************************
         global $dbh;
         $update_check = false;
         try {
@@ -66,9 +63,6 @@ class UpdateCls
 
     public function update_v4_6(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 4 (V4.6) ***
-        // ********************************
         global $dbh;
         $update_check_sql = false;
         try {
@@ -109,9 +103,6 @@ class UpdateCls
 
     public function update_v4_2(): void
     {
-        // *********************************
-        // *** HuMo-genealogy update 3 (V 4.2) ***
-        // *********************************
         global $dbh;
         // *** Change names of languages in table humo_tree_texts ***
         $sql = 'UPDATE humo_tree_texts SET treetext_language="nl" WHERE treetext_language="talen/taal-nederlands.php"';
@@ -129,9 +120,6 @@ class UpdateCls
 
     public function update_v3_2(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 2 (V3.2) ***
-        // ********************************
         global $dbh;
 
         $update_check = false;
@@ -235,9 +223,6 @@ class UpdateCls
 
     public function update_v4_6_update_2(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 4 (V4.6) ***
-        // ********************************
         global $dbh;
         $update_check_sql = false;
         try {
@@ -778,13 +763,10 @@ class UpdateCls
                 $dbh->query($sql);
 
                 echo ' Tree updated!';
-            } // *** End of tabel check ***
+            }
 
 
 
-            // ******************************
-            // *** AUTOMATIC UPDATES HERE ***
-            // ******************************
             // *** Automatic installation or update ***
             if (isset($field)) {
                 unset($field);
@@ -962,11 +944,8 @@ class UpdateCls
             }
 
 
-            // *****************************
             // *** CHANGE OF TABLES HERE ***
-            // *****************************
             if ($translate_tables == true) {
-
                 // *** Update person table (html to utf-8) ***
                 $read_pers_sql = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "person");
                 while ($read_persDb = $read_pers_sql->fetch(PDO::FETCH_OBJ)) {
@@ -1122,21 +1101,16 @@ class UpdateCls
                     //$update.=$sql.'<br>';
                     $dbh->query($sql);
                 }
-            } // end translate of tables
-        } // End of reading family trees ***
+            }
+        }
 
         echo '<br>';
 
         echo '</td></tr>';
-        // *** End of update version 4.6 ***
     }
 
     public function update_v4_7(): void
     {
-        // ************************************
-        // *** Update procedure version 4.7 ***
-        // ************************************
-
         global $dbh;
         $start_time = time();
 
@@ -1296,10 +1270,6 @@ class UpdateCls
 
     public function update_v4_8(): void
     {
-        // ************************************
-        // *** Update procedure version 4.8 ***
-        // ************************************
-
         global $dbh, $updateDb;
         $start_time = time();
 
@@ -1647,10 +1617,6 @@ class UpdateCls
 
     public function update_v4_8_2(): void
     {
-        // **************************************
-        // *** Update procedure version 4.8.2 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.8.2</td><td style="background-color:#00FF00">';
@@ -1694,10 +1660,6 @@ class UpdateCls
 
     public function update_v4_8_8(): void
     {
-        // **************************************
-        // *** Update procedure version 4.8.8 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.8.8</td><td style="background-color:#00FF00">';
@@ -1724,10 +1686,6 @@ class UpdateCls
 
     public function update_v4_8_9(): void
     {
-        // ************************************
-        // *** Update procedure version 4.8.9 ***
-        // ************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.8.9</td><td style="background-color:#00FF00">';
@@ -1831,10 +1789,6 @@ class UpdateCls
 
     public function update_v4_9_1(): void
     {
-        // **************************************
-        // *** Update procedure version 4.9.1 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.9.1</td><td style="background-color:#00FF00">';
@@ -1854,10 +1808,6 @@ class UpdateCls
 
     public function update_v5_0(): void
     {
-        // ************************************
-        // *** Update procedure version 5.0 ***
-        // ************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.0</td><td style="background-color:#00FF00">';
@@ -1899,10 +1849,6 @@ class UpdateCls
 
     public function update_v5_1(): void
     {
-        // ************************************
-        // *** Update procedure version 5.1 ***
-        // ************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.1</td><td style="background-color:#00FF00">';
@@ -2836,10 +2782,6 @@ class UpdateCls
 
     public function update_v5_1_6(): void
     {
-        // **************************************
-        // *** Update procedure version 5.1.6 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.1.6</td><td style="background-color:#00FF00">';
@@ -2908,10 +2850,6 @@ class UpdateCls
 
     public function update_v5_1_9(): void
     {
-        // **************************************
-        // *** Update procedure version 5.1.9 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.1.9</td><td style="background-color:#00FF00">';
@@ -3046,10 +2984,6 @@ class UpdateCls
 
     public function update_v5_2_5(): void
     {
-        // **************************************
-        // *** Update procedure version 5.2.5 ***
-        // **************************************
-
         global $dbh;
 
         // *** Show update status ***
@@ -3228,10 +3162,6 @@ class UpdateCls
 
     public function update_v5_6_1(): void
     {
-        // **************************************
-        // *** Update procedure version 5.6.1 ***
-        // **************************************
-
         global $dbh;
 
         // *** Show update status ***
@@ -3365,10 +3295,6 @@ class UpdateCls
 
     public function update_v5_7(): void
     {
-        // ************************************
-        // *** Update procedure version 5.7 ***
-        // ************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3508,10 +3434,6 @@ class UpdateCls
 
     public function update_v5_9(): void
     {
-        // ************************************
-        // *** Update procedure version 5.9 ***
-        // ************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3587,10 +3509,6 @@ class UpdateCls
 
     public function update_v6_0_1(): void
     {
-        // **************************************
-        // *** Update procedure version 6.0.1 ***
-        // **************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3678,10 +3596,6 @@ class UpdateCls
 
     public function update_v6_4_1(): void
     {
-        // **************************************
-        // *** Update procedure version 6.4.1 ***
-        // **************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3867,10 +3781,6 @@ class UpdateCls
 
     public function update_v6_7_2(): void
     {
-        // **************************************
-        // *** Update procedure version 6.7.2 ***
-        // **************************************
-
         global $dbh;
 
         // *** Show update status ***
@@ -4005,10 +3915,6 @@ class UpdateCls
 
     public function update_v6_7_9($dbh): void
     {
-        // **************************************
-        // *** Update procedure version 6.7.9 ***
-        // **************************************
-
         // *** Show update status ***
         //ob_start();
         ?>
@@ -4137,10 +4043,6 @@ class UpdateCls
 
     public function update_v6_7_9a($dbh): void
     {
-        // ***************************************
-        // *** Update procedure version 6.7.9a ***
-        // ***************************************
-
         // *** Show update status ***
         //ob_start();
         ?>
@@ -4261,4 +4163,4 @@ class UpdateCls
         //ob_flush();
         flush();
     */
-} // *** End of update_cls ***
+}

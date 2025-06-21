@@ -92,9 +92,21 @@ echo $data["descendant_header"];
     <?php
     if (!$show_details) {
         if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") {
+            // TODO check all variables.
+            if ($humo_option["url_rewrite"] == "j") {
+                //$link = $uri_path . 'outline_report_pdf/' . $tree_id . '/' . $data["family_id"] . '?main_person=' . $data["main_person"];
+                $link = $uri_path . 'outline_report_pdf';
+            } else {
+                //$link = $uri_path . 'index.php?page=outline_report_pdf' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"];
+                $link = $uri_path . 'index.php?page=outline_report_pdf';
+            }
+            if ($data["descendant_report"] == true) {
+                $link .= '&amp;descendant_report=1';
+            }
     ?>
-            <!-- Show PDF button -->
-            &nbsp;&nbsp;&nbsp;<form method="POST" action="views/outline_report_pdf.php" style="display : inline;">
+
+            <!-- Show pdf button landscape -->
+            &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $link; ?>" style="display:inline-block;">
                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="screen_mode" value="PDF-P">
                 <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
@@ -105,8 +117,8 @@ echo $data["descendant_header"];
                 <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('PDF (Portrait)'); ?>">
             </form>
 
-            <!-- Show pdf button -->
-            &nbsp;<form method="POST" action="views/outline_report_pdf.php" style="display : inline;">
+            <!-- Show pdf button portrait -->
+            &nbsp;<form method="POST" action="<?= $link; ?>" style="display : inline;">
                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                 <input type="hidden" name="screen_mode" value="PDF-L">
                 <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
@@ -125,13 +137,17 @@ echo $data["descendant_header"];
 <?php
 $generation_number = 0;
 
-// *******************************************
-// ****** Recursive function outline *********
-// *******************************************
+/**
+ * Recursive function outline
+ */
 function outline($outline_family_id, $outline_main_person, $generation_number, $nr_generations)
 {
-    global $dbh, $db_functions, $show_details, $show_date, $dates_behind_names, $nr_generations;
-    global $language, $dirmark1, $dirmark1, $screen_mode, $user;
+    global $db_functions, $show_details, $show_date, $dates_behind_names, $nr_generations;
+    global $language, $dirmark1, $dirmark1, $user;
+
+    $person_privacy = new PersonPrivacy;
+    $person_name_extended = new PersonNameExtended;
+    $person_data = new PersonData;
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -176,19 +192,17 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
         // *** Privacy filter man and woman ***
         $person_manDb = $db_functions->get_person($familyDb->fam_man);
-        $man_cls = new PersonCls($person_manDb);
-        $privacy_man = $man_cls->get_privacy();
+        $privacy_man = $person_privacy->get_privacy($person_manDb);
 
         $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-        $woman_cls = new PersonCls($person_womanDb);
-        $privacy_woman = $woman_cls->get_privacy();
+        $privacy_woman = $person_privacy->get_privacy($person_womanDb);
 
         $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
         $family_privacy = $marriage_cls->get_privacy();
 
-        // *************************************************************
-        // *** Parent1 (normally the father)                         ***
-        // *************************************************************
+        /**
+         * Show parent1 (normally the father)
+         */
         if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
             if ($family_nr == 1) {
                 // *** Show data of man ***
@@ -204,9 +218,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     <span style="font-weight:bold;font-size:120%"><?= $generation_number; ?> </span>
                     <?php
                     if ($swap_parent1_parent2 == true) {
-                        echo $woman_cls->name_extended("outline");
+                        echo $person_name_extended->name_extended($person_womanDb, $privacy_woman, "outline");
                         if ($show_details && !$privacy_woman) {
-                            echo $woman_cls->person_data("outline", $familyDb->fam_gedcomnumber);
+                            echo $person_data->person_data($person_womanDb, $privacy_woman, "outline", $familyDb->fam_gedcomnumber);
                         }
 
                         if ($show_date == "1" && !$privacy_woman && !$show_details) {
@@ -217,9 +231,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                             echo ' &nbsp; (' . language_date($person_womanDb->pers_birth_date) . ' - ' . language_date($person_womanDb->pers_death_date) . ')';
                         }
                     } else {
-                        echo $man_cls->name_extended("outline");
+                        echo $person_name_extended->name_extended($person_manDb, $privacy_man, "outline");
                         if ($show_details && !$privacy_man) {
-                            echo $man_cls->person_data("outline", $familyDb->fam_gedcomnumber);
+                            echo $person_data->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
                         }
 
                         if ($show_date == "1" && !$privacy_man && !$show_details) {
@@ -234,13 +248,14 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 </div>
         <?php
             } else {
-            }   // empty: no second show of data of main_person in outline report
+                // empty: no second show of data of main_person in outline report
+            }
             $family_nr++;
-        } // *** end check of PRO-GEN ***
+        }
 
-        // *************************************************************
-        // *** Parent2 (normally the mother)                         ***
-        // *************************************************************
+        /**
+         * Show parent2 (normally the mother)
+         */
 
         // *** Totally hide parent2 if setting is active ***
         $show_parent2 = true;
@@ -290,9 +305,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
             if ($show_parent2 && $swap_parent1_parent2) {
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-                echo $man_cls->name_extended("outline");
+                echo $person_name_extended->name_extended($person_manDb, $privacy_man, "outline");
                 if ($show_details && !$privacy_man) {
-                    echo $man_cls->person_data("outline", $familyDb->fam_gedcomnumber);
+                    echo $person_data->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
                 }
 
                 if ($show_date == "1" && !$privacy_man && !$show_details) {
@@ -306,9 +321,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 if ($show_details) {
                     echo "&nbsp;&nbsp;&nbsp;&nbsp;";
                 }
-                echo $woman_cls->name_extended("outline");
+                echo $person_name_extended->name_extended($person_womanDb, $privacy_woman, "outline");
                 if ($show_details && !$privacy_woman) {
-                    echo $woman_cls->person_data("outline", $familyDb->fam_gedcomnumber);
+                    echo $person_data->person_data($person_womanDb, $privacy_woman, "outline", $familyDb->fam_gedcomnumber);
                 }
 
                 if ($show_date == "1" && !$privacy_woman && !$show_details) {
@@ -318,7 +333,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     }
                     echo ' &nbsp; (' . @language_date($person_womanDb->pers_birth_date) . ' - ' . @language_date($person_womanDb->pers_death_date) . ')';
                 }
-            } elseif ($screen_mode != "PDF") {
+            } else {
                 // *** No permission to show parent2 ***
                 echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
             }
@@ -326,9 +341,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         </div>
 
         <?php
-        // *************************************************************
-        // *** Children                                              ***
-        // *************************************************************
+        /**
+         * Show children
+         */
         if ($familyDb->fam_children) {
             $childnr = 1;
             $child_array = explode(";", $familyDb->fam_children);
@@ -337,15 +352,14 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
                 // *** Totally hide children if setting is active ***
                 if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
-                    if ($screen_mode != "PDF" && !$show_privacy_text) {
+                    if (!$show_privacy_text) {
                         echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         $show_privacy_text = true;
                     }
                     continue;
                 }
 
-                $child_cls = new PersonCls($childDb);
-                $child_privacy = $child_cls->get_privacy();
+                $child_privacy = $person_privacy->get_privacy($childDb);
 
                 // *** Build descendant_report ***
                 if ($childDb->pers_fams) {
@@ -361,9 +375,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                         <div class="<?= $childindent; ?>">
                             <span style="font-weight:bold;font-size:120%"><?= $childgn; ?></span>
                             <?php
-                            echo $child_cls->name_extended("outline");
+                            echo $person_name_extended->name_extended($childDb, $child_privacy, "outline");
                             if ($show_details and !$child_privacy) {
-                                echo $child_cls->person_data("outline", "");
+                                echo $person_data->person_data($childDb, $child_privacy, "outline", "");
                             }
 
                             if ($show_date == "1" and !$child_privacy and !$show_details) {
@@ -384,9 +398,8 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         }
     } // Show  multiple marriages
 
-} // End of outline function
+}
 
-
-// ******* Start function here - recursive if started ******
+// *** Start function here - recursive if started ***
 ?>
 <?php outline($data["family_id"], $data["main_person"], $generation_number, $nr_generations); ?>

@@ -195,6 +195,9 @@ class MapsModel extends BaseModel
         $maps['location_text'][] = '';
         $maps['location_text_count'][] = '';
 
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName;
+
         $namesearch_string = '';
         if ($maps['family_names'] != '') {
             $namesearch_string = ' AND (';
@@ -259,10 +262,8 @@ class MapsModel extends BaseModel
                 //}
             }
 
-            // *** Use person class ***
-            // TODO: this slows down page for large family trees. Use Javascript to show persons?
-            $person_cls = new PersonCls($personDb);
-            $name = $person_cls->person_name($personDb);
+            $privacy = $person_privacy->get_privacy($personDb);
+            $name = $person_name->get_person_name($personDb, $privacy);
 
             $key = array_search(htmlspecialchars($place), $maps['location']);
             if (isset($key) && $key > 0) {

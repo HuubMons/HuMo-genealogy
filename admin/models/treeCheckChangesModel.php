@@ -39,10 +39,11 @@ class TreeCheckChangesModel extends AdminBaseModel
 
     public function get_changes($tree_check): array
     {
-        // TODO improve variabele. Now needed to show proper links in person_url2.
+        // TODO improve variabele. Now needed to show proper links in person_link.
         global $uri_path;
 
-        $person_cls = new PersonCls;
+        $person_link = new PersonLink();
+
         $row = 0;
 
         if ($tree_check['show_persons']) {
@@ -71,7 +72,7 @@ class TreeCheckChangesModel extends AdminBaseModel
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                 $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                $url = $person_cls->person_url2($person->pers_tree_id, $person->pers_famc, $person->pers_fams, $person->pers_gedcomnumber);
+                $url = $person_link->get_person_link($person);
 
                 $text = '<a href="' . $url . '">' . $person->pers_firstname . ' ' . $person->pers_prefix . $person->pers_lastname . '</a>';
                 $tree_check['changes'][$row][1] = $text;
@@ -130,7 +131,7 @@ class TreeCheckChangesModel extends AdminBaseModel
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                    $url = $person_cls->person_url2($person2->pers_tree_id, $person2->pers_famc, $person2->pers_fams, $person2->pers_gedcomnumber);
+                    $url = $person_link->get_person_link($person2);
 
                     $text = '<a href="' . $url . '">' . $person2->pers_firstname . ' ' . $person2->pers_prefix . $person2->pers_lastname . '</a>';
                     $tree_check['changes'][$row][1] = $text;

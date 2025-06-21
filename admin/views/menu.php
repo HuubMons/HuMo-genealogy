@@ -5,7 +5,9 @@
  */
 
 $popup_style = '';
-//if ($popup == true) $popup_style = ' style="top:0px;"';
+//if ($popup == true){
+//  $popup_style = ' style="top:0px;"';
+//}
 
 if ($page != 'login' && $page != 'update') {
     if (isset($_GET['page'])) {
@@ -147,4 +149,3 @@ if ($popup == false) {
 
 <?php
 }
- // *** END OF MENU ***

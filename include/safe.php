@@ -1,6 +1,6 @@
 <?php
 // *** Function to safely store items in tables ***
-function safe_text_db($text_safe)
+function safe_text_db($text_safe): string
 {
     global $dbh;
 
@@ -16,7 +16,7 @@ function safe_text_db($text_safe)
 }
 
 // *** Function to safely show text on screen (in forms etc.) ***
-function safe_text_show($text_safe)
+function safe_text_show($text_safe): string
 {
     // *** First remove tags, ENT_QUOTES is used to also change single quote character: ' ***
     $text_safe = strip_tags($text_safe, ENT_QUOTES);

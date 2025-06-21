@@ -1,5 +1,7 @@
 <?php
+
 // May 2025: added BaseModel class.
+
 class BaseModel
 {
     protected $dbh, $db_functions, $tree_id, $user, $humo_option;

@@ -1,19 +1,25 @@
 <?php
-// **********************
-// *** Family statistics ***
-// **********************
+/**
+ * Family statistics
+ */
 
 include_once(__DIR__ . "/../../include/show_tree_date.php");
+
+$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
+$num_rows = $datasql->rowCount();
+
+// *** Statistics ***
+if (isset($tree_id) && $tree_id) {
+    $db_functions->set_tree_id($tree_id);
+}
+
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
 ?>
 
 <h2><?= __('Family statistics (numbers since last GEDCOM update)'); ?></h2>
 
-<?php
-// *** Select database ***
-$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
-$num_rows = $datasql->rowCount();
-if ($num_rows > 1) {
-?>
+<?php if ($num_rows > 1) { ?>
     <b><?= __('Select family tree'); ?></b><br>
     <?php
     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
@@ -32,12 +38,8 @@ if ($num_rows > 1) {
 <?php
     }
 }
-
-// *** Statistics ***
-if (isset($tree_id) && $tree_id) {
-    $db_functions->set_tree_id($tree_id);
-}
 ?>
+
 <br><b><?= __('Most visited families:'); ?></b><br>
 <?php
 //MAXIMUM 50 LINES
@@ -56,7 +58,8 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     if (!$familyDb->fam_man) {
         echo __('N.N.');
     } else {
-        $name = $person_cls->person_name($personDb);
+        $privacy = $person_privacy->get_privacy($personDb);
+        $name = $person_name->get_person_name($personDb, $privacy);
         echo $name["standard_name"];
     }
 
@@ -67,7 +70,8 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     if (!$familyDb->fam_woman) {
         echo __('N.N.');
     } else {
-        $name = $person_cls->person_name($personDb);
+        $privacy = $person_privacy->get_privacy($personDb);
+        $name = $person_name->get_person_name($personDb, $privacy);
         echo $name["standard_name"];
     }
     echo '<br>';

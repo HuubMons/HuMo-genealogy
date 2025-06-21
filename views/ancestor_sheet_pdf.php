@@ -10,16 +10,14 @@
  */
 
 $screen_mode = 'ASPDF';
-
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-
-include_once(__DIR__ . '/layout_pdf.php');
-
-
+$dirmark1 = '';
+$dirmark2 = '';
 
 // TODO create seperate controller script.
 $get_ancestor = new AncestorModel($config);
-$data["main_person"] = $get_ancestor->getMainPerson2('');
+//$data["main_person"] = $get_ancestor->getMainPerson2('');
+$data["main_person"] = $get_ancestor->getMainPerson('');
 $rom_nr = $get_ancestor->getNumberRoman();
 
 $db_functions->set_tree_id($tree_id);
@@ -83,16 +81,17 @@ if (__('&#134;') == '&#134;' or __('&#134;') == "†") {
 
 function data_array($id, $width, $height): void
 {
-    global $dbh, $db_functions, $data_array, $data, $dsign;
+    global $db_functions, $data_array, $data, $dsign;
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
 
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
-        $person_cls = new PersonCls($personDb);
-        $pers_privacy = $person_cls->get_privacy();
-        // get length of original name, birth, death strings
-        $names = $person_cls->person_name($personDb);
+        $pers_privacy = $person_privacy->get_privacy($personDb);
+
+        $names = $person_name->get_person_name($personDb, $pers_privacy);
         $name = $names["name"];
-        //if($name != '') {
+
         if (preg_match('/[A-Za-z]/', $name)) {
             $result = parse_line($name, $width, 0, "B");
             $name_len = $result[0];
@@ -212,14 +211,15 @@ function data_array($id, $width, $height): void
 
 function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellwidth): void
 {
-    global $dbh, $db_functions, $pdf, $pdf_font, $data_array, $posy, $posx, $data;
+    global $dbh, $db_functions, $pdf, $data_array, $posy, $posx, $data;
+    $person_privacy = new PersonPrivacy;
 
     $pdf->SetLeftMargin(16);
     $marg = 16;
     for ($m = $begin; $m <= $end; $m += $increment) {
         if ($type == "pers") { // person's name & details
             data_array($m, $maxchar, $numrows);
-            $pdf->SetFont($pdf_font, 'B', 8);
+            $pdf->SetFont($pdf->pdf_font, 'B', 8);
             if ($m % 2 == 0 or ($m == 1 and $data["sexe"][$m] == "M")) { // male
                 $pdf->SetFillColor(191, 239, 255);
             } else { // female
@@ -227,7 +227,7 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             }
             $pdf->MultiCell($cellwidth, 4, $data_array[$m][0], "LTR", "C", true);
             $marg += $cellwidth;
-            $pdf->SetFont($pdf_font, '', 8);
+            $pdf->SetFont($pdf->pdf_font, '', 8);
             $nstring = '';
             $used = $data_array[$m][3] + $data_array[$m][4] + $data_array[$m][5];
         } else {  // marr date & place
@@ -237,15 +237,13 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             }
             if ($data["gedcomnumber"][$m] != '') {
                 $personDb = $db_functions->get_person($data["gedcomnumber"][$m]);
-                $person_cls = new PersonCls($personDb);
-                $pers_privacy = $person_cls->get_privacy();
+                $pers_privacy = $person_privacy->get_privacy($personDb);
             } else {
                 $pers_privacy = false;
             }
             if ($data["gedcomnumber"][$m + 1] != '') {
                 $womanDb = $db_functions->get_person($data["gedcomnumber"][$m + 1]);
-                $woman_cls = new PersonCls($womanDb);
-                $woman_privacy = $woman_cls->get_privacy();
+                $woman_privacy = $person_privacy->get_privacy($womanDb);
             } else {
                 $woman_privacy = false;
             }
@@ -271,10 +269,10 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             if ($data_array[$m][4] == 0 && $data_array[$m][5] == 0) {
                 $nstring = substr($nstring, 0, strlen($nstring) - 1);
             }
-            $pdf->SetFont($pdf_font, '', 8);
+            $pdf->SetFont($pdf->pdf_font, '', 8);
             $pdf->MultiCell($cellwidth, 4, $data_array[$m][1] . $breakln . $data_array[$m][2] . $nstring, "LRB", "C", true);
         } else {
-            $pdf->SetFont($pdf_font, 'I', 8);
+            $pdf->SetFont($pdf->pdf_font, 'I', 8);
             $pdf->MultiCell($cellwidth, 4, $result[1] . $nstring, "LR", "C", false);
         }
         if ($m < $end) {
@@ -288,12 +286,15 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
 
 //initialize pdf generation
 $persDb = $db_functions->get_person($data["main_person"]);
-// *** Use person class ***
-$pers_cls = new PersonCls($persDb);
-$name = $pers_cls->person_name($persDb);
-$title = pdf_convert(__('Ancestor sheet') . __(' of ') . $name["standard_name"]);
 
-$pdf = new PDF();
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
+
+$privacy = $person_privacy->get_privacy($persDb);
+$name = $person_name->get_person_name($persDb, $privacy);
+
+$pdf = new tFPDFextend();
+$title = $pdf->pdf_convert(__('Ancestor sheet') . __(' of ') . $name["standard_name"]);
 $pdf->SetTitle($title, true);
 $pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 $pdf->SetTopMargin(4);
@@ -302,19 +303,19 @@ $pdf->SetAutoPageBreak(false);
 //$pdf->AddPage();
 $pdf->AddPage("L");
 
-$pdf->AddFont($pdf_font, '', 'DejaVuSansCondensed.ttf', true);
-$pdf->AddFont($pdf_font, 'B', 'DejaVuSansCondensed-Bold.ttf', true);
-$pdf->AddFont($pdf_font, 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
-$pdf->AddFont($pdf_font, 'BI', 'DejaVuSansCondensed-BoldOblique.ttf', true);
+$pdf->AddFont($pdf->pdf_font, '', 'DejaVuSansCondensed.ttf', true);
+$pdf->AddFont($pdf->pdf_font, 'B', 'DejaVuSansCondensed-Bold.ttf', true);
+$pdf->AddFont($pdf->pdf_font, 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
+$pdf->AddFont($pdf->pdf_font, 'BI', 'DejaVuSansCondensed-BoldOblique.ttf', true);
 
 $pdf->SetLeftMargin(16);
 $pdf->SetRightMargin(16);
-$pdf->SetFont($pdf_font, 'B', 12);
+$pdf->SetFont($pdf->pdf_font, 'B', 12);
 $pdf->Ln(2);
-$name = $pers_cls->person_name($persDb);
+
 $pdf->MultiCell(0, 10, __('Ancestor sheet') . __(' of ') . str_replace("&quot;", '"', $name["standard_name"]), 0, 'C');
 $pdf->Ln(2);
-$pdf->SetFont($pdf_font, '', 8);
+$pdf->SetFont($pdf->pdf_font, '', 8);
 
 // Output the cells:
 $posy = $pdf->GetY();
@@ -374,10 +375,10 @@ $pdf->MultiCell(80, 5, $legend, 0, "L", false);
 $pdf->Cell(13, 3, " ", 0, 0);
 //$pdf->SetFillColor(255,228,225); $pdf->Cell(20,3,__('female'),1,0,"C",true);
 $pdf->SetFillColor(255, 228, 225);
-$pdf->Cell(20, 3, pdf_convert(__('female')), 1, 0, "C", true);
+$pdf->Cell(20, 3, $pdf->pdf_convert(__('female')), 1, 0, "C", true);
 $pdf->Cell(5, 3, " ", 0, 0);
 //$pdf->SetFillColor(191,239,255); $pdf->Cell(20,3,__('male'),1,0,"C",true);
 $pdf->SetFillColor(191, 239, 255);
-$pdf->Cell(20, 3, pdf_convert(__('male')), 1, 0, "C", true);
+$pdf->Cell(20, 3, $pdf->pdf_convert(__('male')), 1, 0, "C", true);
 
 $pdf->Output($title . ".pdf", "I");

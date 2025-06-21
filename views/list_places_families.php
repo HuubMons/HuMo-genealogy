@@ -13,8 +13,9 @@ if (isset($_GET["start"])) {
     $start = $_GET["start"];
 }
 $nr_persons = $humo_option['show_persons'];
-
 $person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_persons);
+
+$person_privacy = new PersonPrivacy;
 
 //TODO use COUNT
 //if ($count_qry) {
@@ -194,7 +195,7 @@ if ($language["dir"] == "rtl") {
 // with extra sort date column, set smaller left margin
 $listnr = "2";      // default 20% margin
 
-//*** Show persons ******************************************************************
+//*** Show persons ***
 $privcount = 0; // *** Count privacy persons ***
 
 $selected_place = '';
@@ -214,17 +215,12 @@ $selected_place = '';
     while ($familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
         // *** Man privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_man);
-        // *** Person class used for name and person pop-up data ***
-        $man_cls = new PersonCls($personDb);
-        $man_privacy = $man_cls->get_privacy();
+        $man_privacy = $person_privacy->get_privacy($personDb);
 
         // *** Woman privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_woman);
-        // *** Person class used for name and person pop-up data ***
-        $woman_cls = new PersonCls($personDb);
-        $woman_privacy = $woman_cls->get_privacy();
+        $woman_privacy = $person_privacy->get_privacy($personDb);
 
-        // *** Proces marriage using a class ***
         $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
         $family_privacy = $marriage_cls->get_privacy();
 
@@ -246,22 +242,19 @@ $selected_place = '';
 <br>
 
 <?php
-// *** show person ***
 function show_person($familyDb)
 {
-    global $dbh, $db_functions, $tree_id, $selected_place, $language, $user;
-    global $bot_visit, $humo_option, $uri_path, $search_database, $list_expanded;
-    global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
-    global $data;
+    global $db_functions, $selected_place, $list_expanded;
+    global $privacy, $dirmark1, $dirmark2, $data;
+
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
+    $person_popup = new PersonPopup;
 
     $selected_person1 = $familyDb->fam_man ? $familyDb->fam_man : $familyDb->fam_woman;
     $personDb = $db_functions->get_person($selected_person1);
-
-    // *** Person class used for name and person pop-up data ***
-    $person_cls = new PersonCls($personDb);
-    $privacy = $person_cls->get_privacy();
-
-    $name = $person_cls->person_name($personDb);
+    $privacy = $person_privacy->get_privacy($personDb);
+    $name = $person_name->get_person_name($personDb, $privacy);
 
     // *** Show name ***
     $index_name = '';
@@ -323,7 +316,7 @@ function show_person($familyDb)
         <td valign="top" style="border-right:0px; white-space:nowrap;">
             <?php
             // *** Show person popup menu ***
-            echo $person_cls->person_popup_menu($personDb);
+            echo $person_popup->person_popup_menu($personDb, $privacy);
 
             // *** Show picture man or wife ***
             if ($personDb->pers_sexe == "M") {
@@ -333,7 +326,6 @@ function show_person($familyDb)
             } else {
                 echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
             }
-
             ?>
         </td>
 
@@ -341,7 +333,8 @@ function show_person($familyDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $start_url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+            $person_link = new PersonLink();
+            $start_url = $person_link->get_person_link($personDb);
             echo ' <a href="' . $start_url . '">' . rtrim($index_name) . '</a>';
 
             //*** Show spouse/ partner ***
@@ -370,10 +363,8 @@ function show_person($familyDb)
 
                     if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
-
-                        $partner_cls = new PersonCls($partnerDb);
-                        //$privacy2 = $partner_cls->get_privacy();
-                        $name = $partner_cls->person_name($partnerDb);
+                        $privacy = $person_privacy->get_privacy($partnerDb);
+                        $name = $person_name->get_person_name($partnerDb, $privacy);
                     } else {
                         $name["standard_name"] = __('N.N.');
                     }
@@ -404,7 +395,6 @@ function show_person($familyDb)
                     }
                 }
             }
-            // *** End spouse/ partner ***
             ?>
         </td>
 
@@ -478,4 +468,4 @@ function show_person($familyDb)
         </td>
     </tr>
 <?php
-} // *** end function show person ***
+}

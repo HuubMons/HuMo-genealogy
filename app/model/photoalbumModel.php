@@ -109,6 +109,7 @@ class PhotoalbumModel extends BaseModel
 
     public function get_media_files($chosen_tab, $search_media, $category): array
     {
+        $person_privacy = new PersonPrivacy;
         $photoalbum['media_files'] = [];
 
         // *** Create an array of all pics with person_id's. Also check for OBJECT (Family Tree Maker GEDCOM file) ***
@@ -170,14 +171,17 @@ class PhotoalbumModel extends BaseModel
                 if ($picqryDb->event_connect_id) {
                     // *** Check privacy filter ***
                     $personDb = $this->db_functions->get_person($picqryDb->event_connect_id);
-                    $person_cls = new PersonCls($personDb);
-                    $privacy = $person_cls->get_privacy();
+                    $privacy = $person_privacy->get_privacy($personDb);
                     if ($privacy) {
                         $process_picture = false;
                     }
-                    //$name=$person_cls->person_name($personDb);
+                    //$person_privacy = new PersonPrivacy;
+                    //$person_name = new PersonName;
+                    //$privacy = $person_privacy->get_privacy($personDb);
+                    //$name=$person_name->get_person_name($personDb, $privacy);
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    //$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+                    //$person_link = new PersonLink();
+                    //$url = $person_link->get_person_link($personDb);
                     //$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
                     //$picture_text2.=$name["standard_name"];
                 } else {
@@ -186,8 +190,7 @@ class PhotoalbumModel extends BaseModel
                         WHERE connect_tree_id='" . $this->tree_id . "' AND connect_sub_kind='pers_object' AND connect_source_id='" . $picqryDb->event_gedcomnr . "'");
                     while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                         $personDb = $this->db_functions->get_person($connectDb->connect_connect_id);
-                        $person_cls = new PersonCls($personDb);
-                        $privacy = $person_cls->get_privacy();
+                        $privacy = $person_privacy->get_privacy($personDb);
                         if ($privacy) {
                             $process_picture = false;
                         }

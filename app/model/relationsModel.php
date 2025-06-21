@@ -179,8 +179,11 @@ class RelationsModel extends BaseModel
         }
     }
 
-    public function getSelectedPersons($person_cls): void
+    public function getSelectedPersons(): void
     {
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName;
+
         // *** GEDCOM number: must be pattern like: Ixxxx ***
         $pattern = '/^^[a-z,A-Z][0-9]{1,}$/';
 
@@ -197,7 +200,8 @@ class RelationsModel extends BaseModel
             $searchDb = $this->db_functions->get_person($this->relation["person1"]);
             if (isset($searchDb)) {
                 $this->relation['gednr1'] = $searchDb->pers_gedcomnumber;
-                $name = $person_cls->person_name($searchDb);
+                $privacy = $person_privacy->get_privacy($searchDb);
+                $name = $person_name->get_person_name($searchDb, $privacy);
                 $this->relation['name1'] = $name["name"];
                 //$this->relation['sexe1'] = $searchDb->pers_sexe == 'M' ? 'm' : 'f';
                 $this->relation['sexe1'] = $searchDb->pers_sexe;
@@ -215,7 +219,8 @@ class RelationsModel extends BaseModel
             $searchDb2 = $this->db_functions->get_person($this->relation["person2"]);
             if (isset($searchDb2)) {
                 $this->relation['gednr2'] = $searchDb2->pers_gedcomnumber;
-                $name = $person_cls->person_name($searchDb2);
+                $privacy = $person_privacy->get_privacy($searchDb2);
+                $name = $person_name->get_person_name($searchDb2, $privacy);
                 $this->relation['name2'] = $name["name"];
                 //$this->relation['sexe2'] = $searchDb2->pers_sexe == 'M' ? 'm' : 'f';
                 $this->relation['sexe2'] = $searchDb2->pers_sexe;
@@ -433,17 +438,15 @@ class RelationsModel extends BaseModel
                 if ($ancestor_id[$i] != '0') {
                     $person_manDb = $this->db_functions->get_person($ancestor_id[$i], 'famc-fams');
                     /*
-                    $man_cls = new PersonCls($person_manDb);
-                    $man_privacy=$man_cls->get_privacy();
+                    $person_privacy = new PersonPrivacy;
+                    $man_privacy=$person_privacy->get_privacy($person_manDb);
                     if (strtolower($person_manDb->pers_sexe)=='m' && $ancestor_number[$i]>1){
                         $familyDb=$this->db_functions->get_family($marriage_number[$i]);
 
                         // *** Use privacy filter of woman ***
-                        $person_womanDb=$this->db_functions->get_person($familyDb->fam_woman);
-                        $woman_cls = new PersonCls($person_womanDb);
-                        $woman_privacy=$woman_cls->get_privacy();
+                        $person_womanDb=$this->db_functions->get_person();
+                        $woman_privacy=$person_privacy->get_privacy($familyDb->fam_woman);
 
-                        // *** Use class for marriage ***
                         $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
                         $family_privacy=$marriage_cls->get_privacy();
                     }
@@ -3400,7 +3403,7 @@ class RelationsModel extends BaseModel
     // TODO function used once
     private function search_marital(): void
     {
-        $pers_cls = new PersonCls;
+        $person_name = new PersonName;
 
         if ($this->relation['fams1'] != '') {
             $marrcount = count($this->fams1_array);
@@ -3421,7 +3424,8 @@ class RelationsModel extends BaseModel
                     $this->calculate_rel();
 
                     $spouseidDb = $this->db_functions->get_person($thespouse);
-                    $name = $pers_cls->person_name($spouseidDb);
+                    $privacy = $this->db_functions->get_privacy($spouseidDb);
+                    $name = $person_name->get_person_name($spouseidDb, $privacy);
                     $this->relation['spousenameX'] = $name["name"];
 
                     break;
@@ -3444,7 +3448,8 @@ class RelationsModel extends BaseModel
                     $this->relation['famspouseY'] = $this->fams2_array[$x];
                     $this->calculate_rel();
                     $spouseidDb = $this->db_functions->get_person($thespouse2);
-                    $name = $pers_cls->person_name($spouseidDb);
+                    $privacy = $this->db_functions->get_privacy($spouseidDb);
+                    $name = $person_name->get_person_name($spouseidDb, $privacy);
                     $this->relation['spousenameY'] = $name["name"];
                     break;
                 }
@@ -3474,11 +3479,13 @@ class RelationsModel extends BaseModel
                         $this->calculate_rel();
 
                         $spouseidDb = $this->db_functions->get_person($thespouse);
-                        $name = $pers_cls->person_name($spouseidDb);
+                        $privacy = $this->db_functions->get_privacy($spouseidDb);
+                        $name = $person_name->get_person_name($spouseidDb, $privacy);
                         $this->relation['spousenameX'] = $name["name"];
 
                         $spouseidDb = $this->db_functions->get_person($thespouse2);
-                        $name = $pers_cls->person_name($spouseidDb);
+                        $privacy = $this->db_functions->get_privacy($spouseidDb);
+                        $name = $person_name->get_person_name($spouseidDb, $privacy);
                         $this->relation['spousenameY'] = $name["name"];
 
                         $this->relation['famspouseX'] = $this->fams1_array[$x];

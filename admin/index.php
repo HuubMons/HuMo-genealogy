@@ -63,7 +63,7 @@ function admin_custom_autoload($class_name)
 
     // ../include/dbFunctions.php
     // ../include/processLinks.php
-    // ../include/personCls.php
+    // ../include/personData.php
     // ../include/calculateDates.php
 
     // ../languages/languageCls.php
@@ -72,7 +72,10 @@ function admin_custom_autoload($class_name)
     $include = array(
         'DbFunctions',
         'ProcessLinks',
-        'PersonCls',
+        'PersonData',
+        'PersonLink',
+        'PersonName',
+        'PersonPrivacy',
         'CalculateDates'
     );
     $admin_include = array(

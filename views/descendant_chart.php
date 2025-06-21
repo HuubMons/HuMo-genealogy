@@ -6,6 +6,10 @@
 
 $screen_mode = 'STAR';
 
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
+$person_popup = new PersonPopup;
+
 if (!isset($hourglass)) {
     $hourglass = false;
 }
@@ -75,8 +79,8 @@ if ($hourglass === false) {
             endPos = ui.value;
             if (startPos != endPos) {
                 window.location.href = "' . $path2 . 'main_person=' . $data["main_person"] .
-                '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
-                '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
+        '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
+        '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
                 }
             startPos = endPos;
         });
@@ -257,8 +261,7 @@ for ($w = 0; $w < count($genarray); $w++) {
     // *** Start person class and calculate privacy ***
     if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"]) {
         $man = $db_functions->get_person($genarray[$w]["gednr"]);
-        $man_cls = new PersonCls($man);
-        $man_privacy = $man_cls->get_privacy();
+        $man_privacy = $person_privacy->get_privacy($man);
     }
 
     //echo '<div style="position:absolute; background-color:'.$bkcolor.';height:'.$data["vsize"].'px; width:'.$data["hsize"].'px; border:1px brown solid; left:'.$xvalue.'px; top:'.$yvalue.'px">';
@@ -391,17 +394,17 @@ for ($w = 0; $w < count($genarray); $w++) {
                 $woman_cls = ''; // prevent use of $woman_cls from previous wife if another wife is NN
                 if (isset($genarray[$w]["spgednr"]) && $genarray[$w]["spgednr"]) {
                     $woman = $db_functions->get_person($genarray[$w]["spgednr"]);
-                    $woman_cls = new PersonCls($woman);
-                    $woman_privacy = $woman_cls->get_privacy();
+                    $woman_privacy = $person_privacy->get_privacy($woman);
                 }
 
                 // *** Marriage data ***
                 $extra_popup_text .= '<br>' . $genarray[$w]["htx"] . "<br>";
                 if ($woman_cls) {
-                    $name = $woman_cls->person_name($woman);
+                    $name = $person_name->get_person_name($woman, $woman_privacy);
                     if (isset($genarray[$w]["spfams"]) && isset($genarray[$w]["spgednr"]) && isset($genarray[$w]["sps"])) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $woman_cls->person_url2($woman->pers_tree_id, $woman->pers_famc, $woman->pers_fams, $woman->pers_gedcomnumber);
+                        $person_link = new PersonLink();
+                        $url = $person_link->get_person_link($woman);
 
                         $extra_popup_text .= '<a href="' . $url . '">' . '<strong>' . $name["standard_name"] . '</strong></a>';
                     } else {
@@ -425,10 +428,11 @@ for ($w = 0; $w < count($genarray); $w++) {
             }
 
             if (isset($man)) {
-                echo $man_cls->person_popup_menu($man, true, $replacement_text, $extra_popup_text);
+                echo $person_popup->person_popup_menu($man, $man_privacy, true, $replacement_text, $extra_popup_text);
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                //$url=$man_cls->person_url2($man->pers_tree_id,$man->pers_famc,$man->pers_fams,$man->pers_gedcomnumber);
+                //$person_link = new PersonLink();
+                //$url = $person_link->get_person_link($man);
                 //echo '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
             }
             ?>

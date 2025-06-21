@@ -1067,14 +1067,13 @@ class ListModel extends BaseModel
                 $multi_tree = "pers_tree_id='" . $this->tree_id . "'";
             }
 
-            /*	******************************************
-            *** QUICKSEARCH QUERY ***
-            Aug 2017: changed for MySQL > 5.7.
-            Feb 2016: added search for patronym
-            ******************************************
-            */
-            // *** April 2023: added pers_firstname, event_event. To find "firstname eventname" (event could be a kind of lastname too). ***
-            // *** Nov. 2022: changed first patronymic line ***
+            /**
+             * Quicksearch query
+             * Feb 2016: added search for patronym
+             * Aug 2017: changed for MySQL > 5.7.
+             * Nov. 2022: changed first patronymic line
+             * April 2023: added pers_firstname, event_event. To find "firstname eventname" (event could be a kind of lastname too).
+             */
             $query .= "SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,
                 humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
                 " . $make_date . "
@@ -1306,9 +1305,9 @@ class ListModel extends BaseModel
                 WHERE pers_tree_id='" . $this->tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname='' ORDER BY " . $orderby;
         }
 
-        // **************************
-        // *** Generate indexlist ***
-        // **************************
+        /**
+         * Generate indexlist
+         */
 
         // *** Standard index ***
         if ($query == '' or $index_list == 'standard') {
@@ -1328,7 +1327,7 @@ class ListModel extends BaseModel
         // *** DEBUG/ TEST: SHOW QUERY ***
         //echo $query.'<br>';
 
-        //*** Show number of persons and pages *****************************************
+        //*** Show number of persons and pages ***
         $item = 0;
         if (isset($_GET['item']) && is_numeric($_GET['item'])) {
             $item = $_GET['item'];

@@ -170,9 +170,15 @@ class DescendantModel extends FamilyModel
     public function getBasePerson($main_person)
     {
         $dnaDb = $this->db_functions->get_person($main_person);
-        $dnapers_cls = new PersonCls;
-        $dnaname = $dnapers_cls->person_name($dnaDb);
-        $base_person["name"] =  $dnaname["standard_name"];    // need these 4 in report_descendant
+
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName;
+
+        $privacy = $person_privacy->get_privacy($dnaDb);
+        $dnaname = $person_name->get_person_name($dnaDb, $privacy);
+
+        // need these 4 in report_descendant
+        $base_person["name"] =  $dnaname["standard_name"];
         $base_person["sexe"] = $dnaDb->pers_sexe;
         $base_person["famc"] = $dnaDb->pers_famc;
         $base_person["gednr"] = $dnaDb->pers_gedcomnumber;
@@ -181,9 +187,11 @@ class DescendantModel extends FamilyModel
 
     function Prepare_genarray($data)
     {
-        // At this moment these globals are needed to process person_cls and marriage_cls.
-        global $data;
-        global $parent1Db;
+        // At this moment these globals are needed to process personData and marriage_cls.
+        global $data, $parent1Db;
+
+        $person_name = new PersonName;
+        $person_privacy = new PersonPrivacy;
 
         $family_nr = 1;  // *** process multiple families ***
         $dna = $this->getDNA();
@@ -210,13 +218,13 @@ class DescendantModel extends FamilyModel
 
         $dnaDb = $this->db_functions->get_person($data["main_person"]);
         /*
-        $dnapers_cls = new PersonCls;
-        $dnaname = $dnapers_cls->person_name($dnaDb);
+        $privacy = $person_privacy->get_privacy($dnaDb);
+        $dnaname = $person_name->get_person_name($dnaDb, $privacy);
         $base_person_name =  $dnaname["standard_name"];    // need these 4 in report_descendant
         $base_person_sexe = $dnaDb->pers_sexe;
         $base_person_famc = $dnaDb->pers_famc;
         $base_person_gednr = $dnaDb->pers_gedcomnumber;
-*/
+        */
 
         if ($dna == "ydna" || $dna == "ydnamark") {
             while (isset($dnaDb->pers_famc) && $dnaDb->pers_famc != "") {
@@ -348,28 +356,24 @@ class DescendantModel extends FamilyModel
                             $parent2 = $familyDb->fam_woman;
                         }
                         $parent1Db = $this->db_functions->get_person($parent1);
-                        // *** Proces parent1 using a class ***
-                        $parent1_cls = new PersonCls($parent1Db);
-                        $parent1_privacy = $parent1_cls->get_privacy();
+                        $parent1_privacy = $person_privacy->get_privacy($parent1Db);
 
                         $parent2Db = $this->db_functions->get_person($parent2);
-                        // *** Proces parent2 using a class ***
-                        $parent2_cls = new PersonCls($parent2Db);
-                        $parent2_privacy = $parent2_cls->get_privacy();
+                        $parent2_privacy = $person_privacy->get_privacy($parent2Db);
 
-                        // *** Proces marriage using a class ***
                         $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                         $family_privacy = $marriage_cls->get_privacy();
 
 
-                        // *************************************************************
-                        // *** Parent1 (normally the father)                         ***
-                        // *************************************************************
+                        /**
+                         * Parent1 (normally the father)
+                         */
                         if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
                             if ($family_nr == 1) {
                                 //*** Show data of parent1 ***
                                 if ($descendant_loop == 0) {
-                                    $name = $parent1_cls->person_name($parent1Db);
+                                    $privacy = $person_privacy->get_privacy($parent1Db);
+                                    $name = $person_name->get_person_name($parent1Db, $privacy);
                                     $genarray[$arraynr]["nam"] = $name["standard_name"];
                                     if (isset($name["colour_mark"])) {
                                         $genarray[$arraynr]["nam"] .= $name["colour_mark"];
@@ -402,12 +406,12 @@ class DescendantModel extends FamilyModel
                                 $genarray[$arraynr]["fams"] = $id;
                             }
                             $family_nr++;
-                        } // *** End check of PRO-GEN ***
+                        }
 
 
-                        // *************************************************************
-                        // *** Marriage                                              ***
-                        // *************************************************************
+                        /**
+                         * Marriage
+                         */
                         if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
                             // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                             if (
@@ -428,11 +432,12 @@ class DescendantModel extends FamilyModel
                             }
                         }
 
-                        // *************************************************************
-                        // *** Parent2 (normally the mother)                         ***
-                        // *************************************************************
+                        /**
+                         * Parent2 (normally the mother)
+                         */
                         if ($parent2Db) {
-                            $name = $parent2_cls->person_name($parent2Db);
+                            $privacy = $person_privacy->get_privacy($parent2Db);
+                            $name = $person_name->get_person_name($parent2Db, $privacy);
                             $genarray[$arraynr]["sps"] = $name["standard_name"];
                             $genarray[$arraynr]["spgednr"] = $parent2Db->pers_gedcomnumber;
                         } else {
@@ -442,9 +447,9 @@ class DescendantModel extends FamilyModel
                         $genarray[$arraynr]["spfams"] = $id;
 
 
-                        // *************************************************************
-                        // *** Marriagetext                                          ***
-                        // *************************************************************
+                        /**
+                         * Marriagetext
+                         */
                         $temp = '';
 
                         if ($descendant_loop == 0) {
@@ -455,10 +460,9 @@ class DescendantModel extends FamilyModel
                             $genarray[$arraynr]["non"] = 0;
                         }
 
-                        // *************************************************************
-                        // *** Children                                              ***
-                        // *************************************************************
-
+                        /**
+                         * Children
+                         */
                         if (!$familyDb->fam_children) {
                             $genarray[$arraynr]["nrc"] = 0;
                         }
@@ -482,8 +486,6 @@ class DescendantModel extends FamilyModel
                             $show_privacy_text = false;
                             foreach ($child_array as $i => $value) {
                                 $childDb = $this->db_functions->get_person($child_array[$i]);
-                                // *** Use person class ***
-                                $child_cls = new PersonCls($childDb);
 
                                 $chdn_in_gen = $nrchldingen + $childnr;
                                 $place = $lst_in_array + $chdn_in_gen;
@@ -507,8 +509,11 @@ class DescendantModel extends FamilyModel
                                 $genarray[$place]["non"] = 0;
                                 $genarray[$place]["nrc"] = 0;
                                 $genarray[$place]["2nd"] = 0;
-                                $name = $child_cls->person_name($childDb);
+
+                                $privacy = $person_privacy->get_privacy($childDb);
+                                $name = $person_name->get_person_name($childDb, $privacy);
                                 $genarray[$place]["nam"] = $name["standard_name"] . $name["colour_mark"];
+
                                 $genarray[$place]["init"] = $name["initials"];
                                 $genarray[$place]["short"] = $name["short_firstname"];
                                 $genarray[$place]["gednr"] = $childDb->pers_gedcomnumber;
@@ -607,9 +612,9 @@ class DescendantModel extends FamilyModel
 
     // *** This script is also used in hourglass ***
 
-    //*********************************************************************************
-    //********** 1st Part:  CODE TO GENERATE THE STARFIELD CHART FROM $GENARRAY *******
-    //*********************************************************************************
+    /**
+     * 1st Part:  CODE TO GENERATE THE STARFIELD CHART FROM $GENARRAY
+     */
     function generate($genarray)
     {
         global $data;
@@ -827,11 +832,11 @@ class DescendantModel extends FamilyModel
         }  // end if horizontal
 
         return $genarray;
-    }  // end function generate()
+    }
 
-    // *********************************************************************************************
-    // **** 2nd Part: RECURSIVE FUNCTION TO MOVE PART OF THE CHART WHEN NEW ITEMS ARE ADDED ********
-    // *********************************************************************************************
+    /**
+     * 2nd Part: RECURSIVE FUNCTION TO MOVE PART OF THE CHART WHEN NEW ITEMS ARE ADDED
+     */
     function move($i, $genarray)
     {
         $direction = $this->getDirection();

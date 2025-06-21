@@ -15,6 +15,8 @@ $start = $list["start"];
 $list_var = $link_cls->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $link_cls->get_link($uri_path, 'list', $tree_id, true);
 
+$person_privacy = new PersonPrivacy;
+
 if ($list["index_list"] == 'places') {
 ?>
     <!--  Search places -->
@@ -602,7 +604,7 @@ $listnr = "2";      // default 20% margin
 //}
 //echo '<div class="'.$dir.'index_list'.$listnr.'">';
 
-//*** Show persons ******************************************************************
+//*** Show persons ***
 $privcount = 0; // *** Count privacy persons ***
 
 $selected_place = '';
@@ -800,7 +802,7 @@ function name_qry($search_name, $search_part)
                     break;
                 }
             }
-        } // End of spouse search
+        }
 
         // *** Search parent status (no parents, only mother, only father) ***
         $parent_status_found = '1';
@@ -827,8 +829,7 @@ function name_qry($search_name, $search_part)
         // *** Show search results ***
         if ($spouse_found == true && ($parent_status_found === '1' || $parent_status_found !== '1' && !isset($_POST['adv_search']))) {
             $pers_counter++; // needed for spouses search and mother/father only search
-            $person_cls = new PersonCls($personDb);
-            $privacy = $person_cls->get_privacy();
+            $privacy = $person_privacy->get_privacy($personDb);
 
             if ($privacy and ($selection['birth_place'] != '' or $selection['birth_year'] != '' or $selection['death_place'] != '' or $selection['death_year'] != '')) {
                 $privcount++;
@@ -880,16 +881,16 @@ echo '<br>';
 // *** show person ***
 function show_person($personDb)
 {
-    global $dbh, $db_functions, $selected_place, $language, $user;
-    global $bot_visit, $humo_option, $uri_path, $select_trees, $list_expanded;
-    global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
-    global $list;
+    global $dbh, $db_functions, $selected_place, $user, $humo_option, $select_trees, $list_expanded;
+    global $selected_language, $privacy, $dirmark1, $dirmark2, $list;
+
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
+    $person_popup = new PersonPopup;
 
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
-    // *** Person class used for name and person pop-up data ***
-    $person_cls = new PersonCls($personDb);
-    $name = $person_cls->person_name($personDb);
+    $name = $person_name->get_person_name($personDb, $privacy);
 
     // *** Show name ***
     $index_name = '';
@@ -990,7 +991,7 @@ function show_person($personDb)
 
         <td valign="top" style="border-right:0px; white-space:nowrap;">
             <!-- Show person popup menu -->
-            <?= $person_cls->person_popup_menu($personDb); ?>
+            <?= $person_popup->person_popup_menu($personDb, $privacy); ?>
             <?= $dirmark1; ?>
 
             <?php
@@ -1039,7 +1040,8 @@ function show_person($personDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $start_url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+            $person_link = new PersonLink();
+            $start_url = $person_link->get_person_link($personDb);
 
             //echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';
             // *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
@@ -1073,8 +1075,8 @@ function show_person($personDb)
 
                     if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
-                        $partner_cls = new PersonCls;
-                        $name = $partner_cls->person_name($partnerDb);
+                        $privacy_partner = $person_privacy->get_privacy($partnerDb);
+                        $name = $person_name->get_person_name($partnerDb, $privacy_partner);
                     } else {
                         $name["standard_name"] = __('N.N.');
                     }
@@ -1097,7 +1099,6 @@ function show_person($personDb)
                     echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]) . '</span>';
                 }
             }
-            // *** End spouse/ partner ***
             ?>
         </td>
         <td style="white-space:nowrap;">
@@ -1195,4 +1196,4 @@ function show_person($personDb)
     ?>
 
 <?php
-} // *** end function show person ***
+}

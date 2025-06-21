@@ -11,21 +11,23 @@
  * marriage-church witness
  *
  * $event_connect_kind = person/ family.
-*/
+ */
 
-// **********************************************************************
-// * function witness (person gedcomnumber, $event item, database field);
-// **********************************************************************
-function witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
+/**
+ * function witness (person gedcomnumber, $event item, database field);
+ */
+function witness($gedcomnr, $event_kind, $event_connect_kind = 'person'): array
 {
-    global $dbh, $db_functions;
+    global $db_functions;
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
+
     $counter = 0;
     $text = '';
 
     $text_array = [];
 
     if ($gedcomnr) {
-        $witness_cls = new PersonCls;
         //get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
         $witness_qry = $db_functions->get_events_connect($event_connect_kind, $gedcomnr, $event_kind);
 
@@ -70,10 +72,13 @@ function witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
             if ($witnessDb->event_connect_id2) {
                 // *** Connected witness ***
                 $witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id2);
-                $name = $witness_cls->person_name($witness_nameDb);
+
+                $privacy = $person_privacy->get_privacy($witness_nameDb);
+                $name = $person_name->get_person_name($witness_nameDb, $privacy);
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $url = $witness_cls->person_url2($witness_nameDb->pers_tree_id, $witness_nameDb->pers_famc, $witness_nameDb->pers_fams, $witness_nameDb->pers_gedcomnumber);
+                $person_link = new PersonLink();
+                $url = $person_link->get_person_link($witness_nameDb);
 
                 $text .= '<a href="' . $url . '">' . rtrim($name["standard_name"]) . '</a>';
             } else {
@@ -124,31 +129,25 @@ function witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
     return $text_array;
 }
 
-/*
- ****************************************************
- *** Person was witness at (birt, baptize, etc. ) ***
- * Used for:
+/**
+ * function witness_by_events. Used to show "This person was witness at...".
+ *
  * birth witness -> is changed into: birth declaration witness.
  * baptise witness
  * death declaration -> is changed into: death declaration witness.
  * burial witness
  * marriage witness
  * marriage-church witness
-*/
-
-// ********************************************************************************
-// * function witness_by_events (person gedcomnumber, $event item, database field);
-// ********************************************************************************
-function witness_by_events($gedcomnr)
+ */
+// TODO probably better to rename to witness_at_events?
+function witness_by_events($gedcomnr): string
 {
-    global $dbh, $db_functions, $tree_id, $screen_mode;
-    global $link_cls, $uri_path;
+    global $dbh, $db_functions, $tree_id, $screen_mode, $link_cls, $uri_path;
+    $person_name = new PersonName;
 
     $counter = 0;
     $text = '';
     if ($gedcomnr) {
-        $witness_cls = new PersonCls;
-
         /*
         $source_prep = $dbh->prepare("SELECT * FROM humo_events
             WHERE event_tree_id=:event_tree_id
@@ -186,35 +185,30 @@ function witness_by_events($gedcomnr)
                 }
                 $text .= __('birth declaration') . ': ';
                 $witness_line = 'birth declaration';
-                //} elseif ($witnessDb->event_kind == 'baptism_witness' && $witness_line !== 'baptism witness') {
             } elseif ($witnessDb->event_connect_kind == 'CHR' && $witness_line !== 'baptism witness') {
                 if ($witness_line !== '') {
                     $text .= ".<br>\n";
                 }
                 $text .= __('baptism witness') . ': ';
                 $witness_line = 'baptism witness';
-                //} elseif ($witnessDb->event_kind == 'death_decl_witness' && $witness_line !== 'death declaration') {
             } elseif ($witnessDb->event_connect_kind == 'death_declaration' && $witness_line !== 'death declaration') {
                 if ($witness_line !== '') {
                     $text .= ".<br>\n";
                 }
                 $text .= __('death declaration') . ': ';
                 $witness_line = 'death declaration';
-                //} elseif ($witnessDb->event_kind == 'burial_witness' && $witness_line !== 'burial_witness') {
             } elseif ($witnessDb->event_connect_kind == 'BURI' && $witness_line !== 'burial_witness') {
                 if ($witness_line !== '') {
                     $text .= ".<br>\n";
                 }
                 $text .= __('burial witness') . ': ';
                 $witness_line = 'burial_witness';
-                //} elseif ($witnessDb->event_kind == 'marriage_witness' && $witness_line !== 'marriage_witness') {
             } elseif ($witnessDb->event_connect_kind == 'MARR' && $witness_line !== 'marriage_witness') {
                 if ($witness_line !== '') {
                     $text .= ".<br>\n";
                 }
                 $text .= __('marriage witness') . ': ';
                 $witness_line = 'marriage_witness';
-                //} elseif ($witnessDb->event_kind == 'marriage_witness_rel' && $witness_line !== 'marriage_witness_rel') {
             } elseif ($witnessDb->event_connect_kind == 'MARR_REL' && $witness_line !== 'marriage_witness_rel') {
                 if ($witness_line !== '') {
                     $text .= ".<br>\n";
@@ -225,7 +219,6 @@ function witness_by_events($gedcomnr)
                 $text .= ', ';
             }
 
-            //if ($witnessDb->event_kind == 'marriage_witness' || $witnessDb->event_kind == 'marriage_witness_rel') {
             if ($witnessDb->event_connect_kind == 'MARR' || $witnessDb->event_connect_kind == 'MARR_REL') {
                 // *** Connected witness by a family ***
                 $fam_db = $db_functions->get_family($witnessDb->event_connect_id, 'man_woman');
@@ -233,13 +226,15 @@ function witness_by_events($gedcomnr)
                 $name_man = __('N.N.');
                 if (isset($fam_db->fam_man)) {
                     $witness_nameDb = $db_functions->get_person($fam_db->fam_man);
-                    $name_man = $witness_cls->person_name($witness_nameDb);
+                    $privacy = $person_privacy->get_privacy($witness_nameDb);
+                    $name_man = $person_name->get_person_name($witness_nameDb, $privacy);
                 }
 
                 $name_woman = __('N.N.');
                 if (isset($fam_db->fam_woman)) {
                     $witness_nameDb = $db_functions->get_person($fam_db->fam_woman);
-                    $name_woman = $witness_cls->person_name($witness_nameDb);
+                    $privacy = $person_privacy->get_privacy($witness_nameDb);
+                    $name_woman = $person_name->get_person_name($witness_nameDb, $privacy);
                 }
 
                 $vars['pers_family'] = $witnessDb->event_connect_id;
@@ -248,17 +243,20 @@ function witness_by_events($gedcomnr)
             } else {
                 // *** Connected witness by a person ***
                 $witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id);
-                $name = $witness_cls->person_name($witness_nameDb);
+                $privacy = $person_privacy->get_privacy($witness_nameDb);
+                $name = $person_name->get_person_name($witness_nameDb, $privacy);
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $url = $witness_cls->person_url2($witness_nameDb->pers_tree_id, $witness_nameDb->pers_famc, $witness_nameDb->pers_fams, $witness_nameDb->pers_gedcomnumber);
+                $person_link = new PersonLink();
+                $url = $person_link->get_person_link($witness_nameDb);
 
                 $text .= '<a href="' . $url . '">' . rtrim($name["standard_name"]) . '</a>';
             }
 
             if ($witnessDb->event_date) {
+                // *** Use date_place function, there is no place here... ***
                 $text .= ' ' . date_place($witnessDb->event_date, '');
-            } // *** Use date_place function, there is no place here... ***
+            }
 
             //$source_array=show_sources2($event_connect_kind,"pers_event_source",$witnessDb->event_id);
             //if ($source) $text.=$source_array['text'];

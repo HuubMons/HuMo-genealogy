@@ -56,7 +56,7 @@ class ProcessLinks
         $this->path = $path;
     }
 
-    public function get_link($change_path, $page, $tree_id = NULL, $add_seperator = false, $vars = '')
+    public function get_link($change_path, $page, $tree_id = NULL, $add_seperator = false, $vars = ''): string
     {
         //TODO move to constructor.
         global $humo_option;

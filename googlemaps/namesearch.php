@@ -9,7 +9,7 @@ $GeneralSettings = new GeneralSettings();
 $user = $GeneralSettings->get_user_settings($dbh);
 $humo_option = $GeneralSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/../include/personCls.php"); // for privacy
+include_once(__DIR__ . "/../include/personData.php"); // TODO check this.
 include_once(__DIR__ . "/../include/language_date.php");
 include_once(__DIR__ . "/../include/date_place.php");
 include_once(__DIR__ . '/../include/processLinks.php');
@@ -58,6 +58,9 @@ if (isset($_GET['thisplace'])) {
 function mapbirthplace($place)
 {
     global $dbh, $tree_id, $language, $map_max, $link_cls;
+
+    $person_name = new PersonName;
+    $person_privacy = new PersonPrivacy;
 
     if (isset($_GET['namestring'])) {
         $temparray = explode("@", $_GET['namestring']);
@@ -149,9 +152,8 @@ function mapbirthplace($place)
         <div style="direction:ltr">
             <?php
             while ($maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
-                $man_cls = new PersonCls($maplistDb);
-                $privacy_man = $man_cls->get_privacy();
-                $name = $man_cls->person_name($maplistDb);
+                $privacy_man = $person_privacy->get_privacy($maplistDb);
+                $name = $person_name->get_person_name($maplistDb, $privacy_man);
                 if ($name["show_name"] == true) {
                     $pers_family = '';
                     if ($maplistDb->pers_famc) {

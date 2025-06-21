@@ -368,8 +368,11 @@ class StatsPersonsModel extends BaseModel
 
     private function get_person($row, $date = 'EMPTY'): array
     {
-        $person_cls = new PersonCls($row);
-        $privacy = $person_cls->get_privacy();
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName;
+        $person_link = new PersonLink();
+
+        $privacy = $person_privacy->get_privacy($row);
         if (!$privacy) {
             $person['date'] = '';
             if ($date != 'EMPTY') {
@@ -377,9 +380,9 @@ class StatsPersonsModel extends BaseModel
             }
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $person['url'] = $person_cls->person_url2($row->pers_tree_id, $row->pers_famc, $row->pers_fams, $row->pers_gedcomnumber);
+            $person['url'] = $person_link->get_person_link($row);
 
-            $name = $person_cls->person_name($row);
+            $name = $person_name->get_person_name($row, $privacy);
             $person['name'] = $name["standard_name"];
         } else {
             $person['url'] = '';

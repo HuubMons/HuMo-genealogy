@@ -2046,9 +2046,9 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
         $id = $marriage_array[$parent1_marr];
         $familyDb = $db_functions->get_family($id);
 
-        // *************************************************************
-        // *** Parent1 (normally the father)                         ***
-        // *************************************************************
+        /**
+         * Parent1 (normally the father)
+         */
         if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
             if ($family_nr == 1) {
                 // *** Show data of man ***
@@ -2072,9 +2072,9 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
             $family_nr++;
         } // *** end check of PRO-GEN ***
 
-        // *************************************************************
-        // *** Parent2 (normally the mother)                         ***
-        // *************************************************************
+        /**
+         * Parent2 (normally the mother)
+         */
         if (isset($_POST['desc_spouses'])) {
             if ($swap_parent1_parent2 == true) {
                 $persids[] = $familyDb->fam_man;
@@ -2098,9 +2098,10 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
                 $famsids[] = $spqryDb->pers_famc;
             }
         }
-        // *************************************************************
-        // *** Children                                              ***
-        // *************************************************************
+
+        /**
+         * Children
+         */
         if ($familyDb->fam_children) {
             $child_array = explode(";", $familyDb->fam_children);
             foreach ($child_array as $i => $value) {
@@ -2124,7 +2125,7 @@ function descendants($family_id, $main_person, $generation_number, $max_generati
             }
         }
     } // Show  multiple marriages
-} // End of descendant function
+}
 
 function ancestors($person_id, $max_generations)
 {

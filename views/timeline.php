@@ -6,9 +6,10 @@
 
 $personDb = $db_functions->get_person($id);
 
-// *** Check privacy filter ***
-$person_cls = new PersonCls($personDb);
-$privacy = $person_cls->get_privacy();
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
+
+$privacy = $person_privacy->get_privacy($personDb);
 if ($privacy) {
     echo '<br><br>' . __('PRIVACY FILTER');
     exit();
@@ -207,7 +208,7 @@ if ($endyear > date("Y")) {
 }
 $flag = 0; // flags a first entry of timeline event in a specific year. is set to 1 when at least one entry has been made
 
-$name = $person_cls->person_name($personDb);
+$name = $person_name->get_person_name($personDb, $privacy);
 
 // ****** DISPLAY
 if ($data["privacy_filtered"] == true) {
@@ -393,7 +394,7 @@ if ($data["privacy_filtered"] == true) {
                         echo $data["burrtext"];
                         $br_flag = 1;
                     }
-                } // end life events loop
+                }
                 ?>
             </td>
 
@@ -464,7 +465,7 @@ if ($data["privacy_filtered"] == true) {
                             }
                             continue;
                         }
-                    } // end while loop
+                    }
                     if ($flag_br != 0) {
                         echo '</div>';
                     }

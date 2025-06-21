@@ -239,7 +239,10 @@ $family_qry = $dbh->query("SELECT humo_stat_date.* , humo_trees.tree_id, humo_tr
 // *** Show 1 statistics line ***
 function statistics_line($familyDb)
 {
-    global $dbh, $language, $person_cls, $selected_language, $db_functions, $link_cls;
+    global $selected_language, $db_functions, $link_cls;
+
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
 
     $tree_id = $familyDb->tree_id;
     if (isset($tree_id) && $tree_id) {
@@ -282,7 +285,8 @@ function statistics_line($familyDb)
                 if (!$familyDb->stat_gedcom_man) {
                     echo 'N.N.';
                 } else {
-                    $name = $person_cls->person_name($personDb);
+                    $privacy = $person_privacy->get_privacy($personDb);
+                    $name = $person_name->get_person_name($personDb, $privacy);
                     echo $name["standard_name"];
                 }
 
@@ -293,7 +297,8 @@ function statistics_line($familyDb)
                 if (!$familyDb->stat_gedcom_woman) {
                     echo 'N.N.';
                 } else {
-                    $name = $person_cls->person_name($personDb);
+                    $privacy = $person_privacy->get_privacy($personDb);
+                    $name = $person_name->get_person_name($personDb, $privacy);
                     echo $name["standard_name"];
                 }
             } else {

@@ -1,6 +1,6 @@
 <?php
 // *** Quality ***
-function show_quality($quality)
+function show_quality(int $quality): string
 {
     $quality_text = '';
     if ($quality == '0') {

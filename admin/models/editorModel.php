@@ -1515,9 +1515,9 @@ class EditorModel extends AdminBaseModel
         }
 
 
-        // ***************************
-        // *** PROCESS DATA FAMILY ***
-        // ***************************
+        /**
+         * PROCESS DATA FAMILY
+         */
 
         // *** Add new family with new partner ***
         if (isset($_POST['relation_add'])) {
@@ -1798,9 +1798,9 @@ class EditorModel extends AdminBaseModel
         // *** Return deletion confim box in $confirm variabele ***
         $confirm = '';
 
-        // **************************
-        // *** PROCESS DATA EVENT ***
-        // **************************
+        /**
+         * PROCESS DATA EVENT
+         */
 
         // *** Add new event ***
         $new_event = false;
@@ -2523,9 +2523,9 @@ class EditorModel extends AdminBaseModel
             }
         }
 
-        // ************************
-        // *** Save connections ***
-        // ************************
+        /**
+         * Save connections
+         */
 
         // *** Add new person-address connection ***
         //if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
@@ -2590,7 +2590,7 @@ class EditorModel extends AdminBaseModel
                 connect_sub_kind='" . safe_text_db($_POST["connect_sub_kind"]) . "',
                 connect_connect_id='" . safe_text_db($_POST["connect_connect_id"]) . "'";
             $this->dbh->query($sql);
-        } // *** End of update sources ***
+        }
 
         // *** Change source/ address connection ***
         if (isset($_POST['connect_change'])) {
@@ -2894,9 +2894,9 @@ class EditorModel extends AdminBaseModel
         }
 
 
-        // ************************
-        // *** Save data places ***
-        // ************************
+        /**
+         * Save data places
+         */
 
         // *** 25-12-2020: NEW combined addresses and shared addresses ***
         if (isset($_GET['address_add2'])) {
@@ -3096,6 +3096,8 @@ class EditorModel extends AdminBaseModel
     public function update_note()
     {
         $confirm = '';
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName();
 
         // *** Add editor note ***
         if (isset($_GET['note_add']) && $_GET['note_add']) {
@@ -3113,9 +3115,8 @@ class EditorModel extends AdminBaseModel
 
             // *** Name of selected person in family tree ***
             $persDb = $this->db_functions->get_person($this->pers_gedcomnumber);
-            // *** Use class to process person ***
-            $pers_cls = new PersonCls($persDb);
-            $name = $pers_cls->person_name($persDb);
+            $privacy = $person_privacy->get_privacy($persDb);
+            $name = $person_name->get_person_name($persDb, $privacy);
             $note_names = safe_text_db($name["standard_name"]);
 
             //note_connect_kind='person',

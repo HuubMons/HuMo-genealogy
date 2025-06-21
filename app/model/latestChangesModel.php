@@ -3,6 +3,11 @@ class LatestChangesModel extends BaseModel
 {
     public function listChanges(): array
     {
+        $person_link = new PersonLink;
+        $person_privacy = new PersonPrivacy;
+        $person_name = new PersonName;
+        $person_popup = new PersonPopup;
+
         // *** EXAMPLE of a UNION querie ***
         //$qry = "(SELECT * FROM humo1_person ".$query.') ';
         //$qry.= " UNION (SELECT * FROM humo2_person ".$query.')';
@@ -49,6 +54,7 @@ class LatestChangesModel extends BaseModel
         $person_result = $this->dbh->query($person_qry);
         $i = 0;
         $changes = [];
+
         while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
             if ($person->pers_sexe == "M") {
                 $pers_sexe = '<img src="images/man.gif" alt="man">';
@@ -58,12 +64,13 @@ class LatestChangesModel extends BaseModel
                 $pers_sexe = '<img src="images/unknown.gif" alt="unknown">';
             }
 
-            $person_cls = new PersonCls($person);
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $url = $person_cls->person_url2($person->pers_tree_id, $person->pers_famc, $person->pers_fams, $person->pers_gedcomnumber);
-            $name = $person_cls->person_name($person);
+            $url = $person_link->get_person_link($person);
 
-            $changes['show_person'][$i] = $person_cls->person_popup_menu($person) . $pers_sexe . '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+            $privacy = $person_privacy->get_privacy($person);
+            $name = $person_name->get_person_name($person, $privacy);
+
+            $changes['show_person'][$i] = $person_popup->person_popup_menu($person, $privacy) . $pers_sexe . '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
             $changes['changed_date'][$i] = show_datetime($person->pers_changed_datetime);
             $changes['new_date'][$i] = show_datetime($person->pers_new_datetime);
 

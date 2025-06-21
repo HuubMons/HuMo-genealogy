@@ -70,7 +70,8 @@
 // TODO create function to show person.
 // TODO use a popup selection screen to select persons?
 
-$pers_cls = new PersonCls;
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
 
 $limit = 500; // *** Limit results ***
 
@@ -144,7 +145,8 @@ $limit = 500; // *** Limit results ***
                             <select size="1" name="person1" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
-                                    $name = $pers_cls->person_name($searchDb);
+                                    $privacy = $person_privacy->get_privacy($searchDb);
+                                    $name = $person_name->get_person_name($searchDb, $privacy);
                                     if ($name["show_name"]) {
                                         $birth = '';
                                         if ($searchDb->pers_bapt_date) {
@@ -153,9 +155,7 @@ $limit = 500; // *** Limit results ***
                                         if ($searchDb->pers_birth_date) {
                                             $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
                                         }
-                                        $search1_cls = new PersonCls($searchDb);
-                                        $search1_privacy = $search1_cls->get_privacy();
-                                        if ($search1_privacy) {
+                                        if ($person_privacy) {
                                             $birth = '';
                                         }
 
@@ -255,7 +255,8 @@ $limit = 500; // *** Limit results ***
                             <select size="1" name="person2" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                                    $name = $pers_cls->person_name($searchDb2);
+                                    $privacy = $person_privacy->get_privacy($searchDb2);
+                                    $name = $person_name->get_person_name($searchDb2, $privacy);
                                     if ($name["show_name"]) {
                                         $birth = '';
                                         if ($searchDb2->pers_bapt_date) {
@@ -264,9 +265,7 @@ $limit = 500; // *** Limit results ***
                                         if ($searchDb2->pers_birth_date) {
                                             $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
                                         }
-                                        $search2_cls = new PersonCls($searchDb2);
-                                        $search2_privacy = $search2_cls->get_privacy();
-                                        if ($search2_privacy) {
+                                        if ($person_privacy) {
                                             $birth = '';
                                         }
 
@@ -510,7 +509,8 @@ Directions for use:<br>
                         if ($relation['double_spouse'] == 1) {
                             // X and Y are both spouses of Z
                             $spouseidDb = $db_functions->get_person($relation['rel_arrayspouseX'][$relation['foundX_match']][0]);
-                            $name = $pers_cls->person_name($spouseidDb);
+                            $privacy = $person_privacy->get_privacy($spouseidDb);
+                            $name = $person_name->get_person_name($spouseidDb, $privacy);
                             $spousename = $name["name"];
                         ?>
 
@@ -638,7 +638,7 @@ Directions for use:<br>
                                         echo '<b>' . $finnish_spouse1 . '</b><br>';
                                     }
                                 }
-                            }  // end of finnish part
+                            }
 
                             else {
                                 // Norwegian grammar...
@@ -729,6 +729,9 @@ function ext_calc_display_result($result, $db_functions, $relation)
     // each items starts with "par" (parent), "chd" (child) or "spo" (spouse), followed by the gedcomnumber of the person
     // example: parI232;parI65;chdI2304;spoI212;parI304
     // the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
+
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
 
     $map = array();    // array that will hold all data needed for the graphical display
     $tracks = explode(";", $result); // $tracks is array with each person in the trail
@@ -821,10 +824,13 @@ function ext_calc_display_result($result, $db_functions, $relation)
                                 $border = "border:2px solid #666666;";
                             }
 
-                            $pers_cls = new PersonCls;
-                            $name = $pers_cls->person_name($ancDb);
+                            $privacy = $person_privacy->get_privacy($ancDb);
+                            $name = $person_name->get_person_name($ancDb, $privacy);
+
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $pers_cls->person_url2($ancDb->pers_tree_id, $ancDb->pers_famc, $ancDb->pers_fams, $ancDb->pers_gedcomnumber);
+                            $person_link = new PersonLink();
+                            $url = $person_link->get_person_link($ancDb);
+
                             $colsp = true;
 
                             if ($map[$x][2] == 2) {
@@ -885,8 +891,8 @@ function display_table($relation)
 {
     global $db_functions, $tree_id, $link_cls, $uri_path;
 
-    // *** Use person class to show names ***
-    $pers_cls = new PersonCls;
+    $person_privacy = new PersonPrivacy;
+    $person_name = new PersonName;
 
     $vars['pers_family'] = $relation['famspouseX'];
     $linkSpouseX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
@@ -945,7 +951,8 @@ function display_table($relation)
             <table class="newrel" style="border:0px;border-collapse:separate;border-spacing:3px 1px;">
                 <?php
                 $persidDb = $db_functions->get_person($relation['rel_arrayX'][0][0]);
-                $name = $pers_cls->person_name($persidDb);
+                $privacy = $person_privacy->get_privacy($persidDb);
+                $name = $person_name->get_person_name($persidDb, $privacy);
                 if (($relation['spouse'] == 1 && $relation['relation_type'] == 1) || ($relation['spouse'] == 2 && $relation['relation_type'] == 2) || $relation['spouse'] == 3) {
                 ?>
                     <tr>
@@ -985,7 +992,8 @@ function display_table($relation)
                 $count = $relation['foundY_nr'];
                 while ($count != 0) {
                     $persidDb = $db_functions->get_person($relation['rel_arrayY'][$count][0]);
-                    $name = $pers_cls->person_name($persidDb);
+                    $privacy = $person_privacy->get_privacy($persidDb);
+                    $name = $person_name->get_person_name($persidDb, $privacy);
 
                     if ($persidDb->pers_fams) {
                         $fams = $persidDb->pers_fams;
@@ -1018,7 +1026,8 @@ function display_table($relation)
                     <tr>
                         <?php
                         $persidDb = $db_functions->get_person($relation['rel_arrayY'][0][0]);
-                        $name = $pers_cls->person_name($persidDb);
+                        $privacy = $person_privacy->get_privacy($persidDb);
+                        $name = $person_name->get_person_name($persidDb, $privacy);
                         if ($relation['spouse'] == 1 && $relation['relation_type'] == 2 || $relation['spouse'] == 2 && $relation['relation_type'] == 1 || $relation['spouse'] == 3) {
                         ?>
                             <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
@@ -1072,8 +1081,8 @@ function display_table($relation)
         }
 
         $persidDb = $db_functions->get_person($relation['rel_arrayX'][$relation['foundX_match']][0]);
-
-        $name = $pers_cls->person_name($persidDb);
+        $privacy = $person_privacy->get_privacy($persidDb);
+        $name = $person_name->get_person_name($persidDb, $privacy);
 
         if ($persidDb->pers_fams) {
             $fams = $persidDb->pers_fams;
@@ -1123,7 +1132,8 @@ function display_table($relation)
                     <?php
                     if ($countX != 0) {
                         $persidDb = $db_functions->get_person($relation['rel_arrayX'][$countX][0]);
-                        $name = $pers_cls->person_name($persidDb);
+                        $privacy = $person_privacy->get_privacy($persidDb);
+                        $name = $person_name->get_person_name($persidDb, $privacy);
 
                         if ($relation['spouse'] == 1 || $relation['spouse'] == 3) {
                     ?>
@@ -1150,7 +1160,8 @@ function display_table($relation)
                     } elseif ($name1_done == 0) {
                         if ($relation['spouse'] == 1 || $relation['spouse'] == 3) {
                             $persidDb = $db_functions->get_person($relation['rel_arrayX'][0][0]);
-                            $name = $pers_cls->person_name($persidDb);
+                            $privacy = $person_privacy->get_privacy($persidDb);
+                            $name = $person_name->get_person_name($persidDb, $privacy);
 
                             if ($persidDb->pers_fams) {
                                 $fams = $persidDb->pers_fams;
@@ -1191,7 +1202,8 @@ function display_table($relation)
 
                     if ($countY != 0) {
                         $persidDb = $db_functions->get_person($relation['rel_arrayY'][$countY][0]);
-                        $name = $pers_cls->person_name($persidDb);
+                        $privacy = $person_privacy->get_privacy($persidDb);
+                        $name = $person_name->get_person_name($persidDb, $privacy);
 
                         if ($persidDb->pers_fams) {
                             $fams = $persidDb->pers_fams;
@@ -1218,7 +1230,8 @@ function display_table($relation)
                     } elseif ($name2_done == 0) {
                         if ($relation['spouse'] == 2 || $relation['spouse'] == 3) {
                             $persidDb = $db_functions->get_person($relation['rel_arrayY'][0][0]);
-                            $name = $pers_cls->person_name($persidDb);
+                            $privacy = $person_privacy->get_privacy($persidDb);
+                            $name = $person_name->get_person_name($persidDb, $privacy);
 
                             if ($persidDb->pers_fams) {
                                 $fams = $persidDb->pers_fams;

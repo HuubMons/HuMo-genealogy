@@ -145,9 +145,9 @@ class GedcomCls
         // *** For source connect table ***
         $this->connect_nr = 0;
 
-        // **********************************************************************************************
-        // *** Person ***
-        // **********************************************************************************************
+        /**
+         * Person
+         */
 
         // 0 @I1@ INDI
         // *** Process 1st line ***
@@ -411,7 +411,6 @@ class GedcomCls
             // 2 _RELN kloosternaam
             // 2 _OTHN andere naam
             // 1 TITL Sr.
-            // *************************************
 
             // *** Pro-gen titles by name ***
             // 1 _TITL2 = title between first and last name.
@@ -890,9 +889,9 @@ class GedcomCls
                 $person["pers_text"] = $this->process_texts($person["pers_text"], '2');
             }
 
-            // ******************************************************************************************
-            // *** Address(es) ***
-            // ******************************************************************************************
+            /**
+             * Address(es)
+             */
             if ($this->buffer[6] === '1 ADDR' || $this->level[1] == 'RESI') {
                 $this->process_addresses('person', 'person_address', $pers_gedcomnumber);
             }
@@ -926,8 +925,9 @@ class GedcomCls
             // Newer versions of Aldfaer:
             //2 SOUR @S7177@
 
-            // ******************************************************************************************
-            // *** Birth ***
+            /**
+             * Birth
+             */
             if ($this->level[1] == 'BIRT') {
                 if ($this->buffer[6] === '1 BIRT') {
                     $this->processed = true;
@@ -1054,9 +1054,9 @@ class GedcomCls
                 }
             }
 
-            // *******************************************************************************************
-            // *** Baptise ***
-            // *******************************************************************************************
+            /**
+             * Baptise
+             */
 
             // *** FTW ***
             //1 EVEN
@@ -1217,8 +1217,9 @@ class GedcomCls
                 }
             }
 
-            // ******************************************************************************************
-            // *** Deceased ***
+            /**
+             * Deceased
+             */
             if ($this->level[1] == 'DEAT') {
                 if ($this->buffer[6] === '1 DEAT') {
                     $this->processed = true;
@@ -1368,8 +1369,9 @@ class GedcomCls
                 }
             }
 
-            // ****************************************************************************************
-            // *** Burial ***
+            /**
+             * Burial
+             */
 
             //Pro-gen:
             //1 CREM
@@ -1515,7 +1517,6 @@ class GedcomCls
                 }
             }
 
-            // *******************************************************************************************
             // *** Aldfaer witnesses GEDCOM 5.5.1 ***
             // *** Oct. 2024: BE AWARE Aldfaer GEDCOM 5.x is probably wrong. ASSO should be by main person, not by witness. ***
             // *** This is changed in Aldfaer GEDCOM 7! ***
@@ -1684,8 +1685,9 @@ class GedcomCls
                 }
             }
 
-            // ******************************************************************************************
-            // *** Occupation ***
+            /**
+             * Occupation
+             */
             if ($this->level[1] == 'OCCU') {
                 if ($this->buffer[6] === '1 OCCU') {
                     $this->processed = true;
@@ -1815,7 +1817,7 @@ class GedcomCls
                 }
             }
 
-            // *** Pictures by person ********************************
+            // *** Pictures by person ***
 
             // *** Haza-21 pictures ***
             // 1 OBJE H:\haza21v3\Scannen0001.jpg
@@ -2328,9 +2330,9 @@ class GedcomCls
                 $this->process_sources('person', 'person_source', $pers_gedcomnumber, '1');
             }
 
-            // ********************************************************************************************
-            // *** Save non processed GEDCOM items ***
-            // ********************************************************************************************
+            /**
+             * Save non processed GEDCOM items
+             */
             $this->buffer[0] = trim($this->buffer[0]);
             // Skip these lines
             if ($this->buffer[0] === '0 TRLR') {
@@ -2721,12 +2723,12 @@ class GedcomCls
         //$process_time=time()-$person_time;
         //echo ':'.$process_time.'<br>';
 
-    } //end person
+    }
 
 
-    // ************************************************************************************************
-    // *** Process families ***
-    // ************************************************************************************************
+    /**
+     * Process families
+     */
     function process_family($family_array, $first_marr, $second_marr): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -2734,9 +2736,6 @@ class GedcomCls
         //$line = $family_array;
         $line2 = explode("\n", $family_array);
 
-        //********************************************************************************************
-        // *** Family ***
-        //********************************************************************************************
         // 0 @F1@ FAM
         // 0 @F1389_1390@ FAM aldfaer
 
@@ -3061,8 +3060,9 @@ class GedcomCls
             //2 NOTE tekst ondertr wet
             //3 CONT 2nd line
 
-            // ***************************************************************************************
-            // *** Marriage license church ***
+            /**
+             * Marriage license church
+             */
 
             // *** Marriage license Aldfaer ***
             if ($this->level[1] == 'MARL' && $gen_program == 'ALDFAER') {
@@ -3103,7 +3103,7 @@ class GedcomCls
                     $this->process_sources('family', 'fam_marr_church_notice_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage church notice ********************************
+                // *** Pictures by marriage church notice ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
@@ -3113,9 +3113,9 @@ class GedcomCls
                 }
             }
 
-            // ******************************************************************************************
-            // *** Marriage license ***
-            // ******************************************************************************************
+            /**
+             * Marriage license
+             */
             if ($this->level[1] == 'MARB' && $temp_kind !== 'religious') {
                 // *** Type marriage / relation (civil or religious) ***
                 if ($this->buffer[6] === '2 TYPE') {
@@ -3154,7 +3154,7 @@ class GedcomCls
                     $this->process_sources('family', 'fam_marr_notice_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage licence ********************************
+                // *** Pictures by marriage licence ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
@@ -3190,10 +3190,9 @@ class GedcomCls
                 }
             }
 
-            // *******************************************************************************************
-            // *** Marriage church ***
-            // *******************************************************************************************
-
+            /**
+             * Marriage church
+             */
             if ($this->level[1] == 'MARR') {
                 // *** fam_religion ***
                 // Haza-data
@@ -3365,7 +3364,7 @@ class GedcomCls
                     $this->process_sources('family', 'fam_marr_church_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage church ********************************
+                // *** Pictures by marriage church ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
@@ -3375,9 +3374,9 @@ class GedcomCls
                 }
             }
 
-            // **********************************************************************************************
-            // *** Marriage ***
-            // **********************************************************************************************
+            /**
+             * Marriage
+             */
             if ($this->level[1] == 'MARR' && $temp_kind !== 'religious' && $gen_program != 'SukuJutut') {
 
                 if ($this->buffer[6] === '1 MARR') {
@@ -3412,7 +3411,7 @@ class GedcomCls
                     $this->process_sources('family', 'fam_marr_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage ********************************
+                // *** Pictures by marriage ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
@@ -3448,7 +3447,6 @@ class GedcomCls
                 }
             }
 
-            // ******************************************************************************************
             // Finnish program SukuJutut uses its own code for type of relation
             if ($this->level[1] == 'MARR' && $gen_program == 'SukuJutut') {
                 if ($this->buffer[6] === '2 DATE') {
@@ -3505,10 +3503,9 @@ class GedcomCls
                 }
             }
 
-            // ******************************************************************************************
-            // *** Living together ***
-            // ******************************************************************************************
-
+            /**
+             * Living together
+             */
             // NOT TESTED *** BK living together ***
             if ($this->buffer[7] === '1 _COML') {
                 $this->processed = true;
@@ -3600,15 +3597,15 @@ class GedcomCls
                 }
             }
 
-            // *****************************************************************************************
-            // *** Divorce ***
-            // *****************************************************************************************
-
-            // *** Divorce BK ***
-            //1 _SEPR
-            //2 DATE 1933
-            //2 SOUR @S326@
-            //2 NOTE He left his family.
+            /**
+             * Divorce
+             * 
+             * Divorce BK
+             * 1 _SEPR
+             * 2 DATE 1933
+             * 2 SOUR @S326@
+             * 2 NOTE He left his family.
+             */
             if ($this->buffer[7] === '1 _SEPR') {
                 $this->buffer[0] = str_replace("1 _SEPR", "1 DIV", $this->buffer[0]);
                 $this->level[1] = 'DIV';
@@ -3652,8 +3649,9 @@ class GedcomCls
                 }
             }
 
-            // **********************************************************************************************
-            // *** Text by family ***
+            /**
+             * Text by family
+             */
             if ($this->level[1] == 'NOTE') {
                 $family["fam_text"] = $this->process_texts($family["fam_text"], '1');
 
@@ -3663,7 +3661,7 @@ class GedcomCls
                 }
             }
 
-            // *** Pictures by family ********************************
+            // *** Pictures by family ***
             // 1 OBJE
             // 2 FORM jpg
             // 2 FILE C:\Documents and Settings\Mijn documenten\test.jpg
@@ -3673,19 +3671,20 @@ class GedcomCls
                 $this->process_picture('family', $gedcomnumber, 'picture');
             }
 
-            // *********************************************************************
-            // *** Events ***
-            // *********************************************************************
-            //1 MILI
-            //2 TYPE militaire dienst
-            //2 DATE 01 JAN 1999
-            //2 NOTE test
-
-            //1 EVEN
-            //2 TYPE gebeurtenis
-            //2 DATE 01 JAN 2001
-            //2 PLAC Alkmaar
-            //2 NOTE gebeurtenis
+            /**
+             * Events
+             *
+             * 1 MILI
+             * 2 TYPE militaire dienst
+             * 2 DATE 01 JAN 1999
+             * 2 NOTE test
+             * 
+             * 1 EVEN
+             * 2 TYPE gebeurtenis
+             * 2 DATE 01 JAN 2001
+             * 2 PLAC Alkmaar
+             * 2 NOTE gebeurtenis
+             */
 
             // TODO use function check_event.
             //$event_temp = check_event(7);
@@ -3889,9 +3888,9 @@ class GedcomCls
                 $this->process_addresses('family', 'family_address', $gedcomnumber);
             }
 
-            //*******************************************************************************************
-            // *** Save non-processed items ***
-            // ******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             // Skip these lines
             if ($this->buffer[0] == '2 ADDR') {
                 $this->processed = true;
@@ -3931,7 +3930,7 @@ class GedcomCls
                 }
                 $family["fam_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        }  //end explode
+        }
 
         // SAVE
         // Pro-gen: special treatment for woman without a man... :-)
@@ -4240,9 +4239,9 @@ class GedcomCls
         }
     }
 
-    // ************************************************************************************************
-    // *** Import GEDCOM texts ***
-    // ************************************************************************************************
+    /**
+     * Import GEDCOM texts
+     */
     function process_text($text_array): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -4383,9 +4382,9 @@ class GedcomCls
                 }
             }
 
-            //*******************************************************************************************
-            // *** Save non-processed items ***
-            // ******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             // *** Skip these lines ***
             if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
@@ -4413,7 +4412,7 @@ class GedcomCls
                 }
                 $text["text_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         // *** Aldfaer e-mail addressses have a double @. ***
         $text['text_text'] = str_replace('@@', '@', $text['text_text']);
@@ -4482,9 +4481,9 @@ class GedcomCls
         }
     }
 
-    // ************************************************************************************************
-    // *** Process sources ***
-    // ************************************************************************************************
+    /**
+     * Process sources
+     */
     function process_source($source_array): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -4579,9 +4578,9 @@ class GedcomCls
                 $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
-            // ****************************************************************************************
-            // *** Sources 0 @S1@ SOUR ***
-            // ****************************************************************************************
+            /**
+             * Sources 0 @S1@ SOUR
+             */
 
             // *** Source BK ***
             //0 @S3@ SOUR
@@ -4772,7 +4771,7 @@ class GedcomCls
                 $source["source_repo_page"] = substr($this->buffer[0], 7);
             }
 
-            ////*** Picture text ********************************
+            ////*** Picture text ***
             //if level1='PHOT' then begin //Foto omschrijving
             //  if copy(buf,1,6)='2 DSCR' then afbeeldtekst[nrafbeelding]:=copy(buf,8,length(buf));
             //  if copy(buf,1,6)='2 NAME' then afbeeldtekst[nrafbeelding]:=copy(buf,8,length(buf)); //VOOR ANDERE GEDCOM VERSIES!
@@ -4816,9 +4815,9 @@ class GedcomCls
             }
 
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
             if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
@@ -4847,7 +4846,7 @@ class GedcomCls
                 }
                 $source["source_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         // Don't use this anymore. Because HuMo-genealogy sources will be changed when using EXPORT and IMPORT of GEDCOM ***
         // *** Generate title if there is no title in GEDCOM file (BK etc.). ***
@@ -4996,9 +4995,9 @@ class GedcomCls
         }
     }
 
-    // ************************************************************************************************
-    // *** Process repository ***
-    // ************************************************************************************************
+    /**
+     * Process repository
+     */
     function process_repository($repo_array): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -5245,9 +5244,9 @@ class GedcomCls
                 }
             }
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
             if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
@@ -5275,7 +5274,7 @@ class GedcomCls
                 }
                 $repo["repo_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         if (($add_tree == true or $reassign == true) && $repo["repo_text"]) {
             $repo["repo_text"] = $this->reassign_ged($repo["repo_text"], 'N');
@@ -5312,9 +5311,9 @@ class GedcomCls
         }
     }
 
-    // ************************************************************************************************
-    // *** Process (shared) addresses ***
-    // ************************************************************************************************
+    /**
+     * Process (shared) addresses
+     */
     function process_address($line): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -5324,9 +5323,10 @@ class GedcomCls
         $line2 = explode("\n", $line);
         $this->buffer[0] = $line2[0];
 
-        // *********************************************************************************************
-        // *** Addressses Haza-Plus & HuMo-genealogy shared addresses ***
-        // *********************************************************************************************
+        /**
+         * Addressses Haza-Plus & HuMo-genealogy shared addresses
+         */
+
         //0 @R1@ RESI
         //1 ADDR Lange Houtstraat 100
         //1 ZIP 1234 AB
@@ -5474,9 +5474,9 @@ class GedcomCls
                 }
             }
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
             if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
@@ -5505,7 +5505,7 @@ class GedcomCls
                 }
                 $address["address_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         // *** NEW april 2022: Save connections in seperate table ***
         if ($this->connect_nr > 0) {
@@ -5582,9 +5582,9 @@ class GedcomCls
     }
 
 
-    // ************************************************************************************************
-    // *** Process objects ***
-    // ************************************************************************************************
+    /**
+     * Process objects
+     */
     function process_object($object_array): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -5593,9 +5593,6 @@ class GedcomCls
         $line2 = explode("\n", $object_array);
         $this->buffer[0] = $line2[0];
 
-        // *********************************************************************************************
-        // *** Objects ***
-        // *********************************************************************************************
         // 0 @O123@ OBJE
         // 1 FORM jpeg
         // 1 TITL Fred Smith
@@ -5717,9 +5714,9 @@ class GedcomCls
                 }
             }
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
             if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
@@ -5748,7 +5745,7 @@ class GedcomCls
                 }
                 $event_unprocessed_tags .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         if ($add_tree == true || $reassign == true) {
             $this->event['text'] = $this->reassign_ged($this->event['text'], 'O');

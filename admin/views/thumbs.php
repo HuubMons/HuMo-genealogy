@@ -9,6 +9,10 @@ include_once(__DIR__ . "/../include/media_inc.php");
 include_once(__DIR__ . "/../../include/showMedia.php");
 $showMedia = new ShowMedia;
 
+$person_privacy = new PersonPrivacy;
+$person_name = new PersonName;
+$person_link = new PersonLink;
+
 $prefx = '../'; // to get out of the admin map
 
 $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
@@ -960,14 +964,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             $afbqry = $dbh->query($sql);
                             $picture_privacy = false;
                             while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                                $person_cls = new PersonCls;
                                 $db_functions->set_tree_id($tree_id);
                                 $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                                $name = $person_cls->person_name($personDb);
+                                $privacy = $person_privacy->get_privacy($personDb);
+                                $name = $person_name->get_person_name($personDb, $privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                                 $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                                $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                                $url = $person_link->get_person_link($personDb);
                                 $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
                             }
                             echo $picture_text;
