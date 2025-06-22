@@ -56,7 +56,7 @@ function admin_custom_autoload($class_name)
 {
     // Examples of autoload files:
     // include/editor_cls.php
-    // include/gedcomCls.php
+    // include/gedcomImport.php
     // include/updateCls.php
 
     // models/groupsmodel.php
@@ -81,7 +81,8 @@ function admin_custom_autoload($class_name)
     $admin_include = array(
         'Editor_cls',
         'EditorEvent',
-        'GedcomCls',
+        'GedcomImport',
+        'GedcomExport',
         'UpdateCls'
     );
 

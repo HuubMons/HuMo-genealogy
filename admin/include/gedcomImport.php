@@ -1,5 +1,5 @@
 <?php
-class GedcomCls
+class GedcomImport
 {
     private $dbh;
     private $tree_id, $tree_prefix;
@@ -4614,7 +4614,16 @@ class GedcomCls
                 $source["source_status"] = 'restricted';
             }
 
-            if ($this->buffer[6] == '1 DATE') {
+            // Used by GEDCOM 7 files.
+            if ($this->buffer[6] == '1 DATA') {
+                $this->processed = true;
+            }
+            if ($this->buffer[6] == '2 EVEN') {
+                $this->processed = true;
+            }
+
+            //if ($this->buffer[6] == '1 DATE') {
+            if (substr($this->buffer[0], 2, 4) === 'DATE') {
                 $this->processed = true;
                 $source["source_date"] = substr($this->buffer[0], 7);
             }

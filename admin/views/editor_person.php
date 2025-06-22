@@ -158,7 +158,7 @@
                                         <!-- geen aparte 'link' maar heeft de regel als link, door target steeds zelfde window -->
                                         <a href="<?= $OAresult["url"]; ?>" target="openarch.nl">
                                             <?= $OAresult["personname"]; ?> (<?= $OAresult["relationtype"]; ?>),
-                                            <?= $OAresult["eventtype"]; ?> <?= $OAeventdate; ?> <?= $OAresult["eventplace"]; ?>,
+                                            <?= $OAresult["eventtype"]; ?> <?= $OAeventdate; ?> <?= $OAresult["eventplace"][0]; ?>,
                                             <?= $OAresult["archive"]; ?>/<?= $OAresult["sourcetype"]; ?>
                                         </a><br>
                                     </div>
@@ -220,7 +220,7 @@
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-auto">
-                                <input type="submit" name="search_period" value="<?= __('Search using period'); ?>">
+                                <input type="submit" name="search_period" value="<?= __('Search using period'); ?>" class="btn btn-sm btn-success">
                             </div>
                         </div>
                 <?php

@@ -733,7 +733,7 @@ elseif ($trees['step'] == '3') {
         $new_gednum["N"] = $largest_text_ged;
     }
 
-    $gedcom_cls = new GedcomCls($dbh, $tree_id, $tree_prefix, $humo_option);
+    $gedcom_cls = new GedcomImport($dbh, $tree_id, $tree_prefix, $humo_option);
 
     require(__DIR__ . "/../include/prefixes.php");
     $loop2 = count($pers_prefix);

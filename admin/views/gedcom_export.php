@@ -33,11 +33,8 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-@set_time_limit(3000);
 
-$persids = array();
-$famsids = array();
-$noteids = array();
+@set_time_limit(3000);
 ?>
 
 <h1 class="center"><?= __('GEDCOM file export'); ?></h1>
@@ -70,7 +67,8 @@ if (isset($_POST['submit_button'])) {
 <?php
 // *** Start GEDCOM export ***
 if (isset($tree_id) and isset($_POST['submit_button'])) {
-    require_once __DIR__ . "/../include/gedcom_export.php";
+    $gedcom_export = new GedcomExport($dbh, $db_functions, $humo_option, $tree_id);
+    $gedcom_export->exportGedcom($export);
 ?>
     <?= __('GEDCOM file is generated'); ?><br>
 
