@@ -107,10 +107,10 @@ $person_privacy = new PersonPrivacy;
                         $calendar_day = $record->birth_day;
                         $birth_day = $record->birth_day . ' ' . $data["month"];
 
-                        $person_cls_privacy = $person_privacy->get_privacy($record);
-                        $name = $person_name->get_person_name($record, $person_cls_privacy);
+                        $privacy = $person_privacy->get_privacy($record);
+                        $name = $person_name->get_person_name($record, $privacy);
 
-                        if (!$person_cls_privacy) {
+                        if (!$privacy) {
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                             $url = $person_link->get_person_link($record);
 
@@ -130,12 +130,12 @@ $person_privacy = new PersonPrivacy;
                                 <td><?= $calendar_day == $last_cal_day ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
                                 <?php $last_cal_day = $calendar_day; ?>
 
-                                <td><?= $person_cls_privacy ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
+                                <td><?= $privacy ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
 
                                 <td align="left"><a href="<?= $url;?>"><?= $name["standard_name"];?></a></td>
 
                                 <td>
-                                    <div class="pale"><?= $person_cls_privacy ? __(' PRIVACY FILTER') : $died; ?>
+                                    <div class="pale"><?= $privacy ? __(' PRIVACY FILTER') : $died; ?>
                                 </td>
                             </tr>
                     <?php
@@ -252,11 +252,11 @@ $person_privacy = new PersonPrivacy;
                         foreach ($wed as $key => $value) {
                             // get husband
                             $manDb = $db_functions->get_person($value['man']);
-                            $man_cls_privacy = $person_privacy->get_privacy($manDb);
+                            $man_privacy = $person_privacy->get_privacy($manDb);
                             if (!$value['man']) {
                                 $man_name = 'N.N.';
                             } else {
-                                $name = $person_name->get_person_name($manDb, $man_cls_privacy);
+                                $name = $person_name->get_person_name($manDb, $man_privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                                 $url = $person_link->get_person_link($manDb);
@@ -266,11 +266,11 @@ $person_privacy = new PersonPrivacy;
 
                             // get wife
                             $womanDb = $db_functions->get_person($value['woman']);
-                            $woman_cls_privacy = $woman_privacy->get_privacy($womanDb);
+                            $woman_privacy = $woman_privacy->get_privacy($womanDb);
                             if (!$value['woman']) {
                                 $woman_name = 'N.N.';
                             } else {
-                                $name = $person_name->get_person_name($womanDb, $woman_cls_privacy);
+                                $name = $person_name->get_person_name($womanDb, $woman_privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                                 $url = $person_link->get_person_link($womanDb);
@@ -281,14 +281,14 @@ $person_privacy = new PersonPrivacy;
                             $calendar_day = $value['calday'];
                             $marr_day = $value['marday'];
 
-                            if (!$man_cls_privacy && !$woman_cls_privacy) {
+                            if (!$man_privacy && !$woman_privacy) {
                     ?>
                                 <!-- Highlight present day -->
                                 <tr <?php if ($marr_day == $data["today"]) echo 'class="table-primary"'; ?>>
                                     <td><?= $calendar_day == $last_cal_day ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
                                     <?php $last_cal_day = $calendar_day; ?>
 
-                                    <td><?= $man_cls_privacy and !$woman_cls_privacy ? __(' PRIVACY FILTER') : $value['maryr']; ?></td>
+                                    <td><?= $man_privacy and !$woman_privacy ? __(' PRIVACY FILTER') : $value['maryr']; ?></td>
 
                                     <td align="left"><?= $value['type']; ?></td>
                                     <td align="left"><?= $man_name . ' & ' . $woman_name; ?></td>

@@ -437,7 +437,7 @@ else {
                             $search_nr = array_search($child_family[0], $check_double);
                             $rtf_text = '<b><i>, ' . __('follows') . ': </i></b>' . $follows_array[$search_nr];
                             $sect->writeText($rtf_text, $arial12);
-                        } elseif ($child_cls->person_data($childDb, $child_privacy, "child", $id)) {
+                        } elseif ($person_data->person_data($childDb, $child_privacy, "child", $id)) {
                             $rtf_text = strip_tags($person_data->person_data($childDb, $child_privacy, "child", $id), '<b><i>');
                             $sect->writeText($rtf_text, $arial12, $par_child_text);
                             // *** Show RTF media ***

@@ -390,8 +390,6 @@ for ($w = 0; $w < count($genarray); $w++) {
             }
 
             if ($genarray[$w]["non"] != 1) {
-                // *** Start person class and calculate privacy ***
-                $woman_cls = ''; // prevent use of $woman_cls from previous wife if another wife is NN
                 if (isset($genarray[$w]["spgednr"]) && $genarray[$w]["spgednr"]) {
                     $woman = $db_functions->get_person($genarray[$w]["spgednr"]);
                     $woman_privacy = $person_privacy->get_privacy($woman);
@@ -399,7 +397,7 @@ for ($w = 0; $w < count($genarray); $w++) {
 
                 // *** Marriage data ***
                 $extra_popup_text .= '<br>' . $genarray[$w]["htx"] . "<br>";
-                if ($woman_cls) {
+                if (isset($woman)) {
                     $name = $person_name->get_person_name($woman, $woman_privacy);
                     if (isset($genarray[$w]["spfams"]) && isset($genarray[$w]["spgednr"]) && isset($genarray[$w]["sps"])) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***

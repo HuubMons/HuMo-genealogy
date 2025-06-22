@@ -433,9 +433,12 @@ $error_page = '';
 //if ($index['page403']) {
 //    $error_page = __('403 Forbidden');
 //}
-if ($index['page404']) {
-    $error_page = __('404 Not Found');
-}
+
+// TODO: this is disabled, because it blockes favorite pages.
+//if ($index['page404']) {
+//    $error_page = __('404 Not Found');
+//}
+
 //else {
 //    $error_page = __('410 Gone');
 //}

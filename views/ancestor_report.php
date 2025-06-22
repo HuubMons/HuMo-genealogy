@@ -279,7 +279,7 @@ while (isset($ancestor_array2[0])) {
                             <?php
                             // ***  Use "child", to show a link to own family. ***
                             echo $person_name_extended->name_extended($person_manDb, $privacy_man, "child");
-                            echo $man_cls->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
+                            echo $person_data->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
                             ?>
                         </div>
                     </td>

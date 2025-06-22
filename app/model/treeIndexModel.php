@@ -706,11 +706,11 @@ class TreeIndexModel
 
                 if ($pic_conn_kind == 'person') {
                     $personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
-                    $man_cls_privacy = $person_privacy->get_privacy($personmnDb);
-                    if (!$man_cls_privacy) {
+                    $man_privacy = $person_privacy->get_privacy($personmnDb);
+                    if (!$man_privacy) {
                         $is_privacy = false;
 
-                        $name = $person_name->get_person_name($personmnDb, $man_cls_privacy);
+                        $name = $person_name->get_person_name($personmnDb, $man_privacy);
                         $link_text = $name["standard_name"];
 
                         $url = $this->person_link->get_person_link($personmnDb);
@@ -721,19 +721,19 @@ class TreeIndexModel
                     $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
 
                     $personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
-                    $man_cls_privacy = $person_privacy->get_privacy($personmnDb2);
+                    $man_privacy = $person_privacy->get_privacy($personmnDb2);
 
                     $personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
-                    $woman_cls_privacy = $person_privacy->get_privacy($personmnDb3);
+                    $woman_privacy = $person_privacy->get_privacy($personmnDb3);
 
                     // *** Only use this picture if both man and woman have disabled privacy options ***
-                    if (!$man_cls_privacy && !$woman_cls_privacy) {
+                    if (!$man_privacy && !$woman_privacy) {
                         $is_privacy = false;
 
-                        $name = $person_name->get_person_name($personmnDb2, $man_cls_privacy);
+                        $name = $person_name->get_person_name($personmnDb2, $man_privacy);
                         $man_name = $name["standard_name"];
 
-                        $name = $person_name->get_person_name($personmnDb3, $woman_cls_privacy);
+                        $name = $person_name->get_person_name($personmnDb3, $woman_privacy);
                         $woman_name =  $name["standard_name"];
 
                         $link_text = __('Family') . ': ' . $man_name . ' &amp; ' . $woman_name;
@@ -974,10 +974,10 @@ class TreeIndexModel
 
         // *** Save results in an array, so it's possible to order the results by date ***
         while ($record = $birth_qry->fetch(PDO::FETCH_OBJ)) {
-            $person_cls_privacy = $person_privacy->get_privacy($record);
-            $name = $person_name->get_person_name($record, $person_cls_privacy);
+            $privacy = $person_privacy->get_privacy($record);
+            $name = $person_name->get_person_name($record, $privacy);
 
-            if (!$person_cls_privacy) {
+            if (!$privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) === $today || substr($record->pers_birth_date, 0, 6) === $today2) {
                     //$history['order'][]=substr($record->pers_birth_date,-4);
                     // *** First order birth, using C ***

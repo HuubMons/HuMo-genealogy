@@ -8,6 +8,7 @@ class IndexModel
     {
         return $this->page404;
     }
+
     public function get_page301()
     {
         return $this->page301;

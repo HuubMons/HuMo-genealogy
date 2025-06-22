@@ -1047,7 +1047,7 @@ class PersonData
                                 if ($temp) {
                                     $templ_person[$temp] .= ", ";
                                 }
-                                $privacy_parent = $privacy->get_privacy($parent2Db);
+                                $privacy_parent = $person_privacy->get_privacy($parent2Db);
                                 $name = $person_name->get_person_name($parent2Db, $privacy_parent);
                                 $templ_person["marr_more" . $marriagenr] = $pdf_marriage["relnr_rel"] . $pdf_marriage["rel_add"] . " " . $name["standard_name"];
                                 $temp = "marr_more" . $marriagenr;

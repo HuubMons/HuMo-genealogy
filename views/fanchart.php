@@ -575,8 +575,6 @@ if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone c
     $menu_fan = "auto";
 }
 
-//$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
-//$path_tmp .= 'id=' . $data["main_person"];
 $vars['id'] = $data['main_person'];
 $path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
 ?>

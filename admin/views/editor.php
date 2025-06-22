@@ -679,13 +679,6 @@ if ($check_person) {
 
             // *** Example of family screen in pop-up ***
             if ($person) {
-                // TODO: test these lines.
-                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                //$uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                //$person_link = new PersonLink;
-                //$url=$popup_cls->person_link($person);
-                //echo " <a href=\"#\" onClick=\"window.open('".$url."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
-
                 $pers_family = '';
                 if ($person->pers_famc) {
                     $pers_family = $person->pers_famc;

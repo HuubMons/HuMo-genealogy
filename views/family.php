@@ -552,7 +552,7 @@ else {
                             <div class="py-3">
                                 <?= $marriage_cls->marriage_data($familyDb, $family_nr, 'shorter'); ?>
                             </div>
-                            <?= $person_name_extended($parent1Db, $parent1_privacy, "parent1"); ?><br>
+                            <?= $person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"); ?><br>
                         <?php
                         }
                         $family_nr++;
