@@ -16,6 +16,7 @@ $tree_search_result = $dbh->query($tree_search_sql);
 $count = 0;
 
 $person_privacy = new PersonPrivacy;
+$date_place = new DatePlace;
 ?>
 
 <div class="p-3 m-2 genealogy_search">
@@ -452,13 +453,13 @@ if (isset($_POST['descmap'])) {
                                 }
                                 $date = '';
                                 if ($b_date && !$d_date) {
-                                    $date = ' (' . $b_sign . date_place($b_date, '') . ')';
+                                    $date = ' (' . $b_sign . $date_place->date_place($b_date, '') . ')';
                                 }
                                 if ($b_date && $d_date) {
-                                    $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
+                                    $date .= ' (' . $b_sign . $date_place->date_place($b_date, '') . ' - ' . $d_sign . $date_place->date_place($d_date, '') . ')';
                                 }
                                 if (!$b_date && $d_date) {
-                                    $date = '(' . $d_sign . date_place($d_date, '') . ')';
+                                    $date = '(' . $d_sign . $date_place->date_place($d_date, '') . ')';
                                 }
                                 $name = '';
                                 $pref = '';
@@ -585,13 +586,13 @@ if (isset($_POST['ancmap'])) {
                                 }
                                 $date = '';
                                 if ($b_date && !$d_date) {
-                                    $date = ' (' . $b_sign . date_place($b_date, '') . ')';
+                                    $date = ' (' . $b_sign . $date_place->date_place($b_date, '') . ')';
                                 }
                                 if ($b_date && $d_date) {
-                                    $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
+                                    $date .= ' (' . $b_sign . $date_place->date_place($b_date, '') . ' - ' . $d_sign . $date_place->date_place($d_date, '') . ')';
                                 }
                                 if (!$b_date && $d_date) {
-                                    $date = '(' . $d_sign . date_place($d_date, '') . ')';
+                                    $date = '(' . $d_sign . $date_place->date_place($d_date, '') . ')';
                                 }
                             }
                             if (!$privacy_man || ($privacy_man && $user['group_filter_name'] == "j")) {

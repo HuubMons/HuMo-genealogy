@@ -43,6 +43,7 @@ class TreeCheckChangesModel extends AdminBaseModel
         global $uri_path;
 
         $person_link = new PersonLink();
+        $language_date = new LanguageDate();
 
         $row = 0;
 
@@ -80,16 +81,16 @@ class TreeCheckChangesModel extends AdminBaseModel
                 $text = '';
                 if ($person->pers_changed_datetime) {
                     $user_name = $this->db_functions->get_user_name($person->pers_changed_user_id);
-                    $text .= show_datetime($person->pers_changed_datetime) . ' ' . $user_name;
+                    $text .= $language_date->show_datetime($person->pers_changed_datetime) . ' ' . $user_name;
                 }
                 $tree_check['changes'][$row][2] = $text;
 
-                //$text = '<nobr>' . language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ' ' . $person->pers_new_user . '</nobr>';
+                //$text = '<nobr>' . $language_date->language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ' ' . $person->pers_new_user . '</nobr>';
                 $text = '';
                 // TODO check if this could be added in query.
                 if ($person->pers_new_datetime != '1970-01-01 00:00:01') {
                     $user_name = $this->db_functions->get_user_name($person->pers_new_user_id);
-                    $text .= show_datetime($person->pers_new_datetime) . ' ' . $user_name;
+                    $text .= $language_date->show_datetime($person->pers_new_datetime) . ' ' . $user_name;
                 }
                 $tree_check['changes'][$row][3] = $text;
 

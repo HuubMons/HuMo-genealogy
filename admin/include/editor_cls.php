@@ -296,6 +296,8 @@ class Editor_cls
 
     public function show_selected_person($person)
     {
+        $language_date = new LanguageDate;
+
         $text = __('N.N.');
         if ($person) {
             $prefix1 = '';
@@ -310,22 +312,22 @@ class Editor_cls
             $text = '[' . $person->pers_gedcomnumber . '] ' . $prefix1 . $person->pers_lastname . ', ' . $person->pers_firstname . $prefix2 . ' ';
 
             if ($person->pers_birth_date) {
-                $text .= __('*') . ' ' . language_date($person->pers_birth_date);
+                $text .= __('*') . ' ' . $language_date->language_date($person->pers_birth_date);
             }
             if (!$person->pers_birth_date && $person->pers_bapt_date) {
-                $text .= __('~') . ' ' . language_date($person->pers_bapt_date);
+                $text .= __('~') . ' ' . $language_date->language_date($person->pers_bapt_date);
             }
             if ($person->pers_death_date) {
                 if ($text) {
                     $text .= ' ';
                 }
-                $text .= __('&#134;') . ' ' . language_date($person->pers_death_date);
+                $text .= __('&#134;') . ' ' . $language_date->language_date($person->pers_death_date);
             }
             if (!$person->pers_death_date and $person->pers_buried_date) {
                 if ($text) {
                     $text .= ' ';
                 }
-                $text .= __('[]') . ' ' . language_date($person->pers_buried_date);
+                $text .= __('[]') . ' ' . $language_date->language_date($person->pers_buried_date);
             }
         }
         return ($text);

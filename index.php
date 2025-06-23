@@ -63,8 +63,10 @@ function custom_autoload($class_name)
 
     $include = array(
         'CalculateDates',
+        'DatePlace',
         'DbFunctions',
         'GeneralSettings',
+        'LanguageDate',
         'MarriageCls',
         'PersonData',
         'PersonLink',
@@ -246,9 +248,6 @@ if ($index['page'] == 'address') {
     $controllerObj = new AncestorSheetController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'anniversary') {
-    //TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-
     $controllerObj = new AnniversaryController();
     $data = $controllerObj->anniversary();
 } elseif ($index['page'] == 'cms_pages') {
@@ -281,23 +280,12 @@ if ($index['page'] == 'address') {
     $controllerObj = new HourglassController($config);
     $data = $controllerObj->getHourglass();
 } elseif ($index['page'] == 'latest_changes') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-
     $controllerObj = new LatestChangesController($config);
     $data = $controllerObj->list();
 } elseif ($index['page'] == 'list') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-    include_once(__DIR__ . "/include/date_place.php");
-
     $controllerObj = new ListController($config);
     $list = $controllerObj->list_names();
 } elseif ($index['page'] == 'list_places_families') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-    include_once(__DIR__ . "/include/date_place.php");
-
     $controllerObj = new ListPlacesFamiliesController($config);
     $data = $controllerObj->list_places_names();
 } elseif ($index['page'] == 'list_names') {
@@ -314,18 +302,13 @@ if ($index['page'] == 'address') {
     $mail_data = $controllerObj->get_mail_data($dataDb, $selected_language);
 } elseif ($index['page'] == 'maps') {
     // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-    include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/ancestors_descendants.php");
 
     $controllerObj = new MapsController($config);
     $maps = $controllerObj->detail($tree_prefix_quoted);
 } elseif ($index['page'] == 'photoalbum') {
     // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-    include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/showMedia.php");
-    //include_once(__DIR__ . "/admin/include/media_inc.php");
 
     $controllerObj = new PhotoalbumController($config);
     $photoalbum = $controllerObj->detail($selected_language, $uri_path, $link_cls);
@@ -333,10 +316,6 @@ if ($index['page'] == 'address') {
     $controllerObj = new RegisterController($config);
     $register = $controllerObj->get_register_data($dataDb);
 } elseif ($index['page'] == 'relations') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-    include_once(__DIR__ . "/include/date_place.php");
-
     $controllerObj = new RelationsController($config);
     $relation = $controllerObj->getRelations($link_cls, $uri_path, $selected_language);
 } elseif ($index['page'] == 'reset_password') {
@@ -353,38 +332,23 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'user_settings') {
     // TODO refactor
     include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
-    //if (isset($_POST['update_settings'])){
-    //  include_once(__DIR__ . '/include/mail.php');
-    //}
 
     $controllerObj = new UserSettingsController($config);
     $data = $controllerObj->user_settings($dataDb);
 } elseif ($index['page'] == 'show_media_file') {
     // *** Show media file using secured folder ***
-    // *** Skip layout.php ***
     include_once(__DIR__ . "/views/show_media_file.php");
-    exit;
+    exit; // *** Skip layout.php ***
 } elseif ($index['page'] == 'statistics') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-    include_once(__DIR__ . "/include/date_place.php");
-
     $controllerObj = new StatisticsController($config);
     $statistics = $controllerObj->detail();
 } elseif ($index['page'] == 'sources') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/language_date.php");
-    include_once(__DIR__ . "/include/date_place.php");
-
     $controllerObj = new SourcesController($config);
     $data = $controllerObj->list($link_cls, $uri_path);
 } elseif ($index['page'] == 'source') {
     // TODO refactor
-    include_once(__DIR__ . "/include/date_place.php");
     include_once(__DIR__ . "/include/process_text.php");
     include_once(__DIR__ . "/include/showMedia.php");
-    //include_once(__DIR__ . "/include/show_sources.php");
-    include_once(__DIR__ . "/include/language_date.php");
 
     $controllerObj = new SourceController($config);
 
@@ -394,9 +358,6 @@ if ($index['page'] == 'address') {
     }
     $data = $controllerObj->source($id);
 } elseif ($index['page'] == 'timeline') {
-    // TODO refactor
-    require_once(__DIR__ . "/include/language_date.php");
-
     $controllerObj = new TimelineController($config);
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {

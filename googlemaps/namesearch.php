@@ -10,8 +10,6 @@ $user = $GeneralSettings->get_user_settings($dbh);
 $humo_option = $GeneralSettings->get_humo_option($dbh);
 
 include_once(__DIR__ . "/../include/personData.php"); // TODO check this.
-include_once(__DIR__ . "/../include/language_date.php");
-include_once(__DIR__ . "/../include/date_place.php");
 include_once(__DIR__ . '/../include/processLinks.php');
 $link_cls = new ProcessLinks();
 
@@ -61,6 +59,7 @@ function mapbirthplace($place)
 
     $person_name = new PersonName;
     $person_privacy = new PersonPrivacy;
+    $date_place = new DatePlace;
 
     if (isset($_GET['namestring'])) {
         $temparray = explode("@", $_GET['namestring']);
@@ -187,7 +186,7 @@ function mapbirthplace($place)
                     }
                 }
                 if (!$privacy_man and $date and $name["show_name"] == true) {
-                    echo ' (' . $sign . date_place($date, '') . ')';
+                    echo ' (' . $sign . $date_place->date_place($date, '') . ')';
                 }
                 if ($name["show_name"] == true) {
                     echo '</a>';

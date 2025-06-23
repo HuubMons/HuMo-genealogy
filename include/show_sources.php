@@ -15,6 +15,9 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
     global $source_footnote_connect_id, $source_combiner;
     global $temp, $templ_person, $templ_relation; // *** PDF export ***
     global $data;
+
+    $date_place = new DatePlace;
+
     $source_array['text'] = '';
 
     $data["source_presentation"] = 'title';
@@ -99,7 +102,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                     // *** User group option to only show title of source ***
                     if ($user['group_sources'] != 't') {
                         if ($sourceDb->source_date or $sourceDb->source_place) {
-                            $source_array['text'] .= " " . date_place($sourceDb->source_date, $sourceDb->source_place);
+                            $source_array['text'] .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
                         }
                     }
 
@@ -294,7 +297,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                         }
 
                         if ($sourceDb->source_date || $sourceDb->source_place) {
-                            $source_array['text'] .= " " . date_place($sourceDb->source_date, $sourceDb->source_place);
+                            $source_array['text'] .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
                         }
                     }
 
@@ -335,6 +338,9 @@ function show_sources_footnotes(): string
 {
     global $dbh, $db_functions, $tree_id, $source_footnotes, $language, $user;
     global $uri_path, $source_footnote_connect_id, $humo_option;
+
+    $date_place = new DatePlace;
+
     $text = '';
 
     if ($source_footnote_connect_id && count($source_footnote_connect_id) > 0) {
@@ -391,7 +397,7 @@ function show_sources_footnotes(): string
                 if ($user['group_sources'] != 't') {
                     if ($connectDb->connect_date || $connectDb->connect_place) {
                         //if ($connectDb->source_title){ $text.=', '; }
-                        $text .= " " . date_place($connectDb->connect_date, $connectDb->connect_place);
+                        $text .= " " . $date_place->date_place($connectDb->connect_date, $connectDb->connect_place);
                     }
 
                     // *** Show extra source text ***

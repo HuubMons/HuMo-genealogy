@@ -90,7 +90,7 @@ function witness($gedcomnr, $event_kind, $event_connect_kind = 'person'): array
             // *** Birth declaration witness: no date/ place/ text/ source in use ***
             if ($event_connect_kind != 'birth_declaration' && $event_connect_kind != 'death_declaration') {
                 if ($witnessDb->event_date || $witnessDb->event_place) {
-                    $text .= ' ' . date_place($witnessDb->event_date, $witnessDb->event_place);
+                    $text .= ' ' . $date_place->date_place($witnessDb->event_date, $witnessDb->event_place);
                 }
 
                 if ($witnessDb->event_text) {
@@ -143,7 +143,10 @@ function witness($gedcomnr, $event_kind, $event_connect_kind = 'person'): array
 function witness_by_events($gedcomnr): string
 {
     global $dbh, $db_functions, $tree_id, $screen_mode, $link_cls, $uri_path;
+
+    $person_privacy = new PersonPrivacy;
     $person_name = new PersonName;
+    $date_place = new DatePlace;
 
     $counter = 0;
     $text = '';
@@ -255,7 +258,7 @@ function witness_by_events($gedcomnr): string
 
             if ($witnessDb->event_date) {
                 // *** Use date_place function, there is no place here... ***
-                $text .= ' ' . date_place($witnessDb->event_date, '');
+                $text .= ' ' . $date_place->date_place($witnessDb->event_date, '');
             }
 
             //$source_array=show_sources2($event_connect_kind,"pers_event_source",$witnessDb->event_id);

@@ -7,6 +7,9 @@
  * This is needed to show proper colours in graphical reports.
  * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
  */
+
+ $date_place = new DatePlace;
+ $language_date = new LanguageDate;
 ?>
 
 <div class="p-1 m-2 genealogy_search">
@@ -67,7 +70,7 @@
                         <b><?= show_person($familyDb->fam_man) . ' ' . __('and') . ' ' . show_person($familyDb->fam_woman); ?></b>
                         <?php
                         if ($familyDb->fam_marr_date) {
-                            echo ' X ' . date_place($familyDb->fam_marr_date, '');
+                            echo ' X ' . $date_place->date_place($familyDb->fam_marr_date, '');
                         }
                         ?>
                     </div>
@@ -495,14 +498,18 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         $hideshow_text .= '<span style="background-color:#FFAA80">' . __('Marriage/ Related') . '</span>';
                     }
 
-                    $date_place = date_place($fam_marr_date, $fam_marr_place);
-                    if ($date_place) {
-                        if ($hideshow_text) $hideshow_text .= ', ';
-                        $hideshow_text .= $date_place;
+                    $dateplace = $date_place->date_place($fam_marr_date, $fam_marr_place);
+                    if ($dateplace) {
+                        if ($hideshow_text) {
+                            $hideshow_text .= ', ';
+                        }
+                        $hideshow_text .= $dateplace;
                     }
 
                     if ($fam_marr_authority) {
-                        //if ($hideshow_text) $hideshow_text.='.';
+                        //if ($hideshow_text){
+                        //  $hideshow_text.='.';
+                        //}
                         $hideshow_text .= ' [' . $fam_marr_authority . ']';
                     }
 
@@ -1039,7 +1046,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Added by'); ?></td>
-                    <td colspan="2"><?= show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
+                    <td colspan="2"><?= $language_date->show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
                 </tr>
             <?php
             }
@@ -1049,7 +1056,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Changed by'); ?></td>
-                    <td colspan="2"><?= show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
+                    <td colspan="2"><?= $language_date->show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
                 </tr>
             <?php
             }

@@ -1,4 +1,8 @@
 <!-- Start of editor table -->
+<?php
+$language_date = new LanguageDate;
+?>
+
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="person" value="<?= $pers_gedcomnumber; ?>">
@@ -576,7 +580,7 @@
                     $pers_cal_date = 'dd mmm yyyy';
                 } ?>
                 <span style="color:#6D7B8D;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= language_date($pers_cal_date); ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= $language_date->language_date($pers_cal_date); ?>
                 </span>
 
                 <?php
@@ -1770,7 +1774,7 @@
                 <tr class="row62" style="display:none;">
                     <td></td>
                     <td colspan="2">
-                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
+                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $language_date->show_datetime($noteDb->note_new_datetime); ?>)<br>
                         <b><?= $noteDb->note_names; ?></b><br>
                         <textarea readonly rows="1" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
                     </td>
@@ -1784,7 +1788,7 @@
                 <tr class="table_header_large">
                     <td><?= __('Added by'); ?></td>
                     <td colspan="2">
-                        <?= show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
+                        <?= $language_date->show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
                     </td>
                 </tr>
             <?php
@@ -1796,7 +1800,7 @@
                 <tr class="table_header_large">
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2">
-                        <?= show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
+                        <?= $language_date->show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
                     </td>
                 </tr>
         <?php

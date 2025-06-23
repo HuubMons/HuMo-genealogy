@@ -371,12 +371,13 @@ class StatsPersonsModel extends BaseModel
         $person_privacy = new PersonPrivacy;
         $person_name = new PersonName;
         $person_link = new PersonLink();
+        $date_place = new DatePlace;
 
         $privacy = $person_privacy->get_privacy($row);
         if (!$privacy) {
             $person['date'] = '';
             if ($date != 'EMPTY') {
-                $person['date'] = date_place($date, '');
+                $person['date'] = $date_place->date_place($date, '');
             }
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***

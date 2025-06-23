@@ -16,6 +16,7 @@ $list_var = $link_cls->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $link_cls->get_link($uri_path, 'list', $tree_id, true);
 
 $person_privacy = new PersonPrivacy;
+$date_place = new DatePlace;
 
 if ($list["index_list"] == 'places') {
 ?>
@@ -887,6 +888,7 @@ function show_person($personDb)
     $person_privacy = new PersonPrivacy;
     $person_name = new PersonName;
     $person_popup = new PersonPopup;
+    $date_place = new DatePlace;
 
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
@@ -1105,10 +1107,10 @@ function show_person($personDb)
             <?php
             $info = '';
             if ($personDb->pers_bapt_date) {
-                $info = __('~') . ' ' . date_place($personDb->pers_bapt_date, '');
+                $info = __('~') . ' ' . $date_place->date_place($personDb->pers_bapt_date, '');
             }
             if ($personDb->pers_birth_date) {
-                $info = __('*') . ' ' . date_place($personDb->pers_birth_date, '');
+                $info = __('*') . ' ' . $date_place->date_place($personDb->pers_birth_date, '');
             }
             if ($privacy && $info) {
                 $info =  __('PRIVACY FILTER');
@@ -1135,10 +1137,10 @@ function show_person($personDb)
             <?php
             $info = '';
             if ($personDb->pers_buried_date) {
-                $info = __('[]') . ' ' . date_place($personDb->pers_buried_date, '');
+                $info = __('[]') . ' ' . $date_place->date_place($personDb->pers_buried_date, '');
             }
             if ($personDb->pers_death_date) {
-                $info = __('&#134;') . ' ' . date_place($personDb->pers_death_date, '');
+                $info = __('&#134;') . ' ' . $date_place->date_place($personDb->pers_death_date, '');
             }
             if ($privacy && $info) {
                 $info =  __('PRIVACY FILTER');

@@ -7,6 +7,7 @@ class LatestChangesModel extends BaseModel
         $person_privacy = new PersonPrivacy;
         $person_name = new PersonName;
         $person_popup = new PersonPopup;
+        $language_date = new LanguageDate;
 
         // *** EXAMPLE of a UNION querie ***
         //$qry = "(SELECT * FROM humo1_person ".$query.') ';
@@ -71,8 +72,8 @@ class LatestChangesModel extends BaseModel
             $name = $person_name->get_person_name($person, $privacy);
 
             $changes['show_person'][$i] = $person_popup->person_popup_menu($person, $privacy) . $pers_sexe . '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
-            $changes['changed_date'][$i] = show_datetime($person->pers_changed_datetime);
-            $changes['new_date'][$i] = show_datetime($person->pers_new_datetime);
+            $changes['changed_date'][$i] = $language_date->show_datetime($person->pers_changed_datetime);
+            $changes['new_date'][$i] = $language_date->show_datetime($person->pers_new_datetime);
 
             $i++;
         }

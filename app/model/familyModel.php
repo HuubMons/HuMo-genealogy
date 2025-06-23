@@ -11,9 +11,7 @@ class FamilyModel extends BaseModel
         parent::__construct($config);
 
         // TODO check these includes. Move to controllers?
-        include_once(__DIR__ . '/../../include/language_date.php');
         include_once(__DIR__ . '/../../include/language_event.php');
-        include_once(__DIR__ . '/../../include/date_place.php');
         include_once(__DIR__ . '/../../include/process_text.php');
         include_once(__DIR__ . '/../../include/show_sources.php');
         include_once(__DIR__ . '/../../include/witness.php');

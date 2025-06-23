@@ -974,11 +974,13 @@ function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
 
     $style = '';
     if ($source_error == '1') {
+        // *** No source connected, colour = orange ***
         $style = ' style="background-color:#FFAA80"';
-    } // *** No source connected, colour = orange ***
+    }
     if ($source_error == '2') {
+        // *** Source is empty, colour = yellow ***
         $style = ' style="background-color:#FFFF00"';
-    } // *** Source is empty, colour = yellow ***
+    } 
 
     if ($source_count) {
         //return '<span ' . $style . '>[' . $source_count . ']</span>';
@@ -1146,7 +1148,10 @@ function edit_profession($name, $value): void
 
 function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 {
-    global $dbh, $db_functions, $page;
+    global $db_functions, $page;
+
+    $date_place = new DatePlace;
+
     if ($gedcomnumber) {
         $personDb = $db_functions->get_person($gedcomnumber);
 
@@ -1172,14 +1177,14 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 
     if ($gedcom_date == true) {
         if ($personDb->pers_birth_date) {
-            $text .= ' * ' . date_place($personDb->pers_birth_date, '');
+            $text .= ' * ' . $date_place->date_place($personDb->pers_birth_date, '');
         } elseif ($personDb->pers_bapt_date) {
-            $text .= ' ~ ' . date_place($personDb->pers_bapt_date, '');
+            $text .= ' ~ ' . $date_place->date_place($personDb->pers_bapt_date, '');
         } elseif ($personDb->pers_death_date) {
-            $text .= ' &#134; ' . date_place($personDb->pers_death_date, '');
-            //$text.=' &dagger; '.date_place($personDb->pers_death_date,'');
+            $text .= ' &#134; ' . $date_place->date_place($personDb->pers_death_date, '');
+            //$text.=' &dagger; '.$date_place->date_place($personDb->pers_death_date,'');
         } elseif ($personDb->pers_buried_date) {
-            $text .= ' [] ' . date_place($personDb->pers_buried_date, '');
+            $text .= ' [] ' . $date_place->date_place($personDb->pers_buried_date, '');
         }
     }
     return $text;
@@ -1187,13 +1192,15 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
+    $date_place = new DatePlace;
+
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;
     if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
         $check_date = true;
         $hideshow_date = substr($hideshow_date, 0, -1);
     }
-    $text = date_place($hideshow_date, $hideshow_place);
+    $text = $date_place->date_place($hideshow_date, $hideshow_place);
     if ($check_date) {
         $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
     }

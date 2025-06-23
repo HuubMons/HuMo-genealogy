@@ -9,6 +9,14 @@ class PersonPopup
      * $replacement_text='text'; Replace the pop-up icon by the replacement_text
      * $extra_pop-up_text=''; To add extra text in the pop-up screen
      */
+
+    private $date_place;
+
+    public function __construct()
+    {
+        $this->date_place = new DatePlace;
+    }
+
     public function person_popup_menu($personDb, $privacy, $extended = false, $replacement_text = '', $extra_popup_text = '')
     {
         global $db_functions, $bot_visit, $humo_option, $uri_path, $user;
@@ -16,6 +24,7 @@ class PersonPopup
 
         $person_link = new PersonLink;
         $person_name = new PersonName;
+        $date_place = $this->date_place;
 
         include_once(__DIR__ . "/../admin/include/media_inc.php");
 
@@ -203,15 +212,15 @@ class PersonPopup
                 // *** Pop-up tekst ***
                 if (!$privacy) {
                     if ($personDb->pers_birth_date || $personDb->pers_birth_place) {
-                        $text .= __('*') . $dirmark1 . ' ' . date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
+                        $text .= __('*') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
                     } elseif ($personDb->pers_bapt_date || $personDb->pers_bapt_place) {
-                        $text .= __('~') . $dirmark1 . ' ' . date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
+                        $text .= __('~') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
                     }
 
                     if ($personDb->pers_death_date || $personDb->pers_death_place) {
-                        $text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . date_place($personDb->pers_death_date, $personDb->pers_death_place);
+                        $text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_death_date, $personDb->pers_death_place);
                     } elseif ($personDb->pers_buried_date || $personDb->pers_buried_place) {
-                        $text .= '<br>' . __('[]') . $dirmark1 . ' ' . date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
+                        $text .= '<br>' . __('[]') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
                     }
 
                     // *** If needed add extra text in the pop-up box ***

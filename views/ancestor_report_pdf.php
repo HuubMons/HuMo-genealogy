@@ -57,6 +57,8 @@ $person_data = new PersonData;
 $privacy = $person_privacy->get_privacy($persDb);
 $name = $person_name->get_person_name($persDb, $privacy);
 
+$date_place = new DatePlace;
+
 $title = $pdf->pdf_convert(__('Ancestor report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]), 0, 'C');
 
 $pdf->SetTitle($title, true);
@@ -371,7 +373,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
                     $pdf->SetFont($pdf->pdf_font, '', 10);
                     $txt = ' ' . trim($sourceDb->source_title);
                     if ($sourceDb->source_date || $sourceDb->source_place) {
-                        $txt .= " " . date_place($sourceDb->source_date, $sourceDb->source_place);
+                        $txt .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
                     }
                     $pdf->Write(6, $txt . "\n");
                 }

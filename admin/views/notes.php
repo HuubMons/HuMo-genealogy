@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(__DIR__ . "/../../include/language_date.php");
+$language_date = new LanguageDate();
 
 $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 $tree_result = $dbh->query($tree_sql);
@@ -227,7 +227,7 @@ if (isset($note_tree_id)) {
                         <?= __('Added by'); ?>
                     </div>
                     <div class="col-md-7">
-                        <b><?= $user_name; ?></b> <?= show_datetime($noteDb->note_new_datetime); ?>
+                        <b><?= $user_name; ?></b> <?= $language_date->show_datetime($noteDb->note_new_datetime); ?>
                     </div>
                 </div>
 

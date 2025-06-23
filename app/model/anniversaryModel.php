@@ -1,6 +1,14 @@
 <?php
 class AnniversaryModel
 {
+
+    private $language_date;
+
+    public function __construct()
+    {
+        $this->language_date = new LanguageDate();
+    }
+
     public function getMonth()
     {
         // *** Month to show ***
@@ -44,7 +52,7 @@ class AnniversaryModel
                 $data["month"] = 'dec';
             }
         }
-        $data["show_month"] = language_date($data["month"]);
+        $data["show_month"] = $this->language_date->language_date($data["month"]);
         return $data;
     }
 

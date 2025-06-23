@@ -22,6 +22,8 @@ $editor_cls = new Editor_cls;
 $editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
+$language_date = new LanguageDate();
+
 $db_functions->set_tree_id($tree_id);
 
 // *** Search for all connected sources ***
@@ -167,7 +169,7 @@ $nr_sources = count($connect_sql);
                                 <div class="row mb-2">
                                     <div class="col-md-3"><?= __('Added by'); ?></div>
                                     <div class="col-md-7">
-                                        <?= show_datetime($sourceDb->source_new_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_new_user_id); ?>
+                                        <?= $language_date->show_datetime($sourceDb->source_new_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_new_user_id); ?>
                                     </div>
                                 </div>
                             <?php
@@ -179,7 +181,7 @@ $nr_sources = count($connect_sql);
                                 <div class="row mb-2">
                                     <div class="col-md-3"><?= __('Changed by'); ?></div>
                                     <div class="col-md-7">
-                                        <?= show_datetime($sourceDb->source_changed_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_changed_user_id); ?>
+                                        <?= $language_date->show_datetime($sourceDb->source_changed_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_changed_user_id); ?>
                                     </div>
                                 </div>
                             <?php } ?>

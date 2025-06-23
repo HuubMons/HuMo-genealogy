@@ -117,7 +117,6 @@ if ($count > 0) {
                                     }
 
                                     // *** Also show date and place ***
-                                    //if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
                                     if ($addressDb->connect_date) {
                                         $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
                                     }

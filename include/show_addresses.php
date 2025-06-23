@@ -10,6 +10,8 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id): 
     global $temp, $templ_person, $templ_relation; // *** PDF export ***
     global $tree_id, $humo_option, $data;
 
+    $date_place = new DatePlace();
+
     $text = '';
     $address_nr = 0;
 
@@ -133,7 +135,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id): 
             }
             // *** Add date ***
             if ($connectDb->connect_date) {
-                $templ_person["address_address" . $address_nr] .= ' (' . date_place($connectDb->connect_date, '') . ')';
+                $templ_person["address_address" . $address_nr] .= ' (' . $date_place->date_place($connectDb->connect_date, '') . ')';
             }
             if ($templ_person["address_address" . $address_nr] != '') {
                 $temp = "address_address" . $address_nr;
@@ -147,7 +149,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id): 
             }
             // *** Add date ***
             if ($connectDb->connect_date) {
-                $templ_relation["address_address" . $address_nr] .= ' (' . date_place($connectDb->connect_date, '') . ')';
+                $templ_relation["address_address" . $address_nr] .= ' (' . $date_place->date_place($connectDb->connect_date, '') . ')';
             }
             if ($templ_relation["address_address" . $address_nr] != '') {
                 $temp = "address_address" . $address_nr;
@@ -173,17 +175,15 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id): 
 
         // *** Don't use address_date. Using connect_date for all addresses ***
         //if ($connectDb->address_date){
-        //	//$text.=date_place($connectDb->address_date,'').' ';
-        //	$text.=' ('.date_place($connectDb->address_date,'').')';
+        //	$text.=' ('.$date_place->date_place($connectDb->address_date,'').')';
         //	// default, without place, place is processed later.
-        //	$templ_person["address_date".$address_nr]=' ('.date_place($connectDb->address_date,'').')';
+        //	$templ_person["address_date".$address_nr]=' ('.$date_place->date_place($connectDb->address_date,'').')';
         //	$temp="address_date".$address_nr;
         //}
         if ($connectDb->connect_date) {
-            //$text.=date_place($connectDb->address_date,'').' ';
-            $text .= ' (' . date_place($connectDb->connect_date, '') . ')';
+            $text .= ' (' . $date_place->date_place($connectDb->connect_date, '') . ')';
             // default, without place, place is processed later.
-            //$templ_person["address_date".$address_nr]=' ('.date_place($connectDb->connect_date,'').')';
+            //$templ_person["address_date".$address_nr]=' ('.$date_place->date_place($connectDb->connect_date,'').')';
             //$temp="address_date".$address_nr;
         }
 

@@ -27,6 +27,8 @@ class ShowMedia
 
         include_once(__DIR__ . "/../admin/include/media_inc.php");
 
+        $date_place = new DatePlace();
+
         $templ_person = array(); // local version
         $process_text = '';
         $media_nr = 0;
@@ -113,7 +115,7 @@ class ShowMedia
             }
 
             for ($i = 1; $i < ($media_nr + 1); $i++) {
-                $date_place = date_place($media_event_date[$i], $media_event_place[$i]);
+                $dateplace = $date_place->date_place($media_event_date[$i], $media_event_place[$i]);
                 // *** If possible show a thumb ***
 
                 // *** Don't use entities in a picture ***
@@ -153,8 +155,8 @@ class ShowMedia
 
                     // *** Need a class for multiple lines and HTML code in a text ***
                     $picture .= '<div class="glightbox-desc custom-desc' . $media_event_id[$i] . '">';
-                    if ($date_place) {
-                        $picture .= $date_place . '<br>';
+                    if ($dateplace) {
+                        $picture .= $dateplace . '<br>';
                     }
                     $picture .= $title_txt . '</div>';
                     $picture .= $this->print_thumbnail($tree_pict_path, $event_event); // in media_inc.php. using default hight 120px
@@ -178,9 +180,9 @@ class ShowMedia
                 $picture_text = '';
                 if ($media_event_date[$i] || $media_event_place[$i]) {
                     if ($screen_mode != 'RTF') {
-                        $picture_text = $date_place . ' ';
+                        $picture_text = $dateplace . ' ';
                     }
-                    $templ_person["pic_text" . $i] = $date_place;
+                    $templ_person["pic_text" . $i] = $dateplace;
                 }
 
                 // *** Show text by picture of little space ***

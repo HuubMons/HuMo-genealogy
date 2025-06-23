@@ -16,6 +16,14 @@ class PersonData
      * $person_kind = parent2 (normally the woman, generates links to all marriages)
      * $id = family id for link by woman for multiple marrriages
      */
+
+    private $date_place;
+
+    public function __construct()
+    {
+        $this->date_place = new DatePlace;
+    }
+
     public function person_data($personDb, $privacy, $person_kind, $id)
     {
         // TODO check globals
@@ -112,7 +120,7 @@ class PersonData
                         $process_text .= $nameDb->event_event;
 
                         if ($nameDb->event_date || $nameDb->event_place) {
-                            $templ_person["bk_date" . $eventnr] = ' (' . date_place($nameDb->event_date, $nameDb->event_place) . ')';
+                            $templ_person["bk_date" . $eventnr] = ' (' . $this->date_place->date_place($nameDb->event_date, $nameDb->event_place) . ')';
                             if ($templ_person["bk_date" . $eventnr] != '') {
                                 $temp = "bk_date" . $eventnr;
                             }
@@ -179,7 +187,7 @@ class PersonData
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_birth_date_hebnight;
                     }
-                    $templ_person["born_dateplacetime"] = date_place($personDb->pers_birth_date, $personDb->pers_birth_place, $nightfall);
+                    $templ_person["born_dateplacetime"] = $this->date_place->date_place($personDb->pers_birth_date, $personDb->pers_birth_place, $nightfall);
                     if ($templ_person["born_dateplacetime"] != '') {
                         $temp = "born_dateplacetime";
                     }
@@ -265,7 +273,7 @@ class PersonData
                     $birth_decl_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'birth_declaration');
                     foreach ($birth_decl_qry as $birth_decl_qryDb) {
                         // *** Should be only 1 event ***
-                        $templ_person["birth_declaration"] = date_place($birth_decl_qryDb->event_date, $birth_decl_qryDb->event_place);
+                        $templ_person["birth_declaration"] = $this->date_place->date_place($birth_decl_qryDb->event_date, $birth_decl_qryDb->event_place);
                         if ($birth_decl_qryDb->event_text) {
                             $templ_person["birth_declaration"] .= ' ' . $birth_decl_qryDb->event_text;
                         }
@@ -330,7 +338,7 @@ class PersonData
                 $temp_previous = $temp;
 
                 if ($personDb->pers_bapt_date || $personDb->pers_bapt_place) {
-                    $templ_person["bapt_dateplacetime"] = date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
+                    $templ_person["bapt_dateplacetime"] = $this->date_place->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
                     if ($templ_person["bapt_dateplacetime"] != '') {
                         $temp = "bapt_dateplacetime";
                     }
@@ -444,7 +452,7 @@ class PersonData
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_death_date_hebnight;
                     }
-                    $templ_person["dead_dateplacetime"] = date_place($personDb->pers_death_date, $personDb->pers_death_place, $nightfall);
+                    $templ_person["dead_dateplacetime"] = $this->date_place->date_place($personDb->pers_death_date, $personDb->pers_death_place, $nightfall);
                     if ($templ_person["dead_dateplacetime"] != '') {
                         $temp = "dead_dateplacetime";
                     }
@@ -586,7 +594,7 @@ class PersonData
                     $death_decl_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'death_declaration');
                     foreach ($death_decl_qry as $death_decl_qryDb) {
                         // *** Should be only 1 event ***
-                        $templ_person["death_declaration"] = date_place($death_decl_qryDb->event_date, $death_decl_qryDb->event_place);
+                        $templ_person["death_declaration"] = $this->date_place->date_place($death_decl_qryDb->event_date, $death_decl_qryDb->event_place);
                         if ($death_decl_qryDb->event_text) {
                             $templ_person["death_declaration"] .= ' ' . $death_decl_qryDb->event_text;
                         }
@@ -654,7 +662,7 @@ class PersonData
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_buried_date_hebnight;
                     }
-                    $templ_person["buri_dateplacetime"] = date_place($personDb->pers_buried_date, $personDb->pers_buried_place, $nightfall);
+                    $templ_person["buri_dateplacetime"] = $this->date_place->date_place($personDb->pers_buried_date, $personDb->pers_buried_place, $nightfall);
                     if ($templ_person["buri_dateplacetime"] != '') {
                         $temp = "buri_dateplacetime";
                     }
@@ -762,7 +770,7 @@ class PersonData
                 foreach ($name_qry as $nameDb) {
                     $process_text .= ', ' . __('ash dispersion') . ' ';
                     if ($nameDb->event_date) {
-                        $process_text .= date_place($nameDb->event_date, '') . ' ';
+                        $process_text .= $this->date_place->date_place($nameDb->event_date, '') . ' ';
                     }
                     $process_text .= $nameDb->event_event . ' ';
                     //SOURCE and TEXT.
@@ -818,7 +826,7 @@ class PersonData
 
                         // *** Profession date and place ***
                         if ($eventDb->event_date || $eventDb->event_place) {
-                            $templ_person["prof_date" . $eventnr] = ' (' . date_place($eventDb->event_date, $eventDb->event_place) . ')';
+                            $templ_person["prof_date" . $eventnr] = ' (' . $this->date_place->date_place($eventDb->event_date, $eventDb->event_place) . ')';
                             $temp = "prof_date" . $eventnr;
                             $process_text .= $templ_person["prof_date" . $eventnr];
                         }
@@ -894,7 +902,7 @@ class PersonData
 
                         // *** Religion date and place ***
                         if ($eventDb->event_date || $eventDb->event_place) {
-                            $templ_person["religion_date" . $eventnr] = ' (' . date_place($eventDb->event_date, $eventDb->event_place) . ')';
+                            $templ_person["religion_date" . $eventnr] = ' (' . $this->date_place->date_place($eventDb->event_date, $eventDb->event_place) . ')';
                             $temp = "religion_date" . $eventnr;
                             $process_text .= $templ_person["religion_date" . $eventnr];
                         }
@@ -1151,8 +1159,8 @@ class PersonData
                             }
 
                             if ($eventDb->event_date or $eventDb->event_place) {
-                                //$templ_person["event_dateplace".$eventnr]=' '.date_place($eventDb->event_date, $eventDb->event_place);
-                                $templ_person["event_dateplace" . $eventnr] = ' (' . date_place($eventDb->event_date, $eventDb->event_place) . ')';
+                                //$templ_person["event_dateplace".$eventnr]=' '.$this->date_place->date_place($eventDb->event_date, $eventDb->event_place);
+                                $templ_person["event_dateplace" . $eventnr] = ' (' . $this->date_place->date_place($eventDb->event_date, $eventDb->event_place) . ')';
                                 $temp = "event_dateplace" . $eventnr;
                                 $process_text .= $templ_person["event_dateplace" . $eventnr];
                             }

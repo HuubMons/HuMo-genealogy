@@ -10,6 +10,14 @@ class tFPDFextend extends tFPDF
 
     public $pdf_font = 'DejaVu';
 
+    private $language_date;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->language_date = new LanguageDate();
+    }
+
     /*
     function __construct($orientation = 'P', $unit = 'mm', $format = 'A4')
     {
@@ -1082,7 +1090,6 @@ class tFPDFextend extends tFPDF
 
     function Footer(): void
     {
-        global $language_date;
         //Position at 1.5 cm from bottom
         $this->SetY(-15);
         //Arial italic 8
@@ -1093,7 +1100,7 @@ class tFPDFextend extends tFPDF
         //$this->Cell(0,10,'PDF Created with HuMo-genealogy    Page '.$this->PageNo(),0,0,'C');
 
         $text = sprintf(__('PDF Created with %s on'), 'HuMo-genealogy') . ' ';
-        $date_part1 = language_date(date("j M Y")); // *** Translate first part of date (05 JUL 2022) using HuMo-genealogy language_date script ***
+        $date_part1 = $this->language_date->language_date(date("j M Y")); // *** Translate first part of date (05 JUL 2022) using HuMo-genealogy language_date script ***
         //$this->Cell(0, 10, $text . $date_part1 . ' ' . date("g:i a") . '. ' . __('Page') . ' ' . $this->PageNo(), 0, 0, 'C');
         $this->AliasNbPages();
         $this->Cell(0, 10, $text . $date_part1 . ' ' . date("g:i a") . '. ' . __('Page') . ' ' . $this->PageNo() . '/{nb}', 0, 0, 'C');

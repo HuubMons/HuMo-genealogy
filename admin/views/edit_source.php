@@ -45,18 +45,17 @@ if (isset($tree_id) && $tree_id) {
 }
 
 // TODO: this is a temporary copy of script in views/editor.php.
-include_once(__DIR__ . "/../../include/language_date.php");
-include_once(__DIR__ . "/../../include/date_place.php");
-// TODO: this is a temporary copy of script in views/editor.php.
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
+    $date_place = new DatePlace;
+
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;
     if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
         $check_date = true;
         $hideshow_date = substr($hideshow_date, 0, -1);
     }
-    $text = date_place($hideshow_date, $hideshow_place);
+    $text = $date_place->date_place($hideshow_date, $hideshow_place);
     if ($check_date) {
         $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
     }

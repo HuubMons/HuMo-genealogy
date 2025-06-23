@@ -148,6 +148,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
     $person_privacy = new PersonPrivacy;
     $person_name_extended = new PersonNameExtended;
     $person_data = new PersonData;
+    $language_date = new LanguageDate;
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -228,7 +229,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                             if ($dates_behind_names == false) {
                                 echo '<br>';
                             }
-                            echo ' &nbsp; (' . language_date($person_womanDb->pers_birth_date) . ' - ' . language_date($person_womanDb->pers_death_date) . ')';
+                            echo ' &nbsp; (' . $language_date->language_date($person_womanDb->pers_birth_date) . ' - ' . $language_date->language_date($person_womanDb->pers_death_date) . ')';
                         }
                     } else {
                         echo $person_name_extended->name_extended($person_manDb, $privacy_man, "outline");
@@ -241,7 +242,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                             if ($dates_behind_names == false) {
                                 echo '<br>';
                             }
-                            echo ' &nbsp; (' . language_date($person_manDb->pers_birth_date) . ' - ' . language_date($person_manDb->pers_death_date) . ')';
+                            echo ' &nbsp; (' . $language_date->language_date($person_manDb->pers_birth_date) . ' - ' . $language_date->language_date($person_manDb->pers_death_date) . ')';
                         }
                     }
                     ?>
@@ -315,7 +316,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     if ($dates_behind_names == false) {
                         echo '<br>';
                     }
-                    echo ' &nbsp; (' . @language_date($person_manDb->pers_birth_date) . ' - ' . @language_date($person_manDb->pers_death_date) . ')';
+                    echo ' &nbsp; (' . @$language_date->language_date($person_manDb->pers_birth_date) . ' - ' . @$language_date->language_date($person_manDb->pers_death_date) . ')';
                 }
             } elseif ($show_parent2) {
                 if ($show_details) {
@@ -331,7 +332,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     if ($dates_behind_names == false) {
                         echo '<br>';
                     }
-                    echo ' &nbsp; (' . @language_date($person_womanDb->pers_birth_date) . ' - ' . @language_date($person_womanDb->pers_death_date) . ')';
+                    echo ' &nbsp; (' . @$language_date->language_date($person_womanDb->pers_birth_date) . ' - ' . @$language_date->language_date($person_womanDb->pers_death_date) . ')';
                 }
             } else {
                 // *** No permission to show parent2 ***
@@ -385,7 +386,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                                 if ($dates_behind_names == false) {
                                     echo '<br>';
                                 }
-                                echo ' &nbsp; (' . language_date($childDb->pers_birth_date) . ' - ' . language_date($childDb->pers_death_date) . ')';
+                                echo ' &nbsp; (' . $language_date->language_date($childDb->pers_birth_date) . ' - ' . $language_date->language_date($childDb->pers_death_date) . ')';
                             }
                             ?>
                         </div>

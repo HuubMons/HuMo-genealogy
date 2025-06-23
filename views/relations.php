@@ -72,6 +72,7 @@
 
 $person_privacy = new PersonPrivacy;
 $person_name = new PersonName;
+$date_place = new DatePlace;
 
 $limit = 500; // *** Limit results ***
 
@@ -150,10 +151,10 @@ $limit = 500; // *** Limit results ***
                                     if ($name["show_name"]) {
                                         $birth = '';
                                         if ($searchDb->pers_bapt_date) {
-                                            $birth = ' ' . __('~') . ' ' . date_place($searchDb->pers_bapt_date, '');
+                                            $birth = ' ' . __('~') . ' ' . $date_place->date_place($searchDb->pers_bapt_date, '');
                                         }
                                         if ($searchDb->pers_birth_date) {
-                                            $birth = ' ' . __('*') . ' ' . date_place($searchDb->pers_birth_date, '');
+                                            $birth = ' ' . __('*') . ' ' . $date_place->date_place($searchDb->pers_birth_date, '');
                                         }
                                         if ($person_privacy) {
                                             $birth = '';
@@ -260,10 +261,10 @@ $limit = 500; // *** Limit results ***
                                     if ($name["show_name"]) {
                                         $birth = '';
                                         if ($searchDb2->pers_bapt_date) {
-                                            $birth = ' ' . __('~') . ' ' . date_place($searchDb2->pers_bapt_date, '');
+                                            $birth = ' ' . __('~') . ' ' . $date_place->date_place($searchDb2->pers_bapt_date, '');
                                         }
                                         if ($searchDb2->pers_birth_date) {
-                                            $birth = ' ' . __('*') . ' ' . date_place($searchDb2->pers_birth_date, '');
+                                            $birth = ' ' . __('*') . ' ' . $date_place->date_place($searchDb2->pers_birth_date, '');
                                         }
                                         if ($person_privacy) {
                                             $birth = '';

@@ -250,6 +250,7 @@ function show_person($familyDb)
     $person_privacy = new PersonPrivacy;
     $person_name = new PersonName;
     $person_popup = new PersonPopup;
+    $date_place = new DatePlace;
 
     $selected_person1 = $familyDb->fam_man ? $familyDb->fam_man : $familyDb->fam_woman;
     $personDb = $db_functions->get_person($selected_person1);
@@ -402,10 +403,10 @@ function show_person($familyDb)
             <?php
             $info = '';
             if ($familyDb->fam_marr_church_notice_date) {
-                $info = __('o') . ' ' . date_place($familyDb->fam_marr_church_notice_date, '');
+                $info = __('o') . ' ' . $date_place->date_place($familyDb->fam_marr_church_notice_date, '');
             }
             if ($familyDb->fam_marr_notice_date) {
-                $info = __('&infin;') . ' ' . date_place($familyDb->fam_marr_notice_date, '');
+                $info = __('&infin;') . ' ' . $date_place->date_place($familyDb->fam_marr_notice_date, '');
             }
             //echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
             if ($privacy && $info) {
@@ -437,10 +438,10 @@ function show_person($familyDb)
             <?php
             $info = '';
             if ($familyDb->fam_marr_church_date) {
-                $info = __('x') . ' ' . date_place($familyDb->fam_marr_church_date, '');
+                $info = __('x') . ' ' . $date_place->date_place($familyDb->fam_marr_church_date, '');
             }
             if ($familyDb->fam_marr_date) {
-                $info = __('X') . ' ' . date_place($familyDb->fam_marr_date, '');
+                $info = __('X') . ' ' . $date_place->date_place($familyDb->fam_marr_date, '');
             }
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');

@@ -182,8 +182,10 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr): string
 function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 {
     global $dbh, $tree_id, $db_functions;
+
     $person_privacy = new PersonPrivacy;
     $person_name = new PersonName;
+    $language_date = new LanguageDate;
 
     // check for GD 2.x library
     /*
@@ -363,10 +365,10 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else {  // full dates
                         if ($birthyr) {
-                            $text2 .= __('b.') . language_date($birthyr) . "\n";
+                            $text2 .= __('b.') . $language_date->language_date($birthyr) . "\n";
                         }
                         if ($deathyr) {
-                            $text2 .= __('d.') . language_date($deathyr);
+                            $text2 .= __('d.') . $language_date->language_date($deathyr);
                         }
                     }
                 }

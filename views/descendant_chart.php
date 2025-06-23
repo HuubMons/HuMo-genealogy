@@ -9,6 +9,7 @@ $screen_mode = 'STAR';
 $person_privacy = new PersonPrivacy;
 $person_name = new PersonName;
 $person_popup = new PersonPopup;
+$date_place = new DatePlace;
 
 if (!isset($hourglass)) {
     $hourglass = false;
@@ -312,24 +313,24 @@ for ($w = 0; $w < count($genarray); $w++) {
                         } else {
                             //if ($man->pers_birth_date OR $man->pers_birth_place){
                             if ($man->pers_birth_date) {
-                                //$replacement_text.= '<br>'.__('*').$dirmark1.' '.date_place($man->pers_birth_date,$man->pers_birth_place);
-                                $replacement_text .= '<br>' . __('*') . $dirmark1 . ' ' . date_place($man->pers_birth_date, '');
+                                //$replacement_text.= '<br>'.__('*').$dirmark1.' '.$date_place->date_place($man->pers_birth_date,$man->pers_birth_place);
+                                $replacement_text .= '<br>' . __('*') . $dirmark1 . ' ' . $date_place->date_place($man->pers_birth_date, '');
                             }
                             //elseif ($man->pers_bapt_date OR $man->pers_bapt_place){
                             elseif ($man->pers_bapt_date) {
-                                //$replacement_text.= '<br>'.__('~').$dirmark1.' '.date_place($man->pers_bapt_date,$man->pers_bapt_place);
-                                $replacement_text .= '<br>' . __('~') . $dirmark1 . ' ' . date_place($man->pers_bapt_date, '');
+                                //$replacement_text.= '<br>'.__('~').$dirmark1.' '.$date_place->date_place($man->pers_bapt_date,$man->pers_bapt_place);
+                                $replacement_text .= '<br>' . __('~') . $dirmark1 . ' ' . $date_place->date_place($man->pers_bapt_date, '');
                             }
 
                             //if ($man->pers_death_date OR $man->pers_death_place){
                             if ($man->pers_death_date) {
-                                //$replacement_text.= '<br>'.__('&#134;').$dirmark1.' '.date_place($man->pers_death_date,$man->pers_death_place);
-                                $replacement_text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . date_place($man->pers_death_date, '');
+                                //$replacement_text.= '<br>'.__('&#134;').$dirmark1.' '.$date_place->date_place($man->pers_death_date,$man->pers_death_place);
+                                $replacement_text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $date_place->date_place($man->pers_death_date, '');
                             }
                             //elseif ($man->pers_buried_date OR $man->pers_buried_place){
                             elseif ($man->pers_buried_date) {
-                                //$replacement_text.= '<br>'.__('[]').$dirmark1.' '.date_place($man->pers_buried_date,$man->pers_buried_place);
-                                $replacement_text .= '<br>' . __('[]') . $dirmark1 . ' ' . date_place($man->pers_buried_date, '');
+                                //$replacement_text.= '<br>'.__('[]').$dirmark1.' '.$date_place->date_place($man->pers_buried_date,$man->pers_buried_place);
+                                $replacement_text .= '<br>' . __('[]') . $dirmark1 . ' ' . $date_place->date_place($man->pers_buried_date, '');
                             }
 
                             if ($genarray[$w]["non"] == 0) { // otherwise for an unmarried child it would give the parents' marriage!
@@ -337,7 +338,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                                 //if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
                                 // *** Don't check for date. Otherwise living together persons are missing ***
                                 //if ($ownfam->fam_marr_date){
-                                //$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
+                                //$replacement_text.= '<br>'.__('X').$dirmark1.' '.$date_place->date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
 
                                 if ($ownfam->fam_marr_date || $ownfam->fam_marr_place) {
                                     $replacement_text .= '<br>' . __('X');
@@ -347,7 +348,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                                 }
 
                                 if ($ownfam->fam_marr_date) {
-                                    $replacement_text .= $dirmark1 . ' ' . date_place($ownfam->fam_marr_date, '') . ' ';
+                                    $replacement_text .= $dirmark1 . ' ' . $date_place->date_place($ownfam->fam_marr_date, '') . ' ';
                                 }
 
                                 // *** Jan. 2022: Show spouse ***
@@ -413,11 +414,11 @@ for ($w = 0; $w < count($genarray); $w++) {
                         $extra_popup_text .= __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
                     } else {
                         if ($woman->pers_birth_date || $woman->pers_birth_place) {
-                            $extra_popup_text .= __('born') . $dirmark1 . ' ' . date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
+                            $extra_popup_text .= __('born') . $dirmark1 . ' ' . $date_place->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
                         }
 
                         if ($woman->pers_death_date || $woman->pers_death_place) {
-                            $extra_popup_text .= __('died ') . $dirmark1 . ' ' . date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
+                            $extra_popup_text .= __('died ') . $dirmark1 . ' ' . $date_place->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
                         }
                     }
                 } else {

@@ -11,6 +11,8 @@ if ($data["source_search"] != '') {
 }
 
 $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
+
+$date_place = new DatePlace();
 ?>
 
 <h1><?= __('Sources'); ?></h1>
@@ -121,7 +123,7 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
                     ?>
                 </a>
             </td>
-            <td><?= date_place($sourceDb->source_date, ''); ?></td>
+            <td><?= $date_place->date_place($sourceDb->source_date, ''); ?></td>
             <td><?= $sourceDb->source_place; ?></td>
         </tr>
     <?php } ?>

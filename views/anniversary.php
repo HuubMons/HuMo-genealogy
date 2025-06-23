@@ -23,6 +23,7 @@ $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', '
 $person_link = new PersonLink;
 $person_name = new PersonName;
 $person_privacy = new PersonPrivacy;
+$language_date = new LanguageDate;
 ?>
 
 <!-- *** Center page *** -->
@@ -118,7 +119,7 @@ $person_privacy = new PersonPrivacy;
                             $age = (date("Y") - $record->birth_year);
 
                             if ($death_date != '') {
-                                $died = language_date($death_date);
+                                $died = $language_date->language_date($death_date);
                             } elseif ($age > $max_age) {
                                 $died = '? ';
                             } else {

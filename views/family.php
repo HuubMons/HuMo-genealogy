@@ -16,6 +16,8 @@ $_SESSION['save_last_visitid'] = $last_visited;
 $person_privacy = new PersonPrivacy;
 $person_name_extended = new PersonNameExtended;
 $person_data = new PersonData;
+$date_place = new DatePlace;
+$language_date = new LanguageDate;
 
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
 function topline($data)
@@ -671,7 +673,7 @@ else {
                                 continue;
                             }
                         ?>
-
+    
                             <div class="children">
                                 <div class="child_nr" id="person_<?= $childDb->pers_gedcomnumber; ?>"><?= $childnr; ?>.</div>
                                 <?php
@@ -1204,9 +1206,9 @@ if ($user['group_citation_generation'] == 'y') {
             // *** Birth or baptise date ***
             if (isset($family_privacy) && !$family_privacy) {
                 if ($parent1Db->pers_birth_date || $parent1Db->pers_birth_place) {
-                    echo ', ' . __('born') . ' ' . date_place($parent1Db->pers_birth_date, $parent1Db->pers_birth_place);
+                    echo ', ' . __('born') . ' ' . $date_place->date_place($parent1Db->pers_birth_date, $parent1Db->pers_birth_place);
                 } elseif ($parent1Db->pers_bapt_date || $parent1Db->pers_bapt_place) {
-                    echo ', ' . __('baptised') . ' ' . date_place($parent1Db->pers_bapt_date, $parent1Db->pers_bapt_place);
+                    echo ', ' . __('baptised') . ' ' . $date_place->date_place($parent1Db->pers_bapt_date, $parent1Db->pers_bapt_place);
                 }
             }
         }
@@ -1251,7 +1253,7 @@ if ($data["descendant_report"] == false) {
             ?>
                 <tr>
                     <td valign="top">
-                        <?= show_datetime($noteDb->note_new_datetime) . ' ' . $user_name; ?><br>
+                        <?= $language_date->show_datetime($noteDb->note_new_datetime) . ' ' . $user_name; ?><br>
                     </td>
                     <td>
                         <?= nl2br($noteDb->note_note); ?>

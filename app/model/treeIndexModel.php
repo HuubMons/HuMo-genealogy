@@ -1,6 +1,4 @@
 <?php
-include_once(__DIR__ . '/../../include/language_date.php');
-include_once(__DIR__ . '/../../include/date_place.php');
 include_once(__DIR__ . "/../../include/show_tree_date.php");
 
 
@@ -8,8 +6,6 @@ class TreeIndexModel
 {
     // Can't be used in all functions yet. Refactor is needed.
     private $dbh, $humo_option;
-    //private object $dbh;
-    //private array $humo_option;
 
     private PersonLink $person_link;
 
@@ -657,6 +653,7 @@ class TreeIndexModel
 
         $person_name = new PersonName;
         $person_privacy = new PersonPrivacy;
+        $date_place = new DatePlace;
 
         // adding static table for displayed photos storage
         static $temp_pic_names_table = [];
@@ -751,9 +748,9 @@ class TreeIndexModel
                 }
 
                 if (!$is_privacy) {
-                    $date_place = '';
+                    $dateplace = '';
                     if ($picqryDb->event_date || $picqryDb->event_place) {
-                        $date_place = date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
+                        $dateplace = $date_place->date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
                     include_once('./include/give_media_path.php');
                     $picture_path = give_media_path($tree_pict_path, $picname);
@@ -763,7 +760,7 @@ class TreeIndexModel
                     $text .= '<div style="text-align: center;">';
 
                     // *** Show picture using GLightbox ***
-                    $desc_for_lightbox =  $date_place . str_replace("&", "&amp;", $picqryDb->event_text);
+                    $desc_for_lightbox =  $dateplace . str_replace("&", "&amp;", $picqryDb->event_text);
                     $desc_for_lightbox = (mb_strlen($desc_for_lightbox, "UTF-8") > $char_limit2) ? mb_substr($desc_for_lightbox, 0, $char_limit2, "UTF-8") . '...' : $desc_for_lightbox;
 
                     $text .= '<a href="' . $picture_path . '" class="glightbox" data-glightbox="description: ' . $desc_for_lightbox . '"><img src="' . $picture_path .
@@ -771,10 +768,10 @@ class TreeIndexModel
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $text .= '<a href="' . $url . '">' . $link_text . '</a>';
-                    if ($picqryDb->event_text !== '' or $date_place !== '') {
+                    if ($picqryDb->event_text !== '' or $dateplace !== '') {
                         // this code shortens event text below photos to 50 chars and adds '...' if its above 50 chars. Photos with long texts added looks bad...
                         $shortEventText = (mb_strlen($picqryDb->event_text, "UTF-8") > $char_limit) ? mb_substr($picqryDb->event_text, 0, $char_limit, "UTF-8") . '...' : $picqryDb->event_text;
-                        $text .= '<br>' . $date_place . $shortEventText;
+                        $text .= '<br>' . $dateplace . $shortEventText;
                     }
                     $text .= '</div>';
                     // add displayed photo to table for checking uniqueness
@@ -940,6 +937,7 @@ class TreeIndexModel
         global $dbh, $dataDb;
         $person_privacy = new PersonPrivacy;
         $person_name = new PersonName;
+        $date_place = new DatePlace;
 
         // *** Backwards compatible, value is empty ***
         if ($view == '') {
@@ -983,28 +981,28 @@ class TreeIndexModel
                     // *** First order birth, using C ***
                     $history['order'][] = 'C' . substr($record->pers_birth_date, -4);
                     if ($view == 'with_table') {
-                        $history['date'][] = '<td>' . date_place($record->pers_birth_date, '') . '</td><td>' . __('born') . '</td>';
+                        $history['date'][] = '<td>' . $date_place->date_place($record->pers_birth_date, '') . '</td><td>' . __('born') . '</td>';
                     } else {
                         $history['item'][] = __('born');
-                        $history['date'][] = date_place($record->pers_birth_date, '');
+                        $history['date'][] = $date_place->date_place($record->pers_birth_date, '');
                     }
                 } elseif (trim(substr($record->pers_bapt_date, 0, 6)) === $today || substr($record->pers_bapt_date, 0, 6) === $today2) {
                     // *** Second order baptise, using B ***
                     $history['order'][] = 'B' . substr($record->pers_bapt_date, -4);
                     if ($view == 'with_table') {
-                        $history['date'][] = '<td>' . date_place($record->pers_bapt_date, '') . '</td><td>' . __('baptised') . '</td>';
+                        $history['date'][] = '<td>' . $date_place->date_place($record->pers_bapt_date, '') . '</td><td>' . __('baptised') . '</td>';
                     } else {
                         $history['item'][] = __('baptised');
-                        $history['date'][] = date_place($record->pers_bapt_date, '');
+                        $history['date'][] = $date_place->date_place($record->pers_bapt_date, '');
                     }
                 } else {
                     // *** Third order death, using A ***
                     $history['order'][] = 'A' . substr($record->pers_death_date, -4);
                     if ($view == 'with_table') {
-                        $history['date'][] = '<td>' . date_place($record->pers_death_date, '') . '</td><td>' . __('died') . '</td>';
+                        $history['date'][] = '<td>' . $date_place->date_place($record->pers_death_date, '') . '</td><td>' . __('died') . '</td>';
                     } else {
                         $history['item'][] = __('died');
-                        $history['date'][] = date_place($record->pers_death_date, '');
+                        $history['date'][] = $date_place->date_place($record->pers_death_date, '');
                     }
                 }
 

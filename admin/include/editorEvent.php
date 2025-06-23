@@ -84,7 +84,6 @@ class EditorEvent
         }
 
         // *** Also show date and place ***
-        //if ($data_listDb->event_date) $event_event.=', '.date_place($data_listDb->event_date,$data_listDb->event_place);
         if ($data_listDb->event_date) {
             $event_event .= ', ' . hideshow_date_place($data_listDb->event_date, $data_listDb->event_place);
         }

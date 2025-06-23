@@ -12,6 +12,8 @@ $showMedia = new ShowMedia;
 $person_privacy = new PersonPrivacy;
 $person_name = new PersonName;
 
+$date_place = new DatePlace;
+
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
     $photoalbum['category_enabled']['none'] = true; // *** Always show main category ***
@@ -142,16 +144,16 @@ if ($humo_option["url_rewrite"] == "j") {
                     $found_privacy_items = true;
                 }
 
-                $date_place = date_place($afbDb->event_date, $afbDb->event_place);
-                if ($afbDb->event_text || $date_place) {
-                    if ($date_place) {
-                        $picture_text .= $date_place . ' ';
+                $dateplace = $date_place->date_place($afbDb->event_date, $afbDb->event_place);
+                if ($afbDb->event_text || $dateplace) {
+                    if ($dateplace) {
+                        $picture_text .= $dateplace . ' ';
                     }
                     $picture_text .= $afbDb->event_text . '<br>';
 
                     $picture_text2 .= '<br>';
-                    if ($date_place) {
-                        $picture_text2 .= $date_place . ' ';
+                    if ($dateplace) {
+                        $picture_text2 .= $dateplace . ' ';
                     }
                     $picture_text2 .= $afbDb->event_text;
                 }
@@ -179,16 +181,16 @@ if ($humo_option["url_rewrite"] == "j") {
                         $picture_text2 .= $name["standard_name"];
                     }
 
-                    $date_place = date_place($pictureDb->event_date, $pictureDb->event_place);
-                    if ($pictureDb->event_text || $date_place) {
-                        if ($date_place) {
-                            $picture_text .= $date_place . ' ';
+                    $dateplace = $date_place->date_place($pictureDb->event_date, $pictureDb->event_place);
+                    if ($pictureDb->event_text || $dateplace) {
+                        if ($dateplace) {
+                            $picture_text .= $dateplace . ' ';
                         }
                         $picture_text .= $pictureDb->event_text . '<br>';
 
                         $picture_text2 .= '<br>';
-                        if ($date_place) {
-                            $picture_text2 .= $date_place . ' ';
+                        if ($dateplace) {
+                            $picture_text2 .= $dateplace . ' ';
                         }
                         $picture_text2 .= $pictureDb->event_text;
                     }

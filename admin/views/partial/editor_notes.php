@@ -1,4 +1,6 @@
 <?php
+$language_date = new LanguageDate();
+
 // *** $note_connect_id = I123 or F123 ***
 $note_connect_id = $pers_gedcomnumber;
 if ($note_connect_kind == 'family') {
@@ -45,13 +47,13 @@ if (isset($_GET['note_add'])) {
             <input type="hidden" name="note_connect_kind[<?= $noteDb->note_id; ?>]" value="<?= $note_connect_kind; ?>">
 
             <?php $user_name = $db_functions->get_user_name($noteDb->note_new_user_id); ?>
-            <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
+            <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $language_date->show_datetime($noteDb->note_new_datetime); ?>)<br>
 
             <?php
             if ($noteDb->note_changed_user_id) {
                 $user_name = $db_functions->get_user_name($noteDb->note_changed_user_id);
             ?>
-                <?= __('Changed by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_changed_datetime); ?>)<br>
+                <?= __('Changed by'); ?> <b><?= $user_name; ?></b> (<?= $language_date->show_datetime($noteDb->note_changed_datetime); ?>)<br>
             <?php } ?>
 
             <b><?= $noteDb->note_names; ?></b><br>

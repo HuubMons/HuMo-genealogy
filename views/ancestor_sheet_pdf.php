@@ -84,6 +84,7 @@ function data_array($id, $width, $height): void
     global $db_functions, $data_array, $data, $dsign;
     $person_privacy = new PersonPrivacy;
     $person_name = new PersonName;
+    $language_date = new LanguageDate;
 
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
@@ -113,7 +114,7 @@ function data_array($id, $width, $height): void
                     $space = ' ';
                 }
                 //$birth = __('*').' '.$personDb->pers_birth_date.$space.$personDb->pers_birth_place;
-                $birth = __('*') . ' ' . language_date($personDb->pers_birth_date) . $space . $personDb->pers_birth_place;
+                $birth = __('*') . ' ' . $language_date->language_date($personDb->pers_birth_date) . $space . $personDb->pers_birth_place;
                 $result = parse_line($birth, $width, 0);
                 $birth_len = $result[0];
                 $birth = $result[1];
@@ -135,7 +136,7 @@ function data_array($id, $width, $height): void
                 if ($personDb->pers_death_date != '') {
                     $space = ' ';
                 }
-                $death = $dsign . ' ' . language_date($personDb->pers_death_date) . $space . $personDb->pers_death_place;
+                $death = $dsign . ' ' . $language_date->language_date($personDb->pers_death_date) . $space . $personDb->pers_death_place;
                 $result = parse_line($death, $width, 0);
                 $death_len = $result[0];
                 $death = $result[1];

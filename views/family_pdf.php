@@ -9,6 +9,7 @@ $person_privacy = new PersonPrivacy;
 $person_name = new PersonName;
 $person_name_extended = new PersonNameExtended;
 $person_data = new PersonData;
+$date_place = new DatePlace;
 
 $screen_mode = 'PDF';
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
@@ -567,7 +568,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
                     else $txt = ' ' . trim($sourceDb->source_text);
 
                     if ($sourceDb->source_date || $sourceDb->source_place) {
-                        $txt .= " " . date_place($sourceDb->source_date, $sourceDb->source_place);
+                        $txt .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
                     }
                     $pdf->Write(6, $txt . "\n");
                 }

@@ -14,6 +14,8 @@ global $data; // Prevent VSCode error messages.
 $person_link = new PersonLink;
 $person_privacy = new PersonPrivacy;
 $person_name = new PersonName;
+$date_place = new DatePlace;
+$language_date = new LanguageDate;
 ?>
 
 <h1><?= __('Source'); ?></h1>
@@ -38,7 +40,7 @@ if (!isset($data["sourceDb"]->source_id)) {
             <?php
             }
             if ($data["sourceDb"]->source_date) {
-                echo '<b>' . __('Date') . ":</b> " . language_date(strtolower($data["sourceDb"]->source_date)) . "<br>";
+                echo '<b>' . __('Date') . ":</b> " . $language_date->language_date(strtolower($data["sourceDb"]->source_date)) . "<br>";
             }
             if ($data["sourceDb"]->source_publ) {
                 // TODO use a general function to create clickable links.
@@ -345,7 +347,7 @@ if (!isset($data["sourceDb"]->source_id)) {
 
                 // *** Extra source connect information by every source ***
                 if ($connectDb->connect_date || $connectDb->connect_place) {
-                    echo ' ' . date_place($connectDb->connect_date, $connectDb->connect_place);
+                    echo ' ' . $date_place->date_place($connectDb->connect_date, $connectDb->connect_place);
                 }
                 // *** Source role ***
                 if ($connectDb->connect_role) {

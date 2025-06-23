@@ -4,10 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(__DIR__ . "/../../include/language_date.php");
-
-echo '<h1 class="center">' . __('Select person') . '</h1>';
-
 $place_item = 'connect_man';
 $form = 'form2';
 if ($_GET['person_item'] == 'woman') {
@@ -44,6 +40,8 @@ if (substr($_GET['person_item'], 0, 10) === 'add_child_') {
 }
 
 $man_gedcomnumber = safe_text_db($_GET['person']);
+
+echo '<h1 class="center">' . __('Select person') . '</h1>';
 
 if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10) !== 'add_child_') {
     echo '
