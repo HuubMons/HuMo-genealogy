@@ -289,7 +289,6 @@ class PersonData
                     }
 
                     // *** No need to use date, place, text or source with declaration witness. Just show witness ***
-                    //$birth_decl_witness = witness($personDb->pers_gedcomnumber, 'birth_decl_witness');
                     $birth_decl_witness = witness($personDb->pers_gedcomnumber, 'ASSO', 'birth_declaration');
 
                     if ($birth_declaration || $birth_decl_source || $birth_decl_witness) {
@@ -380,7 +379,6 @@ class PersonData
 
                 // *** Show baptise witnesses ***
                 if ($personDb->pers_gedcomnumber) {
-                    //witness($gedcomnr, $event_kind, $event_connect_kind = 'person')
                     $text_array = witness($personDb->pers_gedcomnumber, 'ASSO', 'CHR');
 
                     if ($text_array) {
@@ -697,14 +695,6 @@ class PersonData
 
                 // *** Buried witness ***
                 if ($personDb->pers_gedcomnumber) {
-                    //$temp_text=witness($personDb->pers_gedcomnumber, 'burial_witness');
-                    //if ($temp_text){
-                    //	if($temp) { $templ_person[$temp].=' '; }
-                    //	$templ_person["buri_witn"]= ' ('.__('burial witness').': '.$temp_text.')';
-                    //	$temp="buri_witn";
-                    //	$text.= $templ_person["buri_witn"];
-                    //}
-                    //$text_array = witness($personDb->pers_gedcomnumber, 'burial_witness','person');
                     $text_array = witness($personDb->pers_gedcomnumber, 'ASSO', 'BURI');
                     if ($text_array) {
                         if ($temp) {
@@ -1052,7 +1042,7 @@ class PersonData
                         }
                         if ($screen_mode == "PDF") {
                             if ($parent2Db) {
-                                if ($temp) {
+                                if ($temp && isset($templ_person[$temp])) {
                                     $templ_person[$temp] .= ", ";
                                 }
                                 $privacy_parent = $person_privacy->get_privacy($parent2Db);

@@ -109,7 +109,6 @@ include_once(__DIR__ . "/include/db_login.php"); // Connect to database
 include_once(__DIR__ . "/include/show_tree_text.php");
 include_once(__DIR__ . "/include/safe.php");
 
-//include_once(__DIR__ . "/include/generalSettings.php");
 $GeneralSettings = new GeneralSettings();
 $user = $GeneralSettings->get_user_settings($dbh);
 $humo_option = $GeneralSettings->get_humo_option($dbh);
@@ -118,7 +117,6 @@ $humo_option = $GeneralSettings->get_humo_option($dbh);
 include_once(__DIR__ . "/include/get_visitor_ip.php");
 
 include_once(__DIR__ . "/include/timezone.php");
-//include(__DIR__ . "/languages/languageCls.php");
 
 include_once(__DIR__ . '/app/routing/router.php'); // Page routing.
 
