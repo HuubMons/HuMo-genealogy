@@ -33,6 +33,7 @@ class PersonData
         $person_privacy = new PersonPrivacy;
         $person_name = new PersonName;
         $person_link = new PersonLink;
+        $witness = new Witness;
 
         // *** $personDb is empty by N.N. person ***
         if ($personDb) {
@@ -289,7 +290,7 @@ class PersonData
                     }
 
                     // *** No need to use date, place, text or source with declaration witness. Just show witness ***
-                    $birth_decl_witness = witness($personDb->pers_gedcomnumber, 'ASSO', 'birth_declaration');
+                    $birth_decl_witness = $witness->witness($personDb->pers_gedcomnumber, 'ASSO', 'birth_declaration');
 
                     if ($birth_declaration || $birth_decl_source || $birth_decl_witness) {
                         $text .= $birth_declaration;
@@ -379,7 +380,7 @@ class PersonData
 
                 // *** Show baptise witnesses ***
                 if ($personDb->pers_gedcomnumber) {
-                    $text_array = witness($personDb->pers_gedcomnumber, 'ASSO', 'CHR');
+                    $text_array = $witness->witness($personDb->pers_gedcomnumber, 'ASSO', 'CHR');
 
                     if ($text_array) {
                         if ($temp) {
@@ -608,7 +609,7 @@ class PersonData
                     }
 
                     // *** No need to use date, place, text or source with declaration witness. Just show witness ***
-                    $death_decl_witness = witness($personDb->pers_gedcomnumber, 'ASSO', 'death_declaration');
+                    $death_decl_witness = $witness->witness($personDb->pers_gedcomnumber, 'ASSO', 'death_declaration');
 
                     if ($death_declaration || $death_decl_source || $death_decl_witness) {
                         $text .= $death_declaration;
@@ -695,7 +696,7 @@ class PersonData
 
                 // *** Buried witness ***
                 if ($personDb->pers_gedcomnumber) {
-                    $text_array = witness($personDb->pers_gedcomnumber, 'ASSO', 'BURI');
+                    $text_array = $witness->witness($personDb->pers_gedcomnumber, 'ASSO', 'BURI');
                     if ($text_array) {
                         if ($temp) {
                             $templ_person[$temp] .= ' ';
@@ -966,9 +967,9 @@ class PersonData
 
                 // *** This person was witness at... ***
                 if ($screen_mode == 'PDF') {
-                    $templ_person["witness_by_event"] = "\n" . witness_by_events($personDb->pers_gedcomnumber);
+                    $templ_person["witness_by_event"] = "\n" . $witness->witness_by_events($personDb->pers_gedcomnumber);
                 } else {
-                    $process_text .= witness_by_events($personDb->pers_gedcomnumber);
+                    $process_text .= $witness->witness_by_events($personDb->pers_gedcomnumber);
                 }
             } //*** END PRIVACY PART ***
 
@@ -1291,7 +1292,7 @@ class PersonData
 
                 if ($partner_id != '0' && $partner_id != '') {
                     $partnerDb = $db_functions->get_person($partner_id);
-                    $privacy_partner = $person_privacy->get_privacy($partner_id);
+                    $privacy_partner = $person_privacy->get_privacy($partnerDb);
                     $name = $person_name->get_person_name($partnerDb, $privacy_partner);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***

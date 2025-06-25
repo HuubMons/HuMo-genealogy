@@ -276,6 +276,8 @@ class MarriageCls
         // TODO check globals
         global $temp, $templ_relation, $text;
 
+        $witness = new Witness;
+
         // *** Marriage ***
         $temp_text = '';
         $temp = '';
@@ -326,7 +328,7 @@ class MarriageCls
         }
         // *** Aldfaer/ HuMo-genealogy: show witnesses ***
         if ($marriageDb->fam_gedcomnumber) {
-            $text_array = witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR');
+            $text_array = $witness->witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR');
             if ($text_array) {
                 if ($temp) {
                     $templ_relation[$temp] .= ' ';
@@ -477,6 +479,8 @@ class MarriageCls
         // TODO check globals
         global $temp, $templ_relation, $text;
 
+        $witness = new Witness;
+
         // *** Married church ***
         $temp_text = '';
         $temp = '';
@@ -505,7 +509,7 @@ class MarriageCls
         }
         // *** Aldfaer/ HuMo-genealogy show witnesses ***
         if ($marriageDb->fam_gedcomnumber) {
-            $text_array = witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR_REL');
+            $text_array = $witness->witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR_REL');
             if ($text_array) {
                 if ($temp) {
                     $templ_relation[$temp] .= ' ';
@@ -649,8 +653,7 @@ class MarriageCls
      */
     public function marriage_data($marriageDb = '', $number = '0', $presentation = 'standard')
     {
-        global $dbh, $db_functions, $dataDb, $uri_path, $humo_option, $language, $user, $screen_mode;
-        global $parent1Db, $parent2Db;
+        global $db_functions, $humo_option, $user, $screen_mode, $parent1Db, $parent2Db;
         global $relation_check; // Global still needed to show a proper marriage or relation text when age is calculated in personData.php.
 
         // TODO check globals in new functions.

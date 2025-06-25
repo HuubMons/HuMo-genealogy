@@ -62,9 +62,11 @@ function custom_autoload($class_name)
     // languages/languageCls.php
 
     $include = array(
+        'Ancestors',
         'CalculateDates',
         'DatePlace',
         'DbFunctions',
+        'Descendants',
         'GeneralSettings',
         'LanguageDate',
         'MarriageCls',
@@ -76,6 +78,7 @@ function custom_autoload($class_name)
         'PersonPopup',
         'ProcessLinks',
         'ValidateDate',
+        'Witness',
         'Config'
     );
 
@@ -299,9 +302,6 @@ if ($index['page'] == 'address') {
     $controllerObj = new MailformController($config);
     $mail_data = $controllerObj->get_mail_data($dataDb, $selected_language);
 } elseif ($index['page'] == 'maps') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/ancestors_descendants.php");
-
     $controllerObj = new MapsController($config);
     $maps = $controllerObj->detail($tree_prefix_quoted);
 } elseif ($index['page'] == 'photoalbum') {

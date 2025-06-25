@@ -14,7 +14,6 @@ class FamilyModel extends BaseModel
         include_once(__DIR__ . '/../../include/language_event.php');
         include_once(__DIR__ . '/../../include/process_text.php');
         include_once(__DIR__ . '/../../include/show_sources.php');
-        include_once(__DIR__ . '/../../include/witness.php');
         include_once(__DIR__ . '/../../include/show_addresses.php');
         include_once(__DIR__ . '/../../include/showMedia.php');
         include_once(__DIR__ . '/../../include/show_quality.php');

@@ -22,7 +22,7 @@ $rom_nr = $get_ancestor->getNumberRoman();
 
 $db_functions->set_tree_id($tree_id);
 
-$get_ancestors = $get_ancestor->get_ancestors($data["main_person"]);
+$get_ancestors = $get_ancestor->get_ancestors2($data["main_person"]);
 $data = array_merge($data, $get_ancestors);
 
 

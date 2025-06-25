@@ -1786,7 +1786,10 @@ class EditorModel extends AdminBaseModel
     // This update_editor2 part is used for sources (editor_sources.php) and some other pages.
     public function update_editor2()
     {
-        global $page, $descendant_id, $descendant_array;
+        global $page;
+
+        $ancestors = new Ancestors;
+        $descendants = new Descendants;
 
         // TODO refactor $marriage.
         if (isset($_SESSION['admin_fam_gedcomnumber'])) {
@@ -2197,8 +2200,9 @@ class EditorModel extends AdminBaseModel
 
                 // *** Also change person colors by descendants of selected person ***
                 if (isset($_POST["pers_colour_desc"][$key])) {
-                    // EXAMPLE: get_descendants($family_id,$main_person,$generation_number,$nr_generations);
-                    get_descendants($marriage, $this->pers_gedcomnumber, 0, 20);
+                    // EXAMPLE: $descendants->get_descendants($family_id,$main_person,$nr_generations);
+                    $descendant_array = $descendants->get_descendants($marriage, $this->pers_gedcomnumber, 20);
+                    $descendant_id = $descendants->get_descendant_id();
                     // *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
                     // *** $descendant_array[0]= not in use ***
                     // *** $descendant_array[1]= main person ***
@@ -2245,7 +2249,7 @@ class EditorModel extends AdminBaseModel
 
                 // *** Also change person colors by ancestors of selected person ***
                 if (isset($_POST["pers_colour_anc"][$key])) {
-                    $ancestor_array = get_ancestors($this->db_functions, $this->pers_gedcomnumber);
+                    $ancestor_array = $ancestors->get_ancestors($this->db_functions, $this->pers_gedcomnumber);
                     foreach ($ancestor_array as $key2 => $value) {
                         //echo $key2.'-'.$value.', ';
                         $selected_ancestor = $value;
@@ -2369,8 +2373,9 @@ class EditorModel extends AdminBaseModel
 
                 // *** Also remove colour mark from descendants and/ or ancestors ***
                 if (isset($_POST['event_descendants'])) {
-                    // EXAMPLE: get_descendants($family_id,$main_person,$generation_number,$nr_generations);
-                    get_descendants($marriage, $this->pers_gedcomnumber, 0, 20);
+                    // EXAMPLE: $descendants->get_descendants($family_id,$main_person,$nr_generations);
+                    $descendant_array = $descendants->get_descendants($marriage, $this->pers_gedcomnumber, 20);
+                    $descendant_id = $descendants->get_descendant_id();
                     // *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
                     for ($i = 2; $i <= $descendant_id; $i++) {
                         // *** Get event_order from selected person ***
@@ -2404,7 +2409,7 @@ class EditorModel extends AdminBaseModel
                 }
 
                 if (isset($_POST['event_ancestors'])) {
-                    $ancestor_array = get_ancestors($this->db_functions, $this->pers_gedcomnumber);
+                    $ancestor_array = $ancestors->get_ancestors($this->db_functions, $this->pers_gedcomnumber);
                     foreach ($ancestor_array as $key2 => $value) {
                         //echo $key2.'-'.$value.', ';
                         $selected_ancestor = $value;

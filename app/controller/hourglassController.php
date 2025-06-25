@@ -75,7 +75,7 @@ class HourglassController
 
         // *** Ancestors ***
         $get_ancestorModel = new AncestorModel($this->config);
-        $get_ancestors = $get_ancestorModel->get_ancestors($main_person);
+        $get_ancestors = $get_ancestorModel->get_ancestors2($main_person);
         $data = array_merge($data, $get_ancestors);
 
         return $data;

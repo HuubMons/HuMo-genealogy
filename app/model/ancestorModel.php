@@ -32,8 +32,9 @@ class AncestorModel extends FamilyModel
         return $main_person;
     }
 
+    // TODO: use general get_ancestor function.
     // The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
-    public function get_ancestors($pers_gedcomnumber): array
+    public function get_ancestors2($pers_gedcomnumber): array
     {
         // person 01
         $personDb = $this->db_functions->get_person($pers_gedcomnumber);

@@ -973,8 +973,7 @@ else {
                                     if ($child_result > 0) {
                                         $info = $location_prep->fetch();
 
-                                        $privacy = $person_privacy->get_privacy($childDb);
-                                        $name = $person_name->get_person_name($childDb, $privacy);
+                                        $name = $person_name->get_person_name($childDb, $child_privacy);
                                         $google_name = $name["standard_name"];
                                         $key = array_search($childDb->pers_birth_place, $location_array);
                                         if (isset($key) && $key > 0) {
@@ -996,8 +995,7 @@ else {
                                     if ($child_result > 0) {
                                         $info = $location_prep->fetch();
 
-                                        $privacy = $person_privacy->get_privacy($childDb);
-                                        $name = $person_name->get_person_name($childDb, $privacy);
+                                        $name = $person_name->get_person_name($childDb, $child_privacy);
                                         $google_name = $name["standard_name"];
                                         $key = array_search($childDb->pers_death_place, $location_array);
                                         if (isset($key) && $key > 0) {

@@ -70,8 +70,10 @@ function admin_custom_autoload($class_name)
 
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $include = array(
+        'Ancestors',
         'DatePlace',
         'DbFunctions',
+        'Descendants',
         'LanguageDate',
         'ProcessLinks',
         'PersonData',
@@ -772,8 +774,6 @@ if ($popup == false) {
         } elseif ($page === 'editor') {
             // TODO refactor.
             include_once(__DIR__ . "/include/select_tree.php");
-            // *** Used for person color selection for descendants and ancestors, etc. ***
-            include_once(__DIR__ . "/../include/ancestors_descendants.php");
 
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
@@ -917,8 +917,6 @@ if ($popup == false) {
         elseif ($group_administrator != 'j' && $group_edit_trees) {
             // TODO refactor.
             include_once(__DIR__ . "/include/select_tree.php");
-            // *** Used for person color selection for descendants and ancestors, etc. ***
-            include_once(__DIR__ . "/../include/ancestors_descendants.php");
 
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***

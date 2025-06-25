@@ -50,6 +50,7 @@ class GedcomExport
                 } else {
                     $desc_fams = $fam_searchDb->pers_famc;
                 }
+
                 $generation_number = 0;
 
                 // *** Only use first marriage of selected person to avoid error. Other marriages will be processed in the function! ***
@@ -2040,7 +2041,6 @@ class GedcomExport
         }
 
         $parent1 = '';
-        $parent2 = '';
         $swap_parent1_parent2 = false;
 
         // *** Standard main_person is the man ***

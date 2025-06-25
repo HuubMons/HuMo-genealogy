@@ -14,7 +14,7 @@ class AncestorChartController
 
         $main_person = $get_ancestorModel->getMainPerson2($id);
         $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor chart', $main_person);
-        $get_ancestors = $get_ancestorModel->get_ancestors($main_person);
+        $get_ancestors = $get_ancestorModel->get_ancestors2($main_person);
 
         $data = array(
             "main_person" => $main_person,

@@ -116,6 +116,8 @@ class MapsModel extends BaseModel
     {
         global $desc_array;
 
+        $descendants = new Descendants;
+
         // *** Find descendants of chosen person ***
         $maps['desc_chosen_name'] = '';
         $maps['desc_array'] = '';
@@ -136,11 +138,8 @@ class MapsModel extends BaseModel
             // *** Start function here - recursive if started ***
             $desc_array = [];
 
-            // TODO improve code. Also check global anscestors_descendant script.
-            global $descendant_array;
-            $generation_number = 0; // generation number
-            $nr_generations = 20;
-            get_descendants($persfams_arr[0], $chosenperson, $generation_number, $nr_generations);
+            // EXAMPLE: $descendants->get_descendants($family_id,$main_person,$nr_generations);
+            $descendant_array = $descendants->get_descendants($persfams_arr[0], $chosenperson, 20);
             $desc_array = $descendant_array;
 
             if ($desc_array != '') {
@@ -163,6 +162,8 @@ class MapsModel extends BaseModel
         // TODO $_GET['anc_persfams'] isn't used.
         global $anc_array;
 
+        $ancestors = new Ancestors;
+
         $_SESSION['anc_array'] = '';
         if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
             $chosenperson = $_GET['anc_persged'];
@@ -173,7 +174,7 @@ class MapsModel extends BaseModel
             $myresult = $this->dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
             $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
             $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
-            $anc_array = get_ancestors($this->db_functions, $chosenperson);
+            $anc_array = $ancestors->get_ancestors($this->db_functions, $chosenperson);
             $_SESSION['anc_array'] = $anc_array; // for use in namesearch.php
         } else {
             $chosenname = '';

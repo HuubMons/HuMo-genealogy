@@ -9,7 +9,9 @@ class PersonPrivacy
     public function get_privacy($personDb): bool
     {
         global $user, $dataDb;
+
         $privacy = false;  // *** Standard: show all persons ***
+
         if ($user['group_privacy'] == 'n') {
             $privacy = true;  // *** Standard: filter privacy data of person ***
             // *** $personDb is empty by N.N. person ***
