@@ -1,9 +1,16 @@
 <?php
 class UserSettingsModel extends BaseModel
 {
+    private $userDb = null;
+
+    public function __construct($config)
+    {
+        parent::__construct($config);
+        $this->getUser();
+    }
+
     public function getUser()
     {
-        $userDb = '';
         if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id'])) {
             $qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
                 ON humo_users.user_group_id=humo_groups.group_id
@@ -13,7 +20,12 @@ class UserSettingsModel extends BaseModel
                 $userDb = $result->fetch(PDO::FETCH_OBJ);
             }
         }
-        return $userDb;
+        $this->userDb = $userDb;
+    }
+
+    public function getUserDb()
+    {
+        return $this->userDb;
     }
 
     public function updateSettings($dataDb): string
@@ -25,7 +37,6 @@ class UserSettingsModel extends BaseModel
             }
 
             if ($result_message == '') {
-                //$user_register_date = date("Y-m-d H:i");
                 $sql = "UPDATE humo_users SET user_mail='" . safe_text_db($_POST["register_mail"]) . "'";
                 if ($_POST["register_password"] != '') {
                     $hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
@@ -33,28 +44,28 @@ class UserSettingsModel extends BaseModel
                 if (isset($hashToStoreInDb)) {
                     $sql .= ", user_password_salted='" . $hashToStoreInDb . "'";
                 }
-                $sql .= " WHERE user_id=" . $this->user->user_id;
+                $sql .= " WHERE user_id=" . $this->userDb->user_id;
                 $this->dbh->query($sql);
 
                 $result_message = __('Your settings are updated!');
 
                 // *** Only update 2FA settings if database is updated and 2FA settings are changed ***
-                //if (isset($this->user->user_2fa_enabled) && isset($_POST['user_2fa_check'])) {
-                if ($this->user->user_2fa_enabled && isset($_POST['user_2fa_check'])) {
+                if ($this->userDb->user_2fa_enabled && isset($_POST['user_2fa_check'])) {
                     // *** 2FA Authenticator (2fa_code = code from 2FA authenticator) ***
-                    if (!isset($_POST['user_2fa_enabled']) && $this->user->user_2fa_enabled) {
+                    if (!isset($_POST['user_2fa_enabled']) && $this->userDb->user_2fa_enabled) {
                         // *** Disable 2FA ***
-                        $sql = "UPDATE humo_users SET user_2fa_enabled='' WHERE user_id=" . $this->user->user_id;
+                        $sql = "UPDATE humo_users SET user_2fa_enabled='' WHERE user_id=" . $this->userDb->user_id;
                         $this->dbh->query($sql);
                     }
-                    if (isset($_POST['user_2fa_enabled']) && !$this->user->user_2fa_enabled) {
+                    if (isset($_POST['user_2fa_enabled']) && !$this->userDb->user_2fa_enabled) {
                         if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
                             $Authenticator = new Authenticator();
-                            $checkResult = $Authenticator->verifyCode($this->user->user_2fa_auth_secret, $_POST['2fa_code'], 2);        // 2 = 2*30sec clock tolerance
+                            // *** 2 = 2*30sec clock tolerance ***
+                            $checkResult = $Authenticator->verifyCode($this->userDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);
                             if (!$checkResult) {
                                 $result_message = __('Wrong 2FA code. Please enter valid 2FA code to enable 2FA authentication.') . '<br>';
                             } else {
-                                $sql = "UPDATE humo_users SET user_2fa_enabled='1' WHERE user_id=" . $this->user->user_id;
+                                $sql = "UPDATE humo_users SET user_2fa_enabled='1' WHERE user_id=" . $this->userDb->user_id;
                                 $this->dbh->query($sql);
                                 $result_message = __('Enabled 2FA authentication.') . '<br>';
                             }
@@ -68,7 +79,7 @@ class UserSettingsModel extends BaseModel
 
             if ($dataDb->tree_email) {
                 $register_address = $dataDb->tree_email;
-                $register_subject = "HuMo-genealogy. " . __('Updated profile') . ": " . $this->user->user_name . "\n";
+                $register_subject = "HuMo-genealogy. " . __('Updated profile') . ": " . $this->userDb->user_name . "\n";
 
                 // *** It's better to use plain text in the subject ***
                 $register_subject = strip_tags($register_subject, ENT_QUOTES);
@@ -76,14 +87,14 @@ class UserSettingsModel extends BaseModel
                 $register_message = sprintf(__('Message sent through %s from the website.'), 'HuMo-genealogy');
                 $register_message .= "<br><br>\n";
                 $register_message .= __('User updated his/ her profile') . "<br>\n";
-                $register_message .= __('Name') . ':' . $this->user->user_name . "<br>\n";
+                $register_message .= __('Name') . ':' . $this->userDb->user_name . "<br>\n";
                 $register_message .= __('E-mail') . ": <a href='mailto:" . $_POST['register_mail'] . "'>" . $_POST['register_mail'] . "</a><br>\n";
 
                 $humo_option = $this->humo_option; // Used in mail.php
                 include_once(__DIR__ . '/../../include/mail.php');
 
                 // *** Set who the message is to be sent from ***
-                $mail->setFrom($_POST['register_mail'], $this->user->user_name);
+                $mail->setFrom($_POST['register_mail'], $this->userDb->user_name);
                 // *** Set who the message is to be sent to ***
                 $mail->addAddress($register_address, $register_address);
                 // *** Set the subject line ***
@@ -101,19 +112,19 @@ class UserSettingsModel extends BaseModel
         return $result_message;
     }
 
-    public function showQRcode($get_user)
+    public function showQRcode()
     {
-        if ((isset($get_user->user_name) and $this->user['group_menu_change_password'] == 'y') && $this->user['group_menu_change_password'] == 'y') {
-            if (isset($get_user->user_2fa_auth_secret)) {
+        if ((isset($this->userDb->user_name) and $this->user['group_menu_change_password'] == 'y') && $this->user['group_menu_change_password'] == 'y') {
+            if (isset($this->userDb->user_2fa_auth_secret)) {
                 // *** 2FA Two factor authentification ***
                 $Authenticator = new Authenticator();
-                if ($get_user->user_2fa_auth_secret) {
-                    $user_2fa_auth_secret = $get_user->user_2fa_auth_secret;
+                if ($this->userDb->user_2fa_auth_secret) {
+                    $user_2fa_auth_secret = $this->userDb->user_2fa_auth_secret;
                 } else {
                     $user_2fa_auth_secret = $Authenticator->generateRandomSecret();
 
                     // *** Save auth_secret, so it's not changed anymore ***
-                    $sql = "UPDATE humo_users SET user_2fa_auth_secret='" . safe_text_db($user_2fa_auth_secret) . "' WHERE user_id=" . $get_user->user_id;
+                    $sql = "UPDATE humo_users SET user_2fa_auth_secret='" . safe_text_db($user_2fa_auth_secret) . "' WHERE user_id=" . $this->userDb->user_id;
                     $this->dbh->query($sql);
                 }
 
@@ -122,7 +133,7 @@ class UserSettingsModel extends BaseModel
                     $siteusernamestr = 'HuMo-genealogy ' . $_SERVER['SERVER_NAME'];
                     $twofa["qrCodeUrl"] = $Authenticator->getQR($siteusernamestr, $user_2fa_auth_secret);
                     $twofa["checked"] = '';
-                    if ($get_user->user_2fa_enabled == 1) {
+                    if ($this->userDb->user_2fa_enabled == 1) {
                         $twofa["checked"] = ' checked="true"';
                     }
                 }

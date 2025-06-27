@@ -175,7 +175,7 @@ class DbFunctions
      * QUERY        : SELECT user_name FROM humo_users WHERE user_id=:user_id
      * RETURNS      : user name.
      */
-    public function get_user_name(int $user_id): string
+    public function get_user_name(int|null $user_id): string
     {
         $user_name = '';
         if ($user_id && is_numeric($user_id)) {

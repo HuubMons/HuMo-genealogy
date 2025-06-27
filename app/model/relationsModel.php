@@ -3404,6 +3404,7 @@ class RelationsModel extends BaseModel
     private function search_marital(): void
     {
         $person_name = new PersonName;
+        $privacy = new PersonPrivacy;
 
         if ($this->relation['fams1'] != '') {
             $marrcount = count($this->fams1_array);
@@ -3424,7 +3425,7 @@ class RelationsModel extends BaseModel
                     $this->calculate_rel();
 
                     $spouseidDb = $this->db_functions->get_person($thespouse);
-                    $privacy = $this->db_functions->get_privacy($spouseidDb);
+                    $privacy = $privacy->get_privacy($spouseidDb);
                     $name = $person_name->get_person_name($spouseidDb, $privacy);
                     $this->relation['spousenameX'] = $name["name"];
 
@@ -3448,7 +3449,7 @@ class RelationsModel extends BaseModel
                     $this->relation['famspouseY'] = $this->fams2_array[$x];
                     $this->calculate_rel();
                     $spouseidDb = $this->db_functions->get_person($thespouse2);
-                    $privacy = $this->db_functions->get_privacy($spouseidDb);
+                    $privacy = $privacy->get_privacy($spouseidDb);
                     $name = $person_name->get_person_name($spouseidDb, $privacy);
                     $this->relation['spousenameY'] = $name["name"];
                     break;
@@ -3479,13 +3480,13 @@ class RelationsModel extends BaseModel
                         $this->calculate_rel();
 
                         $spouseidDb = $this->db_functions->get_person($thespouse);
-                        $privacy = $this->db_functions->get_privacy($spouseidDb);
-                        $name = $person_name->get_person_name($spouseidDb, $privacy);
+                        $privacy_spouse = $privacy->get_privacy($spouseidDb);
+                        $name = $person_name->get_person_name($spouseidDb, $privacy_spouse);
                         $this->relation['spousenameX'] = $name["name"];
 
                         $spouseidDb = $this->db_functions->get_person($thespouse2);
-                        $privacy = $this->db_functions->get_privacy($spouseidDb);
-                        $name = $person_name->get_person_name($spouseidDb, $privacy);
+                        $privacy_spouse2 = $privacy->get_privacy($spouseidDb);
+                        $name = $person_name->get_person_name($spouseidDb, $privacy_spouse2);
                         $this->relation['spousenameY'] = $name["name"];
 
                         $this->relation['famspouseX'] = $this->fams1_array[$x];

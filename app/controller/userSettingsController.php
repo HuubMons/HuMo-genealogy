@@ -12,14 +12,16 @@ class UserSettingsController
     {
         $user_settingsModel = new UserSettingsModel($this->config);
 
-        $get_user = $user_settingsModel->getUser();
-        $result_message = $user_settingsModel->updateSettings($dataDb, $get_user);
+        $result_message = $user_settingsModel->updateSettings($dataDb);
+
         // Reload user settings (needed for 2FA).
-        $get_user = $user_settingsModel->getUser();
-        $twofa = $user_settingsModel->showQRcode($get_user);
+        $user_settingsModel->getUser();
+        $twofa = $user_settingsModel->showQRcode();
+
+        $get_userDb = $user_settingsModel->getUserDb();
 
         $data = array(
-            "user" => $get_user,
+            "user" => $get_userDb,
             "result_message" => $result_message
         );
 
