@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-22 15:18+0200\n"
-"PO-Revision-Date: 2025-06-22 15:20+0200\n"
+"PO-Revision-Date: 2025-06-28 08:45+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: English (http://www.transifex.com/projects/p/humo-gen/"
 "language/en/)\n"
@@ -10911,15 +10911,3 @@ msgstr "Select a theme"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Standard-colours"
-
-#~ msgid "404 Not Found"
-#~ msgstr "404 Not Found"
-
-#~ msgid "No Chinese ttf font file found"
-#~ msgstr "No Chinese ttf font file found"
-
-#~ msgid "Download link"
-#~ msgstr "Download link"
-
-#~ msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
-#~ msgstr "Unzip and place in \"include/fanchart/chinese/\" folder"

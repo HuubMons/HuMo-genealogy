@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-22 15:18+0200\n"
-"PO-Revision-Date: 2025-06-22 15:20+0200\n"
+"PO-Revision-Date: 2025-06-28 08:45+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: English (http://www.transifex.com/projects/p/humo-gen/"
 "language/en/)\n"
@@ -10915,36 +10915,3 @@ msgstr "Select a theme"
 #: views/user_settings.php:125 views/user_settings.php:128
 msgid "Standard-colours"
 msgstr "Standard-colours"
-
-#~ msgid "Default slider position"
-#~ msgstr "Default slider position"
-
-#~ msgid "OFF position (leftmost position)"
-#~ msgstr "OFF position (leftmost position)"
-
-#~ msgid "Show all periods (rightmost position)"
-#~ msgstr "Show all periods (rightmost position)"
-
-#~ msgid "404 Not Found"
-#~ msgstr "404 Not Found"
-
-#~ msgid "No Chinese ttf font file found"
-#~ msgstr "No Chinese ttf font file found"
-
-#~ msgid "Download link"
-#~ msgstr "Download link"
-
-#~ msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
-#~ msgstr "Unzip and place in \"include/fanchart/chinese/\" folder"
-
-#~ msgid ""
-#~ "Multiple updates will be done. It is recommended to do a database backup!"
-#~ "<br><b>NEVER INTERRUPT THE UPDATE PROCEDURE!</b><br><b>Please wait until "
-#~ "the notice that the update has been completed!</b>"
-#~ msgstr ""
-#~ "Multiple updates will be done. It is recommended to do a database backup!"
-#~ "<br><b>NEVER INTERRUPT THE UPDATE PROCEDURE!</b><br><b>Please wait until "
-#~ "the notice that the update has been completed!</b>"
-
-#~ msgid "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
-#~ msgstr "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
