@@ -17,10 +17,9 @@ class UserSettingsModel extends BaseModel
                 WHERE humo_users.user_id='" . $_SESSION['user_id'] . "'";
             $result = $this->dbh->query($qry);
             if ($result->rowCount() > 0) {
-                $userDb = $result->fetch(PDO::FETCH_OBJ);
+                $this->userDb = $result->fetch(PDO::FETCH_OBJ);
             }
         }
-        $this->userDb = $userDb;
     }
 
     public function getUserDb()

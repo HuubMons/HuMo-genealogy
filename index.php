@@ -148,8 +148,14 @@ $alignmarker = $index['alignmarker'];
 // *** New routing script sept. 2023. Search route, return match or not found ***
 $page = $index['page'];
 
-if (isset($index['id'])) {
-    $id = $index['id'];
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+} elseif (isset($_POST['id'])) {
+    $id = $_POST['id']; // TODO: check if this is needed.
+} elseif (isset($index['id'])) {
+    $id = $index['id']; // TODO: check if this is needed.
+} else {
+    $id = '';   // Default value, if no id is set.
 }
 
 $tree_id = $index['tree_id'];

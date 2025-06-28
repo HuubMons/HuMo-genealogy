@@ -4,6 +4,10 @@ class LanguageDate
     public function language_date($date_text = ''): string
     {
         global $humo_option, $selected_language;
+
+        if ($date_text == NULL || $date_text == '') {
+            return '';
+        }
         $date_text = strtoupper($date_text);
 
         if ($humo_option["date_display"] == "ch" && $selected_language != "hu") {

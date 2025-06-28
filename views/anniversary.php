@@ -267,7 +267,7 @@ $language_date = new LanguageDate;
 
                             // get wife
                             $womanDb = $db_functions->get_person($value['woman']);
-                            $woman_privacy = $woman_privacy->get_privacy($womanDb);
+                            $woman_privacy = $person_privacy->get_privacy($womanDb);
                             if (!$value['woman']) {
                                 $woman_name = 'N.N.';
                             } else {
