@@ -70,6 +70,7 @@ function custom_autoload($class_name)
         'GeneralSettings',
         'LanguageDate',
         'MarriageCls',
+        'MediaPath',
         'PersonData',
         'PersonLink',
         'PersonName',
@@ -77,6 +78,8 @@ function custom_autoload($class_name)
         'PersonPrivacy',
         'PersonPopup',
         'ProcessLinks',
+        'ResizePicture',
+        'ShowMedia',
         'ValidateDate',
         'Witness',
         'Config'
@@ -225,7 +228,6 @@ include_once(__DIR__ . "/include/config.php");
 if ($index['page'] == 'address') {
     // TODO refactor
     include_once(__DIR__ . "/include/show_sources.php");
-    include_once(__DIR__ . "/include/showMedia.php");
 
     $controllerObj = new AddressController($config);
     $data = $controllerObj->detail();
@@ -311,9 +313,6 @@ if ($index['page'] == 'address') {
     $controllerObj = new MapsController($config);
     $maps = $controllerObj->detail($tree_prefix_quoted);
 } elseif ($index['page'] == 'photoalbum') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/showMedia.php");
-
     $controllerObj = new PhotoalbumController($config);
     $photoalbum = $controllerObj->detail($selected_language, $uri_path, $link_cls);
 } elseif ($index['page'] == 'register') {
@@ -352,7 +351,6 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'source') {
     // TODO refactor
     include_once(__DIR__ . "/include/process_text.php");
-    include_once(__DIR__ . "/include/showMedia.php");
 
     $controllerObj = new SourceController($config);
 

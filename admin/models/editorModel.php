@@ -1788,8 +1788,9 @@ class EditorModel extends AdminBaseModel
     {
         global $page;
 
-        $ancestors = new Ancestors;
-        $descendants = new Descendants;
+        $ancestors = new Ancestors();
+        $descendants = new Descendants();
+        $resizePicture = new ResizePicture();
 
         // TODO refactor $marriage.
         if (isset($_SESSION['admin_fam_gedcomnumber'])) {
@@ -2020,8 +2021,6 @@ class EditorModel extends AdminBaseModel
 
         // *** Upload images ***
         if (isset($_FILES['photo_upload']) && $_FILES['photo_upload']['name']) {
-            include_once(__DIR__ . "/../include/media_inc.php");
-            include_once(__DIR__ . "/../../include/showMedia.php");
             $showMedia = new showMedia();
 
             // *** get path of pictures folder 
@@ -2049,9 +2048,9 @@ class EditorModel extends AdminBaseModel
             $picture_original = $dir . $_FILES['photo_upload']['name'];
             if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'], $picture_original)) {
                 echo __('Photo upload failed, check folder rights');
-            } elseif (check_media_type($dir, $_FILES['photo_upload']['name'])) {
-                resize_picture($dir, $_FILES['photo_upload']['name']); // resize only big image files to H=1080px
-                create_thumbnail($dir, $_FILES['photo_upload']['name']);
+            } elseif ($resizePicture->check_media_type($dir, $_FILES['photo_upload']['name'])) {
+                $resizePicture->resize_picture($dir, $_FILES['photo_upload']['name']); // resize only big image files to H=1080px
+                $resizePicture->create_thumbnail($dir, $_FILES['photo_upload']['name']);
                 // *** Add picture to array ***
                 $picture_array[] = $_FILES['photo_upload']['name'];
 
@@ -2234,8 +2233,7 @@ class EditorModel extends AdminBaseModel
                                 event_place='" . $this->editor_cls->text_process($_POST["event_place" . $key]) . "',
                                 event_changed_user_id='" . $this->userid . "',
                                 event_gedcom='" . $this->editor_cls->text_process($event_gedcom) . "',
-                                event_text='" . $this->editor_cls->text_process($event_text) . "',
-                                event_changed_time='" . $gedcom_time . "'
+                                event_text='" . $this->editor_cls->text_process($event_text) . "'
                                 WHERE event_id='" . $eventDb->event_id . "'";
                             $this->dbh->query($sql);
                         } else {

@@ -10,23 +10,14 @@ class PersonPopup
      * $extra_pop-up_text=''; To add extra text in the pop-up screen
      */
 
-    private $date_place;
-
-    public function __construct()
-    {
-        $this->date_place = new DatePlace;
-    }
-
     public function person_popup_menu($personDb, $privacy, $extended = false, $replacement_text = '', $extra_popup_text = '')
     {
         global $db_functions, $bot_visit, $humo_option, $uri_path, $user;
         global $screen_mode, $dirmark1, $dirmark2, $rtlmarker, $hourglass, $link_cls, $page;
 
-        $person_link = new PersonLink;
-        $person_name = new PersonName;
-        $date_place = $this->date_place;
-
-        include_once(__DIR__ . "/../admin/include/media_inc.php");
+        $personLink = new PersonLink();
+        $personName = new PersonName();
+        $datePlace = new  DatePlace();
 
         $text_start = '';
         $text = '';
@@ -39,7 +30,7 @@ class PersonPopup
             $db_functions->set_tree_id($personDb->pers_tree_id);
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $start_url = $person_link->get_person_link($personDb);
+            $start_url = $personLink->get_person_link($personDb);
             $family_url = $start_url;
 
             // *** Link to own family or parents ***
@@ -84,7 +75,7 @@ class PersonPopup
             $text_start .= '<div style="z-index:500; border:1px solid #999999;" id="m1' . $random_nr . $personDb->pers_gedcomnumber .
                 '" class="sddm_fixed" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
-            $name = $person_name->get_person_name($personDb, $privacy);
+            $name = $personName->get_person_name($personDb, $privacy);
             $text .= $dirmark2 . '<span style="font-size:13px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span><br>';
             $popover_content .= '<li><span style="font-size:13px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span></li>';
             if ($extended) {
@@ -212,15 +203,15 @@ class PersonPopup
                 // *** Pop-up tekst ***
                 if (!$privacy) {
                     if ($personDb->pers_birth_date || $personDb->pers_birth_place) {
-                        $text .= __('*') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
+                        $text .= __('*') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
                     } elseif ($personDb->pers_bapt_date || $personDb->pers_bapt_place) {
-                        $text .= __('~') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
+                        $text .= __('~') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
                     }
 
                     if ($personDb->pers_death_date || $personDb->pers_death_place) {
-                        $text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_death_date, $personDb->pers_death_place);
+                        $text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, $personDb->pers_death_place);
                     } elseif ($personDb->pers_buried_date || $personDb->pers_buried_place) {
-                        $text .= '<br>' . __('[]') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
+                        $text .= '<br>' . __('[]') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
                     }
 
                     // *** If needed add extra text in the pop-up box ***

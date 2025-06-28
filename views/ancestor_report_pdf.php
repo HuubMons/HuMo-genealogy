@@ -27,7 +27,7 @@ $data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
 
 
 // 2024: at this moment this can't be removed yet...
-//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in showMedia.php!!!
+//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in showMedia!!!
 // *** Set variable for queries ***
 $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
     ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id

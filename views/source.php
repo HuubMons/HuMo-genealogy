@@ -90,7 +90,7 @@ if (!isset($data["sourceDb"]->source_id)) {
     $source_media = '';
     $data["picture_presentation"] = 'show'; // Show pictures in source page.
     $showMedia = new ShowMedia;
-    $result = $showMedia->show_media('source', $data["sourceDb"]->source_gedcomnr); // *** This function can be found in file: showMedia.php! ***
+    $result = $showMedia->show_media('source', $data["sourceDb"]->source_gedcomnr);
     if ($result[0]) {
         $source_media = $result[0];
     }

@@ -98,6 +98,8 @@ if (isset($screen_mode) && ($screen_mode == "STAR" || $screen_mode == "STARSIZE"
     $html_text = '';
 }
 
+$media_path = new MediaPath;
+
 function getActiveTopMenu(string $page = 'home')
 {
     $menu_top = 'home';
@@ -180,8 +182,7 @@ $menu_top = getActiveTopMenu($page);
     <?php
     // *** Use your own favicon.ico in media folder ***
     if (file_exists('media/favicon.ico')) {
-        include_once(__DIR__ . '/../include/give_media_path.php');
-        echo '<link href="' . give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
+        echo '<link href="' . $media_path->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
     } else {
         echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
     }
@@ -310,11 +311,9 @@ $menu_top = getActiveTopMenu($page);
         // *** Show logo or name of website ***
         $logo = $humo_option["database_name"];
         if (is_file('media/logo.png')) {
-            include_once(__DIR__ . '/../include/give_media_path.php');
-            $logo = '<img src="' . give_media_path('media/', 'logo.png') . '">';
+            $logo = '<img src="' . $media_path->give_media_path('media/', 'logo.png') . '">';
         } elseif (is_file('media/logo.jpg')) {
-            include_once(__DIR__ . '/../include/give_media_path.php');
-            $logo = '<img src="' . give_media_path('media/', 'logo.png') . '">';
+            $logo = '<img src="' . $media_path->give_media_path('media/', 'logo.jpg') . '">';
         }
     ?>
 

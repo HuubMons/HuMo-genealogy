@@ -113,14 +113,12 @@ class EditorEvent
     // *** REMARK: also used in source editor to add a photo ***
     function show_event($event_connect_kind, $event_connect_id, $event_kind)
     {
-        global $tree_id, $page, $field_date, $field_place, $field_text, $field_text_medium;
+        global $tree_id, $page, $field_place, $field_text, $field_text_medium;
         global $editor_cls, $path_prefix, $tree_pict_path, $humo_option, $field_popup;
         global $db_functions;
 
-        include_once(__DIR__ . "/../include/media_inc.php");
-        include_once(__DIR__ . '/../../include/give_media_path.php');
-        include_once(__DIR__ . "/../../include/showMedia.php");
-        $showMedia = new showMedia();
+        $showMedia = new ShowMedia();
+        $media_path = new MediaPath();
 
         $text = '';
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
@@ -599,9 +597,7 @@ class EditorEvent
                                                         }
                                                     }
 
-                                                    // echo '<a href="../' . give_media_path($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
-                                                    //     print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
-                                                    echo '<a href="../' . give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
+                                                    echo '<a href="../' . $media_path->give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
                                                         $showMedia->print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                                     ?>
                                                 </div>

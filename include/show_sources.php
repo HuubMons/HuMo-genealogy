@@ -315,7 +315,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
 
                 // *** Show picture by source ***
                 $showMedia = new ShowMedia;
-                $result = $showMedia->show_media('connect', $connectDb->connect_id); // *** This function can be found in file: showMedia.php! ***
+                $result = $showMedia->show_media('connect', $connectDb->connect_id);
                 $source_array['text'] .= $result[0];
             }
         } // *** Loop multiple source ***
@@ -433,7 +433,7 @@ function show_sources_footnotes(): string
 
             // *** Show picture by source ***
             $showMedia = new ShowMedia;
-            $result = $showMedia->show_media('connect', $connectDb->connect_id); // *** This function can be found in file: showMedia.php! ***
+            $result = $showMedia->show_media('connect', $connectDb->connect_id);
             $text .= $result[0];
 
             $text .= "<br>\n";

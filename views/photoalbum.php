@@ -5,14 +5,12 @@ if ($user['group_pictures'] != 'j' || $user['group_photobook'] != 'j') {
     exit();
 }
 
-// TODO check autoload.
-include_once(__DIR__ . "/../admin/include/media_inc.php");
-$showMedia = new ShowMedia;
+$showMedia = new ShowMedia();
+$media_path = new MediaPath();
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
-
-$date_place = new DatePlace;
+$person_privacy = new PersonPrivacy();
+$person_name = new PersonName();
+$date_place = new DatePlace();
 
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
@@ -205,7 +203,7 @@ if ($humo_option["url_rewrite"] == "j") {
     ?>
                 <div class="photobook">
                     <!-- Show photo using the lightbox: GLightbox effect -->
-                    <?php $href_path = give_media_path($tmp_dir, $filename); ?>
+                    <?php $href_path = $media_path->give_media_path($tmp_dir, $filename); ?>
                     <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                         <!-- Need a class for multiple lines and HTML code in a text -->
                         <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>

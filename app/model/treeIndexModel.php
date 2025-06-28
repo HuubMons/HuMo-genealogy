@@ -654,6 +654,7 @@ class TreeIndexModel
         $person_name = new PersonName;
         $person_privacy = new PersonPrivacy;
         $date_place = new DatePlace;
+        $media_path = new MediaPath;
 
         // adding static table for displayed photos storage
         static $temp_pic_names_table = [];
@@ -752,8 +753,7 @@ class TreeIndexModel
                     if ($picqryDb->event_date || $picqryDb->event_place) {
                         $dateplace = $date_place->date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
-                    include_once('./include/give_media_path.php');
-                    $picture_path = give_media_path($tree_pict_path, $picname);
+                    $picture_path = $media_path->give_media_path($tree_pict_path, $picname);
 
                     // u can delete this variables if there are some global variables for protocol and omain combined
                     // Get the protocol (HTTP or HTTPS)

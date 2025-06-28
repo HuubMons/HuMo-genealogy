@@ -133,12 +133,10 @@ function ancestor_chart_person($id, $box_appearance)
 {
     global $db_functions, $user, $data, $dirmark1, $dirmark2;
 
-    $person_name = new PersonName;
-    $person_privacy = new PersonPrivacy;
-    $person_popup = new PersonPopup;
-    $date_place = new DatePlace;
-
-    include_once(__DIR__ . "/../admin/include/media_inc.php");
+    $person_name = new PersonName();
+    $person_privacy = new PersonPrivacy();
+    $person_popup = new PersonPopup();
+    $date_place = new DatePlace();
 
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {

@@ -752,7 +752,7 @@ class MarriageCls
 
         // *** Show media/ pictures ***
         $showMedia = new ShowMedia;
-        $result = $showMedia->show_media('family', $marriageDb->fam_gedcomnumber); // *** This function can be found in file: showMedia.php! ***
+        $result = $showMedia->show_media('family', $marriageDb->fam_gedcomnumber);
         $text .= $result[0];
         if (isset($templ_relation)) $templ_relation = array_merge((array)$templ_relation, (array)$result[1]);
         else $templ_relation = $result[1];

@@ -140,7 +140,7 @@ function source_display_pdf($sourcenum)
 
     // *** Pictures by source ***
     //$showMedia = new ShowMedia;
-    //$result = $showMedia->show_media('source', $sourceDb->source_gedcomnr); // *** This function can be found in file: showMedia.php! ***
+    //$result = $showMedia->show_media('source', $sourceDb->source_gedcomnr);
     //echo $result[0];
 
 

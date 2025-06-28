@@ -1067,7 +1067,7 @@ class PersonData
             } else {
                 // *** Show media/ pictures ***
                 $showMedia = new ShowMedia;
-                $result = $showMedia->show_media('person', $personDb->pers_gedcomnumber); // *** This function can be found in file: showMedia.php! ***
+                $result = $showMedia->show_media('person', $personDb->pers_gedcomnumber);
                 $process_text .= $result[0];
                 if (isset($templ_person)) {
                     $templ_person = array_merge((array)$templ_person, (array)$result[1]);

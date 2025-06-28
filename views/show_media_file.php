@@ -67,10 +67,11 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
         $family_qry = $dbh->query($qry2);
         $family_qryDb2 = $family_qry->fetch(PDO::FETCH_OBJ);
 
-        $personmnDb2 = $db_functions->get_person($family_qryDb2->fam_man);
+        $personmnDb = $db_functions->get_person($family_qryDb2->fam_man);
+        $man_privacy = $person_privacy->get_privacy($personmnDb);
 
-        $personmnDb3 = $db_functions->get_person($family_qryDb2->fam_woman);
-        $woman_privacy = $person_privacy->get_privacy($personmnDb3);
+        $personwmnDb = $db_functions->get_person($family_qryDb2->fam_woman);
+        $woman_privacy = $person_privacy->get_privacy($personwmnDb);
 
         // *** Only use this picture if both man and woman have disabled privacy options ***
         if ($man_privacy == '' && $woman_privacy == '') {

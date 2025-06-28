@@ -4,8 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(__DIR__ . "/../include/media_inc.php");
-include_once(__DIR__ . "/../../include/showMedia.php");
 $showMedia = new showMedia();
 ?>
 

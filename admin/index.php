@@ -71,16 +71,19 @@ function admin_custom_autoload($class_name)
     // *** At this moment only a few classes are autoloaded. Under construction ***
     $include = array(
         'Ancestors',
+        'CalculateDates',
         'DatePlace',
         'DbFunctions',
         'Descendants',
         'LanguageDate',
+        'MediaPath',
         'ProcessLinks',
         'PersonData',
         'PersonLink',
         'PersonName',
         'PersonPrivacy',
-        'CalculateDates'
+        'ResizePicture',
+        'ShowMedia'
     );
     $admin_include = array(
         'Editor_cls',
@@ -126,6 +129,8 @@ if (isset($dbh)) {
 
 // *** Added october 2023: generate links to frontsite ***
 $link_cls = new ProcessLinks();
+
+$media_path = new MediaPath();
 
 include_once(__DIR__ . "/../include/get_visitor_ip.php");
 $visitor_ip = visitorIP();
@@ -432,8 +437,7 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 
 // *** Use your own favicon.ico in media folder ***
 if (file_exists('../media/favicon.ico')) {
-    include_once(__DIR__ . '/../include/give_media_path.php');
-    $favicon = '<link href="../' . give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
+    $favicon = '<link href="../' . $media_path->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
 } else {
     $favicon = '<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">';
 }

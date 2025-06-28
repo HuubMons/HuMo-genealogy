@@ -1,9 +1,11 @@
 <?php
-// *** Class to show media by person, marriage, etc. ***
-// *** Updated feb 2013, aug 2015, feb 2023. ***
-// *** Dec. 2024: rebuild to class ***
 
-include_once(__DIR__ . "/give_media_path.php");
+/**
+ * Class to show media by person, marriage, etc.
+ * 
+ * Updated feb 2013, aug 2015, feb 2023.
+ * Dec. 2024: rebuild to class
+ */
 
 class ShowMedia
 {
@@ -14,27 +16,24 @@ class ShowMedia
         $this->set_pcat_dirs();
     }
 
-    public function get_pcat_dirs()
+    public function get_pcat_dirs(): array
     {
         return $this->pcat_dirs;
     }
 
-    public function show_media($event_connect_kind, $event_connect_id)
+    public function show_media($event_connect_kind, $event_connect_id): array
     {
-        global $dbh, $db_functions, $tree_id, $user, $dataDb, $uri_path;
-        global $sect, $screen_mode; // *** RTF Export ***
-        global $data, $page;
-
-        include_once(__DIR__ . "/../admin/include/media_inc.php");
+        global $dbh, $db_functions, $tree_id, $user, $dataDb, $data, $page;
+        global $screen_mode; // *** RTF Export ***
 
         $date_place = new DatePlace();
+        $media_path = new MediaPath();
 
         $templ_person = array(); // local version
         $process_text = '';
         $media_nr = 0;
 
         // *** Pictures/ media ***
-        //if ($user['group_pictures'] == 'j' and $data["picture_presentation"] != 'hide') {
         if ($user['group_pictures'] == 'j' && isset($data["picture_presentation"]) && $data["picture_presentation"] != 'hide') {
             if (isset($dataDb->tree_pict_path)) {
                 $tree_pict_path = $dataDb->tree_pict_path;
@@ -126,7 +125,7 @@ class ShowMedia
                 // (if the $picture_path is already set with subfolder this anyway gives false and so the $picture_path given will work)
                 $temp_path = $tree_pict_path; // use temp path to modify
 
-                // look in category subfolder if exists - lookup code moved to media_inc.php
+                // look in category subfolder if exists
                 if (array_key_exists(substr($event_event, 0, 3), $this->pcat_dirs)) {
                     $temp_path .= substr($event_event, 0, 2) . '/';
                 }
@@ -146,7 +145,7 @@ class ShowMedia
                     if ($line_pos > 0) {
                         $title_txt = substr($media_event_text[$i], 0, $line_pos);
                     }
-                    $href_path = give_media_path($temp_path, str_ireplace("%2F", "/", rawurlencode($event_event)));
+                    $href_path = $media_path->give_media_path($temp_path, str_ireplace("%2F", "/", rawurlencode($event_event)));
                     // *** April 2021: using GLightbox ***
                     // *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
                     // *** But: reverse change of / character (if sub folders are used) ***
@@ -159,10 +158,10 @@ class ShowMedia
                         $picture .= $dateplace . '<br>';
                     }
                     $picture .= $title_txt . '</div>';
-                    $picture .= $this->print_thumbnail($tree_pict_path, $event_event); // in media_inc.php. using default hight 120px
+                    $picture .= $this->print_thumbnail($tree_pict_path, $event_event); // sing default hight 120px
                     $picture .= '</a>';
 
-                    $thumb_url = $this->thumbnail_exists($temp_path, $event_event); //in media_inc.php: returns url of thumb or empty string
+                    $thumb_url = $this->thumbnail_exists($temp_path, $event_event); // returns url of thumb or empty string
                     if (!empty($thumb_url)) {
                         $templ_person["pic_path" . $i] = $thumb_url; //for the time being pdf only with thumbs
                     } else {
@@ -172,7 +171,7 @@ class ShowMedia
                     $templ_person["pic_path" . $i] = trim($templ_person["pic_path" . $i]);
                 } else {
                     // other media formats not to be displayed with lightbox
-                    $href_path = give_media_path($temp_path, $event_event);
+                    $href_path = $media_path->give_media_path($temp_path, $event_event);
                     $picture = '<a href="' . $href_path . '" target="_blank">' . $this->print_thumbnail($temp_path, $event_event) . '</a>';
                 }
 
@@ -239,9 +238,12 @@ class ShowMedia
     }
 
     //search for a thumbnail or mime type placeholder and returns the image tag
-    public function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $attrib = '')
+    public function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $attrib = ''): string
     {
         global $humo_option;
+
+        $media_path = new MediaPath();
+        $resizePicture = new ResizePicture();
 
         // in current state this function is not displaying all formats of pictures that are allowed - for example it's not displaying webp
         // echo 'print thumbnail<br>';
@@ -271,7 +273,7 @@ class ShowMedia
         $thumb_url =  $this->thumbnail_exists($folder, $file);
         // *** found thumbnail ***
         if (!empty($thumb_url)) {
-            // there are problems with these relative paths - when called from lvl +1 (showMedia.php) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
+            // there are problems with these relative paths - when called from lvl +1 (showMedia) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
             $backtrace = debug_backtrace();
             if (isset($backtrace[0]['file']) && isset($backtrace[0]['line'])) {
                 $calling_file = basename($backtrace[0]['file']);
@@ -289,7 +291,7 @@ class ShowMedia
             $mode = 'onlyfile';
             $fileName = $this->thumbnail_exists($folder, $file, $mode);
 
-            $src_path = give_media_path($folder_for_give_media_path, $fileName);
+            $src_path = $media_path->give_media_path($folder_for_give_media_path, $fileName);
             return '<img src="' . $prefix . $src_path . '"' . $img_style . '>';
         }
 
@@ -308,19 +310,19 @@ class ShowMedia
         }
         // check for mime type and no_thumb file
         if (
-            check_media_type($folder, $file) &&
+            $resizePicture->check_media_type($folder, $file) &&
             !is_file($folder . '.' . $file . '.no_thumb')
         ) {
             // script will possibily die here and hidden no_thumb file becomes persistent
             // so this code might be skiped afterwords
-            if ($humo_option["thumbnail_auto_create"] == 'y' && create_thumbnail($folder, $file)) {
-                $src_path = give_media_path($folder, 'thumb_' . $file . '.jpg');
+            if ($humo_option["thumbnail_auto_create"] == 'y' && $resizePicture->create_thumbnail($folder, $file)) {
+                $src_path = $media_path->give_media_path($folder, 'thumb_' . $file . '.jpg');
                 return '<img src="' . $src_path . '"' . $img_style . '>';
             }
         }
 
         $extensions_check = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        $src_path = give_media_path($folder, $file);
+        $src_path = $media_path->give_media_path($folder, $file);
         switch ($extensions_check) {
                 /*
             case 'pdf':
@@ -414,11 +416,11 @@ class ShowMedia
         //return '<img src="../../images/thumb_missing-image.jpg"' . $img_style . '>';
 
         // No thumbnail found, return the original file.
-        $src_path = give_media_path($folder, $file);
+        $src_path = $media_path->give_media_path($folder, $file);
         return '<img src="' . $src_path . '"' . $img_style . '>';
     }
 
-    public function thumbnail_exists($folder, $file, $mode = 'both')
+    public function thumbnail_exists($folder, $file, $mode = 'both'): string
     {
         //added second mode to return only the filename part for function give_media_path (see line ~159)
         if ($mode === 'onlyfile') {
@@ -436,32 +438,41 @@ class ShowMedia
             return ($folder1 . 'thumb_' . $file . '.jpg');
         }
         if (file_exists($folder . 'thumb_' . $file)) {
+            // old naming
             return ($folder1 . 'thumb_' . $file);
-        } // old naming
+        }
         if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg')) {
             return ($folder1 . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg');
         }
         if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'])) {
+            // old naming
             return ($folder1 . $pparts['dirname'] . '/thumb_' . $pparts['basename']);
-        } // old naming
+        }
 
         if (array_key_exists(substr($file, 0, 3), $this->pcat_dirs)) {
+            // check for cat folder
             $folder .= substr($file, 0, 2) . '/';
-        } // check for cat folder
+        }
         if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
             return ($folder1 . 'thumb_' . $file . '.jpg');
         }
         if (file_exists($folder . 'thumb_' . $file)) {
+            // old naming
             return ($folder1 . 'thumb_' . $file);
-        }  // old naming
+        }
         return '';
     }
 
-    function set_pcat_dirs() // returns a.array with existing cat subfolders key=>dir val=>category name localized
+    // returns a.array with existing cat subfolders key=>dir val=>category name localized
+    private function set_pcat_dirs(): void
     {
         global $dbh, $tree_id, $selected_language;
 
         $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
+        //$stmt = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_id = :tree_id");
+        //$stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_INT);
+        //$stmt->execute();
+        //$data2sql = $stmt;
         $dataDb = $data2sql->fetch(PDO::FETCH_OBJ);
         $tree_pict_path = $dataDb->tree_pict_path;
         if (substr($tree_pict_path, 0, 1) === '|') {
@@ -476,17 +487,22 @@ class ShowMedia
             if ($catg->rowCount()) {
                 while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
                     $dirtest = $catDb->photocat_prefix;
-                    if (is_dir($tree_pict_path . '/' . substr($dirtest, 0, 2))) {  // there is a subfolder of this prefix
+                    if (is_dir($tree_pict_path . '/' . substr($dirtest, 0, 2))) {
+                        // there is a subfolder of this prefix
                         $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = '" . $selected_language . "'");
-                        if ($name->rowCount()) {  // there is a name for this language
+                        if ($name->rowCount()) {
+                            // there is a name for this language
                             $nameDb = $name->fetch(PDO::FETCH_OBJ);
                             $catname = $nameDb->photocat_name;
-                        } else {  // maybe a default is set
+                        } else {
+                            // maybe a default is set
                             $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = 'default'");
-                            if ($name->rowCount()) {  // there is a default name for this category
+                            if ($name->rowCount()) {
+                                // there is a default name for this category
                                 $nameDb = $name->fetch(PDO::FETCH_OBJ);
                                 $catname = $nameDb->photocat_name;
-                            } else {  // no name found => show directory name
+                            } else {
+                                // no name found => show directory name
                                 $catname = substr($dirtest, 0, 2);
                             }
                         }
@@ -498,6 +514,4 @@ class ShowMedia
 
         $this->pcat_dirs = $tmp_pcat_dirs;
     }
-
-    // unused function show_picture deleted
 }

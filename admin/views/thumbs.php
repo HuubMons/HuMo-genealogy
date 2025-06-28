@@ -5,9 +5,9 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 include_once(__DIR__ . "/../include/select_tree.php");
-include_once(__DIR__ . "/../include/media_inc.php");
-include_once(__DIR__ . "/../../include/showMedia.php");
+
 $showMedia = new ShowMedia;
+$resizePicture = new ResizePicture();
 
 $person_privacy = new PersonPrivacy;
 $person_name = new PersonName;
@@ -882,7 +882,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         if (file_exists($picture_path_old . $_POST['filename_old'])) {
             rename($picture_path_old . $_POST['filename_old'], $picture_path_new . $_POST['filename']);
             echo '<b>' . __('Changed filename:') . ' </b>' . $picture_path_old .  $_POST['filename_old'] . ' <b>' . __('into filename:') . '</b> ' . $picture_path_new .  $_POST['filename'] . '<br>';
-            if (check_media_type($picture_path_new, $_POST['filename']) && create_thumbnail($picture_path_new, $_POST['filename'])) {
+            if ($resizePicture->check_media_type($picture_path_new, $_POST['filename']) && $resizePicture->create_thumbnail($picture_path_new, $_POST['filename'])) {
                 echo '<b>' . __('Changed filename:') . ' ' . __('into filename:') . '</b> ' . $picture_path_new . 'thumb_' . $_POST['filename'] . '.jpg<br>';
             }
         }
@@ -935,21 +935,21 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         substr($filename, 0, 5) !== 'thumb' &&
                         isset($_POST["thumbnail"]) &&
                         !is_dir($selected_picture_folder . $filename)  &&
-                        check_media_type($selected_picture_folder, $filename)
+                        $resizePicture->check_media_type($selected_picture_folder, $filename)
                     ) {
 
                         if (
                             !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
                             empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
                         ) {    // don't create thumb if one exists
-                            create_thumbnail($selected_picture_folder, $filename); // in media_inc.php script 
+                            $resizePicture->create_thumbnail($selected_picture_folder, $filename);
                         }
                     }
 
                     // *** Show thumbnails ***
                     if (
                         substr($filename, 0, 5) !== 'thumb' &&
-                        check_media_type($selected_picture_folder, $filename) &&
+                        $resizePicture->check_media_type($selected_picture_folder, $filename) &&
                         !is_dir($selected_picture_folder . $filename)
                     ) {
         ?>
