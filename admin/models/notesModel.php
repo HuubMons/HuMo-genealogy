@@ -5,7 +5,7 @@ class NotesModel extends AdminBaseModel
     {
         $limit = 50;
         if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
-            $limit = safe_text_db($_POST['limit']);
+            $limit = $_POST['limit'];
             $_SESSION['save_limit'] = $limit;
         }
         if (isset($_SESSION['save_limit']) && is_numeric($_SESSION['save_limit'])) {

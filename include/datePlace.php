@@ -8,11 +8,11 @@
 
 class DatePlace
 {
-    private $language_date;
+    private $languageDate;
 
     public function __construct()
     {
-        $this->language_date = new LanguageDate();
+        $this->languageDate = new LanguageDate();
     }
 
     function date_place($process_date, $process_place, $hebnight = "")
@@ -36,13 +36,13 @@ class DatePlace
                 }
                 $text .= $process_place . " ";
             }
-            $text .= $this->language_date->language_date($process_date) . $hebdate;
+            $text .= $this->languageDate->language_date($process_date) . $hebdate;
             if ($text) {
                 // *** Only add $dirmark if there is data ***
                 $text = $dirmark1 . $text;
             }
         } else {
-            $text = $this->language_date->language_date($process_date) . $hebdate;
+            $text = $this->languageDate->language_date($process_date) . $hebdate;
             if ($text) {
                 // *** Only add $dirmark if there is data ***
                 $text = $dirmark1 . $text;

@@ -36,15 +36,22 @@ class UserSettingsModel extends BaseModel
             }
 
             if ($result_message == '') {
-                $sql = "UPDATE humo_users SET user_mail='" . safe_text_db($_POST["register_mail"]) . "'";
                 if ($_POST["register_password"] != '') {
                     $hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
                 }
+                $sql = "UPDATE humo_users SET user_mail = :user_mail";
+                $params = [
+                    ':user_mail' => $_POST["register_mail"]
+                ];
                 if (isset($hashToStoreInDb)) {
-                    $sql .= ", user_password_salted='" . $hashToStoreInDb . "'";
+                    $sql .= ", user_password_salted = :user_password_salted";
+                    $params[':user_password_salted'] = $hashToStoreInDb;
                 }
-                $sql .= " WHERE user_id=" . $this->userDb->user_id;
-                $this->dbh->query($sql);
+                $sql .= " WHERE user_id = :user_id";
+                $params[':user_id'] = $this->userDb->user_id;
+
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->execute($params);
 
                 $result_message = __('Your settings are updated!');
 
@@ -123,8 +130,12 @@ class UserSettingsModel extends BaseModel
                     $user_2fa_auth_secret = $Authenticator->generateRandomSecret();
 
                     // *** Save auth_secret, so it's not changed anymore ***
-                    $sql = "UPDATE humo_users SET user_2fa_auth_secret='" . safe_text_db($user_2fa_auth_secret) . "' WHERE user_id=" . $this->userDb->user_id;
-                    $this->dbh->query($sql);
+                    $sql = "UPDATE humo_users SET user_2fa_auth_secret = :auth_secret WHERE user_id = :user_id";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->execute([
+                        ':auth_secret' => $user_2fa_auth_secret,
+                        ':user_id' => $this->userDb->user_id
+                    ]);
                 }
 
                 if (isset($_GET['2fa']) && $_GET['2fa'] == '1') {

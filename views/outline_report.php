@@ -21,7 +21,7 @@ $show_date = $data["show_date"];
 $dates_behind_names = $data["dates_behind_names"];
 $nr_generations = $data["nr_generations"];
 
-$path_form = $link_cls->get_link($uri_path, 'outline_report', $tree_id);
+$path_form = $processLinks->get_link($uri_path, 'outline_report', $tree_id);
 
 //echo '<h1 class="standard_header">' . __('Outline report') . '</h1>';
 echo $data["descendant_header"];
@@ -79,7 +79,7 @@ echo $data["descendant_header"];
 
         <select size="1" name="selectnr_generations" class="form-select form-select-sm" onChange="window.location=this.value;" style="display:inline; width: 100px;">
             <?php
-            $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $tree_id, true);
+            $path_tmp = $processLinks->get_link($uri_path, 'outline_report', $tree_id, true);
             for ($i = 2; $i < 20; $i++) {
                 $nr_gen = $i - 1;
             ?>
@@ -145,10 +145,10 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
     global $db_functions, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $user;
 
-    $person_privacy = new PersonPrivacy;
-    $person_name_extended = new PersonNameExtended;
-    $person_data = new PersonData;
-    $language_date = new LanguageDate;
+    $personPrivacy = new PersonPrivacy();
+    $personName_extended = new PersonNameExtended;
+    $personData = new PersonData;
+    $languageDate = new LanguageDate;
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -193,10 +193,10 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
         // *** Privacy filter man and woman ***
         $person_manDb = $db_functions->get_person($familyDb->fam_man);
-        $privacy_man = $person_privacy->get_privacy($person_manDb);
+        $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
         $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-        $privacy_woman = $person_privacy->get_privacy($person_womanDb);
+        $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
         $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
         $family_privacy = $marriage_cls->get_privacy();
@@ -219,9 +219,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     <span style="font-weight:bold;font-size:120%"><?= $generation_number; ?> </span>
                     <?php
                     if ($swap_parent1_parent2 == true) {
-                        echo $person_name_extended->name_extended($person_womanDb, $privacy_woman, "outline");
+                        echo $personName_extended->name_extended($person_womanDb, $privacy_woman, "outline");
                         if ($show_details && !$privacy_woman) {
-                            echo $person_data->person_data($person_womanDb, $privacy_woman, "outline", $familyDb->fam_gedcomnumber);
+                            echo $personData->person_data($person_womanDb, $privacy_woman, "outline", $familyDb->fam_gedcomnumber);
                         }
 
                         if ($show_date == "1" && !$privacy_woman && !$show_details) {
@@ -229,12 +229,12 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                             if ($dates_behind_names == false) {
                                 echo '<br>';
                             }
-                            echo ' &nbsp; (' . $language_date->language_date($person_womanDb->pers_birth_date) . ' - ' . $language_date->language_date($person_womanDb->pers_death_date) . ')';
+                            echo ' &nbsp; (' . $languageDate->language_date($person_womanDb->pers_birth_date) . ' - ' . $languageDate->language_date($person_womanDb->pers_death_date) . ')';
                         }
                     } else {
-                        echo $person_name_extended->name_extended($person_manDb, $privacy_man, "outline");
+                        echo $personName_extended->name_extended($person_manDb, $privacy_man, "outline");
                         if ($show_details && !$privacy_man) {
-                            echo $person_data->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
+                            echo $personData->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
                         }
 
                         if ($show_date == "1" && !$privacy_man && !$show_details) {
@@ -242,7 +242,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                             if ($dates_behind_names == false) {
                                 echo '<br>';
                             }
-                            echo ' &nbsp; (' . $language_date->language_date($person_manDb->pers_birth_date) . ' - ' . $language_date->language_date($person_manDb->pers_death_date) . ')';
+                            echo ' &nbsp; (' . $languageDate->language_date($person_manDb->pers_birth_date) . ' - ' . $languageDate->language_date($person_manDb->pers_death_date) . ')';
                         }
                     }
                     ?>
@@ -306,9 +306,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
             if ($show_parent2 && $swap_parent1_parent2) {
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-                echo $person_name_extended->name_extended($person_manDb, $privacy_man, "outline");
+                echo $personName_extended->name_extended($person_manDb, $privacy_man, "outline");
                 if ($show_details && !$privacy_man) {
-                    echo $person_data->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
+                    echo $personData->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
                 }
 
                 if ($show_date == "1" && !$privacy_man && !$show_details) {
@@ -316,15 +316,15 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     if ($dates_behind_names == false) {
                         echo '<br>';
                     }
-                    echo ' &nbsp; (' . @$language_date->language_date($person_manDb->pers_birth_date) . ' - ' . @$language_date->language_date($person_manDb->pers_death_date) . ')';
+                    echo ' &nbsp; (' . @$languageDate->language_date($person_manDb->pers_birth_date) . ' - ' . @$languageDate->language_date($person_manDb->pers_death_date) . ')';
                 }
             } elseif ($show_parent2) {
                 if ($show_details) {
                     echo "&nbsp;&nbsp;&nbsp;&nbsp;";
                 }
-                echo $person_name_extended->name_extended($person_womanDb, $privacy_woman, "outline");
+                echo $personName_extended->name_extended($person_womanDb, $privacy_woman, "outline");
                 if ($show_details && !$privacy_woman) {
-                    echo $person_data->person_data($person_womanDb, $privacy_woman, "outline", $familyDb->fam_gedcomnumber);
+                    echo $personData->person_data($person_womanDb, $privacy_woman, "outline", $familyDb->fam_gedcomnumber);
                 }
 
                 if ($show_date == "1" && !$privacy_woman && !$show_details) {
@@ -332,7 +332,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     if ($dates_behind_names == false) {
                         echo '<br>';
                     }
-                    echo ' &nbsp; (' . @$language_date->language_date($person_womanDb->pers_birth_date) . ' - ' . @$language_date->language_date($person_womanDb->pers_death_date) . ')';
+                    echo ' &nbsp; (' . @$languageDate->language_date($person_womanDb->pers_birth_date) . ' - ' . @$languageDate->language_date($person_womanDb->pers_death_date) . ')';
                 }
             } else {
                 // *** No permission to show parent2 ***
@@ -360,7 +360,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     continue;
                 }
 
-                $child_privacy = $person_privacy->get_privacy($childDb);
+                $child_privacy = $personPrivacy->get_privacy($childDb);
 
                 // *** Build descendant_report ***
                 if ($childDb->pers_fams) {
@@ -376,9 +376,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                         <div class="<?= $childindent; ?>">
                             <span style="font-weight:bold;font-size:120%"><?= $childgn; ?></span>
                             <?php
-                            echo $person_name_extended->name_extended($childDb, $child_privacy, "outline");
+                            echo $personName_extended->name_extended($childDb, $child_privacy, "outline");
                             if ($show_details and !$child_privacy) {
-                                echo $person_data->person_data($childDb, $child_privacy, "outline", "");
+                                echo $personData->person_data($childDb, $child_privacy, "outline", "");
                             }
 
                             if ($show_date == "1" and !$child_privacy and !$show_details) {
@@ -386,7 +386,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                                 if ($dates_behind_names == false) {
                                     echo '<br>';
                                 }
-                                echo ' &nbsp; (' . $language_date->language_date($childDb->pers_birth_date) . ' - ' . $language_date->language_date($childDb->pers_death_date) . ')';
+                                echo ' &nbsp; (' . $languageDate->language_date($childDb->pers_birth_date) . ' - ' . $languageDate->language_date($childDb->pers_death_date) . ')';
                             }
                             ?>
                         </div>

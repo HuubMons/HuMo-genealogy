@@ -586,7 +586,7 @@ The file .htpasswd will look something like this:<br>'); ?>
             while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                 // *** Skip empty lines (didn't work in query...) ***
                 $tree_counter++;
-                $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+                $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
             ?>
 
                 <div class="row mb-2">

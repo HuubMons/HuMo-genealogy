@@ -98,7 +98,9 @@ if (isset($screen_mode) && ($screen_mode == "STAR" || $screen_mode == "STARSIZE"
     $html_text = '';
 }
 
-$media_path = new MediaPath;
+$mediaPath = new MediaPath;
+$showTreeText = new ShowTreeText();
+$safeTextShow = new SafeTextShow();
 
 function getActiveTopMenu(string $page = 'home')
 {
@@ -182,7 +184,7 @@ $menu_top = getActiveTopMenu($page);
     <?php
     // *** Use your own favicon.ico in media folder ***
     if (file_exists('media/favicon.ico')) {
-        echo '<link href="' . $media_path->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
+        echo '<link href="' . $mediaPath->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
     } else {
         echo '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">';
     }
@@ -311,9 +313,9 @@ $menu_top = getActiveTopMenu($page);
         // *** Show logo or name of website ***
         $logo = $humo_option["database_name"];
         if (is_file('media/logo.png')) {
-            $logo = '<img src="' . $media_path->give_media_path('media/', 'logo.png') . '">';
+            $logo = '<img src="' . $mediaPath->give_media_path('media/', 'logo.png') . '">';
         } elseif (is_file('media/logo.jpg')) {
-            $logo = '<img src="' . $media_path->give_media_path('media/', 'logo.jpg') . '">';
+            $logo = '<img src="' . $mediaPath->give_media_path('media/', 'logo.jpg') . '">';
         }
     ?>
 
@@ -339,7 +341,7 @@ $menu_top = getActiveTopMenu($page);
                         // *** Changed 1 into 0. So pull-down menu is always shown ***
                         //if ($num_rows > 1) {
                         if ($num_rows > 0) {
-                            $link = $link_cls->get_link($uri_path, 'tree_index');
+                            $link = $processLinks->get_link($uri_path, 'tree_index');
                     ?>
                             <div class="col-md-3">
                                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
@@ -360,7 +362,7 @@ $menu_top = getActiveTopMenu($page);
                                                     $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                                                     $selected = ' selected';
                                                 }
-                                                $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                                                $treetext = $showTreeText ->show_tree_text($tree_searchDb->tree_id, $selected_language);
                                                 echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . $treetext['name'] . '</option>';
                                                 $count++;
                                             }
@@ -382,11 +384,11 @@ $menu_top = getActiveTopMenu($page);
 
                     // *** Show quicksearch field ***
                     if (!$bot_visit) {
-                        $menu_path = $link_cls->get_link($uri_path, 'list', $tree_id);
+                        $menu_path = $processLinks->get_link($uri_path, 'list', $tree_id);
 
                         $quicksearch = '';
                         if (isset($_POST['quicksearch'])) {
-                            $quicksearch = safe_text_show($_POST['quicksearch']);
+                            $quicksearch = $safeTextShow->safe_text_show($_POST['quicksearch']);
                             $_SESSION["save_quicksearch"] = $quicksearch;
                         }
                         if (isset($_SESSION["save_quicksearch"])) {
@@ -416,7 +418,7 @@ $menu_top = getActiveTopMenu($page);
                         <div class="col-md-1 d-none d-md-block">
                             <?php
                             // *** Link for extended search form ***
-                            $menu_path = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+                            $menu_path = $processLinks->get_link($uri_path, 'list', $tree_id, true);
                             $menu_path .= 'adv_search=1&amp;index_list=search';
                             ?>
 
@@ -434,10 +436,10 @@ $menu_top = getActiveTopMenu($page);
                     // *** Favourite list for family pages ***
                     if (!$bot_visit) {
                         // *** Show favorites in selection list ***
-                        $link = $link_cls->get_link($uri_path, 'family', $tree_id);
+                        $link = $processLinks->get_link($uri_path, 'family', $tree_id);
 
-                        $person_privacy = new PersonPrivacy;
-                        $person_name = new PersonName;
+                        $personPrivacy = new PersonPrivacy();
+                        $personName = new PersonName();
                     ?>
                         <div class="col-md-2">
 
@@ -458,8 +460,8 @@ $menu_top = getActiveTopMenu($page);
                                                     // *** Check if family tree is still the same family tree ***
                                                     $test_favorite = $db_functions->get_person($favorite_array2['2']);
                                                     if ($test_favorite) {
-                                                        $privacy = $person_privacy->get_privacy($test_favorite);
-                                                        $name = $person_name->get_person_name($test_favorite, $privacy);
+                                                        $privacy = $personPrivacy->get_privacy($test_favorite);
+                                                        $name = $personName->get_person_name($test_favorite, $privacy);
                                                         echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['2'] . '">' . $name['name'] . ' [' . $favorite_array2['2'] . ']</option>';
                                                     }
                                                 }
@@ -477,18 +479,18 @@ $menu_top = getActiveTopMenu($page);
             </div> <!-- End of Top -->
 
             <?php
-            $menu_path_home = $link_cls->get_link($uri_path, 'index', $tree_id);
+            $menu_path_home = $processLinks->get_link($uri_path, 'index', $tree_id);
             // *** Mobile menu ***
             if ($user['group_menu_login'] == 'j') {
-                $menu_path_login = $link_cls->get_link($uri_path, 'login');
+                $menu_path_login = $processLinks->get_link($uri_path, 'login');
             }
             // *** Log off ***
-            $menu_path_logoff = $link_cls->get_link($uri_path, 'logoff');
-            $menu_path_help = $link_cls->get_link($uri_path, 'help');
-            $menu_path_register = $link_cls->get_link($uri_path, 'register');
-            $menu_path_cms = $link_cls->get_link($uri_path, 'cms_pages');
-            $menu_path_cookies = $link_cls->get_link($uri_path, 'cookies');
-            $menu_path_persons = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+            $menu_path_logoff = $processLinks->get_link($uri_path, 'logoff');
+            $menu_path_help = $processLinks->get_link($uri_path, 'help');
+            $menu_path_register = $processLinks->get_link($uri_path, 'register');
+            $menu_path_cms = $processLinks->get_link($uri_path, 'cms_pages');
+            $menu_path_cookies = $processLinks->get_link($uri_path, 'cookies');
+            $menu_path_persons = $processLinks->get_link($uri_path, 'list', $tree_id, true);
             $menu_path_persons .= 'reset=1';
             if ($humo_option["url_rewrite"] == "j") {
                 $menu_path_names = 'list_names/' . $tree_id . '/';
@@ -496,25 +498,25 @@ $menu_top = getActiveTopMenu($page);
                 $menu_path_names = 'index.php?page=list_names&amp;tree_id=' . $tree_id;
             }
             // Doesn't work yet. An extra / is added at end of link.
-            //$menu_path_names = $link_cls->get_link($uri_path, 'list_names',$tree_id);
+            //$menu_path_names = $processLinks->get_link($uri_path, 'list_names',$tree_id);
 
-            $menu_path_user_settings = $link_cls->get_link($uri_path, 'user_settings');
+            $menu_path_user_settings = $processLinks->get_link($uri_path, 'user_settings');
             $menu_path_admin = 'admin/index.php';
-            $menu_path_anniversary = $link_cls->get_link($uri_path, 'anniversary');
-            $menu_path_statistics = $link_cls->get_link($uri_path, 'statistics');
-            $menu_path_calculator = $link_cls->get_link($uri_path, 'relations');
-            $menu_path_map = $link_cls->get_link($uri_path, 'maps');
-            $menu_path_contact = $link_cls->get_link($uri_path, 'mailform');
+            $menu_path_anniversary = $processLinks->get_link($uri_path, 'anniversary');
+            $menu_path_statistics = $processLinks->get_link($uri_path, 'statistics');
+            $menu_path_calculator = $processLinks->get_link($uri_path, 'relations');
+            $menu_path_map = $processLinks->get_link($uri_path, 'maps');
+            $menu_path_contact = $processLinks->get_link($uri_path, 'mailform');
             // *** Latest changes ***
-            $menu_path_latest_changes = $link_cls->get_link($uri_path, 'latest_changes', $tree_id);
-            $menu_path_tree_index = $link_cls->get_link($uri_path, 'tree_index', $tree_id);
-            $menu_path_places_persons = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+            $menu_path_latest_changes = $processLinks->get_link($uri_path, 'latest_changes', $tree_id);
+            $menu_path_tree_index = $processLinks->get_link($uri_path, 'tree_index', $tree_id);
+            $menu_path_places_persons = $processLinks->get_link($uri_path, 'list', $tree_id, true);
             $menu_path_places_persons .= 'index_list=places&amp;reset=1';
-            $menu_path_list_places_families = $link_cls->get_link($uri_path, 'list_places_families', $tree_id, true);
+            $menu_path_list_places_families = $processLinks->get_link($uri_path, 'list_places_families', $tree_id, true);
             $menu_path_list_places_families .= 'reset=1';
-            $menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum', $tree_id);
-            $menu_path_sources = $link_cls->get_link($uri_path, 'sources', $tree_id);
-            $menu_path_addresses = $link_cls->get_link($uri_path, 'addresses', $tree_id);
+            $menu_path_photoalbum = $processLinks->get_link($uri_path, 'photoalbum', $tree_id);
+            $menu_path_sources = $processLinks->get_link($uri_path, 'sources', $tree_id);
+            $menu_path_addresses = $processLinks->get_link($uri_path, 'addresses', $tree_id);
             ?>
 
         </div> <!-- End of top_menu -->
@@ -708,7 +710,7 @@ $menu_top = getActiveTopMenu($page);
                     <?php if (!$bot_visit) { ?>
                         <li class="nav-item dropdown">
                             <?php include_once(__DIR__ . "/partial/select_language.php"); ?>
-                            <?php $language_path = $link_cls->get_link($uri_path, 'language', '', true); ?>
+                            <?php $language_path = $processLinks->get_link($uri_path, 'language', '', true); ?>
                             <?= show_country_flags($selected_language, '', 'language', $language_path); ?>
                         </li>
                     <?php } ?>

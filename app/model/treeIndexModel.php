@@ -7,20 +7,24 @@ class TreeIndexModel
     // Can't be used in all functions yet. Refactor is needed.
     private $dbh, $humo_option;
 
-    private PersonLink $person_link;
+    private PersonLink $personLink;
+    private $processLinks;
 
     public function __construct($dbh, $humo_option)
     {
         $this->dbh = $dbh;
         $this->humo_option = $humo_option;
 
-        $this->person_link = new PersonLink();
+        $this->personLink = new PersonLink();
+        $this->processLinks = new ProcessLinks();
     }
 
     public function show_tree_index()
     {
         global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
-        global $link_cls, $uri_path;
+        global $uri_path;
+
+        $showTreeText = new ShowTreeText();
 
         // *** Option to only index CMS page for bots ***
         if ($bot_visit && $humo_option["searchengine_cms_only"] == 'y') {
@@ -36,7 +40,7 @@ class TreeIndexModel
         elseif ($tree_prefix_quoted == '' || $tree_prefix_quoted == 'EMPTY') {
             $temp = $this->selected_family_tree();
 
-            $path_tmp = $link_cls->get_link($uri_path, 'login');
+            $path_tmp = $this->processLinks->get_link($uri_path, 'login');
             $temp .= '<h2><a href="' . $path_tmp . '">' . __('Select another family tree, or login for the selected family tree.') . '</a></h2>';
 
             $item_array[0]['position'] = 'center';
@@ -145,7 +149,7 @@ class TreeIndexModel
                     $temp .= $this->owner();
 
                     // *** Prepare mainmenu text and source ***
-                    $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+                    $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
 
                     // *** Show mainmenu text ***
                     $mainmenu_text = $treetext['mainmenu_text'];
@@ -237,25 +241,31 @@ class TreeIndexModel
     public function selected_family_tree(): string
     {
         global $dbh, $num_rows, $selected_language;
+
+        $showTreeText = new ShowTreeText();
+
         $text = '';
         if ($num_rows > 1) {
             $text .= __('Selected family tree') . ': ';
         }
         // *** Variable $treetext_name used from menu.php ***
-        $treetext = show_tree_text($_SESSION['tree_id'], $selected_language);
+        $treetext = $showTreeText->show_tree_text($_SESSION['tree_id'], $selected_language);
         return $text . $treetext['name'];
     }
 
     // *** List family trees ***
     public function tree_list($datasql): string
     {
-        global $dbh, $humo_option, $uri_path, $user, $language, $selected_language, $link_cls;
+        global $uri_path, $user, $selected_language;
+
+        $showTreeText = new ShowTreeText();
+
         $text = '';
         while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
             // *** Check is family tree is shown or hidden for user group ***
             $hide_tree_array = explode(";", $user['group_hide_trees']);
             if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-                $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+                $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
                 $treetext_name = $treetext['name'];
 
                 // *** Name family tree ***
@@ -265,7 +275,7 @@ class TreeIndexModel
                 } elseif (isset($_SESSION['tree_id']) && $_SESSION['tree_id'] == $dataDb->tree_id) {
                     $tree_name = '<span class="tree_link">' . $treetext_name . '</span>';
                 } else {
-                    $path_tmp = $link_cls->get_link($uri_path, 'tree_index', $dataDb->tree_id);
+                    $path_tmp = $this->processLinks->get_link($uri_path, 'tree_index', $dataDb->tree_id);
                     $tree_name = '<span class="tree_link"><a href="' . $path_tmp . '">' . $treetext_name . '</a></span>';
                 }
                 if ($text !== '') {
@@ -332,8 +342,10 @@ class TreeIndexModel
                 // displays one set of name & nr column items in the row
                 // $nr is the array number of the name set created in function last_names
                 // if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
-                global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text, $link_cls, $uri_path, $tree_id;
-                $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+                global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text, $uri_path, $tree_id;
+
+                $processLinks = new ProcessLinks($uri_path);
+                $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
                 $text .= '<td class="namelst">';
                 if (isset($freq_last_names[$nr])) {
                     $top_pers_lastname = '';
@@ -449,15 +461,25 @@ class TreeIndexModel
                         if ($cache_exists) {
                             // *** Update existing cache item ***
                             $sql = "UPDATE humo_settings SET
-                                setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "'
-                                WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
-                            $dbh->query($sql);
+                                setting_variable = :setting_variable,
+                                setting_value = :setting_value
+                                WHERE setting_tree_id = :setting_tree_id";
+                            $stmt = $dbh->prepare($sql);
+                            $stmt->execute([
+                                ':setting_variable' => 'cache_surnames',
+                                ':setting_value' => $cache,
+                                ':setting_tree_id' => $tree_id
+                            ]);
                         } else {
                             // *** Add new cache item ***
-                            $sql = "INSERT INTO humo_settings SET
-                                setting_variable='cache_surnames', setting_value='" . safe_text_db($cache) . "',
-                                setting_tree_id='" . safe_text_db($tree_id) . "'";
-                            $dbh->query($sql);
+                            $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_tree_id)
+                                    VALUES (:setting_variable, :setting_value, :setting_tree_id)";
+                            $stmt = $dbh->prepare($sql);
+                            $stmt->execute([
+                                ':setting_variable' => 'cache_surnames',
+                                ':setting_value' => $cache,
+                                ':setting_tree_id' => $tree_id
+                            ]);
                         }
                     }
                 } // *** End of cache ***
@@ -531,7 +553,10 @@ class TreeIndexModel
     // *** Search field ***
     public function search_box(): string
     {
-        global $language, $dbh, $humo_option, $link_cls, $uri_path, $tree_id;
+        global $dbh, $humo_option, $uri_path, $tree_id;
+
+        $safeTextShow = new SafeTextShow();
+
         $text = '';
 
         // *** Reset search field if a new genealogy is selected ***
@@ -572,7 +597,7 @@ class TreeIndexModel
         //    $search_database = $_SESSION["save_search_database"];
         //}
 
-        $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, false);
+        $path_tmp = $this->processLinks->get_link($uri_path, 'list', $tree_id, false);
         $text .= '<form method="post" action="' . $path_tmp . '">';
 
         $text .= '<p>';
@@ -587,7 +612,7 @@ class TreeIndexModel
         $quicksearch = '';
         if (isset($_POST['quicksearch'])) {
             //$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
-            $quicksearch = safe_text_show($_POST['quicksearch']);
+            $quicksearch = $safeTextShow->safe_text_show($_POST['quicksearch']);
             $_SESSION["save_quicksearch"] = $quicksearch;
         }
         if (isset($_SESSION["save_quicksearch"])) {
@@ -640,7 +665,7 @@ class TreeIndexModel
             $text .= '<input type="hidden" name="search_database" value="all_trees">';
         }
         $text .= '<p><button type="submit" class="btn btn-success btn-sm my-2">' . __('Search') . '</button></p>';
-        $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+        $path_tmp = $this->processLinks->get_link($uri_path, 'list', $tree_id, true);
         $path_tmp .= 'adv_search=1&index_list=search';
         $text .= '<a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a>';
         return $text . "</form>";
@@ -651,10 +676,10 @@ class TreeIndexModel
     {
         global $dataDb, $tree_id, $dbh, $db_functions, $humo_option;
 
-        $person_name = new PersonName;
-        $person_privacy = new PersonPrivacy;
-        $date_place = new DatePlace;
-        $media_path = new MediaPath;
+        $personName = new PersonName();
+        $personPrivacy = new PersonPrivacy();
+        $datePlace = new DatePlace();
+        $mediaPath = new MediaPath;
 
         // adding static table for displayed photos storage
         static $temp_pic_names_table = [];
@@ -704,14 +729,14 @@ class TreeIndexModel
 
                 if ($pic_conn_kind == 'person') {
                     $personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
-                    $man_privacy = $person_privacy->get_privacy($personmnDb);
+                    $man_privacy = $personPrivacy->get_privacy($personmnDb);
                     if (!$man_privacy) {
                         $is_privacy = false;
 
-                        $name = $person_name->get_person_name($personmnDb, $man_privacy);
+                        $name = $personName->get_person_name($personmnDb, $man_privacy);
                         $link_text = $name["standard_name"];
 
-                        $url = $this->person_link->get_person_link($personmnDb);
+                        $url = $this->personLink->get_person_link($personmnDb);
                     }
                 } elseif ($pic_conn_kind == 'family') {
                     $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $picqryDb->event_connect_id . "'";
@@ -719,19 +744,19 @@ class TreeIndexModel
                     $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
 
                     $personmnDb2 = $db_functions->get_person($picqryDb2->fam_man);
-                    $man_privacy = $person_privacy->get_privacy($personmnDb2);
+                    $man_privacy = $personPrivacy->get_privacy($personmnDb2);
 
                     $personmnDb3 = $db_functions->get_person($picqryDb2->fam_woman);
-                    $woman_privacy = $person_privacy->get_privacy($personmnDb3);
+                    $woman_privacy = $personPrivacy->get_privacy($personmnDb3);
 
                     // *** Only use this picture if both man and woman have disabled privacy options ***
                     if (!$man_privacy && !$woman_privacy) {
                         $is_privacy = false;
 
-                        $name = $person_name->get_person_name($personmnDb2, $man_privacy);
+                        $name = $personName->get_person_name($personmnDb2, $man_privacy);
                         $man_name = $name["standard_name"];
 
-                        $name = $person_name->get_person_name($personmnDb3, $woman_privacy);
+                        $name = $personName->get_person_name($personmnDb3, $woman_privacy);
                         $woman_name =  $name["standard_name"];
 
                         $link_text = __('Family') . ': ' . $man_name . ' &amp; ' . $woman_name;
@@ -743,7 +768,7 @@ class TreeIndexModel
                         }
                         // TODO use function to build link:
                         //$vars['pers_family'] = $familyDb->stat_gedcom_fam;
-                        //$link = $link_cls->get_link('../', 'family', $familyDb->tree_id, false, $vars);
+                        //$link = $this->processLinks->get_link('../', 'family', $familyDb->tree_id, false, $vars);
                         //echo '<a href="' . $link . '">' . __('Family') . ': </a>';
                     }
                 }
@@ -751,9 +776,9 @@ class TreeIndexModel
                 if (!$is_privacy) {
                     $dateplace = '';
                     if ($picqryDb->event_date || $picqryDb->event_place) {
-                        $dateplace = $date_place->date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
+                        $dateplace = $datePlace->date_place($picqryDb->event_date, $picqryDb->event_place) . '<br>';
                     }
-                    $picture_path = $media_path->give_media_path($tree_pict_path, $picname);
+                    $picture_path = $mediaPath->give_media_path($tree_pict_path, $picname);
 
                     // u can delete this variables if there are some global variables for protocol and omain combined
                     // Get the protocol (HTTP or HTTPS)
@@ -788,8 +813,8 @@ class TreeIndexModel
     public function extra_links(): string
     {
         global $dbh, $tree_id, $humo_option, $uri_path;
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
         $text = '';
 
         // *** Check if there are extra links ***
@@ -806,9 +831,9 @@ class TreeIndexModel
             while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                 if (in_array($personDb->pers_own_code, $pers_own_code)) {
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $path_tmp = $this->person_link->get_person_link($personDb);
-                    $privacy = $person_privacy->get_privacy($personDb);
-                    $name = $person_name->get_person_name($personDb, $privacy);
+                    $path_tmp = $this->personLink->get_person_link($personDb);
+                    $privacy = $personPrivacy->get_privacy($personDb);
+                    $name = $personName->get_person_name($personDb, $privacy);
                     $text_nr = array_search($personDb->pers_own_code, $pers_own_code);
                     $link_order2 = $link_order[$text_nr];
                     // *** Only needed for PJCS, can't be used in other installations ***
@@ -832,7 +857,8 @@ class TreeIndexModel
     // *** Alphabet line ***
     public function alphabet(): string
     {
-        global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $link_cls;
+        global $dbh, $dataDb, $tree_id, $user, $humo_option, $uri_path;
+
         $text = '';
 
         // *** Read cache (only used in large family trees) ***
@@ -892,14 +918,24 @@ class TreeIndexModel
             if ($cache && $cache_count == $count_first_character) {
                 if ($cache_exists) {
                     $sql = "UPDATE humo_settings SET
-                        setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "'
-                        WHERE setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $dbh->query($sql);
+                        setting_variable = :setting_variable,
+                        setting_value = :setting_value
+                        WHERE setting_tree_id = :setting_tree_id";
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->execute([
+                        ':setting_variable' => 'cache_alphabet',
+                        ':setting_value' => $cache,
+                        ':setting_tree_id' => $tree_id
+                    ]);
                 } else {
-                    $sql = "INSERT INTO humo_settings SET
-                        setting_variable='cache_alphabet', setting_value='" . safe_text_db($cache) . "',
-                        setting_tree_id='" . safe_text_db($tree_id) . "'";
-                    $dbh->query($sql);
+                    $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_tree_id)
+                        VALUES (:setting_variable, :setting_value, :setting_tree_id)";
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->execute([
+                        ':setting_variable' => 'cache_alphabet',
+                        ':setting_value' => $cache,
+                        ':setting_tree_id' => $tree_id
+                    ]);
                 }
             }
         }
@@ -924,7 +960,7 @@ class TreeIndexModel
         $person = "SELECT pers_patronym FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
         $personDb = $dbh->query($person);
         if ($personDb->rowCount() > 0) {
-            $path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+            $path_tmp = $this->processLinks->get_link($uri_path, 'list', $tree_id, true);
             $path_tmp .= 'index_list=patronym';
             $text .= ' <a href="' . $path_tmp . '">' . __('Patronyms') . '</a>';
         }
@@ -935,9 +971,9 @@ class TreeIndexModel
     public function today_in_history($view = 'with_table'): string
     {
         global $dbh, $dataDb;
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
-        $date_place = new DatePlace;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $datePlace = new DatePlace();
 
         // *** Backwards compatible, value is empty ***
         if ($view == '') {
@@ -972,8 +1008,8 @@ class TreeIndexModel
 
         // *** Save results in an array, so it's possible to order the results by date ***
         while ($record = $birth_qry->fetch(PDO::FETCH_OBJ)) {
-            $privacy = $person_privacy->get_privacy($record);
-            $name = $person_name->get_person_name($record, $privacy);
+            $privacy = $personPrivacy->get_privacy($record);
+            $name = $personName->get_person_name($record, $privacy);
 
             if (!$privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) === $today || substr($record->pers_birth_date, 0, 6) === $today2) {
@@ -981,33 +1017,33 @@ class TreeIndexModel
                     // *** First order birth, using C ***
                     $history['order'][] = 'C' . substr($record->pers_birth_date, -4);
                     if ($view == 'with_table') {
-                        $history['date'][] = '<td>' . $date_place->date_place($record->pers_birth_date, '') . '</td><td>' . __('born') . '</td>';
+                        $history['date'][] = '<td>' . $datePlace->date_place($record->pers_birth_date, '') . '</td><td>' . __('born') . '</td>';
                     } else {
                         $history['item'][] = __('born');
-                        $history['date'][] = $date_place->date_place($record->pers_birth_date, '');
+                        $history['date'][] = $datePlace->date_place($record->pers_birth_date, '');
                     }
                 } elseif (trim(substr($record->pers_bapt_date, 0, 6)) === $today || substr($record->pers_bapt_date, 0, 6) === $today2) {
                     // *** Second order baptise, using B ***
                     $history['order'][] = 'B' . substr($record->pers_bapt_date, -4);
                     if ($view == 'with_table') {
-                        $history['date'][] = '<td>' . $date_place->date_place($record->pers_bapt_date, '') . '</td><td>' . __('baptised') . '</td>';
+                        $history['date'][] = '<td>' . $datePlace->date_place($record->pers_bapt_date, '') . '</td><td>' . __('baptised') . '</td>';
                     } else {
                         $history['item'][] = __('baptised');
-                        $history['date'][] = $date_place->date_place($record->pers_bapt_date, '');
+                        $history['date'][] = $datePlace->date_place($record->pers_bapt_date, '');
                     }
                 } else {
                     // *** Third order death, using A ***
                     $history['order'][] = 'A' . substr($record->pers_death_date, -4);
                     if ($view == 'with_table') {
-                        $history['date'][] = '<td>' . $date_place->date_place($record->pers_death_date, '') . '</td><td>' . __('died') . '</td>';
+                        $history['date'][] = '<td>' . $datePlace->date_place($record->pers_death_date, '') . '</td><td>' . __('died') . '</td>';
                     } else {
                         $history['item'][] = __('died');
-                        $history['date'][] = $date_place->date_place($record->pers_death_date, '');
+                        $history['date'][] = $datePlace->date_place($record->pers_death_date, '');
                     }
                 }
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $url = $this->person_link->get_person_link($record);
+                $url = $this->personLink->get_person_link($record);
                 $history['name'][] = '<td><a href="' . $url . '">' . $name["standard_name"] . '</a></td>';
             } else {
                 $count_privacy++;

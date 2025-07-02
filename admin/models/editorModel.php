@@ -4,16 +4,12 @@
  * July 2023: refactor editor to MVC
  */
 
-// *** These lines are also used for seperate source pages! ***
-include_once(__DIR__ . "/../../include/language_event.php");
-
 class EditorModel extends AdminBaseModel
 {
     private $tree_prefix, $new_tree = false;
-    private $pers_gedcomnumber, $person, $pers_alive = '', $add_person;
-    private $search_id, $search_name;
+    private $pers_gedcomnumber, $person, $pers_alive = '', $add_person, $search_id, $search_name;
     private $marriage; // TODO check $marriage. Not in use for all $marriage variables yet.
-    private $editor_cls, $userid;
+    private $editor_cls, $userid, $safeTextDb;
 
     public function __construct($admin_config, $tree_prefix, $editor_cls)
     {
@@ -26,6 +22,8 @@ class EditorModel extends AdminBaseModel
         if (is_numeric($_SESSION['user_id_admin'])) {
             $this->userid = $_SESSION['user_id_admin'];
         }
+
+        $this->safeTextDb = new SafeTextDb();
     }
 
     // TODO: not used yet (because of other lines to calculate pers_alive status)
@@ -33,7 +31,7 @@ class EditorModel extends AdminBaseModel
     {
         $this->pers_alive = '';
         if (isset($_POST["pers_alive"])) {
-            $this->pers_alive = safe_text_db($_POST["pers_alive"]);
+            $this->pers_alive = $this->safeTextDb->safe_text_db($_POST["pers_alive"]);
         }
         //if ($_POST["pers_death_date"] || $_POST["pers_death_place"] || $_POST["pers_buried_date"] || $_POST["pers_buried_place"]) {
         //    $this->pers_alive = 'deceased';
@@ -98,6 +96,7 @@ class EditorModel extends AdminBaseModel
 
     public function set_pers_gedcomnumber(): void
     {
+        $validateGedcomnumber = new ValidateGedcomnumber;
         // *** Used for new selected family tree or search person etc. ***
         if (isset($_POST["tree_id"])) {
             $this->pers_gedcomnumber = '';
@@ -133,8 +132,7 @@ class EditorModel extends AdminBaseModel
         $this->search_id = '';
         // *** Manually search for GEDCOM number, must be pattern like: Ixxxx ***
         if (isset($_POST["search_id"])) {
-            $pattern = '/^^[a-z,A-Z][0-9]{1,}$/';
-            if (preg_match($pattern, $_POST["search_id"])) {
+            if ($validateGedcomnumber->validate($_POST["search_id"])){
                 $this->pers_gedcomnumber = $_POST['search_id'];
                 $this->search_id = $_POST['search_id'];
 
@@ -150,15 +148,20 @@ class EditorModel extends AdminBaseModel
 
             // *** Select first person to show from favorite list (also check if person still exists) ***
             $new_nr_qry = "SELECT * FROM humo_settings LEFT JOIN humo_persons ON setting_value=pers_gedcomnumber
-                WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($this->tree_id) . "'
-                AND pers_tree_id='" . safe_text_db($this->tree_id) . "' LIMIT 0,1";
-            $new_nr_result = $this->dbh->query($new_nr_qry);
+                WHERE setting_variable='admin_favourite' AND setting_tree_id=:tree_id
+                AND pers_tree_id=:tree_id2 LIMIT 0,1";
+            $stmt = $this->dbh->prepare($new_nr_qry);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id2', $this->tree_id, PDO::PARAM_STR);
+            $new_nr_result = $stmt->execute() ? $stmt : false;
             if ($new_nr_result && $new_nr_result->rowCount()) {
                 $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
                 $this->pers_gedcomnumber = $new_nr->setting_value;
             } else {
-                $new_nr_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . safe_text_db($this->tree_id) . "' LIMIT 0,1";
-                $new_nr_result = $this->dbh->query($new_nr_qry);
+                $new_nr_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id LIMIT 0,1";
+                $stmt = $this->dbh->prepare($new_nr_qry);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $new_nr_result = $stmt->execute() ? $stmt : false;
                 $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
                 if (isset($new_nr->pers_gedcomnumber)) {
                     $this->pers_gedcomnumber = $new_nr->pers_gedcomnumber;
@@ -176,8 +179,7 @@ class EditorModel extends AdminBaseModel
 
         // *** Check GEDCOM number should be I123456 (although other letter is allowed) ***
         if ($this->pers_gedcomnumber) {
-            $pattern = '/^^[a-z,A-Z][0-9]{1,}$/';
-            if (preg_match($pattern, $this->pers_gedcomnumber)) {
+            if ($validateGedcomnumber->validate($this->pers_gedcomnumber)){
                 // *** Now check if GEDCOM number exists ***
                 $this->person = $this->db_functions->get_person($this->pers_gedcomnumber);
                 // *** Person don't exist (anymore)! ***
@@ -216,7 +218,7 @@ class EditorModel extends AdminBaseModel
         $this->search_name = '';
 
         if (isset($_POST["search_quicksearch"])) {
-            $this->search_name = safe_text_db($_POST['search_quicksearch']);
+            $this->search_name = $this->safeTextDb->safe_text_db($_POST['search_quicksearch']);
             $_SESSION['admin_search_name'] = $this->search_name;
 
             //$this->pers_gedcomnumber = '';
@@ -256,6 +258,8 @@ class EditorModel extends AdminBaseModel
     {
         $this->marriage = '';
 
+        $validateGedcomnumber = new ValidateGedcomnumber;
+
         // *** Child is added, show marriage page ***
         if (isset($_POST['child_connect'])) {
             $this->marriage = $_POST['marriage_nr'];
@@ -284,8 +288,7 @@ class EditorModel extends AdminBaseModel
 
         // *** Check GEDCOM number should be F123456 (although other letter is allowed) ***
         if ($this->marriage) {
-            $pattern = '/^^[a-z,A-Z][0-9]{1,}$/';
-            if (preg_match($pattern, $this->marriage)) {
+            if ($validateGedcomnumber->validate($this->marriage)){
                 // Maybe later check here if $marriage is in database. But normally it should be.
             } else {
                 // *** Non valid GEDCOM number, now reset GEDCOM number ***
@@ -304,17 +307,23 @@ class EditorModel extends AdminBaseModel
     {
         if (isset($_GET['pers_favorite'])) {
             if ($_GET['pers_favorite'] == "1") {
-                $sql = "INSERT INTO humo_settings SET
-                    setting_variable='admin_favourite',
-                    setting_value='" . safe_text_db($this->pers_gedcomnumber) . "',
-                    setting_tree_id='" . safe_text_db($this->tree_id) . "'";
-                $this->dbh->query($sql);
+                $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_tree_id)
+                        VALUES (:setting_variable, :setting_value, :setting_tree_id)";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':setting_variable', 'admin_favourite', PDO::PARAM_STR);
+                $stmt->bindValue(':setting_value', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':setting_tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->execute();
             } else {
                 $sql = "DELETE FROM humo_settings
-                    WHERE setting_variable='admin_favourite'
-                    AND setting_value='" . safe_text_db($this->pers_gedcomnumber) . "'
-                    AND setting_tree_id='" . safe_text_db($this->tree_id) . "'";
-                $this->dbh->query($sql);
+                    WHERE setting_variable = :setting_variable
+                    AND setting_value = :setting_value
+                    AND setting_tree_id = :setting_tree_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':setting_variable', 'admin_favourite', PDO::PARAM_STR);
+                $stmt->bindValue(':setting_value', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':setting_tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->execute();
             }
         }
     }
@@ -323,9 +332,17 @@ class EditorModel extends AdminBaseModel
     {
         if ($new_tree == false) {
             // *** Favourites ***
-            $fav_qry = "SELECT * FROM humo_settings LEFT JOIN humo_persons ON setting_value=pers_gedcomnumber
-                WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($this->tree_id) . "' AND pers_tree_id='" . safe_text_db($this->tree_id) . "'";
-            $fav_result = $this->dbh->query($fav_qry);
+            $fav_qry = "SELECT * FROM humo_settings 
+                LEFT JOIN humo_persons ON setting_value = pers_gedcomnumber
+                WHERE setting_variable = :setting_variable 
+                AND setting_tree_id = :tree_id 
+                AND pers_tree_id = :tree_id2";
+            $stmt = $this->dbh->prepare($fav_qry);
+            $stmt->bindValue(':setting_variable', 'admin_favourite', PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id2', $this->tree_id, PDO::PARAM_STR);
+            $stmt->execute();
+            $fav_result = $stmt;
 
             // *** Update cache for list of latest changes ***
             $this->cache_latest_changes();
@@ -537,7 +554,7 @@ class EditorModel extends AdminBaseModel
             // *** Manual alive setting ***
             $pers_alive = '';
             if (isset($_POST["pers_alive"])) {
-                $pers_alive = safe_text_db($_POST["pers_alive"]);
+                $pers_alive = $this->safeTextDb->safe_text_db($_POST["pers_alive"]);
             }
             // *** Only change alive setting if birth or bapise date is changed ***
             if ($_POST["pers_birth_date_previous"] != $_POST["pers_birth_date"] && is_numeric(substr($_POST["pers_birth_date"], -4))) {
@@ -560,19 +577,31 @@ class EditorModel extends AdminBaseModel
 
             //pers_callname='".$this->editor_cls->text_process($_POST["pers_callname"])."',
             $sql = "UPDATE humo_persons SET
-                pers_firstname='" . $this->editor_cls->text_process($_POST["pers_firstname"]) . "',
-                pers_prefix='" . $pers_prefix . "',
-                pers_lastname='" . $this->editor_cls->text_process($_POST["pers_lastname"]) . "',
-                pers_patronym='" . $this->editor_cls->text_process($_POST["pers_patronym"]) . "',
-                pers_name_text='" . $this->editor_cls->text_process($_POST["pers_name_text"], true) . "',
-                pers_alive='" . $pers_alive . "',
-                pers_sexe='" . safe_text_db($_POST["pers_sexe"]) . "',
-                pers_own_code='" . safe_text_db($_POST["pers_own_code"]) . "',
-                pers_text='" . $this->editor_cls->text_process($_POST["person_text"], true) . "',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($this->pers_gedcomnumber) . "'";
-            $this->dbh->query($sql);
-
+                pers_firstname = :pers_firstname,
+                pers_prefix = :pers_prefix,
+                pers_lastname = :pers_lastname,
+                pers_patronym = :pers_patronym,
+                pers_name_text = :pers_name_text,
+                pers_alive = :pers_alive,
+                pers_sexe = :pers_sexe,
+                pers_own_code = :pers_own_code,
+                pers_text = :pers_text,
+                pers_changed_user_id = :userid
+                WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :pers_gedcomnumber";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':pers_firstname', $this->editor_cls->text_process($_POST["pers_firstname"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_prefix', $pers_prefix, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_lastname', $this->editor_cls->text_process($_POST["pers_lastname"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_patronym', $this->editor_cls->text_process($_POST["pers_patronym"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_name_text', $this->editor_cls->text_process($_POST["pers_name_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_alive', $pers_alive, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_sexe', $_POST["pers_sexe"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_own_code', $_POST["pers_own_code"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_text', $this->editor_cls->text_process($_POST["person_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+            $stmt->execute();
             $pers_stillborn = '';
             if (isset($_POST["pers_stillborn"])) {
                 $pers_stillborn = 'y';
@@ -598,85 +627,141 @@ class EditorModel extends AdminBaseModel
             $pers_cal_date = substr($pers_cal_date, -4);
 
             $sql = "UPDATE humo_persons SET
-                pers_birth_date='" . $this->editor_cls->date_process("pers_birth_date") . "',
-                pers_birth_place='" . $this->editor_cls->text_process($_POST["pers_birth_place"]) . "',
-                pers_birth_time='" . $this->editor_cls->text_process($_POST["pers_birth_time"]) . "',
-                pers_birth_text='" . $this->editor_cls->text_process($_POST["pers_birth_text"], true) . "',
-                pers_stillborn='" . $pers_stillborn . "',
-                pers_bapt_date='" . $this->editor_cls->date_process("pers_bapt_date") . "',
-                pers_bapt_place='" . $this->editor_cls->text_process($_POST["pers_bapt_place"]) . "',
-                pers_bapt_text='" . $this->editor_cls->text_process($_POST["pers_bapt_text"], true) . "',
-                pers_religion='" . safe_text_db($_POST["pers_religion"]) . "',
-                pers_death_date='" . $this->editor_cls->date_process("pers_death_date") . "',
-                pers_death_place='" . $this->editor_cls->text_process($_POST["pers_death_place"]) . "',
-                pers_death_time='" . $this->editor_cls->text_process($_POST["pers_death_time"]) . "',
-                pers_death_text='" . $this->editor_cls->text_process($_POST["pers_death_text"], true) . "',
-                pers_death_cause='" . safe_text_db($pers_death_cause) . "',
-                pers_death_age='" . safe_text_db($_POST["pers_death_age"]) . "',
-                pers_buried_date='" . $this->editor_cls->date_process("pers_buried_date") . "',
-                pers_buried_place='" . $this->editor_cls->text_process($_POST["pers_buried_place"]) . "',
-                pers_buried_text='" . $this->editor_cls->text_process($_POST["pers_buried_text"], true) . "',";
-            if ($pers_cal_date) $sql .= "pers_cal_date='" . $pers_cal_date . "',";
-            $sql .= "pers_cremation='" . safe_text_db($_POST["pers_cremation"]) . "',
-                pers_cremation='" . safe_text_db($_POST["pers_cremation"]) . "',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($this->pers_gedcomnumber) . "'";
-            $this->dbh->query($sql);
+                pers_birth_date = :pers_birth_date,
+                pers_birth_place = :pers_birth_place,
+                pers_birth_time = :pers_birth_time,
+                pers_birth_text = :pers_birth_text,
+                pers_stillborn = :pers_stillborn,
+                pers_bapt_date = :pers_bapt_date,
+                pers_bapt_place = :pers_bapt_place,
+                pers_bapt_text = :pers_bapt_text,
+                pers_religion = :pers_religion,
+                pers_death_date = :pers_death_date,
+                pers_death_place = :pers_death_place,
+                pers_death_time = :pers_death_time,
+                pers_death_text = :pers_death_text,
+                pers_death_cause = :pers_death_cause,
+                pers_death_age = :pers_death_age,
+                pers_buried_date = :pers_buried_date,
+                pers_buried_place = :pers_buried_place,
+                pers_buried_text = :pers_buried_text,";
+            if ($pers_cal_date) {
+                $sql .= " pers_cal_date = :pers_cal_date,";
+            }
+            $sql .= "
+                pers_cremation = :pers_cremation,
+                pers_changed_user_id = :userid
+                WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :pers_gedcomnumber";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':pers_birth_date', $this->editor_cls->date_process("pers_birth_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_birth_place', $this->editor_cls->text_process($_POST["pers_birth_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_birth_time', $this->editor_cls->text_process($_POST["pers_birth_time"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_birth_text', $this->editor_cls->text_process($_POST["pers_birth_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_stillborn', $pers_stillborn, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_bapt_date', $this->editor_cls->date_process("pers_bapt_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_bapt_place', $this->editor_cls->text_process($_POST["pers_bapt_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_bapt_text', $this->editor_cls->text_process($_POST["pers_bapt_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_religion', $_POST["pers_religion"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_date', $this->editor_cls->date_process("pers_death_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_place', $this->editor_cls->text_process($_POST["pers_death_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_time', $this->editor_cls->text_process($_POST["pers_death_time"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_text', $this->editor_cls->text_process($_POST["pers_death_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_cause', $pers_death_cause, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_age', $_POST["pers_death_age"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_buried_date', $this->editor_cls->date_process("pers_buried_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_buried_place', $this->editor_cls->text_process($_POST["pers_buried_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_buried_text', $this->editor_cls->text_process($_POST["pers_buried_text"], true), PDO::PARAM_STR);
+            if ($pers_cal_date) {
+                $stmt->bindValue(':pers_cal_date', $pers_cal_date, PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':pers_cremation', $_POST["pers_cremation"], PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+            $stmt->execute();
 
             // *** Save birth declaration ***
             if ($_POST['birth_decl_id'] && is_numeric($_POST['birth_decl_id'])) {
                 $sql = "UPDATE humo_events SET
-                    event_date='" . $this->editor_cls->date_process("birth_decl_date") . "',
-                    event_place='" . $this->editor_cls->text_process($_POST['birth_decl_place']) . "',
-                    event_text='" . $this->editor_cls->text_process($_POST['birth_decl_text']) . "',
-                    event_changed_user_id='" . $this->userid . "'
-                    WHERE event_id='" . $_POST['birth_decl_id'] . "'";
-                $this->dbh->query($sql);
+                    event_date = :event_date,
+                    event_place = :event_place,
+                    event_text = :event_text,
+                    event_changed_user_id = :userid
+                    WHERE event_id = :event_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':event_date', $this->editor_cls->date_process("birth_decl_date"), PDO::PARAM_STR);
+                $stmt->bindValue(':event_place', $this->editor_cls->text_process($_POST['birth_decl_place']), PDO::PARAM_STR);
+                $stmt->bindValue(':event_text', $this->editor_cls->text_process($_POST['birth_decl_text']), PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->bindValue(':event_id', $_POST['birth_decl_id'], PDO::PARAM_INT);
+                $stmt->execute();
             } elseif ($_POST['birth_decl_date'] || $_POST['birth_decl_place'] || $_POST['birth_decl_text']) {
-                $sql = "INSERT INTO humo_events SET
-                    event_tree_id='" . $this->tree_id . "',
-                    event_gedcomnr='',
-                    event_order='1',
-                    event_connect_kind='person',
-                    event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "',
-                    event_kind='birth_declaration',
-                    event_event='',
-                    event_event_extra='',
-                    event_gedcom='EVEN',
-                    event_date='" . $this->editor_cls->date_process("birth_decl_date") . "',
-                    event_place='" . $this->editor_cls->text_process($_POST['birth_decl_place']) . "',
-                    event_text='" . $this->editor_cls->text_process($_POST['birth_decl_text']) . "',
-                    event_quality='',
-                    event_new_user_id='" . $this->userid . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "INSERT INTO humo_events SET
+                        event_tree_id = :tree_id,
+                        event_gedcomnr = '',
+                        event_order = '1',
+                        event_connect_kind = 'person',
+                        event_connect_id = :gedcomnumber,
+                        event_kind = 'birth_declaration',
+                        event_event = '',
+                        event_event_extra = '',
+                        event_gedcom = 'EVEN',
+                        event_date = :event_date,
+                        event_place = :event_place,
+                        event_text = :event_text,
+                        event_quality = '',
+                        event_new_user_id = :userid"
+                );
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':event_date', $this->editor_cls->date_process("birth_decl_date"), PDO::PARAM_STR);
+                $stmt->bindValue(':event_place', $this->editor_cls->text_process($_POST['birth_decl_place']), PDO::PARAM_STR);
+                $stmt->bindValue(':event_text', $this->editor_cls->text_process($_POST['birth_decl_text']), PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Save death declaration ***
             if ($_POST['death_decl_id'] && is_numeric($_POST['death_decl_id'])) {
                 $sql = "UPDATE humo_events SET
-                    event_date='" . $this->editor_cls->date_process("death_decl_date") . "',
-                    event_place='" . $this->editor_cls->text_process($_POST['death_decl_place']) . "',
-                    event_text='" . $this->editor_cls->text_process($_POST['death_decl_text']) . "',
-                    event_changed_user_id='" . $this->userid . "'
-                    WHERE event_id='" . $_POST['death_decl_id'] . "'";
-                $this->dbh->query($sql);
+                    event_date = :event_date,
+                    event_place = :event_place,
+                    event_text = :event_text,
+                    event_changed_user_id = :userid
+                    WHERE event_id = :event_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':event_date', $this->editor_cls->date_process("death_decl_date"), PDO::PARAM_STR);
+                $stmt->bindValue(':event_place', $this->editor_cls->text_process($_POST['death_decl_place']), PDO::PARAM_STR);
+                $stmt->bindValue(':event_text', $this->editor_cls->text_process($_POST['death_decl_text']), PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->bindValue(':event_id', $_POST['death_decl_id'], PDO::PARAM_INT);
+                $stmt->execute();
             } elseif ($_POST['death_decl_date'] || $_POST['death_decl_place'] || $_POST['death_decl_text']) {
-                $sql = "INSERT INTO humo_events SET
-                    event_tree_id='" . $this->tree_id . "',
-                    event_gedcomnr='',
-                    event_order='1',
-                    event_connect_kind='person',
-                    event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "',
-                    event_kind='death_declaration',
-                    event_event='',
-                    event_event_extra='',
-                    event_gedcom='EVEN',
-                    event_date='" . $this->editor_cls->date_process("death_decl_date") . "',
-                    event_place='" . $this->editor_cls->text_process($_POST['death_decl_place']) . "',
-                    event_text='" . $this->editor_cls->text_process($_POST['death_decl_text']) . "',
-                    event_quality='',
-                    event_new_user_id='" . $this->userid . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "INSERT INTO humo_events SET
+                        event_tree_id = :tree_id,
+                        event_gedcomnr = '',
+                        event_order = '1',
+                        event_connect_kind = 'person',
+                        event_connect_id = :gedcomnumber,
+                        event_kind = 'death_declaration',
+                        event_event = '',
+                        event_event_extra = '',
+                        event_gedcom = 'EVEN',
+                        event_date = :event_date,
+                        event_place = :event_place,
+                        event_text = :event_text,
+                        event_quality = '',
+                        event_new_user_id = :userid"
+                );
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':event_date', $this->editor_cls->date_process("death_decl_date"), PDO::PARAM_STR);
+                $stmt->bindValue(':event_place', $this->editor_cls->text_process($_POST['death_decl_place']), PDO::PARAM_STR);
+                $stmt->bindValue(':event_text', $this->editor_cls->text_process($_POST['death_decl_text']), PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Extra UPDATE queries if jewish dates is enabled ***
@@ -694,27 +779,47 @@ class EditorModel extends AdminBaseModel
                     $per_dea_heb = $_POST["pers_death_date_hebnight"];
                 }
                 $sql = "UPDATE humo_persons SET
-                    pers_birth_date_hebnight='" . safe_text_db($per_bir_heb) . "',
-                    pers_death_date_hebnight='" . safe_text_db($per_dea_heb) . "',
-                    pers_buried_date_hebnight='" . safe_text_db($per_bur_heb) . "'
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($this->pers_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                    pers_birth_date_hebnight = :birth_hebnight,
+                    pers_death_date_hebnight = :death_hebnight,
+                    pers_buried_date_hebnight = :buried_hebnight
+                    WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':birth_hebnight', $per_bir_heb, PDO::PARAM_STR);
+                $stmt->bindValue(':death_hebnight', $per_dea_heb, PDO::PARAM_STR);
+                $stmt->bindValue(':buried_hebnight', $per_bur_heb, PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // Extra UPDATE queries if Hebrew name is displayed in main Name section (and not under name event)
             if ($this->humo_option['admin_hebname'] == "y") {
                 $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom = '_HEBN' AND event_connect_id = '" . $this->pers_gedcomnumber . "' AND event_kind='name' AND event_connect_kind='person'";
                 $result = $this->dbh->query($sql);
-                if ($result->rowCount() != 0) {     // a Hebrew name entry already exists for this person: UPDATE 
-                    if ($_POST["even_hebname"] == '') {  // empty entry: existing hebrew name was deleted so delete the event
-                        $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom='_HEBN'  AND event_connect_kind='person' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "' AND event_kind='name' ";
-                        $this->dbh->query($sql);
-                    } else {  // update or retain the entered value
+                if ($result->rowCount() != 0) {
+                    // a Hebrew name entry already exists for this person: UPDATE 
+                    if ($_POST["even_hebname"] == '') {
+                        // empty entry: existing hebrew name was deleted so delete the event
+                        $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_gedcom = '_HEBN' AND event_connect_kind = 'person' AND event_connect_id = :event_connect_id AND event_kind = 'name'";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                        $stmt->execute();
+                    } else {
+                        // update or retain the entered value
                         $sql = "UPDATE `humo_events` SET 
-                            event_event='" . safe_text_db($_POST["even_hebname"]) . "',
-                            event_changed_user_id='" . $this->userid . "'
-                            WHERE event_tree_id='" . $this->tree_id . "' AND  event_gedcom='_HEBN' AND event_kind='name' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "'";
-                        $this->dbh->query($sql);
+                            event_event = :event_event,
+                            event_changed_user_id = :event_changed_user_id
+                            WHERE event_tree_id = :tree_id
+                            AND event_gedcom = '_HEBN'
+                            AND event_kind = 'name'
+                            AND event_connect_id = :event_connect_id";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':event_event', $_POST["even_hebname"], PDO::PARAM_STR);
+                        $stmt->bindValue(':event_changed_user_id', $this->userid, PDO::PARAM_STR);
+                        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                        $stmt->execute();
                     }
                 } elseif ($_POST["even_hebname"] != '') {  // new Hebrew name event: INSERT
                     // *** Add event. If event is new, use: $new_event=true. ***
@@ -729,16 +834,26 @@ class EditorModel extends AdminBaseModel
                 $result = $this->dbh->query($sql);
                 if ($result->rowCount() != 0) {     // a brit mila already exists for this person: UPDATE 
                     if ($_POST["even_brit_date"] == '' && $_POST["even_brit_place"] == '' && $_POST["even_brit_text"] == '') {
-                        $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom='_BRTM'  AND event_connect_kind='person' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "' AND event_kind='event' ";
-                        $this->dbh->query($sql);
+                        $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_gedcom = '_BRTM' AND event_connect_kind = 'person' AND event_connect_id = :event_connect_id AND event_kind = 'event'";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                        $stmt->execute();
                     } else {
                         $sql = "UPDATE humo_events SET
-                            event_date='" . $this->editor_cls->date_process("even_brit_date") . "',
-                            event_place='" . safe_text_db($_POST["even_brit_place"]) . "',
-                            event_text='" . safe_text_db($_POST["even_brit_text"]) . "',
-                            event_changed_user_id='" . $this->userid . "'
-                            WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom='_BRTM' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "'";
-                        $this->dbh->query($sql);
+                            event_date = :event_date,
+                            event_place = :event_place,
+                            event_text = :event_text,
+                            event_changed_user_id = :event_changed_user_id
+                            WHERE event_tree_id = :event_tree_id AND event_gedcom = '_BRTM' AND event_connect_id = :event_connect_id";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':event_date', $this->editor_cls->date_process("even_brit_date"), PDO::PARAM_STR);
+                        $stmt->bindValue(':event_place', $_POST["even_brit_place"], PDO::PARAM_STR);
+                        $stmt->bindValue(':event_text', $_POST["even_brit_text"], PDO::PARAM_STR);
+                        $stmt->bindValue(':event_changed_user_id', $this->userid, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                        $stmt->execute();
                     }
                 } elseif (
                     isset($_POST["even_brit_date"]) && $_POST["even_brit_date"] != '' || isset($_POST["even_brit_place"]) && $_POST["even_brit_place"] != '' || isset($_POST["even_brit_text"]) && $_POST["even_brit_text"] != ''
@@ -758,16 +873,28 @@ class EditorModel extends AdminBaseModel
                 if ($result->rowCount() != 0) {     // a bar/bat mitsvah already exists for this person: UPDATE 
 
                     if ($_POST["even_barm_date"] == '' && $_POST["even_barm_place"] == '' && $_POST["even_barm_text"] == '') {
-                        $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom='" . $barmbasm . "'  AND event_connect_kind='person' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "' AND event_kind='event' ";
-                        $this->dbh->query($sql);
+                        $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_gedcom = :event_gedcom AND event_connect_kind = 'person' AND event_connect_id = :event_connect_id AND event_kind = 'event'";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_gedcom', $barmbasm, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                        $stmt->execute();
                     } else {
                         $sql = "UPDATE humo_events SET 
-                            event_date='" . $this->editor_cls->date_process("even_barm_date") . "',
-                            event_place='" . safe_text_db($_POST["even_barm_place"]) . "',
-                            event_text='" . safe_text_db($_POST["even_barm_text"]) . "',
-                            event_changed_user_id='" . $this->userid . "'
-                            WHERE event_tree_id='" . $this->tree_id . "' AND  event_gedcom='" . $barmbasm . "' AND event_connect_id='" . safe_text_db($this->pers_gedcomnumber) . "'";
-                        $this->dbh->query($sql);
+                            event_date = :event_date,
+                            event_place = :event_place,
+                            event_text = :event_text,
+                            event_changed_user_id = :event_changed_user_id
+                            WHERE event_tree_id = :event_tree_id AND event_gedcom = :event_gedcom AND event_connect_id = :event_connect_id";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':event_date', $this->editor_cls->date_process("even_barm_date"), PDO::PARAM_STR);
+                        $stmt->bindValue(':event_place', $_POST["even_barm_place"], PDO::PARAM_STR);
+                        $stmt->bindValue(':event_text', $_POST["even_barm_text"], PDO::PARAM_STR);
+                        $stmt->bindValue(':event_changed_user_id', $this->userid, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_gedcom', $barmbasm, PDO::PARAM_STR);
+                        $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                        $stmt->execute();
                     }
                 } elseif ($_POST["even_barm_date"] != '' || $_POST["even_barm_place"] != '' || $_POST["even_barm_text"] != '') {  // new BAR/BAT MITSVA event: INSERT
 
@@ -801,7 +928,7 @@ class EditorModel extends AdminBaseModel
             // *** If person is deceased, set alive setting ***
             $pers_alive = '';
             if (isset($_POST["pers_alive"])) {
-                $pers_alive = safe_text_db($_POST["pers_alive"]);
+                $pers_alive = $this->safeTextDb->safe_text_db($_POST["pers_alive"]);
             }
             if ($_POST["pers_death_date"] || $_POST["pers_death_place"] || $_POST["pers_buried_date"] || $_POST["pers_buried_place"]) {
                 $pers_alive = 'deceased';
@@ -836,93 +963,153 @@ class EditorModel extends AdminBaseModel
 
             //pers_callname='".$this->editor_cls->text_process($_POST["pers_callname"])."',
             $sql = "INSERT INTO humo_persons SET
-                pers_tree_id='" . $this->tree_id . "',
-                pers_tree_prefix='" . $this->tree_prefix . "',
-                pers_famc='',
-                pers_fams='',
-                pers_gedcomnumber='" . $new_gedcomnumber . "',
-                pers_firstname='" . $this->editor_cls->text_process($_POST["pers_firstname"]) . "',
-                pers_prefix='" . $pers_prefix . "',
-                pers_lastname='" . $this->editor_cls->text_process($_POST["pers_lastname"]) . "',
-                pers_patronym='" . $this->editor_cls->text_process($_POST["pers_patronym"]) . "',
-                pers_name_text='" . $this->editor_cls->text_process($_POST["pers_name_text"]) . "',
-                pers_alive='" . $pers_alive . "',
-                pers_sexe='" . safe_text_db($_POST["pers_sexe"]) . "',
-                pers_own_code='" . safe_text_db($_POST["pers_own_code"]) . "',
-                pers_place_index='',
-                pers_text='" . $this->editor_cls->text_process($_POST["person_text"]) . "',
-
-                pers_birth_date='" . $this->editor_cls->date_process("pers_birth_date") . "',
-                pers_birth_place='" . $this->editor_cls->text_process($_POST["pers_birth_place"]) . "',
-                pers_birth_time='" . $this->editor_cls->text_process($_POST["pers_birth_time"]) . "',
-                pers_birth_text='" . $this->editor_cls->text_process($_POST["pers_birth_text"], true) . "',
-                pers_stillborn='" . $pers_stillborn . "',
-                pers_bapt_date='" . $this->editor_cls->date_process("pers_bapt_date") . "',
-                pers_bapt_place='" . $this->editor_cls->text_process($_POST["pers_bapt_place"]) . "',
-                pers_bapt_text='" . $this->editor_cls->text_process($_POST["pers_bapt_text"], true) . "',
-                pers_religion='" . safe_text_db($_POST["pers_religion"]) . "',
-                pers_death_date='" . $this->editor_cls->date_process("pers_death_date") . "',
-                pers_death_place='" . $this->editor_cls->text_process($_POST["pers_death_place"]) . "',
-                pers_death_time='" . $this->editor_cls->text_process($_POST["pers_death_time"]) . "',
-                pers_death_text='" . $this->editor_cls->text_process($_POST["pers_death_text"], true) . "',
-                pers_death_cause='" . safe_text_db($pers_death_cause) . "',
-                pers_death_age='" . safe_text_db($_POST["pers_death_age"]) . "',
-                pers_buried_date='" . $this->editor_cls->date_process("pers_buried_date") . "',
-                pers_buried_place='" . $this->editor_cls->text_process($_POST["pers_buried_place"]) . "',
-                pers_buried_text='" . $this->editor_cls->text_process($_POST["pers_buried_text"], true) . "',";
-            if ($pers_cal_date) $sql .= "pers_cal_date='" . $pers_cal_date . "',";
-            $sql .= "pers_cremation='" . safe_text_db($_POST["pers_cremation"]) . "',
-                pers_new_user_id='" . $this->userid . "'";
-            $this->dbh->query($sql);
+                pers_tree_id = :tree_id,
+                pers_tree_prefix = :tree_prefix,
+                pers_famc = '',
+                pers_fams = '',
+                pers_gedcomnumber = :new_gedcomnumber,
+                pers_firstname = :pers_firstname,
+                pers_prefix = :pers_prefix,
+                pers_lastname = :pers_lastname,
+                pers_patronym = :pers_patronym,
+                pers_name_text = :pers_name_text,
+                pers_alive = :pers_alive,
+                pers_sexe = :pers_sexe,
+                pers_own_code = :pers_own_code,
+                pers_place_index = '',
+                pers_text = :pers_text,
+                pers_birth_date = :pers_birth_date,
+                pers_birth_place = :pers_birth_place,
+                pers_birth_time = :pers_birth_time,
+                pers_birth_text = :pers_birth_text,
+                pers_stillborn = :pers_stillborn,
+                pers_bapt_date = :pers_bapt_date,
+                pers_bapt_place = :pers_bapt_place,
+                pers_bapt_text = :pers_bapt_text,
+                pers_religion = :pers_religion,
+                pers_death_date = :pers_death_date,
+                pers_death_place = :pers_death_place,
+                pers_death_time = :pers_death_time,
+                pers_death_text = :pers_death_text,
+                pers_death_cause = :pers_death_cause,
+                pers_death_age = :pers_death_age,
+                pers_buried_date = :pers_buried_date,
+                pers_buried_place = :pers_buried_place,
+                pers_buried_text = :pers_buried_text,";
+            if ($pers_cal_date) {
+                $sql .= "pers_cal_date = :pers_cal_date,";
+            }
+            $sql .= "pers_cremation = :pers_cremation,
+                pers_new_user_id = :userid";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_prefix', $this->tree_prefix, PDO::PARAM_STR);
+            $stmt->bindValue(':new_gedcomnumber', $new_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_firstname', $this->editor_cls->text_process($_POST["pers_firstname"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_prefix', $pers_prefix, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_lastname', $this->editor_cls->text_process($_POST["pers_lastname"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_patronym', $this->editor_cls->text_process($_POST["pers_patronym"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_name_text', $this->editor_cls->text_process($_POST["pers_name_text"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_alive', $pers_alive, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_sexe', $_POST["pers_sexe"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_own_code', $_POST["pers_own_code"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_text', $this->editor_cls->text_process($_POST["person_text"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_birth_date', $this->editor_cls->date_process("pers_birth_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_birth_place', $this->editor_cls->text_process($_POST["pers_birth_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_birth_time', $this->editor_cls->text_process($_POST["pers_birth_time"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_birth_text', $this->editor_cls->text_process($_POST["pers_birth_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_stillborn', $pers_stillborn, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_bapt_date', $this->editor_cls->date_process("pers_bapt_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_bapt_place', $this->editor_cls->text_process($_POST["pers_bapt_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_bapt_text', $this->editor_cls->text_process($_POST["pers_bapt_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_religion', $_POST["pers_religion"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_date', $this->editor_cls->date_process("pers_death_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_place', $this->editor_cls->text_process($_POST["pers_death_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_time', $this->editor_cls->text_process($_POST["pers_death_time"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_text', $this->editor_cls->text_process($_POST["pers_death_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_cause', $pers_death_cause, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_death_age', $_POST["pers_death_age"], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_buried_date', $this->editor_cls->date_process("pers_buried_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_buried_place', $this->editor_cls->text_process($_POST["pers_buried_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':pers_buried_text', $this->editor_cls->text_process($_POST["pers_buried_text"], true), PDO::PARAM_STR);
+            if ($pers_cal_date) {
+                $stmt->bindValue(':pers_cal_date', $pers_cal_date, PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':pers_cremation', $_POST["pers_cremation"], PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->execute();
 
             // *** Save birth declaration (there is no birth declaration when new relation is added) ***
             if (isset($_POST['birth_decl_date']) && ($_POST['birth_decl_date'] || $_POST['birth_decl_place'] || $_POST['birth_decl_text'])) {
-                $sql = "INSERT INTO humo_events SET
-                    event_tree_id='" . $this->tree_id . "',
-                    event_gedcomnr='',
-                    event_order='1',
-                    event_connect_kind='person',
-                    event_connect_id='" . $new_gedcomnumber . "',
-                    event_kind='birth_declaration',
-                    event_event='',
-                    event_event_extra='',
-                    event_gedcom='EVEN',
-                    event_date='" . safe_text_db($_POST['birth_decl_date']) . "',
-                    event_place='" . safe_text_db($_POST['birth_decl_place']) . "',
-                    event_text='" . safe_text_db($_POST['birth_decl_text']) . "',
-                    event_quality='',
-                    event_new_user_id='" . $this->userid . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "INSERT INTO humo_events SET
+                        event_tree_id = :tree_id,
+                        event_gedcomnr = '',
+                        event_order = '1',
+                        event_connect_kind = 'person',
+                        event_connect_id = :gedcomnumber,
+                        event_kind = 'birth_declaration',
+                        event_event = '',
+                        event_event_extra = '',
+                        event_gedcom = 'EVEN',
+                        event_date = :event_date,
+                        event_place = :event_place,
+                        event_text = :event_text,
+                        event_quality = '',
+                        event_new_user_id = :userid"
+                );
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $new_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':event_date', $_POST['birth_decl_date'], PDO::PARAM_STR);
+                $stmt->bindValue(':event_place', $_POST['birth_decl_place'], PDO::PARAM_STR);
+                $stmt->bindValue(':event_text', $_POST['birth_decl_text'], PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Save death declaration (there is no death declaration when new relation is added) ***
             if (isset($_POST['death_decl_date']) && ($_POST['death_decl_date'] || $_POST['death_decl_place'] || $_POST['death_decl_text'])) {
-                $sql = "INSERT INTO humo_events SET
-                    event_tree_id='" . $this->tree_id . "',
-                    event_gedcomnr='',
-                    event_order='1',
-                    event_connect_kind='person',
-                    event_connect_id='" . $new_gedcomnumber . "',
-                    event_kind='death_declaration',
-                    event_event='',
-                    event_event_extra='',
-                    event_gedcom='EVEN',
-                    event_date='" . safe_text_db($_POST['death_decl_date']) . "',
-                    event_place='" . safe_text_db($_POST['death_decl_place']) . "',
-                    event_text='" . safe_text_db($_POST['death_decl_text']) . "',
-                    event_quality='',
-                    event_new_user_id='" . $this->userid . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "INSERT INTO humo_events SET
+                        event_tree_id = :tree_id,
+                        event_gedcomnr = '',
+                        event_order = '1',
+                        event_connect_kind = 'person',
+                        event_connect_id = :gedcomnumber,
+                        event_kind = 'death_declaration',
+                        event_event = '',
+                        event_event_extra = '',
+                        event_gedcom = 'EVEN',
+                        event_date = :event_date,
+                        event_place = :event_place,
+                        event_text = :event_text,
+                        event_quality = '',
+                        event_new_user_id = :userid"
+                );
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $new_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':event_date', $_POST['death_decl_date'], PDO::PARAM_STR);
+                $stmt->bindValue(':event_place', $_POST['death_decl_place'], PDO::PARAM_STR);
+                $stmt->bindValue(':event_text', $_POST['death_decl_text'], PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Only needed for jewish settings ***
             if ($this->humo_option['admin_hebnight'] == "y" && isset($_POST["pers_birth_date_hebnight"])) {
-                $sql = "UPDATE humo_persons SET
-                    pers_birth_date_hebnight='" . safe_text_db($_POST["pers_birth_date_hebnight"]) . "',
-                    pers_death_date_hebnight='" . safe_text_db($_POST["pers_death_date_hebnight"]) . "',
-                    pers_buried_date_hebnight='" . safe_text_db($_POST["pers_buried_date_hebnight"]) . "'
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($new_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_persons SET
+                        pers_birth_date_hebnight = :birth_hebnight,
+                        pers_death_date_hebnight = :death_hebnight,
+                        pers_buried_date_hebnight = :buried_hebnight
+                        WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber"
+                );
+                $stmt->bindValue(':birth_hebnight', $_POST["pers_birth_date_hebnight"], PDO::PARAM_STR);
+                $stmt->bindValue(':death_hebnight', $_POST["pers_death_date_hebnight"], PDO::PARAM_STR);
+                $stmt->bindValue(':buried_hebnight', $_POST["pers_buried_date_hebnight"], PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $new_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // TODO: this code is used multiple times in this script.
@@ -1011,10 +1198,10 @@ class EditorModel extends AdminBaseModel
         }
 
         // *** Family move down ***
-        if (isset($_GET['fam_down'])) {
-            $child_array_org = explode(";", safe_text_db($_GET['fam_array']));
+        if (isset($_GET['fam_down']) && is_numeric($_GET['fam_down'])) {
+            $child_array_org = explode(";", $this->safeTextDb->safe_text_db($_GET['fam_array']));
             $child_array = $child_array_org;
-            $child_array_id = safe_text_db($_GET['fam_down']);
+            $child_array_id = $_GET['fam_down'];
             $child_array[$child_array_id] = $child_array_org[($child_array_id + 1)];
             $child_array[$child_array_id + 1] = $child_array_org[($child_array_id)];
             $fams = '';
@@ -1026,17 +1213,21 @@ class EditorModel extends AdminBaseModel
                 $fams .= $child_array[$k];
             }
             $sql = "UPDATE humo_persons SET
-                pers_fams='" . $fams . "',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_id='" . safe_text_db($_GET["person_id"]) . "'";
-            $this->dbh->query($sql);
+                pers_fams = :fams,
+                pers_changed_user_id = :userid
+                WHERE pers_id = :person_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fams', $fams, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':person_id', $_GET["person_id"], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
         // *** Family move up ***
-        if (isset($_GET['fam_up'])) {
-            $child_array_org = explode(";", safe_text_db($_GET['fam_array']));
+        if (isset($_GET['fam_up']) && is_numeric($_GET['fam_up'])) {
+            $child_array_org = explode(";", $this->safeTextDb->safe_text_db($_GET['fam_array']));
             $child_array = $child_array_org;
-            $child_array_id = safe_text_db($_GET['fam_up']) - 1;
+            $child_array_id = $_GET['fam_up'] - 1;
             $child_array[$child_array_id + 1] = $child_array_org[($child_array_id)];
             $child_array[$child_array_id] = $child_array_org[($child_array_id + 1)];
             $fams = '';
@@ -1048,15 +1239,19 @@ class EditorModel extends AdminBaseModel
                 $fams .= $child_array[$k];
             }
             $sql = "UPDATE humo_persons SET
-                pers_fams='" . $fams . "',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_id='" . safe_text_db($_GET["person_id"]) . "'";
-            $this->dbh->query($sql);
+                pers_fams = :fams,
+                pers_changed_user_id = :userid
+                WHERE pers_id = :person_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fams', $fams, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':person_id', $_GET["person_id"], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
         // *** Family disconnect ***
         if (isset($_POST['fam_remove2'])) {
-            $fam_remove = safe_text_db($_POST['fam_remove3']);
+            $fam_remove = $this->safeTextDb->safe_text_db($_POST['fam_remove3']);
 
             // *** Remove fams number from man and woman ***
             $new_nr = $this->db_functions->get_family($fam_remove);
@@ -1070,11 +1265,16 @@ class EditorModel extends AdminBaseModel
                     $resultDb = $this->db_functions->get_person($child_gedcomnumber[$i]);
 
                     // *** Remove parents from child record ***
-                    $sql = "UPDATE humo_persons SET
-                        pers_famc='',
-                        pers_changed_user_id='" . $this->userid . "'
-                        WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($child_gedcomnumber[$i]) . "'";
-                    $this->dbh->query($sql);
+                    $stmt = $this->dbh->prepare(
+                        "UPDATE humo_persons SET
+                            pers_famc='',
+                            pers_changed_user_id=:userid
+                            WHERE pers_tree_id=:tree_id AND pers_gedcomnumber=:gedcomnumber"
+                    );
+                    $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                    $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $stmt->bindValue(':gedcomnumber', $child_gedcomnumber[$i], PDO::PARAM_STR);
+                    $stmt->execute();
                 }
             }
 
@@ -1127,60 +1327,112 @@ class EditorModel extends AdminBaseModel
             $man_gedcomnumber = 'I' . $temp_number;
             $woman_gedcomnumber = 'I' . ($temp_number + 1);
 
-            $sql = "INSERT INTO humo_families SET
-                fam_gedcomnumber='" . $fam_gedcomnumber . "',
-                fam_tree_id='" . $this->tree_id . "',
-                fam_kind='',
-                fam_man='" . safe_text_db($man_gedcomnumber) . "',
-                fam_woman='" . safe_text_db($woman_gedcomnumber) . "',
-                fam_children='" . safe_text_db($this->pers_gedcomnumber) . "',
-                fam_relation_date='', fam_relation_place='', fam_relation_text='',
-                fam_marr_notice_date='', fam_marr_notice_place='', fam_marr_notice_text='',
-                fam_marr_date='', fam_marr_place='', fam_marr_text='', fam_marr_authority='',
-                fam_marr_church_date='', fam_marr_church_place='', fam_marr_church_text='',
-                fam_marr_church_notice_date='', fam_marr_church_notice_place='', fam_marr_church_notice_text='', fam_religion='',
-                fam_div_date='', fam_div_place='', fam_div_text='', fam_div_authority='',
-                fam_text='',
-                fam_new_user_id='" . $this->userid . "'";
-            $this->dbh->query($sql);
+            $sql = "INSERT INTO humo_families (
+                fam_gedcomnumber, fam_tree_id, fam_kind, fam_man, fam_woman, fam_children,
+                fam_relation_date, fam_relation_place, fam_relation_text,
+                fam_marr_notice_date, fam_marr_notice_place, fam_marr_notice_text,
+                fam_marr_date, fam_marr_place, fam_marr_text, fam_marr_authority,
+                fam_marr_church_date, fam_marr_church_place, fam_marr_church_text,
+                fam_marr_church_notice_date, fam_marr_church_notice_place, fam_marr_church_notice_text, fam_religion,
+                fam_div_date, fam_div_place, fam_div_text, fam_div_authority,
+                fam_text, fam_new_user_id
+            ) VALUES (
+                :fam_gedcomnumber, :fam_tree_id, '', :fam_man, :fam_woman, :fam_children,
+                '', '', '',
+                '', '', '',
+                '', '', '', '',
+                '', '', '',
+                '', '', '', '',
+                '', '', '', '',
+                '', :fam_new_user_id
+            )";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_man', $man_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_woman', $woman_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_children', $this->pers_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_new_user_id', $this->userid, PDO::PARAM_STR);
+            $stmt->execute();
 
             // only needed for jewish settings
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $sql = "UPDATE humo_families SET 
-                    fam_marr_notice_date_hebnight='', fam_marr_date_hebnight='', fam_marr_church_date_hebnight='', fam_marr_church_notice_date_hebnight='' 
-                    WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($fam_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_families SET 
+                        fam_marr_notice_date_hebnight = :notice_hebnight,
+                        fam_marr_date_hebnight = :marr_hebnight,
+                        fam_marr_church_date_hebnight = :church_hebnight,
+                        fam_marr_church_notice_date_hebnight = :church_notice_hebnight
+                     WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber"
+                );
+                $stmt->bindValue(':notice_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':marr_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':church_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':church_notice_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Add father ***
             //pers_callname='',
             $pers_alive1 = '';
             if (isset($_POST['pers_alive1'])) {
-                $pers_alive1 = safe_text_db($_POST['pers_alive1']);
+                $pers_alive1 = $this->safeTextDb->safe_text_db($_POST['pers_alive1']);
             }
             $pers_sexe1 = '';
             if (isset($_POST['pers_sexe1'])) {
-                $pers_sexe1 = safe_text_db($_POST['pers_sexe1']);
+                $pers_sexe1 = $this->safeTextDb->safe_text_db($_POST['pers_sexe1']);
             }
-            $sql = "INSERT INTO humo_persons SET
-                pers_gedcomnumber='" . $man_gedcomnumber . "',
-                pers_tree_id='" . $this->tree_id . "',
-                pers_tree_prefix='" . $this->tree_prefix . "',
-                pers_famc='', pers_fams='" . safe_text_db($fam_gedcomnumber) . "',
-                pers_firstname='" . safe_text_db($_POST['pers_firstname1']) . "',
-                pers_prefix='" . safe_text_db($_POST['pers_prefix1']) . "',
-                pers_lastname='" . safe_text_db($_POST['pers_lastname1']) . "',
-                pers_patronym='" . safe_text_db($_POST['pers_patronym1']) . "',
-                pers_name_text='',
-                pers_alive='" . $pers_alive1 . "',
-                pers_sexe='" . $pers_sexe1 . "',
-                pers_own_code='', pers_place_index='', pers_text='',
-                pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
-                pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
-                pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-                pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', 
-                pers_new_user_id='" . $this->userid . "'";
-            $this->dbh->query($sql);
+            $stmt = $this->dbh->prepare(
+                "INSERT INTO humo_persons SET
+                    pers_gedcomnumber = :man_gedcomnumber,
+                    pers_tree_id = :tree_id,
+                    pers_tree_prefix = :tree_prefix,
+                    pers_famc = '',
+                    pers_fams = :fam_gedcomnumber,
+                    pers_firstname = :pers_firstname1,
+                    pers_prefix = :pers_prefix1,
+                    pers_lastname = :pers_lastname1,
+                    pers_patronym = :pers_patronym1,
+                    pers_name_text = '',
+                    pers_alive = :pers_alive1,
+                    pers_sexe = :pers_sexe1,
+                    pers_own_code = '',
+                    pers_place_index = '',
+                    pers_text = '',
+                    pers_birth_date = '',
+                    pers_birth_place = '',
+                    pers_birth_time = '',
+                    pers_birth_text = '',
+                    pers_stillborn = '',
+                    pers_bapt_date = '',
+                    pers_bapt_place = '',
+                    pers_bapt_text = '',
+                    pers_religion = '',
+                    pers_death_date = '',
+                    pers_death_place = '',
+                    pers_death_time = '',
+                    pers_death_text = '',
+                    pers_death_cause = '',
+                    pers_buried_date = '',
+                    pers_buried_place = '',
+                    pers_buried_text = '',
+                    pers_cremation = '',
+                    pers_new_user_id = :userid"
+            );
+            $stmt->bindValue(':man_gedcomnumber', $man_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_prefix', $this->tree_prefix, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_firstname1', $_POST['pers_firstname1'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_prefix1', $_POST['pers_prefix1'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_lastname1', $_POST['pers_lastname1'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_patronym1', $_POST['pers_patronym1'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_alive1', $pers_alive1, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_sexe1', $pers_sexe1, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->execute();
 
             // *** Add special name ***
             if (isset($_POST["event_event_name1"]) && $_POST["event_event_name1"] != "") {
@@ -1233,41 +1485,80 @@ class EditorModel extends AdminBaseModel
 
             // only needed for jewish settings
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $sql = "UPDATE humo_persons SET 
-                    pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($man_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_persons SET 
+                        pers_birth_date_hebnight = :birth_hebnight, 
+                        pers_death_date_hebnight = :death_hebnight, 
+                        pers_buried_date_hebnight = :buried_hebnight 
+                     WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber"
+                );
+                $stmt->bindValue(':birth_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':death_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':buried_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $man_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Add mother ***
             //pers_callname='',
             $pers_alive2 = '';
             if (isset($_POST['pers_alive2'])) {
-                $pers_alive2 = safe_text_db($_POST['pers_alive2']);
+                $pers_alive2 = $this->safeTextDb->safe_text_db($_POST['pers_alive2']);
             }
             $pers_sexe2 = '';
             if (isset($_POST['pers_sexe2'])) {
-                $pers_sexe2 = safe_text_db($_POST['pers_sexe2']);
+                $pers_sexe2 = $this->safeTextDb->safe_text_db($_POST['pers_sexe2']);
             }
-            $sql = "INSERT INTO humo_persons SET
-                pers_gedcomnumber='" . $woman_gedcomnumber . "',
-                pers_tree_id='" . $this->tree_id . "',
-                pers_tree_prefix='" . $this->tree_prefix . "',
-                pers_famc='', pers_fams='" . safe_text_db($fam_gedcomnumber) . "',
-                pers_firstname='" . safe_text_db($_POST['pers_firstname2']) . "',
-                pers_prefix='" . safe_text_db($_POST['pers_prefix2']) . "',
-                pers_lastname='" . safe_text_db($_POST['pers_lastname2']) . "',
-                pers_patronym='" . safe_text_db($_POST['pers_patronym2']) . "',
-                pers_name_text='',
-                pers_alive='" . $pers_alive2 . "',
-                pers_sexe='" . $pers_sexe2 . "',
-                pers_own_code='', pers_place_index='', pers_text='',
-                pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
-                pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
-                pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-                pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', 
-                pers_new_user_id='" . $this->userid . "'";
-            $this->dbh->query($sql);
+            $stmt = $this->dbh->prepare(
+                "INSERT INTO humo_persons SET
+                    pers_gedcomnumber = :woman_gedcomnumber,
+                    pers_tree_id = :tree_id,
+                    pers_tree_prefix = :tree_prefix,
+                    pers_famc = '',
+                    pers_fams = :fam_gedcomnumber,
+                    pers_firstname = :pers_firstname2,
+                    pers_prefix = :pers_prefix2,
+                    pers_lastname = :pers_lastname2,
+                    pers_patronym = :pers_patronym2,
+                    pers_name_text = '',
+                    pers_alive = :pers_alive2,
+                    pers_sexe = :pers_sexe2,
+                    pers_own_code = '',
+                    pers_place_index = '',
+                    pers_text = '',
+                    pers_birth_date = '',
+                    pers_birth_place = '',
+                    pers_birth_time = '',
+                    pers_birth_text = '',
+                    pers_stillborn = '',
+                    pers_bapt_date = '',
+                    pers_bapt_place = '',
+                    pers_bapt_text = '',
+                    pers_religion = '',
+                    pers_death_date = '',
+                    pers_death_place = '',
+                    pers_death_time = '',
+                    pers_death_text = '',
+                    pers_death_cause = '',
+                    pers_buried_date = '',
+                    pers_buried_place = '',
+                    pers_buried_text = '',
+                    pers_cremation = '',
+                    pers_new_user_id = :userid"
+            );
+            $stmt->bindValue(':woman_gedcomnumber', $woman_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_prefix', $this->tree_prefix, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_firstname2', $_POST['pers_firstname2'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_prefix2', $_POST['pers_prefix2'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_lastname2', $_POST['pers_lastname2'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_patronym2', $_POST['pers_patronym2'], PDO::PARAM_STR);
+            $stmt->bindValue(':pers_alive2', $pers_alive2, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_sexe2', $pers_sexe2, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->execute();
 
             // *** Add special name ***
             if (isset($_POST["event_event_name2"]) && $_POST["event_event_name2"] != "") {
@@ -1320,18 +1611,33 @@ class EditorModel extends AdminBaseModel
 
             // only needed for jewish settings
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $sql = "UPDATE humo_persons SET 
-                    pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($woman_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_persons SET 
+                        pers_birth_date_hebnight = :birth_hebnight, 
+                        pers_death_date_hebnight = :death_hebnight, 
+                        pers_buried_date_hebnight = :buried_hebnight 
+                     WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber"
+                );
+                $stmt->bindValue(':birth_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':death_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':buried_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $woman_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Add parents to child record ***
-            $sql = "UPDATE humo_persons SET
-                pers_famc='" . safe_text_db($fam_gedcomnumber) . "',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($this->pers_gedcomnumber) . "'";
-            $this->dbh->query($sql);
+            $stmt = $this->dbh->prepare(
+                "UPDATE humo_persons SET
+                    pers_famc = :fam_gedcomnumber,
+                    pers_changed_user_id = :userid
+                    WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :pers_gedcomnumber"
+            );
+            $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+            $stmt->execute();
 
             $this->family_tree_update();
         }
@@ -1349,17 +1655,28 @@ class EditorModel extends AdminBaseModel
                 }
 
                 $sql = "UPDATE humo_families SET
-                    fam_children='" . $fam_children . "',
-                    fam_changed_user_id='" . $this->userid . "'
-                    WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . $parentsDb->fam_gedcomnumber . "'";
-                $this->dbh->query($sql);
+                    fam_children = :fam_children,
+                    fam_changed_user_id = :userid
+                    WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':fam_children', $fam_children, PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':fam_gedcomnumber', $parentsDb->fam_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
 
                 // *** Add parents to child record ***
-                $sql = "UPDATE humo_persons SET
-                    pers_famc='" . $parentsDb->fam_gedcomnumber . "',
-                    pers_changed_user_id='" . $this->userid . "'
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $this->pers_gedcomnumber . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_persons SET
+                        pers_famc = :fam_gedcomnumber,
+                        pers_changed_user_id = :userid
+                        WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :pers_gedcomnumber"
+                );
+                $stmt->bindValue(':fam_gedcomnumber', $parentsDb->fam_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
 
                 $this->family_tree_update();
 
@@ -1424,24 +1741,40 @@ class EditorModel extends AdminBaseModel
 
                     if (isset($_POST["children"]) && $_POST["children"]) {
                         $sql = "UPDATE humo_families SET
-                            fam_children='" . safe_text_db($_POST["children"]) . ';' . safe_text_db($_POST["child_connect2"]) . "',
-                            fam_changed_user_id='" . $this->userid . "'
-                            WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($_POST['family_id']) . "'";
+                            fam_children = :fam_children,
+                            fam_changed_user_id = :userid
+                            WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':fam_children', $_POST["children"] . ';' . $_POST["child_connect2"], PDO::PARAM_STR);
+                        $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':fam_gedcomnumber', $_POST['family_id'], PDO::PARAM_STR);
+                        $stmt->execute();
                     } else {
                         $sql = "UPDATE humo_families SET
-                            fam_children='" . safe_text_db($_POST["child_connect2"]) . "',
-                            fam_changed_user_id='" . $this->userid . "'
-                            WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($_POST['family_id']) . "'";
+                            fam_children = :fam_children,
+                            fam_changed_user_id = :userid
+                            WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':fam_children', $_POST["child_connect2"], PDO::PARAM_STR);
+                        $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':fam_gedcomnumber', $_POST['family_id'], PDO::PARAM_STR);
+                        $stmt->execute();
                     }
-                    //echo $sql;
-                    $this->dbh->query($sql);
 
                     // *** Add parents to child record ***
-                    $sql = "UPDATE humo_persons SET
-                        pers_famc='" . safe_text_db($_POST['family_id']) . "',
-                        pers_changed_user_id='" . $this->userid . "'
-                        WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($_POST["child_connect2"]) . "'";
-                    $this->dbh->query($sql);
+                    $stmt = $this->dbh->prepare(
+                        "UPDATE humo_persons SET
+                            pers_famc = :family_id,
+                            pers_changed_user_id = :userid
+                            WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :child_gedcomnumber"
+                    );
+                    $stmt->bindValue(':family_id', $_POST['family_id'], PDO::PARAM_STR);
+                    $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                    $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $stmt->bindValue(':child_gedcomnumber', $_POST["child_connect2"], PDO::PARAM_STR);
+                    $stmt->execute();
 
                     $this->family_tree_update();
                 }
@@ -1451,67 +1784,27 @@ class EditorModel extends AdminBaseModel
         // *** Disconnect child ***
         if (isset($_POST['child_disconnecting'])) {
             $sql = "UPDATE humo_families SET
-                fam_children='" . safe_text_db($_POST["child_disconnect2"]) . "',
-                fam_changed_user_id='" . $this->userid . "'
-                WHERE fam_id='" . safe_text_db($_POST["family_id"]) . "'";
-            $this->dbh->query($sql);
+                fam_children = :fam_children,
+                fam_changed_user_id = :userid
+                WHERE fam_id = :fam_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fam_children', $_POST["child_disconnect2"], PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_id', $_POST["family_id"], PDO::PARAM_STR);
+            $stmt->execute();
 
             // *** Remove parents from child record ***
             $sql = "UPDATE humo_persons SET
-                pers_famc='',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($_POST["child_disconnect_gedcom"]) . "'";
-            $this->dbh->query($sql);
+                pers_famc = :famc,
+                pers_changed_user_id = :userid
+                WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':famc', '', PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':gedcomnumber', $_POST["child_disconnect_gedcom"], PDO::PARAM_STR);
+            $stmt->execute();
         }
-
-        // *** Child move down ***
-        if (isset($_GET['child_down'])) {
-            $child_array_org = explode(";", safe_text_db($_GET['child_array']));
-            $child_array = $child_array_org;
-            $child_array_id = safe_text_db($_GET['child_down']);
-            $child_array[$child_array_id] = $child_array_org[($child_array_id + 1)];
-            $child_array[$child_array_id + 1] = $child_array_org[($child_array_id)];
-            $fam_children = '';
-            // use implode: $fam_children = implode(";", $child_array);
-            $counter = count($child_array);
-            // use implode: $fam_children = implode(";", $child_array);
-            for ($k = 0; $k < $counter; $k++) {
-                if ($k > 0) {
-                    $fam_children .= ';';
-                }
-                $fam_children .= $child_array[$k];
-            }
-            $sql = "UPDATE humo_families SET
-                fam_children='" . $fam_children . "',
-                fam_changed_user_id'" . $this->userid . "'
-                WHERE fam_id='" . safe_text_db($_GET["family_id"]) . "'";
-            $this->dbh->query($sql);
-        }
-
-        // *** Child move up ***
-        if (isset($_GET['child_up'])) {
-            $child_array_org = explode(";", safe_text_db($_GET['child_array']));
-            $child_array = $child_array_org;
-            $child_array_id = safe_text_db($_GET['child_up']) - 1;
-            $child_array[$child_array_id + 1] = $child_array_org[($child_array_id)];
-            $child_array[$child_array_id] = $child_array_org[($child_array_id + 1)];
-            $fam_children = '';
-            // use implode: $fam_children = implode(";", $child_array);
-            $counter = count($child_array);
-            // use implode: $fam_children = implode(";", $child_array);
-            for ($k = 0; $k < $counter; $k++) {
-                if ($k > 0) {
-                    $fam_children .= ';';
-                }
-                $fam_children .= $child_array[$k];
-            }
-            $sql = "UPDATE humo_families SET
-                fam_children='" . $fam_children . "',
-                fam_changed_user_id='" . $this->userid . "'
-                WHERE fam_id='" . safe_text_db($_GET["family_id"]) . "'";
-            $this->dbh->query($sql);
-        }
-
 
         /**
          * PROCESS DATA FAMILY
@@ -1545,35 +1838,66 @@ class EditorModel extends AdminBaseModel
                 $woman_gedcomnumber = $partner_gedcomnumber;
             }
 
-            $sql = "INSERT INTO humo_families SET
-                fam_tree_id='" . $this->tree_id . "',
-                fam_gedcomnumber='" . $fam_gedcomnumber . "', fam_kind='',
-                fam_man='" . safe_text_db($man_gedcomnumber) . "', fam_woman='" . safe_text_db($woman_gedcomnumber) . "',
-                fam_children='',
-                fam_relation_date='', fam_relation_place='', fam_relation_text='',
-                fam_marr_notice_date='', fam_marr_notice_place='', fam_marr_notice_text='',
-                fam_marr_date='', fam_marr_place='', fam_marr_text='', fam_marr_authority='',
-                fam_marr_church_date='', fam_marr_church_place='', fam_marr_church_text='',
-                fam_marr_church_notice_date='', fam_marr_church_notice_place='', fam_marr_church_notice_text='', fam_religion='',
-                fam_div_date='', fam_div_place='', fam_div_text='', fam_div_authority='',
-                fam_text='',
-                fam_new_user_id='" . $this->userid . "'";
-            //echo $sql;
-            $this->dbh->query($sql);
+            $stmt = $this->dbh->prepare(
+                "INSERT INTO humo_families SET
+                    fam_tree_id = :tree_id,
+                    fam_gedcomnumber = :fam_gedcomnumber,
+                    fam_kind = '',
+                    fam_man = :fam_man,
+                    fam_woman = :fam_woman,
+                    fam_children = '',
+                    fam_relation_date = '',
+                    fam_relation_place = '',
+                    fam_relation_text = '',
+                    fam_marr_notice_date = '',
+                    fam_marr_notice_place = '',
+                    fam_marr_notice_text = '',
+                    fam_marr_date = '',
+                    fam_marr_place = '',
+                    fam_marr_text = '',
+                    fam_marr_authority = '',
+                    fam_marr_church_date = '',
+                    fam_marr_church_place = '',
+                    fam_marr_church_text = '',
+                    fam_marr_church_notice_date = '',
+                    fam_marr_church_notice_place = '',
+                    fam_marr_church_notice_text = '',
+                    fam_religion = '',
+                    fam_div_date = '',
+                    fam_div_place = '',
+                    fam_div_text = '',
+                    fam_div_authority = '',
+                    fam_text = '',
+                    fam_new_user_id = :userid"
+            );
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_man', $man_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_woman', $woman_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->execute();
 
             // only needed for jewish settings
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $sql = "UPDATE humo_families SET 
-                    fam_marr_notice_date_hebnight='', fam_marr_date_hebnight='', fam_marr_church_date_hebnight='', fam_marr_church_notice_date_hebnight=''  
-                    WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($fam_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_families SET 
+                        fam_marr_notice_date_hebnight = :notice_hebnight,
+                        fam_marr_date_hebnight = :marr_hebnight,
+                        fam_marr_church_date_hebnight = :church_hebnight,
+                        fam_marr_church_notice_date_hebnight = :church_notice_hebnight
+                     WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber"
+                );
+                $stmt->bindValue(':notice_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':marr_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':church_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':church_notice_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Update famc and fams for new added partner ***
-            //$sql = "UPDATE humo_persons SET
-            //    pers_famc='', pers_fams='" . safe_text_db($fam_gedcomnumber) . "'
-            //    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($partner_gedcomnumber) . "'";
-            //$this->dbh->query($sql);
+
             // *** Add marriage to person ***
             $this->fams_add($partner_gedcomnumber, $fam_gedcomnumber);
 
@@ -1582,10 +1906,19 @@ class EditorModel extends AdminBaseModel
 
             // extra UPDATE queries if jewish dates enabled
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $sql = "UPDATE humo_persons SET 
-                    pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . safe_text_db($partner_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_persons SET 
+                        pers_birth_date_hebnight = :birth_hebnight, 
+                        pers_death_date_hebnight = :death_hebnight, 
+                        pers_buried_date_hebnight = :buried_hebnight 
+                     WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber"
+                );
+                $stmt->bindValue(':birth_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':death_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':buried_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':gedcomnumber', $partner_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Update $pers_gedcomnumber. Should be original value. ***
@@ -1622,28 +1955,62 @@ class EditorModel extends AdminBaseModel
                 //$sexe = 'M';
             }
 
-            $sql = "INSERT INTO humo_families SET
-                fam_tree_id='" . $this->tree_id . "',
-                fam_gedcomnumber='" . $fam_gedcomnumber . "', fam_kind='',
-                fam_man='" . safe_text_db($man_gedcomnumber) . "', fam_woman='" . safe_text_db($woman_gedcomnumber) . "',
-                fam_children='',
-                fam_relation_date='', fam_relation_place='', fam_relation_text='',
-                fam_marr_notice_date='', fam_marr_notice_place='', fam_marr_notice_text='',
-                fam_marr_date='', fam_marr_place='', fam_marr_text='', fam_marr_authority='',
-                fam_marr_church_date='', fam_marr_church_place='', fam_marr_church_text='',
-                fam_marr_church_notice_date='', fam_marr_church_notice_place='', fam_marr_church_notice_text='', fam_religion='',
-                fam_div_date='', fam_div_place='', fam_div_text='', fam_div_authority='',
-                fam_text='',
-                fam_new_user_id='" . $this->userid . "'";
-            //echo $sql.'<br>';
-            $this->dbh->query($sql);
+            $stmt = $this->dbh->prepare(
+                "INSERT INTO humo_families SET
+                    fam_tree_id = :tree_id,
+                    fam_gedcomnumber = :fam_gedcomnumber,
+                    fam_kind = '',
+                    fam_man = :fam_man,
+                    fam_woman = :fam_woman,
+                    fam_children = '',
+                    fam_relation_date = '',
+                    fam_relation_place = '',
+                    fam_relation_text = '',
+                    fam_marr_notice_date = '',
+                    fam_marr_notice_place = '',
+                    fam_marr_notice_text = '',
+                    fam_marr_date = '',
+                    fam_marr_place = '',
+                    fam_marr_text = '',
+                    fam_marr_authority = '',
+                    fam_marr_church_date = '',
+                    fam_marr_church_place = '',
+                    fam_marr_church_text = '',
+                    fam_marr_church_notice_date = '',
+                    fam_marr_church_notice_place = '',
+                    fam_marr_church_notice_text = '',
+                    fam_religion = '',
+                    fam_div_date = '',
+                    fam_div_place = '',
+                    fam_div_text = '',
+                    fam_div_authority = '',
+                    fam_text = '',
+                    fam_new_user_id = :userid"
+            );
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_man', $man_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_woman', $woman_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->execute();
 
             // only needed for jewish settings
             if ($this->humo_option['admin_hebnight'] == "y") {
-                $sql = "UPDATE humo_families SET 
-                    fam_marr_notice_date_hebnight='', fam_marr_date_hebnight='', fam_marr_church_date_hebnight='', fam_marr_church_notice_date_hebnight='' 
-                    WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($fam_gedcomnumber) . "'";
-                $this->dbh->query($sql);
+                $stmt = $this->dbh->prepare(
+                    "UPDATE humo_families SET 
+                        fam_marr_notice_date_hebnight = :notice_hebnight,
+                        fam_marr_date_hebnight = :marr_hebnight,
+                        fam_marr_church_date_hebnight = :church_hebnight,
+                        fam_marr_church_notice_date_hebnight = :church_notice_hebnight
+                     WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber"
+                );
+                $stmt->bindValue(':notice_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':marr_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':church_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':church_notice_hebnight', '', PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             // *** Add marriage to person records MAN and WOMAN ***
@@ -1656,10 +2023,15 @@ class EditorModel extends AdminBaseModel
         // *** Switch parents ***
         if (isset($_POST['parents_switch'])) {
             $sql = "UPDATE humo_families SET
-                fam_man='" . safe_text_db($_POST["connect_woman"]) . "',
-                fam_woman='" . safe_text_db($_POST["connect_man"]) . "'
-                WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($_POST['marriage']) . "'";
-            $this->dbh->query($sql);
+                fam_man = :fam_man,
+                fam_woman = :fam_woman
+                WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fam_man', $_POST["connect_woman"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_woman', $_POST["connect_man"], PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_gedcomnumber', $_POST['marriage'], PDO::PARAM_STR);
+            $stmt->execute();
 
             // *** Empty search boxes if a switch is made ***
             $_POST['search_quicksearch_woman'] = '';
@@ -1717,37 +2089,69 @@ class EditorModel extends AdminBaseModel
             }
 
             $sql = "UPDATE humo_families SET
-                fam_kind='" . safe_text_db($_POST["fam_kind"]) . "',
-                fam_man='" . safe_text_db($_POST["connect_man"]) . "',
-                fam_woman='" . safe_text_db($_POST["connect_woman"]) . "',
-                fam_relation_date='" . $this->editor_cls->date_process("fam_relation_date") . "',
-                fam_relation_end_date='" . $this->editor_cls->date_process("fam_relation_end_date") . "',
-                fam_relation_place='" . $this->editor_cls->text_process($_POST["fam_relation_place"]) . "',
-                fam_relation_text='" . $this->editor_cls->text_process($_POST["fam_relation_text"], true) . "',
-                fam_man_age='" . safe_text_db($_POST["fam_man_age"]) . "',
-                fam_woman_age='" . safe_text_db($_POST["fam_woman_age"]) . "',
-                fam_marr_notice_date='" . $this->editor_cls->date_process("fam_marr_notice_date") . "',
-                fam_marr_notice_place='" . $this->editor_cls->text_process($_POST["fam_marr_notice_place"]) . "',
-                fam_marr_notice_text='" . $this->editor_cls->text_process($_POST["fam_marr_notice_text"], true) . "',
-                fam_marr_date='" . $this->editor_cls->date_process("fam_marr_date") . "',
-                fam_marr_place='" . $this->editor_cls->text_process($_POST["fam_marr_place"]) . "',
-                fam_marr_text='" . $this->editor_cls->text_process($_POST["fam_marr_text"], true) . "',
-                fam_marr_authority='" . safe_text_db($_POST["fam_marr_authority"]) . "',
-                fam_marr_church_date='" . $this->editor_cls->date_process("fam_marr_church_date") . "',
-                fam_marr_church_place='" . $this->editor_cls->text_process($_POST["fam_marr_church_place"]) . "',
-                fam_marr_church_text='" . $this->editor_cls->text_process($_POST["fam_marr_church_text"], true) . "',
-                fam_marr_church_notice_date='" . $this->editor_cls->date_process("fam_marr_church_notice_date") . "',
-                fam_marr_church_notice_place='" . $this->editor_cls->text_process($_POST["fam_marr_church_notice_place"]) . "',
-                fam_marr_church_notice_text='" . $this->editor_cls->text_process($_POST["fam_marr_church_notice_text"], true) . "',
-                fam_religion='" . safe_text_db($_POST["fam_religion"]) . "',
-                fam_div_date='" . $this->editor_cls->date_process("fam_div_date") . "',
-                fam_div_place='" . $this->editor_cls->text_process($_POST["fam_div_place"]) . "',
-                fam_div_text='" . $this->editor_cls->text_process($fam_div_text, true) . "',
-                fam_div_authority='" . safe_text_db($_POST["fam_div_authority"]) . "',
-                fam_text='" . $this->editor_cls->text_process($_POST["fam_text"], true) . "',
-                fam_changed_user_id='" . $this->userid . "'
-                WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($_POST['marriage']) . "'";
-            $this->dbh->query($sql);
+                fam_kind = :fam_kind,
+                fam_man = :fam_man,
+                fam_woman = :fam_woman,
+                fam_relation_date = :fam_relation_date,
+                fam_relation_end_date = :fam_relation_end_date,
+                fam_relation_place = :fam_relation_place,
+                fam_relation_text = :fam_relation_text,
+                fam_man_age = :fam_man_age,
+                fam_woman_age = :fam_woman_age,
+                fam_marr_notice_date = :fam_marr_notice_date,
+                fam_marr_notice_place = :fam_marr_notice_place,
+                fam_marr_notice_text = :fam_marr_notice_text,
+                fam_marr_date = :fam_marr_date,
+                fam_marr_place = :fam_marr_place,
+                fam_marr_text = :fam_marr_text,
+                fam_marr_authority = :fam_marr_authority,
+                fam_marr_church_date = :fam_marr_church_date,
+                fam_marr_church_place = :fam_marr_church_place,
+                fam_marr_church_text = :fam_marr_church_text,
+                fam_marr_church_notice_date = :fam_marr_church_notice_date,
+                fam_marr_church_notice_place = :fam_marr_church_notice_place,
+                fam_marr_church_notice_text = :fam_marr_church_notice_text,
+                fam_religion = :fam_religion,
+                fam_div_date = :fam_div_date,
+                fam_div_place = :fam_div_place,
+                fam_div_text = :fam_div_text,
+                fam_div_authority = :fam_div_authority,
+                fam_text = :fam_text,
+                fam_changed_user_id = :fam_changed_user_id
+                WHERE fam_tree_id = :fam_tree_id AND fam_gedcomnumber = :fam_gedcomnumber";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fam_kind', $_POST["fam_kind"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_man', $_POST["connect_man"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_woman', $_POST["connect_woman"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_relation_date', $this->editor_cls->date_process("fam_relation_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_relation_end_date', $this->editor_cls->date_process("fam_relation_end_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_relation_place', $this->editor_cls->text_process($_POST["fam_relation_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_relation_text', $this->editor_cls->text_process($_POST["fam_relation_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_man_age', $_POST["fam_man_age"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_woman_age', $_POST["fam_woman_age"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_notice_date', $this->editor_cls->date_process("fam_marr_notice_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_notice_place', $this->editor_cls->text_process($_POST["fam_marr_notice_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_notice_text', $this->editor_cls->text_process($_POST["fam_marr_notice_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_date', $this->editor_cls->date_process("fam_marr_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_place', $this->editor_cls->text_process($_POST["fam_marr_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_text', $this->editor_cls->text_process($_POST["fam_marr_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_authority', $_POST["fam_marr_authority"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_church_date', $this->editor_cls->date_process("fam_marr_church_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_church_place', $this->editor_cls->text_process($_POST["fam_marr_church_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_church_text', $this->editor_cls->text_process($_POST["fam_marr_church_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_church_notice_date', $this->editor_cls->date_process("fam_marr_church_notice_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_church_notice_place', $this->editor_cls->text_process($_POST["fam_marr_church_notice_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_marr_church_notice_text', $this->editor_cls->text_process($_POST["fam_marr_church_notice_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_religion', $_POST["fam_religion"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_div_date', $this->editor_cls->date_process("fam_div_date"), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_div_place', $this->editor_cls->text_process($_POST["fam_div_place"]), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_div_text', $this->editor_cls->text_process($fam_div_text, true), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_div_authority', $_POST["fam_div_authority"], PDO::PARAM_STR);
+            $stmt->bindValue(':fam_text', $this->editor_cls->text_process($_POST["fam_text"], true), PDO::PARAM_STR);
+            $stmt->bindValue(':fam_changed_user_id', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':fam_gedcomnumber', $_POST['marriage'], PDO::PARAM_STR);
+            $stmt->execute();
 
             // only needed for jewish settings
             if ($this->humo_option['admin_hebnight'] == "y") {
@@ -1768,12 +2172,19 @@ class EditorModel extends AdminBaseModel
                     $f_m_c_n_d_h = $_POST["fam_marr_church_notice_date_hebnight"];
                 }
                 $sql = "UPDATE humo_families SET 
-                    fam_marr_notice_date_hebnight='" . $this->editor_cls->text_process($f_m_n_d_h) . "', 
-                    fam_marr_date_hebnight='" . $this->editor_cls->text_process($f_m_d_h) . "', 
-                    fam_marr_church_date_hebnight='" . $this->editor_cls->text_process($f_m_c_d_h) . "', 
-                    fam_marr_church_notice_date_hebnight='" . $this->editor_cls->text_process($f_m_c_n_d_h) . "' 
-                    WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . safe_text_db($_POST['marriage']) . "'";
-                $this->dbh->query($sql);
+                    fam_marr_notice_date_hebnight = :notice_hebnight,
+                    fam_marr_date_hebnight = :marr_hebnight,
+                    fam_marr_church_date_hebnight = :church_hebnight,
+                    fam_marr_church_notice_date_hebnight = :church_notice_hebnight
+                    WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :fam_gedcomnumber";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':notice_hebnight', $this->editor_cls->text_process($f_m_n_d_h), PDO::PARAM_STR);
+                $stmt->bindValue(':marr_hebnight', $this->editor_cls->text_process($f_m_d_h), PDO::PARAM_STR);
+                $stmt->bindValue(':church_hebnight', $this->editor_cls->text_process($f_m_c_d_h), PDO::PARAM_STR);
+                $stmt->bindValue(':church_notice_hebnight', $this->editor_cls->text_process($f_m_c_n_d_h), PDO::PARAM_STR);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':fam_gedcomnumber', $_POST['marriage'], PDO::PARAM_STR);
+                $stmt->execute();
             }
 
             $this->family_tree_update();
@@ -2016,7 +2427,7 @@ class EditorModel extends AdminBaseModel
         if (isset($_POST['marriage_event_add'])) {
             // *** Add event. If event is new, use: $new_event=true. ***
             // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-            $this->add_event(false, 'family', safe_text_db($_POST['marriage']), $_POST["event_kind"], '', '', '', '', '');
+            $this->add_event(false, 'family', $this->safeTextDb->safe_text_db($_POST['marriage']), $_POST["event_kind"], '', '', '', '', '');
         }
 
         // *** Upload images ***
@@ -2208,12 +2619,16 @@ class EditorModel extends AdminBaseModel
                     for ($i = 2; $i <= $descendant_id; $i++) {
                         // *** Check if descendant already has this colour ***
                         $event_sql = "SELECT * FROM humo_events
-                            WHERE event_tree_id='" . $this->tree_id . "'
-                            AND event_connect_kind='person' 
-                            AND event_connect_id='" . $descendant_array[$i] . "'
-                            AND event_kind='person_colour_mark'
-                            AND event_event='" . safe_text_db($_POST["event_event_old"][$key]) . "'";
-                        $event_qry = $this->dbh->query($event_sql);
+                            WHERE event_tree_id = :tree_id
+                            AND event_connect_kind = 'person'
+                            AND event_connect_id = :descendant_id
+                            AND event_kind = 'person_colour_mark'
+                            AND event_event = :event_event";
+                        $event_qry = $this->dbh->prepare($event_sql);
+                        $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $event_qry->bindValue(':descendant_id', $descendant_array[$i], PDO::PARAM_STR);
+                        $event_qry->bindValue(':event_event', $_POST["event_event_old"][$key], PDO::PARAM_STR);
+                        $event_qry->execute();
                         $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
 
                         $event_gedcom = '';
@@ -2228,14 +2643,22 @@ class EditorModel extends AdminBaseModel
                         // *** Descendant already has this color, change it ***
                         if (isset($eventDb->event_event)) {
                             $sql = "UPDATE humo_events SET
-                                event_event='" . $event_event . "',
-                                event_date='" . $this->editor_cls->date_process("event_date", $key) . "',
-                                event_place='" . $this->editor_cls->text_process($_POST["event_place" . $key]) . "',
-                                event_changed_user_id='" . $this->userid . "',
-                                event_gedcom='" . $this->editor_cls->text_process($event_gedcom) . "',
-                                event_text='" . $this->editor_cls->text_process($event_text) . "'
-                                WHERE event_id='" . $eventDb->event_id . "'";
-                            $this->dbh->query($sql);
+                                event_event = :event_event,
+                                event_date = :event_date,
+                                event_place = :event_place,
+                                event_changed_user_id = :event_changed_user_id,
+                                event_gedcom = :event_gedcom,
+                                event_text = :event_text
+                                WHERE event_id = :event_id";
+                            $stmt = $this->dbh->prepare($sql);
+                            $stmt->bindValue(':event_event', $event_event, PDO::PARAM_STR);
+                            $stmt->bindValue(':event_date', $this->editor_cls->date_process("event_date", $key), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_place', $this->editor_cls->text_process($_POST["event_place" . $key]), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_changed_user_id', $this->userid, PDO::PARAM_STR);
+                            $stmt->bindValue(':event_gedcom', $this->editor_cls->text_process($event_gedcom), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_text', $this->editor_cls->text_process($event_text), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_id', $eventDb->event_id, PDO::PARAM_INT);
+                            $stmt->execute();
                         } else {
                             // *** Add person event for descendants ***
                             // *** Add event. If event is new, use: $new_event=true. ***
@@ -2254,12 +2677,16 @@ class EditorModel extends AdminBaseModel
 
                         // *** Check if ancestor already has this colour ***
                         $event_sql = "SELECT * FROM humo_events
-                            WHERE event_tree_id='" . $this->tree_id . "'
-                            AND event_connect_kind='person'
-                            AND event_connect_id='" . $selected_ancestor . "'
-                            AND event_kind='person_colour_mark'
-                            AND event_event='" . safe_text_db($_POST["event_event_old"][$key]) . "'";
-                        $event_qry = $this->dbh->query($event_sql);
+                            WHERE event_tree_id = :tree_id
+                            AND event_connect_kind = 'person'
+                            AND event_connect_id = :selected_ancestor
+                            AND event_kind = 'person_colour_mark'
+                            AND event_event = :event_event";
+                        $event_qry = $this->dbh->prepare($event_sql);
+                        $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                        $event_qry->bindValue(':selected_ancestor', $selected_ancestor, PDO::PARAM_STR);
+                        $event_qry->bindValue(':event_event', $_POST["event_event_old"][$key], PDO::PARAM_STR);
+                        $event_qry->execute();
                         $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
 
                         $event_gedcom = '';
@@ -2274,14 +2701,22 @@ class EditorModel extends AdminBaseModel
                         // *** Ancestor already has this color, change it ***
                         if (isset($eventDb->event_event)) {
                             $sql = "UPDATE humo_events SET
-                                event_event='" . $event_event . "',
-                                event_date='" . $this->editor_cls->date_process("event_date", $key) . "',
-                                event_place='" . $this->editor_cls->text_process($_POST["event_place" . $key]) . "',
-                                event_changed_user_id='" . $this->userid . "',
-                                event_gedcom='" . $this->editor_cls->text_process($event_gedcom) . "',
-                                event_text='" . $this->editor_cls->text_process($event_text) . "'
-                                WHERE event_id='" . $eventDb->event_id . "'";
-                            $this->dbh->query($sql);
+                                event_event = :event_event,
+                                event_date = :event_date,
+                                event_place = :event_place,
+                                event_changed_user_id = :event_changed_user_id,
+                                event_gedcom = :event_gedcom,
+                                event_text = :event_text
+                                WHERE event_id = :event_id";
+                            $stmt = $this->dbh->prepare($sql);
+                            $stmt->bindValue(':event_event', $event_event, PDO::PARAM_STR);
+                            $stmt->bindValue(':event_date', $this->editor_cls->date_process("event_date", $key), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_place', $this->editor_cls->text_process($_POST["event_place" . $key]), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_changed_user_id', $this->userid, PDO::PARAM_STR);
+                            $stmt->bindValue(':event_gedcom', $this->editor_cls->text_process($event_gedcom), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_text', $this->editor_cls->text_process($event_text), PDO::PARAM_STR);
+                            $stmt->bindValue(':event_id', $eventDb->event_id, PDO::PARAM_INT);
+                            $stmt->execute();
                         } else {
                             // *** Add person event for ancestors ***
                             // *** Add event. If event is new, use: $new_event=true. ***
@@ -2320,8 +2755,8 @@ class EditorModel extends AdminBaseModel
             $confirm .= '</div>';
         }
         if (isset($_POST['event_drop2'])) {
-            $event_kind = safe_text_db($_POST['event_kind']);
-            $event_order_id = safe_text_db($_POST['event_drop']);
+            $event_kind = $this->safeTextDb->safe_text_db($_POST['event_kind']);
+            $event_order_id = $this->safeTextDb->safe_text_db($_POST['event_drop']);
 
             //if (isset($_POST['event_person'])) {
             if ($_POST['event_connect_kind'] == 'person') {
@@ -2341,26 +2776,42 @@ class EditorModel extends AdminBaseModel
                 if (isset($_POST['event_descendants']) || isset($_POST['event_ancestors'])) {
                     // *** Get event_event from selected person, needed to remove colour from descendant and/ or ancestors ***
                     $event_sql = "SELECT event_event FROM humo_events
-                        WHERE event_tree_id='" . $this->tree_id . "'
-                        AND event_connect_kind='person' AND event_connect_id='" . $this->pers_gedcomnumber . "'
-                        AND event_kind='person_colour_mark' AND event_order='" . $event_order_id . "'";
-                    $event_qry = $this->dbh->query($event_sql);
+                        WHERE event_tree_id = :tree_id
+                        AND event_connect_kind = 'person' AND event_connect_id = :pers_gedcomnumber
+                        AND event_kind = 'person_colour_mark' AND event_order = :event_order_id";
+                    $event_qry = $this->dbh->prepare($event_sql);
+                    $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $event_qry->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                    $event_qry->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
+                    $event_qry->execute();
                     $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
                     $event_event = $eventDb->event_event;
                 }
 
                 $sql = "DELETE FROM humo_events
-                    WHERE event_tree_id='" . $this->tree_id . "'
-                    AND event_connect_kind='person' AND event_connect_id='" . $this->pers_gedcomnumber . "'
-                    AND event_kind='" . $event_kind . "' AND event_order='" . $event_order_id . "'";
-                $this->dbh->query($sql);
+                    WHERE event_tree_id = :tree_id
+                    AND event_connect_kind = 'person'
+                    AND event_connect_id = :pers_gedcomnumber
+                    AND event_kind = :event_kind
+                    AND event_order = :event_order_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+                $stmt->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
+                $stmt->execute();
 
                 // *** Change order of events ***
                 $event_sql = "SELECT * FROM humo_events
-                    WHERE event_tree_id='" . $this->tree_id . "'
-                    AND event_connect_kind='person' AND event_connect_id='" . $this->pers_gedcomnumber . "'
-                    AND event_kind='" . $event_kind . "' AND event_order>'" . $event_order_id . "' ORDER BY event_order";
-                $event_qry = $this->dbh->query($event_sql);
+                    WHERE event_tree_id = :tree_id
+                    AND event_connect_kind = 'person' AND event_connect_id = :pers_gedcomnumber
+                    AND event_kind = :event_kind AND event_order > :event_order_id ORDER BY event_order";
+                $event_qry = $this->dbh->prepare($event_sql);
+                $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $event_qry->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $event_qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+                $event_qry->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
+                $event_qry->execute();
                 while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                     $sql = "UPDATE humo_events SET
                         event_order='" . ($eventDb->event_order - 1) . "',
@@ -2477,21 +2928,35 @@ class EditorModel extends AdminBaseModel
             // *** Picture by source: pictures are stored in event table ***
             //if (isset($_POST['event_source'])) {
             elseif ($_POST['event_connect_kind'] == 'source') {
-                $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                    AND event_connect_kind='source' AND event_connect_id='" . safe_text_db($_GET['source_id']) . "'
-                    AND event_kind='" . $event_kind . "' AND event_order='" . $event_order_id . "'";
-                $this->dbh->query($sql);
+                $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id
+                    AND event_connect_kind = 'source' AND event_connect_id = :source_id
+                    AND event_kind = :event_kind AND event_order = :event_order_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $stmt->bindValue(':source_id', $_GET['source_id'], PDO::PARAM_STR);
+                $stmt->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+                $stmt->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
+                $stmt->execute();
 
-                $event_sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                    AND event_connect_kind='source' AND event_connect_id='" . safe_text_db($_GET['source_id']) . "'
-                    AND event_kind='" . $event_kind . "' AND event_order>'" . $event_order_id . "' ORDER BY event_order";
-                $event_qry = $this->dbh->query($event_sql);
+                $event_sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                    AND event_connect_kind = 'source' AND event_connect_id = :source_id
+                    AND event_kind = :event_kind AND event_order > :event_order_id ORDER BY event_order";
+                $event_qry = $this->dbh->prepare($event_sql);
+                $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $event_qry->bindValue(':source_id', $_GET['source_id'], PDO::PARAM_STR);
+                $event_qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+                $event_qry->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
+                $event_qry->execute();
                 while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                     $sql = "UPDATE humo_events SET
-                        event_order='" . ($eventDb->event_order - 1) . "',
-                        event_changed_user_id='" . $this->userid . "'
-                        WHERE event_id='" . $eventDb->event_id . "'";
-                    $this->dbh->query($sql);
+                        event_order = :event_order,
+                        event_changed_user_id = :event_changed_user_id
+                        WHERE event_id = :event_id";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':event_order', ($eventDb->event_order - 1), PDO::PARAM_INT);
+                    $stmt->bindValue(':event_changed_user_id', $this->userid, PDO::PARAM_STR);
+                    $stmt->bindValue(':event_id', $eventDb->event_id, PDO::PARAM_INT);
+                    $stmt->execute();
                 }
             } else {
                 $event_connect_id = '';
@@ -2504,15 +2969,32 @@ class EditorModel extends AdminBaseModel
                     $event_connect_id = $marriage;
                 }
                 if ($event_connect_id) {
-                    $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                        AND event_connect_kind='" . $_POST['event_connect_kind'] . "' AND event_connect_id='" . safe_text_db($event_connect_id) . "'
-                        AND event_kind='" . $event_kind . "' AND event_order='" . $event_order_id . "'";
-                    $this->dbh->query($sql);
+                    $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id
+                        AND event_connect_kind = :event_connect_kind
+                        AND event_connect_id = :event_connect_id
+                        AND event_kind = :event_kind
+                        AND event_order = :event_order_id";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $stmt->bindValue(':event_connect_kind', $_POST['event_connect_kind'], PDO::PARAM_STR);
+                    $stmt->bindValue(':event_connect_id', $event_connect_id, PDO::PARAM_STR);
+                    $stmt->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+                    $stmt->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
+                    $stmt->execute();
 
-                    $event_sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                        AND event_connect_kind='" . $_POST['event_connect_kind'] . "' AND event_connect_id='" . safe_text_db($event_connect_id) . "'
-                        AND event_kind='" . $event_kind . "' AND event_order>'" . $event_order_id . "' ORDER BY event_order";
-                    $event_qry = $this->dbh->query($event_sql);
+                    $event_sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                        AND event_connect_kind = :event_connect_kind
+                        AND event_connect_id = :event_connect_id
+                        AND event_kind = :event_kind
+                        AND event_order > :event_order_id
+                        ORDER BY event_order";
+                    $event_qry = $this->dbh->prepare($event_sql);
+                    $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $event_qry->bindValue(':event_connect_kind', $_POST['event_connect_kind'], PDO::PARAM_STR);
+                    $event_qry->bindValue(':event_connect_id', $event_connect_id, PDO::PARAM_STR);
+                    $event_qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+                    $event_qry->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
+                    $event_qry->execute();
                     while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                         $sql = "UPDATE humo_events SET
                             event_order='" . ($eventDb->event_order - 1) . "',
@@ -2575,22 +3057,34 @@ class EditorModel extends AdminBaseModel
         if (isset($_POST['connect_add'])) {
             // *** Generate new order number ***
             $event_sql = "SELECT * FROM humo_connections
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . safe_text_db($_POST['connect_kind']) . "'
-                AND connect_sub_kind='" . safe_text_db($_POST["connect_sub_kind"]) . "'
-                AND connect_connect_id='" . safe_text_db($_POST["connect_connect_id"]) . "'";
-            $event_qry = $this->dbh->query($event_sql);
+                WHERE connect_tree_id = :tree_id
+                AND connect_kind = :connect_kind
+                AND connect_sub_kind = :connect_sub_kind
+                AND connect_connect_id = :connect_connect_id";
+            $event_qry = $this->dbh->prepare($event_sql);
+            $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $event_qry->bindValue(':connect_kind', $_POST['connect_kind'], PDO::PARAM_STR);
+            $event_qry->bindValue(':connect_sub_kind', $_POST["connect_sub_kind"], PDO::PARAM_STR);
+            $event_qry->bindValue(':connect_connect_id', $_POST["connect_connect_id"], PDO::PARAM_STR);
+            $event_qry->execute();
             $count = $event_qry->rowCount();
             $count++;
 
             $sql = "INSERT INTO humo_connections SET
-                connect_tree_id='" . $this->tree_id . "',
-                connect_order='" . $count . "',
-                connect_new_user_id='" . $this->userid . "',
-                connect_kind='" . safe_text_db($_POST['connect_kind']) . "',
-                connect_sub_kind='" . safe_text_db($_POST["connect_sub_kind"]) . "',
-                connect_connect_id='" . safe_text_db($_POST["connect_connect_id"]) . "'";
-            $this->dbh->query($sql);
+                connect_tree_id = :tree_id,
+                connect_order = :connect_order,
+                connect_new_user_id = :userid,
+                connect_kind = :connect_kind,
+                connect_sub_kind = :connect_sub_kind,
+                connect_connect_id = :connect_connect_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':connect_order', $count, PDO::PARAM_INT);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':connect_kind', $_POST['connect_kind'], PDO::PARAM_STR);
+            $stmt->bindValue(':connect_sub_kind', $_POST["connect_sub_kind"], PDO::PARAM_STR);
+            $stmt->bindValue(':connect_connect_id', $_POST["connect_connect_id"], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
         // *** Change source/ address connection ***
@@ -2628,16 +3122,16 @@ class EditorModel extends AdminBaseModel
                 if ($connect_changed) {
                     $sql = "UPDATE humo_connections SET";
                     if (isset($_POST['connect_kind'][$key])) {
-                        $sql .= " connect_kind='" . safe_text_db($_POST['connect_kind'][$key]) . "',";
+                        $sql .= " connect_kind='" . $this->safeTextDb->safe_text_db($_POST['connect_kind'][$key]) . "',";
                     }
                     if (isset($_POST['connect_sub_kind'][$key])) {
-                        $sql .= " connect_sub_kind='" . safe_text_db($_POST['connect_sub_kind'][$key]) . "',";
+                        $sql .= " connect_sub_kind='" . $this->safeTextDb->safe_text_db($_POST['connect_sub_kind'][$key]) . "',";
                     }
                     $sql .= " connect_page='" . $this->editor_cls->text_process($_POST["connect_page"][$key]) . "',
                         connect_role='" . $this->editor_cls->text_process($_POST["connect_role"][$key]) . "',";
 
                     if (isset($_POST['connect_source_id'][$key])) {
-                        $sql .= "connect_source_id='" . safe_text_db($_POST['connect_source_id'][$key]) . "',";
+                        $sql .= "connect_source_id='" . $this->safeTextDb->safe_text_db($_POST['connect_source_id'][$key]) . "',";
                     }
 
                     if (isset($_POST['connect_date'][$key])) {
@@ -2650,18 +3144,18 @@ class EditorModel extends AdminBaseModel
 
                     // *** Extra text for source ***
                     if (isset($_POST['connect_text'][$key])) {
-                        $sql .= "connect_text='" . safe_text_db($_POST['connect_text'][$key]) . "',";
+                        $sql .= "connect_text='" . $this->safeTextDb->safe_text_db($_POST['connect_text'][$key]) . "',";
                     }
 
                     if (isset($_POST['connect_quality'][$key])) {
-                        $sql .= " connect_quality='" . safe_text_db($_POST['connect_quality'][$key]) . "',";
+                        $sql .= " connect_quality='" . $this->safeTextDb->safe_text_db($_POST['connect_quality'][$key]) . "',";
                     }
 
                     if (isset($_POST['connect_item_id'][$key]) && $_POST['connect_item_id'][$key]) {
-                        $sql .= " connect_item_id='" . safe_text_db($_POST['connect_item_id'][$key]) . "',";
+                        $sql .= " connect_item_id='" . $this->safeTextDb->safe_text_db($_POST['connect_item_id'][$key]) . "',";
                     }
 
-                    $sql .= " connect_changed_user_id='" . $this->userid . "' WHERE connect_id='" . safe_text_db($_POST["connect_change"][$key]) . "'";
+                    $sql .= " connect_changed_user_id='" . $this->userid . "' WHERE connect_id='" . $this->safeTextDb->safe_text_db($_POST["connect_change"][$key]) . "'";
                     //echo $sql.'<br>';
                     $this->dbh->query($sql);
                 }
@@ -2676,19 +3170,28 @@ class EditorModel extends AdminBaseModel
                 //source_repo_page='".$this->editor_cls->text_process($_POST['source_repo_page'][$key])."',
                 //source_repo_gedcomnr='".$this->editor_cls->text_process($_POST['source_repo_gedcomnr'][$key])."',
                 if (isset($_POST['source_title'][$key])) {
-                    //source_date='".safe_text_db($_POST['source_date'][$key])."',
+                    //source_date='".$_POST['source_date'][$key]."',
                     //$source_shared=''; if (isset($_POST['source_shared'][$key])) $source_shared='1';
                     //source_shared='".$source_shared."',
 
                     $sql = "UPDATE humo_sources SET
-                        source_title='" . $this->editor_cls->text_process($_POST['source_title'][$key]) . "',
-                        source_text='" . $this->editor_cls->text_process($_POST['source_text'][$key], true) . "',
-                        source_refn='" . $this->editor_cls->text_process($_POST['source_refn'][$key]) . "',
-                        source_date='" . $this->editor_cls->date_process("source_date", $key) . "',
-                        source_place='" . $this->editor_cls->text_process($_POST['source_place'][$key]) . "',
-                        source_changed_user_id='" . $this->userid . "'
-                        WHERE source_tree_id='" . $this->tree_id . "' AND source_id='" . safe_text_db($_POST["source_id"][$key]) . "'";
-                    $this->dbh->query($sql);
+                        source_title = :source_title,
+                        source_text = :source_text,
+                        source_refn = :source_refn,
+                        source_date = :source_date,
+                        source_place = :source_place,
+                        source_changed_user_id = :userid
+                        WHERE source_tree_id = :tree_id AND source_id = :source_id";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':source_title', $this->editor_cls->text_process($_POST['source_title'][$key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':source_text', $this->editor_cls->text_process($_POST['source_text'][$key], true), PDO::PARAM_STR);
+                    $stmt->bindValue(':source_refn', $this->editor_cls->text_process($_POST['source_refn'][$key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':source_date', $this->editor_cls->date_process("source_date", $key), PDO::PARAM_STR);
+                    $stmt->bindValue(':source_place', $this->editor_cls->text_process($_POST['source_place'][$key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                    $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $stmt->bindValue(':source_id', $_POST["source_id"][$key], PDO::PARAM_STR);
+                    $stmt->execute();
                 }
             }
         }
@@ -2745,7 +3248,7 @@ class EditorModel extends AdminBaseModel
                     }
 
                     if (isset($_GET['marriage_nr'])) {
-                        echo '<input type="hidden" name="marriage_nr" value="' . safe_text_db($_GET['marriage_nr']) . '">';
+                        echo '<input type="hidden" name="marriage_nr" value="' . $this->safeTextDb->safe_text_db($_GET['marriage_nr']) . '">';
                     }
                     ?>
 
@@ -2758,9 +3261,10 @@ class EditorModel extends AdminBaseModel
         }
         // *** Delete source or address connection ***
         if (isset($_POST['connect_drop2'])) {
-            $event_sql = "SELECT * FROM humo_connections
-                WHERE connect_id='" . safe_text_db($_POST['connect_drop']) . "'";
-            $event_qry = $this->dbh->query($event_sql);
+            $event_sql = "SELECT * FROM humo_connections WHERE connect_id = :connect_id";
+            $event_qry = $this->dbh->prepare($event_sql);
+            $event_qry->bindValue(':connect_id', $_POST['connect_drop'], PDO::PARAM_STR);
+            $event_qry->execute();
             $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
 
             $connect_kind = $eventDb->connect_kind;
@@ -2774,13 +3278,13 @@ class EditorModel extends AdminBaseModel
                 //DOESN'T WORK
                 //$sourceDb = $this->db_functions->get_source($eventDb->connect_source_id);
                 $source_sql="SELECT * FROM humo_sources
-                    WHERE source_gedcomnr='".safe_text_db($eventDb->connect_source_id)."'
+                    WHERE source_gedcomnr='".$eventDb->connect_source_id."'
                     AND source_shared!='1'";
                 //echo $source_sql.'<br>';
                 $source_qry=$this->dbh->query($source_sql);
                 $sourceDb=$source_qry->fetch(PDO::FETCH_OBJ);
                 if ($sourceDb){
-                    $sql="DELETE FROM humo_sources WHERE source_id='".safe_text_db($sourceDb->source_id)."'";
+                    $sql="DELETE FROM humo_sources WHERE source_id='".$sourceDb->source_id."'";
                     $this->dbh->query($sql);
                 }
             }
@@ -2789,12 +3293,17 @@ class EditorModel extends AdminBaseModel
             // *** Remove NON SHARED addresses ***
             if ($connect_sub_kind == 'person_address' || $connect_sub_kind == 'family_address') {
                 $address_sql = "SELECT * FROM humo_addresses
-                    WHERE address_gedcomnr='" . safe_text_db($eventDb->connect_item_id) . "'
-                    AND address_shared!='1'";
-                $address_qry = $this->dbh->query($address_sql);
+                    WHERE address_gedcomnr = :address_gedcomnr
+                    AND address_shared != '1'";
+                $address_qry = $this->dbh->prepare($address_sql);
+                $address_qry->bindValue(':address_gedcomnr', $eventDb->connect_item_id, PDO::PARAM_STR);
+                $address_qry->execute();
                 $addressDb = $address_qry->fetch(PDO::FETCH_OBJ);
                 if ($addressDb) {
-                    $sql = "DELETE FROM humo_addresses WHERE address_id='" . safe_text_db($addressDb->address_id) . "'";
+                    $sql = "DELETE FROM humo_addresses WHERE address_id = :address_id";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':address_id', $addressDb->address_id, PDO::PARAM_INT);
+                    $stmt->execute();
                     $this->dbh->query($sql);
                 }
 
@@ -2807,21 +3316,32 @@ class EditorModel extends AdminBaseModel
                 }
             }
 
-            $sql = "DELETE FROM humo_connections WHERE connect_id='" . safe_text_db($_POST['connect_drop']) . "'";
+            $sql = "DELETE FROM humo_connections WHERE connect_id = :connect_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':connect_id', $_POST['connect_drop'], PDO::PARAM_STR);
+            $stmt->execute();
             $this->dbh->query($sql);
 
             // *** Re-order remaining source connections ***
             $event_order = 1;
             $event_sql = "SELECT * FROM humo_connections
-                WHERE connect_tree_id='" . $this->tree_id . "'
-                AND connect_kind='" . $connect_kind . "'
-                AND connect_sub_kind='" . $connect_sub_kind . "'
-                AND connect_connect_id='" . $connect_connect_id . "'
+                WHERE connect_tree_id = :tree_id
+                AND connect_kind = :connect_kind
+                AND connect_sub_kind = :connect_sub_kind
+                AND connect_connect_id = :connect_connect_id
                 ORDER BY connect_order";
-            $event_qry = $this->dbh->query($event_sql);
+            $event_qry = $this->dbh->prepare($event_sql);
+            $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $event_qry->bindValue(':connect_kind', $connect_kind, PDO::PARAM_STR);
+            $event_qry->bindValue(':connect_sub_kind', $connect_sub_kind, PDO::PARAM_STR);
+            $event_qry->bindValue(':connect_connect_id', $connect_connect_id, PDO::PARAM_STR);
+            $event_qry->execute();
             while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
-                $sql = "UPDATE humo_connections SET connect_order='" . $event_order . "' WHERE connect_id='" . $eventDb->connect_id . "'";
-                $this->dbh->query($sql);
+                $sql = "UPDATE humo_connections SET connect_order = :connect_order WHERE connect_id = :connect_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':connect_order', $event_order, PDO::PARAM_INT);
+                $stmt->bindValue(':connect_id', $eventDb->connect_id, PDO::PARAM_STR);
+                $stmt->execute();
                 $event_order++;
             }
         }
@@ -2856,11 +3376,16 @@ class EditorModel extends AdminBaseModel
             $this->dbh->query($sql);
 
             $sql = "UPDATE humo_connections SET
-                connect_tree_id='" . $this->tree_id . "',
-                connect_source_id='" . $new_gedcomnumber . "',
-                connect_changed_user_id='" . $this->userid . "'
-                WHERE connect_id='" . safe_text_db($_GET["connect_id"]) . "'";
-            $this->dbh->query($sql);
+                connect_tree_id = :tree_id,
+                connect_source_id = :connect_source_id,
+                connect_changed_user_id = :userid
+                WHERE connect_id = :connect_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':connect_source_id', $new_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':connect_id', $_GET["connect_id"], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
         //source_shared='".$this->editor_cls->text_process($_POST['source_shared'])."',
@@ -2875,23 +3400,41 @@ class EditorModel extends AdminBaseModel
         }
         if ($save_source_data) {
             $sql = "UPDATE humo_sources SET
-                source_status='" . $this->editor_cls->text_process($_POST['source_status']) . "',
-                source_title='" . $this->editor_cls->text_process($_POST['source_title']) . "',
-                source_date='" . $this->editor_cls->date_process('source_date') . "',
-                source_place='" . $this->editor_cls->text_process($_POST['source_place']) . "',
-                source_publ='" . $this->editor_cls->text_process($_POST['source_publ']) . "',
-                source_refn='" . $this->editor_cls->text_process($_POST['source_refn']) . "',
-                source_auth='" . $this->editor_cls->text_process($_POST['source_auth']) . "',
-                source_subj='" . $this->editor_cls->text_process($_POST['source_subj']) . "',
-                source_item='" . $this->editor_cls->text_process($_POST['source_item']) . "',
-                source_kind='" . $this->editor_cls->text_process($_POST['source_kind']) . "',
-                source_repo_caln='" . $this->editor_cls->text_process($_POST['source_repo_caln']) . "',
-                source_repo_page='" . $this->editor_cls->text_process($_POST['source_repo_page']) . "',
-                source_repo_gedcomnr='" . $this->editor_cls->text_process($_POST['source_repo_gedcomnr']) . "',
-                source_text='" . $this->editor_cls->text_process($_POST['source_text'], true) . "',
-                source_changed_user_id='" . $this->userid . "'
-                WHERE source_tree_id='" . $this->tree_id . "' AND source_id='" . safe_text_db($_POST["source_id"]) . "'";
-            $this->dbh->query($sql);
+                source_status = :source_status,
+                source_title = :source_title,
+                source_date = :source_date,
+                source_place = :source_place,
+                source_publ = :source_publ,
+                source_refn = :source_refn,
+                source_auth = :source_auth,
+                source_subj = :source_subj,
+                source_item = :source_item,
+                source_kind = :source_kind,
+                source_repo_caln = :source_repo_caln,
+                source_repo_page = :source_repo_page,
+                source_repo_gedcomnr = :source_repo_gedcomnr,
+                source_text = :source_text,
+                source_changed_user_id = :userid
+                WHERE source_tree_id = :tree_id AND source_id = :source_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':source_status', $this->editor_cls->text_process($_POST['source_status']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_title', $this->editor_cls->text_process($_POST['source_title']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_date', $this->editor_cls->date_process('source_date'), PDO::PARAM_STR);
+            $stmt->bindValue(':source_place', $this->editor_cls->text_process($_POST['source_place']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_publ', $this->editor_cls->text_process($_POST['source_publ']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_refn', $this->editor_cls->text_process($_POST['source_refn']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_auth', $this->editor_cls->text_process($_POST['source_auth']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_subj', $this->editor_cls->text_process($_POST['source_subj']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_item', $this->editor_cls->text_process($_POST['source_item']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_kind', $this->editor_cls->text_process($_POST['source_kind']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_repo_caln', $this->editor_cls->text_process($_POST['source_repo_caln']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_repo_page', $this->editor_cls->text_process($_POST['source_repo_page']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_repo_gedcomnr', $this->editor_cls->text_process($_POST['source_repo_gedcomnr']), PDO::PARAM_STR);
+            $stmt->bindValue(':source_text', $this->editor_cls->text_process($_POST['source_text'], true), PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':source_id', $_POST["source_id"], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
 
@@ -2916,15 +3459,24 @@ class EditorModel extends AdminBaseModel
                 address_new_user_id='" . $this->userid . "'";
             $this->dbh->query($sql);
 
-            $sql = "UPDATE humo_connections SET
-                connect_tree_id='" . $this->tree_id . "',
-                connect_kind='" . safe_text_db($_GET['connect_kind']) . "',
-                connect_sub_kind='" . safe_text_db($_GET["connect_sub_kind"]) . "',
-                connect_connect_id='" . safe_text_db($_GET["connect_connect_id"]) . "',
-                connect_item_id='" . $new_gedcomnumber . "',
-                connect_new_user_id='" . $this->userid . "'
-                WHERE connect_id='" . safe_text_db($_GET["connect_id"]) . "'";
-            $this->dbh->query($sql);
+            $stmt = $this->dbh->prepare(
+                "UPDATE humo_connections SET
+                    connect_tree_id = :tree_id,
+                    connect_kind = :connect_kind,
+                    connect_sub_kind = :connect_sub_kind,
+                    connect_connect_id = :connect_connect_id,
+                    connect_item_id = :connect_item_id,
+                    connect_new_user_id = :userid
+                 WHERE connect_id = :connect_id"
+            );
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->bindValue(':connect_kind', $_GET['connect_kind'], PDO::PARAM_STR);
+            $stmt->bindValue(':connect_sub_kind', $_GET["connect_sub_kind"], PDO::PARAM_STR);
+            $stmt->bindValue(':connect_connect_id', $_GET["connect_connect_id"], PDO::PARAM_STR);
+            $stmt->bindValue(':connect_item_id', $new_gedcomnumber, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':connect_id', $_GET["connect_id"], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
         // *** Change address ***
@@ -2962,15 +3514,24 @@ class EditorModel extends AdminBaseModel
 
                 if ($address_changed) {
                     $sql = "UPDATE humo_addresses SET
-                        address_shared='" . $address_shared . "',
-                        address_address='" . $this->editor_cls->text_process($_POST["address_address_" . $key]) . "',
-                        address_place='" . $this->editor_cls->text_process($_POST["address_place_" . $key]) . "',
-                        address_text='" . $this->editor_cls->text_process($_POST["address_text_" . $key]) . "',
-                        address_phone='" . $this->editor_cls->text_process($_POST["address_phone_" . $key]) . "',
-                        address_zip='" . $this->editor_cls->text_process($_POST["address_zip_" . $key]) . "',
-                        address_changed_user_id='" . $this->userid . "'
-                        WHERE address_id='" . safe_text_db($_POST["change_address_id"][$key]) . "'";
-                    $this->dbh->query($sql);
+                        address_shared = :address_shared,
+                        address_address = :address_address,
+                        address_place = :address_place,
+                        address_text = :address_text,
+                        address_phone = :address_phone,
+                        address_zip = :address_zip,
+                        address_changed_user_id = :userid
+                        WHERE address_id = :address_id";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':address_shared', $address_shared, PDO::PARAM_STR);
+                    $stmt->bindValue(':address_address', $this->editor_cls->text_process($_POST["address_address_" . $key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':address_place', $this->editor_cls->text_process($_POST["address_place_" . $key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':address_text', $this->editor_cls->text_process($_POST["address_text_" . $key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':address_phone', $this->editor_cls->text_process($_POST["address_phone_" . $key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':address_zip', $this->editor_cls->text_process($_POST["address_zip_" . $key]), PDO::PARAM_STR);
+                    $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                    $stmt->bindValue(':address_id', $_POST["change_address_id"][$key], PDO::PARAM_STR);
+                    $stmt->execute();
                 }
             }
         }
@@ -2983,18 +3544,18 @@ class EditorModel extends AdminBaseModel
             $connect_source_sql="SELECT * FROM humo_connections LEFT JOIN humo_sources
                 ON source_gedcomnr=connect_source_id
                 WHERE connect_tree_id='".$this->tree_id."' AND source_tree_id='".$this->tree_id."'
-                AND connect_sub_kind='".safe_text_db($connect_sub_kind)."'
-                AND connect_connect_id='".safe_text_db($connect_connect_id)."'
+                AND connect_sub_kind='".$connect_sub_kind."'
+                AND connect_connect_id='".$connect_connect_id."'
                 AND source_shared!='1'";
             //echo $connect_source_sql.'<br>';
             $connect_source_qry=$this->dbh->query($connect_source_sql);
             while($connect_sourceDb=$connect_source_qry->fetch(PDO::FETCH_OBJ)){
             // TODO: ALWAYS REMOVE A CONNECTION, ONLY REMOVE SOURCE IF IT ISN'T SHARED
 
-            $sql="DELETE FROM humo_sources WHERE source_id='".safe_text_db($connect_sourceDb->source_id)."'";
+            $sql="DELETE FROM humo_sources WHERE source_id='".$connect_sourceDb->source_id."'";
             $this->dbh->query($sql);
 
-            $sql="DELETE FROM humo_connections WHERE connect_id='".safe_text_db($connect_sourceDb->connect_id)."'";
+            $sql="DELETE FROM humo_connections WHERE connect_id='".$connect_sourceDb->connect_id."'";
             $this->dbh->query($sql);
             }
         }
@@ -3016,10 +3577,14 @@ class EditorModel extends AdminBaseModel
                 $fams = $familynr;
             }
             $sql = "UPDATE humo_persons SET
-                pers_fams='" . $fams . "',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_id='" . $person_db->pers_id . "'";
-            $this->dbh->query($sql);
+                pers_fams = :fams,
+                pers_changed_user_id = :userid
+                WHERE pers_id = :person_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fams', $fams, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':person_id', $person_db->pers_id, PDO::PARAM_STR);
+            $stmt->execute();
         }
     }
 
@@ -3039,10 +3604,14 @@ class EditorModel extends AdminBaseModel
             }
 
             $sql = "UPDATE humo_persons SET
-                pers_fams='" . $fams3 . "',
-                pers_changed_user_id='" . $this->userid . "'
-                WHERE pers_id='" . $person_db->pers_id . "'";
-            $this->dbh->query($sql);
+                pers_fams = :fams,
+                pers_changed_user_id = :userid
+                WHERE pers_id = :person_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':fams', $fams3, PDO::PARAM_STR);
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':person_id', $person_db->pers_id, PDO::PARAM_STR);
+            $stmt->execute();
         }
     }
 
@@ -3053,8 +3622,13 @@ class EditorModel extends AdminBaseModel
         $nr_families = $this->db_functions->count_families($this->tree_id);
 
         $tree_date = date("Y-m-d H:i");
-        $sql = "UPDATE humo_trees SET tree_persons='" . $nr_persons . "', tree_families='" . $nr_families . "', tree_date='" . $tree_date . "' WHERE tree_id='" . $this->tree_id . "'";
-        $this->dbh->query($sql);
+        $sql = "UPDATE humo_trees SET tree_persons = :nr_persons, tree_families = :nr_families, tree_date = :tree_date WHERE tree_id = :tree_id";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindValue(':nr_persons', $nr_persons, PDO::PARAM_INT);
+        $stmt->bindValue(':nr_families', $nr_families, PDO::PARAM_INT);
+        $stmt->bindValue(':tree_date', $tree_date, PDO::PARAM_STR);
+        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+        $stmt->execute();
     }
 
     // *** Add event. $new_event=false/true ***
@@ -3063,12 +3637,17 @@ class EditorModel extends AdminBaseModel
         // *** Generate new order number ***
         $event_order = 1;
         if (!$new_event) {
-            $event_sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='" . $event_connect_kind . "'
-                AND event_connect_id='" . $event_connect_id . "'
-                AND event_kind='" . $event_kind . "'
+            $event_sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                AND event_connect_kind = :event_connect_kind
+                AND event_connect_id = :event_connect_id
+                AND event_kind = :event_kind
                 ORDER BY event_order DESC LIMIT 0,1";
-            $event_qry = $this->dbh->query($event_sql);
+            $event_qry = $this->dbh->prepare($event_sql);
+            $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $event_qry->bindValue(':event_connect_kind', $event_connect_kind, PDO::PARAM_STR);
+            $event_qry->bindValue(':event_connect_id', $event_connect_id, PDO::PARAM_STR);
+            $event_qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+            $event_qry->execute();
             $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
             $event_order = 0;
             if (isset($eventDb->event_order)) {
@@ -3077,28 +3656,51 @@ class EditorModel extends AdminBaseModel
             $event_order++;
         }
 
-        $sql = "INSERT INTO humo_events SET
-            event_tree_id='" . $this->tree_id . "',
-            event_connect_kind='" . $event_connect_kind . "',
-            event_connect_id='" . safe_text_db($event_connect_id) . "',
-            event_kind='" . $event_kind . "',
-            event_event='" . safe_text_db($event_event) . "',
-            event_gedcom='" . safe_text_db($event_gedcom) . "',";
+        $sql = "INSERT INTO humo_events (
+            event_tree_id,
+            event_connect_kind,
+            event_connect_id,
+            event_kind,
+            event_event,
+            event_gedcom," . ($event_date ? " event_date," : "") . "
+            event_place,
+            event_text,
+            event_order,
+            event_new_user_id
+        ) VALUES (
+            :tree_id,
+            :event_connect_kind,
+            :event_connect_id,
+            :event_kind,
+            :event_event,
+            :event_gedcom," . ($event_date ? " :event_date," : "") . "
+            :event_place,
+            :event_text,
+            :event_order,
+            :event_new_user_id
+        )";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+        $stmt->bindValue(':event_connect_kind', $event_connect_kind, PDO::PARAM_STR);
+        $stmt->bindValue(':event_connect_id', $event_connect_id, PDO::PARAM_STR);
+        $stmt->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+        $stmt->bindValue(':event_event', $event_event, PDO::PARAM_STR);
+        $stmt->bindValue(':event_gedcom', $event_gedcom, PDO::PARAM_STR);
         if ($event_date) {
-            $sql .= " event_date='" . $this->editor_cls->date_process($event_date, $multiple_rows) . "',";
+            $stmt->bindValue(':event_date', $this->editor_cls->date_process($event_date, $multiple_rows), PDO::PARAM_STR);
         }
-        $sql .= " event_place='" . safe_text_db($event_place) . "',
-        event_text='" . safe_text_db($event_text) . "',
-        event_order='" . $event_order . "',
-        event_new_user_id='" . $this->userid . "'";
-        $this->dbh->query($sql);
+        $stmt->bindValue(':event_place', $event_place, PDO::PARAM_STR);
+        $stmt->bindValue(':event_text', $event_text, PDO::PARAM_STR);
+        $stmt->bindValue(':event_order', $event_order, PDO::PARAM_INT);
+        $stmt->bindValue(':event_new_user_id', $this->userid, PDO::PARAM_STR);
+        $stmt->execute();
     }
 
     public function update_note()
     {
         $confirm = '';
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName();
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
 
         // *** Add editor note ***
         if (isset($_GET['note_add']) && $_GET['note_add']) {
@@ -3116,22 +3718,29 @@ class EditorModel extends AdminBaseModel
 
             // *** Name of selected person in family tree ***
             $persDb = $this->db_functions->get_person($this->pers_gedcomnumber);
-            $privacy = $person_privacy->get_privacy($persDb);
-            $name = $person_name->get_person_name($persDb, $privacy);
-            $note_names = safe_text_db($name["standard_name"]);
+            $privacy = $personPrivacy->get_privacy($persDb);
+            $name = $personName->get_person_name($persDb, $privacy);
+            $note_names = $this->safeTextDb->safe_text_db($name["standard_name"]);
 
             //note_connect_kind='person',
-            $sql = "INSERT INTO humo_user_notes SET
-                note_new_user_id='" . $this->userid . "',
-                note_note='',
-                note_kind='editor',
-                note_status='Not started',
-                note_priority='Normal',
-                note_connect_kind='" . $note_connect_kind . "',
-                note_connect_id='" . safe_text_db($note_connect_id) . "',
-                note_names='" . safe_text_db($note_names) . "',
-                note_tree_id='" . $this->tree_id . "'";
-            $this->dbh->query($sql);
+            $stmt = $this->dbh->prepare(
+                "INSERT INTO humo_user_notes SET
+                    note_new_user_id = :userid,
+                    note_note = '',
+                    note_kind = 'editor',
+                    note_status = 'Not started',
+                    note_priority = 'Normal',
+                    note_connect_kind = :note_connect_kind,
+                    note_connect_id = :note_connect_id,
+                    note_names = :note_names,
+                    note_tree_id = :tree_id"
+            );
+            $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+            $stmt->bindValue(':note_connect_kind', $note_connect_kind, PDO::PARAM_STR);
+            $stmt->bindValue(':note_connect_id', $note_connect_id, PDO::PARAM_STR);
+            $stmt->bindValue(':note_names', $note_names, PDO::PARAM_STR);
+            $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+            $stmt->execute();
         }
 
         // *** Change editor note ***
@@ -3156,12 +3765,18 @@ class EditorModel extends AdminBaseModel
 
                     if ($note_changed) {
                         $sql = "UPDATE humo_user_notes SET
-                            note_note='" . $this->editor_cls->text_process($_POST["note_note"][$key]) . "',
-                            note_status='" . $this->editor_cls->text_process($_POST["note_status"][$key]) . "',
-                            note_priority='" . $this->editor_cls->text_process($_POST["note_priority"][$key]) . "',
-                            note_changed_user_id='" . $this->userid . "'
-                            WHERE note_id='" . $note_id . "'";
-                        $this->dbh->query($sql);
+                            note_note = :note_note,
+                            note_status = :note_status,
+                            note_priority = :note_priority,
+                            note_changed_user_id = :userid
+                            WHERE note_id = :note_id";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->bindValue(':note_note', $this->editor_cls->text_process($_POST["note_note"][$key]), PDO::PARAM_STR);
+                        $stmt->bindValue(':note_status', $this->editor_cls->text_process($_POST["note_status"][$key]), PDO::PARAM_STR);
+                        $stmt->bindValue(':note_priority', $this->editor_cls->text_process($_POST["note_priority"][$key]), PDO::PARAM_STR);
+                        $stmt->bindValue(':userid', $this->userid, PDO::PARAM_STR);
+                        $stmt->bindValue(':note_id', $note_id, PDO::PARAM_INT);
+                        $stmt->execute();
                     }
                 }
             }
@@ -3180,8 +3795,10 @@ class EditorModel extends AdminBaseModel
             $confirm .= '</div>';
         }
         if (isset($_POST['note_drop2']) && is_numeric($_POST['note_drop'])) {
-            $sql = "DELETE FROM humo_user_notes WHERE note_id='" . safe_text_db($_POST['note_drop']) . "'";
-            $this->dbh->query($sql);
+            $sql = "DELETE FROM humo_user_notes WHERE note_id = :note_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':note_id', $_POST['note_drop'], PDO::PARAM_INT);
+            $stmt->execute();
         }
 
         return $confirm;
@@ -3252,17 +3869,26 @@ class EditorModel extends AdminBaseModel
             // *** Add or renew cache in database (only if cache_count is valid) ***
             if ($cache && $cache_count == $count_latest_changes) {
                 if ($cache_exists) {
-                    //$sql = "UPDATE humo_settings SET setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "' WHERE setting_tree_id='" . safe_text_db($this->tree_id) . "' AND setting_variable='cache_latest_changes'";
-
                     // Because of bug found in jan. 2024, remove value from database and insert again.
-                    $sql = "DELETE FROM humo_settings WHERE setting_tree_id='" . safe_text_db($this->tree_id) . "' AND setting_variable='cache_latest_changes'";
-                    $this->dbh->query($sql);
+                    $sql = "DELETE FROM humo_settings WHERE setting_tree_id = :tree_id AND setting_variable = :setting_variable";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $stmt->bindValue(':setting_variable', 'cache_latest_changes', PDO::PARAM_STR);
+                    $stmt->execute();
 
-                    $sql = "INSERT INTO humo_settings SET setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($this->tree_id) . "'";
-                    $this->dbh->query($sql);
+                    $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_tree_id) VALUES (:setting_variable, :setting_value, :setting_tree_id)";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':setting_variable', 'cache_latest_changes', PDO::PARAM_STR);
+                    $stmt->bindValue(':setting_value', $cache, PDO::PARAM_STR);
+                    $stmt->bindValue(':setting_tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $stmt->execute();
                 } else {
-                    $sql = "INSERT INTO humo_settings SET setting_variable='cache_latest_changes', setting_value='" . safe_text_db($cache) . "', setting_tree_id='" . safe_text_db($this->tree_id) . "'";
-                    $this->dbh->query($sql);
+                    $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_tree_id) VALUES (:setting_variable, :setting_value, :setting_tree_id)";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':setting_variable', 'cache_latest_changes', PDO::PARAM_STR);
+                    $stmt->bindValue(':setting_value', $cache, PDO::PARAM_STR);
+                    $stmt->bindValue(':setting_tree_id', $this->tree_id, PDO::PARAM_STR);
+                    $stmt->execute();
                 }
             }
         }

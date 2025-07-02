@@ -15,16 +15,21 @@ if ($user['group_menu_login'] != 'j') {
 // TODO: process text in variable.
 if (isset($_POST['password']) && $_POST['password'] != '' && !$resetpassword['message_password']) {
     // *** Update the new password now (and use salted password) ***
-    $password = safe_text_db($_POST['password']);
-    $hashToStoreInDb = password_hash($password, PASSWORD_DEFAULT);
-    $count = $dbh->prepare("update humo_users set user_password_salted='" . $hashToStoreInDb . "', user_password='' where user_id='" . $resetpassword['userid'] . "'");
+    $hashToStoreInDb = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+    $count = $dbh->prepare("UPDATE humo_users SET user_password_salted = :password, user_password = '' WHERE user_id = :userid");
+    $count->bindValue(':password', $hashToStoreInDb, PDO::PARAM_STR);
+    $count->bindValue(':userid', $resetpassword['userid'], PDO::PARAM_INT);
     $count->execute();
+
     $no = $count->rowCount();
     if ($no == 1) {
         $tm = time();
         // Update the key so it can't be used again.
-        $count = $dbh->prepare("update humo_pw_retrieval set retrieval_status='done'
-            where retrieval_pkey='" . $resetpassword['activation_key'] . "' and retrieval_userid='" . $resetpassword['userid'] . "' and retrieval_status='pending'");
+        $count = $dbh->prepare("UPDATE humo_pw_retrieval SET retrieval_status='done'
+            WHERE retrieval_pkey=:pkey AND retrieval_userid=:userid AND retrieval_status='pending'");
+        $count->bindValue(':pkey', $resetpassword['activation_key'], PDO::PARAM_STR);
+        $count->bindValue(':userid', $resetpassword['userid'], PDO::PARAM_INT);
         $count->execute();
 ?>
         <div class="alert alert-success me-2" role="alert"><?= __('Your new password has been stored successfully'); ?></div>
@@ -36,7 +41,7 @@ if (isset($_POST['password']) && $_POST['password'] != '' && !$resetpassword['me
 
 
 
-$path_reset_password = $link_cls->get_link($uri_path, 'reset_password');
+$path_reset_password = $processLinks->get_link($uri_path, 'reset_password');
 
 
 
@@ -100,7 +105,6 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
 ?>
     <br>
     <?php
-    //$email = safe_text_db($_POST['user_mail']);
     //if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     //    $msg = __('Your email address is not correct') . "<br>";
     //    $status = "NOTOK";

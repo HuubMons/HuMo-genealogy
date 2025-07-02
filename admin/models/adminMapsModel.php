@@ -32,39 +32,22 @@ class AdminMapsModel extends AdminBaseModel
             $api_1 = $apiDb->setting_value;
             // *** Update value ***
             if (isset($_POST['api_1'])) {
-                $this->dbh->query("UPDATE humo_settings SET setting_value='" . safe_text_db($_POST['api_1']) . "' WHERE setting_variable='google_api_key'");
+                $stmt = $this->dbh->prepare("UPDATE humo_settings SET setting_value = :setting_value WHERE setting_variable = 'google_api_key'");
+                $stmt->bindValue(':setting_value', $_POST['api_1'], PDO::PARAM_STR);
+                $stmt->execute();
+
                 $api_1 = $_POST['api_1'];
             }
         } elseif (isset($_POST['api_1'])) {
             // *** No value in database, add new value ***
-            $this->dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='" . safe_text_db($_POST['api_1']) . "'");
+            $stmt = $this->dbh->prepare("INSERT INTO humo_settings SET setting_value = :setting_value WHERE setting_variable = 'google_api_key'");
+            $stmt->bindValue(':setting_value', $_POST['api_1'], PDO::PARAM_STR);
+            $stmt->execute();
+
             $api_1 = $_POST['api_1'];
         }
         return $api_1;
     }
-
-    /*
-    public function get_google_api2(): string
-    {
-        // *** Google key 2 ***
-        $api_2 = '';
-        $api_query = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key2'");
-        $api_2Db = $api_query->fetch(PDO::FETCH_OBJ);
-        if ($api_2Db) {
-            $api_2 = $api_2Db->setting_value;
-            // *** Update value ***
-            if (isset($_POST['api_2'])) {
-                $this->dbh->query("UPDATE humo_settings SET setting_value='" . safe_text_db($_POST['api_2']) . "' WHERE setting_variable='google_api_key2'");
-                $api_2 = $_POST['api_2'];
-            }
-        } elseif (isset($_POST['api_2'])) {
-            // *** No value in database, add new value ***
-            $this->dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key2', setting_value='" . safe_text_db($_POST['api_2']) . "'");
-            $api_2 = $_POST['api_2'];
-        }
-        return $api_2;
-    }
-    */
 
     public function get_geokeo_api(): string
     {
@@ -76,12 +59,16 @@ class AdminMapsModel extends AdminBaseModel
             $api_geokeo = $api_2Db->setting_value;
             // *** Update value ***
             if (isset($_POST['api_geokeo'])) {
-                $this->dbh->query("UPDATE humo_settings SET setting_value='" . safe_text_db($_POST['api_geokeo']) . "' WHERE setting_variable='geokeo_api_key'");
+                $stmt = $this->dbh->prepare("UPDATE humo_settings SET setting_value = :setting_value WHERE setting_variable = 'geokeo_api_key'");
+                $stmt->bindValue(':setting_value', $_POST['api_geokeo'], PDO::PARAM_STR);
+                $stmt->execute();
                 $api_geokeo = $_POST['api_geokeo'];
             }
         } elseif (isset($_POST['api_geokeo']) && $_POST['api_geokeo'] != '') {
             // *** No value in database, add new value ***
-            $this->dbh->query("INSERT INTO humo_settings SET setting_variable='geokeo_api_key', setting_value='" . safe_text_db($_POST['api_geokeo']) . "'");
+            $stmt = $this->dbh->prepare("INSERT INTO humo_settings SET setting_variable = 'geokeo_api_key', setting_value = :setting_value");
+            $stmt->bindValue(':setting_value', $_POST['api_geokeo'], PDO::PARAM_STR);
+            $stmt->execute();
             $api_geokeo = $_POST['api_geokeo'];
         }
         return $api_geokeo;

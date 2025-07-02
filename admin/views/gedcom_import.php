@@ -310,10 +310,10 @@ if (!defined('ADMIN_PAGE')) {
             $nr_persons = $db_functions->count_persons($trees['tree_id']);
             if ($nr_persons > 0) {
                 // *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
-                $treetext = show_tree_text($trees['tree_id'], $selected_language);
-                $treetext2 = '';
+                $treetext = $showTreeText->show_tree_text($trees['tree_id'], $selected_language);
+                $tree_text2 = '';
                 if ($treetext['name']) {
-                    $treetext2 = $treetext['name'];
+                    $tree_text2 = $treetext['name'];
                 }
             ?>
                 <div class="form-check">
@@ -733,7 +733,7 @@ elseif ($trees['step'] == '3') {
         $new_gednum["N"] = $largest_text_ged;
     }
 
-    $gedcom_cls = new GedcomImport($dbh, $tree_id, $tree_prefix, $humo_option);
+    $gedcomImport = new GedcomImport($dbh, $tree_id, $tree_prefix, $humo_option);
 
     require(__DIR__ . "/../include/prefixes.php");
     $loop2 = count($pers_prefix);
@@ -1033,7 +1033,7 @@ elseif ($trees['step'] == '3') {
         if ($start_gedcom) {
             if ($process_gedcom === "person") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
-                $gedcom_cls->process_person($buffer2);
+                $gedcomImport->process_person($buffer2);
                 $process_gedcom = '';
                 $buffer2 = '';
 
@@ -1048,17 +1048,17 @@ elseif ($trees['step'] == '3') {
 
             } elseif ($process_gedcom === "family") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
-                $gedcom_cls->process_family($buffer2, 0, 0);
+                $gedcomImport->process_family($buffer2, 0, 0);
                 $process_gedcom = '';
                 $buffer2 = '';
             } elseif ($process_gedcom === "text") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
-                $gedcom_cls->process_text($buffer2);
+                $gedcomImport->process_text($buffer2);
                 $process_gedcom = '';
                 $buffer2 = '';
             } elseif ($process_gedcom === "source") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
-                $gedcom_cls->process_source($buffer2);
+                $gedcomImport->process_source($buffer2);
                 $process_gedcom = '';
                 $buffer2 = '';
             }
@@ -1066,17 +1066,17 @@ elseif ($trees['step'] == '3') {
             // *** Repository ***
             elseif ($process_gedcom === "repository") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
-                $gedcom_cls->process_repository($buffer2);
+                $gedcomImport->process_repository($buffer2);
                 $process_gedcom = '';
                 $buffer2 = '';
             } elseif ($process_gedcom === "address") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
-                $gedcom_cls->process_address($buffer2);
+                $gedcomImport->process_address($buffer2);
                 $process_gedcom = '';
                 $buffer2 = '';
             } elseif ($process_gedcom === "object") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
-                $gedcom_cls->process_object($buffer2);
+                $gedcomImport->process_object($buffer2);
                 $process_gedcom = '';
                 $buffer2 = '';
             }
@@ -1319,7 +1319,7 @@ elseif ($trees['step'] == '3') {
                     <th><?= __('text'); ?></th>
                 </tr>
                 <?php
-                $not_processed = $gedcom_cls->get_not_processed();
+                $not_processed = $gedcomImport->get_not_processed();
                 if (isset($not_processed)) {
                     $counter = count($not_processed);
                     for ($i = 0; $i < $counter; $i++) {
@@ -1522,15 +1522,21 @@ elseif ($trees['step'] == '4') {
                     while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
                         // *** Add to connection table ***
                         $connect_order++;
-                        $gebeurtsql = "INSERT INTO humo_connections SET
-                            connect_tree_id='" . $trees['tree_id'] . "',
-                            connect_order='" . $connect_order . "',
-                            connect_kind='person',
-                            connect_sub_kind='pers_text_source',
-                            connect_connect_id='" . safe_text_db($personDb->pers_gedcomnumber) . "',
-                            connect_source_id='" . safe_text_db($connectDb->connect_source_id) . "'
-                            ";
-                        $dbh->query($gebeurtsql);
+                        $stmt = $dbh->prepare(
+                            "INSERT INTO humo_connections SET
+                                connect_tree_id = :tree_id,
+                                connect_order = :connect_order,
+                                connect_kind = 'person',
+                                connect_sub_kind = 'pers_text_source',
+                                connect_connect_id = :connect_id,
+                                connect_source_id = :source_id"
+                        );
+                        $stmt->execute([
+                            ':tree_id' => $trees['tree_id'],
+                            ':connect_order' => $connect_order,
+                            ':connect_id' => $personDb->pers_gedcomnumber,
+                            ':source_id' => $connectDb->connect_source_id
+                        ]);
                     }
                 }
             }
@@ -1587,42 +1593,42 @@ elseif ($trees['step'] == '4') {
                 $sql = "UPDATE humo_persons SET ";
                 if ($pers_text) {
                     $first_item = false;
-                    $sql .= "pers_text='" . safe_text_db($pers_text) . "'";
+                    $sql .= "pers_text='" . $safeTextDb->safe_text_db($pers_text) . "'";
                 }
                 if ($pers_name_text) {
                     if (!$first_item) {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "pers_name_text='" . safe_text_db($pers_name_text) . "'";
+                    $sql .= "pers_name_text='" . $safeTextDb->safe_text_db($pers_name_text) . "'";
                 }
                 if ($pers_birth_text) {
                     if (!$first_item) {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "pers_birth_text='" . safe_text_db($pers_birth_text) . "'";
+                    $sql .= "pers_birth_text='" . $safeTextDb->safe_text_db($pers_birth_text) . "'";
                 }
                 if ($pers_bapt_text) {
                     if (!$first_item) {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "pers_bapt_text='" . safe_text_db($pers_bapt_text) . "'";
+                    $sql .= "pers_bapt_text='" . $safeTextDb->safe_text_db($pers_bapt_text) . "'";
                 }
                 if ($pers_death_text) {
                     if (!$first_item) {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "pers_death_text='" . safe_text_db($pers_death_text) . "'";
+                    $sql .= "pers_death_text='" . $safeTextDb->safe_text_db($pers_death_text) . "'";
                 }
                 if ($pers_buried_text) {
                     if (!$first_item) {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "pers_buried_text='" . safe_text_db($pers_buried_text) . "'";
+                    $sql .= "pers_buried_text='" . $safeTextDb->safe_text_db($pers_buried_text) . "'";
                 }
                 $sql .= " WHERE pers_id='" . $personDb->pers_id . "'";
                 $dbh->query($sql);
@@ -1743,15 +1749,21 @@ elseif ($trees['step'] == '4') {
                     while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
                         // *** Add to connection table ***
                         $connect_order++;
-                        $gebeurtsql = "INSERT INTO humo_connections SET
-                            connect_tree_id='" . $trees['tree_id'] . "',
-                            connect_order='" . $connect_order . "',
-                            connect_kind='family',
-                            connect_sub_kind='family_text',
-                            connect_connect_id='" . safe_text_db($famDb->fam_gedcomnumber) . "',
-                            connect_source_id='" . safe_text_db($connectDb->connect_source_id) . "'
-                            ";
-                        $dbh->query($gebeurtsql);
+                        $stmt = $dbh->prepare(
+                            "INSERT INTO humo_connections SET
+                                connect_tree_id = :tree_id,
+                                connect_order = :connect_order,
+                                connect_kind = 'family',
+                                connect_sub_kind = 'family_text',
+                                connect_connect_id = :connect_id,
+                                connect_source_id = :source_id"
+                        );
+                        $stmt->execute([
+                            ':tree_id' => $trees['tree_id'],
+                            ':connect_order' => $connect_order,
+                            ':connect_id' => $famDb->fam_gedcomnumber,
+                            ':source_id' => $connectDb->connect_source_id
+                        ]);
                     }
                 }
             }
@@ -1792,7 +1804,7 @@ elseif ($trees['step'] == '4') {
                 $sql = "UPDATE humo_families SET ";
                 if ($fam_text) {
                     $first_item = false;
-                    $sql .= "fam_text='" . safe_text_db($fam_text) . "'";
+                    $sql .= "fam_text='" . $safeTextDb->safe_text_db($fam_text) . "'";
                 }
 
                 if ($fam_relation_text) {
@@ -1800,7 +1812,7 @@ elseif ($trees['step'] == '4') {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "fam_relation_text='" . safe_text_db($fam_relation_text) . "'";
+                    $sql .= "fam_relation_text='" . $safeTextDb->safe_text_db($fam_relation_text) . "'";
                 }
 
                 if ($fam_marr_notice_text) {
@@ -1808,7 +1820,7 @@ elseif ($trees['step'] == '4') {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "fam_marr_notice_text='" . safe_text_db($fam_marr_notice_text) . "'";
+                    $sql .= "fam_marr_notice_text='" . $safeTextDb->safe_text_db($fam_marr_notice_text) . "'";
                 }
 
                 if ($fam_marr_text) {
@@ -1816,7 +1828,7 @@ elseif ($trees['step'] == '4') {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "fam_marr_text='" . safe_text_db($fam_marr_text) . "'";
+                    $sql .= "fam_marr_text='" . $safeTextDb->safe_text_db($fam_marr_text) . "'";
                 }
 
                 if ($fam_marr_church_notice_text) {
@@ -1824,7 +1836,7 @@ elseif ($trees['step'] == '4') {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "fam_marr_church_notice_text='" . safe_text_db($fam_marr_church_notice_text) . "'";
+                    $sql .= "fam_marr_church_notice_text='" . $safeTextDb->safe_text_db($fam_marr_church_notice_text) . "'";
                 }
 
                 if ($fam_marr_church_text) {
@@ -1832,7 +1844,7 @@ elseif ($trees['step'] == '4') {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "fam_marr_church_text='" . safe_text_db($fam_marr_church_text) . "'";
+                    $sql .= "fam_marr_church_text='" . $safeTextDb->safe_text_db($fam_marr_church_text) . "'";
                 }
 
                 if ($fam_div_text) {
@@ -1840,7 +1852,7 @@ elseif ($trees['step'] == '4') {
                         $sql .= ", ";
                     }
                     $first_item = false;
-                    $sql .= "fam_div_text='" . safe_text_db($fam_div_text) . "'";
+                    $sql .= "fam_div_text='" . $safeTextDb->safe_text_db($fam_div_text) . "'";
                 }
 
                 $sql .= " WHERE fam_id='" . $famDb->fam_id . "'";
@@ -1951,7 +1963,11 @@ elseif ($trees['step'] == '4') {
             if ($position !== false) {
                 // pers_name_text change into: process_text(pers_name_text)
                 $pers_firstname = substr($personDb->pers_firstname, 0, $position) . $personDb->pers_name_text . substr($personDb->pers_firstname, $position + 1);
-                $dbh->query("UPDATE humo_persons SET pers_firstname='" . safe_text_db($pers_firstname) . "', pers_name_text='' WHERE pers_id='" . $personDb->pers_id . "'");
+                $stmt = $dbh->prepare("UPDATE humo_persons SET pers_firstname = :firstname, pers_name_text = '' WHERE pers_id = :pers_id");
+                $stmt->execute([
+                    ':firstname' => $pers_firstname,
+                    ':pers_id' => $personDb->pers_id
+                ]);
             }
 
             // ***Check * in lastname ***
@@ -2240,7 +2256,11 @@ elseif ($trees['step'] == '4') {
     $dbh->query($sql);
 
     // *** Remove cache ***
-    $dbh->query("DELETE FROM humo_settings WHERE setting_variable LIKE 'cache%' AND setting_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_settings WHERE setting_variable LIKE :cache AND setting_tree_id = :tree_id");
+    $stmt->execute([
+        ':cache' => 'cache%',
+        ':tree_id' => $trees['tree_id']
+    ]);
 
     // Show process time:
     $end_time = time();

@@ -45,11 +45,13 @@ class listNamesModel extends BaseModel
 
     public function get_last_name($last_name): string
     {
+        $safeTextDb = new SafeTextDb();
+
         if (!isset($last_name)) {
             $last_name = 'a'; // *** Default first_character ***
         }
         if (isset($_GET['last_name']) && $_GET['last_name'] && is_string($_GET['last_name'])) {
-            $last_name = safe_text_db($_GET['last_name']);
+            $last_name = $safeTextDb->safe_text_db($_GET['last_name']);
         }
         return $last_name;
     }
@@ -183,7 +185,7 @@ class listNamesModel extends BaseModel
         return $list_names;
     }
 
-    function get_pagination($uri_path, $list_names): array
+    function get_pagination($list_names): array
     {
         //*** Show number of persons and pages ***
         $list_names['show_pagination'] = false;
@@ -192,7 +194,7 @@ class listNamesModel extends BaseModel
 
         if ($list_names["person"] > 0) {
             if ($this->humo_option["url_rewrite"] == "j") {
-                $uri_path_string = $uri_path . 'list_names/' . $this->tree_id . '/' . $list_names["last_name"] . '?';
+                $uri_path_string = $this->uri_path . 'list_names/' . $this->tree_id . '/' . $list_names["last_name"] . '?';
             } else {
                 $uri_path_string = 'index.php?page=list_names&amp;last_name=' . $list_names["last_name"] . '&amp;';
             }

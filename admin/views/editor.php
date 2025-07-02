@@ -144,57 +144,39 @@ $person_found = true;
                     SELECT * FROM humo_persons
                     LEFT JOIN humo_events
                     ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                    WHERE pers_tree_id='" . $tree_id . "' AND
+                    WHERE pers_tree_id=:tree_id AND
                         (
-                        CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
-                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($search_name) . "%' 
-                        OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($search_name) . "%' 
-                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($search_name) . "%'
-                        OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($search_name) . "%'
-                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($search_name) . "%' 
-                        OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($search_name) . "%' 
-                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($search_name) . "%'
+                        CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE :search_name
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE :search_name
+                        OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE :search_name
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE :search_name
+                        OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE :search_name
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE :search_name
+                        OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE :search_name
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE :search_name
                         )
                         GROUP BY pers_id
                         ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
                     ";
-
-                // Next line was before ORDER BY line. Doesn't work if only_full_group is disabled
-                //		GROUP BY pers_id, event_event, event_kind, event_id
-
-                // *** 27-03-2023: Improved for GROUP BY, there were double results ***
-                // *** Only get pers_id, otherwise GROUP BY doesn't work properly (double results) ***
-                //SELECT pers_gedcomnumber FROM humo_persons
-                //	GROUP BY pers_gedcomnumber
-                /*
-                    $person_qry="
-                        SELECT pers_id FROM humo_persons
-                        LEFT JOIN humo_events
-                        ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                        WHERE pers_tree_id='".$tree_id."' AND
-                            (
-                            CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_name)."%'
-                            OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($search_name)."%' 
-                            OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
-                            OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($search_name)."%'
-
-                            OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
-                            OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_name)."%' 
-                            OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
-                            OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name)."%'
-                            )
-                            GROUP BY pers_id
-                            ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
-                    ";
-                    //echo $person_qry;
-                    */
-
-                $person_result = $dbh->query($person_qry);
+                $person_stmt = $dbh->prepare($person_qry);
+                $like_search_name = '%' . $search_name . '%';
+                $person_stmt->execute([
+                    ':tree_id' => $tree_id,
+                    ':search_name' => $like_search_name
+                ]);
+                $person_result = $person_stmt;
             } elseif ($editor['pers_gedcomnumber']) {
                 // *** Heredis GEDCOM don't uses I, so don't add an I anymore! ***
-                // if(substr($editor['pers_gedcomnumber'],0,1)!="i" AND substr($editor['pers_gedcomnumber'],0,1)!="I") { $editor['pers_gedcomnumber'] = "I".$editor['pers_gedcomnumber']; }
-                $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($editor['pers_gedcomnumber']) . "'";
-                $person_result = $dbh->query($person_qry);
+                // if(substr($editor['pers_gedcomnumber'],0,1)!="i" AND substr($editor['pers_gedcomnumber'],0,1)!="I") {
+                //   $editor['pers_gedcomnumber'] = "I".$editor['pers_gedcomnumber'];
+                // }
+                $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber";
+                $person_stmt = $dbh->prepare($person_qry);
+                $person_stmt->execute([
+                    ':tree_id' => $tree_id,
+                    ':gedcomnumber' => $editor['pers_gedcomnumber']
+                ]);
+                $person_result = $person_stmt;
                 $person = $person_result->fetch(PDO::FETCH_OBJ);
                 if ($person) {
                     $pers_gedcomnumber = $person->pers_gedcomnumber;
@@ -689,7 +671,7 @@ if ($check_person) {
                 }
 
                 $vars['pers_family'] = $pers_family;
-                $link = $link_cls->get_link('../', 'family', $tree_id, true, $vars);
+                $link = $processLinks->get_link('../', 'family', $tree_id, true, $vars);
                 $link .= "main_person=" . $person->pers_gedcomnumber;
                 echo " <a href=\"#\" onClick=\"window.open('" . $link . "', '','width=800,height=500')\"><b>[" . __('Preview') . ']</b></a>';
             }
@@ -940,12 +922,13 @@ if ($check_person) {
 // *** Show event options ***
 function event_option($event_gedcom, $event)
 {
-    global $language;
+    $languageEventName = new LanguageEventName();
+
     $selected = '';
     if ($event_gedcom == $event) {
         $selected = ' selected';
     }
-    return '<option value="' . $event . '"' . $selected . '>' . language_event($event) . '</option>';
+    return '<option value="' . $event . '"' . $selected . '>' . $languageEventName->language_event($event) . '</option>';
 }
 
 // *** New function mar. 2024 ***
@@ -1150,7 +1133,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 {
     global $db_functions, $page;
 
-    $date_place = new DatePlace;
+    $datePlace = new DatePlace();
 
     if ($gedcomnumber) {
         $personDb = $db_functions->get_person($gedcomnumber);
@@ -1177,14 +1160,14 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 
     if ($gedcom_date == true) {
         if ($personDb->pers_birth_date) {
-            $text .= ' * ' . $date_place->date_place($personDb->pers_birth_date, '');
+            $text .= ' * ' . $datePlace->date_place($personDb->pers_birth_date, '');
         } elseif ($personDb->pers_bapt_date) {
-            $text .= ' ~ ' . $date_place->date_place($personDb->pers_bapt_date, '');
+            $text .= ' ~ ' . $datePlace->date_place($personDb->pers_bapt_date, '');
         } elseif ($personDb->pers_death_date) {
-            $text .= ' &#134; ' . $date_place->date_place($personDb->pers_death_date, '');
-            //$text.=' &dagger; '.$date_place->date_place($personDb->pers_death_date,'');
+            $text .= ' &#134; ' . $datePlace->date_place($personDb->pers_death_date, '');
+            //$text.=' &dagger; '.$datePlace->date_place($personDb->pers_death_date,'');
         } elseif ($personDb->pers_buried_date) {
-            $text .= ' [] ' . $date_place->date_place($personDb->pers_buried_date, '');
+            $text .= ' [] ' . $datePlace->date_place($personDb->pers_buried_date, '');
         }
     }
     return $text;
@@ -1192,7 +1175,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
-    $date_place = new DatePlace;
+    $datePlace = new DatePlace();
 
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;
@@ -1200,7 +1183,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
         $check_date = true;
         $hideshow_date = substr($hideshow_date, 0, -1);
     }
-    $text = $date_place->date_place($hideshow_date, $hideshow_place);
+    $text = $datePlace->date_place($hideshow_date, $hideshow_place);
     if ($check_date) {
         $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
     }

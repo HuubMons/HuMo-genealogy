@@ -70,9 +70,10 @@
 // TODO create function to show person.
 // TODO use a popup selection screen to select persons?
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
-$date_place = new DatePlace;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$datePlace = new DatePlace();
+$safeTextShow = new SafeTextShow();
 
 $limit = 500; // *** Limit results ***
 
@@ -86,7 +87,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('Name'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_name" value="<?= safe_text_show($relation["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="text" name="search_name" value="<?= $safeTextShow->safe_text_show($relation["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
                     <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -94,7 +95,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('or: ID'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_gednr" value="<?= safe_text_show($relation["search_gednr1"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="text" name="search_gednr" value="<?= $safeTextShow->safe_text_show($relation["search_gednr1"]); ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -102,40 +103,67 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?php
                 if (isset($_SESSION["button_search_name1"]) && $_SESSION["button_search_name1"] == 1) {
-                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
+                    //$search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
 
                     if ($relation["search_name1"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
                         $relation["search_name1"] = str_replace(' ', '%', $relation["search_name1"]);
                         // *** In case someone entered "Mons, Huub" using a comma ***
                         $relation["search_name1"] = str_replace(',', '', $relation["search_name1"]);
+
                         // *** August 2022: new query ***
+                        $search_name1 = '%' . $relation["search_name1"] . '%';
                         $search_qry = "
-                            SELECT * FROM humo_persons LEFT JOIN humo_events
-                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                            WHERE pers_tree_id='" . $tree_id . "' AND
-                                (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name1"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($relation["search_name1"]) . "%'
-                                )
-                                GROUP BY pers_id, event_event, event_kind, event_id
-                                ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
+                            SELECT * FROM humo_persons 
+                            LEFT JOIN humo_events
+                                ON event_connect_id=pers_gedcomnumber 
+                                AND event_kind='name' 
+                                AND event_tree_id=pers_tree_id 
+                            WHERE pers_tree_id = :tree_id AND (
+                                CONCAT(pers_firstname, REPLACE(pers_prefix, '_', ' '), pers_patronym, pers_lastname) LIKE :search_name1
+                                OR CONCAT(pers_patronym, pers_lastname, REPLACE(pers_prefix, '_', ' '), pers_firstname) LIKE :search_name1
+                                OR CONCAT(pers_patronym, pers_lastname, pers_firstname, REPLACE(pers_prefix, '_', ' ')) LIKE :search_name1
+                                OR CONCAT(pers_patronym, REPLACE(pers_prefix, '_', ' '), pers_lastname, pers_firstname) LIKE :search_name1
+                                OR CONCAT(event_event, pers_patronym, REPLACE(pers_prefix, '_', ' '), pers_lastname) LIKE :search_name1
+                                OR CONCAT(pers_patronym, pers_lastname, REPLACE(pers_prefix, '_', ' '), event_event) LIKE :search_name1
+                                OR CONCAT(pers_patronym, pers_lastname, event_event, REPLACE(pers_prefix, '_', ' ')) LIKE :search_name1
+                                OR CONCAT(pers_patronym, REPLACE(pers_prefix, '_', ' '), pers_lastname, event_event) LIKE :search_name1
+                            )
+                            GROUP BY pers_id, event_event, event_kind, event_id
+                            ORDER BY pers_lastname, pers_firstname, CAST(SUBSTRING(pers_gedcomnumber, 2) AS UNSIGNED)
+                            LIMIT 0, $limit
+                        ";
+                        $stmt = $dbh->prepare($search_qry);
+                        $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':search_name1', $search_name1, PDO::PARAM_STR);
+                        $stmt->execute();
+                        $search_result = $stmt;
                     } elseif ($relation["search_gednr1"] != '') {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND (pers_gedcomnumber = '" . $relation["search_gednr1"] . "' OR pers_gedcomnumber = 'I" . $relation["search_gednr1"] . "')";
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND (pers_gedcomnumber = :gednr1 OR pers_gedcomnumber = :gednr1_prefixed)";
+                        $stmt = $dbh->prepare($search_qry);
+                        $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':gednr1', $relation["search_gednr1"], PDO::PARAM_STR);
+                        $stmt->bindValue(':gednr1_prefixed', 'I' . $relation["search_gednr1"], PDO::PARAM_STR);
+                        $stmt->execute();
+                        $search_result = $stmt;
+                    } else {
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
+                        $stmt = $dbh->prepare($search_qry);
+                        $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt->execute();
+                        $search_result = $stmt;
                     }
 
                     // *** Link from person pop-up menu ***
                     if (isset($_SESSION["search_pers_id"])) {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id"] . "'";
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND pers_id = :pers_id";
+                        $stmt = $dbh->prepare($search_qry);
+                        $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt->bindValue(':pers_id', $_SESSION["search_pers_id"], PDO::PARAM_STR);
+                        $stmt->execute();
+                        $search_result = $stmt;
                     }
 
-                    $search_result = $dbh->query($search_qry);
                     if ($search_result) {
                         $number_results = $search_result->rowCount();
                         if ($number_results > 0) {
@@ -146,17 +174,17 @@ $limit = 500; // *** Limit results ***
                             <select size="1" name="person1" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
-                                    $privacy = $person_privacy->get_privacy($searchDb);
-                                    $name = $person_name->get_person_name($searchDb, $privacy);
+                                    $privacy = $personPrivacy->get_privacy($searchDb);
+                                    $name = $personName->get_person_name($searchDb, $privacy);
                                     if ($name["show_name"]) {
                                         $birth = '';
                                         if ($searchDb->pers_bapt_date) {
-                                            $birth = ' ' . __('~') . ' ' . $date_place->date_place($searchDb->pers_bapt_date, '');
+                                            $birth = ' ' . __('~') . ' ' . $datePlace->date_place($searchDb->pers_bapt_date, '');
                                         }
                                         if ($searchDb->pers_birth_date) {
-                                            $birth = ' ' . __('*') . ' ' . $date_place->date_place($searchDb->pers_birth_date, '');
+                                            $birth = ' ' . __('*') . ' ' . $datePlace->date_place($searchDb->pers_birth_date, '');
                                         }
-                                        if ($person_privacy) {
+                                        if ($personPrivacy) {
                                             $birth = '';
                                         }
 
@@ -196,7 +224,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('Search'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_name2" value="<?= safe_text_show($relation["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="text" name="search_name2" value="<?= $safeTextShow->safe_text_show($relation["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
                     <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -204,7 +232,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('or: ID'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_gednr2" value="<?= safe_text_show($relation["search_gednr2"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="text" name="search_gednr2" value="<?= $safeTextShow->safe_text_show($relation["search_gednr2"]); ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -212,40 +240,67 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?php
                 if (isset($_SESSION["button_search_name2"]) && $_SESSION["button_search_name2"] == 1) {
-                    $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
-
+ 
                     if ($relation["search_name2"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
                         $relation["search_name2"] = str_replace(' ', '%', $relation["search_name2"]);
                         // *** In case someone entered "Mons, Huub" using a comma ***
                         $relation["search_name2"] = str_replace(',', '', $relation["search_name2"]);
                         // *** August 2022: new query ***
+
+                        $search_name2 = '%' . $relation["search_name2"] . '%';
                         $search_qry = "
-                            SELECT * FROM humo_persons LEFT JOIN humo_events
-                            ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
-                            WHERE pers_tree_id='" . $tree_id . "' AND
-                                (
-                                CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
-                                OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
-                                OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($relation["search_name2"]) . "%' 
-                                OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($relation["search_name2"]) . "%'
-                                )
+                            SELECT * FROM humo_persons 
+                            LEFT JOIN humo_events
+                                ON event_connect_id=pers_gedcomnumber 
+                                AND event_kind='name' 
+                                AND event_tree_id=pers_tree_id 
+                            WHERE pers_tree_id = :tree_id AND (
+                                CONCAT(pers_firstname, REPLACE(pers_prefix, '_', ' '), pers_patronym, pers_lastname) LIKE :search_name2
+                                OR CONCAT(pers_patronym, pers_lastname, REPLACE(pers_prefix, '_', ' '), pers_firstname) LIKE :search_name2
+                                OR CONCAT(pers_patronym, pers_lastname, pers_firstname, REPLACE(pers_prefix, '_', ' ')) LIKE :search_name2
+                                OR CONCAT(pers_patronym, REPLACE(pers_prefix, '_', ' '), pers_lastname, pers_firstname) LIKE :search_name2
+                                OR CONCAT(event_event, pers_patronym, REPLACE(pers_prefix, '_', ' '), pers_lastname) LIKE :search_name2
+                                OR CONCAT(pers_patronym, pers_lastname, REPLACE(pers_prefix, '_', ' '), event_event) LIKE :search_name2
+                                OR CONCAT(pers_patronym, pers_lastname, event_event, REPLACE(pers_prefix, '_', ' ')) LIKE :search_name2
+                                OR CONCAT(pers_patronym, REPLACE(pers_prefix, '_', ' '), pers_lastname, event_event) LIKE :search_name2
+                            )
                             GROUP BY pers_id, event_event, event_kind, event_id
-                            ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0," . $limit;
+                            ORDER BY pers_lastname, pers_firstname, CAST(SUBSTRING(pers_gedcomnumber, 2) AS UNSIGNED)
+                            LIMIT 0, $limit
+                        ";
+                        $stmt2 = $dbh->prepare($search_qry);
+                        $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt2->bindValue(':search_name2', $search_name2, PDO::PARAM_STR);
+                        $stmt2->execute();
+                        $search_result2 = $stmt2;
                     } elseif ($relation["search_gednr2"] != '') {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND (pers_gedcomnumber = '" . $relation["search_gednr2"] . "' OR pers_gedcomnumber = 'I" . $relation["search_gednr2"] . "')";
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND (pers_gedcomnumber = :gednr2 OR pers_gedcomnumber = :gednr2_prefixed)";
+                        $stmt2 = $dbh->prepare($search_qry);
+                        $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt2->bindValue(':gednr2', $relation["search_gednr2"], PDO::PARAM_STR);
+                        $stmt2->bindValue(':gednr2_prefixed', 'I' . $relation["search_gednr2"], PDO::PARAM_STR);
+                        $stmt2->execute();
+                        $search_result2 = $stmt2;
+                    }
+                    else{
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
+                        $stmt2 = $dbh->prepare($search_qry);
+                        $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt2->execute();
+                        $search_result2 = $stmt2;
                     }
 
                     // *** Link from person pop-up menu ***
                     if (isset($_SESSION["search_pers_id2"])) {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $_SESSION["search_pers_id2"] . "'";
+                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND pers_id = :pers_id";
+                        $stmt2 = $dbh->prepare($search_qry);
+                        $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+                        $stmt2->bindValue(':pers_id', $_SESSION["search_pers_id2"], PDO::PARAM_STR);
+                        $stmt2->execute();
+                        $search_result2 = $stmt2;
                     }
 
-                    $search_result2 = $dbh->query($search_qry);
                     if ($search_result2) {
                         $number_results = $search_result2->rowCount();
                         if ($number_results > 0) {
@@ -256,17 +311,17 @@ $limit = 500; // *** Limit results ***
                             <select size="1" name="person2" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                                    $privacy = $person_privacy->get_privacy($searchDb2);
-                                    $name = $person_name->get_person_name($searchDb2, $privacy);
+                                    $privacy = $personPrivacy->get_privacy($searchDb2);
+                                    $name = $personName->get_person_name($searchDb2, $privacy);
                                     if ($name["show_name"]) {
                                         $birth = '';
                                         if ($searchDb2->pers_bapt_date) {
-                                            $birth = ' ' . __('~') . ' ' . $date_place->date_place($searchDb2->pers_bapt_date, '');
+                                            $birth = ' ' . __('~') . ' ' . $datePlace->date_place($searchDb2->pers_bapt_date, '');
                                         }
                                         if ($searchDb2->pers_birth_date) {
-                                            $birth = ' ' . __('*') . ' ' . $date_place->date_place($searchDb2->pers_birth_date, '');
+                                            $birth = ' ' . __('*') . ' ' . $datePlace->date_place($searchDb2->pers_birth_date, '');
                                         }
-                                        if ($person_privacy) {
+                                        if ($personPrivacy) {
                                             $birth = '';
                                         }
 
@@ -510,8 +565,8 @@ Directions for use:<br>
                         if ($relation['double_spouse'] == 1) {
                             // X and Y are both spouses of Z
                             $spouseidDb = $db_functions->get_person($relation['rel_arrayspouseX'][$relation['foundX_match']][0]);
-                            $privacy = $person_privacy->get_privacy($spouseidDb);
-                            $name = $person_name->get_person_name($spouseidDb, $privacy);
+                            $privacy = $personPrivacy->get_privacy($spouseidDb);
+                            $name = $personName->get_person_name($spouseidDb, $privacy);
                             $spousename = $name["name"];
                         ?>
 
@@ -639,9 +694,7 @@ Directions for use:<br>
                                         echo '<b>' . $finnish_spouse1 . '</b><br>';
                                     }
                                 }
-                            }
-
-                            else {
+                            } else {
                                 // Norwegian grammar...
                                 if ($spousetext2 === '') {
                                     $relation['rel_text_nor_dan2'] = '';
@@ -731,8 +784,8 @@ function ext_calc_display_result($result, $db_functions, $relation)
     // example: parI232;parI65;chdI2304;spoI212;parI304
     // the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
 
-    $person_privacy = new PersonPrivacy;
-    $person_name = new PersonName;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
 
     $map = array();    // array that will hold all data needed for the graphical display
     $tracks = explode(";", $result); // $tracks is array with each person in the trail
@@ -825,12 +878,12 @@ function ext_calc_display_result($result, $db_functions, $relation)
                                 $border = "border:2px solid #666666;";
                             }
 
-                            $privacy = $person_privacy->get_privacy($ancDb);
-                            $name = $person_name->get_person_name($ancDb, $privacy);
+                            $privacy = $personPrivacy->get_privacy($ancDb);
+                            $name = $personName->get_person_name($ancDb, $privacy);
 
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $person_link = new PersonLink();
-                            $url = $person_link->get_person_link($ancDb);
+                            $personLink = new PersonLink();
+                            $url = $personLink->get_person_link($ancDb);
 
                             $colsp = true;
 
@@ -890,16 +943,17 @@ function ext_calc_display_result($result, $db_functions, $relation)
 // *** Show calculated relation ***
 function display_table($relation)
 {
-    global $db_functions, $tree_id, $link_cls, $uri_path;
+    global $db_functions, $tree_id, $uri_path;
 
-    $person_privacy = new PersonPrivacy;
-    $person_name = new PersonName;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $processLinks = new ProcessLinks();
 
     $vars['pers_family'] = $relation['famspouseX'];
-    $linkSpouseX = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+    $linkSpouseX = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
 
     $vars['pers_family'] = $relation['famspouseY'];
-    $linkSpouseY = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+    $linkSpouseY = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
 
     //$border="border:1px solid #777777;";
     $border = "";
@@ -952,8 +1006,8 @@ function display_table($relation)
             <table class="newrel" style="border:0px;border-collapse:separate;border-spacing:3px 1px;">
                 <?php
                 $persidDb = $db_functions->get_person($relation['rel_arrayX'][0][0]);
-                $privacy = $person_privacy->get_privacy($persidDb);
-                $name = $person_name->get_person_name($persidDb, $privacy);
+                $privacy = $personPrivacy->get_privacy($persidDb);
+                $name = $personName->get_person_name($persidDb, $privacy);
                 if (($relation['spouse'] == 1 && $relation['relation_type'] == 1) || ($relation['spouse'] == 2 && $relation['relation_type'] == 2) || $relation['spouse'] == 3) {
                 ?>
                     <tr>
@@ -993,8 +1047,8 @@ function display_table($relation)
                 $count = $relation['foundY_nr'];
                 while ($count != 0) {
                     $persidDb = $db_functions->get_person($relation['rel_arrayY'][$count][0]);
-                    $privacy = $person_privacy->get_privacy($persidDb);
-                    $name = $person_name->get_person_name($persidDb, $privacy);
+                    $privacy = $personPrivacy->get_privacy($persidDb);
+                    $name = $personName->get_person_name($persidDb, $privacy);
 
                     if ($persidDb->pers_fams) {
                         $fams = $persidDb->pers_fams;
@@ -1004,7 +1058,7 @@ function display_table($relation)
                         $fam = $persidDb->pers_famc;
                     }
                     $vars['pers_family'] = $fam;
-                    $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                    $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
 
                     $count = $relation['rel_arrayY'][$count][2];
                 ?>
@@ -1027,8 +1081,8 @@ function display_table($relation)
                     <tr>
                         <?php
                         $persidDb = $db_functions->get_person($relation['rel_arrayY'][0][0]);
-                        $privacy = $person_privacy->get_privacy($persidDb);
-                        $name = $person_name->get_person_name($persidDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($persidDb);
+                        $name = $personName->get_person_name($persidDb, $privacy);
                         if ($relation['spouse'] == 1 && $relation['relation_type'] == 2 || $relation['spouse'] == 2 && $relation['relation_type'] == 1 || $relation['spouse'] == 3) {
                         ?>
                             <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
@@ -1082,8 +1136,8 @@ function display_table($relation)
         }
 
         $persidDb = $db_functions->get_person($relation['rel_arrayX'][$relation['foundX_match']][0]);
-        $privacy = $person_privacy->get_privacy($persidDb);
-        $name = $person_name->get_person_name($persidDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($persidDb);
+        $name = $personName->get_person_name($persidDb, $privacy);
 
         if ($persidDb->pers_fams) {
             $fams = $persidDb->pers_fams;
@@ -1093,7 +1147,7 @@ function display_table($relation)
             $fam = $persidDb->pers_famc;
         }
         $vars['pers_family'] = $fam;
-        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+        $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
         ?>
 
         <br>
@@ -1133,8 +1187,8 @@ function display_table($relation)
                     <?php
                     if ($countX != 0) {
                         $persidDb = $db_functions->get_person($relation['rel_arrayX'][$countX][0]);
-                        $privacy = $person_privacy->get_privacy($persidDb);
-                        $name = $person_name->get_person_name($persidDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($persidDb);
+                        $name = $personName->get_person_name($persidDb, $privacy);
 
                         if ($relation['spouse'] == 1 || $relation['spouse'] == 3) {
                     ?>
@@ -1150,7 +1204,7 @@ function display_table($relation)
                             $fam = $persidDb->pers_famc;
                         }
                         $vars['pers_family'] = $fam;
-                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                        $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
                         ?>
                         <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
                             <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
@@ -1161,8 +1215,8 @@ function display_table($relation)
                     } elseif ($name1_done == 0) {
                         if ($relation['spouse'] == 1 || $relation['spouse'] == 3) {
                             $persidDb = $db_functions->get_person($relation['rel_arrayX'][0][0]);
-                            $privacy = $person_privacy->get_privacy($persidDb);
-                            $name = $person_name->get_person_name($persidDb, $privacy);
+                            $privacy = $personPrivacy->get_privacy($persidDb);
+                            $name = $personName->get_person_name($persidDb, $privacy);
 
                             if ($persidDb->pers_fams) {
                                 $fams = $persidDb->pers_fams;
@@ -1203,8 +1257,8 @@ function display_table($relation)
 
                     if ($countY != 0) {
                         $persidDb = $db_functions->get_person($relation['rel_arrayY'][$countY][0]);
-                        $privacy = $person_privacy->get_privacy($persidDb);
-                        $name = $person_name->get_person_name($persidDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($persidDb);
+                        $name = $personName->get_person_name($persidDb, $privacy);
 
                         if ($persidDb->pers_fams) {
                             $fams = $persidDb->pers_fams;
@@ -1214,7 +1268,7 @@ function display_table($relation)
                             $fam = $persidDb->pers_famc;
                         }
                         $vars['pers_family'] = $fam;
-                        $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                        $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
                     ?>
                         <td style="border:0px;width:70px">&nbsp;</td>
 
@@ -1231,8 +1285,8 @@ function display_table($relation)
                     } elseif ($name2_done == 0) {
                         if ($relation['spouse'] == 2 || $relation['spouse'] == 3) {
                             $persidDb = $db_functions->get_person($relation['rel_arrayY'][0][0]);
-                            $privacy = $person_privacy->get_privacy($persidDb);
-                            $name = $person_name->get_person_name($persidDb, $privacy);
+                            $privacy = $personPrivacy->get_privacy($persidDb);
+                            $name = $personName->get_person_name($persidDb, $privacy);
 
                             if ($persidDb->pers_fams) {
                                 $fams = $persidDb->pers_fams;
@@ -1242,7 +1296,7 @@ function display_table($relation)
                                 $fam = $persidDb->pers_famc;
                             }
                             $vars['pers_family'] = $fam;
-                            $link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+                            $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
                         ?>
                             <td style="border:0px;width:70px">&nbsp;</td>
 

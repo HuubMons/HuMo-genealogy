@@ -8,14 +8,14 @@ class AddressesController
         $this->config = $config;
     }
 
-    public function list($link_cls, $uri_path): array
+    public function list(): array
     {
         $addressesModel = new AddressesModel($this->config);
 
         $authorised = $addressesModel->getAddressAuthorised();
         $addressesModel->process_variables();
         $addresses = $addressesModel->listAddresses();
-        $line_pages = $addressesModel->line_pages($link_cls, $uri_path);
+        $line_pages = $addressesModel->line_pages();
         $address_image = $addressesModel->getAddressImage();
         $place_image = $addressesModel->getPlaceImage();
         $select_sort = $addressesModel->getSelectSort();

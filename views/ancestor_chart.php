@@ -133,10 +133,10 @@ function ancestor_chart_person($id, $box_appearance)
 {
     global $db_functions, $user, $data, $dirmark1, $dirmark2;
 
-    $person_name = new PersonName();
-    $person_privacy = new PersonPrivacy();
-    $person_popup = new PersonPopup();
-    $date_place = new DatePlace();
+    $personName = new PersonName();
+    $personPrivacy = new PersonPrivacy();
+    $personPopup = new PersonPopup();
+    $datePlace = new DatePlace();
 
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
@@ -148,8 +148,8 @@ function ancestor_chart_person($id, $box_appearance)
 
     if ($data["gedcomnumber"][$id]) {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
-        $pers_privacy = $person_privacy->get_privacy($personDb);
-        $name = $person_name->get_person_name($personDb, $pers_privacy);
+        $pers_privacy = $personPrivacy->get_privacy($personDb);
+        $name = $personName->get_person_name($personDb, $pers_privacy);
         $name2 = $dirmark2 . $name["name"] . $name["colour_mark"] . $dirmark2;
 
         // *** Replace pop-up icon by a text box ***
@@ -172,24 +172,24 @@ function ancestor_chart_person($id, $box_appearance)
             if ($box_appearance != 'small') {
                 //if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
                 if ($personDb->pers_birth_date) {
-                    //$replacement_text.='<br>'.__('*').$dirmark1.' '.$date_place->date_place($personDb->pers_birth_date,$personDb->pers_birth_place); }
-                    $replacement_text .= '<br>' . __('*') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_birth_date, '');
+                    //$replacement_text.='<br>'.__('*').$dirmark1.' '.$datePlace->date_place($personDb->pers_birth_date,$personDb->pers_birth_place); }
+                    $replacement_text .= '<br>' . __('*') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
                 }
                 //elseif ($personDb->pers_bapt_date OR $personDb->pers_bapt_place){
                 elseif ($personDb->pers_bapt_date) {
-                    //$replacement_text.='<br>'.__('~').$dirmark1.' '.$date_place->date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place); }
-                    $replacement_text .= '<br>' . __('~') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_bapt_date, '');
+                    //$replacement_text.='<br>'.__('~').$dirmark1.' '.$datePlace->date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place); }
+                    $replacement_text .= '<br>' . __('~') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
                 }
 
                 //if ($personDb->pers_death_date OR $personDb->pers_death_place){
                 if ($personDb->pers_death_date) {
-                    //$replacement_text.='<br>'.__('&#134;').$dirmark1.' '.$date_place->date_place($personDb->pers_death_date,$personDb->pers_death_place); }
-                    $replacement_text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_death_date, '');
+                    //$replacement_text.='<br>'.__('&#134;').$dirmark1.' '.$datePlace->date_place($personDb->pers_death_date,$personDb->pers_death_place); }
+                    $replacement_text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
                 }
                 //elseif ($personDb->pers_buried_date OR $personDb->pers_buried_place){
                 elseif ($personDb->pers_buried_date) {
-                    //$replacement_text.='<br>'.__('[]').$dirmark1.' '.$date_place->date_place($personDb->pers_buried_date,$personDb->pers_buried_place); }
-                    $replacement_text .= '<br>' . __('[]') . $dirmark1 . ' ' . $date_place->date_place($personDb->pers_buried_date, '');
+                    //$replacement_text.='<br>'.__('[]').$dirmark1.' '.$datePlace->date_place($personDb->pers_buried_date,$personDb->pers_buried_place); }
+                    $replacement_text .= '<br>' . __('[]') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
                 }
 
                 if ($box_appearance != 'medium') {
@@ -203,8 +203,8 @@ function ancestor_chart_person($id, $box_appearance)
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
-                        //$replacement_text.='<br>'.__('X').$dirmark1.' '.$date_place->date_place($marr_date,$marr_place); }
-                        $replacement_text .= '<br>' . __('X') . $dirmark1 . ' ' . $date_place->date_place($marr_date, '');
+                        //$replacement_text.='<br>'.__('X').$dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
+                        $replacement_text .= '<br>' . __('X') . $dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
                     }
                 }
                 if ($box_appearance == 'ancestor_sheet_marr') {
@@ -219,8 +219,8 @@ function ancestor_chart_person($id, $box_appearance)
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
-                        //$replacement_text=__('X').$dirmark1.' '.$date_place->date_place($marr_date,$marr_place); }
-                        $replacement_text = __('X') . $dirmark1 . ' ' . $date_place->date_place($marr_date, '');
+                        //$replacement_text=__('X').$dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
+                        $replacement_text = __('X') . $dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
                     } else $replacement_text = __('X'); // if no details in the row we don't want the row to collapse
                 }
                 if ($box_appearance == 'ancestor_header') {
@@ -254,7 +254,7 @@ function ancestor_chart_person($id, $box_appearance)
             $marr_place = $data["marr_place"][$id];
         }
         if ($marr_date || $marr_place) {
-            $extra_popup_text .= '<br>' . __('X') . $dirmark1 . ' ' . $date_place->date_place($marr_date, $marr_place);
+            $extra_popup_text .= '<br>' . __('X') . $dirmark1 . ' ' . $datePlace->date_place($marr_date, $marr_place);
         }
 
         // *** Show picture by person ***
@@ -278,11 +278,11 @@ function ancestor_chart_person($id, $box_appearance)
         if ($box_appearance == 'ancestor_sheet_marr' || $box_appearance == 'ancestor_header') { // cause in that case there is no link
             $text .= $replacement_text;
         } else {
-            $text .= $person_popup->person_popup_menu($personDb, $pers_privacy, true, $replacement_text, $extra_popup_text);
+            $text .= $personPopup->person_popup_menu($personDb, $pers_privacy, true, $replacement_text, $extra_popup_text);
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            //$person_link = new PersonLink();
-            //$url = $person_link->get_person_link($personDb);
+            //$personLink = new PersonLink();
+            //$url = $personLink->get_person_link($personDb);
             //$text .= '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
         }
     }

@@ -14,7 +14,6 @@ if ($_GET['person_item'] == 'relation_add2') {
     $place_item = 'relation_add2';
     $form = 'form4';
 }
-//if ($_GET['person_item']=='child_connect2'){ $place_item='child_connect2'; $form='form4'; }
 if ($_GET['person_item'] == 'child_connect2') {
     $place_item = 'child_connect2';
     $form = 'form7';
@@ -22,12 +21,10 @@ if ($_GET['person_item'] == 'child_connect2') {
 
 // *** Witnesses (=event, multiple witnesses possible) ***
 if ($_GET['person_item'] == 'person_witness') {
-    //$place_item = 'text_event2' . $_GET['event_row'];
     $place_item = 'event_connect_id2' . $_GET['event_row'];
     $form = 'form1';
 }
 if ($_GET['person_item'] == 'marriage_witness') {
-    //$place_item = 'text_event2' . $_GET['event_row'];
     $place_item = 'event_connect_id2' . $_GET['event_row'];
     $form = 'form2';
 }
@@ -39,7 +36,7 @@ if (substr($_GET['person_item'], 0, 10) === 'add_child_') {
     $form = 'form_entire';
 }
 
-$man_gedcomnumber = safe_text_db($_GET['person']);
+$man_gedcomnumber = $safeTextDb->safe_text_db($_GET['person']);
 
 echo '<h1 class="center">' . __('Select person') . '</h1>';
 
@@ -99,12 +96,12 @@ if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10)
 
 $search_quicksearch_man = '';
 if (isset($_POST['search_quicksearch_man'])) {
-    $search_quicksearch_man = safe_text_db($_POST['search_quicksearch_man']);
+    $search_quicksearch_man = $safeTextDb->safe_text_db($_POST['search_quicksearch_man']);
 }
 
 $search_man_id = '';
 if (isset($_POST['search_man_id'])) {
-    $search_man_id = safe_text_db($_POST['search_man_id']);
+    $search_man_id = $safeTextDb->safe_text_db($_POST['search_man_id']);
 }
 ?>
 <form method="POST" action="index.php?page=editor_person_select&amp;person_item=<?= $_GET['person_item']; ?>&amp;person=<?= $_GET['person']; ?><?= isset($_GET['event_row']) ? '&amp;event_row=' . $_GET['event_row'] : ''; ?>&amp;tree_id=<?= $tree_id; ?>" style="display : inline;">
@@ -133,22 +130,31 @@ if ($search_quicksearch_man != '') {
     $search_quicksearch_man = str_replace(' ', '%', $search_quicksearch_man);
     // *** In case someone entered "Mons, Huub" using a comma ***
     $search_quicksearch_man = str_replace(',', '', $search_quicksearch_man);
-    //$person_qry= "SELECT *, CONCAT(pers_firstname,pers_prefix,pers_lastname) as concat_name
+
     $person_qry = "SELECT *
     FROM humo_persons
-    WHERE pers_tree_id='" . $tree_id . "'
-        AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . $search_quicksearch_man . "%'
-        OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . $search_quicksearch_man . "%'
-        OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . $search_quicksearch_man . "%'
-        OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . $search_quicksearch_man . "%')
-        ORDER BY pers_lastname, pers_firstname";
-    $person_result = $dbh->query($person_qry);
+    WHERE pers_tree_id = :tree_id
+        AND (
+            CONCAT(pers_firstname, REPLACE(pers_prefix, '_', ' '), pers_lastname) LIKE :search
+            OR CONCAT(pers_lastname, REPLACE(pers_prefix, '_', ' '), pers_firstname) LIKE :search
+            OR CONCAT(pers_lastname, pers_firstname, REPLACE(pers_prefix, '_', ' ')) LIKE :search
+            OR CONCAT(REPLACE(pers_prefix, '_', ' '), pers_lastname, pers_firstname) LIKE :search
+        )
+    ORDER BY pers_lastname, pers_firstname";
+    $stmt = $dbh->prepare($person_qry);
+    $like_search = '%' . $search_quicksearch_man . '%';
+    $stmt->bindParam(':tree_id', $tree_id, PDO::PARAM_STR);
+    $stmt->bindParam(':search', $like_search, PDO::PARAM_STR);
+    $stmt->execute();
+    $person_result = $stmt;
 } elseif ($search_man_id != '') {
     if (substr($search_man_id, 0, 1) !== "i" && substr($search_man_id, 0, 1) !== "I") {
+        //make entry "48" into "I48"
         $search_man_id = "I" . $search_man_id;
-    } //make entry "48" into "I48"
+    }
     $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_man_id . "'";
     $person_result = $dbh->query($person_qry);
+    // TODO check this
     //$person = $db_functions->get_person($man_gedcomnumber);
 } else {
     $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $man_gedcomnumber . "'";

@@ -85,12 +85,14 @@ class ListPlacesFamiliesModel extends BaseModel
     // TODO this function is also used in script list.
     private function name_qry($search_name, $search_part): string
     {
-        $text = "LIKE '%" . safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
+        $safeTextDb = new SafeTextDb();
+
+        $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
         if ($search_part == 'equals') {
-            $text = "='" . safe_text_db($search_name) . "'";
+            $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
         }
         if ($search_part == 'starts_with') {
-            $text = "LIKE '" . safe_text_db($search_name) . "%'";
+            $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
         }
         return $text;
     }

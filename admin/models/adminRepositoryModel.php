@@ -25,38 +25,79 @@ class AdminRepositoryModel extends AdminBaseModel
             // *** Generate new GEDCOM number ***
             $new_gedcomnumber = 'R' . $this->db_functions->generate_gedcomnr($this->tree_id, 'repo');
 
-            $sql = "INSERT INTO humo_repositories SET
-                repo_tree_id='" . $this->tree_id . "',
-                repo_gedcomnr='" . $new_gedcomnumber . "',
-                repo_name='" . $editor_cls->text_process($_POST['repo_name']) . "',
-                repo_address='" . $editor_cls->text_process($_POST['repo_address']) . "',
-                repo_zip='" . safe_text_db($_POST['repo_zip']) . "',
-                repo_place='" . $editor_cls->text_process($_POST['repo_place']) . "',
-                repo_phone='" . safe_text_db($_POST['repo_phone']) . "',
-                repo_date='" . $editor_cls->date_process('repo_date') . "',
-                repo_text='" . $editor_cls->text_process($_POST['repo_text']) . "',
-                repo_mail='" . safe_text_db($_POST['repo_mail']) . "',
-                repo_url='" . safe_text_db($_POST['repo_url']) . "',
-                repo_new_user_id='" . $userid . "'";
-            $this->dbh->query($sql);
+            $sql = "INSERT INTO humo_repositories (
+                repo_tree_id,
+                repo_gedcomnr,
+                repo_name,
+                repo_address,
+                repo_zip,
+                repo_place,
+                repo_phone,
+                repo_date,
+                repo_text,
+                repo_mail,
+                repo_url,
+                repo_new_user_id
+            ) VALUES (
+                :repo_tree_id,
+                :repo_gedcomnr,
+                :repo_name,
+                :repo_address,
+                :repo_zip,
+                :repo_place,
+                :repo_phone,
+                :repo_date,
+                :repo_text,
+                :repo_mail,
+                :repo_url,
+                :repo_new_user_id
+            )";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':repo_tree_id' => $this->tree_id,
+                ':repo_gedcomnr' => $new_gedcomnumber,
+                ':repo_name' => $editor_cls->text_process($_POST['repo_name']),
+                ':repo_address' => $editor_cls->text_process($_POST['repo_address']),
+                ':repo_zip' => $_POST['repo_zip'],
+                ':repo_place' => $editor_cls->text_process($_POST['repo_place']),
+                ':repo_phone' => $_POST['repo_phone'],
+                ':repo_date' => $editor_cls->date_process('repo_date'),
+                ':repo_text' => $editor_cls->text_process($_POST['repo_text']),
+                ':repo_mail' => $_POST['repo_mail'],
+                ':repo_url' => $_POST['repo_url'],
+                ':repo_new_user_id' => $userid
+            ]);
 
             $this->repo_id = $this->dbh->lastInsertId();
         }
 
         if (isset($_POST['repo_change'])) {
             $sql = "UPDATE humo_repositories SET
-                repo_name='" . $editor_cls->text_process($_POST['repo_name']) . "',
-                repo_address='" . $editor_cls->text_process($_POST['repo_address']) . "',
-                repo_zip='" . safe_text_db($_POST['repo_zip']) . "',
-                repo_place='" . $editor_cls->text_process($_POST['repo_place']) . "',
-                repo_phone='" . safe_text_db($_POST['repo_phone']) . "',
-                repo_date='" . $editor_cls->date_process('repo_date') . "',
-                repo_text='" . $editor_cls->text_process($_POST['repo_text']) . "',
-                repo_mail='" . safe_text_db($_POST['repo_mail']) . "',
-                repo_url='" . safe_text_db($_POST['repo_url']) . "',
-                repo_changed_user_id='" . $userid . "'
-                WHERE repo_id='" . $this->repo_id . "'";
-            $this->dbh->query($sql);
+                repo_name = :repo_name,
+                repo_address = :repo_address,
+                repo_zip = :repo_zip,
+                repo_place = :repo_place,
+                repo_phone = :repo_phone,
+                repo_date = :repo_date,
+                repo_text = :repo_text,
+                repo_mail = :repo_mail,
+                repo_url = :repo_url,
+                repo_changed_user_id = :repo_changed_user_id
+                WHERE repo_id = :repo_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':repo_name' => $editor_cls->text_process($_POST['repo_name']),
+                ':repo_address' => $editor_cls->text_process($_POST['repo_address']),
+                ':repo_zip' => $_POST['repo_zip'],
+                ':repo_place' => $editor_cls->text_process($_POST['repo_place']),
+                ':repo_phone' => $_POST['repo_phone'],
+                ':repo_date' => $editor_cls->date_process('repo_date'),
+                ':repo_text' => $editor_cls->text_process($_POST['repo_text']),
+                ':repo_mail' => $_POST['repo_mail'],
+                ':repo_url' => $_POST['repo_url'],
+                ':repo_changed_user_id' => $userid,
+                ':repo_id' => $this->repo_id
+            ]);
         }
 
         if (isset($_POST['repo_remove2'])) {

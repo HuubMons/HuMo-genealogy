@@ -6,10 +6,10 @@
 
 $personDb = $db_functions->get_person($id);
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
 
-$privacy = $person_privacy->get_privacy($personDb);
+$privacy = $personPrivacy->get_privacy($personDb);
 if ($privacy) {
     echo '<br><br>' . __('PRIVACY FILTER');
     exit();
@@ -86,7 +86,7 @@ if (isset($_POST['tml'])) {
 }
 
 $vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
-$path = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
+$path = $processLinks->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
 ?>
 
 <!-- SHOW MENU -->
@@ -208,7 +208,7 @@ if ($endyear > date("Y")) {
 }
 $flag = 0; // flags a first entry of timeline event in a specific year. is set to 1 when at least one entry has been made
 
-$name = $person_name->get_person_name($personDb, $privacy);
+$name = $personName->get_person_name($personDb, $privacy);
 
 // ****** DISPLAY
 if ($data["privacy_filtered"] == true) {

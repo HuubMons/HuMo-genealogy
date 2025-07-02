@@ -123,12 +123,14 @@ $user = $dbh->query($usersql);
 
                 <?php
                 // *** Show statistics ***
-                $logbooksql = "SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username='" . safe_text_db($userDb->user_name) . "'";
-                $logbook = $dbh->query($logbooksql);
+                $logbooksql = "SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username = :username";
+                $logbook = $dbh->prepare($logbooksql);
+                $logbook->execute([':username' => $userDb->user_name]);
                 $logbookDb = $logbook->fetch(PDO::FETCH_OBJ);
 
-                $logdatesql = "SELECT log_date, log_ip_address FROM humo_user_log WHERE log_username='" . safe_text_db($userDb->user_name) . "' ORDER BY log_date DESC LIMIT 0,1";
-                $logdate = $dbh->query($logdatesql);
+                $logdatesql = "SELECT log_date, log_ip_address FROM humo_user_log WHERE log_username = :username ORDER BY log_date DESC LIMIT 0,1";
+                $logdate = $dbh->prepare($logdatesql);
+                $logdate->execute([':username' => $userDb->user_name]);
                 $logdateDb = $logdate->fetch(PDO::FETCH_OBJ);
 
                 if ($logbookDb->nr_login) {

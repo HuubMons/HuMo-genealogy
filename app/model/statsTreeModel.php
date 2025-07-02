@@ -3,9 +3,9 @@ class StatsTreeModel extends BaseModel
 {
     public function get_data(): array
     {
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
-        $person_link = new PersonLink();
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $personLink = new PersonLink();
 
         // *** Most children in family ***
         $statistics['nr_children'] = 0; // *** minimum of 0 children ***
@@ -23,17 +23,17 @@ class StatsTreeModel extends BaseModel
 
         if ($statistics['nr_children'] != "0") {
             $record_man = $this->db_functions->get_person($man_gedcomnumber);
-            $privacy = $person_privacy->get_privacy($record_man);
-            $name = $person_name->get_person_name($record_man, $privacy);
+            $privacy = $personPrivacy->get_privacy($record_man);
+            $name = $personName->get_person_name($record_man, $privacy);
             $statistics['man'] = $name["standard_name"];
 
             $record_woman = $this->db_functions->get_person($woman_gedcomnumber);
-            $privacy = $person_privacy->get_privacy($record_woman);
-            $name = $person_name->get_person_name($record_woman, $privacy);
+            $privacy = $personPrivacy->get_privacy($record_woman);
+            $name = $personName->get_person_name($record_woman, $privacy);
             $statistics['woman'] = $name["standard_name"];
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $statistics['url'] = $person_link->get_person_link($record_man);
+            $statistics['url'] = $personLink->get_person_link($record_man);
         }
         return $statistics;
     }

@@ -26,8 +26,9 @@ class ShowMedia
         global $dbh, $db_functions, $tree_id, $user, $dataDb, $data, $page;
         global $screen_mode; // *** RTF Export ***
 
-        $date_place = new DatePlace();
-        $media_path = new MediaPath();
+        $datePlace = new DatePlace();
+        $mediaPath = new MediaPath();
+        $processText = new ProcessText();
 
         $templ_person = array(); // local version
         $process_text = '';
@@ -53,11 +54,17 @@ class ShowMedia
 
             // *** Standard connected media by person and family ***
             // TODO: show these items seperately: picture_birth, picture_death, picture_marriage, picture_burial etc.
-            $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='" . safe_text_db($event_connect_kind) . "'
-                AND event_connect_id='" . safe_text_db($event_connect_id) . "'
-                AND LEFT(event_kind,7)='picture'
-                ORDER BY event_kind, event_order");
+            $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                AND event_connect_kind = :event_connect_kind
+                AND event_connect_id = :event_connect_id
+                AND LEFT(event_kind, 7) = 'picture'
+                ORDER BY event_kind, event_order";
+            $picture_qry = $dbh->prepare($sql);
+            $picture_qry->execute([
+                ':tree_id' => $tree_id,
+                ':event_connect_kind' => $event_connect_kind,
+                ':event_connect_id' => $event_connect_id
+            ]);
             while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
                 $media_nr++;
                 $media_event_id[$media_nr] = $pictureDb->event_id;
@@ -83,9 +90,14 @@ class ShowMedia
 
             if ($event_connect_kind == 'person' || $event_connect_kind == 'family' || $event_connect_kind == 'source') {
                 foreach ($connect_sql as $connectDb) {
-                    $picture_qry = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                        AND event_gedcomnr='" . safe_text_db($connectDb->connect_source_id) . "' AND event_kind='object'
-                        ORDER BY event_order");
+                    $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                        AND event_gedcomnr = :event_gedcomnr AND event_kind = 'object'
+                        ORDER BY event_order";
+                    $picture_qry = $dbh->prepare($sql);
+                    $picture_qry->execute([
+                        ':tree_id' => $tree_id,
+                        ':event_gedcomnr' => $connectDb->connect_source_id
+                    ]);
                     while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
                         $media_nr++;
                         $media_event_id[$media_nr] = $pictureDb->event_id;
@@ -114,7 +126,7 @@ class ShowMedia
             }
 
             for ($i = 1; $i < ($media_nr + 1); $i++) {
-                $dateplace = $date_place->date_place($media_event_date[$i], $media_event_place[$i]);
+                $dateplace = $datePlace->date_place($media_event_date[$i], $media_event_place[$i]);
                 // *** If possible show a thumb ***
 
                 // *** Don't use entities in a picture ***
@@ -145,7 +157,7 @@ class ShowMedia
                     if ($line_pos > 0) {
                         $title_txt = substr($media_event_text[$i], 0, $line_pos);
                     }
-                    $href_path = $media_path->give_media_path($temp_path, str_ireplace("%2F", "/", rawurlencode($event_event)));
+                    $href_path = $mediaPath->give_media_path($temp_path, str_ireplace("%2F", "/", rawurlencode($event_event)));
                     // *** April 2021: using GLightbox ***
                     // *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
                     // *** But: reverse change of / character (if sub folders are used) ***
@@ -171,7 +183,7 @@ class ShowMedia
                     $templ_person["pic_path" . $i] = trim($templ_person["pic_path" . $i]);
                 } else {
                     // other media formats not to be displayed with lightbox
-                    $href_path = $media_path->give_media_path($temp_path, $event_event);
+                    $href_path = $mediaPath->give_media_path($temp_path, $event_event);
                     $picture = '<a href="' . $href_path . '" target="_blank">' . $this->print_thumbnail($temp_path, $event_event) . '</a>';
                 }
 
@@ -188,7 +200,7 @@ class ShowMedia
                 if (isset($media_event_text[$i]) && $media_event_text[$i]) {
                     if ($screen_mode != 'RTF') {
                         //$picture_text.=' '.str_replace("&", "&amp;", $media_event_text[$i]);
-                        $picture_text .= ' ' . str_replace("&", "&amp;", process_text($media_event_text[$i]));
+                        $picture_text .= ' ' . str_replace("&", "&amp;", $processText->process_text($media_event_text[$i]));
                     }
                     if (isset($templ_person["pic_text" . $i])) {
                         $templ_person["pic_text" . $i] .= ' ' . $media_event_text[$i];
@@ -242,7 +254,7 @@ class ShowMedia
     {
         global $humo_option;
 
-        $media_path = new MediaPath();
+        $mediaPath = new MediaPath();
         $resizePicture = new ResizePicture();
 
         // in current state this function is not displaying all formats of pictures that are allowed - for example it's not displaying webp
@@ -291,7 +303,7 @@ class ShowMedia
             $mode = 'onlyfile';
             $fileName = $this->thumbnail_exists($folder, $file, $mode);
 
-            $src_path = $media_path->give_media_path($folder_for_give_media_path, $fileName);
+            $src_path = $mediaPath->give_media_path($folder_for_give_media_path, $fileName);
             return '<img src="' . $prefix . $src_path . '"' . $img_style . '>';
         }
 
@@ -316,13 +328,13 @@ class ShowMedia
             // script will possibily die here and hidden no_thumb file becomes persistent
             // so this code might be skiped afterwords
             if ($humo_option["thumbnail_auto_create"] == 'y' && $resizePicture->create_thumbnail($folder, $file)) {
-                $src_path = $media_path->give_media_path($folder, 'thumb_' . $file . '.jpg');
+                $src_path = $mediaPath->give_media_path($folder, 'thumb_' . $file . '.jpg');
                 return '<img src="' . $src_path . '"' . $img_style . '>';
             }
         }
 
         $extensions_check = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        $src_path = $media_path->give_media_path($folder, $file);
+        $src_path = $mediaPath->give_media_path($folder, $file);
         switch ($extensions_check) {
                 /*
             case 'pdf':
@@ -416,7 +428,7 @@ class ShowMedia
         //return '<img src="../../images/thumb_missing-image.jpg"' . $img_style . '>';
 
         // No thumbnail found, return the original file.
-        $src_path = $media_path->give_media_path($folder, $file);
+        $src_path = $mediaPath->give_media_path($folder, $file);
         return '<img src="' . $src_path . '"' . $img_style . '>';
     }
 
@@ -468,11 +480,8 @@ class ShowMedia
     {
         global $dbh, $tree_id, $selected_language;
 
-        $data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
-        //$stmt = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_id = :tree_id");
-        //$stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_INT);
-        //$stmt->execute();
-        //$data2sql = $stmt;
+        $data2sql = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_id = :tree_id");
+        $data2sql->execute([':tree_id' => $tree_id]);
         $dataDb = $data2sql->fetch(PDO::FETCH_OBJ);
         $tree_pict_path = $dataDb->tree_pict_path;
         if (substr($tree_pict_path, 0, 1) === '|') {

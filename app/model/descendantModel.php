@@ -171,11 +171,11 @@ class DescendantModel extends FamilyModel
     {
         $dnaDb = $this->db_functions->get_person($main_person);
 
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
 
-        $privacy = $person_privacy->get_privacy($dnaDb);
-        $dnaname = $person_name->get_person_name($dnaDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($dnaDb);
+        $dnaname = $personName->get_person_name($dnaDb, $privacy);
 
         // need these 4 in report_descendant
         $base_person["name"] =  $dnaname["standard_name"];
@@ -190,8 +190,8 @@ class DescendantModel extends FamilyModel
         // At this moment these globals are needed to process personData and marriage_cls.
         global $data, $parent1Db;
 
-        $person_name = new PersonName;
-        $person_privacy = new PersonPrivacy;
+        $personName = new PersonName();
+        $personPrivacy = new PersonPrivacy();
 
         $family_nr = 1;  // *** process multiple families ***
         $dna = $this->getDNA();
@@ -218,8 +218,8 @@ class DescendantModel extends FamilyModel
 
         $dnaDb = $this->db_functions->get_person($data["main_person"]);
         /*
-        $privacy = $person_privacy->get_privacy($dnaDb);
-        $dnaname = $person_name->get_person_name($dnaDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($dnaDb);
+        $dnaname = $personName->get_person_name($dnaDb, $privacy);
         $base_person_name =  $dnaname["standard_name"];    // need these 4 in report_descendant
         $base_person_sexe = $dnaDb->pers_sexe;
         $base_person_famc = $dnaDb->pers_famc;
@@ -356,10 +356,10 @@ class DescendantModel extends FamilyModel
                             $parent2 = $familyDb->fam_woman;
                         }
                         $parent1Db = $this->db_functions->get_person($parent1);
-                        $parent1_privacy = $person_privacy->get_privacy($parent1Db);
+                        $parent1_privacy = $personPrivacy->get_privacy($parent1Db);
 
                         $parent2Db = $this->db_functions->get_person($parent2);
-                        $parent2_privacy = $person_privacy->get_privacy($parent2Db);
+                        $parent2_privacy = $personPrivacy->get_privacy($parent2Db);
 
                         $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                         $family_privacy = $marriage_cls->get_privacy();
@@ -372,8 +372,8 @@ class DescendantModel extends FamilyModel
                             if ($family_nr == 1) {
                                 //*** Show data of parent1 ***
                                 if ($descendant_loop == 0) {
-                                    $privacy = $person_privacy->get_privacy($parent1Db);
-                                    $name = $person_name->get_person_name($parent1Db, $privacy);
+                                    $privacy = $personPrivacy->get_privacy($parent1Db);
+                                    $name = $personName->get_person_name($parent1Db, $privacy);
                                     $genarray[$arraynr]["nam"] = $name["standard_name"];
                                     if (isset($name["colour_mark"])) {
                                         $genarray[$arraynr]["nam"] .= $name["colour_mark"];
@@ -436,8 +436,8 @@ class DescendantModel extends FamilyModel
                          * Parent2 (normally the mother)
                          */
                         if ($parent2Db) {
-                            $privacy = $person_privacy->get_privacy($parent2Db);
-                            $name = $person_name->get_person_name($parent2Db, $privacy);
+                            $privacy = $personPrivacy->get_privacy($parent2Db);
+                            $name = $personName->get_person_name($parent2Db, $privacy);
                             $genarray[$arraynr]["sps"] = $name["standard_name"];
                             $genarray[$arraynr]["spgednr"] = $parent2Db->pers_gedcomnumber;
                         } else {
@@ -510,8 +510,8 @@ class DescendantModel extends FamilyModel
                                 $genarray[$place]["nrc"] = 0;
                                 $genarray[$place]["2nd"] = 0;
 
-                                $privacy = $person_privacy->get_privacy($childDb);
-                                $name = $person_name->get_person_name($childDb, $privacy);
+                                $privacy = $personPrivacy->get_privacy($childDb);
+                                $name = $personName->get_person_name($childDb, $privacy);
                                 $genarray[$place]["nam"] = $name["standard_name"] . $name["colour_mark"];
 
                                 $genarray[$place]["init"] = $name["initials"];

@@ -6,11 +6,12 @@ if ($user['group_pictures'] != 'j' || $user['group_photobook'] != 'j') {
 }
 
 $showMedia = new ShowMedia();
-$media_path = new MediaPath();
+$mediaPath = new MediaPath();
 
-$person_privacy = new PersonPrivacy();
-$person_name = new PersonName();
-$date_place = new DatePlace();
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$datePlace = new DatePlace();
+$safeTextShow = new SafeTextShow();
 
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
@@ -58,10 +59,10 @@ $item = 0;
 if (isset($_GET['item'])) {
     $item = $_GET['item'];
 }
-$albumpath = $link_cls->get_link($uri_path, 'photoalbum', $tree_id, true);
+$albumpath = $processLinks->get_link($uri_path, 'photoalbum', $tree_id, true);
 
 
-//$menu_path_photoalbum = $link_cls->get_link($uri_path, 'photoalbum',$tree_id);
+//$menu_path_photoalbum = $processLinks->get_link($uri_path, 'photoalbum',$tree_id);
 $path = 'index.php?page=photoalbum?tree_id=' . $tree_id;
 if ($photoalbum['show_categories'] === true) {
     $path .= '&amp;select_category=' . $photoalbum['chosen_tab'];
@@ -100,7 +101,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
             <!-- Search by photo name -->
             <div class="col-auto">
-                <input type="text" name="search_media" value="<?= safe_text_show($photoalbum['search_media']); ?>" size="20" class="form-control form-control-sm">
+                <input type="text" name="search_media" value="<?= $safeTextShow->safe_text_show($photoalbum['search_media']); ?>" size="20" class="form-control form-control-sm">
             </div>
             <div class="col-auto">
                 <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-success">
@@ -121,28 +122,32 @@ if ($humo_option["url_rewrite"] == "j") {
             $picture_text = '';    // Text with link to person
             $picture_text2 = '';    // Text without link to person
 
-            $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-                AND event_connect_kind='person' AND LEFT(event_kind,7)='picture' AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
-            $afbqry = $dbh->query($sql);
+            $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                AND event_connect_kind = 'person' AND LEFT(event_kind,7) = 'picture' AND LOWER(event_event) = :filename";
+            $afbqry = $dbh->prepare($sql);
+            $afbqry->execute([
+                ':tree_id' => $tree_id,
+                ':filename' => strtolower($filename)
+            ]);
             if (!$afbqry->rowCount()) {
                 $picture_text = substr($filename, 0, -4);
             }
             while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
                 $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                $privacy = $person_privacy->get_privacy($personDb);
-                $name = $person_name->get_person_name($personDb, $privacy);
+                $privacy = $personPrivacy->get_privacy($personDb);
+                $name = $personName->get_person_name($personDb, $privacy);
 
                 if (!$privacy) {
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $person_link = new PersonLink();
-                    $url = $person_link->get_person_link($personDb);
+                    $personLink = new PersonLink();
+                    $url = $personLink->get_person_link($personDb);
                     $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
                     $picture_text2 .= $name["standard_name"];
                 } else {
                     $found_privacy_items = true;
                 }
 
-                $dateplace = $date_place->date_place($afbDb->event_date, $afbDb->event_place);
+                $dateplace = $datePlace->date_place($afbDb->event_date, $afbDb->event_place);
                 if ($afbDb->event_text || $dateplace) {
                     if ($dateplace) {
                         $picture_text .= $dateplace . ' ';
@@ -165,13 +170,13 @@ if ($humo_option["url_rewrite"] == "j") {
                     AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
                 while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                     $personDb = $db_functions->get_person($connectDb->connect_connect_id);
-                    $privacy = $person_privacy->get_privacy($personDb);
-                    $name = $person_name->get_person_name($personDb, $privacy);
+                    $privacy = $personPrivacy->get_privacy($personDb);
+                    $name = $personName->get_person_name($personDb, $privacy);
 
                     if (!$privacy) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $person_link = new PersonLink();
-                        $url = $person_link->get_person_link($personDb);
+                        $personLink = new PersonLink();
+                        $url = $personLink->get_person_link($personDb);
                         if ($picture_text !== '' && $picture_text !== '0') {
                             $picture_text .= '<br>';
                         }
@@ -179,7 +184,7 @@ if ($humo_option["url_rewrite"] == "j") {
                         $picture_text2 .= $name["standard_name"];
                     }
 
-                    $dateplace = $date_place->date_place($pictureDb->event_date, $pictureDb->event_place);
+                    $dateplace = $datePlace->date_place($pictureDb->event_date, $pictureDb->event_place);
                     if ($pictureDb->event_text || $dateplace) {
                         if ($dateplace) {
                             $picture_text .= $dateplace . ' ';
@@ -203,7 +208,7 @@ if ($humo_option["url_rewrite"] == "j") {
     ?>
                 <div class="photobook">
                     <!-- Show photo using the lightbox: GLightbox effect -->
-                    <?php $href_path = $media_path->give_media_path($tmp_dir, $filename); ?>
+                    <?php $href_path = $mediaPath->give_media_path($tmp_dir, $filename); ?>
                     <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                         <!-- Need a class for multiple lines and HTML code in a text -->
                         <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>

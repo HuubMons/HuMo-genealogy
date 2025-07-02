@@ -8,7 +8,7 @@ class PhotoalbumController
         $this->config = $config;
     }
 
-    public function detail($selected_language, $uri_path, $link_cls): array
+    public function detail($selected_language): array
     {
         $photoalbumModel = new PhotoalbumModel($this->config);
 
@@ -38,7 +38,7 @@ class PhotoalbumController
         }
 
 
-        $get_calculate_pages = $photoalbumModel->calculate_pages($photoalbum, $uri_path, $link_cls);
+        $get_calculate_pages = $photoalbumModel->calculate_pages($photoalbum);
         $photoalbum = array_merge($photoalbum, $get_calculate_pages);
 
         return $photoalbum;

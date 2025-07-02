@@ -5819,12 +5819,13 @@ class GedcomImport
     }
     */
 
+    // TODO same as class safeTextDb?
     function text_process($text, $long_text = false)
     {
         //if ($long_text==true){
         //	$text = str_replace("\r\n", "\n", $text);
         //}
-        //$text=safe_text_db($text);
+        //$text=$safeTextDb->safe_text_db($text);
         //return $text;
 
         $return_text = '';

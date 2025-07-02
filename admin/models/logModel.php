@@ -24,9 +24,12 @@ class LogModel extends AdminBaseModel
                 while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                     if (is_numeric($_POST[$dataDb->setting_id . 'id'])) {
                         $setting_value = $_POST[$dataDb->setting_id . 'own_code'] . "|" . $_POST[$dataDb->setting_id . 'link_text'];
-                        $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "'
-                    WHERE setting_id=" . $_POST[$dataDb->setting_id . 'id'];
-                        $this->dbh->query($sql);
+                        $sql = "UPDATE humo_settings SET setting_value = :setting_value WHERE setting_id = :setting_id";
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->execute([
+                            ':setting_value' => $setting_value,
+                            ':setting_id' => $_POST[$dataDb->setting_id . 'id']
+                        ]);
                     }
                 }
             }
@@ -43,9 +46,13 @@ class LogModel extends AdminBaseModel
             // *** Add IP address ***
             if (isset($_POST['add_link']) && $_POST['own_code'] != '' && is_numeric($_POST['link_order'])) {
                 $setting_value = $_POST['own_code'] . "|" . $_POST['link_text'];
-                $sql = "INSERT INTO humo_settings SET setting_variable='ip_blacklist',
-                setting_value='" . safe_text_db($setting_value) . "', setting_order='" . $_POST['link_order'] . "'";
-                $this->dbh->query($sql);
+                $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_order) VALUES (:setting_variable, :setting_value, :setting_order)";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->execute([
+                    ':setting_variable' => 'ip_blacklist',
+                    ':setting_value'    => $setting_value,
+                    ':setting_order'    => $_POST['link_order']
+                ]);
             }
 
             if (isset($_GET['up']) && is_numeric($_GET['link_order']) && is_numeric($_GET['id'])) {

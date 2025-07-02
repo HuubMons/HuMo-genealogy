@@ -26,7 +26,12 @@ class ThumbsModel extends AdminBaseModel
             } elseif (isset($_POST['default_path']) && $_POST['default_path'] == 'yes') {
                 $tree_pict_path = '|' . $tree_pict_path;
             }
-            $this->dbh->query("UPDATE humo_trees SET tree_pict_path='" . safe_text_db($tree_pict_path) . "' WHERE tree_id=" . safe_text_db($this->tree_id));
+            $sql = "UPDATE humo_trees SET tree_pict_path = :tree_pict_path WHERE tree_id = :tree_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':tree_pict_path' => $tree_pict_path,
+                ':tree_id' => $this->tree_id
+            ]);
         }
     }
 

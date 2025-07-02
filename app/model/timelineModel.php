@@ -1,11 +1,11 @@
 <?php
 class TimelineModel extends BaseModel
 {
-    private $language_date;
+    private $languageDate;
 
     public function __construct()
     {
-        $this->language_date = new LanguageDate();
+        $this->languageDate = new LanguageDate();
     }
 
     // TODO remove return_array check (and use array in all julgreg lines.).
@@ -23,7 +23,7 @@ class TimelineModel extends BaseModel
         $year = substr($process_date, -4);
         if ($year > 0 && $year < 2200) {
             $data["year"] = $year;
-            $data["date_translated"] = $this->language_date->language_date($process_date);
+            $data["date_translated"] = $this->languageDate->language_date($process_date);
         }
 
         if ($return_array) {
@@ -55,7 +55,7 @@ class TimelineModel extends BaseModel
             $temp = substr($borndate, -4);
             if ($temp > 0 and $temp < 2200) {
                 $data["bornyear"] = $temp;
-                $data["borntext"] = ucfirst(__('birth')) . ' ' . $this->language_date->language_date($borndate);
+                $data["borntext"] = ucfirst(__('birth')) . ' ' . $this->languageDate->language_date($borndate);
                 $data["isborn"] = 1;
             }
         }
@@ -77,7 +77,7 @@ class TimelineModel extends BaseModel
             $temp = substr($baptdate, -4);
             if ($temp > 0 and $temp < 2200) {
                 $data["baptyear"] = $temp;
-                $data["bapttext"] = ucfirst(__('baptised')) . ' ' . $this->language_date->language_date($baptdate);
+                $data["bapttext"] = ucfirst(__('baptised')) . ' ' . $this->languageDate->language_date($baptdate);
                 $data["isborn"] = 1;
             }
         }
@@ -98,7 +98,7 @@ class TimelineModel extends BaseModel
             $temp = substr($deathdate, -4);
             if ($temp > 0 && $temp < 2200) {
                 $data["deathyear"] = $temp;
-                $data["deathtext"] = ucfirst(__('death')) . ' ' . $this->language_date->language_date($deathdate);
+                $data["deathtext"] = ucfirst(__('death')) . ' ' . $this->languageDate->language_date($deathdate);
                 $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $personDb->pers_death_date, true);
                 if ($age) {
                     $data["deathtext"] = '[' . $age . '] ' . $data["deathtext"];
@@ -113,7 +113,7 @@ class TimelineModel extends BaseModel
             $temp = substr($burrdate, -4);
             if ($temp > 0 && $temp < 2200) {
                 $data["burryear"] = $temp;
-                $data["burrtext"] = ucfirst(__('buried')) . $this->language_date->language_date($burrdate);
+                $data["burrtext"] = ucfirst(__('buried')) . $this->languageDate->language_date($burrdate);
                 $data["isdeath"] = 1;
             }
         }
@@ -163,8 +163,8 @@ class TimelineModel extends BaseModel
 
     public function getTimelinePersons($personDb, $dirmark1)
     {
-        $person_name = new PersonName;
-        $person_privacy = new PersonPrivacy;
+        $personName = new PersonName();
+        $personPrivacy = new PersonPrivacy();
 
         // *** MARRIAGES & CHILDREN ***
         if (isset($personDb->pers_fams) && $personDb->pers_fams) {
@@ -181,8 +181,8 @@ class TimelineModel extends BaseModel
                 $spouse2Db = $this->db_functions->get_person($spouse);
                 $privacy = true;
                 if ($spouse2Db) {
-                    $privacy = $person_privacy->get_privacy($spouse2Db);
-                    $name = $person_name->get_person_name($spouse2Db, $privacy);
+                    $privacy = $personPrivacy->get_privacy($spouse2Db);
+                    $name = $personName->get_person_name($spouse2Db, $privacy);
                 }
                 if (!$privacy) {
                     if (isset($spouse2Db->pers_death_date) && $spouse2Db->pers_death_date) {
@@ -197,7 +197,7 @@ class TimelineModel extends BaseModel
                             if ($name["firstname"]) {
                                 $data["spousedeathname"][$i] = $name["firstname"];
                             }
-                            $data["spousedeathtext"][$i] = ucfirst(__('death')) . ' ' . $spouse . " " . $data["spousedeathname"][$i] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->language_date->language_date($data["spousedeathdate"][$i]));
+                            $data["spousedeathtext"][$i] = ucfirst(__('death')) . ' ' . $spouse . " " . $data["spousedeathname"][$i] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->languageDate->language_date($data["spousedeathdate"][$i]));
                             $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $spouse2Db->pers_death_date, true);
                             if ($age) {
                                 $data["spousedeathtext"][$i] = '[' . $age . '] ' . $data["spousedeathtext"][$i];
@@ -231,7 +231,7 @@ class TimelineModel extends BaseModel
                             $spousetext = __('with ') . $spousename;
                         }
                         $data["marryear"][$i] = $temp;
-                        $data["marrtext"][$i] = $text . $spousetext . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->language_date->language_date($marrdate[$i]));
+                        $data["marrtext"][$i] = $text . $spousetext . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->languageDate->language_date($marrdate[$i]));
                         $data["ismarr"] = 1;
 
                         $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $marrdate[$i], true);
@@ -266,8 +266,8 @@ class TimelineModel extends BaseModel
                             $child = __('child ');
                         }
 
-                        $privacy = $person_privacy->get_privacy($chldDb);
-                        $name = $person_name->get_person_name($chldDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($chldDb);
+                        $name = $personName->get_person_name($chldDb, $privacy);
 
                         if (!$privacy) {
                             $data["chbornyear"][$i][$m] = '';
@@ -282,7 +282,7 @@ class TimelineModel extends BaseModel
                             $temp = substr($data["chborndate"][$i][$m], -4);
                             if ($temp > 0 && $temp < 2200) {
                                 $data["chbornyear"][$i][$m] = $temp;
-                                $data["chborntext"][$i][$m] = ucfirst(__('birth')) . ' ' . $child . " " . $childname[$i][$m] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->language_date->language_date($data["chborndate"][$i][$m]));
+                                $data["chborntext"][$i][$m] = ucfirst(__('birth')) . ' ' . $child . " " . $childname[$i][$m] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->languageDate->language_date($data["chborndate"][$i][$m]));
                                 $data["ischild"] = 1;
 
                                 $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $chldDb->pers_birth_date, true);
@@ -294,7 +294,7 @@ class TimelineModel extends BaseModel
                             $temp = substr($data["chdeathdate"][$i][$m], -4);
                             if ($temp > 0 && $temp < 2200) {
                                 $data["chdeathyear"][$i][$m] = $temp;
-                                $data["chdeathtext"][$i][$m] = ucfirst(__('death')) . ' ' . $child . " " . $childname[$i][$m] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->language_date->language_date($data["chdeathdate"][$i][$m]));
+                                $data["chdeathtext"][$i][$m] = ucfirst(__('death')) . ' ' . $child . " " . $childname[$i][$m] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->languageDate->language_date($data["chdeathdate"][$i][$m]));
 
                                 $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $chldDb->pers_death_date, true);
                                 if ($age) {
@@ -318,8 +318,8 @@ class TimelineModel extends BaseModel
                                 // CHILDREN'S MARRIAGES
                                 $chspouse = $chldDb->pers_gedcomnumber == $chfamilyDb->fam_man ? $chfamilyDb->fam_woman : $chfamilyDb->fam_man;
                                 $chspouse2Db = $this->db_functions->get_person($chspouse);
-                                $privacy = $person_privacy->get_privacy($chspouse2Db);
-                                $name = $person_name->get_person_name($chspouse2Db, $privacy);
+                                $privacy = $personPrivacy->get_privacy($chspouse2Db);
+                                $name = $personName->get_person_name($chspouse2Db, $privacy);
                                 if (!$privacy) {
                                     if ($chfamilyDb->fam_marr_date) {
                                         $data["chmarrdate"][$i][$m][$p] = $this->julgreg($chfamilyDb->fam_marr_date);
@@ -346,7 +346,7 @@ class TimelineModel extends BaseModel
                                             $chspousetext = __('with ') . $chspousename;
                                         }
                                         $data["chmarryear"][$i][$m][$p] = $temp;
-                                        $data["chmarrtext"][$i][$m][$p] = $chtext . $child . " " . $childname[$i][$m] . ' ' . $chspousetext . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->language_date->language_date($data["chmarrdate"][$i][$m][$p]));
+                                        $data["chmarrtext"][$i][$m][$p] = $chtext . $child . " " . $childname[$i][$m] . ' ' . $chspousetext . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->languageDate->language_date($data["chmarrdate"][$i][$m][$p]));
                                         //$chismarr=1;
 
                                         $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $data["chmarrdate"][$i][$m][$p], true);
@@ -365,8 +365,8 @@ class TimelineModel extends BaseModel
                                     $count_grchildren = count($data["grchildren"][$i][$m][$p]);
                                     for ($g = 0; $g < $count_grchildren; $g++) {
                                         $grchldDb = $this->db_functions->get_person($data["grchildren"][$i][$m][$p][$g]);
-                                        $privacy = $person_privacy->get_privacy($grchldDb);
-                                        $name = $person_name->get_person_name($grchldDb, $privacy);
+                                        $privacy = $personPrivacy->get_privacy($grchldDb);
+                                        $name = $personName->get_person_name($grchldDb, $privacy);
                                         if (!$privacy) {
                                             $data["grchbornyear"][$i][$m][$p][$g] = '';
                                             $data["grchborndate"][$i][$m][$p][$g] = '';
@@ -388,7 +388,7 @@ class TimelineModel extends BaseModel
                                             $temp = substr($data["grchborndate"][$i][$m][$p][$g], -4);
                                             if ($temp > 0 && $temp < 2200) {
                                                 $data["grchbornyear"][$i][$m][$p][$g] = $temp;
-                                                $data["grchborntext"][$i][$m][$p][$g] = ucfirst(__('birth')) . ' ' . $grchild . " " . $grchildname[$i][$m][$p][$g] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->language_date->language_date($data["grchborndate"][$i][$m][$p][$g]));
+                                                $data["grchborntext"][$i][$m][$p][$g] = ucfirst(__('birth')) . ' ' . $grchild . " " . $grchildname[$i][$m][$p][$g] . " " . $dirmark1 . str_replace(" ", "&nbsp;", $this->languageDate->language_date($data["grchborndate"][$i][$m][$p][$g]));
 
                                                 $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $grchldDb->pers_birth_date, true);
                                                 if ($age) {
@@ -399,7 +399,7 @@ class TimelineModel extends BaseModel
                                             $temp = substr($data["grchdeathdate"][$i][$m][$p][$g], -4);
                                             if ($temp > 0 && $temp < 2200) {
                                                 $data["grchdeathyear"][$i][$m][$p][$g] = $temp;
-                                                $data["grchdeathtext"][$i][$m][$p][$g] = ucfirst(__('death')) . ' ' . $grchild . " " . $grchildname[$i][$m][$p][$g] . "  " . $dirmark1 . str_replace(" ", "&nbsp;", $this->language_date->language_date($data["grchdeathdate"][$i][$m][$p][$g]));
+                                                $data["grchdeathtext"][$i][$m][$p][$g] = ucfirst(__('death')) . ' ' . $grchild . " " . $grchildname[$i][$m][$p][$g] . "  " . $dirmark1 . str_replace(" ", "&nbsp;", $this->languageDate->language_date($data["grchdeathdate"][$i][$m][$p][$g]));
 
                                                 $age = $process_age->calculate_age($personDb->pers_bapt_date, $personDb->pers_birth_date, $grchldDb->pers_death_date, true);
                                                 if ($age) {

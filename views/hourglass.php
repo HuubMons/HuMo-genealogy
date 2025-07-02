@@ -77,7 +77,7 @@ $anc_hi = $anc_top + ((pow(2, $data["chosengenanc"] - 1) * $v_distance) / 2) + 1
 $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
 
 $vars['pers_family'] = $data["family_id"];
-$path_tmp = $link_cls->get_link($uri_path, 'hourglass', $tree_id, true, $vars);
+$path_tmp = $processLinks->get_link($uri_path, 'hourglass', $tree_id, true, $vars);
 $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
 ?>
 

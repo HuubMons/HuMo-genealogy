@@ -72,12 +72,16 @@ class IndexModel
 
                     // *** Save succesful login into log! ***
                     $sql = "INSERT INTO humo_user_log SET
-                        log_date='" . date("Y-m-d H:i") . "',
-                        log_username='" . $resultDb->user_name . "',
-                        log_ip_address='" . $visitor_ip . "',
-                        log_user_admin='user',
-                        log_status='success'";
-                    $dbh->query($sql);
+                        log_date = :log_date,
+                        log_username = :log_username,
+                        log_ip_address = :log_ip_address,
+                        log_user_admin = 'user',
+                        log_status = 'success'";
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+                    $stmt->bindValue(':log_username', $resultDb->user_name, PDO::PARAM_STR);
+                    $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+                    $stmt->execute();
 
                     // *** Send to secured page ***
                     // TODO check link
@@ -91,12 +95,16 @@ class IndexModel
 
                 // *** Save failed login into log! ***
                 $sql = "INSERT INTO humo_user_log SET
-                    log_date='" . date("Y-m-d H:i") . "',
-                    log_username='" . safe_text_db($_POST["username"]) . "',
-                    log_ip_address='" . $visitor_ip . "',
-                    log_user_admin='user',
-                    log_status='failed'";
-                $dbh->query($sql);
+                    log_date = :log_date,
+                    log_username = :log_username,
+                    log_ip_address = :log_ip_address,
+                    log_user_admin = 'user',
+                    log_status = 'failed'";
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+                $stmt->bindValue(':log_username', $_POST["username"], PDO::PARAM_STR);
+                $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+                $stmt->execute();
             }
         }
         return $index;

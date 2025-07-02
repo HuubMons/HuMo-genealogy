@@ -22,7 +22,7 @@ $editor_cls = new Editor_cls;
 $editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
-$language_date = new LanguageDate();
+$languageDate = new LanguageDate();
 
 $db_functions->set_tree_id($tree_id);
 
@@ -169,7 +169,7 @@ $nr_sources = count($connect_sql);
                                 <div class="row mb-2">
                                     <div class="col-md-3"><?= __('Added by'); ?></div>
                                     <div class="col-md-7">
-                                        <?= $language_date->show_datetime($sourceDb->source_new_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_new_user_id); ?>
+                                        <?= $languageDate->show_datetime($sourceDb->source_new_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_new_user_id); ?>
                                     </div>
                                 </div>
                             <?php
@@ -181,7 +181,7 @@ $nr_sources = count($connect_sql);
                                 <div class="row mb-2">
                                     <div class="col-md-3"><?= __('Changed by'); ?></div>
                                     <div class="col-md-7">
-                                        <?= $language_date->show_datetime($sourceDb->source_changed_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_changed_user_id); ?>
+                                        <?= $languageDate->show_datetime($sourceDb->source_changed_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_changed_user_id); ?>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -252,21 +252,21 @@ $nr_sources = count($connect_sql);
                     // *** Add new source or select existing source ***
                     $source_search_gedcomnr = '';
                     if (isset($_POST['source_search_gedcomnr'])) {
-                        $source_search_gedcomnr = safe_text_db($_POST['source_search_gedcomnr']);
+                        $source_search_gedcomnr = $safeTextDb->safe_text_db($_POST['source_search_gedcomnr']);
                     }
                     $source_search = '';
                     if (isset($_POST['source_search'])) {
-                        $source_search = safe_text_db($_POST['source_search']);
+                        $source_search = $safeTextDb->safe_text_db($_POST['source_search']);
                     }
 
                     // *** Source: pull-down menu ***
                     // TODO only get necesary items
-                    $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . safe_text_db($tree_id) . "'";
+                    $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . $safeTextDb->safe_text_db($tree_id) . "'";
                     if (isset($_POST['source_search_gedcomnr'])) {
-                        $qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($_POST['source_search_gedcomnr']) . "%'";
+                        $qry .= " AND source_gedcomnr LIKE '%" . $safeTextDb->safe_text_db($_POST['source_search_gedcomnr']) . "%'";
                     }
                     if (isset($_POST['source_search'])) {
-                        $qry .= " AND ( source_title LIKE '%" . safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($source_search) . "%') )";
+                        $qry .= " AND ( source_title LIKE '%" . $safeTextDb->safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($source_search) . "%') )";
                     }
                     $qry .= " ORDER BY IF (source_title!='',source_title,source_text)";
                     //$qry.=" ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,500";

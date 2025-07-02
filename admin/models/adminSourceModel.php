@@ -29,21 +29,23 @@ class AdminSourceModel extends AdminBaseModel
 
     public function get_sources(): array
     {
+        $safeTextDb = new SafeTextDb();
+
         $editSource['search_gedcomnr'] = '';
         if (isset($_POST['source_search_gedcomnr'])) {
-            $editSource['search_gedcomnr'] = safe_text_db($_POST['source_search_gedcomnr']);
+            $editSource['search_gedcomnr'] = $safeTextDb->safe_text_db($_POST['source_search_gedcomnr']);
         }
         $editSource['search_text'] = '';
         if (isset($_POST['source_search'])) {
-            $editSource['search_text'] = safe_text_db($_POST['source_search']);
+            $editSource['search_text'] = $safeTextDb->safe_text_db($_POST['source_search']);
         }
 
         $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
         if ($editSource['search_gedcomnr']) {
-            $qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($editSource['search_gedcomnr']) . "%'";
+            $qry .= " AND source_gedcomnr LIKE '%" . $safeTextDb->safe_text_db($editSource['search_gedcomnr']) . "%'";
         }
         if ($editSource['search_text']) {
-            $qry .= " AND ( source_title LIKE '%" . safe_text_db($editSource['search_text']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($editSource['search_text']) . "%') )";
+            $qry .= " AND ( source_title LIKE '%" . $safeTextDb->safe_text_db($editSource['search_text']) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($editSource['search_text']) . "%') )";
         }
         $qry .= " ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,200";
 
@@ -85,25 +87,63 @@ class AdminSourceModel extends AdminBaseModel
             // *** Generate new GEDCOM number ***
             $new_gedcomnumber = 'S' . $this->db_functions->generate_gedcomnr($this->tree_id, 'source');
 
-            $sql = "INSERT INTO humo_sources SET
-                source_tree_id='" . $this->tree_id . "',
-                source_gedcomnr='" . $new_gedcomnumber . "',
-                source_status='" . $editor_cls->text_process($_POST['source_status']) . "',
-                source_title='" . $editor_cls->text_process($_POST['source_title']) . "',
-                source_date='" . safe_text_db($_POST['source_date']) . "',
-                source_place='" . $editor_cls->text_process($_POST['source_place']) . "',
-                source_publ='" . $editor_cls->text_process($_POST['source_publ']) . "',
-                source_refn='" . $editor_cls->text_process($_POST['source_refn']) . "',
-                source_auth='" . $editor_cls->text_process($_POST['source_auth']) . "',
-                source_subj='" . $editor_cls->text_process($_POST['source_subj']) . "',
-                source_item='" . $editor_cls->text_process($_POST['source_item']) . "',
-                source_kind='" . $editor_cls->text_process($_POST['source_kind']) . "',
-                source_repo_caln='" . $editor_cls->text_process($_POST['source_repo_caln']) . "',
-                source_repo_page='" . safe_text_db($_POST['source_repo_page']) . "',
-                source_repo_gedcomnr='" . $editor_cls->text_process($_POST['source_repo_gedcomnr']) . "',
-                source_text='" . $editor_cls->text_process($_POST['source_text']) . "',
-                source_new_user_id='" . $userid . "'";
-            $this->dbh->query($sql);
+            $sql = "INSERT INTO humo_sources (
+                source_tree_id,
+                source_gedcomnr,
+                source_status,
+                source_title,
+                source_date,
+                source_place,
+                source_publ,
+                source_refn,
+                source_auth,
+                source_subj,
+                source_item,
+                source_kind,
+                source_repo_caln,
+                source_repo_page,
+                source_repo_gedcomnr,
+                source_text,
+                source_new_user_id
+            ) VALUES (
+                :source_tree_id,
+                :source_gedcomnr,
+                :source_status,
+                :source_title,
+                :source_date,
+                :source_place,
+                :source_publ,
+                :source_refn,
+                :source_auth,
+                :source_subj,
+                :source_item,
+                :source_kind,
+                :source_repo_caln,
+                :source_repo_page,
+                :source_repo_gedcomnr,
+                :source_text,
+                :source_new_user_id
+            )";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':source_tree_id' => $this->tree_id,
+                ':source_gedcomnr' => $new_gedcomnumber,
+                ':source_status' => $editor_cls->text_process($_POST['source_status']),
+                ':source_title' => $editor_cls->text_process($_POST['source_title']),
+                ':source_date' => $_POST['source_date'],
+                ':source_place' => $editor_cls->text_process($_POST['source_place']),
+                ':source_publ' => $editor_cls->text_process($_POST['source_publ']),
+                ':source_refn' => $editor_cls->text_process($_POST['source_refn']),
+                ':source_auth' => $editor_cls->text_process($_POST['source_auth']),
+                ':source_subj' => $editor_cls->text_process($_POST['source_subj']),
+                ':source_item' => $editor_cls->text_process($_POST['source_item']),
+                ':source_kind' => $editor_cls->text_process($_POST['source_kind']),
+                ':source_repo_caln' => $editor_cls->text_process($_POST['source_repo_caln']),
+                ':source_repo_page' => $_POST['source_repo_page'],
+                ':source_repo_gedcomnr' => $editor_cls->text_process($_POST['source_repo_gedcomnr']),
+                ':source_text' => $editor_cls->text_process($_POST['source_text']),
+                ':source_new_user_id' => $userid
+            ]);
 
             $this->source_id = $this->dbh->lastInsertId();
         }
@@ -111,23 +151,42 @@ class AdminSourceModel extends AdminBaseModel
         // Remark: source_change in editorModel.php (used to change sources in familyscreen).
         if (isset($_POST['source_change2'])) {
             $sql = "UPDATE humo_sources SET
-            source_status='" . $editor_cls->text_process($_POST['source_status']) . "',
-            source_title='" . $editor_cls->text_process($_POST['source_title']) . "',
-            source_date='" . $editor_cls->date_process('source_date') . "',
-            source_place='" . $editor_cls->text_process($_POST['source_place']) . "',
-            source_publ='" . $editor_cls->text_process($_POST['source_publ']) . "',
-            source_refn='" . $editor_cls->text_process($_POST['source_refn']) . "',
-            source_auth='" . $editor_cls->text_process($_POST['source_auth']) . "',
-            source_subj='" . $editor_cls->text_process($_POST['source_subj']) . "',
-            source_item='" . $editor_cls->text_process($_POST['source_item']) . "',
-            source_kind='" . $editor_cls->text_process($_POST['source_kind']) . "',
-            source_repo_caln='" . $editor_cls->text_process($_POST['source_repo_caln']) . "',
-            source_repo_page='" . $editor_cls->text_process($_POST['source_repo_page']) . "',
-            source_repo_gedcomnr='" . $editor_cls->text_process($_POST['source_repo_gedcomnr']) . "',
-            source_text='" . $editor_cls->text_process($_POST['source_text'], true) . "',
-            source_changed_user_id='" . $userid . "'
-            WHERE source_tree_id='" . $this->tree_id . "' AND source_id='" . $this->source_id . "'";
-            $this->dbh->query($sql);
+                source_status = :source_status,
+                source_title = :source_title,
+                source_date = :source_date,
+                source_place = :source_place,
+                source_publ = :source_publ,
+                source_refn = :source_refn,
+                source_auth = :source_auth,
+                source_subj = :source_subj,
+                source_item = :source_item,
+                source_kind = :source_kind,
+                source_repo_caln = :source_repo_caln,
+                source_repo_page = :source_repo_page,
+                source_repo_gedcomnr = :source_repo_gedcomnr,
+                source_text = :source_text,
+                source_changed_user_id = :source_changed_user_id
+            WHERE source_tree_id = :source_tree_id AND source_id = :source_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':source_status' => $editor_cls->text_process($_POST['source_status']),
+                ':source_title' => $editor_cls->text_process($_POST['source_title']),
+                ':source_date' => $editor_cls->date_process('source_date'),
+                ':source_place' => $editor_cls->text_process($_POST['source_place']),
+                ':source_publ' => $editor_cls->text_process($_POST['source_publ']),
+                ':source_refn' => $editor_cls->text_process($_POST['source_refn']),
+                ':source_auth' => $editor_cls->text_process($_POST['source_auth']),
+                ':source_subj' => $editor_cls->text_process($_POST['source_subj']),
+                ':source_item' => $editor_cls->text_process($_POST['source_item']),
+                ':source_kind' => $editor_cls->text_process($_POST['source_kind']),
+                ':source_repo_caln' => $editor_cls->text_process($_POST['source_repo_caln']),
+                ':source_repo_page' => $editor_cls->text_process($_POST['source_repo_page']),
+                ':source_repo_gedcomnr' => $editor_cls->text_process($_POST['source_repo_gedcomnr']),
+                ':source_text' => $editor_cls->text_process($_POST['source_text'], true),
+                ':source_changed_user_id' => $userid,
+                ':source_tree_id' => $this->tree_id,
+                ':source_id' => $this->source_id
+            ]);
         }
 
         if (isset($_POST['source_remove2'])) {
@@ -136,8 +195,12 @@ class AdminSourceModel extends AdminBaseModel
             $this->dbh->query($sql);
 
             // *** Delete connections to source, and re-order remaining source connections ***
-            $connect_sql = "SELECT * FROM humo_connections WHERE connect_tree_id='" . $this->tree_id . "' AND connect_source_id='" . safe_text_db($_POST['source_gedcomnr']) . "'";
-            $connect_qry = $this->dbh->query($connect_sql);
+            $connect_sql = "SELECT * FROM humo_connections WHERE connect_tree_id = :tree_id AND connect_source_id = :source_gedcomnr";
+            $connect_qry = $this->dbh->prepare($connect_sql);
+            $connect_qry->execute([
+                ':tree_id' => $this->tree_id,
+                ':source_gedcomnr' => $_POST['source_gedcomnr']
+            ]);
             while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                 // *** Delete source connections ***
                 $sql = "DELETE FROM humo_connections WHERE connect_id='" . $connectDb->connect_id . "'";

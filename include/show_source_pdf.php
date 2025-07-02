@@ -19,7 +19,7 @@ function source_display_pdf($sourcenum)
     global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language, $humo_option;
     global $bot_visit; // *** Don't remove. Is needed for source.php ***
 
-    $language_date = new LanguageDate();
+    $languageDate = new LanguageDate();
 
     // *** Check user authority ***
     if ($user['group_sources'] != 'j') {
@@ -50,7 +50,7 @@ function source_display_pdf($sourcenum)
         $pdf->SetFont('DejaVu', 'B', 10);
         $pdf->Write(6, __('Date') . ": ");
         $pdf->SetFont('DejaVu', '', 10);
-        $pdf->Write(6, $language_date->language_date(strtolower($sourceDb->source_date)) . "\n");
+        $pdf->Write(6, $languageDate->language_date(strtolower($sourceDb->source_date)) . "\n");
     }
     if ($sourceDb->source_publ) {
         $source_publ = $sourceDb->source_publ;

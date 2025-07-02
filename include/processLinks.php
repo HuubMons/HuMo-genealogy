@@ -4,11 +4,11 @@
  * Added in in august 2023.
  * 
  * Example to get a link:
- * $link = $link_cls->get_link($uri_path, 'tree_index', $tree_id);
+ * $link = $processLinks->get_link($uri_path, 'tree_index', $tree_id);
  *
  * For family page, add $vars.
  *  $vars['pers_family'] = $pers_family;
- *  $link = $link_cls->get_link('../', 'family', $tree_id, true, $vars);
+ *  $link = $processLinks->get_link('../', 'family', $tree_id, true, $vars);
  *  $link .= "main_person=" . $person->pers_gedcomnumber;
  */
 
@@ -58,7 +58,6 @@ class ProcessLinks
 
     public function get_link($change_path, $page, $tree_id = NULL, $add_seperator = false, $vars = ''): string
     {
-        //TODO move to constructor.
         global $humo_option;
 
         $path = $this->path;

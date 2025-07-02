@@ -115,6 +115,8 @@ class Editor_cls
 
     public function date_process($process_name, $multiple_rows = '')
     {
+        $safeTextDb = new SafeTextDb();
+
         // *** Save "before", "about", "after" texts before a date ***
         $process_name_prefix = $process_name . '_prefix';
 
@@ -170,7 +172,7 @@ class Editor_cls
         }
 
         $process_date = strtoupper($process_date);
-        return safe_text_db($process_date);
+        return $safeTextDb->safe_text_db($process_date);
     }
 
     public function valid_date($date)
@@ -265,12 +267,14 @@ class Editor_cls
 
     public function text_process($text, $long_text = false)
     {
+        $safeTextDb = new SafeTextDb();
+
         //$text=htmlentities($text,ENT_QUOTES,'UTF-8');
         if ($long_text == true) {
             //$text = str_replace("\r\n", "<br>\n", $text);
             $text = str_replace("\r\n", "\n", $text);
         }
-        return safe_text_db($text);
+        return $safeTextDb->safe_text_db($text);
     }
 
     // *** Show texts without <br> and process Aldfaer and other @xx@ texts ***
@@ -296,7 +300,7 @@ class Editor_cls
 
     public function show_selected_person($person)
     {
-        $language_date = new LanguageDate;
+        $languageDate = new LanguageDate;
 
         $text = __('N.N.');
         if ($person) {
@@ -312,22 +316,22 @@ class Editor_cls
             $text = '[' . $person->pers_gedcomnumber . '] ' . $prefix1 . $person->pers_lastname . ', ' . $person->pers_firstname . $prefix2 . ' ';
 
             if ($person->pers_birth_date) {
-                $text .= __('*') . ' ' . $language_date->language_date($person->pers_birth_date);
+                $text .= __('*') . ' ' . $languageDate->language_date($person->pers_birth_date);
             }
             if (!$person->pers_birth_date && $person->pers_bapt_date) {
-                $text .= __('~') . ' ' . $language_date->language_date($person->pers_bapt_date);
+                $text .= __('~') . ' ' . $languageDate->language_date($person->pers_bapt_date);
             }
             if ($person->pers_death_date) {
                 if ($text) {
                     $text .= ' ';
                 }
-                $text .= __('&#134;') . ' ' . $language_date->language_date($person->pers_death_date);
+                $text .= __('&#134;') . ' ' . $languageDate->language_date($person->pers_death_date);
             }
             if (!$person->pers_death_date and $person->pers_buried_date) {
                 if ($text) {
                     $text .= ' ';
                 }
-                $text .= __('[]') . ' ' . $language_date->language_date($person->pers_buried_date);
+                $text .= __('[]') . ' ' . $languageDate->language_date($person->pers_buried_date);
             }
         }
         return ($text);

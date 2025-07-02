@@ -28,6 +28,8 @@ class AdminSettingsModel extends AdminBaseModel
 
     public function save_settings($settings):void
     {
+        $safeTextDb = new SafeTextDb();
+
         if (isset($_POST['save_option'])) {
             // *** Update settings ***
             $this->db_functions->update_settings('default_skin', $_POST["default_skin"]);
@@ -116,13 +118,16 @@ class AdminSettingsModel extends AdminBaseModel
             }
 
             if (strpos($this->humo_option['default_timeline'], $settings['time_lang'] . "!") === false) {
-                // no entry for this language yet - append it
-                $this->dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'" . safe_text_db($_POST["default_timeline"]) . "') WHERE setting_variable='default_timeline'");
+                // no entry for this language yet - append it using a prepared statement
+                $sql = "UPDATE humo_settings SET setting_value=CONCAT(setting_value, :timeline) WHERE setting_variable='default_timeline'";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':timeline', $_POST["default_timeline"], PDO::PARAM_STR);
+                $stmt->execute();
             } else {
                 $time_arr = explode("@", substr($this->humo_option['default_timeline'], 0, -1));
                 foreach ($time_arr as $key => $value) {
                     if (strpos($value, $settings['time_lang'] . "!") !== false) {
-                        $time_arr[$key] = substr(safe_text_db($_POST["default_timeline"]), 0, -1);
+                        $time_arr[$key] = substr($safeTextDb->safe_text_db($_POST["default_timeline"]), 0, -1);
                     }
                 }
                 $time_str = implode("@", $time_arr) . "@";
@@ -226,11 +231,11 @@ class AdminSettingsModel extends AdminBaseModel
             }
             $this->db_functions->update_settings('admin_barm', $setting_value);
 
-            if (isset($_POST["death_char"]) && safe_text_db($_POST["death_char"]) == "y" && $this->humo_option['death_char'] == "n") {
+            if (isset($_POST["death_char"]) && $_POST["death_char"] == "y" && $this->humo_option['death_char'] == "n") {
                 $this->humo_option['death_char'] = 'y';
                 include(__DIR__ . "/../../languages/change_all.php");  // change cross to infinity
                 $this->db_functions->update_settings('death_char', 'y');
-            } elseif ((!isset($_POST["death_char"]) || safe_text_db($_POST["death_char"]) == "n") && $this->humo_option['death_char'] == "y") {
+            } elseif ((!isset($_POST["death_char"]) || $_POST["death_char"] == "n") && $this->humo_option['death_char'] == "y") {
                 $this->humo_option['death_char'] = 'n';
                 include(__DIR__ . "/../../languages/change_all.php");  // change infinity to cross
                 $this->db_functions->update_settings('death_char', 'n');

@@ -11,11 +11,12 @@ if ($user['group_sources'] != 'j') {
 
 global $data; // Prevent VSCode error messages.
 
-$person_link = new PersonLink;
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
-$date_place = new DatePlace;
-$language_date = new LanguageDate;
+$personLink = new PersonLink;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$processText = new ProcessText();
+$datePlace = new DatePlace();
+$languageDate = new LanguageDate;
 ?>
 
 <h1><?= __('Source'); ?></h1>
@@ -40,7 +41,7 @@ if (!isset($data["sourceDb"]->source_id)) {
             <?php
             }
             if ($data["sourceDb"]->source_date) {
-                echo '<b>' . __('Date') . ":</b> " . $language_date->language_date(strtolower($data["sourceDb"]->source_date)) . "<br>";
+                echo '<b>' . __('Date') . ":</b> " . $languageDate->language_date(strtolower($data["sourceDb"]->source_date)) . "<br>";
             }
             if ($data["sourceDb"]->source_publ) {
                 // TODO use a general function to create clickable links.
@@ -84,7 +85,7 @@ if (!isset($data["sourceDb"]->source_id)) {
     // TODO move to model
     $source_text = '';
     if ($data["sourceDb"]->source_text) {
-        $source_text = process_text($data["sourceDb"]->source_text);
+        $source_text = $processText->process_text($data["sourceDb"]->source_text);
     }
     // *** Pictures by source ***
     $source_media = '';
@@ -168,15 +169,15 @@ if (!isset($data["sourceDb"]->source_id)) {
                         // *** Person source ***
                         if (isset($event_Db->event_connect_kind) && $event_Db->event_connect_kind == 'person' && $event_Db->event_connect_id) {
                             $personDb = $db_functions->get_person($event_Db->event_connect_id);
-                            $privacy = $person_privacy->get_privacy($personDb);
-                            $name = $person_name->get_person_name($personDb, $privacy);
+                            $privacy = $personPrivacy->get_privacy($personDb);
+                            $name = $personName->get_person_name($personDb, $privacy);
 
                             echo __('Source for:');
 
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_link->get_person_link($personDb);
-                            $privacy = $person_privacy->get_privacy($personDb);
-                            $name = $person_name->get_person_name($personDb, $privacy);
+                            $url = $personLink->get_person_link($personDb);
+                            $privacy = $personPrivacy->get_privacy($personDb);
+                            $name = $personName->get_person_name($personDb, $privacy);
                             echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
 
                             if ($event_Db->event_event) {
@@ -193,10 +194,10 @@ if (!isset($data["sourceDb"]->source_id)) {
                         $addressDb = $address_sql->fetch(PDO::FETCH_OBJ);
                         // Show person that has connected address.
                         $personDb = $db_functions->get_person($addressDb->connect_connect_id);
-                        $privacy = $person_privacy->get_privacy($personDb);
-                        $name = $person_name->get_person_name($personDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($personDb);
+                        $name = $personName->get_person_name($personDb, $privacy);
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $person_link->get_person_link($personDb);
+                        $url = $personLink->get_person_link($personDb);
 
                         echo __('Source by address (person):');
                         echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
@@ -204,9 +205,9 @@ if (!isset($data["sourceDb"]->source_id)) {
                         $personDb = $db_functions->get_person($connectDb->connect_connect_id);
 
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $person_link->get_person_link($personDb);
-                        $privacy = $person_privacy->get_privacy($personDb);
-                        $name = $person_name->get_person_name($personDb, $privacy);
+                        $url = $personLink->get_person_link($personDb);
+                        $privacy = $personPrivacy->get_privacy($personDb);
+                        $name = $personName->get_person_name($personDb, $privacy);
                         echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                     }
                 }
@@ -249,19 +250,19 @@ if (!isset($data["sourceDb"]->source_id)) {
                             if ($familyDb->fam_man) {
                                 $personDb = $db_functions->get_person($familyDb->fam_man);
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $url = $person_link->get_person_link($personDb);
+                                $url = $personLink->get_person_link($personDb);
 
-                                $privacy = $person_privacy->get_privacy($personDb);
-                                $name = $person_name->get_person_name($personDb, $privacy);
+                                $privacy = $personPrivacy->get_privacy($personDb);
+                                $name = $personName->get_person_name($personDb, $privacy);
                                 echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                             }
 
                             if ($familyDb->fam_woman) {
                                 $personDb = $db_functions->get_person($familyDb->fam_woman);
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $url = $person_link->get_person_link($personDb);
-                                $privacy = $person_privacy->get_privacy($personDb);
-                                $name = $person_name->get_person_name($personDb, $privacy);
+                                $url = $personLink->get_person_link($personDb);
+                                $privacy = $personPrivacy->get_privacy($personDb);
+                                $name = $personName->get_person_name($personDb, $privacy);
                                 echo ' &amp; <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                             }
 
@@ -284,18 +285,18 @@ if (!isset($data["sourceDb"]->source_id)) {
                         if ($familyDb->fam_man) {
                             $personDb = $db_functions->get_person($familyDb->fam_man);
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_link->get_person_link($personDb);
-                            $privacy = $person_privacy->get_privacy($personDb);
-                            $name = $person_name->get_person_name($personDb, $privacy);
+                            $url = $personLink->get_person_link($personDb);
+                            $privacy = $personPrivacy->get_privacy($personDb);
+                            $name = $personName->get_person_name($personDb, $privacy);
                             echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                         }
 
                         if ($familyDb->fam_woman) {
                             $personDb = $db_functions->get_person($familyDb->fam_woman);
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_link->get_person_link($personDb);
-                            $privacy = $person_privacy->get_privacy($personDb);
-                            $name = $person_name->get_person_name($personDb, $privacy);
+                            $url = $personLink->get_person_link($personDb);
+                            $privacy = $personPrivacy->get_privacy($personDb);
+                            $name = $personName->get_person_name($personDb, $privacy);
                             echo ' &amp; <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                         }
                     } else {
@@ -304,18 +305,18 @@ if (!isset($data["sourceDb"]->source_id)) {
                         if ($familyDb->fam_man) {
                             $personDb = $db_functions->get_person($familyDb->fam_man);
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_link->get_person_link($personDb);
-                            $privacy = $person_privacy->get_privacy($personDb);
-                            $name = $person_name->get_person_name($personDb, $privacy);
+                            $url = $personLink->get_person_link($personDb);
+                            $privacy = $personPrivacy->get_privacy($personDb);
+                            $name = $personName->get_person_name($personDb, $privacy);
                             echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                         }
 
                         if ($familyDb->fam_woman) {
                             $personDb = $db_functions->get_person($familyDb->fam_woman);
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_link->get_person_link($personDb);
-                            $privacy = $person_privacy->get_privacy($personDb);
-                            $name = $person_name->get_person_name($personDb, $privacy);
+                            $url = $personLink->get_person_link($personDb);
+                            $privacy = $personPrivacy->get_privacy($personDb);
+                            $name = $personName->get_person_name($personDb, $privacy);
                             echo ' &amp; <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                         }
                     }
@@ -347,7 +348,7 @@ if (!isset($data["sourceDb"]->source_id)) {
 
                 // *** Extra source connect information by every source ***
                 if ($connectDb->connect_date || $connectDb->connect_place) {
-                    echo ' ' . $date_place->date_place($connectDb->connect_date, $connectDb->connect_place);
+                    echo ' ' . $datePlace->date_place($connectDb->connect_date, $connectDb->connect_place);
                 }
                 // *** Source role ***
                 if ($connectDb->connect_role) {

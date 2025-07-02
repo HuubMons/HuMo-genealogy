@@ -44,16 +44,16 @@ for ($i = 0; $i < $maxperson; $i++) {
 function fillarray($nr, $pers_gedcomnumber): void
 {
     global $db_functions, $maxperson, $data, $indexnr;
-    $person_privacy = new PersonPrivacy;
-    $person_name = new PersonName;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
 
     if ($nr >= $maxperson) {
         return;
     }
     if ($pers_gedcomnumber) {
         $personmnDb = $db_functions->get_person($pers_gedcomnumber);
-        $man_privacy = $person_privacy->get_privacy($personmnDb);
-        $name = $person_name->get_person_name($personmnDb, $man_privacy);
+        $man_privacy = $personPrivacy->get_privacy($personmnDb);
+        $name = $personName->get_person_name($personmnDb, $man_privacy);
         //$data["fanchart_item"][$nr]['standard_name']=$name["standard_name"];
         $data["fanchart_item"][$nr]['standard_name'] = html_entity_decode($name["standard_name"]);
 
@@ -183,9 +183,9 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 {
     global $dbh, $tree_id, $db_functions;
 
-    $person_privacy = new PersonPrivacy;
-    $person_name = new PersonName;
-    $language_date = new LanguageDate;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $languageDate = new LanguageDate;
 
     // check for GD 2.x library
     /*
@@ -365,10 +365,10 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else {  // full dates
                         if ($birthyr) {
-                            $text2 .= __('b.') . $language_date->language_date($birthyr) . "\n";
+                            $text2 .= __('b.') . $languageDate->language_date($birthyr) . "\n";
                         }
                         if ($deathyr) {
-                            $text2 .= __('d.') . $language_date->language_date($deathyr);
+                            $text2 .= __('d.') . $languageDate->language_date($deathyr);
                         }
                     }
                 }
@@ -460,14 +460,14 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                 $imagemap .= "$tx, $ty";
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $person_linkDb = new stdClass();
-                $person_linkDb->pers_tree_id = $tree_id;
-                $person_linkDb->pers_famc = $data["fanchart_item"][$sosa]['pers_famc'];
-                $person_linkDb->pers_fams = $data["fanchart_item"][$sosa]['pers_fams'];
-                $person_linkDb->pers_gedcomnumber = $data["fanchart_item"][$sosa]['pers_gedcomnumber'];
+                $personLinkDb = new stdClass();
+                $personLinkDb->pers_tree_id = $tree_id;
+                $personLinkDb->pers_famc = $data["fanchart_item"][$sosa]['pers_famc'];
+                $personLinkDb->pers_fams = $data["fanchart_item"][$sosa]['pers_fams'];
+                $personLinkDb->pers_gedcomnumber = $data["fanchart_item"][$sosa]['pers_gedcomnumber'];
 
-                $person_link = new PersonLink();
-                $url = $person_link->get_person_link($person_linkDb);
+                $personLink = new PersonLink();
+                $url = $personLink->get_person_link($personLinkDb);
 
                 $imagemap .= "\" href=\"" . $url . "\"";
 
@@ -489,8 +489,8 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                     $spouseDb = $spouse_result->fetch();
 
                     $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
-                    $privacy = $person_privacy->get_privacy($spouse2Db);
-                    $spname = $person_name->get_person_name($spouse2Db, $privacy);
+                    $privacy = $personPrivacy->get_privacy($spouse2Db);
+                    $spname = $personName->get_person_name($spouse2Db, $privacy);
                     $spouse_lan = $data["fanchart_item"][1]['pers_sexe'] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
                     if ($spname != "") {
                         $spousename = "\n(" . __($spouse_lan) . ": " . $spname["standard_name"] . ")";
@@ -578,7 +578,7 @@ if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone c
 }
 
 $vars['id'] = $data['main_person'];
-$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
+$path_tmp = $processLinks->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
 ?>
 
 <!-- Menu -->

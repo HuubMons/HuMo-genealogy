@@ -41,10 +41,12 @@ class RegisterModel extends BaseModel
         if (isset($_POST['send_mail']) && $register["register_allowed"] == true) {
             $register["show_form"] = false;
 
-            $usersql = 'SELECT * FROM humo_users WHERE user_name="' . safe_text_db($_POST["register_name"]) . '"';
+            $usersql = 'SELECT * FROM humo_users WHERE user_name = :user_name';
+            $stmt = $this->dbh->prepare($usersql);
+            $stmt->execute([':user_name' => $_POST["register_name"]]);
             $user = $this->dbh->query($usersql);
             $userDb = $user->fetch(PDO::FETCH_OBJ);
-            if (isset($userDb->user_id) || strtolower(safe_text_db($_POST["register_name"])) === "admin") {
+            if (isset($userDb->user_id) || strtolower($_POST["register_name"]) === "admin") {
                 $register["error"] = __('ERROR: username already exists');
             }
 
@@ -59,14 +61,18 @@ class RegisterModel extends BaseModel
             if (!$register["error"]) {
                 $user_register_date = date("Y-m-d H:i");
                 $hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
-                $sql = "INSERT INTO humo_users SET
-                    user_name='" . safe_text_db($_POST["register_name"]) . "',
-                    user_remark='" . safe_text_db($_POST["register_text"]) . "',
-                    user_register_date='" . safe_text_db($user_register_date) . "',
-                    user_mail='" . safe_text_db($_POST["register_mail"]) . "',
-                    user_password_salted='" . $hashToStoreInDb . "',
-                    user_group_id='" . $this->humo_option["visitor_registration_group"] . "';";
-                $this->dbh->query($sql);
+                $sql = "INSERT INTO humo_users 
+                    (user_name, user_remark, user_register_date, user_mail, user_password_salted, user_group_id)
+                    VALUES (:user_name, :user_remark, :user_register_date, :user_mail, :user_password_salted, :user_group_id)";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->execute([
+                    ':user_name' => $_POST["register_name"],
+                    ':user_remark' => $_POST["register_text"],
+                    ':user_register_date' => $user_register_date,
+                    ':user_mail' => $_POST["register_mail"],
+                    ':user_password_salted' => $hashToStoreInDb,
+                    ':user_group_id' => $this->humo_option["visitor_registration_group"]
+                ]);
 
                 // *** Mail new registered user to the administrator ***
                 $register_address = '';

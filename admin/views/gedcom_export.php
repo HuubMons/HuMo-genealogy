@@ -67,8 +67,8 @@ if (isset($_POST['submit_button'])) {
 <?php
 // *** Start GEDCOM export ***
 if (isset($tree_id) and isset($_POST['submit_button'])) {
-    $gedcom_export = new GedcomExport($dbh, $db_functions, $humo_option, $tree_id);
-    $gedcom_export->exportGedcom($export);
+    $gedcomExport = new GedcomExport($dbh, $db_functions, $humo_option, $tree_id);
+    $gedcomExport->exportGedcom($export);
 ?>
     <?= __('GEDCOM file is generated'); ?><br>
 
@@ -100,7 +100,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <select <?= $export["part_tree"] == 'part' ? ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ' : ''; ?> size="1" name="tree_id" class="form-select form-select-sm">
                     <?php
                     while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-                        $treetext = show_tree_text($treeDb->tree_id, $selected_language);
+                        $treetext = $showTreeText->show_tree_text($treeDb->tree_id, $selected_language);
                     ?>
                         <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $treetext['name']; ?></option>
                     <?php } ?>
@@ -122,7 +122,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             $search_quicksearch = '';
             $search_id = '';
             if (isset($_POST["search_quicksearch"])) {
-                $search_quicksearch = safe_text_db($_POST['search_quicksearch']);
+                $search_quicksearch = $safeTextDb->safe_text_db($_POST['search_quicksearch']);
                 $_SESSION['admin_search_quicksearch'] = $search_quicksearch;
                 $_SESSION['admin_search_id'] = '';
                 $search_id = '';
@@ -133,7 +133,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
             if (isset($_POST["search_id"]) and (!isset($_POST["search_quicksearch"]) or $_POST["search_quicksearch"] == '')) {
                 // if both name and ID given go by name
-                $search_id = safe_text_db($_POST['search_id']);
+                $search_id = $safeTextDb->safe_text_db($_POST['search_id']);
                 $_SESSION['admin_search_id'] = $search_id;
                 $_SESSION['admin_search_quicksearch'] = '';
                 $search_quicksearch = '';

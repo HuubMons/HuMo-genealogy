@@ -1668,10 +1668,6 @@ class GedcomExport
                     $this->buffer = '';
                     natsort($this->noteids);
                     foreach ($this->noteids as $note_text) {
-                        //$text_query = "SELECT * FROM humo_texts WHERE text_tree_id='" . $this->tree_id . "' AND text_gedcomnr='" . substr($note_text, 1, -1) . "'";
-                        //$text_sql = $this->dbh->query($text_query);
-                        //while ($textDb = $text_sql->fetch(PDO::FETCH_OBJ)) {
-
                         $stmt = $this->dbh->prepare("SELECT * FROM humo_texts WHERE text_tree_id=:text_tree_id AND text_gedcomnr=:text_gedcomnr");
                         $stmt->execute([
                             ':text_tree_id' => $this->tree_id,

@@ -1,6 +1,6 @@
 <!-- Start of editor table -->
 <?php
-$language_date = new LanguageDate;
+$languageDate = new LanguageDate;
 ?>
 
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
@@ -356,8 +356,16 @@ $language_date = new LanguageDate;
 
                         // *** Add person to admin favourite list ***
                         $fav_qry = "SELECT * FROM humo_settings
-                        WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_value='" . $pers_gedcomnumber . "'";
-                        $fav_result = $dbh->query($fav_qry);
+                            WHERE setting_variable = :setting_variable
+                            AND setting_tree_id = :setting_tree_id
+                            AND setting_value = :setting_value";
+                        $fav_stmt = $dbh->prepare($fav_qry);
+                        $fav_stmt->execute([
+                            ':setting_variable' => 'admin_favourite',
+                            ':setting_tree_id' => $tree_id,
+                            ':setting_value' => $pers_gedcomnumber
+                        ]);
+                        $fav_result = $fav_stmt;
                         $rows = $fav_result->rowCount();
                         if ($rows > 0) {
                             echo '<a href="index.php?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="../images/favorite_blue.png" style="border: 0px"></a>';
@@ -580,7 +588,7 @@ $language_date = new LanguageDate;
                     $pers_cal_date = 'dd mmm yyyy';
                 } ?>
                 <span style="color:#6D7B8D;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= $language_date->language_date($pers_cal_date); ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= $languageDate->language_date($pers_cal_date); ?>
                 </span>
 
                 <?php
@@ -1774,7 +1782,7 @@ $language_date = new LanguageDate;
                 <tr class="row62" style="display:none;">
                     <td></td>
                     <td colspan="2">
-                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $language_date->show_datetime($noteDb->note_new_datetime); ?>)<br>
+                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>)<br>
                         <b><?= $noteDb->note_names; ?></b><br>
                         <textarea readonly rows="1" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
                     </td>
@@ -1788,7 +1796,7 @@ $language_date = new LanguageDate;
                 <tr class="table_header_large">
                     <td><?= __('Added by'); ?></td>
                     <td colspan="2">
-                        <?= $language_date->show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
+                        <?= $languageDate->show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
                     </td>
                 </tr>
             <?php
@@ -1800,7 +1808,7 @@ $language_date = new LanguageDate;
                 <tr class="table_header_large">
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2">
-                        <?= $language_date->show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
+                        <?= $languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
                     </td>
                 </tr>
         <?php

@@ -33,11 +33,16 @@
 </tr>
 
 <?php
-$connect_qry = $dbh->query("SELECT * FROM humo_connections
-    WHERE connect_tree_id='" . $tree_id . "'
-    AND connect_sub_kind='" . $connect_sub_kind . "'
-    AND connect_connect_id='" . safe_text_db($connect_connect_id) . "'
+$connect_qry = $dbh->prepare("SELECT * FROM humo_connections
+    WHERE connect_tree_id = :tree_id
+    AND connect_sub_kind = :connect_sub_kind
+    AND connect_connect_id = :connect_connect_id
     ORDER BY connect_order");
+$connect_qry->execute([
+    ':tree_id' => $tree_id,
+    ':connect_sub_kind' => $connect_sub_kind,
+    ':connect_connect_id' => $connect_connect_id
+]);
 $count = $connect_qry->rowCount();
 $address_nr = 0;
 
@@ -177,10 +182,13 @@ if ($count > 0) {
                                         if ($connect_kind == 'person') {
                                             global $pers_gedcomnumber;
                                             if ($addressDb->connect_order == $count) {
-                                                $sql = "UPDATE humo_persons SET
-                                                    pers_place_index='" . safe_text_db($address3Db->address_place) . "'
-                                                    WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($pers_gedcomnumber) . "'";
-                                                $dbh->query($sql);
+                                                $sql = "UPDATE humo_persons SET pers_place_index = :place WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber";
+                                                $stmt = $dbh->prepare($sql);
+                                                $stmt->execute([
+                                                    ':place' => $address3Db->address_place,
+                                                    ':tree_id' => $tree_id,
+                                                    ':gedcomnumber' => $pers_gedcomnumber
+                                                ]);
                                             }
                                         }
                                         ?>

@@ -10,14 +10,21 @@
 
 class PersonName
 {
-    private $db_functions, $pers_gedcomnumber, $show_name_texts;
+    private $db_functions, $pers_gedcomnumber, $show_name_texts, $processText;
+
+    public function __construct()
+    {
+        $this->processText = new ProcessText();
+    }
 
     public function get_person_name($personDb, bool $privacy, $show_name_texts = false)
     {
         global $db_functions, $user, $screen_mode, $selection, $humo_option;
 
         $this->db_functions = $db_functions;
-        $this->pers_gedcomnumber = $personDb->pers_gedcomnumber;
+        if (isset($personDb->pers_gedcomnumber)) {
+            $this->pers_gedcomnumber = $personDb->pers_gedcomnumber;
+        }
         $this->show_name_texts = $show_name_texts;
 
         if (isset($personDb->pers_gedcomnumber) && $personDb->pers_gedcomnumber) {
@@ -96,7 +103,7 @@ class PersonName
                             if ($pers_firstname) {
                                 $pers_firstname .= ' ';
                             }
-                            $pers_firstname .= process_text($rufnameDb->event_text);
+                            $pers_firstname .= $this->processText->process_text($rufnameDb->event_text);
                         }
                     }
                 }
@@ -532,7 +539,7 @@ class PersonName
                 if ($nobility) {
                     $nobility .= ' ';
                 }
-                $nobility .= process_text($nameDb->event_text);
+                $nobility .= $this->processText->process_text($nameDb->event_text);
             }
         }
         unset($name_qry);
@@ -554,7 +561,7 @@ class PersonName
                 if ($lordship) {
                     $lordship .= ' ';
                 }
-                $lordship .= process_text($nameDb->event_text);
+                $lordship .= $this->processText->process_text($nameDb->event_text);
             }
         }
         unset($name_qry);
@@ -576,7 +583,7 @@ class PersonName
                 if ($title_before) {
                     $title_before .= ' ';
                 }
-                $title_before .= process_text($nameDb->event_text);
+                $title_before .= $this->processText->process_text($nameDb->event_text);
             }
         }
         unset($name_qry);
@@ -598,7 +605,7 @@ class PersonName
                 if ($title_after) {
                     $title_after .= ' ';
                 }
-                $title_after .= process_text($nameDb->event_text);
+                $title_after .= $this->processText->process_text($nameDb->event_text);
             }
         }
         unset($name_qry);
@@ -640,7 +647,7 @@ class PersonName
                     if ($title['before']) {
                         $title['before'] .= ' ';
                     }
-                    $title['before'] .= process_text($nameDb->event_text);
+                    $title['before'] .= $this->processText->process_text($nameDb->event_text);
                 }
             } elseif (in_array($nameDb->event_event, $titles_between)) {
                 if ($title['between']) {
@@ -652,7 +659,7 @@ class PersonName
                     if ($title['between']) {
                         $title['between'] .= ' ';
                     }
-                    $title['between'] .= process_text($nameDb->event_text);
+                    $title['between'] .= $this->processText->process_text($nameDb->event_text);
                 }
             } else {
                 if ($title['after']) {
@@ -664,7 +671,7 @@ class PersonName
                     if ($title['after']) {
                         $title['after'] .= ' ';
                     }
-                    $title['after'] .= process_text($nameDb->event_text);
+                    $title['after'] .= $this->processText->process_text($nameDb->event_text);
                 }
             }
         }

@@ -43,11 +43,6 @@ class AdminCmsPagesModel extends AdminBaseModel
                 $page_status = '1';
             }
 
-            //$page_menu_id = '0';
-            //if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
-            //    $page_menu_id = $_POST['page_menu_id'];
-            //}
-            //$page_menu_id = '0';
             if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
                 $this->page_menu_id = $_POST['page_menu_id'];
             }
@@ -55,45 +50,56 @@ class AdminCmsPagesModel extends AdminBaseModel
             // *** Generate new order numer, needed for new page or moved page ***
             $page_order = '1';
             $ordersql = $this->dbh->query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1");
-            //if ($ordersql) {
             $orderDb = $ordersql->fetch(PDO::FETCH_OBJ);
             if (isset($orderDb->page_order)) {
                 $page_order = $orderDb->page_order + 1;
             }
 
             if (isset($_POST['add_page'])) {
-                $sql = "INSERT INTO humo_cms_pages SET page_order='" . $page_order . "', ";
+                $sql = "INSERT INTO humo_cms_pages (page_order, page_status, page_menu_id, page_title, page_text)
+                    VALUES (:page_order, :page_status, :page_menu_id, :page_title, :page_text)";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->execute([
+                    ':page_order' => $page_order,
+                    ':page_status' => $page_status,
+                    ':page_menu_id' => $this->page_menu_id,
+                    ':page_title' => $_POST['page_title'],
+                    ':page_text' => $_POST['page_text']
+                ]);
             } else {
-                $sql = "UPDATE humo_cms_pages SET ";
-
-                // *** If menu/ category is changed, use new page_order. Ordering for old category is restored later in script ***
-                //$page_menu_id = '0';
-                //if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
-                //    $page_menu_id = $_POST['page_menu_id'];
-                //}
-
                 // TODO check code. Double?
                 if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
                     $this->page_menu_id = $_POST['page_menu_id'];
                 }
 
+                $sql = "UPDATE humo_cms_pages SET ";
+                $params = [];
+
                 if ($this->page_menu_id != $_POST['page_menu_id_old']) {
                     // *** Page is moved to another category, use new page_order ***
-                    $sql .= "page_order='" . $page_order . "',";
+                    $sql .= "page_order = :page_order, ";
+                    $params[':page_order'] = $page_order;
                 }
+
+                $sql .= "page_status = :page_status,
+                    page_menu_id = :page_menu_id,
+                    page_title = :page_title,
+                    page_text = :page_text ";
+
+                $params[':page_status'] = $page_status;
+                $params[':page_menu_id'] = $this->page_menu_id;
+                $params[':page_title'] = $_POST['page_title'];
+                $params[':page_text'] = $_POST['page_text'];
+
+                if (isset($_POST['change_page']) && is_numeric($_POST['page_id'])) {
+                    $sql .= "WHERE page_id = :page_id";
+                    $params[':page_id'] = $_POST['page_id'];
+                    $this->select_page = $_POST['page_id']; // *** Show changed page ***
+                }
+
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->execute($params);
             }
-
-            $sql .= "page_status='" . $page_status . "',
-                page_menu_id='" . $this->page_menu_id . "',
-                page_title='" . safe_text_db($_POST['page_title']) . "',
-                page_text='" . safe_text_db($_POST['page_text']) . "'";
-
-            if (isset($_POST['change_page']) && is_numeric($_POST['page_id'])) {
-                $sql .= "WHERE page_id='" . $_POST['page_id'] . "'";
-                $this->select_page = $_POST['page_id']; // *** Show changed page ***
-            }
-
-            $this->dbh->query($sql);
 
             if (isset($_POST['add_page'])) {
                 $qry = $this->dbh->query("SELECT * FROM humo_cms_pages ORDER BY page_id DESC LIMIT 0,1");
@@ -141,22 +147,33 @@ class AdminCmsPagesModel extends AdminBaseModel
         if (isset($_GET['page_up']) && is_numeric($_GET['page_up']) && is_numeric($_GET['select_page'])) {
             $sql = "UPDATE humo_cms_pages as table1, humo_cms_pages as table2
                 SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
-                WHERE table1.page_id='" . $_GET['page_up'] . "' AND table2.page_id='" . $_GET['select_page'] . "'";
-            $this->dbh->query($sql);
+                WHERE table1.page_id=:page_up AND table2.page_id=:select_page";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':page_up' => $_GET['page_up'],
+                ':select_page' => $_GET['select_page']
+            ]);
         }
+
         // *** Page up ***
         if (isset($_GET['page_down']) && is_numeric($_GET['page_down']) && is_numeric($_GET['menu_id'])) {
             $sql = "UPDATE humo_cms_pages as table1, humo_cms_pages as table2
                 SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
-                WHERE table1.page_order='" . $_GET['page_down'] . "' AND table1.page_menu_id='" . $_GET['menu_id'] . "'
-                AND table2.page_order='" . $_GET['page_down'] + 1 . "'  AND table2.page_menu_id='" . $_GET['menu_id'] . "'";
-            $this->dbh->query($sql);
+                WHERE table1.page_order=:page_down AND table1.page_menu_id=:menu_id
+                AND table2.page_order=:page_down_next AND table2.page_menu_id=:menu_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':page_down' => $_GET['page_down'],
+                ':page_down_next' => $_GET['page_down'] + 1,
+                ':menu_id' => $_GET['menu_id']
+            ]);
         }
 
         // *** Remove page ***
         if (isset($_POST['page_remove2']) && is_numeric($_POST['page_id'])) {
-            $sql = "DELETE FROM humo_cms_pages WHERE page_id='" . $_POST['page_id'] . "'";
-            $this->dbh->query($sql);
+            $sql = "DELETE FROM humo_cms_pages WHERE page_id = :page_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([':page_id' => $_POST['page_id']]);
         }
 
         // *** Save or add menu ***
@@ -168,13 +185,21 @@ class AdminCmsPagesModel extends AdminBaseModel
                 $menu_order = $datasql->rowCount() + 1;
             }
 
-            $sql = "INSERT INTO humo_cms_menu SET menu_order='" . $menu_order . "', menu_name='" . safe_text_db($_POST['menu_name']) . "'";
-            $this->dbh->query($sql);
+            $sql = "INSERT INTO humo_cms_menu (menu_order, menu_name) VALUES (:menu_order, :menu_name)";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':menu_order' => $menu_order,
+                ':menu_name' => $_POST['menu_name']
+            ]);
         }
 
         if (isset($_POST['change_menu']) && is_numeric($_POST['menu_id'])) {
-            $sql = "UPDATE humo_cms_menu SET menu_name='" . safe_text_db($_POST['menu_name']) . "' WHERE menu_id='" . $_POST['menu_id'] . "'";
-            $this->dbh->query($sql);
+            $sql = "UPDATE humo_cms_menu SET menu_name = :menu_name WHERE menu_id = :menu_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':menu_name' => $_POST['menu_name'],
+                ':menu_id' => $_POST['menu_id']
+            ]);
         }
 
         if (isset($_GET['menu_up']) && is_numeric($_GET['menu_up'])) {

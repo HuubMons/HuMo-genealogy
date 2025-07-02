@@ -19,8 +19,10 @@ class Witness
     public function witness($gedcomnr, $event_kind, $event_connect_kind = 'person'): array
     {
         global $db_functions;
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
+
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $processText = new ProcessText();
 
         $counter = 0;
         $text = '';
@@ -73,12 +75,12 @@ class Witness
                     // *** Connected witness ***
                     $witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id2);
 
-                    $privacy = $person_privacy->get_privacy($witness_nameDb);
-                    $name = $person_name->get_person_name($witness_nameDb, $privacy);
+                    $privacy = $personPrivacy->get_privacy($witness_nameDb);
+                    $name = $personName->get_person_name($witness_nameDb, $privacy);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $person_link = new PersonLink();
-                    $url = $person_link->get_person_link($witness_nameDb);
+                    $personLink = new PersonLink();
+                    $url = $personLink->get_person_link($witness_nameDb);
 
                     $text .= '<a href="' . $url . '">' . rtrim($name["standard_name"]) . '</a>';
                 } else {
@@ -87,32 +89,32 @@ class Witness
                 }
 
                 /* OLD CODE. There is no need to add a seperate date/ place/ text or source to witnesses.
-            // *** Birth declaration witness: no date/ place/ text/ source in use ***
-            if ($event_connect_kind != 'birth_declaration' && $event_connect_kind != 'death_declaration') {
-                if ($witnessDb->event_date || $witnessDb->event_place) {
-                    $text .= ' ' . $date_place->date_place($witnessDb->event_date, $witnessDb->event_place);
-                }
+                // *** Birth declaration witness: no date/ place/ text/ source in use ***
+                if ($event_connect_kind != 'birth_declaration' && $event_connect_kind != 'death_declaration') {
+                    if ($witnessDb->event_date || $witnessDb->event_place) {
+                        $text .= ' ' . $datePlace->date_place($witnessDb->event_date, $witnessDb->event_place);
+                    }
 
-                if ($witnessDb->event_text) {
-                    $text .= ' ' . process_text($witnessDb->event_text);
+                    if ($witnessDb->event_text) {
+                        $text .= ' ' . $processText->process_text($witnessDb->event_text);
+                    }
                 }
-            }
-            $text_array['text'] = $text;
+                $text_array['text'] = $text;
 
-            // *** Show sources by witnesses ***
-            if ($event_connect_kind == 'person') {
-                $source_array = show_sources2($event_connect_kind, "pers_event_source", $witnessDb->event_id);
-            } else {
-                $source_array = show_sources2($event_connect_kind, "fam_event_source", $witnessDb->event_id);
-            }
-            if ($source_array) {
-                $text_array['source'] = $source_array['text'];
-            }
-            */
+                // *** Show sources by witnesses ***
+                if ($event_connect_kind == 'person') {
+                    $source_array = show_sources2($event_connect_kind, "pers_event_source", $witnessDb->event_id);
+                } else {
+                    $source_array = show_sources2($event_connect_kind, "fam_event_source", $witnessDb->event_id);
+                }
+                if ($source_array) {
+                    $text_array['source'] = $source_array['text'];
+                }
+                */
 
                 // *** Nov. 2024: restored text. ***
                 if ($witnessDb->event_text) {
-                    $text .= ' ' . process_text($witnessDb->event_text);
+                    $text .= ' ' . $processText->process_text($witnessDb->event_text);
                 }
             }
             if ($text) {
@@ -135,11 +137,12 @@ class Witness
      */
     public function witness_by_events($gedcomnr): string
     {
-        global $dbh, $db_functions, $tree_id, $screen_mode, $link_cls, $uri_path;
+        global $dbh, $db_functions, $tree_id, $screen_mode, $uri_path;
 
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
-        $date_place = new DatePlace;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $datePlace = new DatePlace();
+        $processLinks = new ProcessLinks($uri_path);
 
         $counter = 0;
         $text = '';
@@ -210,36 +213,36 @@ class Witness
                     $name_man = __('N.N.');
                     if (isset($fam_db->fam_man)) {
                         $witness_nameDb = $db_functions->get_person($fam_db->fam_man);
-                        $privacy = $person_privacy->get_privacy($witness_nameDb);
-                        $name_man = $person_name->get_person_name($witness_nameDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($witness_nameDb);
+                        $name_man = $personName->get_person_name($witness_nameDb, $privacy);
                     }
 
                     $name_woman = __('N.N.');
                     if (isset($fam_db->fam_woman)) {
                         $witness_nameDb = $db_functions->get_person($fam_db->fam_woman);
-                        $privacy = $person_privacy->get_privacy($witness_nameDb);
-                        $name_woman = $person_name->get_person_name($witness_nameDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($witness_nameDb);
+                        $name_woman = $personName->get_person_name($witness_nameDb, $privacy);
                     }
 
                     $vars['pers_family'] = $witnessDb->event_connect_id;
-                    $link = $link_cls->get_link($uri_path, 'family', $tree_id, false, $vars);
+                    $link = $processLinks->get_link($uri_path, 'family', $tree_id, false, $vars);
                     $text .= '<a href="' . $link . '">' . rtrim($name_man["standard_name"]) . ' &amp; ' . rtrim($name_woman["standard_name"]) . '</a>';
                 } else {
                     // *** Connected witness by a person ***
                     $witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id);
-                    $privacy = $person_privacy->get_privacy($witness_nameDb);
-                    $name = $person_name->get_person_name($witness_nameDb, $privacy);
+                    $privacy = $personPrivacy->get_privacy($witness_nameDb);
+                    $name = $personName->get_person_name($witness_nameDb, $privacy);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $person_link = new PersonLink();
-                    $url = $person_link->get_person_link($witness_nameDb);
+                    $personLink = new PersonLink();
+                    $url = $personLink->get_person_link($witness_nameDb);
 
                     $text .= '<a href="' . $url . '">' . rtrim($name["standard_name"]) . '</a>';
                 }
 
                 if ($witnessDb->event_date) {
                     // *** Use date_place function, there is no place here... ***
-                    $text .= ' ' . $date_place->date_place($witnessDb->event_date, '');
+                    $text .= ' ' . $datePlace->date_place($witnessDb->event_date, '');
                 }
 
                 //$source_array=show_sources2($event_connect_kind,"pers_event_source",$witnessDb->event_id);

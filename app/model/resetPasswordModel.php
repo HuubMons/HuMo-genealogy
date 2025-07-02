@@ -29,9 +29,7 @@ class ResetPasswordModel extends BaseModel
     {
         $check_input_msg = '';
         if (isset($_POST['user_mail'])) {
-            // TODO maybe not needed anymore.
-            $email = safe_text_db($_POST['user_mail']);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($_POST['user_mail'], FILTER_VALIDATE_EMAIL)) {
                 $check_input_msg = __('Your email address is not correct') . '<br>';
             }
 
@@ -42,7 +40,7 @@ class ResetPasswordModel extends BaseModel
             }
 
             $countmail = $this->dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail=:email");
-            $countmail->bindValue(':email', $email, PDO::PARAM_STR);
+            $countmail->bindValue(':email', $_POST['user_mail'], PDO::PARAM_STR);
             $countmail->execute();
             $row = $countmail->fetch(PDO::FETCH_OBJ);
             $nr_mail = $countmail->rowCount();
@@ -104,8 +102,8 @@ class ResetPasswordModel extends BaseModel
     {
         $message_password = '';
         if (isset($_POST['password']) && $_POST['password'] != '') {
-            $password = safe_text_db($_POST['password']);
-            $password2 = safe_text_db($_POST['password2']);
+            $password = $_POST['password'];
+            $password2 = $_POST['password2'];
             $tm = time() - 86400;
 
             $sql = $this->dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval

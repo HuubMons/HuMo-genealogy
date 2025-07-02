@@ -303,10 +303,10 @@ if (isset($_POST['mark_all'])) {
             /*
             // using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
             // >>>>> New PersonName class not tested yet. And: don't use "new PersonName" in this loop.
-            $person_name = new PersonName;
-            $person_privacy = new PersonPrivacy;
-            $privacy = $person_privacy->get_privacy($personDb);
-            $name=$person_name->get_person_name($personDb, $privacy); 
+            $personName = new PersonName();
+            $personPrivacy = new PersonPrivacy();
+            $privacy = $personPrivacy->get_privacy($personDb);
+            $name=$personName->get_person_name($personDb, $privacy); 
             */
             $name = $personDb['pers_lastname'] . ", " . $personDb['pers_firstname'] . ' ' . str_replace("_", " ", $personDb['pers_prefix']);
 

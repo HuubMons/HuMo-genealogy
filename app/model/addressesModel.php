@@ -2,6 +2,14 @@
 class AddressesModel extends BaseModel
 {
     private $count_addresses, $all_addresses, $item, $selectsort, $sort_desc, $adr_place, $adr_address;
+    private $safeTextShow;
+
+    public function __construct($config)
+    {
+        parent::__construct($config);
+
+        $this->safeTextShow = new SafeTextShow();
+    }
 
     public function getAddressAuthorised(): string
     {
@@ -51,6 +59,8 @@ class AddressesModel extends BaseModel
 
     public function listAddresses()
     {
+        $safeTextDb = new SafeTextDb();
+
         // *** Order data ***
         $desc_asc = " ASC ";
         $this->sort_desc = 0;
@@ -103,10 +113,10 @@ class AddressesModel extends BaseModel
         $where = '';
         if ($this->adr_place || $this->adr_address) {
             if ($this->adr_place != '') {
-                $where .= " AND address_place LIKE '%" . safe_text_db($this->adr_place) . "%' ";
+                $where .= " AND address_place LIKE '%" . $safeTextDb->safe_text_db($this->adr_place) . "%' ";
             }
             if ($this->adr_address != '') {
-                $where .= " AND address_address LIKE '%" . safe_text_db($this->adr_address) . "%' ";
+                $where .= " AND address_address LIKE '%" . $safeTextDb->safe_text_db($this->adr_address) . "%' ";
             }
         }
 
@@ -121,10 +131,13 @@ class AddressesModel extends BaseModel
         $this->count_addresses = $this->humo_option['show_persons'];    // *** Number of lines to show ***
 
         // *** Get addresses ***
-        $sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:tree_id AND address_shared='1'" . $where . "
-            ORDER BY " . $orderby . " LIMIT " . safe_text_db($this->item) . "," . $this->count_addresses;
+        $sql = "SELECT * FROM humo_addresses
+            WHERE address_tree_id=:tree_id AND address_shared='1'" . $where . "
+            ORDER BY " . $orderby . " LIMIT :item, :count_addresses";
         $address_qry = $this->dbh->prepare($sql);
         $address_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_INT);
+        $address_qry->bindValue(':item', (int)$this->item, PDO::PARAM_INT);
+        $address_qry->bindValue(':count_addresses', (int)$this->count_addresses, PDO::PARAM_INT);
         $address_qry->execute();
 
         return $address_qry->fetchAll(PDO::FETCH_OBJ);
@@ -153,9 +166,11 @@ class AddressesModel extends BaseModel
 
         return $link;
     }
-    public function line_pages($link_cls, $uri_path): array
+
+    public function line_pages(): array
     {
-        $path = $link_cls->get_link($uri_path, 'addresses', $this->tree_id, true);
+        $processLinks = new ProcessLinks();
+        $path = $processLinks->get_link($this->uri_path, 'addresses', $this->tree_id, true);
 
         $start = 0;
         if (isset($_GET["start"]) && is_numeric($_GET["start"])) {
@@ -218,7 +233,7 @@ class AddressesModel extends BaseModel
                 $place_sort_reverse = '0';
             }
         }
-        return 'adr_place=' . safe_text_show($this->adr_place) . '&adr_address=' . safe_text_show($this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
+        return 'adr_place=' . $this->safeTextShow->safe_text_show($this->adr_place) . '&adr_address=' . $this->safeTextShow->safe_text_show($this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
     }
 
     public function getPlaceImage(): string
@@ -239,7 +254,7 @@ class AddressesModel extends BaseModel
                 $address_sort_reverse = '0';
             }
         }
-        return 'adr_place=' . safe_text_show($this->adr_place) . '&adr_address=' . safe_text_show($this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
+        return 'adr_place=' . $this->safeTextShow->safe_text_show($this->adr_place) . '&adr_address=' . $this->safeTextShow->safe_text_show($this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
     }
 
     public function getAddressImage(): string

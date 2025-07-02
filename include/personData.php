@@ -17,11 +17,11 @@ class PersonData
      * $id = family id for link by woman for multiple marrriages
      */
 
-    private $date_place;
+    private $datePlace;
 
     public function __construct()
     {
-        $this->date_place = new DatePlace;
+        $this->datePlace = new DatePlace();
     }
 
     public function person_data($personDb, $privacy, $person_kind, $id)
@@ -30,10 +30,13 @@ class PersonData
         global $db_functions, $user, $humo_option, $swap_parent1_parent2;
         global $screen_mode, $dirmark1, $temp, $templ_person, $data;
 
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
-        $person_link = new PersonLink;
-        $witness = new Witness;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $personLink = new PersonLink();
+        $witness = new Witness();
+        $processText = new ProcessText();
+        $languagePersonName = new LanguagePersonName();
+        $languageEventName = new LanguageEventName();
 
         // *** $personDb is empty by N.N. person ***
         if ($personDb) {
@@ -94,7 +97,7 @@ class PersonData
                             }
                         }
                         // *** Translate names ***
-                        $text .= language_name($nameDb->event_gedcom);
+                        $text .= $languagePersonName->language_name($nameDb->event_gedcom);
                         // *** _RUFN is shown by name ***
                         if ($nameDb->event_gedcom == '_RUFN') {
                             $eventnr--;
@@ -121,7 +124,7 @@ class PersonData
                         $process_text .= $nameDb->event_event;
 
                         if ($nameDb->event_date || $nameDb->event_place) {
-                            $templ_person["bk_date" . $eventnr] = ' (' . $this->date_place->date_place($nameDb->event_date, $nameDb->event_place) . ')';
+                            $templ_person["bk_date" . $eventnr] = ' (' . $this->datePlace->date_place($nameDb->event_date, $nameDb->event_place) . ')';
                             if ($templ_person["bk_date" . $eventnr] != '') {
                                 $temp = "bk_date" . $eventnr;
                             }
@@ -131,7 +134,7 @@ class PersonData
                         if ($nameDb->event_text) {
                             $templ_person["bk_text" . $eventnr] = ' ' . $nameDb->event_text;
                             $temp = "bk_text" . $eventnr;
-                            $process_text .= process_text($templ_person["bk_text" . $eventnr]);
+                            $process_text .= $processText->process_text($templ_person["bk_text" . $eventnr]);
                         }
 
                         $source_array = show_sources2("person", "pers_event_source", $nameDb->event_id);
@@ -188,7 +191,7 @@ class PersonData
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_birth_date_hebnight;
                     }
-                    $templ_person["born_dateplacetime"] = $this->date_place->date_place($personDb->pers_birth_date, $personDb->pers_birth_place, $nightfall);
+                    $templ_person["born_dateplacetime"] = $this->datePlace->date_place($personDb->pers_birth_date, $personDb->pers_birth_place, $nightfall);
                     if ($templ_person["born_dateplacetime"] != '') {
                         $temp = "born_dateplacetime";
                     }
@@ -207,7 +210,7 @@ class PersonData
                 }
 
                 if ($user["group_texts_pers"] == 'j') {
-                    $work_text = process_text($personDb->pers_birth_text);
+                    $work_text = $processText->process_text($personDb->pers_birth_text);
                     if ($work_text) {
                         //if($temp) { $templ_person[$temp].=", "; }
                         //$templ_person["born_text"]=" ".strip_tags($work_text);
@@ -274,7 +277,7 @@ class PersonData
                     $birth_decl_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'birth_declaration');
                     foreach ($birth_decl_qry as $birth_decl_qryDb) {
                         // *** Should be only 1 event ***
-                        $templ_person["birth_declaration"] = $this->date_place->date_place($birth_decl_qryDb->event_date, $birth_decl_qryDb->event_place);
+                        $templ_person["birth_declaration"] = $this->datePlace->date_place($birth_decl_qryDb->event_date, $birth_decl_qryDb->event_place);
                         if ($birth_decl_qryDb->event_text) {
                             $templ_person["birth_declaration"] .= ' ' . $birth_decl_qryDb->event_text;
                         }
@@ -338,14 +341,14 @@ class PersonData
                 $temp_previous = $temp;
 
                 if ($personDb->pers_bapt_date || $personDb->pers_bapt_place) {
-                    $templ_person["bapt_dateplacetime"] = $this->date_place->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
+                    $templ_person["bapt_dateplacetime"] = $this->datePlace->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
                     if ($templ_person["bapt_dateplacetime"] != '') {
                         $temp = "bapt_dateplacetime";
                     }
                     $text = $templ_person["bapt_dateplacetime"];
                 }
                 if ($user["group_texts_pers"] == 'j') {
-                    $work_text = process_text($personDb->pers_bapt_text);
+                    $work_text = $processText->process_text($personDb->pers_bapt_text);
                     if ($work_text) {
                         //if($temp) { $templ_person[$temp].=", "; }
                         //$templ_person["bapt_text"]=' '.strip_tags($work_text);
@@ -451,7 +454,7 @@ class PersonData
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_death_date_hebnight;
                     }
-                    $templ_person["dead_dateplacetime"] = $this->date_place->date_place($personDb->pers_death_date, $personDb->pers_death_place, $nightfall);
+                    $templ_person["dead_dateplacetime"] = $this->datePlace->date_place($personDb->pers_death_date, $personDb->pers_death_place, $nightfall);
                     if ($templ_person["dead_dateplacetime"] != '') {
                         $temp = "dead_dateplacetime";
                     }
@@ -465,7 +468,7 @@ class PersonData
                 }
 
                 if ($user["group_texts_pers"] == 'j') {
-                    $work_text = process_text($personDb->pers_death_text);
+                    $work_text = $processText->process_text($personDb->pers_death_text);
                     if ($work_text) {
                         $templ_person["dead_text"] = ' ' . $work_text;
                         $temp = "dead_text";
@@ -593,7 +596,7 @@ class PersonData
                     $death_decl_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'death_declaration');
                     foreach ($death_decl_qry as $death_decl_qryDb) {
                         // *** Should be only 1 event ***
-                        $templ_person["death_declaration"] = $this->date_place->date_place($death_decl_qryDb->event_date, $death_decl_qryDb->event_place);
+                        $templ_person["death_declaration"] = $this->datePlace->date_place($death_decl_qryDb->event_date, $death_decl_qryDb->event_place);
                         if ($death_decl_qryDb->event_text) {
                             $templ_person["death_declaration"] .= ' ' . $death_decl_qryDb->event_text;
                         }
@@ -661,14 +664,14 @@ class PersonData
                     if ($humo_option['admin_hebnight'] == "y") {
                         $nightfall = $personDb->pers_buried_date_hebnight;
                     }
-                    $templ_person["buri_dateplacetime"] = $this->date_place->date_place($personDb->pers_buried_date, $personDb->pers_buried_place, $nightfall);
+                    $templ_person["buri_dateplacetime"] = $this->datePlace->date_place($personDb->pers_buried_date, $personDb->pers_buried_place, $nightfall);
                     if ($templ_person["buri_dateplacetime"] != '') {
                         $temp = "buri_dateplacetime";
                     }
                     $text = $templ_person["buri_dateplacetime"];
                 }
                 if ($user["group_texts_pers"] == 'j') {
-                    $work_text = process_text($personDb->pers_buried_text);
+                    $work_text = $processText->process_text($personDb->pers_buried_text);
                     if ($work_text) {
                         //if($temp) { $templ_person[$temp].=", "; }
                         //$templ_person["buri_text"]=' '.strip_tags($work_text);
@@ -761,7 +764,7 @@ class PersonData
                 foreach ($name_qry as $nameDb) {
                     $process_text .= ', ' . __('ash dispersion') . ' ';
                     if ($nameDb->event_date) {
-                        $process_text .= $this->date_place->date_place($nameDb->event_date, '') . ' ';
+                        $process_text .= $this->datePlace->date_place($nameDb->event_date, '') . ' ';
                     }
                     $process_text .= $nameDb->event_event . ' ';
                     //SOURCE and TEXT.
@@ -817,13 +820,13 @@ class PersonData
 
                         // *** Profession date and place ***
                         if ($eventDb->event_date || $eventDb->event_place) {
-                            $templ_person["prof_date" . $eventnr] = ' (' . $this->date_place->date_place($eventDb->event_date, $eventDb->event_place) . ')';
+                            $templ_person["prof_date" . $eventnr] = ' (' . $this->datePlace->date_place($eventDb->event_date, $eventDb->event_place) . ')';
                             $temp = "prof_date" . $eventnr;
                             $process_text .= $templ_person["prof_date" . $eventnr];
                         }
 
                         if ($eventDb->event_text) {
-                            $work_text = process_text($eventDb->event_text);
+                            $work_text = $processText->process_text($eventDb->event_text);
                             if ($work_text) {
                                 if ($temp) {
                                     $templ_person[$temp] .= " ";
@@ -893,13 +896,13 @@ class PersonData
 
                         // *** Religion date and place ***
                         if ($eventDb->event_date || $eventDb->event_place) {
-                            $templ_person["religion_date" . $eventnr] = ' (' . $this->date_place->date_place($eventDb->event_date, $eventDb->event_place) . ')';
+                            $templ_person["religion_date" . $eventnr] = ' (' . $this->datePlace->date_place($eventDb->event_date, $eventDb->event_place) . ')';
                             $temp = "religion_date" . $eventnr;
                             $process_text .= $templ_person["religion_date" . $eventnr];
                         }
 
                         if ($eventDb->event_text) {
-                            $work_text = process_text($eventDb->event_text);
+                            $work_text = $processText->process_text($eventDb->event_text);
                             if ($work_text) {
                                 //if($temp) { $templ_person[$temp].=", "; }
                                 if ($temp) {
@@ -1013,8 +1016,8 @@ class PersonData
 
                             // *** $parent2Db is empty if it is a N.N. person ***
                             if ($parent2Db) {
-                                $privacy_parent = $person_privacy->get_privacy($parent2Db);
-                                $name = $person_name->get_person_name($parent2Db, $privacy_parent);
+                                $privacy_parent = $personPrivacy->get_privacy($parent2Db);
+                                $name = $personName->get_person_name($parent2Db, $privacy_parent);
                                 $process_text .= $name["standard_name"];
                             } else {
                                 $process_text .= __('N.N.');
@@ -1025,7 +1028,7 @@ class PersonData
                             }
 
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_link->get_person_link($personDb);
+                            $url = $personLink->get_person_link($personDb);
                             $process_text .= '<a href="' . $url . '">';
 
                             if (isset($parent2_marr_data)) {
@@ -1033,8 +1036,8 @@ class PersonData
                             }
                             // *** $parent2Db is empty by N.N. person ***
                             if ($parent2Db) {
-                                $privacy_parent = $person_privacy->get_privacy($parent2Db);
-                                $name = $person_name->get_person_name($parent2Db, $privacy_parent);
+                                $privacy_parent = $personPrivacy->get_privacy($parent2Db);
+                                $name = $personName->get_person_name($parent2Db, $privacy_parent);
                                 $process_text .= $name["standard_name"];
                             } else {
                                 $process_text .= __('N.N.');
@@ -1046,8 +1049,8 @@ class PersonData
                                 if ($temp && isset($templ_person[$temp])) {
                                     $templ_person[$temp] .= ", ";
                                 }
-                                $privacy_parent = $person_privacy->get_privacy($parent2Db);
-                                $name = $person_name->get_person_name($parent2Db, $privacy_parent);
+                                $privacy_parent = $personPrivacy->get_privacy($parent2Db);
+                                $name = $personName->get_person_name($parent2Db, $privacy_parent);
                                 $templ_person["marr_more" . $marriagenr] = $pdf_marriage["relnr_rel"] . $pdf_marriage["rel_add"] . " " . $name["standard_name"];
                                 $temp = "marr_more" . $marriagenr;
                             } else {
@@ -1085,14 +1088,14 @@ class PersonData
                     //URL/ Internet link
                     $process_text .= '<b>' . __('URL/ Internet link') . '</b> <a href="' . $urlDb->event_event . '" target="_blank">' . $urlDb->event_event . '</a>';
                     if ($urlDb->event_text) {
-                        $process_text .= ' ' . process_text($urlDb->event_text);
+                        $process_text .= ' ' . $processText->process_text($urlDb->event_text);
                     }
                     $process_text .= "<br>\n";
                 }
 
                 //******** Text by person **************
                 if ($user["group_text_pers"] == 'j') {
-                    $work_text = process_text($personDb->pers_text, 'person');
+                    $work_text = $processText->process_text($personDb->pers_text, 'person');
 
                     if ($work_text) {
                         //$process_text.='<br>'.$work_text."\n";
@@ -1139,8 +1142,8 @@ class PersonData
                                 //$event_text='';
                             }
 
-                            $process_text .= '<b>' . language_event($event_gedcom) . '</b>';
-                            $templ_person["event_ged" . $eventnr] = language_event($event_gedcom);
+                            $process_text .= '<b>' . $languageEventName->language_event($event_gedcom) . '</b>';
+                            $templ_person["event_ged" . $eventnr] = $languageEventName->language_event($event_gedcom);
                             $temp = "event_ged" . $eventnr;
 
                             if ($eventDb->event_event) {
@@ -1150,14 +1153,14 @@ class PersonData
                             }
 
                             if ($eventDb->event_date or $eventDb->event_place) {
-                                //$templ_person["event_dateplace".$eventnr]=' '.$this->date_place->date_place($eventDb->event_date, $eventDb->event_place);
-                                $templ_person["event_dateplace" . $eventnr] = ' (' . $this->date_place->date_place($eventDb->event_date, $eventDb->event_place) . ')';
+                                //$templ_person["event_dateplace".$eventnr]=' '.$this->datePlace->date_place($eventDb->event_date, $eventDb->event_place);
+                                $templ_person["event_dateplace" . $eventnr] = ' (' . $this->datePlace->date_place($eventDb->event_date, $eventDb->event_place) . ')';
                                 $temp = "event_dateplace" . $eventnr;
                                 $process_text .= $templ_person["event_dateplace" . $eventnr];
                             }
 
                             if ($eventDb->event_text) {
-                                $work_text = process_text($eventDb->event_text);
+                                $work_text = $processText->process_text($eventDb->event_text);
                                 if ($work_text) {
                                     //$process_text.=", ".$work_text;
                                     $process_text .= " " . $work_text;
@@ -1222,9 +1225,9 @@ class PersonData
     private function get_child_partner($db_functions, $personDb, $person_kind)
     {
         global $bot_visit, $dirmark1;
-        $person_link = new PersonLink;
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
+        $personLink = new PersonLink;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
 
         $child_marriage = '';
         if (!$bot_visit && $person_kind == 'child' && $personDb->pers_fams) {
@@ -1292,17 +1295,17 @@ class PersonData
 
                 if ($partner_id != '0' && $partner_id != '') {
                     $partnerDb = $db_functions->get_person($partner_id);
-                    $privacy_partner = $person_privacy->get_privacy($partnerDb);
-                    $name = $person_name->get_person_name($partnerDb, $privacy_partner);
+                    $privacy_partner = $personPrivacy->get_privacy($partnerDb);
+                    $name = $personName->get_person_name($partnerDb, $privacy_partner);
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $url = $person_link->get_person_link($partnerDb);
+                    $url = $personLink->get_person_link($partnerDb);
                 } else {
                     $name["standard_name"] = __('N.N.');
 
                     // *** Link for N.N. partner, not in database ***
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $url = $person_link->get_person_link($personDb);
+                    $url = $personLink->get_person_link($personDb);
                 }
                 $name["standard_name"] = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
 

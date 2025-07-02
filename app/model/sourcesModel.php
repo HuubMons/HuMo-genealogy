@@ -6,13 +6,15 @@ class SourcesModel extends BaseModel
     // *** Added feb 2025 ***
     public function process_variables(): void
     {
+        $safeTextDb = new SafeTextDb();
+
         // *** Search ***
         $this->source_search = '';
         if (isset($_POST['source_search'])) {
-            $this->source_search = safe_text_db($_POST['source_search']);
+            $this->source_search = $safeTextDb->safe_text_db($_POST['source_search']);
         }
         if (isset($_GET['source_search'])) {
-            $this->source_search = safe_text_db($_GET['source_search']);
+            $this->source_search = $safeTextDb->safe_text_db($_GET['source_search']);
         }
 
         $this->order_sources = 'title';
@@ -52,6 +54,8 @@ class SourcesModel extends BaseModel
 
     public function listSources()
     {
+        $safeTextDb = new SafeTextDb();
+        
         $desc_asc = " ASC ";
         $this->sort_desc = 0;
         if (isset($_GET['sort_desc'])) {
@@ -71,10 +75,10 @@ class SourcesModel extends BaseModel
                 $querie .= " AND (source_status!='restricted' OR source_status IS NULL)";
             }
 
-            //	if ($this->source_search!=''){ $querie.=" AND (source_title LIKE '%".safe_text_db($this->source_search)."%')"; }
+            //	if ($this->source_search!=''){ $querie.=" AND (source_title LIKE '%".$safeTextDb->safe_text_db($this->source_search)."%')"; }
             // *** Only search in source_text if source_title isn't used ***
             if ($this->source_search != '') {
-                $querie .= " AND (source_title LIKE '%" . safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($this->source_search) . "%') )";
+                $querie .= " AND (source_title LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%') )";
             }
 
             $querie .= " ORDER BY IF (source_title!='',source_title,source_text)" . $desc_asc; // *** Order by title if exists, else use text ***
@@ -92,7 +96,7 @@ class SourcesModel extends BaseModel
             }
 
             if ($this->source_search != '') {
-                $querie .= " AND (source_title LIKE '%" . safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($this->source_search) . "%') )";
+                $querie .= " AND (source_title LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%') )";
             }
 
             $querie .= " ORDER BY year" . $desc_asc;
@@ -105,7 +109,7 @@ class SourcesModel extends BaseModel
             }
 
             if ($this->source_search != '') {
-                $querie .= " AND (source_title LIKE '%" . safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($this->source_search) . "%') )";
+                $querie .= " AND (source_title LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%') )";
             }
 
             $querie .= " ORDER BY source_place" . $desc_asc;
@@ -117,7 +121,7 @@ class SourcesModel extends BaseModel
         // *** All sources query ***
         $this->all_sources = $this->dbh->query($querie);
 
-        $source = $this->dbh->query($querie . " LIMIT " . safe_text_db($this->item) . "," . $this->count_sources);
+        $source = $this->dbh->query($querie . " LIMIT " . $safeTextDb->safe_text_db($this->item) . "," . $this->count_sources);
         return $source->fetchAll(PDO::FETCH_OBJ);
     }
 
@@ -134,9 +138,10 @@ class SourcesModel extends BaseModel
         return $link;
     }
 
-    public function line_pages($link_cls, $uri_path): array
+    public function line_pages(): array
     {
-        $path = $link_cls->get_link($uri_path, 'sources', $this->tree_id, true);
+        $processLinks = new ProcessLinks();
+        $path = $processLinks->get_link($this->uri_path, 'sources', $this->tree_id, true);
 
         $start = 0;
         if (isset($_GET["start"]) && is_numeric($_GET["start"])) {

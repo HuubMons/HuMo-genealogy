@@ -5,8 +5,8 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $editor_cls = new Editor_cls;
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName();
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
 
 // *** Used to select adoption parents ***
 $adoption_id = '';
@@ -36,12 +36,12 @@ echo '
 
 $search_quicksearch_parent = '';
 if (isset($_POST['search_quicksearch_parent'])) {
-    $search_quicksearch_parent = safe_text_db($_POST['search_quicksearch_parent']);
+    $search_quicksearch_parent = $safeTextDb->safe_text_db($_POST['search_quicksearch_parent']);
 }
 
 $search_person_id = '';
 if (isset($_POST['search_person_id'])) {
-    $search_person_id = safe_text_db($_POST['search_person_id']);
+    $search_person_id = $safeTextDb->safe_text_db($_POST['search_person_id']);
 }
 ?>
 
@@ -100,8 +100,8 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_man);
 
-    $privacy = $person_privacy->get_privacy($persDb);
-    $name = $person_name->get_person_name($persDb, $privacy);
+    $privacy = $personPrivacy->get_privacy($persDb);
+    $name = $personName->get_person_name($persDb, $privacy);
     $parent2_text .= $name["standard_name"];
 
     $parent2_text .= ' ' . __('and') . ' ';
@@ -110,8 +110,8 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $db_functions->set_tree_id($tree_id);
     $persDb = $db_functions->get_person($parentsDb->fam_woman);
 
-    $privacy = $person_privacy->get_privacy($persDb);
-    $name = $person_name->get_person_name($persDb, $privacy);
+    $privacy = $personPrivacy->get_privacy($persDb);
+    $name = $personName->get_person_name($persDb, $privacy);
     $parent2_text .= $name["standard_name"];
 
     echo '<a href="" onClick=\'return select_item("' . str_replace("'", "&prime;", $parentsDb->fam_gedcomnumber) . '")\'>[' . $parentsDb->fam_gedcomnumber . '] ' . $parent2_text . '</a><br>';

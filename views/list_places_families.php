@@ -15,7 +15,8 @@ if (isset($_GET["start"])) {
 $nr_persons = $humo_option['show_persons'];
 $person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_persons);
 
-$person_privacy = new PersonPrivacy;
+$personPrivacy = new PersonPrivacy();
+$safeTextShow = new SafeTextShow();
 
 //TODO use COUNT
 //if ($count_qry) {
@@ -30,7 +31,7 @@ $rows = $result->fetch();
 $count_persons = $rows['found_rows'];
 //}
 
-$link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
+$link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
 ?>
 
 <!-- Search places -->
@@ -86,7 +87,7 @@ $link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
             </div>
 
             <div class="col-2">
-                <input type="text" name="place_name" value="<?= safe_text_show($data["place_name"]); ?>" size="15" class="form-control form-control-sm">
+                <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($data["place_name"]); ?>" size="15" class="form-control form-control-sm">
             </div>
 
             <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -96,7 +97,7 @@ $link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
 </form>
 
 <?php
-$uri_path_string = $link_cls->get_link($uri_path, 'list_places_families', $tree_id, true);
+$uri_path_string = $processLinks->get_link($uri_path, 'list_places_families', $tree_id, true);
 
 // *** Check for search results ***
 if ($person_result->rowCount() == 0) {
@@ -215,11 +216,11 @@ $selected_place = '';
     while ($familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
         // *** Man privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_man);
-        $man_privacy = $person_privacy->get_privacy($personDb);
+        $man_privacy = $personPrivacy->get_privacy($personDb);
 
         // *** Woman privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_woman);
-        $woman_privacy = $person_privacy->get_privacy($personDb);
+        $woman_privacy = $personPrivacy->get_privacy($personDb);
 
         $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
         $family_privacy = $marriage_cls->get_privacy();
@@ -247,15 +248,15 @@ function show_person($familyDb)
     global $db_functions, $selected_place, $list_expanded;
     global $privacy, $dirmark1, $dirmark2, $data;
 
-    $person_privacy = new PersonPrivacy;
-    $person_name = new PersonName;
-    $person_popup = new PersonPopup;
-    $date_place = new DatePlace;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $personPopup = new PersonPopup();
+    $datePlace = new DatePlace();
 
     $selected_person1 = $familyDb->fam_man ? $familyDb->fam_man : $familyDb->fam_woman;
     $personDb = $db_functions->get_person($selected_person1);
-    $privacy = $person_privacy->get_privacy($personDb);
-    $name = $person_name->get_person_name($personDb, $privacy);
+    $privacy = $personPrivacy->get_privacy($personDb);
+    $name = $personName->get_person_name($personDb, $privacy);
 
     // *** Show name ***
     $index_name = '';
@@ -317,7 +318,7 @@ function show_person($familyDb)
         <td valign="top" style="border-right:0px; white-space:nowrap;">
             <?php
             // *** Show person popup menu ***
-            echo $person_popup->person_popup_menu($personDb, $privacy);
+            echo $personPopup->person_popup_menu($personDb, $privacy);
 
             // *** Show picture man or wife ***
             if ($personDb->pers_sexe == "M") {
@@ -334,8 +335,8 @@ function show_person($familyDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $person_link = new PersonLink();
-            $start_url = $person_link->get_person_link($personDb);
+            $personLink = new PersonLink();
+            $start_url = $personLink->get_person_link($personDb);
             echo ' <a href="' . $start_url . '">' . rtrim($index_name) . '</a>';
 
             //*** Show spouse/ partner ***
@@ -364,8 +365,8 @@ function show_person($familyDb)
 
                     if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
-                        $privacy = $person_privacy->get_privacy($partnerDb);
-                        $name = $person_name->get_person_name($partnerDb, $privacy);
+                        $privacy = $personPrivacy->get_privacy($partnerDb);
+                        $name = $personName->get_person_name($partnerDb, $privacy);
                     } else {
                         $name["standard_name"] = __('N.N.');
                     }
@@ -403,10 +404,10 @@ function show_person($familyDb)
             <?php
             $info = '';
             if ($familyDb->fam_marr_church_notice_date) {
-                $info = __('o') . ' ' . $date_place->date_place($familyDb->fam_marr_church_notice_date, '');
+                $info = __('o') . ' ' . $datePlace->date_place($familyDb->fam_marr_church_notice_date, '');
             }
             if ($familyDb->fam_marr_notice_date) {
-                $info = __('&infin;') . ' ' . $date_place->date_place($familyDb->fam_marr_notice_date, '');
+                $info = __('&infin;') . ' ' . $datePlace->date_place($familyDb->fam_marr_notice_date, '');
             }
             //echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
             if ($privacy && $info) {
@@ -438,10 +439,10 @@ function show_person($familyDb)
             <?php
             $info = '';
             if ($familyDb->fam_marr_church_date) {
-                $info = __('x') . ' ' . $date_place->date_place($familyDb->fam_marr_church_date, '');
+                $info = __('x') . ' ' . $datePlace->date_place($familyDb->fam_marr_church_date, '');
             }
             if ($familyDb->fam_marr_date) {
-                $info = __('X') . ' ' . $date_place->date_place($familyDb->fam_marr_date, '');
+                $info = __('X') . ' ' . $datePlace->date_place($familyDb->fam_marr_date, '');
             }
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');

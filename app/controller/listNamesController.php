@@ -8,7 +8,7 @@ class ListNamesController
         $this->config = $config;
     }
 
-    public function list_names($last_name, $uri_path): array
+    public function list_names($last_name): array
     {
         $list_namesModel = new listNamesModel($this->config);
 
@@ -22,7 +22,7 @@ class ListNamesController
         $get_names = $list_namesModel->get_names($list_names);
         $list_names = array_merge($list_names, $get_names);
 
-        $get_pagination = $list_namesModel->get_pagination($uri_path, $list_names);
+        $get_pagination = $list_namesModel->get_pagination($list_names);
         $list_names = array_merge($list_names, $get_pagination);
 
         return $list_names;

@@ -2,7 +2,7 @@
 // *** Show media file using secured folder ***
 // this checks if this is special url query for giving the file - it gives the file if user is authorized to get it
 if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['media_dir']) && isset($_GET['media_filename'])) {
-    $person_privay = new PersonPrivacy;
+    $person_privay = new PersonPrivacy();
 
     if (isset($_GET['media_filename']) && $_GET['media_filename']) {
         $media_filename = $_GET['media_filename'];
@@ -56,7 +56,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
 
     if ($media_qryDb && $media_qryDb->event_connect_kind === 'person') {
         $personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
-        $man_privacy = $person_privacy->get_privacy($personmnDb);
+        $man_privacy = $personPrivacy->get_privacy($personmnDb);
         if ($personmnDb && !$man_privacy) {
             $file_allowed = true;
         } else {
@@ -68,10 +68,10 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
         $family_qryDb2 = $family_qry->fetch(PDO::FETCH_OBJ);
 
         $personmnDb = $db_functions->get_person($family_qryDb2->fam_man);
-        $man_privacy = $person_privacy->get_privacy($personmnDb);
+        $man_privacy = $personPrivacy->get_privacy($personmnDb);
 
         $personwmnDb = $db_functions->get_person($family_qryDb2->fam_woman);
-        $woman_privacy = $person_privacy->get_privacy($personwmnDb);
+        $woman_privacy = $personPrivacy->get_privacy($personwmnDb);
 
         // *** Only use this picture if both man and woman have disabled privacy options ***
         if ($man_privacy == '' && $woman_privacy == '') {

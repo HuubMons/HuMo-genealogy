@@ -5,11 +5,12 @@
  * Seperated from family script in july 2023 by Huub.
  */
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
-$person_name_extended = new PersonNameExtended;
-$person_data = new PersonData;
-$date_place = new DatePlace;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$personName_extended = new PersonNameExtended;
+$personData = new PersonData;
+$datePlace = new DatePlace();
+$processText = new ProcessText();
 
 $screen_mode = 'PDF';
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
@@ -54,8 +55,8 @@ $pdf = new tFPDFextend();
 
 // *** Generate title of PDF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
-$privacy = $person_privacy->get_privacy($persDb);
-$name = $person_name->get_person_name($persDb, $privacy);
+$privacy = $personPrivacy->get_privacy($persDb);
+$name = $personName->get_person_name($persDb, $privacy);
 
 if (!$data["descendant_report"] == false) {
     $title = $pdf->pdf_convert(__('Descendant report') . __(' of ') . $name["standard_name"]);
@@ -81,14 +82,14 @@ $pdf->SetFont($pdf->pdf_font, '', 12);
  */
 if (!$data["family_id"]) {
     $parent1Db = $db_functions->get_person($data["main_person"]);
-    $parent1_privacy = $person_privacy->get_privacy($parent1Db);
+    $parent1_privacy = $personPrivacy->get_privacy($parent1Db);
 
     // *** Show familysheet name: user's choice or default ***
     $pdf->Cell(0, 2, " ", 0, 1);
     $pdf->SetFont($pdf->pdf_font, 'BI', 12);
     $pdf->SetFillColor(196, 242, 107);
 
-    $treetext = show_tree_text($tree_id, $selected_language);
+    $treetext = $showTreeText ->show_tree_text($tree_id, $selected_language);
     $family_top = $treetext['family_top'];
     if ($family_top != '') {
         $pdf->Cell(0, 6, $pdf->pdf_convert($family_top), 0, 1, 'L', true);
@@ -97,7 +98,7 @@ if (!$data["family_id"]) {
     }
 
     // *** Name ***
-    $pdfdetails = $person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1");
+    $pdfdetails = $personName_extended->name_extended($parent1Db, $parent1_privacy, "parent1");
     if ($pdfdetails) {
         $pdf->write_name($templ_name, $pdf->GetX() + 5, "long");
 
@@ -107,7 +108,7 @@ if (!$data["family_id"]) {
     $indent = $pdf->GetX();
 
     $id = '';
-    $pdfdetails = $person_data->person_data($parent1Db, $parent1_privacy, "parent1", $id);
+    $pdfdetails = $personData->person_data($parent1Db, $parent1_privacy, "parent1", $id);
     if ($pdfdetails) {
         $pdf->pdfdisplay($pdfdetails, "parent");
     }
@@ -120,8 +121,8 @@ else {
     $pdf->SetFont($pdf->pdf_font, 'B', 15);
     $pdf->Ln(4);
 
-    $privacy = $person_privacy->get_privacy($persDb);
-    $name = $person_name->get_person_name($persDb, $privacy);
+    $privacy = $personPrivacy->get_privacy($persDb);
+    $name = $personName->get_person_name($persDb, $privacy);
 
     if (!$data["descendant_report"] == false) {
         $pdf->MultiCell(0, 10, __('Descendant report') . __(' of ') . str_replace("&quot;", '"', $name["standard_name"]), 0, 'C');
@@ -223,10 +224,10 @@ else {
                     $parent2 = $familyDb->fam_woman;
                 }
                 $parent1Db = $db_functions->get_person($parent1);
-                $parent1_privacy = $person_privacy->get_privacy($parent1Db);
+                $parent1_privacy = $personPrivacy->get_privacy($parent1Db);
 
                 $parent2Db = $db_functions->get_person($parent2);
-                $parent2_privacy = $person_privacy->get_privacy($parent2Db);
+                $parent2_privacy = $personPrivacy->get_privacy($parent2Db);
 
                 $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                 $family_privacy = $marriage_cls->get_privacy();
@@ -261,7 +262,7 @@ else {
                 $pdf->SetFont($pdf->pdf_font, 'BI', 12);
                 $pdf->SetFillColor(186, 244, 193);
 
-                $treetext = show_tree_text($tree_id, $selected_language);
+                $treetext = $showTreeText ->show_tree_text($tree_id, $selected_language);
                 $family_top = $treetext['family_top'];
                 if ($family_top != '') {
                     $pdf->SetLeftMargin(10);
@@ -287,7 +288,7 @@ else {
                         unset($templ_name);
 
                         // *** Name ***
-                        $pdfdetails = $person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1");
+                        $pdfdetails = $personName_extended->name_extended($parent1Db, $parent1_privacy, "parent1");
                         if ($pdfdetails) {
                             //$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
                             $pdf->write_name($templ_name, $pdf->GetX() + 5, "long");
@@ -299,7 +300,7 @@ else {
 
                         // *** Person data ***
                         $pdf->SetLeftMargin($indent);
-                        $pdfdetails = $person_data->person_data($parent1Db, $parent1_privacy,"parent1", $id);
+                        $pdfdetails = $personData->person_data($parent1Db, $parent1_privacy,"parent1", $id);
                         if ($pdfdetails) {
                             $pdf->pdfdisplay($pdfdetails, "parent1");
                         }
@@ -315,7 +316,7 @@ else {
                         unset($templ_name);
 
                         // *** PDF rendering of name ***
-                        $pdfdetails = $person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1");
+                        $pdfdetails = $personName_extended->name_extended($parent1Db, $parent1_privacy, "parent1");
                         if ($pdfdetails) {
                             //TODO check: kort
                             $pdf->write_name($templ_name, $pdf->GetX() + 5, "kort");
@@ -368,7 +369,7 @@ else {
                 unset($templ_name);
                 // PDF rendering of name + details
                 $pdf->Write(8, " "); // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
-                $pdfdetails = $person_name_extended->name_extended($parent2Db, $parent2_privacy, "parent2");
+                $pdfdetails = $personName_extended->name_extended($parent2Db, $parent2_privacy, "parent2");
                 if ($pdfdetails) {
                     //$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
                     $pdf->write_name($templ_name, $pdf->GetX() + 5, "long");
@@ -378,7 +379,7 @@ else {
                 }
                 $indent = $pdf->GetX();
 
-                $pdfdetails = $person_data->person_data($parent2Db, $parent2_privacy,"parent2", $id);
+                $pdfdetails = $personData->person_data($parent2Db, $parent2_privacy,"parent2", $id);
                 $pdf->SetLeftMargin($indent);
                 if ($pdfdetails) {
                     $pdf->pdfdisplay($pdfdetails, "parent2");
@@ -392,7 +393,7 @@ else {
 
                 if ($family_privacy) {
                     // No marriage data
-                } elseif ($user["group_texts_fam"] == 'j' && process_text($familyDb->fam_text)) {
+                } elseif ($user["group_texts_fam"] == 'j' && $processText->process_text($familyDb->fam_text)) {
                     // PDF rendering of marriage notes
                     //$pdf->SetFont($pdf->pdf_font,'I',11);
                     //$pdf->Write(6,process_text($familyDb->fam_text)."\n");
@@ -452,7 +453,7 @@ else {
 
                     foreach ($child_array as $i => $value) {
                         $childDb = $db_functions->get_person($child_array[$i]);
-                        $child_privacy = $person_privacy->get_privacy($childDb);
+                        $child_privacy = $personPrivacy->get_privacy($childDb);
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
@@ -468,7 +469,7 @@ else {
 
                         unset($templ_person);
                         unset($templ_name);
-                        $pdfdetails = $person_name_extended->name_extended($childDb, $child_privacy, "child");
+                        $pdfdetails = $personName_extended->name_extended($childDb, $child_privacy, "child");
                         if ($pdfdetails) {
                             //$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
                             $pdf->write_name($templ_name, $pdf->GetX() + 5, "child");
@@ -517,7 +518,7 @@ else {
                             unset($templ_person);
                             unset($templ_name);
 
-                            $pdf_child = $person_data->person_data($childDb, $child_privacy, "child", $id);
+                            $pdf_child = $personData->person_data($childDb, $child_privacy, "child", $id);
                             if ($pdf_child) {
                                 $child_indent = $indent + 5;
                                 $pdf->SetLeftMargin($child_indent);
@@ -568,7 +569,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
                     else $txt = ' ' . trim($sourceDb->source_text);
 
                     if ($sourceDb->source_date || $sourceDb->source_place) {
-                        $txt .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
+                        $txt .= " " . $datePlace->date_place($sourceDb->source_date, $sourceDb->source_place);
                     }
                     $pdf->Write(6, $txt . "\n");
                 }

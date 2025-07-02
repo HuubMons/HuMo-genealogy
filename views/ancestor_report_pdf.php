@@ -49,15 +49,15 @@ $pdf_marriage = array();
 $pdf = new tFPDFextend();
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
-$person_name_extended = new PersonNameExtended;
-$person_data = new PersonData;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$personName_extended = new PersonNameExtended;
+$personData = new PersonData;
 
-$privacy = $person_privacy->get_privacy($persDb);
-$name = $person_name->get_person_name($persDb, $privacy);
+$privacy = $personPrivacy->get_privacy($persDb);
+$name = $personName->get_person_name($persDb, $privacy);
 
-$date_place = new DatePlace;
+$datePlace = new DatePlace();
 
 $title = $pdf->pdf_convert(__('Ancestor report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]), 0, 'C');
 
@@ -188,14 +188,14 @@ while (isset($ancestor_array2[0])) {
 
         if ($ancestor_array[$i] != '0') {
             $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $privacy_man = $person_privacy->get_privacy($person_manDb);
+            $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
             if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
                 $familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                 // *** Use privacy filter of woman ***
                 $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-                $privacy_woman = $person_privacy->get_privacy($person_womanDb);
+                $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
                 $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
                 $family_privacy = $marriage_cls->get_privacy();
@@ -210,7 +210,7 @@ while (isset($ancestor_array2[0])) {
             // *** Name ***
             unset($templ_person);
             unset($templ_name);
-            $pdfdetails = $person_name_extended->name_extended($person_manDb, $privacy_man, "child");
+            $pdfdetails = $personName_extended->name_extended($person_manDb, $privacy_man, "child");
             if ($pdfdetails) {
                 // BUG: layout_pdf.php isn't used anymore. For some reason name is in smaller font.
 
@@ -221,7 +221,7 @@ while (isset($ancestor_array2[0])) {
             }
 
             if ($listednr == '') {
-                $pdfdetails = $person_data->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
+                $pdfdetails = $personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
                 if ($pdfdetails) {
                     $pdf->SetLeftMargin(38);
                     $pdf->pdfdisplay($pdfdetails, "ancestor");
@@ -306,7 +306,7 @@ while (isset($ancestor_array2[0])) {
 
             // *** Show N.N. person ***
             $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $privacy_man = $person_privacy->get_privacy($person_manDb);
+            $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
             unset($templ_person);
 
@@ -321,10 +321,10 @@ while (isset($ancestor_array2[0])) {
 
             $pdf->SetLeftMargin(38);
             $pdf->SetX($pdf->GetX() + 3);
-            $person_name_extended->name_extended($person_manDb, $privacy_man, "child");
+            $personName_extended->name_extended($person_manDb, $privacy_man, "child");
             $pdf->Ln(7);
 
-            $pdfdetails = $person_data->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
+            $pdfdetails = $personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
             if ($pdfdetails) {
                 $pdf->pdfdisplay($pdfdetails, "ancestor");
             } elseif ($ancestor_number[$i] > 9999) {
@@ -373,7 +373,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
                     $pdf->SetFont($pdf->pdf_font, '', 10);
                     $txt = ' ' . trim($sourceDb->source_title);
                     if ($sourceDb->source_date || $sourceDb->source_place) {
-                        $txt .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
+                        $txt .= " " . $datePlace->date_place($sourceDb->source_date, $sourceDb->source_place);
                     }
                     $pdf->Write(6, $txt . "\n");
                 }

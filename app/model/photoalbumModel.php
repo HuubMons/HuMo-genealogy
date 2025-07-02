@@ -23,17 +23,19 @@ class PhotoalbumModel extends BaseModel
 
     public function get_search_media(): string
     {
+        $safeTextDb = new SafeTextDb();
+
         // *** Photo search ***
         $search_media = '';
         if (isset($_SESSION['save_search_media'])) {
             $search_media = $_SESSION['save_search_media'];
         }
         if (isset($_POST['search_media'])) {
-            $search_media = safe_text_db($_POST['search_media']);
+            $search_media = $safeTextDb->safe_text_db($_POST['search_media']);
             $_SESSION['save_search_media'] = $search_media;
         }
         if (isset($_GET['search_media'])) {
-            $search_media = safe_text_db($_GET['search_media']);
+            $search_media = $safeTextDb->safe_text_db($_GET['search_media']);
             $_SESSION['save_search_media'] = $search_media;
         }
         return $search_media;
@@ -109,7 +111,7 @@ class PhotoalbumModel extends BaseModel
 
     public function get_media_files($chosen_tab, $search_media, $category): array
     {
-        $person_privacy = new PersonPrivacy;
+        $personPrivacy = new PersonPrivacy();
         $photoalbum['media_files'] = [];
 
         // *** Create an array of all pics with person_id's. Also check for OBJECT (Family Tree Maker GEDCOM file) ***
@@ -171,17 +173,17 @@ class PhotoalbumModel extends BaseModel
                 if ($picqryDb->event_connect_id) {
                     // *** Check privacy filter ***
                     $personDb = $this->db_functions->get_person($picqryDb->event_connect_id);
-                    $privacy = $person_privacy->get_privacy($personDb);
+                    $privacy = $personPrivacy->get_privacy($personDb);
                     if ($privacy) {
                         $process_picture = false;
                     }
-                    //$person_privacy = new PersonPrivacy;
-                    //$person_name = new PersonName;
-                    //$privacy = $person_privacy->get_privacy($personDb);
-                    //$name=$person_name->get_person_name($personDb, $privacy);
+                    //$personPrivacy = new PersonPrivacy();
+                    //$personName = new PersonName();
+                    //$privacy = $personPrivacy->get_privacy($personDb);
+                    //$name=$personName->get_person_name($personDb, $privacy);
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    //$person_link = new PersonLink();
-                    //$url = $person_link->get_person_link($personDb);
+                    //$personLink = new PersonLink();
+                    //$url = $personLink->get_person_link($personDb);
                     //$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
                     //$picture_text2.=$name["standard_name"];
                 } else {
@@ -190,7 +192,7 @@ class PhotoalbumModel extends BaseModel
                         WHERE connect_tree_id='" . $this->tree_id . "' AND connect_sub_kind='pers_object' AND connect_source_id='" . $picqryDb->event_gedcomnr . "'");
                     while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                         $personDb = $this->db_functions->get_person($connectDb->connect_connect_id);
-                        $privacy = $person_privacy->get_privacy($personDb);
+                        $privacy = $personPrivacy->get_privacy($personDb);
                         if ($privacy) {
                             $process_picture = false;
                         }
@@ -240,12 +242,14 @@ class PhotoalbumModel extends BaseModel
         return $photoalbum;
     }
 
-    public function calculate_pages($photoalbum, $uri_path, $link_cls): array
+    public function calculate_pages($photoalbum): array
     {
+        $processLinks = new ProcessLinks();
+
         // *** Calculate pages ***
         $nr_pictures = count($photoalbum['media_files']);
 
-        $albumpath = $link_cls->get_link($uri_path, 'photoalbum', $this->tree_id, true);
+        $albumpath = $processLinks->get_link($this->uri_path, 'photoalbum', $this->tree_id, true);
 
         $item = 0;
         if (isset($_GET['item'])) {

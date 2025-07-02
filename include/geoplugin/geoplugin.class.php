@@ -77,10 +77,11 @@ class geoPlugin
     function locate($ip = null)
     {
         global $_SERVER;
+        $getVisitorIP = new GetVisitorIP();
 
         if (is_null($ip)) {
             //$ip = $_SERVER['REMOTE_ADDR'];
-            $ip = visitorIP();
+            $ip = $getVisitorIP->visitorIP();
         }
 
         $host = str_replace('{IP}', $ip, $this->host);

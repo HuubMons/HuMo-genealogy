@@ -73,11 +73,11 @@ $pdfdetails = array();
 $pdf_marriage = array();
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
 
-$privacy = $person_privacy->get_privacy($persDb);
-$name = $person_name->get_person_name($persDb, $privacy);
+$privacy = $personPrivacy->get_privacy($persDb);
+$name = $personName->get_person_name($persDb, $privacy);
 
 $pdf = new tFPDFextend();
 $title = $pdf->pdf_convert(__('Outline report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]));
@@ -102,7 +102,7 @@ $pdf->SetFont($pdf->pdf_font, '', 12);
 
 
 
-$path_form = $link_cls->get_link($uri_path, 'outline_report', $tree_id);
+$path_form = $processLinks->get_link($uri_path, 'outline_report', $tree_id);
 
 $generation_number = 0;
 
@@ -111,9 +111,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
     global $db_functions, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $user;
 
-    $person_privacy = new PersonPrivacy;
-    $person_name_extended = new PersonNameExtended;
-    $language_date = new LanguageDate;
+    $personPrivacy = new PersonPrivacy();
+    $personName_extended = new PersonNameExtended;
+    $languageDate = new LanguageDate;
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -158,10 +158,10 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
         // *** Privacy filter man and woman ***
         $person_manDb = $db_functions->get_person($familyDb->fam_man);
-        $privacy_man = $person_privacy->get_privacy($person_manDb);
+        $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
         $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-        $privacy_woman = $person_privacy->get_privacy($person_womanDb);
+        $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
         $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
         // TODO check $family_privacy;
@@ -186,7 +186,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
                 if ($swap_parent1_parent2 == true) {
                     $pdf->SetFont($pdf->pdf_font, 'B', 12);
-                    $pdf->Write(8, $pdf->pdf_convert($person_name_extended->name_extended($person_womanDb, $privacy_woman, "outline")));
+                    $pdf->Write(8, $pdf->pdf_convert($personName_extended->name_extended($person_womanDb, $privacy_woman, "outline")));
                     $pdf->SetFont($pdf->pdf_font, '', 12);
 
                     if ($show_date == "1" && !$privacy_woman && !$show_details) {
@@ -194,19 +194,19 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                             $pdf->SetLeftMargin($generation_number * 10 + 4);
                             $pdf->Write(8, "\n");
                         }
-                        $pdf_text = $language_date->language_date($person_womanDb->pers_birth_date) . ' - ' . $language_date->language_date($person_womanDb->pers_death_date);
+                        $pdf_text = $languageDate->language_date($person_womanDb->pers_birth_date) . ' - ' . $languageDate->language_date($person_womanDb->pers_death_date);
                         $pdf->Write(8, ' (' . $pdf->pdf_convert($pdf_text) . ')');
                     }
                 } else {
                     $pdf->SetFont($pdf->pdf_font, 'B', 12);
-                    $pdf->Write(8, $pdf->pdf_convert($person_name_extended->name_extended($person_manDb, $privacy_man, "outline")));
+                    $pdf->Write(8, $pdf->pdf_convert($personName_extended->name_extended($person_manDb, $privacy_man, "outline")));
                     $pdf->SetFont($pdf->pdf_font, '', 12);
                     if ($show_date == "1" && !$privacy_man && !$show_details) {
                         if ($dates_behind_names == false) {
                             $pdf->SetLeftMargin($generation_number * 10 + 4);
                             $pdf->Write(8, "\n");
                         }
-                        $pdf_text = $language_date->language_date($person_manDb->pers_birth_date) . ' - ' . $language_date->language_date($person_manDb->pers_death_date);
+                        $pdf_text = $languageDate->language_date($person_manDb->pers_birth_date) . ' - ' . $languageDate->language_date($person_manDb->pers_death_date);
                         $pdf->Write(8, ' (' . $pdf->pdf_convert($pdf_text) . ')');
                     }
                 }
@@ -241,19 +241,19 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 
         if ($show_parent2 && $swap_parent1_parent2) {
             $pdf->SetFont($pdf->pdf_font, 'BI', 12);
-            $pdf->Write(8, $pdf->pdf_convert($person_name_extended->name_extended($person_manDb, $privacy_man, "outline")));
+            $pdf->Write(8, $pdf->pdf_convert($personName_extended->name_extended($person_manDb, $privacy_man, "outline")));
             $pdf->SetFont($pdf->pdf_font, '', 12);
             if ($show_date == "1" && !$privacy_man && !$show_details) {
                 if ($dates_behind_names == false) {
                     $pdf->SetLeftMargin($generation_number * 10 + 4);
                     $pdf->Write(8, "\n");
                 }
-                $pdf_text = $language_date->language_date($person_manDb->pers_birth_date) . ' - ' . $language_date->language_date($person_manDb->pers_death_date);
+                $pdf_text = $languageDate->language_date($person_manDb->pers_birth_date) . ' - ' . $languageDate->language_date($person_manDb->pers_death_date);
                 $pdf->Write(8, ' (' . $pdf->pdf_convert($pdf_text) . ')');
             }
         } elseif ($show_parent2) {
             $pdf->SetFont($pdf->pdf_font, 'BI', 12);
-            $pdf->Write(8, $pdf->pdf_convert($person_name_extended->name_extended($person_womanDb, $privacy_woman, "outline")));
+            $pdf->Write(8, $pdf->pdf_convert($personName_extended->name_extended($person_womanDb, $privacy_woman, "outline")));
             $pdf->SetFont($pdf->pdf_font, '', 12);
 
             if ($show_date == "1" && !$privacy_woman && !$show_details) {
@@ -261,7 +261,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     $pdf->SetLeftMargin($generation_number * 10 + 4);
                     $pdf->Write(8, "\n");
                 }
-                $pdf_text = $language_date->language_date($person_womanDb->pers_birth_date) . ' - ' . $language_date->language_date($person_womanDb->pers_death_date);
+                $pdf_text = $languageDate->language_date($person_womanDb->pers_birth_date) . ' - ' . $languageDate->language_date($person_womanDb->pers_death_date);
                 $pdf->Write(8, ' (' . $pdf->pdf_convert($pdf_text) . ')');
             }
         }
@@ -284,7 +284,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     continue;
                 }
 
-                $child_privacy = $person_privacy->get_privacy($childDb);
+                $child_privacy = $personPrivacy->get_privacy($childDb);
 
                 // *** Build descendant_report ***
                 if ($childDb->pers_fams) {
@@ -300,7 +300,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                         $pdf->Write(8, "\n");
                         $pdf->Write(8, $childgn . '  ');
                         $pdf->SetFont($pdf->pdf_font, 'B', 12);
-                        $pdf->Write(8, $pdf->pdf_convert($person_name_extended->name_extended($childDb, $child_privacy, "outline")));
+                        $pdf->Write(8, $pdf->pdf_convert($personName_extended->name_extended($childDb, $child_privacy, "outline")));
                         $pdf->SetFont($pdf->pdf_font, '', 12);
 
                         if ($show_date == "1" and !$child_privacy and !$show_details) {
@@ -308,7 +308,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                                 $pdf->SetLeftMargin($childgn * 10 + 4);
                                 $pdf->Write(8, "\n");
                             }
-                            $pdf_text = $language_date->language_date($childDb->pers_birth_date) . ' - ' . $language_date->language_date($childDb->pers_death_date);
+                            $pdf_text = $languageDate->language_date($childDb->pers_birth_date) . ' - ' . $languageDate->language_date($childDb->pers_death_date);
                             $pdf->Write(8, ' (' . $pdf->pdf_convert($pdf_text) . ')');
                         }
                     }

@@ -18,6 +18,7 @@ class EditorEvent
     //	return $d;
     //}
 
+    // TODO create class, also use for include/witness.php.
     // *** Show event_kind text ***
     function event_text($event_kind, $event_gedcom = '', $event_event_extra = '')
     {
@@ -118,7 +119,9 @@ class EditorEvent
         global $db_functions;
 
         $showMedia = new ShowMedia();
-        $media_path = new MediaPath();
+        $mediaPath = new MediaPath();
+        $languagePersonName = new LanguagePersonName();
+        $languageEventName = new LanguageEventName();
 
         $text = '';
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
@@ -309,26 +312,48 @@ class EditorEvent
                                 // *** Maybe this isn't used, but just in case created this insert script ***
                                 if ($pictureDb->event_connect_kind || $pictureDb->event_connect_id) {
                                     //	Don't use UPDATE but create a new EVENT!!
-                                    $sql = "INSERT INTO humo_events SET
-                                        event_tree_id='" . $pictureDb->event_tree_id . "',
-                                        event_connect_kind='" . $event_connect_kind . "',
-                                        event_connect_id='" . safe_text_db($event_connect_id) . "',
-                                        event_kind='picture',
-                                        event_event='" . $pictureDb->event_event . "',
-                                        event_gedcom='',
-                                        event_order='" . $event_order . "'";
+                                    $sql = "INSERT INTO humo_events (
+                                        event_tree_id,
+                                        event_connect_kind,
+                                        event_connect_id,
+                                        event_kind,
+                                        event_event,
+                                        event_gedcom,
+                                        event_order
+                                    ) VALUES (
+                                        :event_tree_id,
+                                        :event_connect_kind,
+                                        :event_connect_id,
+                                        'picture',
+                                        :event_event,
+                                        '',
+                                        :event_order
+                                    )";
+                                    $stmt = $this->dbh->prepare($sql);
+                                    $stmt->execute([
+                                        ':event_tree_id' => $pictureDb->event_tree_id,
+                                        ':event_connect_kind' => $event_connect_kind,
+                                        ':event_connect_id' => $event_connect_id,
+                                        ':event_event' => $pictureDb->event_event,
+                                        ':event_order' => $event_order
+                                    ]);
                                     $event_order++;
-                                    $this->dbh->query($sql);
                                 } else {
                                     // *** Convert OBJECTS to standard images ***
                                     $sql = "UPDATE humo_events SET
-                                        event_connect_kind='" . $event_connect_kind . "',
-                                        event_connect_id='" . safe_text_db($event_connect_id) . "',
-                                        event_kind='picture',
-                                        event_gedcom='',
-                                        event_order='" . $event_order . "'
-                                        WHERE event_id='" . $pictureDb->event_id . "'";
-                                    $this->dbh->query($sql);
+                                        event_connect_kind = :event_connect_kind,
+                                        event_connect_id = :event_connect_id,
+                                        event_kind = 'picture',
+                                        event_gedcom = '',
+                                        event_order = :event_order
+                                        WHERE event_id = :event_id";
+                                    $stmt = $this->dbh->prepare($sql);
+                                    $stmt->execute([
+                                        ':event_connect_kind' => $event_connect_kind,
+                                        ':event_connect_id' => $event_connect_id,
+                                        ':event_order' => $event_order,
+                                        ':event_id' => $pictureDb->event_id
+                                    ]);
                                     $event_order++;
                                     // *** Remove connection ***
                                     $sql = "DELETE FROM humo_connections WHERE connect_id='" . $connectDb->connect_id . "'";
@@ -597,7 +622,7 @@ class EditorEvent
                                                         }
                                                     }
 
-                                                    echo '<a href="../' . $media_path->give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
+                                                    echo '<a href="../' . $mediaPath->give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
                                                         $showMedia->print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                                     ?>
                                                 </div>
@@ -817,15 +842,15 @@ class EditorEvent
                                                     echo __('Nickname') . ': ';
                                                 } elseif ($data_listDb->event_gedcom == '_RUFN') {
                                                     echo __('German Rufname') . ': ';
-                                                } elseif (language_name($data_listDb->event_gedcom)) {
-                                                    echo language_name($data_listDb->event_gedcom);
+                                                } elseif ($languagePersonName->language_name($data_listDb->event_gedcom)) {
+                                                    echo $languagePersonName->language_name($data_listDb->event_gedcom);
                                                 } else {
                                                     echo $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom) . ': ';
                                                 }
 
                                                 $event_text = $data_listDb->event_event;
                                                 if (!$event_text) {
-                                                    $event_text = language_event($data_listDb->event_gedcom);
+                                                    $event_text = $languageEventName->language_event($data_listDb->event_gedcom);
                                                 }
 
                                                 if ($check_sources_text) {

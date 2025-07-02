@@ -14,16 +14,16 @@ if ($user["group_birthday_list"] != 'j') {
     exit(__('You are not authorised to see this page.'));
 }
 
-$path = $link_cls->get_link($uri_path, 'anniversary', $tree_id, true);
+$path = $processLinks->get_link($uri_path, 'anniversary', $tree_id, true);
 
 $max_age = '110';
 $last_cal_day = 0;
 $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
 
-$person_link = new PersonLink;
-$person_name = new PersonName;
-$person_privacy = new PersonPrivacy;
-$language_date = new LanguageDate;
+$personLink = new PersonLink;
+$personName = new PersonName();
+$personPrivacy = new PersonPrivacy();
+$languageDate = new LanguageDate;
 ?>
 
 <!-- *** Center page *** -->
@@ -108,18 +108,18 @@ $language_date = new LanguageDate;
                         $calendar_day = $record->birth_day;
                         $birth_day = $record->birth_day . ' ' . $data["month"];
 
-                        $privacy = $person_privacy->get_privacy($record);
-                        $name = $person_name->get_person_name($record, $privacy);
+                        $privacy = $personPrivacy->get_privacy($record);
+                        $name = $personName->get_person_name($record, $privacy);
 
                         if (!$privacy) {
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $url = $person_link->get_person_link($record);
+                            $url = $personLink->get_person_link($record);
 
                             $death_date = $record->pers_death_date;
                             $age = (date("Y") - $record->birth_year);
 
                             if ($death_date != '') {
-                                $died = $language_date->language_date($death_date);
+                                $died = $languageDate->language_date($death_date);
                             } elseif ($age > $max_age) {
                                 $died = '? ';
                             } else {
@@ -253,28 +253,28 @@ $language_date = new LanguageDate;
                         foreach ($wed as $key => $value) {
                             // get husband
                             $manDb = $db_functions->get_person($value['man']);
-                            $man_privacy = $person_privacy->get_privacy($manDb);
+                            $man_privacy = $personPrivacy->get_privacy($manDb);
                             if (!$value['man']) {
                                 $man_name = 'N.N.';
                             } else {
-                                $name = $person_name->get_person_name($manDb, $man_privacy);
+                                $name = $personName->get_person_name($manDb, $man_privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $url = $person_link->get_person_link($manDb);
+                                $url = $personLink->get_person_link($manDb);
 
                                 $man_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
                             }
 
                             // get wife
                             $womanDb = $db_functions->get_person($value['woman']);
-                            $woman_privacy = $person_privacy->get_privacy($womanDb);
+                            $woman_privacy = $personPrivacy->get_privacy($womanDb);
                             if (!$value['woman']) {
                                 $woman_name = 'N.N.';
                             } else {
-                                $name = $person_name->get_person_name($womanDb, $woman_privacy);
+                                $name = $personName->get_person_name($womanDb, $woman_privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $url = $person_link->get_person_link($womanDb);
+                                $url = $personLink->get_person_link($womanDb);
 
                                 $woman_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
                             }

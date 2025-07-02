@@ -16,7 +16,9 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
     global $temp, $templ_person, $templ_relation; // *** PDF export ***
     global $data;
 
-    $date_place = new DatePlace;
+    $datePlace = new DatePlace();
+    $processText = new ProcessText();
+    $safeTextDb = new SafeTextDb();
 
     $source_array['text'] = '';
 
@@ -45,7 +47,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                 if (!isset($source_footnotes)) {
                     $source_footnotes[] = $sourceDb->source_id;
                     $pdf_footnotes[] = $pdf->AddLink();
-                    $pdf_source[safe_text_db($connectDb->connect_source_id)] = safe_text_db($connectDb->connect_source_id);
+                    $pdf_source[$safeTextDb->safe_text_db($connectDb->connect_source_id)] = $safeTextDb->safe_text_db($connectDb->connect_source_id);
                 }
 
                 // *** Show text "Source by person/Sources by person" ***
@@ -64,7 +66,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                 // *** Check if source is allready listed in the sourcelist ***
                 if (!in_array($sourceDb->source_id, $source_footnotes)) {
                     // *** Add source in sourcelist ***
-                    $pdf_source[safe_text_db($connectDb->connect_source_id)] = safe_text_db($connectDb->connect_source_id);
+                    $pdf_source[$safeTextDb->safe_text_db($connectDb->connect_source_id)] = $safeTextDb->safe_text_db($connectDb->connect_source_id);
                     $pdf_footnotes[] = $pdf->AddLink();
                     $source_footnotes[] = $sourceDb->source_id;
 
@@ -102,7 +104,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                     // *** User group option to only show title of source ***
                     if ($user['group_sources'] != 't') {
                         if ($sourceDb->source_date or $sourceDb->source_place) {
-                            $source_array['text'] .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
+                            $source_array['text'] .= " " . $datePlace->date_place($sourceDb->source_date, $sourceDb->source_place);
                         }
                     }
 
@@ -280,7 +282,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                     if ($sourceDb->source_title) {
                         $source_array['text'] .= ' ' . trim($sourceDb->source_title);
                     } elseif ($sourceDb->source_text) {
-                        $source_array['text'] .= ' ' . process_text($sourceDb->source_text);
+                        $source_array['text'] .= ' ' . $processText->process_text($sourceDb->source_text);
                     }
 
                     // *** Added june 2023, also show page info ***
@@ -297,7 +299,7 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                         }
 
                         if ($sourceDb->source_date || $sourceDb->source_place) {
-                            $source_array['text'] .= " " . $date_place->date_place($sourceDb->source_date, $sourceDb->source_place);
+                            $source_array['text'] .= " " . $datePlace->date_place($sourceDb->source_date, $sourceDb->source_place);
                         }
                     }
 
@@ -339,7 +341,8 @@ function show_sources_footnotes(): string
     global $dbh, $db_functions, $tree_id, $source_footnotes, $language, $user;
     global $uri_path, $source_footnote_connect_id, $humo_option;
 
-    $date_place = new DatePlace;
+    $datePlace = new DatePlace();
+    $processText = new ProcessText();
 
     $text = '';
 
@@ -373,7 +376,7 @@ function show_sources_footnotes(): string
                     }
 
                     //if ($sourceDb->source_text)
-                    //	$text.=' '.process_text($sourceDb->source_text);
+                    //	$text .= ' ' . $processText->process_text($sourceDb->source_text);
                     $text .= '</a>';
                 } else {
                     if ($sourceDb->source_title) {
@@ -383,7 +386,7 @@ function show_sources_footnotes(): string
                     //else $text.=' '.$sourceDb->source_text;
 
                     if ($user['group_sources'] != 't' && $sourceDb->source_text) {
-                        $text .= ' ' . process_text($sourceDb->source_text);
+                        $text .= ' ' . $processText->process_text($sourceDb->source_text);
                     }
 
                     // *** User group option to only show title of source ***
@@ -397,7 +400,7 @@ function show_sources_footnotes(): string
                 if ($user['group_sources'] != 't') {
                     if ($connectDb->connect_date || $connectDb->connect_place) {
                         //if ($connectDb->source_title){ $text.=', '; }
-                        $text .= " " . $date_place->date_place($connectDb->connect_date, $connectDb->connect_place);
+                        $text .= " " . $datePlace->date_place($connectDb->connect_date, $connectDb->connect_place);
                     }
 
                     // *** Show extra source text ***

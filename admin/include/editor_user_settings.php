@@ -79,11 +79,11 @@ if (is_numeric($user)) {
             <?php
             $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
             while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
-                $treetext = show_tree_text($data3Db->tree_id, $selected_language);
-                $treetext_name = $treetext['name'];
+                $treetext = $showTreeText->show_tree_text($data3Db->tree_id, $selected_language);
+                $tree_text_name = $treetext['name'];
             ?>
                 <tr>
-                    <td><?= $treetext_name; ?></td>
+                    <td><?= $tree_text_name; ?></td>
 
                     <!-- Show/ hide tree for user -->
                     <td>

@@ -14,10 +14,11 @@ class PersonNameExtended
         global $sect; // *** RTF Export ***
         global $templ_name, $familyDb, $data;
 
-        $person_link = new PersonLink;
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
-        $person_popup = new PersonPopup;
+        $personLink = new PersonLink;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $personPopup = new PersonPopup();
+        $processText = new ProcessText();
 
         $start_name = '';
         $text_name = '';
@@ -34,7 +35,7 @@ class PersonNameExtended
             $db_functions->set_tree_id($personDb->pers_tree_id);
 
             // *** Show pop-up menu ***
-            $start_name .= $person_popup->person_popup_menu($personDb, $privacy);
+            $start_name .= $personPopup->person_popup_menu($personDb, $privacy);
 
             // *** Check privacy filter ***
             if ($privacy && $user['group_filter_name'] == 'n') {
@@ -94,7 +95,7 @@ class PersonNameExtended
                 }
             }
 
-            $name = $person_name->get_person_name($personDb, $privacy, $show_name_texts);
+            $name = $personName->get_person_name($personDb, $privacy, $show_name_texts);
             $standard_name = $name["standard_name"] . $dirmark2;
 
             // *** Show full gedcomnummer as [I5] (because of Heredis GEDCOM file, that shows: 5I) ***
@@ -113,7 +114,7 @@ class PersonNameExtended
                 $templ_name["name_name"] = $standard_name;
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $url = $person_link->get_person_link($personDb);
+                $url = $personLink->get_person_link($personDb);
 
                 $standard_name = '<a href="' . $url . '">' . $standard_name;
                 // *** Show name with link ***
@@ -130,7 +131,7 @@ class PersonNameExtended
             if (!$privacy) {
                 // *** Text by name ***
                 if ($user["group_texts_pers"] == 'j') {
-                    $work_text = process_text($personDb->pers_name_text);
+                    $work_text = $processText->process_text($personDb->pers_name_text);
                     if ($work_text) {
                         $templ_name["name_text"] = " " . $work_text;
                         $text_name2 .= " " . $work_text;
@@ -196,8 +197,8 @@ class PersonNameExtended
                 // *** Father ***
                 if ($parents_familyDb->fam_man) {
                     $fatherDb = $db_functions->get_person($parents_familyDb->fam_man);
-                    $privacy_father = $person_privacy->get_privacy($fatherDb);
-                    $name = $person_name->get_person_name($fatherDb, $privacy_father);
+                    $privacy_father = $personPrivacy->get_privacy($fatherDb);
+                    $name = $personName->get_person_name($fatherDb, $privacy_father);
                     $templ_name["name_parents"] .= $name["standard_name"];
 
                     // *** Seperate father/mother links ***
@@ -207,7 +208,7 @@ class PersonNameExtended
                     }
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $url = $person_link->get_person_link($fatherDb);
+                    $url = $personLink->get_person_link($fatherDb);
 
                     // *** Add link ***
                     if ($user['group_gen_protection'] == 'n') {
@@ -226,8 +227,8 @@ class PersonNameExtended
                 // *** Mother ***
                 if ($parents_familyDb->fam_woman) {
                     $motherDb = $db_functions->get_person($parents_familyDb->fam_woman);
-                    $privacy_mother = $person_privacy->get_privacy($motherDb);
-                    $name = $person_name->get_person_name($motherDb, $privacy_mother);
+                    $privacy_mother = $personPrivacy->get_privacy($motherDb);
+                    $name = $personName->get_person_name($motherDb, $privacy_mother);
                     $templ_name["name_parents"] .= $name["standard_name"];
 
                     // *** Seperate father/mother links ***
@@ -237,7 +238,7 @@ class PersonNameExtended
                     }
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $url = $person_link->get_person_link($motherDb);
+                    $url = $personLink->get_person_link($motherDb);
 
                     // *** Add link ***
                     if ($user['group_gen_protection'] == 'n') {
@@ -276,8 +277,8 @@ class PersonNameExtended
                     //*** Father ***
                     if (isset($parents_familyDb->fam_man) && $parents_familyDb->fam_man) {
                         $fatherDb = $db_functions->get_person($parents_familyDb->fam_man);
-                        $privacy_father = $person_privacy->get_privacy($fatherDb);
-                        $name = $person_name->get_person_name($fatherDb, $privacy_father);
+                        $privacy_father = $personPrivacy->get_privacy($fatherDb);
+                        $name = $personName->get_person_name($fatherDb, $privacy_father);
 
                         $templ_name["name_parents"] .= $name["standard_name"];
                         $text = $name["standard_name"];
@@ -297,8 +298,8 @@ class PersonNameExtended
                     //*** Mother ***
                     if (isset($parents_familyDb->fam_woman) && $parents_familyDb->fam_woman) {
                         $motherDb = $db_functions->get_person($parents_familyDb->fam_woman);
-                        $privacy_mother = $person_privacy->get_privacy($motherDb);
-                        $name = $person_name->get_person_name($motherDb, $privacy_mother);
+                        $privacy_mother = $personPrivacy->get_privacy($motherDb);
+                        $name = $personName->get_person_name($motherDb, $privacy_mother);
                         $templ_name["name_parents"] .= $name["standard_name"];
                         $text .= $name["standard_name"];
                     } else {
@@ -309,10 +310,10 @@ class PersonNameExtended
                     $url = '';
                     if (isset($parents_familyDb->fam_man) && $parents_familyDb->fam_man) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $person_link->get_person_link($fatherDb);
+                        $url = $personLink->get_person_link($fatherDb);
                     } elseif (isset($parents_familyDb->fam_woman) && $parents_familyDb->fam_woman) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $url = $person_link->get_person_link($motherDb);
+                        $url = $personLink->get_person_link($motherDb);
                     }
 
                     // *** Add link ***
@@ -363,12 +364,12 @@ class PersonNameExtended
                         //*** Father ***
                         if ($family_parents2Db->fam_man) {
                             $fatherDb = $db_functions->get_person($family_parents2Db->fam_man);
-                            $privacy_father = $person_privacy->get_privacy($fatherDb);
-                            $name = $person_name->get_person_name($fatherDb, $privacy_father);
+                            $privacy_father = $personPrivacy->get_privacy($fatherDb);
+                            $name = $personName->get_person_name($fatherDb, $privacy_father);
                             $templ_name["name_parents"] .= $name["standard_name"];
                             $text = $name["standard_name"];
 
-                            $url = $person_link->get_person_link($fatherDb);
+                            $url = $personLink->get_person_link($fatherDb);
                             // *** Add link ***
                             if (isset($url) && $user['group_gen_protection'] == 'n')
                                 $text = '<a href="' . $url . '">' . $text . '</a>';
@@ -382,11 +383,11 @@ class PersonNameExtended
                         //*** Mother ***
                         if ($family_parents2Db->fam_woman) {
                             $motherDb = $db_functions->get_person($family_parents2Db->fam_woman);
-                            $privacy_mother = $person_privacy->get_privacy($motherDb);
-                            $name = $person_name->get_person_name($motherDb, $privacy_mother);
+                            $privacy_mother = $personPrivacy->get_privacy($motherDb);
+                            $name = $personName->get_person_name($motherDb, $privacy_mother);
                             $templ_name["name_parents"] .= ' ' . $name["standard_name"];
 
-                            $url = $person_link->get_person_link($motherDb);
+                            $url = $personLink->get_person_link($motherDb);
                             // *** Add link ***
                             if (isset($url) && $user['group_gen_protection'] == 'n')
                                 $name["standard_name"] = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
@@ -398,14 +399,14 @@ class PersonNameExtended
                     } else {
                         // *** Aldfaer ***
                         $fatherDb = $db_functions->get_person($famc_adoptiveDb->event_event);
-                        $privacy_father = $person_privacy->get_privacy($fatherDb);
-                        $name = $person_name->get_person_name($fatherDb, $privacy_father);
+                        $privacy_father = $personPrivacy->get_privacy($fatherDb);
+                        $name = $personName->get_person_name($fatherDb, $privacy_father);
                         $templ_name["name_parents"] .= $name["standard_name"];
                         $text = $name["standard_name"];
 
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                         if (isset($fatherDb->pers_tree_id)) {
-                            $url = $person_link->get_person_link($fatherDb);
+                            $url = $personLink->get_person_link($fatherDb);
                         }
                         // *** Add link ***
                         if (isset($url) && $user['group_gen_protection'] == 'n')

@@ -86,13 +86,14 @@ $par_child_text->setIndentRight(0.5);
 // *** Generate title of RTF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
-$person_name_extended = new PersonNameExtended;
-$person_data = new PersonData;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$personName_extended = new PersonNameExtended;
+$personData = new PersonData;
+$processText = new ProcessText();
 
-$privacy = $person_privacy->get_privacy($persDb);
-$name = $person_name->get_person_name($persDb, $privacy);
+$privacy = $personPrivacy->get_privacy($persDb);
+$name = $personName->get_person_name($persDb, $privacy);
 
 if (!$data["descendant_report"] == false) {
     $title = __('Descendant report') . __(' of ') . $name["standard_name"];
@@ -129,12 +130,12 @@ if (!$data["family_id"]) {
     // starfieldchart is never called when there is no own fam so no need to mark this out
     // *** Privacy filter ***
     $parent1Db = $db_functions->get_person($data["main_person"]);
-    $parent1_privacy = $person_privacy->get_privacy($parent1Db);
+    $parent1_privacy = $personPrivacy->get_privacy($parent1Db);
 
-    $rtf_text = strip_tags($person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
+    $rtf_text = strip_tags($personName_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
     $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
     $id = '';
-    $rtf_text = strip_tags($person_data->person_data($parent1Db, $parent1_privacy, "parent1", $id), "<b><i>");
+    $rtf_text = strip_tags($personData->person_data($parent1Db, $parent1_privacy, "parent1", $id), "<b><i>");
     $sect->writeText($rtf_text, $arial12, $parSimple);
 }
 
@@ -223,10 +224,10 @@ else {
                     $parent2 = $familyDb->fam_woman;
                 }
                 $parent1Db = $db_functions->get_person($parent1);
-                $parent1_privacy = $person_privacy->get_privacy($parent1Db);
+                $parent1_privacy = $personPrivacy->get_privacy($parent1Db);
 
                 $parent2Db = $db_functions->get_person($parent2);
-                $parent2_privacy = $person_privacy->get_privacy($parent2Db);
+                $parent2_privacy = $personPrivacy->get_privacy($parent2Db);
 
                 $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                 $family_privacy = $marriage_cls->get_privacy();
@@ -244,7 +245,7 @@ else {
 
                 $sect->addEmptyParagraph($fontSmall, $parBlack);
 
-                $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+                $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $selected_language);
                 $rtf_text = $treetext['family_top'];
                 if ($rtf_text != '') {
                     $sect->writeText($rtf_text, $arial14, $parHead);
@@ -264,10 +265,10 @@ else {
                         // *** Start new line ***
                         $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
-                        $rtf_text = strip_tags($person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
+                        $rtf_text = strip_tags($personName_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
                         $sect->writeText($rtf_text, $arial12);
                         $id = '';
-                        $rtf_text = strip_tags($person_data->person_data($parent1Db, $parent1_privacy, "parent1", $id), "<b><i>");
+                        $rtf_text = strip_tags($personData->person_data($parent1Db, $parent1_privacy, "parent1", $id), "<b><i>");
                         $sect->writeText($rtf_text, $arial12, $parSimple);
 
                         // *** Show RTF media ***
@@ -285,7 +286,7 @@ else {
                         // *** Start new line ***
                         $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
-                        $rtf_text = strip_tags($person_name_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
+                        $rtf_text = strip_tags($personName_extended->name_extended($parent1Db, $parent1_privacy, "parent1"), "<b><i>");
                         //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                         $sect->writeText($rtf_text, $arial12);
                     }
@@ -331,10 +332,10 @@ else {
                 // *** Start new line ***
                 $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
-                $rtf_text = strip_tags($person_name_extended->name_extended($parent2Db, $parent2_privacy, "parent2"), "<b><i>");
+                $rtf_text = strip_tags($personName_extended->name_extended($parent2Db, $parent2_privacy, "parent2"), "<b><i>");
                 //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                 $sect->writeText($rtf_text, $arial12);
-                $rtf_text = strip_tags($person_data->person_data($parent2Db, $parent2_privacy, "parent2", $id), "<b><i>");
+                $rtf_text = strip_tags($personData->person_data($parent2Db, $parent2_privacy, "parent2", $id), "<b><i>");
                 $sect->writeText($rtf_text, $arial12, $parSimple);
 
                 // *** Show RTF media ***
@@ -350,9 +351,9 @@ else {
 
                 if ($family_privacy) {
                     // No marriage data
-                } elseif ($user["group_texts_fam"] == 'j' && process_text($familyDb->fam_text)) {
+                } elseif ($user["group_texts_fam"] == 'j' && $processText->process_text($familyDb->fam_text)) {
                     $sect->addEmptyParagraph($fontSmall, $parBlack);
-                    $rtf_text = strip_tags(process_text($familyDb->fam_text), "<b><i>");
+                    $rtf_text = strip_tags($processText->process_text($familyDb->fam_text), "<b><i>");
                     $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                     $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
                     if ($source_array) {
@@ -399,7 +400,7 @@ else {
                     $show_privacy_text = false;
                     foreach ($child_array as $i => $value) {
                         $childDb = $db_functions->get_person($child_array[$i]);
-                        $child_privacy = $person_privacy->get_privacy($childDb);
+                        $child_privacy = $personPrivacy->get_privacy($childDb);
 
                         // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
@@ -411,7 +412,7 @@ else {
                         $rtf_text = $childnr . '. ';
                         $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 
-                        $rtf_text = strip_tags($person_name_extended->name_extended($childDb, $child_privacy, "child"), '<b><i>');
+                        $rtf_text = strip_tags($personName_extended->name_extended($childDb, $child_privacy, "child"), '<b><i>');
                         $sect->writeText($rtf_text, $arial12);
 
                         // *** Build descendant_report ***
@@ -437,8 +438,8 @@ else {
                             $search_nr = array_search($child_family[0], $check_double);
                             $rtf_text = '<b><i>, ' . __('follows') . ': </i></b>' . $follows_array[$search_nr];
                             $sect->writeText($rtf_text, $arial12);
-                        } elseif ($person_data->person_data($childDb, $child_privacy, "child", $id)) {
-                            $rtf_text = strip_tags($person_data->person_data($childDb, $child_privacy, "child", $id), '<b><i>');
+                        } elseif ($personData->person_data($childDb, $child_privacy, "child", $id)) {
+                            $rtf_text = strip_tags($personData->person_data($childDb, $child_privacy, "child", $id), '<b><i>');
                             $sect->writeText($rtf_text, $arial12, $par_child_text);
                             // *** Show RTF media ***
                             if (!$child_privacy) {
@@ -472,7 +473,7 @@ if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_prese
 $rtf->save($file_name);
 
 $vars['pers_family'] = $data["family_id"];
-$link = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+$link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
 $link .= "main_person=" . $data["main_person"];
 ?>
 <br><br><a href="<?= $download_link; ?>"><?= __('Download RTF report.'); ?></a>

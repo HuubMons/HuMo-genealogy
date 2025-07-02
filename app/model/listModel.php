@@ -743,18 +743,22 @@ class ListModel extends BaseModel
     // *** Search for (part of) first or lastname ***
     private function name_qry($search_name, $search_part): string
     {
-        $text = "LIKE '%" . safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
+        $safeTextDb = new SafeTextDb();
+
+        $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
         if ($search_part == 'equals') {
-            $text = "='" . safe_text_db($search_name) . "'";
+            $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
         }
         if ($search_part == 'starts_with') {
-            $text = "LIKE '" . safe_text_db($search_name) . "%'";
+            $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
         }
         return $text;
     }
 
     public function build_query(): array
     {
+        $safeTextDb = new SafeTextDb();
+
         $query = '';
         $count_qry = '';
 
@@ -804,7 +808,7 @@ class ListModel extends BaseModel
                 $and = " AND ";
             } elseif ($selection['pers_prefix']) {
                 // *** Search results for: "van", "van " and "van_" ***
-                $pers_prefix = safe_text_db(str_replace(' ', '_', $selection['pers_prefix']));
+                $pers_prefix = $safeTextDb->safe_text_db(str_replace(' ', '_', $selection['pers_prefix']));
                 $query .= $and . "(pers_prefix='" . $pers_prefix . "' OR pers_prefix ='" . $pers_prefix . '_' . "')";
                 $and = " AND ";
             }
@@ -836,15 +840,15 @@ class ListModel extends BaseModel
             if ($selection['birth_year']) {
                 if (!$selection['birth_year_end']) {   // filled in one year: exact date
                     // *** Also search for baptise ***
-                    $query .= $and . "(pers_birth_date LIKE '%" . safe_text_db($selection['birth_year']) . "%'";
+                    $query .= $and . "(pers_birth_date LIKE '%" . $safeTextDb->safe_text_db($selection['birth_year']) . "%'";
                     $and = " AND ";
-                    $query .= " OR pers_bapt_date LIKE '%" . safe_text_db($selection['birth_year']) . "%')";
+                    $query .= " OR pers_bapt_date LIKE '%" . $safeTextDb->safe_text_db($selection['birth_year']) . "%')";
                     $and = " AND ";
                 } else {
                     // *** Also search for baptise ***
-                    $query .= $and . "(RIGHT(pers_birth_date, 4)>='" . safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_birth_date, 4)<='" . safe_text_db($selection['birth_year_end']) . "'";
+                    $query .= $and . "(RIGHT(pers_birth_date, 4)>='" . $safeTextDb->safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_birth_date, 4)<='" . $safeTextDb->safe_text_db($selection['birth_year_end']) . "'";
                     $and = " AND ";
-                    $query .= " OR RIGHT(pers_bapt_date, 4)>='" . safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_bapt_date, 4)<='" . safe_text_db($selection['birth_year_end']) . "')";
+                    $query .= " OR RIGHT(pers_bapt_date, 4)>='" . $safeTextDb->safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_bapt_date, 4)<='" . $safeTextDb->safe_text_db($selection['birth_year_end']) . "')";
                     $and = " AND ";
                 }
             }
@@ -852,15 +856,15 @@ class ListModel extends BaseModel
             if ($selection['death_year']) {
                 if (!$selection['death_year_end']) {      // filled in one year: exact date
                     // ** Also search for buried date ***
-                    $query .= $and . "(pers_death_date LIKE '%" . safe_text_db($selection['death_year']) . "%'";
+                    $query .= $and . "(pers_death_date LIKE '%" . $safeTextDb->safe_text_db($selection['death_year']) . "%'";
                     $and = " AND ";
-                    $query .= "OR pers_buried_date LIKE '%" . safe_text_db($selection['death_year']) . "%')";
+                    $query .= "OR pers_buried_date LIKE '%" . $safeTextDb->safe_text_db($selection['death_year']) . "%')";
                     $and = " AND ";
                 } else {
                     // ** Also search for buried date ***
-                    $query .= $and . "(RIGHT(pers_death_date, 4)>='" . safe_text_db($selection['death_year']) . "' AND RIGHT(pers_death_date, 4)<='" . safe_text_db($selection['death_year_end']) . "'";
+                    $query .= $and . "(RIGHT(pers_death_date, 4)>='" . $safeTextDb->safe_text_db($selection['death_year']) . "' AND RIGHT(pers_death_date, 4)<='" . $safeTextDb->safe_text_db($selection['death_year_end']) . "'";
                     $and = " AND ";
-                    $query .= " OR RIGHT(pers_buried_date, 4)>='" . safe_text_db($selection['death_year']) . "' AND RIGHT(pers_buried_date, 4)<='" . safe_text_db($selection['death_year_end']) . "')";
+                    $query .= " OR RIGHT(pers_buried_date, 4)>='" . $safeTextDb->safe_text_db($selection['death_year']) . "' AND RIGHT(pers_buried_date, 4)<='" . $safeTextDb->safe_text_db($selection['death_year_end']) . "')";
                     $and = " AND ";
                 }
             }
@@ -1085,16 +1089,16 @@ class ListModel extends BaseModel
                     LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
                     WHERE (" . $multi_tree . ")
                         AND 
-                        ( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($quicksearch) . "%'
-                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($quicksearch) . "%'
-                        OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($quicksearch) . "%'
-                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($quicksearch) . "%'
+                        ( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
+                        OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
 
-                        OR CONCAT(pers_firstname,event_event) LIKE '%" . safe_text_db($quicksearch) . "%'
+                        OR CONCAT(pers_firstname,event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
                         )
                     GROUP BY pers_id, event_event, event_kind
                 ) as humo_persons1

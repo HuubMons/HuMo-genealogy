@@ -8,8 +8,8 @@
  * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
  */
 
- $date_place = new DatePlace;
- $language_date = new LanguageDate;
+ $datePlace = new DatePlace();
+ $languageDate = new LanguageDate;
 ?>
 
 <div class="p-1 m-2 genealogy_search">
@@ -70,7 +70,7 @@
                         <b><?= show_person($familyDb->fam_man) . ' ' . __('and') . ' ' . show_person($familyDb->fam_woman); ?></b>
                         <?php
                         if ($familyDb->fam_marr_date) {
-                            echo ' X ' . $date_place->date_place($familyDb->fam_marr_date, '');
+                            echo ' X ' . $datePlace->date_place($familyDb->fam_marr_date, '');
                         }
                         ?>
                     </div>
@@ -236,10 +236,10 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
         <?php
         if (isset($_GET['fam_remove']) || isset($_POST['fam_remove'])) {
             if (isset($_GET['fam_remove'])) {
-                $fam_remove = safe_text_db($_GET['fam_remove']);
+                $fam_remove = $safeTextDb->safe_text_db($_GET['fam_remove']);
             };
             if (isset($_POST['marriage_nr'])) {
-                $fam_remove = safe_text_db($_POST['marriage_nr']);
+                $fam_remove = $safeTextDb->safe_text_db($_POST['marriage_nr']);
             };
 
             $new_nr = $db_functions->get_family($fam_remove);
@@ -295,9 +295,14 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         isset($_POST["fam_man_age"]) && $_POST["fam_man_age"] != '' && $fam_marr_date != '' && $person1->pers_birth_date == '' && $person1->pers_bapt_date == ''
                     ) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
-                        $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($man_gedcomnumber) . "'";
-                        $dbh->query($sql);
+                        $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
+                            WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :man_gedcomnumber";
+                        $stmt = $dbh->prepare($sql);
+                        $stmt->execute([
+                            ':pers_birth_date' => $pers_birth_date,
+                            ':tree_id' => $tree_id,
+                            ':man_gedcomnumber' => $man_gedcomnumber
+                        ]);
                     }
                     ?>
 
@@ -314,9 +319,14 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         isset($_POST["fam_woman_age"]) && $_POST["fam_woman_age"] != '' && $fam_marr_date != '' && $person2->pers_birth_date == '' && $person2->pers_bapt_date == ''
                     ) {
                         $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
-                        $sql = "UPDATE humo_persons SET pers_birth_date='" . safe_text_db($pers_birth_date) . "'
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . safe_text_db($woman_gedcomnumber) . "'";
-                        $dbh->query($sql);
+                        $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
+                            WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :woman_gedcomnumber";
+                        $stmt = $dbh->prepare($sql);
+                        $stmt->execute([
+                            ':pers_birth_date' => $pers_birth_date,
+                            ':tree_id' => $tree_id,
+                            ':woman_gedcomnumber' => $woman_gedcomnumber
+                        ]);
                     }
                     ?>
                     <b><?= $editor_cls->show_selected_person($person2); ?></b>
@@ -498,7 +508,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         $hideshow_text .= '<span style="background-color:#FFAA80">' . __('Marriage/ Related') . '</span>';
                     }
 
-                    $dateplace = $date_place->date_place($fam_marr_date, $fam_marr_place);
+                    $dateplace = $datePlace->date_place($fam_marr_date, $fam_marr_place);
                     if ($dateplace) {
                         if ($hideshow_text) {
                             $hideshow_text .= ', ';
@@ -1046,7 +1056,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Added by'); ?></td>
-                    <td colspan="2"><?= $language_date->show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
+                    <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
                 </tr>
             <?php
             }
@@ -1056,7 +1066,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Changed by'); ?></td>
-                    <td colspan="2"><?= $language_date->show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
+                    <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
                 </tr>
             <?php
             }

@@ -4,10 +4,12 @@ class IndexController
     public function detail($dbh, $humo_option, $user): array
     {
         $indexModel = new IndexModel();
+        $getVisitorIP = new GetVisitorIP();
+        $setTimezone = new SetTimezone();
 
         // TODO check if these variables can be used in multiple scripts. Only use in index page?
         $index['db_functions'] = new DbFunctions($dbh);
-        $index['visitor_ip'] = visitorIP();
+        $index['visitor_ip'] = $getVisitorIP->visitorIP();
 
         // *** Debug HuMo-genealogy front pages ***
         if ($humo_option["debug_front_pages"] == 'y') {
@@ -21,7 +23,7 @@ class IndexController
             exit;
         }
 
-        timezone();
+        $setTimezone->timezone();
         // *** TIMEZONE TEST ***
         //echo date("Y-m-d H:i");
 

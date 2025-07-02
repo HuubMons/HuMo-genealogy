@@ -29,9 +29,9 @@ class AddressModel extends BaseModel
     public function getAddressConnectedPersons($id): string
     {
         $text = '';
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
-        $person_link = new PersonLink();
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $personLink = new PersonLink();
 
         // *** Search address in connections table ***
         $event_qry = $this->db_functions->get_connections('person_address', $id);
@@ -39,11 +39,11 @@ class AddressModel extends BaseModel
             // *** Person address ***
             if ($eventDb->connect_connect_id) {
                 $personDb = $this->db_functions->get_person($eventDb->connect_connect_id);
-                $privacy = $person_privacy->get_privacy($personDb);
-                $name = $person_name->get_person_name($personDb, $privacy);
+                $privacy = $personPrivacy->get_privacy($personDb);
+                $name = $personName->get_person_name($personDb, $privacy);
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $url = $person_link->get_person_link($personDb);
+                $url = $personLink->get_person_link($personDb);
 
                 $text .= __('Address by person') . ': <a href="' . $url . '">' . $name["standard_name"] . '</a>';
 

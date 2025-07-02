@@ -57,7 +57,7 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
             <select size="1" name="tree_id" class="form-select form-select-sm">
                 <?php
                 foreach ($tree_result as $treeDb) {
-                    $treetext = show_tree_text($treeDb->tree_id, $selected_language);
+                    $treetext = $showTreeText->show_tree_text($treeDb->tree_id, $selected_language);
                 ?>
                     <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $treetext['name']; ?></option>
                 <?php } ?>

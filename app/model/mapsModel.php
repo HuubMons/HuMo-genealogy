@@ -196,8 +196,8 @@ class MapsModel extends BaseModel
         $maps['location_text'][] = '';
         $maps['location_text_count'][] = '';
 
-        $person_privacy = new PersonPrivacy;
-        $person_name = new PersonName;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
 
         $namesearch_string = '';
         if ($maps['family_names'] != '') {
@@ -263,8 +263,8 @@ class MapsModel extends BaseModel
                 //}
             }
 
-            $privacy = $person_privacy->get_privacy($personDb);
-            $name = $person_name->get_person_name($personDb, $privacy);
+            $privacy = $personPrivacy->get_privacy($personDb);
+            $name = $personName->get_person_name($personDb, $privacy);
 
             $key = array_search(htmlspecialchars($place), $maps['location']);
             if (isset($key) && $key > 0) {

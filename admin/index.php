@@ -48,43 +48,26 @@ session_start();
 $page = 'index';
 
 /**
- *  Dec. 2024: Added autoload.
- *  Name of class = AdminSomethingClass
- *  Name of script: adminSomethingClass.php ***
+ * Dec. 2024: Added autoload.
+ * Name of class = AdminSomethingClass
+ * Name of script: adminSomethingClass.php ***
+ *  
+ * Examples of autoload files:
+ * include/editor_cls.php
+ * include/gedcomImport.php
+ * include/updateCls.php
+ *
+ * models/groupsmodel.php
+ * 
+ * ../include/dbFunctions.php
+ * ../include/processLinks.php
+ * ../include/personData.php
+ * ../include/calculateDates.php
+ * 
+ * ../languages/languageCls.php
  */
 function admin_custom_autoload($class_name)
 {
-    // Examples of autoload files:
-    // include/editor_cls.php
-    // include/gedcomImport.php
-    // include/updateCls.php
-
-    // models/groupsmodel.php
-
-    // ../include/dbFunctions.php
-    // ../include/processLinks.php
-    // ../include/personData.php
-    // ../include/calculateDates.php
-
-    // ../languages/languageCls.php
-
-    // *** At this moment only a few classes are autoloaded. Under construction ***
-    $include = array(
-        'Ancestors',
-        'CalculateDates',
-        'DatePlace',
-        'DbFunctions',
-        'Descendants',
-        'LanguageDate',
-        'MediaPath',
-        'ProcessLinks',
-        'PersonData',
-        'PersonLink',
-        'PersonName',
-        'PersonPrivacy',
-        'ResizePicture',
-        'ShowMedia'
-    );
     $admin_include = array(
         'Editor_cls',
         'EditorEvent',
@@ -99,10 +82,10 @@ function admin_custom_autoload($class_name)
         require __DIR__ . '/controller/' . lcfirst($class_name) . '.php';
     } elseif (substr($class_name, -5) == 'Model') {
         require __DIR__ . '/models/' . lcfirst($class_name) . '.php';
-    } elseif (in_array($class_name, $include)) {
-        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
     } elseif (in_array($class_name, $admin_include)) {
         require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
+    } elseif (is_file(__DIR__ . '/../include/' . lcfirst($class_name) . '.php')) {
+        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('admin_custom_autoload');
@@ -118,22 +101,20 @@ if (isset($_GET['log_off'])) {
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
 include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
 
-include_once(__DIR__ . "/../include/safe.php"); // Variables
-
-// *** Function to show family tree texts ***
-include_once(__DIR__ . '/../include/show_tree_text.php');
+$safeTextDb = new SafeTextDb();
+$showTreeText = new ShowTreeText();
 
 if (isset($dbh)) {
     $db_functions = new DbFunctions($dbh);
 }
 
 // *** Added october 2023: generate links to frontsite ***
-$link_cls = new ProcessLinks();
+$processLinks = new ProcessLinks();
 
-$media_path = new MediaPath();
+$mediaPath = new MediaPath();
 
-include_once(__DIR__ . "/../include/get_visitor_ip.php");
-$visitor_ip = visitorIP();
+$getVisitorIP = new GetVisitorIP;
+$visitor_ip = $getVisitorIP->visitorIP();
 
 
 
@@ -161,13 +142,9 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
     }
 
     if ($check_tables) {
-        include_once(__DIR__ . "/../include/generalSettings.php");
-        $GeneralSettings = new GeneralSettings();
-        $user = $GeneralSettings->get_user_settings($dbh);
-        $humo_option = $GeneralSettings->get_humo_option($dbh);
-
-        // *** Added may 2020, needed for some user settings in admin section ***
-        include_once(__DIR__ . "/../include/generalSettings.php"); // USER variables
+        $generalSettings = new GeneralSettings();
+        $user = $generalSettings->get_user_settings($dbh);
+        $humo_option = $generalSettings->get_humo_option($dbh);
 
         // **** Temporary update scripts ***
         //
@@ -221,8 +198,8 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
 }
 
 // *** Set timezone ***
-include_once(__DIR__ . "/../include/timezone.php"); // set timezone
-timezone();
+$setTimezone = new setTimezone;
+$setTimezone->timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
 
@@ -321,25 +298,33 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
             // *** Add login in logbook ***
             $sql = "INSERT INTO humo_user_log SET
-                log_date='" . date("Y-m-d H:i") . "',
-                log_username='" . $resultDb->user_name . "',
-                log_ip_address='" . $visitor_ip . "',
-                log_user_admin='admin',
-                log_status='success'";
-            $dbh->query($sql);
+                log_date = :log_date,
+                log_username = :log_username,
+                log_ip_address = :log_ip_address,
+                log_user_admin = 'admin',
+                log_status = 'success'";
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+            $stmt->bindValue(':log_username', $resultDb->user_name, PDO::PARAM_STR);
+            $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+            $stmt->execute();
         }
     } else {
         // *** No valid user or password ***
         $fault = true;
 
-        // *** Save log! ***
+        // *** Save log ***
         $sql = "INSERT INTO humo_user_log SET
-            log_date='" . date("Y-m-d H:i") . "',
-            log_username='" . safe_text_db($_POST["username"]) . "',
-            log_ip_address='" . $visitor_ip . "',
-            log_user_admin='admin',
-            log_status='failed'";
-        $dbh->query($sql);
+            log_date = :log_date,
+            log_username = :log_username,
+            log_ip_address = :log_ip_address,
+            log_user_admin = 'admin',
+            log_status = 'failed'";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+        $stmt->bindValue(':log_username', $_POST["username"], PDO::PARAM_STR);
+        $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+        $stmt->execute();
     }
 }
 
@@ -437,7 +422,7 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 
 // *** Use your own favicon.ico in media folder ***
 if (file_exists('../media/favicon.ico')) {
-    $favicon = '<link href="../' . $media_path->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
+    $favicon = '<link href="../' . $mediaPath->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
 } else {
     $favicon = '<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">';
 }

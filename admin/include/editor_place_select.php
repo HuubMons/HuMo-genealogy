@@ -16,9 +16,20 @@ if (isset($_GET['form'])) {
     }
 
     $check_array = array(
-        "pers_birth_place", "pers_bapt_place", "pers_death_place", "pers_buried_place",
-        "fam_relation_place", "fam_marr_notice_place", "fam_marr_place", "fam_marr_church_notice_place", "fam_marr_church_place", "fam_div_place",
-        "address_place", "event_place", "birth_decl_place", "death_decl_place"
+        "pers_birth_place",
+        "pers_bapt_place",
+        "pers_death_place",
+        "pers_buried_place",
+        "fam_relation_place",
+        "fam_marr_notice_place",
+        "fam_marr_place",
+        "fam_marr_church_notice_place",
+        "fam_marr_church_place",
+        "fam_div_place",
+        "address_place",
+        "event_place",
+        "birth_decl_place",
+        "death_decl_place"
     );
     if (in_array($_GET['place_item'], $check_array)) {
         $url_place_item = $_GET['place_item'];
@@ -71,7 +82,7 @@ if (isset($url_event_id)) {
 }
 $quicksearch_place = '';
 if (isset($_POST['search_quicksearch_place'])) {
-    $quicksearch_place = safe_text_db($_POST['search_quicksearch_place']);
+    $quicksearch_place = $safeTextDb->safe_text_db($_POST['search_quicksearch_place']);
 }
 echo '<form method="POST" action="index.php?page=editor_place_select' . $url_add . '" style="display : inline;">';
 echo '<input type="text" name="search_quicksearch_place" placeholder="' . __('Name') . '" value="' . $quicksearch_place . '" size="15">';
@@ -83,26 +94,31 @@ if ($quicksearch_place) {
     $search = '%' . $quicksearch_place . '%';
 }
 
-$query = "(SELECT pers_birth_place as place_order FROM humo_persons
-    WHERE pers_tree_id='" . $tree_id . "' AND pers_birth_place LIKE '" . $search . "' GROUP BY place_order)";
+$params = [
+    ':tree_id' => $tree_id,
+    ':search' => $search
+];
+$query = "
+    (SELECT pers_birth_place as place_order FROM humo_persons
+        WHERE pers_tree_id = :tree_id AND pers_birth_place LIKE :search GROUP BY place_order)
+    UNION
+    (SELECT pers_bapt_place as place_order FROM humo_persons
+        WHERE pers_tree_id = :tree_id AND pers_bapt_place LIKE :search GROUP BY place_order)
+    UNION
+    (SELECT event_place as place_order FROM humo_events
+        WHERE event_tree_id = :tree_id AND event_place LIKE :search GROUP BY place_order)
+    UNION
+    (SELECT pers_death_place as place_order FROM humo_persons
+        WHERE pers_tree_id = :tree_id AND pers_death_place LIKE :search GROUP BY place_order)
+    UNION
+    (SELECT pers_buried_place as place_order FROM humo_persons
+        WHERE pers_tree_id = :tree_id AND pers_buried_place LIKE :search GROUP BY place_order)
+    ORDER BY place_order
+";
 
-$query .= " UNION (SELECT pers_bapt_place as place_order FROM humo_persons
-    WHERE pers_tree_id='" . $tree_id . "' AND pers_bapt_place LIKE '" . $search . "' GROUP BY place_order)";
-
-//$query.= " UNION (SELECT pers_place_index as place_order FROM humo_persons
-//	WHERE pers_tree_id='".$tree_id."' AND pers_place_index LIKE '".$search."' GROUP BY place_order)";
-
-$query .= " UNION (SELECT event_place as place_order FROM humo_events
-    WHERE event_tree_id='" . $tree_id . "' AND event_place LIKE '" . $search . "' GROUP BY place_order)";
-
-$query .= " UNION (SELECT pers_death_place as place_order FROM humo_persons
-    WHERE pers_tree_id='" . $tree_id . "' AND pers_death_place LIKE '" . $search . "' GROUP BY place_order)";
-
-$query .= " UNION (SELECT pers_buried_place as place_order FROM humo_persons
-    WHERE pers_tree_id='" . $tree_id . "' AND pers_buried_place LIKE '" . $search . "' GROUP BY place_order)";
-
-$query .= ' ORDER BY place_order';
-$result = $dbh->query($query);
+$stmt = $dbh->prepare($query);
+$stmt->execute($params);
+$result = $stmt;
 
 while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
     //echo '<a href="" onClick=\'return select_item("'.$resultDb->place_order.'")\'>'.$resultDb->place_order.'</a><br>';

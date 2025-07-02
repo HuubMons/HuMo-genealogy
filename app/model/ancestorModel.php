@@ -88,16 +88,14 @@ class AncestorModel extends FamilyModel
 
     function getAncestorHeader($name, $main_person): string
     {
-        global $uri_path, $link_cls;
+        $processLinks = new ProcessLinks();
 
         $data['header_active'] = array();
         $data['header_link'] = array();
         $data['header_text'] = array();
 
         $vars['id'] = $main_person;
-        //$link = $link_cls->get_link($uri_path, 'ancestor_report', $this->tree_id, true, $vars);
-        //$link .= 'screen_mode=ancestor_chart';
-        $link = $link_cls->get_link($uri_path, 'ancestor_report', $this->tree_id, false, $vars);
+        $link = $processLinks->get_link($this->uri_path, 'ancestor_report', $this->tree_id, false, $vars);
         //$link .= 'screen_mode=ancestor_chart';
 
         $data['header_link'][] = $link;
@@ -124,10 +122,8 @@ class AncestorModel extends FamilyModel
         $data['header_text'][] = __('Ancestor sheet');
 
         // *** Fanchart ***
-        //$path = $link_cls->get_link($uri_path, 'fanchart', $this->tree_id, true);
-        //$path .= 'id=' . $main_person;
         $vars['id'] = $main_person;
-        $path = $link_cls->get_link($uri_path, 'fanchart', $this->tree_id, false, $vars);
+        $path = $processLinks->get_link($this->uri_path, 'fanchart', $this->tree_id, false, $vars);
 
         $data['header_link'][] = $path;
         $data['header_active'][] = $name == 'Fanchart' ? 'active' : '';

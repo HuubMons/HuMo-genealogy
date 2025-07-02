@@ -13,8 +13,8 @@ if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
 ?>
 
 <h2><?= __('Family statistics (numbers since last GEDCOM update)'); ?></h2>
@@ -24,7 +24,7 @@ $person_name = new PersonName;
     <?php
     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
         $tree_date = show_tree_date($dataDb->tree_date);
-        $treetext = show_tree_text($dataDb->tree_id, $selected_language);
+        $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $selected_language);
 
         if ($dataDb->tree_id == $tree_id) {
     ?>
@@ -47,7 +47,7 @@ $family_qry = $dbh->query("SELECT fam_gedcomnumber, fam_tree_id, fam_counter, fa
     WHERE fam_tree_id='" . $tree_id . "' AND fam_counter ORDER BY fam_counter desc LIMIT 0,50");
 while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     $vars['pers_family'] = $familyDb->fam_gedcomnumber;
-    $link = $link_cls->get_link('../', 'family', $familyDb->fam_tree_id, false, $vars);
+    $link = $processLinks->get_link('../', 'family', $familyDb->fam_tree_id, false, $vars);
 ?>
 
     <?= $familyDb->fam_counter; ?> <a href="<?= $link; ?>"><?= __('Family'); ?>:</a>
@@ -58,8 +58,8 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     if (!$familyDb->fam_man) {
         echo __('N.N.');
     } else {
-        $privacy = $person_privacy->get_privacy($personDb);
-        $name = $person_name->get_person_name($personDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($personDb);
+        $name = $personName->get_person_name($personDb, $privacy);
         echo $name["standard_name"];
     }
 
@@ -70,8 +70,8 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     if (!$familyDb->fam_woman) {
         echo __('N.N.');
     } else {
-        $privacy = $person_privacy->get_privacy($personDb);
-        $name = $person_name->get_person_name($personDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($personDb);
+        $name = $personName->get_person_name($personDb, $privacy);
         echo $name["standard_name"];
     }
     echo '<br>';

@@ -9,8 +9,8 @@
 // *** tree_merge is the function that navigates all merge screens and options ***
 $db_functions->set_tree_id($trees['tree_id']);
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
 
 // the following creates the pages that cycle through all duplicates that are stored in the dupl_arr array
 // the pages themselves are presented with the "show_pair function"
@@ -487,7 +487,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
 
     $search_firstname = '';
     if (isset($_POST["search_firstname"]) && !isset($_POST["switch"])) {
-        $search_firstname = trim(safe_text_db($_POST['search_firstname']));
+        $search_firstname = trim($safeTextDb->safe_text_db($_POST['search_firstname']));
         $_SESSION['rel_search_firstname'] = $search_firstname;
     }
     if (isset($_SESSION['rel_search_firstname'])) {
@@ -496,7 +496,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
 
     $search_lastname = '';
     if (isset($_POST["search_lastname"]) && !isset($_POST["switch"])) {
-        $search_lastname = trim(safe_text_db($_POST['search_lastname']));
+        $search_lastname = trim($safeTextDb->safe_text_db($_POST['search_lastname']));
         $_SESSION['rel_search_lastname'] = $search_lastname;
     }
     if (isset($_SESSION['rel_search_lastname'])) {
@@ -505,7 +505,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
 
     $search_indi = '';
     if (isset($_POST["search_indi"]) && !isset($_POST["switch"])) {
-        $search_indi = trim(safe_text_db($_POST['search_indi']));
+        $search_indi = trim($safeTextDb->safe_text_db($_POST['search_indi']));
         $_SESSION['search_indi'] = $search_indi;
     }
     if (isset($_SESSION['search_indi'])) {
@@ -514,7 +514,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
 
     $search_firstname2 = '';
     if (isset($_POST["search_firstname2"]) && !isset($_POST["switch"])) {
-        $search_firstname2 = trim(safe_text_db($_POST['search_firstname2']));
+        $search_firstname2 = trim($safeTextDb->safe_text_db($_POST['search_firstname2']));
         $_SESSION['rel_search_firstname2'] = $search_firstname2;
     }
     if (isset($_SESSION['rel_search_firstname2'])) {
@@ -523,7 +523,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
 
     $search_lastname2 = '';
     if (isset($_POST["search_lastname2"]) && !isset($_POST["switch"])) {
-        $search_lastname2 = trim(safe_text_db($_POST['search_lastname2']));
+        $search_lastname2 = trim($safeTextDb->safe_text_db($_POST['search_lastname2']));
         $_SESSION['rel_search_lastname2'] = $search_lastname2;
     }
     if (isset($_SESSION['rel_search_lastname2'])) {
@@ -532,7 +532,7 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
 
     $search_indi2 = '';
     if (isset($_POST["search_indi2"]) && !isset($_POST["switch"])) {
-        $search_indi2 = trim(safe_text_db($_POST['search_indi2']));
+        $search_indi2 = trim($safeTextDb->safe_text_db($_POST['search_indi2']));
         $_SESSION['search_indi2'] = $search_indi2;
     }
     if (isset($_SESSION['search_indi2'])) {
@@ -592,8 +592,8 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
                                 <select size="1" name="left" style="width:<?= $len; ?>px">
                                     <?php
                                     while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
-                                        $privacy = $person_privacy->get_privacy($searchDb);
-                                        $name = $person_name->get_person_name($searchDb, $privacy);
+                                        $privacy = $personPrivacy->get_privacy($searchDb);
+                                        $name = $personName->get_person_name($searchDb, $privacy);
                                         if ($name["show_name"]) {
                                             echo '<option';
                                             if (isset($left) && ($searchDb->pers_id == $left && !(isset($_POST["search1"]) && $search_lastname == '' && $search_firstname == ''))) {
@@ -663,8 +663,8 @@ elseif (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["sea
                                 <select size="1" name="right" style="width:<?= $len; ?>px">
                                     <?php
                                     while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
-                                        $privacy = $person_privacy->get_privacy($searchDb2);
-                                        $name = $person_name->get_person_name($searchDb2, $privacy);
+                                        $privacy = $personPrivacy->get_privacy($searchDb2);
+                                        $name = $personName->get_person_name($searchDb2, $privacy);
                                         if ($name["show_name"]) {
                                             echo '<option';
                                             if (isset($right) && ($searchDb2->pers_id == $right && !(isset($_POST["search2"]) && $search_lastname2 == '' && $search_firstname2 == ''))) {
@@ -854,9 +854,9 @@ elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
     // *** Re-read variables after changing them ***
     // *** Don't use include_once! Otherwise the old value will be shown ***
     include_once(__DIR__ . "/../../include/generalSettings.php");
-    $GeneralSettings = new GeneralSettings();
-    //$user = $GeneralSettings->get_user_settings($dbh);
-    $humo_option = $GeneralSettings->get_humo_option($dbh);
+    $generalSettings = new GeneralSettings();
+    //$user = $generalSettings->get_user_settings($dbh);
+    $humo_option = $generalSettings->get_humo_option($dbh);
 ?>
 
     <form method="post" action="index.php" class="my-2">
@@ -1058,8 +1058,8 @@ function show_pair($left_id, $right_id, $mode)
     // get data for left person
     $leftDb = $db_functions->get_person_with_id($left_id);
 
-    $person_privacy = new PersonPrivacy;
-    $person_name = new PersonName;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
 
     $spouses1 = '';
     $children1 = '';
@@ -1070,16 +1070,16 @@ function show_pair($left_id, $right_id, $mode)
 
             $spouse_ged = $famDb->fam_man == $leftDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $privacy = $person_privacy->get_privacy($spouseDb);
-            $name = $person_name->get_person_name($spouseDb, $privacy);
+            $privacy = $personPrivacy->get_privacy($spouseDb);
+            $name = $personName->get_person_name($spouseDb, $privacy);
             $spouses1 .= $name["standard_name"] . '<br>';
 
             if ($famDb->fam_children) {
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $privacy = $person_privacy->get_privacy($childDb);
-                    $name = $person_name->get_person_name($childDb, $privacy);
+                    $privacy = $personPrivacy->get_privacy($childDb);
+                    $name = $personName->get_person_name($childDb, $privacy);
                     $children1 .= $name["standard_name"] . '<br>';
                 }
             }
@@ -1096,13 +1096,13 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $privacy = $person_privacy->get_privacy($fatherDb);
-        $name = $person_name->get_person_name($fatherDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($fatherDb);
+        $name = $personName->get_person_name($fatherDb, $privacy);
         $father1 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $privacy = $person_privacy->get_privacy($motherDb);
-        $name = $person_name->get_person_name($motherDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($motherDb);
+        $name = $personName->get_person_name($motherDb, $privacy);
         $mother1 .= $name["standard_name"] . '<br>';
     }
 
@@ -1117,16 +1117,16 @@ function show_pair($left_id, $right_id, $mode)
             $famDb = $db_functions->get_family($value);
             $spouse_ged = $famDb->fam_man == $rightDb->pers_gedcomnumber ? $famDb->fam_woman : $famDb->fam_man;
             $spouseDb = $db_functions->get_person($spouse_ged);
-            $privacy = $person_privacy->get_privacy($spouseDb);
-            $name = $person_name->get_person_name($spouseDb, $privacy);
+            $privacy = $personPrivacy->get_privacy($spouseDb);
+            $name = $personName->get_person_name($spouseDb, $privacy);
             $spouses2 .= $name["standard_name"] . '<br>';
 
             if ($famDb->fam_children) {
                 $child = explode(';', $famDb->fam_children);
                 foreach ($child as $ch_value) {
                     $childDb = $db_functions->get_person($ch_value);
-                    $privacy = $person_privacy->get_privacy($childDb);
-                    $name = $person_name->get_person_name($childDb, $privacy);
+                    $privacy = $personPrivacy->get_privacy($childDb);
+                    $name = $personName->get_person_name($childDb, $privacy);
                     $children2 .= $name["standard_name"] . '<br>';
                 }
             }
@@ -1143,13 +1143,13 @@ function show_pair($left_id, $right_id, $mode)
         $parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
         $fatherDb = $db_functions->get_person($parentsDb->fam_man);
-        $privacy = $person_privacy->get_privacy($fatherDb);
-        $name = $person_name->get_person_name($fatherDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($fatherDb);
+        $name = $personName->get_person_name($fatherDb, $privacy);
         $father2 .= $name["standard_name"] . '<br>';
 
         $motherDb = $db_functions->get_person($parentsDb->fam_woman);
-        $privacy = $person_privacy->get_privacy($motherDb);
-        $name = $person_name->get_person_name($motherDb, $privacy);
+        $privacy = $personPrivacy->get_privacy($motherDb);
+        $name = $personName->get_person_name($motherDb, $privacy);
         $mother2 .= $name["standard_name"] . '<br>';
     }
 ?>

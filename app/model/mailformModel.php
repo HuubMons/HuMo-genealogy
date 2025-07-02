@@ -61,8 +61,9 @@ class MailformModel extends BaseModel
     {
         if (isset($_POST['send_mail']) && $mail_data["send_mail"] == true) {
             $mail_address = $dataDb->tree_email;
+            $showTreeText = new ShowTreeText();
 
-            $treetext = show_tree_text($_SESSION['tree_id'], $selected_language);
+            $treetext = $showTreeText ->show_tree_text($_SESSION['tree_id'], $selected_language);
             $mail_data["subject"] = sprintf(__('%s Mail form.'), 'HuMo-genealogy');
             $mail_data["subject"] .= " (" . $treetext['name'] . "): " . $_POST['mail_subject'] . "\n";
 

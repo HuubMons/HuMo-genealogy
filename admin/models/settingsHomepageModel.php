@@ -25,7 +25,11 @@ class SettingsHomepageModel extends AdminBaseModel
                 if (isset($_POST[$dataDb->setting_id . 'module_option_2'])) {
                     $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_2'];
                 }
-                $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "' WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
+                $sql = "UPDATE humo_settings SET setting_value = :setting_value WHERE setting_id = :setting_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
+                $stmt->bindValue(':setting_id', $_POST[$dataDb->setting_id . 'id'], PDO::PARAM_INT);
+                $stmt->execute();
                 $this->dbh->query($sql);
             }
         }
@@ -49,8 +53,12 @@ class SettingsHomepageModel extends AdminBaseModel
         // *** Add module ***
         if (isset($_POST['add_module']) && is_numeric($_POST['module_order'])) {
             $setting_value = $_POST['module_status'] . "|" . $_POST['module_column'] . "|" . $_POST['module_item'];
-            $sql = "INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='" . safe_text_db($setting_value) . "', setting_order='" . $_POST['module_order'] . "'";
-            $this->dbh->query($sql);
+            $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_order) VALUES (:setting_variable, :setting_value, :setting_order)";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':setting_variable', 'template_homepage', PDO::PARAM_STR);
+            $stmt->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
+            $stmt->bindValue(':setting_order', $_POST['module_order'], PDO::PARAM_INT);
+            $stmt->execute();
         }
     }
 
@@ -157,8 +165,11 @@ class SettingsHomepageModel extends AdminBaseModel
             $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
             while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
                 $setting_value = $_POST[$dataDb->setting_id . 'own_code'] . "|" . $_POST[$dataDb->setting_id . 'link_text'];
-                $sql = "UPDATE humo_settings SET setting_value='" . safe_text_db($setting_value) . "' WHERE setting_id=" . safe_text_db($_POST[$dataDb->setting_id . 'id']);
-                $this->dbh->query($sql);
+                $sql = "UPDATE humo_settings SET setting_value = :setting_value WHERE setting_id = :setting_id";
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
+                $stmt->bindValue(':setting_id', $_POST[$dataDb->setting_id . 'id'], PDO::PARAM_INT);
+                $stmt->execute();
             }
         }
 
@@ -181,8 +192,12 @@ class SettingsHomepageModel extends AdminBaseModel
         // *** Add link ***
         if (isset($_POST['add_link']) && is_numeric($_POST['link_order'])) {
             $setting_value = $_POST['own_code'] . "|" . $_POST['link_text'];
-            $sql = "INSERT INTO humo_settings SET setting_variable='link', setting_value='" . safe_text_db($setting_value) . "', setting_order='" . $_POST['link_order'] . "'";
-            $this->dbh->query($sql);
+            $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_order) VALUES (:setting_variable, :setting_value, :setting_order)";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':setting_variable', 'link', PDO::PARAM_STR);
+            $stmt->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
+            $stmt->bindValue(':setting_order', $_POST['link_order'], PDO::PARAM_INT);
+            $stmt->execute();
         }
 
         if (isset($_GET['up']) && is_numeric($_GET['link_order']) && is_numeric($_GET['id'])) {
@@ -206,7 +221,11 @@ class SettingsHomepageModel extends AdminBaseModel
             $itemDb = $item->fetch(PDO::FETCH_OBJ);
 
             // *** Lower previous link ***
-            $sql = "UPDATE humo_settings SET setting_order='" . safe_text_db($_GET['link_order']) . "' WHERE setting_id='" . $itemDb->setting_id . "'";
+            $sql = "UPDATE humo_settings SET setting_order = :link_order WHERE setting_id = :setting_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':link_order', $_GET['link_order'], PDO::PARAM_INT);
+            $stmt->bindValue(':setting_id', $itemDb->setting_id, PDO::PARAM_INT);
+            $stmt->execute();
 
             $this->dbh->query($sql);
             // *** Raise link order ***

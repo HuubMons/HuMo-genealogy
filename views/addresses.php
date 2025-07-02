@@ -5,8 +5,8 @@ if ($data["authorised"] != '') {
     exit();
 }
 
-$path_form = $link_cls->get_link($uri_path, 'addresses', $tree_id);
-$path = $link_cls->get_link($uri_path, 'addresses', $tree_id, true);
+$path_form = $processLinks->get_link($uri_path, 'addresses', $tree_id);
+$path = $processLinks->get_link($uri_path, 'addresses', $tree_id, true);
 ?>
 
 <h1 style="text-align:center;"><?= __('Addresses'); ?></h1>

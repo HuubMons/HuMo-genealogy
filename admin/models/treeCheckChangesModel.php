@@ -14,7 +14,7 @@ class TreeCheckChangesModel extends AdminBaseModel
     {
         $limit = 50;
         if (isset($_POST['limit']) && is_numeric($_POST['limit'])) {
-            $limit = safe_text_db($_POST['limit']);
+            $limit = $_POST['limit'];
         }
         return $limit;
     }
@@ -39,11 +39,8 @@ class TreeCheckChangesModel extends AdminBaseModel
 
     public function get_changes($tree_check): array
     {
-        // TODO improve variabele. Now needed to show proper links in person_link.
-        global $uri_path;
-
-        $person_link = new PersonLink();
-        $language_date = new LanguageDate();
+        $personLink = new PersonLink();
+        $languageDate = new LanguageDate();
 
         $row = 0;
 
@@ -72,8 +69,7 @@ class TreeCheckChangesModel extends AdminBaseModel
                 $tree_check['changes'][$row][0] = __('Person');
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                $url = $person_link->get_person_link($person);
+                $url = $personLink->get_person_link($person, '../');
 
                 $text = '<a href="' . $url . '">' . $person->pers_firstname . ' ' . $person->pers_prefix . $person->pers_lastname . '</a>';
                 $tree_check['changes'][$row][1] = $text;
@@ -81,16 +77,16 @@ class TreeCheckChangesModel extends AdminBaseModel
                 $text = '';
                 if ($person->pers_changed_datetime) {
                     $user_name = $this->db_functions->get_user_name($person->pers_changed_user_id);
-                    $text .= $language_date->show_datetime($person->pers_changed_datetime) . ' ' . $user_name;
+                    $text .= $languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $user_name;
                 }
                 $tree_check['changes'][$row][2] = $text;
 
-                //$text = '<nobr>' . $language_date->language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ' ' . $person->pers_new_user . '</nobr>';
+                //$text = '<nobr>' . $languageDate->language_date($person->pers_new_date) . ' ' . $person->pers_new_time . ' ' . $person->pers_new_user . '</nobr>';
                 $text = '';
                 // TODO check if this could be added in query.
                 if ($person->pers_new_datetime != '1970-01-01 00:00:01') {
                     $user_name = $this->db_functions->get_user_name($person->pers_new_user_id);
-                    $text .= $language_date->show_datetime($person->pers_new_datetime) . ' ' . $user_name;
+                    $text .= $languageDate->show_datetime($person->pers_new_datetime) . ' ' . $user_name;
                 }
                 $tree_check['changes'][$row][3] = $text;
 
@@ -121,7 +117,7 @@ class TreeCheckChangesModel extends AdminBaseModel
 
             $person_result = $this->dbh->query($person_qry);
             while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                // check if standard functions can be used.
+                // TODO check if standard functions can be used.
                 //$personDb=$this->db_functions->get_person($parent1);
                 $person2_qry = "(SELECT * FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $person->fam_man . "')";
                 $person2_result = $this->dbh->query($person2_qry);
@@ -131,8 +127,7 @@ class TreeCheckChangesModel extends AdminBaseModel
                     $tree_check['changes'][$row][0] = __('Family');
 
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                    $url = $person_link->get_person_link($person2);
+                    $url = $personLink->get_person_link($person2, '../');
 
                     $text = '<a href="' . $url . '">' . $person2->pers_firstname . ' ' . $person2->pers_prefix . $person2->pers_lastname . '</a>';
                     $tree_check['changes'][$row][1] = $text;
@@ -140,14 +135,14 @@ class TreeCheckChangesModel extends AdminBaseModel
                     $text = '';
                     if ($person->fam_changed_datetime) {
                         $user_name = $this->db_functions->get_user_name($person->fam_changed_user_id);
-                        $text .= show_datetime($person->fam_changed_datetime) . ' ' . $user_name;
+                        $text .= $languageDate->show_datetime($person->fam_changed_datetime) . ' ' . $user_name;
                     }
                     $tree_check['changes'][$row][2] = $text;
 
                     $text = '';
                     if ($person->fam_new_datetime != '1970-01-01 00:00:01') {
                         $user_name = $this->db_functions->get_user_name($person->fam_new_user_id);
-                        $text .= show_datetime($person->fam_new_datetime) . ' ' . $user_name;
+                        $text .= $languageDate->show_datetime($person->fam_new_datetime) . ' ' . $user_name;
                     }
                     $tree_check['changes'][$row][3] = $text;
 

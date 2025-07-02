@@ -55,7 +55,9 @@ class CmsPagesModel extends BaseModel
                 $select_page = $cms_pagesDb->page_id;
             }
         }
-        $page_qry = $this->dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='" . safe_text_db($select_page) . "' AND page_status!=''");
+        $stmt = $this->dbh->prepare("SELECT * FROM humo_cms_pages WHERE page_id = :page_id AND page_status != ''");
+        $stmt->execute([':page_id' => $select_page]);
+        $page_qry = $stmt;
         $cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 
         // *** Raise page counter ***

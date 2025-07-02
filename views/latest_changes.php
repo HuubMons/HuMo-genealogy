@@ -9,6 +9,8 @@ $path = 'index.php?page=latest_changes.php&amp;tree_id=' . $tree_id;
 if ($humo_option["url_rewrite"] == "j") {
     $path = 'latest_changes/' . $tree_id;
 }
+
+$safeTextShow = new SafeTextShow();
 ?>
 
 <h1><?= __('Recently changed persons and new persons'); ?></h1>
@@ -19,7 +21,7 @@ if ($humo_option["url_rewrite"] == "j") {
     <div class="col-sm-4">
         <form action="<?= $path; ?>" method="post">
             <div class="input-group mb-3 text-center">
-                <input type="text" class="form-control form-control-sm" name="search_name" id="part_of_name" value="<?= safe_text_show($search_name); ?>">
+                <input type="text" class="form-control form-control-sm" name="search_name" id="part_of_name" value="<?= $safeTextShow->safe_text_show($search_name); ?>">
                 <input type="submit" class="btn btn-sm btn-success" value="<?= __('Search'); ?>">
             </div>
         </form>

@@ -13,11 +13,12 @@ class PersonPopup
     public function person_popup_menu($personDb, $privacy, $extended = false, $replacement_text = '', $extra_popup_text = '')
     {
         global $db_functions, $bot_visit, $humo_option, $uri_path, $user;
-        global $screen_mode, $dirmark1, $dirmark2, $rtlmarker, $hourglass, $link_cls, $page;
+        global $screen_mode, $dirmark1, $dirmark2, $rtlmarker, $hourglass, $page;
 
         $personLink = new PersonLink();
         $personName = new PersonName();
         $datePlace = new  DatePlace();
+        $processLinks = new ProcessLinks($uri_path);
 
         $text_start = '';
         $text = '';
@@ -46,7 +47,7 @@ class PersonPopup
             // *** Change start url for a person in a graphical ancestor report ***
             if ($screen_mode == 'ancestor_chart' && $hourglass === false) {
                 $vars['id'] = $personDb->pers_gedcomnumber;
-                $start_url = $link_cls->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, true, $vars);
+                $start_url = $processLinks->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, true, $vars);
                 $start_url .= 'screen_mode=ancestor_chart';
             }
 
@@ -102,7 +103,7 @@ class PersonPopup
                 }
                 if ($check_children) {
                     $vars['pers_family'] = $pers_family;
-                    $path_tmp = $link_cls->get_link($uri_path, 'family', $personDb->pers_tree_id, true, $vars);
+                    $path_tmp = $processLinks->get_link($uri_path, 'family', $personDb->pers_tree_id, true, $vars);
                     $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;descendant_report=1';
                     $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a>';
                     $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a></li>';
@@ -112,7 +113,7 @@ class PersonPopup
             if ($user['group_gen_protection'] == 'n' && $personDb->pers_famc != '') {
                 // == Ancestor report: link & icons by Klaas de Winkel ==
                 $vars['id'] = $personDb->pers_gedcomnumber;
-                $path_tmp = $link_cls->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, false, $vars);
+                $path_tmp = $processLinks->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, false, $vars);
                 $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a>';
                 $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a></li>';
             }
@@ -127,14 +128,14 @@ class PersonPopup
                 }
                 if ($user['group_gen_protection'] == 'n' && $tmldates == 1) {
                     $vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
-                    $path_tmp = $link_cls->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
+                    $path_tmp = $processLinks->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
                     $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a>';
                     $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a></li>';
                 }
             }
 
             if ($user["group_relcalc"] == 'j') {
-                $relpath = $link_cls->get_link($uri_path, 'relations', $personDb->pers_tree_id, true);
+                $relpath = $processLinks->get_link($uri_path, 'relations', $personDb->pers_tree_id, true);
                 $text .= '<a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a>';
                 $popover_content .= '<li><a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a></li>';
             }
@@ -155,7 +156,7 @@ class PersonPopup
             if ($user['group_gen_protection'] == 'n' && $personDb->pers_famc != '' && $personDb->pers_fams != '' && $check_children) {
                 // hourglass only if there is at least one generation of ancestors and of children.
                 $vars['pers_family'] = $pers_family;
-                $path_tmp = $link_cls->get_link($uri_path, 'hourglass', $personDb->pers_tree_id, true, $vars);
+                $path_tmp = $processLinks->get_link($uri_path, 'hourglass', $personDb->pers_tree_id, true, $vars);
                 $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;screen_mode=HOUR';
                 $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a>';
                 $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a></li>';

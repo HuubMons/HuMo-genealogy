@@ -3,6 +3,8 @@ class UsersModel extends AdminBaseModel
 {
     function update_user(): string
     {
+        $safeTextDb = new SafeTextDb();
+
         $alert = '';
         if (isset($_POST['change_user'])) {
             $usersql = "SELECT * FROM humo_users ORDER BY user_name";
@@ -14,20 +16,33 @@ class UsersModel extends AdminBaseModel
                     if ($_POST[$userDb->user_id . "username"] == "") {
                         $username = 'GEEN NAAM / NO NAME';
                     }
-                    $sql = "UPDATE humo_users SET
-                        user_name='" . safe_text_db($username) . "',
-                        user_mail='" . safe_text_db($usermail) . "', ";
+
+                    $update_fields = [
+                        'user_name' => $username,
+                        'user_mail' => $usermail,
+                        'user_group_id' => $_POST[$userDb->user_id . "group_id"]
+                    ];
+                    $set_clause = "user_name = :user_name, user_mail = :user_mail, ";
+                    $params = [
+                        ':user_name' => $update_fields['user_name'],
+                        ':user_mail' => $update_fields['user_mail'],
+                        ':user_group_id' => $update_fields['user_group_id'],
+                        ':user_id' => $_POST[$userDb->user_id . "user_id"]
+                    ];
                     if (isset($_POST[$userDb->user_id . "password"]) && $_POST[$userDb->user_id . "password"]) {
                         $hashToStoreInDb = password_hash($_POST[$userDb->user_id . "password"], PASSWORD_DEFAULT);
-                        $sql = $sql . "user_password_salted='" . $hashToStoreInDb . "', user_password='', ";
+                        $set_clause .= "user_password_salted = :user_password_salted, user_password = '', ";
+                        $params[':user_password_salted'] = $hashToStoreInDb;
                     }
-                    $sql .= "user_group_id='" . safe_text_db($_POST[$userDb->user_id . "group_id"]);
-                    $sql .= "' WHERE user_id=" . safe_text_db($_POST[$userDb->user_id . "user_id"]);
+                    $set_clause .= "user_group_id = :user_group_id";
+                    $sql = "UPDATE humo_users SET $set_clause WHERE user_id = :user_id";
                     try {
-                        $this->dbh->query($sql);
+                        $stmt = $this->dbh->prepare($sql);
+                        $stmt->execute($params);
                     } catch (PDOException $e) {
                         $alert = __('Error: user name probably allready exist.') . '<br>';
                     }
+
                 }
             }
         }
@@ -50,13 +65,17 @@ class UsersModel extends AdminBaseModel
 
         if (isset($_POST['remove_user2']) && is_numeric($_POST['remove_user'])) {
             // *** Delete source connection ***
-            $sql = "DELETE FROM humo_users WHERE user_id='" . safe_text_db($_POST['remove_user']) . "'";
-            $this->dbh->query($sql);
+            $sql = "DELETE FROM humo_users WHERE user_id = :user_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':user_id', $_POST['remove_user'], PDO::PARAM_INT);
+            $stmt->execute();
         }
 
         if (isset($_GET['unblock_ip_address'])) {
-            $sql = "DELETE FROM humo_user_log WHERE log_ip_address='" . safe_text_db($_GET['unblock_ip_address']) . "' AND log_status='failed'";
-            $this->dbh->query($sql);
+            $sql = "DELETE FROM humo_user_log WHERE log_ip_address = :ip_address AND log_status = 'failed'";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindValue(':ip_address', $_GET['unblock_ip_address'], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
         return $alert;

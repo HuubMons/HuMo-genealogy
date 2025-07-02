@@ -2,11 +2,11 @@
 class AnniversaryModel
 {
 
-    private $language_date;
+    private $languageDate;
 
     public function __construct()
     {
-        $this->language_date = new LanguageDate();
+        $this->languageDate = new LanguageDate();
     }
 
     public function getMonth()
@@ -52,7 +52,7 @@ class AnniversaryModel
                 $data["month"] = 'dec';
             }
         }
-        $data["show_month"] = $this->language_date->language_date($data["month"]);
+        $data["show_month"] = $this->languageDate->language_date($data["month"]);
         return $data;
     }
 

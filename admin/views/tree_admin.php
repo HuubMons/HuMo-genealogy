@@ -37,7 +37,7 @@
     if ($datasql) {
         $count_lines = $datasql->rowCount();
         while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            $treetext = show_tree_text($dataDb->tree_id, $trees['language']);
+            $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $trees['language']);
     ?>
             <li class="list-group-item <?= $dataDb->tree_id == $trees['tree_id'] ? 'list-group-item-secondary' : ''; ?>">
                 <div class="row">

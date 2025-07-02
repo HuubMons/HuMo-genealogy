@@ -123,7 +123,7 @@ if ($popup == false) {
                 <li class="nav-item dropdown">
                     <?php include_once(__DIR__ . "/../../views/partial/select_language.php"); ?>
                     <?php /*
-                    $language_path = $link_cls->get_link('', 'language', '', true);
+                    $language_path = $processLinks->get_link('', 'language', '', true);
                     */
                     ?>
                     <?php $language_path = 'index.php?'; ?>

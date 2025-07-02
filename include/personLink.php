@@ -6,14 +6,26 @@
 *	17-06-2025 Huub Mons: added separate class for person link handling.
 *
 *	Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/
-*	$url=$person_link->PersonLink($personDb);
+*	$url=$personLink->PersonLink($personDb);
 */
 
 class PersonLink
 {
-    public function get_person_link($personDb): string
+    private $processLinks;
+
+    public function __construct()
     {
-        global $uri_path, $link_cls;
+        $this->processLinks = new ProcessLinks();
+    }
+
+    public function get_person_link($personDb, $path = ''): string
+    {
+        // TODO check global.
+        global $uri_path;
+
+        if ($path) {
+            $uri_path = $path;
+        }
 
         $vars['pers_family'] = '';
         if ($personDb->pers_famc) {
@@ -24,7 +36,7 @@ class PersonLink
             $vars['pers_family'] = $pers_fams[0];
         }
 
-        $url = $link_cls->get_link($uri_path, 'family', $personDb->pers_tree_id, true, $vars);
+        $url = $this->processLinks->get_link($uri_path, 'family', $personDb->pers_tree_id, true, $vars);
         if ($personDb->pers_gedcomnumber) {
             $url .= "main_person=" . $personDb->pers_gedcomnumber;
         }

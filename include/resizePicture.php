@@ -57,15 +57,14 @@ class ResizePicture
         if (Imagick::queryformats($imtype . '*')) {
             $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
             fclose($fhandle);
-            if ($imtype == 'PDF' && $is_ghostscript) {
-                $im = new \Imagick($pict_path_original . '[0]'); //first page of PDF (default: last page)
-                $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE); // without you only get black frames
-            } elseif (($imtype == 'MP4' ||
-                    $imtype == 'MPG' ||
-                    $imtype == 'FLV' ||
-                    $imtype == 'MOV' ||
-                    $imtype == 'AVI')
-                && $is_ffmpeg
+            if ($imtype == 'PDF') {
+                if ($is_ghostscript) {
+                    $im = new \Imagick($pict_path_original . '[0]'); //first page of PDF (default: last page)
+                    $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE); // without you only get black frames
+                } else {
+                    return false; // no ghostscript installed
+                }
+            } elseif (($imtype == 'MP4' || $imtype == 'MPG' || $imtype == 'FLV' || $imtype == 'MOV' || $imtype == 'AVI') && $is_ffmpeg
             ) {
                 $im = new \Imagick($pict_path_original . "[15]"); // [] should select frame 15 of video, not working, allways takes the first frame
                 $add_arrow = true;

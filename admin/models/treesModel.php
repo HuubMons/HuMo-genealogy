@@ -109,12 +109,19 @@ class TreesModel extends AdminBaseModel
             }
 
             $sql = "UPDATE humo_trees SET
-                tree_email='" . safe_text_db($_POST['tree_email']) . "',
-                tree_owner='" . safe_text_db($_POST['tree_owner']) . "',
-                tree_pict_path='" . safe_text_db($tree_pict_path) . "',
-                tree_privacy='" . safe_text_db($_POST['tree_privacy']) . "'
-                WHERE tree_id=" . $this->selected_tree_id;
-            $this->dbh->query($sql);
+                tree_email = :tree_email,
+                tree_owner = :tree_owner,
+                tree_pict_path = :tree_pict_path,
+                tree_privacy = :tree_privacy
+                WHERE tree_id = :tree_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':tree_email'    => $_POST['tree_email'],
+                ':tree_owner'    => $_POST['tree_owner'],
+                ':tree_pict_path'=> $tree_pict_path,
+                ':tree_privacy'  => $_POST['tree_privacy'],
+                ':tree_id'       => $this->selected_tree_id
+            ]);
         }
 
         if (isset($_POST['remove_tree2']) && is_numeric($_POST['tree_id'])) {
@@ -228,28 +235,56 @@ class TreesModel extends AdminBaseModel
         }
 
         if (isset($_POST['add_tree_text'])) {
-            $sql = "INSERT INTO humo_tree_texts SET
-            treetext_tree_id='" . $this->selected_tree_id . "',
-            treetext_language='" . safe_text_db($_POST['language_tree']) . "',
-            treetext_name='" . safe_text_db($_POST['treetext_name']) . "',
-            treetext_mainmenu_text='" . safe_text_db($_POST['treetext_mainmenu_text']) . "',
-            treetext_mainmenu_source='" . safe_text_db($_POST['treetext_mainmenu_source']) . "',
-            treetext_family_top='" . safe_text_db($_POST['treetext_family_top']) . "',
-            treetext_family_footer='" . safe_text_db($_POST['treetext_family_footer']) . "'";
-            $this->dbh->query($sql);
+            $sql = "INSERT INTO humo_tree_texts (
+                treetext_tree_id,
+                treetext_language,
+                treetext_name,
+                treetext_mainmenu_text,
+                treetext_mainmenu_source,
+                treetext_family_top,
+                treetext_family_footer
+            ) VALUES (
+                :treetext_tree_id,
+                :treetext_language,
+                :treetext_name,
+                :treetext_mainmenu_text,
+                :treetext_mainmenu_source,
+                :treetext_family_top,
+                :treetext_family_footer
+            )";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':treetext_tree_id'         => $this->selected_tree_id,
+                ':treetext_language'        => $_POST['language_tree'],
+                ':treetext_name'            => $_POST['treetext_name'],
+                ':treetext_mainmenu_text'   => $_POST['treetext_mainmenu_text'],
+                ':treetext_mainmenu_source' => $_POST['treetext_mainmenu_source'],
+                ':treetext_family_top'      => $_POST['treetext_family_top'],
+                ':treetext_family_footer'   => $_POST['treetext_family_footer']
+            ]);
         }
 
         if (isset($_POST['change_tree_text'])) {
             $sql = "UPDATE humo_tree_texts SET
-            treetext_tree_id='" . $this->selected_tree_id . "',
-            treetext_language='" . safe_text_db($_POST['language_tree']) . "',
-            treetext_name='" . safe_text_db($_POST['treetext_name']) . "',
-            treetext_mainmenu_text='" . safe_text_db($_POST['treetext_mainmenu_text']) . "',
-            treetext_mainmenu_source='" . safe_text_db($_POST['treetext_mainmenu_source']) . "',
-            treetext_family_top='" . safe_text_db($_POST['treetext_family_top']) . "',
-            treetext_family_footer='" . safe_text_db($_POST['treetext_family_footer']) . "'
-            WHERE treetext_id=" . safe_text_db($_POST['treetext_id']);
-            $this->dbh->query($sql);
+                treetext_tree_id = :treetext_tree_id,
+                treetext_language = :treetext_language,
+                treetext_name = :treetext_name,
+                treetext_mainmenu_text = :treetext_mainmenu_text,
+                treetext_mainmenu_source = :treetext_mainmenu_source,
+                treetext_family_top = :treetext_family_top,
+                treetext_family_footer = :treetext_family_footer
+            WHERE treetext_id = :treetext_id";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':treetext_tree_id'         => $this->selected_tree_id,
+                ':treetext_language'        => $_POST['language_tree'],
+                ':treetext_name'            => $_POST['treetext_name'],
+                ':treetext_mainmenu_text'   => $_POST['treetext_mainmenu_text'],
+                ':treetext_mainmenu_source' => $_POST['treetext_mainmenu_source'],
+                ':treetext_family_top'      => $_POST['treetext_family_top'],
+                ':treetext_family_footer'   => $_POST['treetext_family_footer'],
+                ':treetext_id'              => $_POST['treetext_id']
+            ]);
         }
 
         // *** Add empty line ***
@@ -276,12 +311,20 @@ class TreesModel extends AdminBaseModel
 
         // *** Change collation of tree ***
         if (isset($_POST['tree_collation'])) {
-            $tree_collation = safe_text_db($_POST['tree_collation']);
-            $this->dbh->query("ALTER TABLE humo_persons CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE " . $tree_collation . ";");
-            $this->dbh->query("ALTER TABLE humo_persons CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE " . $tree_collation . ";");
-            $this->dbh->query("ALTER TABLE humo_persons CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE " . $tree_collation . ";");
-            //$this->dbh->query("ALTER TABLE humo_persons CHANGE `pers_callname` `pers_callname` VARCHAR(20) COLLATE ".$tree_collation.";");
-            $this->dbh->query("ALTER TABLE humo_events CHANGE `event_event` `event_event` TEXT COLLATE " . $tree_collation . ";");
+
+            $collation = $_POST['tree_collation'];
+
+            $stmt1 = $this->dbh->prepare("ALTER TABLE humo_persons CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE $collation;");
+            $stmt1->execute();
+
+            $stmt2 = $this->dbh->prepare("ALTER TABLE humo_persons CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE $collation;");
+            $stmt2->execute();
+
+            $stmt3 = $this->dbh->prepare("ALTER TABLE humo_persons CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE $collation;");
+            $stmt3->execute();
+
+            $stmt4 = $this->dbh->prepare("ALTER TABLE humo_events CHANGE `event_event` `event_event` TEXT COLLATE $collation;");
+            $stmt4->execute();
         }
     }
 }

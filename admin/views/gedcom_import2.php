@@ -12,12 +12,16 @@ $nr_records = $total[0];
 if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
-        $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+        $stmt = $dbh->prepare("DELETE FROM humo_persons WHERE pers_tree_id=:tree_id LIMIT " . $limit);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
         echo '*';
         ob_flush();
         flush();
     }
-    $dbh->query("DELETE FROM humo_persons WHERE pers_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_persons WHERE pers_tree_id=:tree_id");
+    $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+    $stmt->execute();
 
     echo ' ' . __('Optimize table...');
     ob_flush();
@@ -39,12 +43,16 @@ $nr_records = $total[0];
 if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
-        $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+        $stmt = $dbh->prepare("DELETE FROM humo_families WHERE fam_tree_id=:tree_id LIMIT " . $limit);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
         echo '*';
         ob_flush();
         flush();
     }
-    $dbh->query("DELETE FROM humo_families WHERE fam_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_families WHERE fam_tree_id=:tree_id");
+    $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+    $stmt->execute();
 
     echo ' ' . __('Optimize table...') . ' ';
     ob_flush();
@@ -68,12 +76,16 @@ $nr_records = $total[0];
 if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
-        $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+        $stmt = $dbh->prepare("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id=:tree_id LIMIT " . $limit);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
         echo '*';
         ob_flush();
         flush();
     }
-    $dbh->query("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_unprocessed_tags WHERE tag_tree_id=:tree_id");
+    $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+    $stmt->execute();
 
     echo ' ' . __('Optimize table...');
     ob_flush();
@@ -91,7 +103,10 @@ echo '<br>';
 printf(__('Remove old family tree items from %s table...'), 'humo_settings');
 ob_flush();
 flush();
-$dbh->query("DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+$stmt = $dbh->prepare("DELETE FROM humo_settings WHERE setting_variable = :setting_variable AND setting_tree_id = :tree_id");
+$stmt->bindValue(':setting_variable', 'admin_favourite', PDO::PARAM_STR);
+$stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+$stmt->execute();
 
 echo ' ' . __('Optimize table...');
 ob_flush();
@@ -107,7 +122,9 @@ echo '<br>';
 printf(__('Remove old family tree items from %s table...'), 'humo_repositories');
 ob_flush();
 flush();
-$dbh->query("DELETE FROM humo_repositories WHERE repo_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+$stmt = $dbh->prepare("DELETE FROM humo_repositories WHERE repo_tree_id = :tree_id");
+$stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+$stmt->execute();
 
 echo ' ' . __('Optimize table...');
 ob_flush();
@@ -130,12 +147,16 @@ $nr_records = $total[0];
 if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
-        $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+        $stmt = $dbh->prepare("DELETE FROM humo_sources WHERE source_tree_id = :tree_id LIMIT " . $limit);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
         echo '*';
         ob_flush();
         flush();
     }
-    $dbh->query("DELETE FROM humo_sources WHERE source_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_sources WHERE source_tree_id = :tree_id");
+    $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+    $stmt->execute();
 
     echo ' ' . __('Optimize table...');
     ob_flush();
@@ -160,12 +181,16 @@ $nr_records = $total[0];
 if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
-        $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+        $stmt = $dbh->prepare("DELETE FROM humo_texts WHERE text_tree_id = :tree_id LIMIT " . $limit);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
         echo '*';
         ob_flush();
         flush();
     }
-    $dbh->query("DELETE FROM humo_texts WHERE text_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_texts WHERE text_tree_id = :tree_id");
+    $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+    $stmt->execute();
 
     echo ' ' . __('Optimize table...');
     $dbh->query("OPTIMIZE TABLE humo_texts");
@@ -188,12 +213,16 @@ $nr_records = $total[0];
 if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
-        $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+        $stmt = $dbh->prepare("DELETE FROM humo_connections WHERE connect_tree_id = :tree_id LIMIT " . $limit);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
         echo '*';
         ob_flush();
         flush();
     }
-    $dbh->query("DELETE FROM humo_connections WHERE connect_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_connections WHERE connect_tree_id = :tree_id");
+    $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+    $stmt->execute();
 
     echo ' ' . __('Optimize table...');
     ob_flush();
@@ -218,12 +247,16 @@ $nr_records = $total[0];
 if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
-        $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit);
+        $stmt = $dbh->prepare("DELETE FROM humo_addresses WHERE address_tree_id = :tree_id LIMIT " . $limit);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
         echo '*';
         ob_flush();
         flush();
     }
-    $dbh->query("DELETE FROM humo_addresses WHERE address_tree_id='" . safe_text_db($trees['tree_id']) . "'");
+    $stmt = $dbh->prepare("DELETE FROM humo_addresses WHERE address_tree_id = :tree_id");
+    $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+    $stmt->execute();
 
     echo ' ' . __('Optimize table...');
     ob_flush();
@@ -248,22 +281,32 @@ if ($nr_records > 0) {
     $loop = $nr_records / $limit;
     for ($i = 0; $i <= $loop; $i++) {
         if ($humo_option["gedcom_read_save_pictures"] === 'y') {
-            $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "' AND event_kind!='picture' LIMIT " . $limit;
+            $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_kind != 'picture' LIMIT " . $limit;
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+            $stmt->execute();
         } else {
-            $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "' LIMIT " . $limit;
+            $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id LIMIT " . $limit;
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+            $stmt->execute();
         }
 
-        $dbh->query($sql);
         echo '*';
         ob_flush();
         flush();
     }
     if ($humo_option["gedcom_read_save_pictures"] === 'y') {
-        $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "' AND event_kind!='picture'";
+        $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_kind != 'picture'";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
     } else {
-        $sql = "DELETE FROM humo_events WHERE event_tree_id='" . safe_text_db($trees['tree_id']) . "'";
+        $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
     }
-    $dbh->query($sql);
 
     echo ' ' . __('Optimize table...');
     ob_flush();

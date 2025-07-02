@@ -47,7 +47,7 @@ if (isset($tree_id) && $tree_id) {
 // TODO: this is a temporary copy of script in views/editor.php.
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
-    $date_place = new DatePlace;
+    $datePlace = new DatePlace();
 
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;
@@ -55,7 +55,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
         $check_date = true;
         $hideshow_date = substr($hideshow_date, 0, -1);
     }
-    $text = $date_place->date_place($hideshow_date, $hideshow_place);
+    $text = $datePlace->date_place($hideshow_date, $hideshow_place);
     if ($check_date) {
         $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
     }
@@ -370,7 +370,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
     // *** Source example in IFRAME ***
     if (!isset($_POST['add_source'])) {
         $vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
-        $sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
+        $sourcestring = $processLinks->get_link('../', 'source', $tree_id, false, $vars);
     ?>
         <br><br><?= __('Preview'); ?><br>
         <iframe src="<?= $sourcestring; ?>" class="iframe">

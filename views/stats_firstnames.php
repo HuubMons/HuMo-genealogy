@@ -63,7 +63,7 @@ uksort(
     }
 );
 
-$path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+$path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
 count($m_first_names) < count($f_first_names) ? $most = count($f_first_names) : $most = count($m_first_names);
 if ($most > $maxnames) {

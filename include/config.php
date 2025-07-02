@@ -9,5 +9,6 @@ $config = array(
     "db_functions" => $db_functions,
     "tree_id" => $tree_id,
     "user" => $user,
-    "humo_option" => $humo_option
+    "humo_option" => $humo_option,
+    "uri_path" => $uri_path
 );

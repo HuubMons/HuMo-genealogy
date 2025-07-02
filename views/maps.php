@@ -1,8 +1,8 @@
 <script src="googlemaps/namesearch.js"></script>
 
 <?php
-$link = $link_cls->get_link($uri_path, 'maps', $tree_id);
-$link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
+$link = $processLinks->get_link($uri_path, 'maps', $tree_id);
+$link2 = $processLinks->get_link($uri_path, 'maps', $tree_id, true);
 
 // *** Select family tree ***
 $tree_id_string = " AND ( ";
@@ -15,8 +15,8 @@ $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tre
 $tree_search_result = $dbh->query($tree_search_sql);
 $count = 0;
 
-$person_privacy = new PersonPrivacy;
-$date_place = new DatePlace;
+$personPrivacy = new PersonPrivacy();
+$datePlace = new DatePlace();
 ?>
 
 <div class="p-3 m-2 genealogy_search">
@@ -61,7 +61,7 @@ $date_place = new DatePlace;
                                 $db_functions->set_tree_id($tree_id);
                                 $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                             }
-                            $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                            $treetext = $showTreeText ->show_tree_text($tree_searchDb->tree_id, $selected_language);
                             $count++;
                     ?>
                             <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>><?= $treetext['name']; ?></option>
@@ -434,7 +434,7 @@ if (isset($_POST['descmap'])) {
                             //if($desc_searchDb->pers_gedcomnumber == $chosenperson) {
                             //  $selected = ' selected ';
                             //}
-                            $privacy_man = $person_privacy->get_privacy($desc_searchDb);
+                            $privacy_man = $personPrivacy->get_privacy($desc_searchDb);
                             $date = '';
                             if (!$privacy_man) {
                                 // if a person has privacy set (even if only for data, not for name,
@@ -453,13 +453,13 @@ if (isset($_POST['descmap'])) {
                                 }
                                 $date = '';
                                 if ($b_date && !$d_date) {
-                                    $date = ' (' . $b_sign . $date_place->date_place($b_date, '') . ')';
+                                    $date = ' (' . $b_sign . $datePlace->date_place($b_date, '') . ')';
                                 }
                                 if ($b_date && $d_date) {
-                                    $date .= ' (' . $b_sign . $date_place->date_place($b_date, '') . ' - ' . $d_sign . $date_place->date_place($d_date, '') . ')';
+                                    $date .= ' (' . $b_sign . $datePlace->date_place($b_date, '') . ' - ' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                                 if (!$b_date && $d_date) {
-                                    $date = '(' . $d_sign . $date_place->date_place($d_date, '') . ')';
+                                    $date = '(' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                                 $name = '';
                                 $pref = '';
@@ -566,7 +566,7 @@ if (isset($_POST['ancmap'])) {
                             //if($anc_searchDb->pers_gedcomnumber == $chosenperson) {
                             //  $selected = ' selected ';
                             //}
-                            $privacy_man = $person_privacy->get_privacy($anc_searchDb);
+                            $privacy_man = $personPrivacy->get_privacy($anc_searchDb);
                             $date = '';
                             if (!$privacy_man) {
                                 // don't show dates if privacy is set for this person
@@ -586,13 +586,13 @@ if (isset($_POST['ancmap'])) {
                                 }
                                 $date = '';
                                 if ($b_date && !$d_date) {
-                                    $date = ' (' . $b_sign . $date_place->date_place($b_date, '') . ')';
+                                    $date = ' (' . $b_sign . $datePlace->date_place($b_date, '') . ')';
                                 }
                                 if ($b_date && $d_date) {
-                                    $date .= ' (' . $b_sign . $date_place->date_place($b_date, '') . ' - ' . $d_sign . $date_place->date_place($d_date, '') . ')';
+                                    $date .= ' (' . $b_sign . $datePlace->date_place($b_date, '') . ' - ' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                                 if (!$b_date && $d_date) {
-                                    $date = '(' . $d_sign . $date_place->date_place($d_date, '') . ')';
+                                    $date = '(' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                             }
                             if (!$privacy_man || ($privacy_man && $user['group_filter_name'] == "j")) {

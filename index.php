@@ -41,61 +41,37 @@ session_start();
  *  Dec. 2024: Added autoload.
  *  Name of class = SomethingClass
  *  Name of script: somethingClass.php ***
+ * 
+ *  Examples of autoload files:
+ *  app/model/ All scripts are autoloading.
+ *  app/model/adresModel.php
+ *
+ *  controller/ All scripts are autoloading.
+ *  controller/addressController.php
+ *
+ *  include/dbFunctions.php
+ *  include/marriage_cls
+ *  include/personData.php
+ *  include/calculateDates.php
+ *  include/processLinks.php
+ *  include/validateDate.php
+ *
+ *  languages/languageCls.php
  */
 // TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php.
 function custom_autoload($class_name)
 {
-    // Examples of autoload files:
-    // app/model/ All scripts are autoloading.
-    // app/model/adresModel.php
-
-    // controller/ All scripts are autoloading.
-    // controller/addressController.php
-
-    // include/dbFunctions.php
-    // include/marriage_cls
-    // include/personData.php
-    // include/calculateDates.php
-    // include/processLinks.php
-    // include/validateDate.php
-
-    // languages/languageCls.php
-
-    $include = array(
-        'Ancestors',
-        'CalculateDates',
-        'DatePlace',
-        'DbFunctions',
-        'Descendants',
-        'GeneralSettings',
-        'LanguageDate',
-        'MarriageCls',
-        'MediaPath',
-        'PersonData',
-        'PersonLink',
-        'PersonName',
-        'PersonNameExtended',
-        'PersonPrivacy',
-        'PersonPopup',
-        'ProcessLinks',
-        'ResizePicture',
-        'ShowMedia',
-        'ValidateDate',
-        'Witness',
-        'Config'
-    );
-
     if ($class_name == 'LanguageCls') {
         require __DIR__ . '/languages/languageCls.php';
     } elseif (substr($class_name, -10) == 'Controller') {
         require __DIR__ . '/app/controller/' . lcfirst($class_name) . '.php';
     } elseif (substr($class_name, -5) == 'Model') {
         require __DIR__ . '/app/model/' . lcfirst($class_name) . '.php';
-    } elseif (in_array($class_name, $include)) {
-        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
     } elseif ($class_name == 'tFPDF' || $class_name == 'tFPDFextend') {
         // *** No lcfirst used, because of name of class ***
         require __DIR__ . '/include/tfpdf/' . $class_name . '.php';
+    } elseif (is_file(__DIR__ . '/include/' . lcfirst($class_name) . '.php')) {
+        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('custom_autoload');
@@ -112,17 +88,13 @@ if (isset($_GET['log_off'])) {
 
 // TODO refactor/ check scripts for autoload.
 include_once(__DIR__ . "/include/db_login.php"); // Connect to database
-include_once(__DIR__ . "/include/show_tree_text.php");
-include_once(__DIR__ . "/include/safe.php");
 
-$GeneralSettings = new GeneralSettings();
-$user = $GeneralSettings->get_user_settings($dbh);
-$humo_option = $GeneralSettings->get_humo_option($dbh);
+$safeTextDb = new SafeTextDb();
+$generalSettings = new GeneralSettings();
+$user = $generalSettings->get_user_settings($dbh);
+$humo_option = $generalSettings->get_humo_option($dbh);
 
-// Statistics and option to block certain IP addresses.
-include_once(__DIR__ . "/include/get_visitor_ip.php");
-
-include_once(__DIR__ . "/include/timezone.php");
+$showTreeText = new ShowTreeText();
 
 include_once(__DIR__ . '/app/routing/router.php'); // Page routing.
 
@@ -208,7 +180,7 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 }
 
 // *** To be used to show links in several pages ***
-$link_cls = new ProcessLinks($uri_path);
+$processLinks = new ProcessLinks($uri_path);
 
 /**
  * General config array. May 2025: added baseModel.php.
@@ -233,7 +205,7 @@ if ($index['page'] == 'address') {
     $data = $controllerObj->detail();
 } elseif ($index['page'] == 'addresses') {
     $controllerObj = new AddressesController($config);
-    $data = $controllerObj->list($link_cls, $uri_path);
+    $data = $controllerObj->list();
 } elseif ($index['page'] == 'ancestor_report') {
     $controllerObj = new AncestorReportController($config);
     $data = $controllerObj->list($id);
@@ -303,7 +275,7 @@ if ($index['page'] == 'address') {
     if (isset($index['last_name'])) {
         $last_name = $index['last_name'];
     }
-    $list_names = $controllerObj->list_names($last_name, $uri_path);
+    $list_names = $controllerObj->list_names($last_name);
 } elseif ($index['page'] == 'login') {
     //
 } elseif ($index['page'] == 'mailform') {
@@ -314,13 +286,13 @@ if ($index['page'] == 'address') {
     $maps = $controllerObj->detail($tree_prefix_quoted);
 } elseif ($index['page'] == 'photoalbum') {
     $controllerObj = new PhotoalbumController($config);
-    $photoalbum = $controllerObj->detail($selected_language, $uri_path, $link_cls);
+    $photoalbum = $controllerObj->detail($selected_language);
 } elseif ($index['page'] == 'register') {
     $controllerObj = new RegisterController($config);
     $register = $controllerObj->get_register_data($dataDb);
 } elseif ($index['page'] == 'relations') {
     $controllerObj = new RelationsController($config);
-    $relation = $controllerObj->getRelations($link_cls, $uri_path, $selected_language);
+    $relation = $controllerObj->getRelations($selected_language);
 } elseif ($index['page'] == 'reset_password') {
     $controllerObj = new ResetPasswordController($config);
     $resetpassword = $controllerObj->detail();
@@ -347,11 +319,8 @@ if ($index['page'] == 'address') {
     $statistics = $controllerObj->detail();
 } elseif ($index['page'] == 'sources') {
     $controllerObj = new SourcesController($config);
-    $data = $controllerObj->list($link_cls, $uri_path);
+    $data = $controllerObj->list();
 } elseif ($index['page'] == 'source') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/process_text.php");
-
     $controllerObj = new SourceController($config);
 
     // *** url_rewrite is disabled ***

@@ -5,14 +5,14 @@
     <?php
     foreach ($list_names["alphabet_array"] as $alphabet) {
         $vars['last_name'] = $alphabet;
-        $link = $link_cls->get_link($uri_path, 'list_names', $tree_id, false, $vars);
+        $link = $processLinks->get_link($uri_path, 'list_names', $tree_id, false, $vars);
     ?>
         <a href="<?= $link; ?>"><?= $alphabet; ?></a>
     <?php
     }
 
     $vars['last_name'] = 'all';
-    $link = $link_cls->get_link($uri_path, 'list_names', $tree_id, false, $vars);
+    $link = $processLinks->get_link($uri_path, 'list_names', $tree_id, false, $vars);
     ?>
     <a href="<?= $link; ?>"><?= __('All names'); ?></a>
 </div>
@@ -61,7 +61,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
 <?php
 $col_width = ((round(100 / $list_names["max_cols"])) - 6) . "%";
-$path_tmp = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+$path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 ?>
 <table class="table table-sm nametbl">
     <thead class="table-primary">

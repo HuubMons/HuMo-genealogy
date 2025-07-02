@@ -82,15 +82,15 @@ if (__('&#134;') == '&#134;' or __('&#134;') == "†") {
 function data_array($id, $width, $height): void
 {
     global $db_functions, $data_array, $data, $dsign;
-    $person_privacy = new PersonPrivacy;
-    $person_name = new PersonName;
-    $language_date = new LanguageDate;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $languageDate = new LanguageDate;
 
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
-        $pers_privacy = $person_privacy->get_privacy($personDb);
+        $pers_privacy = $personPrivacy->get_privacy($personDb);
 
-        $names = $person_name->get_person_name($personDb, $pers_privacy);
+        $names = $personName->get_person_name($personDb, $pers_privacy);
         $name = $names["name"];
 
         if (preg_match('/[A-Za-z]/', $name)) {
@@ -114,7 +114,7 @@ function data_array($id, $width, $height): void
                     $space = ' ';
                 }
                 //$birth = __('*').' '.$personDb->pers_birth_date.$space.$personDb->pers_birth_place;
-                $birth = __('*') . ' ' . $language_date->language_date($personDb->pers_birth_date) . $space . $personDb->pers_birth_place;
+                $birth = __('*') . ' ' . $languageDate->language_date($personDb->pers_birth_date) . $space . $personDb->pers_birth_place;
                 $result = parse_line($birth, $width, 0);
                 $birth_len = $result[0];
                 $birth = $result[1];
@@ -136,7 +136,7 @@ function data_array($id, $width, $height): void
                 if ($personDb->pers_death_date != '') {
                     $space = ' ';
                 }
-                $death = $dsign . ' ' . $language_date->language_date($personDb->pers_death_date) . $space . $personDb->pers_death_place;
+                $death = $dsign . ' ' . $languageDate->language_date($personDb->pers_death_date) . $space . $personDb->pers_death_place;
                 $result = parse_line($death, $width, 0);
                 $death_len = $result[0];
                 $death = $result[1];
@@ -213,7 +213,7 @@ function data_array($id, $width, $height): void
 function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellwidth): void
 {
     global $dbh, $db_functions, $pdf, $data_array, $posy, $posx, $data;
-    $person_privacy = new PersonPrivacy;
+    $personPrivacy = new PersonPrivacy();
 
     $pdf->SetLeftMargin(16);
     $marg = 16;
@@ -238,13 +238,13 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             }
             if ($data["gedcomnumber"][$m] != '') {
                 $personDb = $db_functions->get_person($data["gedcomnumber"][$m]);
-                $pers_privacy = $person_privacy->get_privacy($personDb);
+                $pers_privacy = $personPrivacy->get_privacy($personDb);
             } else {
                 $pers_privacy = false;
             }
             if ($data["gedcomnumber"][$m + 1] != '') {
                 $womanDb = $db_functions->get_person($data["gedcomnumber"][$m + 1]);
-                $woman_privacy = $person_privacy->get_privacy($womanDb);
+                $woman_privacy = $personPrivacy->get_privacy($womanDb);
             } else {
                 $woman_privacy = false;
             }
@@ -288,11 +288,11 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
 //initialize pdf generation
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$person_privacy = new PersonPrivacy;
-$person_name = new PersonName;
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
 
-$privacy = $person_privacy->get_privacy($persDb);
-$name = $person_name->get_person_name($persDb, $privacy);
+$privacy = $personPrivacy->get_privacy($persDb);
+$name = $personName->get_person_name($persDb, $privacy);
 
 $pdf = new tFPDFextend();
 $title = $pdf->pdf_convert(__('Ancestor sheet') . __(' of ') . $name["standard_name"]);

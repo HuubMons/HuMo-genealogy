@@ -5,6 +5,8 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+$showTreeText = new ShowTreeText();
+
 // *** Select family tree ***
 $tree_id_string = " AND ( ";
 $id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ;
@@ -60,7 +62,7 @@ $rowspan = $tree_search_result->rowCount() + 1;
                             ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
                         }
 
-                        $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                        $treetext = $showTreeText ->show_tree_text($tree_searchDb->tree_id, $selected_language);
                         $interval = round((2010 - ${"slider_choice" . $tree_searchDb->tree_prefix}) / 9);
                     ?>
                         <tr>

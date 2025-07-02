@@ -11,8 +11,6 @@ class FamilyModel extends BaseModel
         parent::__construct($config);
 
         // TODO check these includes. Move to controllers?
-        include_once(__DIR__ . '/../../include/language_event.php');
-        include_once(__DIR__ . '/../../include/process_text.php');
         include_once(__DIR__ . '/../../include/show_sources.php');
         include_once(__DIR__ . '/../../include/show_addresses.php');
         include_once(__DIR__ . '/../../include/show_quality.php');
@@ -91,13 +89,14 @@ class FamilyModel extends BaseModel
         if (isset($_GET['source_presentation']) && in_array($_GET['source_presentation'], $source_presentation_array)) {
             $_SESSION['save_source_presentation'] = $_GET["source_presentation"];
         }
-        // *** Default setting is selected by administrator ***
-        $source_presentation = $this->user['group_source_presentation'];
+
         if (isset($_SESSION['save_source_presentation']) && in_array($_SESSION['save_source_presentation'], $source_presentation_array)) {
             $source_presentation = $_SESSION['save_source_presentation'];
         } else {
+            // *** Default setting is selected by administrator ***
+            $source_presentation = $this->user['group_source_presentation'];
             // *** Extra saving of setting in session (if no choice is made, this is admin default setting, needed for show_sources.php!!!) ***
-            $_SESSION['save_source_presentation'] = safe_text_db($source_presentation);
+            $_SESSION['save_source_presentation'] = $source_presentation;
         }
         return $source_presentation;
     }
@@ -231,15 +230,14 @@ class FamilyModel extends BaseModel
 
     function getDescendantHeader($name, $family_id, $main_person): string
     {
-        // TODO remove global
-        global $link_cls, $uri_path;
+        $processLinks = new ProcessLinks();
 
         $data['header_active'] = array();
         $data['header_link'] = array();
         $data['header_text'] = array();
 
         $vars['pers_family'] = $family_id;
-        $path_tmp = $link_cls->get_link($uri_path, 'family', $this->tree_id, true, $vars);
+        $path_tmp = $processLinks->get_link($this->uri_path, 'family', $this->tree_id, true, $vars);
         $path_tmp .= "main_person=" . $main_person . '&amp;descendant_report=1';
         $data['header_link'][] = $path_tmp;
         $data['header_active'][] = $name == 'Descendant report' ? 'active' : '';
@@ -267,7 +265,7 @@ class FamilyModel extends BaseModel
         $data['header_active'][] = $name == 'DNA charts' ? 'active' : '';
         $data['header_text'][] = __('DNA Charts');
 
-        $path_tmp = $link_cls->get_link($uri_path, 'outline_report', $this->tree_id, true);
+        $path_tmp = $processLinks->get_link($this->uri_path, 'outline_report', $this->tree_id, true);
         $path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
         $data['header_link'][] = $path_tmp;
         $data['header_active'][] = $name == 'Outline report' ? 'active' : '';
