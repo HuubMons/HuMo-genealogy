@@ -3,8 +3,6 @@ class UsersModel extends AdminBaseModel
 {
     function update_user(): string
     {
-        $safeTextDb = new SafeTextDb();
-
         $alert = '';
         if (isset($_POST['change_user'])) {
             $usersql = "SELECT * FROM humo_users ORDER BY user_name";
