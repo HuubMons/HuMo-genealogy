@@ -319,7 +319,7 @@ if (!defined('ADMIN_PAGE')) {
                 <div class="form-check">
                     <input type="radio" value="no" name="add_tree" onchange="document.getElementById('step2').disabled = !this.checked;" class="form-check-input">
                     <label class="form-check-label" for="flexRadioDefault1">
-                        <?php printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $treetext2, $nr_persons); ?>
+                        <?php printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $tree_text2, $nr_persons); ?>
                     </label>
                 </div>
 

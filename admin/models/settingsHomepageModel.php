@@ -30,7 +30,6 @@ class SettingsHomepageModel extends AdminBaseModel
                 $stmt->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
                 $stmt->bindValue(':setting_id', $_POST[$dataDb->setting_id . 'id'], PDO::PARAM_INT);
                 $stmt->execute();
-                $this->dbh->query($sql);
             }
         }
 
