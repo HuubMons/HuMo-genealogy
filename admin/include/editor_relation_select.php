@@ -7,6 +7,7 @@ if (!defined('ADMIN_PAGE')) {
 $editor_cls = new Editor_cls;
 $personPrivacy = new PersonPrivacy();
 $personName = new PersonName();
+$validateGedcomnumber = new ValidateGedcomnumber();
 
 // *** Used to select adoption parents ***
 $adoption_id = '';
@@ -40,8 +41,8 @@ if (isset($_POST['search_quicksearch_parent'])) {
 }
 
 $search_person_id = '';
-if (isset($_POST['search_person_id'])) {
-    $search_person_id = $safeTextDb->safe_text_db($_POST['search_person_id']);
+if (isset($_POST['search_person_id']) && $validateGedcomnumber->validate($_POST['search_person_id'])) {
+    $search_person_id = $_POST['search_person_id'];
 }
 ?>
 
@@ -77,17 +78,17 @@ if ($search_quicksearch_parent != '') {
 
     $parents_result = $dbh->query($parents);
 } elseif ($search_person_id != '') {
-    // *** Search for man ***
-    $parents = "(SELECT * FROM humo_families, humo_persons
-        WHERE fam_man=pers_gedcomnumber AND pers_tree_id='" . $tree_id . "' AND fam_tree_id='" . $tree_id . "'
-        AND fam_man='$search_person_id')";
-
-    // *** Search for woman ***
-    $parents = "(SELECT * FROM humo_families, humo_persons
-        WHERE fam_woman=pers_gedcomnumber AND pers_tree_id='" . $tree_id . "' AND fam_tree_id='" . $tree_id . "'
-        AND fam_man='$search_person_id')";
-
-    $parents_result = $dbh->query($parents);
+    $parents = "SELECT humo_families.fam_gedcomnumber, humo_families.fam_man, humo_families.fam_woman, humo_persons.pers_gedcomnumber, humo_persons.pers_firstname, humo_persons.pers_prefix, humo_persons.pers_lastname, humo_persons.pers_tree_id
+         FROM humo_families
+         JOIN humo_persons ON (humo_families.fam_man = humo_persons.pers_gedcomnumber OR humo_families.fam_woman = humo_persons.pers_gedcomnumber)
+         WHERE humo_persons.pers_gedcomnumber = :search_person_id
+         AND humo_persons.pers_tree_id = :tree_id
+         AND humo_families.fam_tree_id = :tree_id";
+    $stmt = $dbh->prepare($parents);
+    $stmt->bindParam(':search_person_id', $search_person_id, PDO::PARAM_STR);
+    $stmt->bindParam(':tree_id', $tree_id, PDO::PARAM_STR);
+    $stmt->execute();
+    $parents_result = $stmt;
 } else {
     $parents = "SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' ORDER BY fam_gedcomnumber LIMIT 0,100";
     $parents_result = $dbh->query($parents);

@@ -4,6 +4,8 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+$validateGedcomnumber = new ValidateGedcomnumber;
+
 $place_item = 'connect_man';
 $form = 'form2';
 if ($_GET['person_item'] == 'woman') {
@@ -36,10 +38,15 @@ if (substr($_GET['person_item'], 0, 10) === 'add_child_') {
     $form = 'form_entire';
 }
 
-$man_gedcomnumber = $safeTextDb->safe_text_db($_GET['person']);
+$man_gedcomnumber = '';
+if ($validateGedcomnumber->validate($_GET['person'])) {
+    $man_gedcomnumber = $_GET['person'];
+}
+?>
 
-echo '<h1 class="center">' . __('Select person') . '</h1>';
+<h1 class="center"><?= __('Select person'); ?></h1>
 
+<?php
 if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10) !== 'add_child_') {
     echo '
         <script>
@@ -100,8 +107,8 @@ if (isset($_POST['search_quicksearch_man'])) {
 }
 
 $search_man_id = '';
-if (isset($_POST['search_man_id'])) {
-    $search_man_id = $safeTextDb->safe_text_db($_POST['search_man_id']);
+if (isset($_POST['search_man_id']) && $validateGedcomnumber->validate($_POST['search_man_id'])) {
+    $search_man_id = $_POST['search_man_id'];
 }
 ?>
 <form method="POST" action="index.php?page=editor_person_select&amp;person_item=<?= $_GET['person_item']; ?>&amp;person=<?= $_GET['person']; ?><?= isset($_GET['event_row']) ? '&amp;event_row=' . $_GET['event_row'] : ''; ?>&amp;tree_id=<?= $tree_id; ?>" style="display : inline;">
