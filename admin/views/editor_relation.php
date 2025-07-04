@@ -10,6 +10,7 @@
 
  $datePlace = new DatePlace();
  $languageDate = new LanguageDate;
+ $validateGedcomnumber = new ValidateGedcomnumber();
 ?>
 
 <div class="p-1 m-2 genealogy_search">
@@ -235,11 +236,11 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
         <?php
         if (isset($_GET['fam_remove']) || isset($_POST['fam_remove'])) {
-            if (isset($_GET['fam_remove'])) {
-                $fam_remove = $safeTextDb->safe_text_db($_GET['fam_remove']);
+            if (isset($_GET['fam_remove']) && $validateGedcomnumber->validate($_GET['fam_remove'])) {
+                $fam_remove = $_GET['fam_remove'];
             };
-            if (isset($_POST['marriage_nr'])) {
-                $fam_remove = $safeTextDb->safe_text_db($_POST['marriage_nr']);
+            if (isset($_POST['marriage_nr']) && $validateGedcomnumber->validate($_POST['marriage_nr'])) {
+                $fam_remove = $_POST['marriage_nr'];
             };
 
             $new_nr = $db_functions->get_family($fam_remove);

@@ -35,6 +35,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 @set_time_limit(3000);
+$validateGedcomnumber = new ValidateGedcomnumber();
 ?>
 
 <h1 class="center"><?= __('GEDCOM file export'); ?></h1>
@@ -131,14 +132,15 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 $search_quicksearch = $_SESSION['admin_search_quicksearch'];
             }
 
-            if (isset($_POST["search_id"]) and (!isset($_POST["search_quicksearch"]) or $_POST["search_quicksearch"] == '')) {
+            // *** search_id = person GEDCOM number ***
+            if (isset($_POST["search_id"]) && $validateGedcomnumber->validate($_POST['search_id']) && (!isset($_POST["search_quicksearch"]) or $_POST["search_quicksearch"] == '')) {
                 // if both name and ID given go by name
-                $search_id = $safeTextDb->safe_text_db($_POST['search_id']);
+                $search_id = $_POST['search_id'];
                 $_SESSION['admin_search_id'] = $search_id;
                 $_SESSION['admin_search_quicksearch'] = '';
                 $search_quicksearch = '';
             }
-            if (isset($_SESSION['admin_search_id'])) {
+            if (isset($_SESSION['admin_search_id']) && $validateGedcomnumber->validate($_SESSION['admin_search_id'])) {
                 $search_id = $_SESSION['admin_search_id'];
             }
             ?>
@@ -147,14 +149,14 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <div class="col-md-4"><?= __('Choose person'); ?></div>
                 <div class="col-md-4">
                     <!-- Search persons firstname/ lastname -->
-                    <input type="text" name="search_quicksearch" value="<?= $search_quicksearch; ?>" size="15" class="form-control form-control-sm">
+                    <input type="text" name="search_quicksearch" value="<?= $search_quicksearch; ?>" placeholder="<?= __('Name'); ?>" size="15" class="form-control form-control-sm">
                 </div>
             </div>
 
             <div class="row mb-2">
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
-                    <?= __('or ID:'); ?><br>
+                    <?= __('GEDCOM number (ID)'); ?><br>
                     <input type="text" name="search_id" value="<?= $search_id; ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
@@ -183,12 +185,19 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                             ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
                         $person_result = $dbh->query($person_qry);
                     } elseif ($search_id != '') {
+                        // TODO: check this. Input is now validated GEDCOM number.
                         if (substr($search_id, 0, 1) != "i" and substr($search_id, 0, 1) != "I") {
+                            //make entry "48" into "I48"
                             $search_id = "I" . $search_id;
-                        } //make entry "48" into "I48"
+                        }
                         $person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_id . "'";
-                        $person_result = $dbh->query($person_qry);
+                            WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :search_id";
+                        $person_stmt = $dbh->prepare($person_qry);
+                        $person_stmt->execute([
+                            ':tree_id' => $tree_id,
+                            ':search_id' => $search_id
+                        ]);
+                        $person_result = $person_stmt;
                         $idsearch = true;
                     } else {
                         $person_qry = "SELECT pers_tree_id, pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
@@ -358,7 +367,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         <?php
         // PMB - Start of dropdowns for 'Normal' export options
         // We need to set the default though for the opening form or the dropdowns don't appear...
-        if (isset($_POST['export_type']) && ($_POST['export_type']=='normal' || $_POST['export_type']=='minimal')) {
+        if (isset($_POST['export_type']) && ($_POST['export_type'] == 'normal' || $_POST['export_type'] == 'minimal')) {
             $export_type = $_POST['export_type'];
         } else {
             $export_type = 'normal';

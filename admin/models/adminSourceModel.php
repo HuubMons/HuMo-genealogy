@@ -30,26 +30,34 @@ class AdminSourceModel extends AdminBaseModel
     public function get_sources(): array
     {
         $safeTextDb = new SafeTextDb();
+        $validateGedcomnumber = new ValidateGedcomnumber();
 
         $editSource['search_gedcomnr'] = '';
-        if (isset($_POST['source_search_gedcomnr'])) {
-            $editSource['search_gedcomnr'] = $safeTextDb->safe_text_db($_POST['source_search_gedcomnr']);
+        if (isset($_POST['source_search_gedcomnr']) && $validateGedcomnumber->validate($_POST['source_search_gedcomnr'])) {
+            $editSource['search_gedcomnr'] = $_POST['source_search_gedcomnr'];
         }
         $editSource['search_text'] = '';
         if (isset($_POST['source_search'])) {
             $editSource['search_text'] = $safeTextDb->safe_text_db($_POST['source_search']);
         }
 
-        $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
+        $qry = "SELECT * FROM humo_sources WHERE source_tree_id = :tree_id";
+        $params = [':tree_id' => $this->tree_id];
+
         if ($editSource['search_gedcomnr']) {
-            $qry .= " AND source_gedcomnr LIKE '%" . $safeTextDb->safe_text_db($editSource['search_gedcomnr']) . "%'";
+            $qry .= " AND source_gedcomnr LIKE :gedcomnr";
+            $params[':gedcomnr'] = '%' . $editSource['search_gedcomnr'] . '%';
         }
         if ($editSource['search_text']) {
-            $qry .= " AND ( source_title LIKE '%" . $safeTextDb->safe_text_db($editSource['search_text']) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($editSource['search_text']) . "%') )";
+            $qry .= " AND (source_title LIKE :search_text OR (source_title = '' AND source_text LIKE :search_text2))";
+            $params[':search_text'] = '%' . $editSource['search_text'] . '%';
+            $params[':search_text2'] = '%' . $editSource['search_text'] . '%';
         }
-        $qry .= " ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,200";
+        $qry .= " ORDER BY IF(source_title != '', source_title, source_text) LIMIT 0,200";
 
-        $source_qry = $this->dbh->query($qry);
+        $stmt = $this->dbh->prepare($qry);
+        $stmt->execute($params);
+        $source_qry = $stmt;
 
         // Build array result here. Max. results 200.
         while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {

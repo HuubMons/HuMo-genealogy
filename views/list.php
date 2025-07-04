@@ -778,9 +778,9 @@ function name_qry($search_name, $search_part)
                 }
 
                 if ($personDb->pers_gedcomnumber == $famDb->fam_man) {
-                    $spouse_qry .= ' pers_gedcomnumber="' . $safeTextDb->safe_text_db($famDb->fam_woman) . '"';
+                    $spouse_qry .= ' pers_gedcomnumber="' . $famDb->fam_woman . '"';
                 } else {
-                    $spouse_qry .= ' pers_gedcomnumber="' . $safeTextDb->safe_text_db($famDb->fam_man) . '"';
+                    $spouse_qry .= ' pers_gedcomnumber="' . $famDb->fam_man . '"';
                 }
                 if ($selection['spouse_lastname']) {
                     if ($selection['spouse_lastname'] == __('...')) {

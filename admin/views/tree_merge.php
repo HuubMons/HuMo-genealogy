@@ -1184,7 +1184,7 @@ function show_pair($left_id, $right_id, $mode)
             <th style="width:375px;border-bottom:2px solid #a4a4a4"> <?= __('Person 2: '); ?></th>
         </tr>
         <tr style="background-color:#e6e6e6">
-            <td style="font-weight:bold"><?= __('Gedcom number:'); ?></td>
+            <td style="font-weight:bold"><?= __('GEDCOM number (ID)'); ?></td>
             <td><?= $leftDb->pers_gedcomnumber; ?></td>
             <td><?= $rightDb->pers_gedcomnumber; ?></td>
         </tr>

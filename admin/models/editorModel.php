@@ -354,6 +354,8 @@ class EditorModel extends AdminBaseModel
 
     public function update_editor()
     {
+        $validateGedcomnumber = new ValidateGedcomnumber;
+
         // *** Return deletion confim box in $confirm variabele ***
         $confirm = '';
 
@@ -1250,8 +1252,9 @@ class EditorModel extends AdminBaseModel
         }
 
         // *** Family disconnect ***
-        if (isset($_POST['fam_remove2'])) {
-            $fam_remove = $this->safeTextDb->safe_text_db($_POST['fam_remove3']);
+        // *** $_POST['fam_remove3'] = gedcomnumber of family to remove ***
+        if (isset($_POST['fam_remove2']) && $validateGedcomnumber->validate($_POST['fam_remove3'])) {
+            $fam_remove = $_POST['fam_remove3'];
 
             // *** Remove fams number from man and woman ***
             $new_nr = $this->db_functions->get_family($fam_remove);

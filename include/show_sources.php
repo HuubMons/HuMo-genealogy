@@ -10,15 +10,15 @@
  */
 function show_sources2(string $connect_kind, string $connect_sub_kind, string $connect_connect_id)
 {
-    global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $family_id, $uri_path;
+    global $db_functions, $tree_id, $user, $humo_option, $uri_path;
     global $pdf_source, $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
     global $source_footnote_connect_id, $source_combiner;
-    global $temp, $templ_person, $templ_relation; // *** PDF export ***
+    global $templ_person, $templ_relation; // *** PDF export ***
     global $data;
 
     $datePlace = new DatePlace();
     $processText = new ProcessText();
-    $safeTextDb = new SafeTextDb();
+    $validateGedcomber = new ValidateGedcomnumber();
 
     $source_array['text'] = '';
 
@@ -44,10 +44,10 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
             // *** PDF export. Jan. 2021: all sources are exported (used to be: only shared sources) ***
             if ($screen_mode == 'PDF' && $source_status === 'publish') {
                 // *** Show sources as footnotes ***
-                if (!isset($source_footnotes)) {
+                if (!isset($source_footnotes) && $validateGedcomber->validate($connectDb->connect_source_id)) {
                     $source_footnotes[] = $sourceDb->source_id;
                     $pdf_footnotes[] = $pdf->AddLink();
-                    $pdf_source[$safeTextDb->safe_text_db($connectDb->connect_source_id)] = $safeTextDb->safe_text_db($connectDb->connect_source_id);
+                    $pdf_source[$connectDb->connect_source_id] = $connectDb->connect_source_id;
                 }
 
                 // *** Show text "Source by person/Sources by person" ***
@@ -64,9 +64,9 @@ function show_sources2(string $connect_kind, string $connect_sub_kind, string $c
                 }
 
                 // *** Check if source is allready listed in the sourcelist ***
-                if (!in_array($sourceDb->source_id, $source_footnotes)) {
+                if (!in_array($sourceDb->source_id, $source_footnotes) && $validateGedcomber->validate($connectDb->connect_source_id)) {
                     // *** Add source in sourcelist ***
-                    $pdf_source[$safeTextDb->safe_text_db($connectDb->connect_source_id)] = $safeTextDb->safe_text_db($connectDb->connect_source_id);
+                    $pdf_source[$connectDb->connect_source_id] = $connectDb->connect_source_id;
                     $pdf_footnotes[] = $pdf->AddLink();
                     $source_footnotes[] = $sourceDb->source_id;
 

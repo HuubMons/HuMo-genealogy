@@ -163,8 +163,6 @@ class RelationsModel extends BaseModel
 
     public function checkInput(): void
     {
-        $safeTextDb = new SafeTextDb();
-
         if (isset($_POST["button_search_name1"]) || isset($_POST["button_search_id1"])) {
             $_SESSION["button_search_name1"] = 1;
         }
@@ -173,9 +171,9 @@ class RelationsModel extends BaseModel
         }
 
         // *** Link from person pop-up menu ***
-        if (isset($_GET['pers_id'])) {
+        if (isset($_GET['pers_id']) && is_numeric($_GET['pers_id'])) {
             $_SESSION["button_search_name1"] = 1;
-            $_SESSION["search_pers_id"] = $safeTextDb->safe_text_db($_GET['pers_id']);
+            $_SESSION["search_pers_id"] = $_GET['pers_id'];
             unset($_SESSION["search_pers_id2"]);
             $_SESSION['rel_search_name'] = '';
         }
@@ -269,10 +267,10 @@ class RelationsModel extends BaseModel
 
     public function getGEDCOMnumbers(): void
     {
-        $safeTextDb = new SafeTextDb();
+        $validateGedcomber = new ValidateGedcomnumber();
 
-        if (isset($_POST["search_gednr"]) && !isset($_POST["switch"])) {
-            $this->search_gednr1 = strtoupper($safeTextDb->safe_text_db($_POST['search_gednr']));
+        if (isset($_POST["search_gednr"]) && $validateGedcomber->validate($_POST['search_gednr'])  && !isset($_POST["switch"])) {
+            $this->search_gednr1 = strtoupper($_POST['search_gednr']);
             $_SESSION['rel_search_gednr'] = $this->search_gednr1;
         }
         if (isset($_SESSION['rel_search_gednr'])) {
@@ -282,8 +280,8 @@ class RelationsModel extends BaseModel
             $this->search_gednr1 = '';
         }
 
-        if (isset($_POST["search_gednr2"]) && !isset($_POST["switch"])) {
-            $this->search_gednr2 = strtoupper($safeTextDb->safe_text_db($_POST['search_gednr2']));
+        if (isset($_POST["search_gednr2"]) && $validateGedcomber->validate($_POST['search_gednr2'])  && !isset($_POST["switch"])) {
+            $this->search_gednr2 = strtoupper($_POST['search_gednr2']);
             $_SESSION['rel_search_gednr2'] = $this->search_gednr2;
         }
         if (isset($_SESSION['rel_search_gednr2'])) {

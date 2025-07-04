@@ -23,9 +23,11 @@ class AdminAddressModel extends AdminBaseModel
 
     public function get_addresses()
     {
+        $validateGedcomnuber = new ValidateGedcomnumber();
+
         $editAddress['search_gedcomnr'] = '';
-        if (isset($_POST['address_search_gedcomnr'])) {
-            $editAddress['search_gedcomnr'] = $this->safeTextDb->safe_text_db($_POST['address_search_gedcomnr']);
+        if (isset($_POST['address_search_gedcomnr']) && $validateGedcomnuber->validate($_POST['address_search_gedcomnr'])) {
+            $editAddress['search_gedcomnr'] = $_POST['address_search_gedcomnr'];
         }
         $editAddress['search_text'] = '';
         if (isset($_POST['address_search'])) {
