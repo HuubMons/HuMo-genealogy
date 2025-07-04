@@ -1,9 +1,17 @@
 <?php
 class OutlineReportController
 {
-    public function getOutlineReport($dbh, $tree_id, $humo_option)
+    private $config;
+
+    public function __construct($config)
     {
-        $OutlineReportModel = new OutlineReportModel($dbh);
+        $this->config = $config;
+    }
+
+    public function getOutlineReport(): array
+    {
+        $OutlineReportModel = new OutlineReportModel($this->config);
+
         $family_id = $OutlineReportModel->getFamilyId();
         $main_person = $OutlineReportModel->getMainPerson();
 
@@ -18,12 +26,12 @@ class OutlineReportController
         $number_roman = $OutlineReportModel->getNumberRoman();
         $number_generation = $OutlineReportModel->getNumberGeneration();
         $descendant_report = $OutlineReportModel->getDescendantReport();
-        $descendant_header = $OutlineReportModel->getDescendantHeader('Outline report', $tree_id, $family_id, $main_person);
+        $descendant_header = $OutlineReportModel->getDescendantHeader('Outline report', $family_id, $main_person);
 
         $show_details = $OutlineReportModel->getShowDetails();
         $show_date = $OutlineReportModel->getShowDate();
         $dates_behind_names = $OutlineReportModel->getDatesBehindNames();
-        $nr_generations = $OutlineReportModel->getNrGenerations($humo_option);
+        $nr_generations = $OutlineReportModel->getNrGenerations();
 
         return array(
             "family_id" => $family_id,
@@ -45,9 +53,5 @@ class OutlineReportController
 
             "title" => __('Family')
         );
-
-        // TODO use array merge
-        // *** Add array $person_data:
-        //$data = array_merge($data, $person_data);
     }
 }

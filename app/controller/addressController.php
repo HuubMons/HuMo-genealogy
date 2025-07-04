@@ -1,19 +1,18 @@
 <?php
 class AddressController
 {
-    private $db_functions, $user;
+    private $config;
 
-    public function __construct($db_functions, $user)
+    public function __construct($config)
     {
-        $this->db_functions = $db_functions;
-        $this->user = $user;
+        $this->config = $config;
     }
 
-    public function detail()
+    public function detail(): array
     {
-        $addressModel = new AddressModel($this->db_functions);
+        $addressModel = new AddressModel($this->config);
 
-        $authorised = $addressModel->getAddressAuthorised($this->user);
+        $authorised = $addressModel->getAddressAuthorised();
         $address = $addressModel->getById($_GET["id"]);
         $address_sources = $addressModel->getAddressSources($_GET["id"]);
         $address_connected_persons = $addressModel->getAddressConnectedPersons($_GET["id"]);

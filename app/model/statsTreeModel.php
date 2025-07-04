@@ -1,11 +1,15 @@
 <?php
-class StatsTreeModel
+class StatsTreeModel extends BaseModel
 {
-    public function get_data($dbh, $db_functions, $tree_id)
+    public function get_data(): array
     {
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $personLink = new PersonLink();
+
         // *** Most children in family ***
         $statistics['nr_children'] = 0; // *** minimum of 0 children ***
-        $res = $dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_children != ''");
+        $res = $this->dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children FROM humo_families WHERE fam_tree_id='" . $this->tree_id . "' AND fam_children != ''");
         while ($record = $res->fetch(PDO::FETCH_OBJ)) {
             $count_children = substr_count($record->fam_children, ';');
             $count_children += 1;
@@ -18,19 +22,18 @@ class StatsTreeModel
         }
 
         if ($statistics['nr_children'] != "0") {
-            $record = $db_functions->get_person($man_gedcomnumber);
-            $person_cls = new PersonCls($record);
-            $name = $person_cls->person_name($record);
+            $record_man = $this->db_functions->get_person($man_gedcomnumber);
+            $privacy = $personPrivacy->get_privacy($record_man);
+            $name = $personName->get_person_name($record_man, $privacy);
             $statistics['man'] = $name["standard_name"];
 
-            $record = $db_functions->get_person($woman_gedcomnumber);
-            $person_cls = new PersonCls($record);
-            $name = $person_cls->person_name($record);
+            $record_woman = $this->db_functions->get_person($woman_gedcomnumber);
+            $privacy = $personPrivacy->get_privacy($record_woman);
+            $name = $personName->get_person_name($record_woman, $privacy);
             $statistics['woman'] = $name["standard_name"];
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            //$statistics['url']=$person_cls->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
-            $statistics['url'] = $person_cls->person_url2($tree_id, $fam_gedcomnumber, '', '');
+            $statistics['url'] = $personLink->get_person_link($record_man);
         }
         return $statistics;
     }

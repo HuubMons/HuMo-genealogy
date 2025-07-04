@@ -1,20 +1,23 @@
 <?php
 class AdminRepositoryController
 {
+    protected $admin_config;
     private $editor_cls;
 
-    public function __construct()
+    public function __construct($admin_config)
     {
+        $this->admin_config = $admin_config;
+
         $this->editor_cls = new Editor_cls;
     }
 
-    public function detail($dbh, $tree_id, $db_functions)
+    public function detail(): array
     {
-        $editRepositoryModel = new AdminRepositoryModel($dbh);
-        $editRepositoryModel->set_repo_id();
-        $editRepositoryModel->update_repository($dbh, $tree_id, $db_functions, $this->editor_cls);
-        $editRepository['repo_id'] = $editRepositoryModel->get_repo_id();
+        $editRepositoryModel = new AdminRepositoryModel($this->admin_config);
 
+        $editRepositoryModel->set_repo_id();
+        $editRepositoryModel->update_repository($this->editor_cls);
+        $editRepository['repo_id'] = $editRepositoryModel->get_repo_id();
         $editRepository['editor_cls'] = $this->editor_cls;
 
         return $editRepository;

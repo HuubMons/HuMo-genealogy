@@ -10,6 +10,8 @@
 // TODO create seperate controller script.
 // Allready prepared controller. But can't use it yet because of tree_index and mainindex.
 $mainindex = new TreeIndexModel($dbh, $humo_option);
+// Doesn't work because of functions in functions. TreeIndexModel needs refactoring.
+//$mainindex = new TreeIndexModel($config);
 $tree_index["items"] = $mainindex->show_tree_index();
 
 

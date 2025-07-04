@@ -7,40 +7,53 @@
 
 class MarriageCls
 {
-    public $cls_marriage_Db = null;  // Database relation record
-    public $privacy = false;  // Relation privacy filter
+    private $cls_marriage_Db = null;  // Database relation record
+    private bool $privacy = false;  // Relation privacy filter
 
-    private $marriage_check = false;
-    private $relation_kind = ''; // Living together, non mariatal, etc.
-    private $relation_check = false; // true = relation/ not married.
+    private bool $marriage_check = false;
+    private $relation_kind = ''; // Living together, non marital, etc.
+    private bool $relation_check = false; // true = relation/ not married.
     private $addition = ''; // Add (married) "to" in marriage text.
+    private $presentation = 'standard';
 
+    private $datePlace, $processText;
+    
     public function __construct($familyDb = null, $privacy_man = null, $privacy_woman = null)
     {
-        $this->cls_marriage_Db = $familyDb; // Database relation record
-        $this->privacy = $this->set_privacy($privacy_man, $privacy_woman); // Set relation privacy
+        //parent::__construct($config);
+
+        $this->cls_marriage_Db = $familyDb;
+        $this->set_privacy($privacy_man, $privacy_woman);
+
+        $this->datePlace = new DatePlace();
+        $this->processText = new ProcessText();
+
     }
 
     /**
      * Relation privacy filter
      * If man OR woman privacy filter is set
      */
-    public function set_privacy($privacy_man, $privacy_woman)
+    private function set_privacy($privacy_man, $privacy_woman): void
     {
         global $user;
-        $privacy_marriage = false;
+        $this->privacy = false;
         if ($user["group_privacy"] == 'n') {
             if ($privacy_man) {
-                $privacy_marriage = true;
+                $this->privacy = true;
             }
             if ($privacy_woman) {
-                $privacy_marriage = true;
+                $this->privacy = true;
             }
         }
-        return $privacy_marriage;
     }
 
-    private function check_relation_type($fam_kind)
+    public function get_privacy(): bool
+    {
+        return $this->privacy;
+    }
+
+    private function check_relation_type($fam_kind): void
     {
         if ($fam_kind == 'living together') {
             $this->relation_check = true;
@@ -92,23 +105,21 @@ class MarriageCls
         }
     }
 
-    private function get_living_together($marriageDb, $user, $presentation, $screen_mode)
+    private function get_living_together($marriageDb, $user, $screen_mode): void
     {
         // TODO check globals
-        global $temp;
-        global $templ_relation;
-        global $text;
+        global $temp, $templ_relation, $text;
 
         // *** Living together ***
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_relation_date || $marriageDb->fam_relation_place) {
             // TODO check these variables.
-            $templ_relation["cohabit_date"] = date_place($marriageDb->fam_relation_date, $marriageDb->fam_relation_place);
+            $templ_relation["cohabit_date"] = $this->datePlace->date_place($marriageDb->fam_relation_date, $marriageDb->fam_relation_place);
             $temp = "cohabit_date";
             $temp_text .= $templ_relation["cohabit_date"];
         }
-        if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_relation_text)) {
+        if ($user["group_texts_fam"] == 'j' and $this->processText->process_text($marriageDb->fam_relation_text)) {
             if ($temp_text) {
                 //$temp_text.= ', ';
                 //if($temp) { $templ_relation[$temp].=", "; }
@@ -117,14 +128,14 @@ class MarriageCls
                     $templ_relation[$temp] .= ' ';
                 }
             }
-            //$templ_relation["cohabit_text"]=strip_tags(process_text($marriageDb->fam_relation_text));
-            $templ_relation["cohabit_text"] = process_text($marriageDb->fam_relation_text);
+            //$templ_relation["cohabit_text"]=strip_tags($this->processText->process_text($marriageDb->fam_relation_text));
+            $templ_relation["cohabit_text"] = $this->processText->process_text($marriageDb->fam_relation_text);
             $temp = "cohabit_text";
             $temp_text .= $templ_relation["cohabit_text"];
         }
 
         // *** Living together source ***
-        if ($presentation == 'standard') {
+        if ($this->presentation == 'standard') {
             $source_array = show_sources2("family", "fam_relation_source", $marriageDb->fam_gedcomnumber);
             if ($source_array) {
                 if ($screen_mode == 'PDF') {
@@ -167,21 +178,21 @@ class MarriageCls
         $temp = '';
         $fam_relation_end_place = '';
         if ($marriageDb->fam_relation_end_date || $fam_relation_end_place) {
-            $temp_text .= date_place($marriageDb->fam_relation_end_date, $fam_relation_end_place);
+            $temp_text .= $this->datePlace->date_place($marriageDb->fam_relation_end_date, $fam_relation_end_place);
             $templ_relation["cohabit_end"] = '';
             if (isset($templ_relation["cohabit_exist"])) {
                 $templ_relation["cohabit_end"] = '. ';
             }
-            $templ_relation["cohabit_end"] .= __('End living together') . ' ' . date_place($marriageDb->fam_relation_end_date, $fam_relation_end_place);
+            $templ_relation["cohabit_end"] .= __('End living together') . ' ' . $this->datePlace->date_place($marriageDb->fam_relation_end_date, $fam_relation_end_place);
             $temp = "cohabit_end";
         }
-        //if ($user["group_texts_fam"]=='j' AND isset($marriageDb->fam_relation_end_text) AND process_text($marriageDb->fam_relation_end_text)){
+        //if ($user["group_texts_fam"]=='j' AND isset($marriageDb->fam_relation_end_text) AND $this->processText->process_text($marriageDb->fam_relation_end_text)){
         //	if ($temp_text){
         //		$temp_text.= ', ';
         //		if($temp) { $templ_relation[$temp].=", "; }
         //	}
-        //	$temp_text.= process_text($marriageDb->fam_relation_end_text);
-        //	//$templ_relation["cohabit_text"]=process_text($marriageDb->fam_relation_end_text);
+        //	$temp_text.= $this->processText->process_text($marriageDb->fam_relation_end_text);
+        //	//$templ_relation["cohabit_text"]=$this->processText->process_text($marriageDb->fam_relation_end_text);
         //	//$temp="cohabit_text";
         //}
         // *** Living together source ***
@@ -199,40 +210,38 @@ class MarriageCls
         }
     }
 
-    private function get_married_notice($marriageDb, $humo_option, $user,  $presentation, $screen_mode)
+    private function get_married_notice($marriageDb, $humo_option, $user,  $screen_mode): void
     {
         // TODO check globals
-        global $temp;
-        global $templ_relation;
-        global $text;
+        global $temp, $templ_relation, $text;
 
         // *** Married Notice ***
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_notice_date || $marriageDb->fam_marr_notice_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_notice_date_hebnight;
             }
-            $temp_text .= date_place($marriageDb->fam_marr_notice_date, $marriageDb->fam_marr_notice_place, $nightfall);
-            $templ_relation["prew_date"] = date_place($marriageDb->fam_marr_notice_date, $marriageDb->fam_marr_notice_place, $nightfall);
+            $temp_text .= $this->datePlace->date_place($marriageDb->fam_marr_notice_date, $marriageDb->fam_marr_notice_place, $nightfall);
+            $templ_relation["prew_date"] = $this->datePlace->date_place($marriageDb->fam_marr_notice_date, $marriageDb->fam_marr_notice_place, $nightfall);
             $temp = "prew_date";
         }
-        if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_marr_notice_text)) {
+        if ($user["group_texts_fam"] == 'j' and $this->processText->process_text($marriageDb->fam_marr_notice_text)) {
             if ($temp_text) {
                 $temp_text .= ' ';
                 if ($temp) {
                     $templ_relation[$temp] .= " ";
                 }
             }
-            $temp_text .= process_text($marriageDb->fam_marr_notice_text);
-            //$templ_relation["prew_text"]=strip_tags(process_text($marriageDb->fam_marr_notice_text));
-            $templ_relation["prew_text"] = process_text($marriageDb->fam_marr_notice_text);
+            $temp_text .= $this->processText->process_text($marriageDb->fam_marr_notice_text);
+            //$templ_relation["prew_text"]=strip_tags($this->processText->process_text($marriageDb->fam_marr_notice_text));
+            $templ_relation["prew_text"] = $this->processText->process_text($marriageDb->fam_marr_notice_text);
             $temp = "prew_text";
         }
 
         // *** Married notice source ***
-        if ($presentation == 'standard') {
+        if ($this->presentation == 'standard') {
             $source_array = show_sources2("family", "fam_marr_notice_source", $marriageDb->fam_gedcomnumber);
             if ($source_array) {
                 if ($screen_mode == 'PDF') {
@@ -264,22 +273,22 @@ class MarriageCls
         }
     }
 
-    private function get_marriage($marriageDb, $humo_option, $parent1Db, $user, $presentation, $screen_mode)
+    private function get_marriage($marriageDb, $humo_option, $parent1Db, $user, $screen_mode): void
     {
         // TODO check globals
-        global $temp;
-        global $templ_relation;
-        global $text;
+        global $temp, $templ_relation, $text;
+
+        $witness = new Witness;
 
         // *** Marriage ***
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_date || $marriageDb->fam_marr_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_date_hebnight;
             }
-            $templ_relation["wedd_date"] = date_place($marriageDb->fam_marr_date, $marriageDb->fam_marr_place, $nightfall);
+            $templ_relation["wedd_date"] = $this->datePlace->date_place($marriageDb->fam_marr_date, $marriageDb->fam_marr_place, $nightfall);
 
             // *** Show age of parent1 when married. Only show age if dates are available. ***
             //if (isset($parent1Db->pers_bapt_date) OR isset($parent1Db->pers_birth_date)){
@@ -298,18 +307,18 @@ class MarriageCls
             $temp = "wedd_authority";
             $temp_text .= $templ_relation["wedd_authority"];
         }
-        if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_marr_text)) {
+        if ($user["group_texts_fam"] == 'j' and $this->processText->process_text($marriageDb->fam_marr_text)) {
             if ($temp_text) {
                 $temp_text .= ' ';
                 if ($temp) {
                     $templ_relation[$temp] .= " ";
                 }
             }
-            //$templ_relation["wedd_text"]=strip_tags(process_text($marriageDb->fam_marr_text));
-            $templ_relation["wedd_text"] = process_text($marriageDb->fam_marr_text);
+            //$templ_relation["wedd_text"]=strip_tags($this->processText->process_text($marriageDb->fam_marr_text));
+            $templ_relation["wedd_text"] = $this->processText->process_text($marriageDb->fam_marr_text);
 
             // *** Source by family text ***
-            if ($presentation == 'standard') {
+            if ($this->presentation == 'standard') {
                 $source_array = show_sources2("family", "family_text", $marriageDb->fam_gedcomnumber);
                 if ($source_array) {
                     $templ_relation["wedd_text"] .= $source_array['text'];
@@ -321,7 +330,7 @@ class MarriageCls
         }
         // *** Aldfaer/ HuMo-genealogy: show witnesses ***
         if ($marriageDb->fam_gedcomnumber) {
-            $text_array = witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR');
+            $text_array = $witness->witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR');
             if ($text_array) {
                 if ($temp) {
                     $templ_relation[$temp] .= ' ';
@@ -346,7 +355,7 @@ class MarriageCls
         }
 
         // *** Marriage source ***
-        if ($presentation == 'standard') {
+        if ($this->presentation == 'standard') {
             $source_array = show_sources2("family", "fam_marr_source", $marriageDb->fam_gedcomnumber);
             if ($source_array) {
                 if ($screen_mode == 'PDF') {
@@ -402,26 +411,24 @@ class MarriageCls
         }
     }
 
-    private function get_married_church_notice($marriageDb, $humo_option, $user, $presentation, $screen_mode)
+    private function get_married_church_notice($marriageDb, $humo_option, $user, $screen_mode): void
     {
         // TODO check globals
-        global $temp;
-        global $templ_relation;
-        global $text;
+        global $temp, $templ_relation, $text;
 
         // *** Married church notice ***
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_church_notice_date || $marriageDb->fam_marr_church_notice_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_church_notice_date_hebnight;
             }
-            $templ_relation["prec_date"] = date_place($marriageDb->fam_marr_church_notice_date, $marriageDb->fam_marr_church_notice_place, $nightfall);
+            $templ_relation["prec_date"] = $this->datePlace->date_place($marriageDb->fam_marr_church_notice_date, $marriageDb->fam_marr_church_notice_place, $nightfall);
             $temp = "prec_date";
             $temp_text .= $templ_relation["prec_date"];
         }
-        if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_marr_church_notice_text)) {
+        if ($user["group_texts_fam"] == 'j' and $this->processText->process_text($marriageDb->fam_marr_church_notice_text)) {
             if ($temp_text) {
                 //$temp_text.= ', ';
                 //if($temp) { $templ_relation[$temp].=", "; }
@@ -430,14 +437,14 @@ class MarriageCls
                     $templ_relation[$temp] .= " ";
                 }
             }
-            //$templ_relation["prec_text"]= strip_tags(process_text($marriageDb->fam_marr_church_notice_text));
-            $templ_relation["prec_text"] = process_text($marriageDb->fam_marr_church_notice_text);
+            //$templ_relation["prec_text"]= strip_tags($this->processText->process_text($marriageDb->fam_marr_church_notice_text));
+            $templ_relation["prec_text"] = $this->processText->process_text($marriageDb->fam_marr_church_notice_text);
             $temp = "prec_text";
             $temp_text .= $templ_relation["prec_text"];
         }
 
         // *** Married church notice source ***
-        if ($presentation == 'standard') {
+        if ($this->presentation == 'standard') {
             $source_array = show_sources2("family", "fam_marr_church_notice_source", $marriageDb->fam_gedcomnumber);
             if ($source_array) {
                 if ($screen_mode == 'PDF') {
@@ -469,26 +476,26 @@ class MarriageCls
         }
     }
 
-    private function get_married_church($marriageDb, $humo_option, $user, $presentation, $screen_mode)
+    private function get_married_church($marriageDb, $humo_option, $user, $screen_mode): void
     {
         // TODO check globals
-        global $temp;
-        global $templ_relation;
-        global $text;
+        global $temp, $templ_relation, $text;
+
+        $witness = new Witness;
 
         // *** Married church ***
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_marr_church_date || $marriageDb->fam_marr_church_place) {
-            $nightfall = "";
+            $nightfall = '';
             if ($humo_option['admin_hebnight'] == "y") {
                 $nightfall = $marriageDb->fam_marr_church_date_hebnight;
             }
-            $templ_relation["chur_date"] = date_place($marriageDb->fam_marr_church_date, $marriageDb->fam_marr_church_place, $nightfall);
+            $templ_relation["chur_date"] = $this->datePlace->date_place($marriageDb->fam_marr_church_date, $marriageDb->fam_marr_church_place, $nightfall);
             $temp = "chur_date";
             $temp_text .= $templ_relation["chur_date"];
         }
-        if ($user["group_texts_fam"] == 'j' and process_text($marriageDb->fam_marr_church_text)) {
+        if ($user["group_texts_fam"] == 'j' and $this->processText->process_text($marriageDb->fam_marr_church_text)) {
             if ($temp_text) {
                 //$temp_text.= ', ';
                 //if($temp) { $templ_relation[$temp].=", "; }
@@ -497,14 +504,14 @@ class MarriageCls
                     $templ_relation[$temp] .= " ";
                 }
             }
-            //$templ_relation["chur_text"]=strip_tags(process_text($marriageDb->fam_marr_church_text));
-            $templ_relation["chur_text"] = process_text($marriageDb->fam_marr_church_text);
+            //$templ_relation["chur_text"]=strip_tags($this->processText->process_text($marriageDb->fam_marr_church_text));
+            $templ_relation["chur_text"] = $this->processText->process_text($marriageDb->fam_marr_church_text);
             $temp = "chur_text";
             $temp_text .= $templ_relation["chur_text"];
         }
         // *** Aldfaer/ HuMo-genealogy show witnesses ***
         if ($marriageDb->fam_gedcomnumber) {
-            $text_array = witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR_REL');
+            $text_array = $witness->witness($marriageDb->fam_gedcomnumber, 'ASSO', 'MARR_REL');
             if ($text_array) {
                 if ($temp) {
                     $templ_relation[$temp] .= ' ';
@@ -529,7 +536,7 @@ class MarriageCls
         }
 
         // *** Married church source ***
-        if ($presentation == 'standard') {
+        if ($this->presentation == 'standard') {
             $source_array = show_sources2("family", "fam_marr_church_source", $marriageDb->fam_gedcomnumber);
             if ($source_array) {
                 if ($screen_mode == 'PDF') {
@@ -567,12 +574,10 @@ class MarriageCls
         }
     }
 
-    private function get_divorce($marriageDb, $user, $presentation, $screen_mode)
+    private function get_divorce($marriageDb, $user, $screen_mode): void
     {
         // TODO check globals
-        global $temp;
-        global $templ_relation;
-        global $text;
+        global $temp, $templ_relation, $text;
 
         // Temporary needed to check for divorce.
         global $temp_text;
@@ -581,7 +586,7 @@ class MarriageCls
         $temp_text = '';
         $temp = '';
         if ($marriageDb->fam_div_date || $marriageDb->fam_div_place) {
-            $templ_relation["devr_date"] = date_place($marriageDb->fam_div_date, $marriageDb->fam_div_place);
+            $templ_relation["devr_date"] = $this->datePlace->date_place($marriageDb->fam_div_date, $marriageDb->fam_div_place);
             $temp = "devr_date";
             $temp_text .= $templ_relation["devr_date"];
         }
@@ -590,23 +595,25 @@ class MarriageCls
             $temp = "devr_authority";
             $temp_text .= $templ_relation["devr_authority"];
         }
-        if ($user["group_texts_fam"] == 'j' and $marriageDb->fam_div_text != 'DIVORCE' and process_text($marriageDb->fam_div_text)) {
+        if ($user["group_texts_fam"] == 'j' and $marriageDb->fam_div_text != 'DIVORCE' and $this->processText->process_text($marriageDb->fam_div_text)) {
             if ($temp_text) {
                 //$temp_text.= ', ';
-                //if($temp) { $templ_relation[$temp].=", "; }
+                //if($temp) {
+                //  $templ_relation[$temp].=", ";
+                //}
                 $temp_text .= ' ';
                 if ($temp) {
                     $templ_relation[$temp] .= " ";
                 }
             }
-            //$templ_relation["devr_text"]=strip_tags(process_text($marriageDb->fam_div_text));
-            $templ_relation["devr_text"] = process_text($marriageDb->fam_div_text);
+            //$templ_relation["devr_text"]=strip_tags($this->processText->process_text($marriageDb->fam_div_text));
+            $templ_relation["devr_text"] = $this->processText->process_text($marriageDb->fam_div_text);
             $temp = "devr_text";
             $temp_text .= $templ_relation["devr_text"];
         }
 
         // *** Divorse source ***
-        if ($presentation == 'standard') {
+        if ($this->presentation == 'standard') {
             $source_array = show_sources2("family", "fam_div_source", $marriageDb->fam_gedcomnumber);
             if ($source_array) {
                 if ($screen_mode == 'PDF') {
@@ -643,18 +650,20 @@ class MarriageCls
     }
 
 
-
-    // ***************************************************
-    // *** Show marriage                               ***
-    // ***************************************************
+    /**
+     * Show marriage
+     */
     public function marriage_data($marriageDb = '', $number = '0', $presentation = 'standard')
     {
-        global $dbh, $db_functions, $dataDb, $uri_path, $humo_option, $language, $user, $screen_mode;
-        global $parent1Db, $parent2Db;
-        global $relation_check; // Global still needed to show a proper marriage or relation text when age is calculated in personCls.php.
+        global $db_functions, $humo_option, $user, $screen_mode, $parent1Db, $parent2Db;
+        global $relation_check; // Global still needed to show a proper marriage or relation text when age is calculated in personData.php.
 
         // TODO check globals in new functions.
         global $temp, $templ_relation, $text;
+
+        $languageEventName = new LanguageEventName;
+
+        $this->presentation = $presentation;
 
         $templ_relation = array($marriageDb);  //reset array
 
@@ -662,31 +671,28 @@ class MarriageCls
             $marriageDb = $this->cls_marriage_Db;
         }
 
-        // *** Open a person class for witnesses ***
-        $person_cls = new PersonCls;
-
         $text = '';
 
         $this->addition = __(' to: '); // Default addition.
         $this->check_relation_type($marriageDb->fam_kind);
 
-        // This variable is also used to show a proper marriage or relation text when age is calculated in personCls.php.
+        // This variable is also used to show a proper marriage or relation text when age is calculated in personData.php.
         // Variable is global now.
         $relation_check = $this->relation_check;
 
-        $this->get_living_together($marriageDb, $user, $presentation, $screen_mode);
+        $this->get_living_together($marriageDb, $user, $screen_mode);
 
-        $this->get_married_notice($marriageDb, $humo_option, $user,  $presentation, $screen_mode);
+        $this->get_married_notice($marriageDb, $humo_option, $user,  $screen_mode);
 
-        $this->get_marriage($marriageDb, $humo_option, $parent1Db, $user, $presentation, $screen_mode);
+        $this->get_marriage($marriageDb, $humo_option, $parent1Db, $user, $screen_mode);
 
-        $this->get_married_church_notice($marriageDb, $humo_option, $user, $presentation, $screen_mode);
+        $this->get_married_church_notice($marriageDb, $humo_option, $user, $screen_mode);
 
-        $this->get_married_church($marriageDb, $humo_option, $user, $presentation, $screen_mode);
+        $this->get_married_church($marriageDb, $humo_option, $user, $screen_mode);
 
         // TODO improve code to check if divorce is used. Use: $templ_relation["devr_exist"]?
         global $temp_text;
-        $this->get_divorce($marriageDb, $user, $presentation, $screen_mode);
+        $this->get_divorce($marriageDb, $user, $screen_mode);
 
 
         // *** No relation data (marriage without date), show standard text ***
@@ -750,7 +756,7 @@ class MarriageCls
 
         // *** Show media/ pictures ***
         $showMedia = new ShowMedia;
-        $result = $showMedia->show_media('family', $marriageDb->fam_gedcomnumber); // *** This function can be found in file: showMedia.php! ***
+        $result = $showMedia->show_media('family', $marriageDb->fam_gedcomnumber);
         $text .= $result[0];
         if (isset($templ_relation)) $templ_relation = array_merge((array)$templ_relation, (array)$result[1]);
         else $templ_relation = $result[1];
@@ -770,7 +776,7 @@ class MarriageCls
             //URL/ Internet link
             $text .= '<b>' . __('URL/ Internet link') . '</b> <a href="' . $urlDb->event_event . '" target="_blank">' . $urlDb->event_event . '</a>';
             if ($urlDb->event_text) {
-                $text .= ' ' . process_text($urlDb->event_text);
+                $text .= ' ' . $this->processText->process_text($urlDb->event_text);
             }
             $text .= "<br>\n";
         }
@@ -802,11 +808,11 @@ class MarriageCls
                         $event_text = '';
                     }
 
-                    $text .= '<b>' . language_event($event_gedcom) . '</b>';
+                    $text .= '<b>' . $languageEventName->language_event($event_gedcom) . '</b>';
                     if (isset($templ_relation["event" . $i . "_ged"])) {
-                        $templ_relation["event" . $i . "_ged"] .= language_event($event_gedcom);
+                        $templ_relation["event" . $i . "_ged"] .= $languageEventName->language_event($event_gedcom);
                     } else {
-                        $templ_relation["event" . $i . "_ged"] = language_event($event_gedcom);
+                        $templ_relation["event" . $i . "_ged"] = $languageEventName->language_event($event_gedcom);
                     }
 
                     // *** Show event kind ***
@@ -815,16 +821,16 @@ class MarriageCls
                         $text .= $templ_relation["event" . $i . "_event"];
                     }
                     if ($eventDb->event_date or $eventDb->event_place) {
-                        $templ_relation["event" . $i . "_date"] = ' ' . date_place($eventDb->event_date, $eventDb->event_place);
+                        $templ_relation["event" . $i . "_date"] = ' ' . $this->datePlace->date_place($eventDb->event_date, $eventDb->event_place);
                         $text .= $templ_relation["event" . $i . "_date"];
                     }
                     if ($event_text) {
-                        $templ_relation["event" . $i . "_text"] = ' ' . process_text($eventDb->event_text);
+                        $templ_relation["event" . $i . "_text"] = ' ' . $this->processText->process_text($eventDb->event_text);
                         $text .= $templ_relation["event" . $i . "_text"];
                     }
 
                     // *** Sources by a family event ***
-                    if ($presentation == 'standard') {
+                    if ($this->presentation == 'standard') {
                         $source_array = show_sources2("family", "fam_event_source", $eventDb->event_id);
                         if ($source_array) {
                             if ($screen_mode == 'PDF') {
@@ -843,15 +849,15 @@ class MarriageCls
             }
         }
 
-        // **********************************
-        // *** Concatenate marriage texts ***
-        // **********************************
+        /**
+         * Concatenate marriage texts
+         */
 
         // Process english 1st, 2nd, 3rd and 4th marriage.
-        // TODO Check code. 1st, 2nd is only show by children. Script also in personCls.php.
+        // TODO Check code. 1st, 2nd is only show by children. Script also in personData.php.
         // Used for descendant report.
         $relation_number = '';
-        if ($presentation == 'short' || $presentation == 'shorter') {
+        if ($this->presentation == 'short' || $this->presentation == 'shorter') {
             if ($number == '1') {
                 $relation_number = __('1st');
             }
@@ -867,11 +873,11 @@ class MarriageCls
 
             if ($this->marriage_check == true) {
                 if ($number) {
-                    $relation_number .= ' ' . __('marriage');     // marriage
+                    $relation_number .= ' ' . __('marriage');
                     $this->relation_kind = '';
                     $this->addition = __(' to: ');
                 } else {
-                    $relation_number .= __('Married ');       // Married
+                    $relation_number .= __('Married ');
                     $this->relation_kind = '';
                     $this->addition = __(' to: ');
                 }
@@ -879,11 +885,11 @@ class MarriageCls
 
             if ($relation_check == true) {
                 if ($number) {
-                    $relation_number .= ' ' . __('related');   // relation
+                    $relation_number .= ' ' . __('related');
                     $this->relation_kind = '';
                     $this->addition = __(' to: ');
                 } else {
-                    $relation_number = ucfirst(__('related')) . ' ';      // Relation
+                    $relation_number = ucfirst(__('related')) . ' ';
                     $this->relation_kind = '';
                     $this->addition = __(' to: ');
                 }
@@ -892,22 +898,22 @@ class MarriageCls
             if ($relation_check == false && $this->marriage_check == false) {
                 if ($number) {
                     // *** Other text in 2nd marriage: 2nd marriage Hubertus [Huub] Mons ***
-                    if ($presentation == 'shorter') {
-                        $relation_number .= ' ' . __('marriage/ relation');   // relation
+                    if ($this->presentation == 'shorter') {
+                        $relation_number .= ' ' . __('marriage/ relation');
                     } else {
-                        $relation_number .= ' ' . __('married/ related');   // relation
+                        $relation_number .= ' ' . __('married/ related');
                     }
                     $this->relation_kind = '';
                     $this->addition = __(' to: ');
                 } else {
-                    $relation_number .= __('Married/ Related');      // Relation
+                    $relation_number .= __('Married/ Related');
                     $this->relation_kind = '';
                     $this->addition = __(' to: ');
                 }
             }
         }
 
-        if ($presentation == 'short' || $presentation == 'shorter') {
+        if ($this->presentation == 'short' || $this->presentation == 'shorter') {
             $text = '<b>' . $relation_number . $this->relation_kind . '</b>';
             $templ_relation = array();  //reset array - don't need it
             $templ_relation['relnr_rel'] = $relation_number . $this->relation_kind;
@@ -919,7 +925,7 @@ class MarriageCls
             // Show end of relation here?
 
             // *** No addition in text: 2nd marriage Hubertus [Huub] Mons ***
-            if ($presentation == 'shorter') {
+            if ($this->presentation == 'shorter') {
                 $this->addition = '';
             }
         } else {
@@ -933,7 +939,7 @@ class MarriageCls
             $templ_relation["rel_add"] = $this->addition;
         }
 
-        //if ($presentation == 'short' or $presentation == 'shorter') {
+        //if ($this->presentation == 'short' or $this->presentation == 'shorter') {
         //    $templ_relation["rel_add"] = " " . $this->addition;
         //} else {
         //    $templ_relation["rel_add"] = "\n" . $this->addition;
@@ -948,6 +954,5 @@ class MarriageCls
             return $templ_relation;
         }
         return null;
-    } // *** End of marriage ***
-
-} // End of class
+    }
+}

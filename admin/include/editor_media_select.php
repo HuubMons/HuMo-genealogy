@@ -4,8 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(__DIR__ . "/../include/media_inc.php");
-include_once(__DIR__ . "/../../include/showMedia.php");
 $showMedia = new showMedia();
 ?>
 
@@ -79,7 +77,7 @@ if (file_exists($array_picture_folder[0])) {
 
     $search_quicksearch = '';
     if (isset($_POST['search_quicksearch'])) {
-        $search_quicksearch = safe_text_db($_POST['search_quicksearch']);
+        $search_quicksearch = $safeTextDb->safe_text_db($_POST['search_quicksearch']);
     }
 ?>
     <form method="POST" action="index.php?page=editor_media_select&form=<?= $selected_form . '&event_id=' . $event_id; ?>">

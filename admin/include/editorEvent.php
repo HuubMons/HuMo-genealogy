@@ -18,6 +18,7 @@ class EditorEvent
     //	return $d;
     //}
 
+    // TODO create class, also use for include/witness.php.
     // *** Show event_kind text ***
     function event_text($event_kind, $event_gedcom = '', $event_event_extra = '')
     {
@@ -84,7 +85,6 @@ class EditorEvent
         }
 
         // *** Also show date and place ***
-        //if ($data_listDb->event_date) $event_event.=', '.date_place($data_listDb->event_date,$data_listDb->event_place);
         if ($data_listDb->event_date) {
             $event_event .= ', ' . hideshow_date_place($data_listDb->event_date, $data_listDb->event_place);
         }
@@ -114,14 +114,14 @@ class EditorEvent
     // *** REMARK: also used in source editor to add a photo ***
     function show_event($event_connect_kind, $event_connect_id, $event_kind)
     {
-        global $tree_id, $page, $field_date, $field_place, $field_text, $field_text_medium;
+        global $tree_id, $page, $field_place, $field_text, $field_text_medium;
         global $editor_cls, $path_prefix, $tree_pict_path, $humo_option, $field_popup;
         global $db_functions;
 
-        include_once(__DIR__ . "/../include/media_inc.php");
-        include_once(__DIR__ . '/../../include/give_media_path.php');
-        include_once(__DIR__ . "/../../include/showMedia.php");
-        $showMedia = new showMedia();
+        $showMedia = new ShowMedia();
+        $mediaPath = new MediaPath();
+        $languagePersonName = new LanguagePersonName();
+        $languageEventName = new LanguageEventName();
 
         $text = '';
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
@@ -196,7 +196,7 @@ class EditorEvent
                 " . $hebtext . "
                 ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'name') {
-            $hebclause = "";
+            $hebclause = '';
             if ($humo_option['admin_hebname'] == 'y') {
                 $hebclause = " AND event_gedcom!='_HEBN' ";
             }
@@ -229,8 +229,8 @@ class EditorEvent
         } elseif ($event_kind == 'religion') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='religion' ORDER BY event_order";
         } elseif ($event_kind == 'picture') {
-            $search_picture = "";
-            $searchpic = "";
+            $search_picture = '';
+            $searchpic = '';
             if (isset($_POST['searchpic'])) {
                 $search_picture = $_POST['searchpic'];
             }
@@ -267,223 +267,10 @@ class EditorEvent
         }
 
 
-        // *** Show events by person ***
-        if ($event_kind == 'person') {
-            //$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
-            $link = 'event_person_link';
-            ?>
-            <tr class="table_header_large" id="event_person_link">
-                <td><?= __('Events'); ?></td>
-                <td colspan="2">
-
-                    <!-- Add person event -->
-                    <div class="row">
-                        <div class="col-4">
-                            <select size="1" name="event_kind" class="form-select form-select-sm">
-                                <option value="event"><?= __('Event'); ?></option>
-                                <option value="adoption"><?= __('Adoption'); ?></option>
-                                <option value="URL"><?= __('URL/ Internet link'); ?></option>
-                                <option value="person_colour_mark"><?= __('Colour mark by person'); ?></option>
-                            </select>
-                        </div>
-                        <div class="col-3">
-                            <input type="submit" name="person_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-outline-primary">
-                        </div>
-
-                        <div class="col-1">
-                            <!-- Help popup -->
-                            <?php $rtlmarker = "ltr"; ?>
-                            &nbsp;
-                            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_event_person',0,0)" onmouseout="mclosetime()">
-                                    <img src="../images/help.png" height="16" width="16">
-                                </a>
-                                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_event_person" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                    <?= __('For items like:') . ' ' . __('Event') . ', ' . __('baptized as child') . ', ' . __('depart') . ' ' . __('etc.'); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </td>
-            </tr>
-
-        <?php
-        }
-
-        // *** Show events by family ***
-        if ($event_kind == 'family') {
-            $link = 'event_family_link';
-        ?>
-            <tr class="table_header_large" id="event_family_link">
-                <td><?= __('Events'); ?></td>
-                <td colspan="2">
-
-                    <div class="row">
-                        <div class="col-4">
-                            <select size="1" name="event_kind" class="form-select form-select-sm">
-                                <option value="event"><?= __('Event'); ?></option>
-                                <option value="URL"><?= __('URL/ Internet link'); ?></option>
-                            </select>
-                        </div>
-
-                        <div class="col-3">
-                            <input type="submit" name="marriage_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-outline-primary">
-                        </div>
-
-                        <div class="col-3">
-                            <!-- Help popup -->
-                            <?php $rtlmarker = "ltr"; ?>
-                            &nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_event_family',0,0)" onmouseout="mclosetime()">
-                                    <img src="../images/help.png" height="16" width="16">
-                                </a>
-                                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_event_family" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                    <?= __('For items like:') . ' ' . __('Event') . ', ' . __('Marriage contract') . ', ' . __('Marriage license') . ', ' . __('etc.'); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Show name by person ***
-        if ($event_kind == 'name') {
-            // *** Nickname, alias, adopted name, hebrew name, etc. ***
-            // *** Remark: in editorModel.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
-            $link = 'name';
-        ?>
-            <tr class="table_header_large">
-                <td></td>
-                <td colspan="2">
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <select size="1" name="event_gedcom_add" id="event_gedcom_add" class="form-select form-select-sm">
-                                <?php event_selection(''); ?>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="text" name="event_event_name" id="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="submit" name="event_add_name" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
-                        </div>
-                    </div>
-
-                    <!-- Test to add line inside table -->
-                    <!--
-                    <button type="button" onclick="myFunction()">Test</button>
-
-                    //https://www.w3schools.com/jsref/met_table_insertrow.asp
-                    <script>
-                    function myFunction() {
-                    var table = document.getElementById("table_editor");
-                    var row = table.insertRow(8);
-
-                    //APEND!!!!!!
-                    //var row = table.insertRow(-1);
-                    //var cell = row.insertCell(-1);
-
-                    var cell1 = row.insertCell(0);
-                    var cell2 = row.insertCell(1);
-                    var cell3 = row.insertCell(2);
-                    var cell4 = row.insertCell(3);
-                    //row.id = "xyz"; //you can add your id like this
-
-                    var str = document.getElementById("event_gedcom_add");
-                    var stra = str.value;
-
-                    var str2 = document.getElementById("event_event_name");
-                    var str2a = str2.value;
-
-
-                    // https://www.w3schools.com/js/tryit.asp?filename=tryjs_ajax_database
-                    const xhttp = new XMLHttpRequest();
-                    xhttp.onload = function() {
-                        cell2.innerHTML = this.responseText;
-                    }
-                    xhttp.open("GET", "include/editor_ajax.php?event_gedcom_add="+stra+"&event_event_name="+str2a);
-                    xhttp.send();
-
-                    cell1.innerHTML = "NEW CELL1";
-                    //cell2.innerHTML = "NEW CELL2";
-
-                    var event_gedcom_add = document.getElementById("event_gedcom_add");
-                    var value = event_gedcom_add.value;
-                    cell3.innerHTML = value;
-
-                    cell4.innerHTML = "NEW CELL4";
-                    }
-                    </script>
-                    -->
-
-                </td>
-            </tr>
-
-        <?php
-        }
-
-        // *** Show profession by person ***
-        if ($event_kind == 'profession') {
-            $link = 'profession';
-        ?>
-            <tr class="table_header_large" id="profession">
-                <td style="border-right:0px;">
-                    <b><?= __('Profession'); ?></b>
-                </td>
-                <td colspan="2">
-                    <?php
-                    // *** Skip for newly added person ***
-                    // *** Remark: in editorModel.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
-                    if (!isset($_GET['add_person'])) {
-                    ?>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <input type="text" name="event_event_profession" value="" size="35" class="form-control form-control-sm">
-                            </div>
-                            <div class="col-md-4">
-                                <input type="submit" name="event_add_profession" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
-                            </div>
-                        </div>
-                    <?php } ?>
-                </td>
-            </tr>
-        <?php
-        }
-
-        // *** Show religion by person ***
-        if ($event_kind == 'religion') {
-            $link = 'religion';
-        ?>
-            <tr class="table_header_large" id="religion">
-                <td style="border-right:0px;"><?= __('Religion'); ?></td>
-                <td colspan="2">
-                    <?php
-                    // *** Skip for newly added person ***
-                    if (!isset($_GET['add_person'])) {
-                        // *** Remark: in editorModel.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
-                    ?>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <input type="text" name="event_event_religion" value="" size="35" class="form-control form-control-sm">
-                            </div>
-                            <div class="col-md-4">
-                                <input type="submit" name="event_add_religion" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
-                            </div>
-                        </div>
-                    <?php } ?>
-                </td>
-            </tr>
-        <?php
-        }
-
+        // TODO move to view scripts?
         // *** Show pictures by person, family and (shared) source ***
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
-            $link = 'picture';
+            //$link = 'picture';
         ?>
             <tr class="table_header_large" id="picture">
                 <td style="border-right:0px;">
@@ -500,7 +287,6 @@ class EditorEvent
                     }
 
                     // MAY 2023: convert OBJECTS to standard images.
-                    // DEC 2015: OLD: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
                     // *** Search for all external connected objects by a person or a family ***
                     if ($event_connect_kind == 'person') {
                         $connect_qry = "SELECT * FROM humo_connections
@@ -526,26 +312,48 @@ class EditorEvent
                                 // *** Maybe this isn't used, but just in case created this insert script ***
                                 if ($pictureDb->event_connect_kind || $pictureDb->event_connect_id) {
                                     //	Don't use UPDATE but create a new EVENT!!
-                                    $sql = "INSERT INTO humo_events SET
-                                        event_tree_id='" . $pictureDb->event_tree_id . "',
-                                        event_connect_kind='" . $event_connect_kind . "',
-                                        event_connect_id='" . safe_text_db($event_connect_id) . "',
-                                        event_kind='picture',
-                                        event_event='" . $pictureDb->event_event . "',
-                                        event_gedcom='',
-                                        event_order='" . $event_order . "'";
+                                    $sql = "INSERT INTO humo_events (
+                                        event_tree_id,
+                                        event_connect_kind,
+                                        event_connect_id,
+                                        event_kind,
+                                        event_event,
+                                        event_gedcom,
+                                        event_order
+                                    ) VALUES (
+                                        :event_tree_id,
+                                        :event_connect_kind,
+                                        :event_connect_id,
+                                        'picture',
+                                        :event_event,
+                                        '',
+                                        :event_order
+                                    )";
+                                    $stmt = $this->dbh->prepare($sql);
+                                    $stmt->execute([
+                                        ':event_tree_id' => $pictureDb->event_tree_id,
+                                        ':event_connect_kind' => $event_connect_kind,
+                                        ':event_connect_id' => $event_connect_id,
+                                        ':event_event' => $pictureDb->event_event,
+                                        ':event_order' => $event_order
+                                    ]);
                                     $event_order++;
-                                    $this->dbh->query($sql);
                                 } else {
                                     // *** Convert OBJECTS to standard images ***
                                     $sql = "UPDATE humo_events SET
-                                        event_connect_kind='" . $event_connect_kind . "',
-                                        event_connect_id='" . safe_text_db($event_connect_id) . "',
-                                        event_kind='picture',
-                                        event_gedcom='',
-                                        event_order='" . $event_order . "'
-                                        WHERE event_id='" . $pictureDb->event_id . "'";
-                                    $this->dbh->query($sql);
+                                        event_connect_kind = :event_connect_kind,
+                                        event_connect_id = :event_connect_id,
+                                        event_kind = 'picture',
+                                        event_gedcom = '',
+                                        event_order = :event_order
+                                        WHERE event_id = :event_id";
+                                    $stmt = $this->dbh->prepare($sql);
+                                    $stmt->execute([
+                                        ':event_connect_kind' => $event_connect_kind,
+                                        ':event_connect_id' => $event_connect_id,
+                                        ':event_order' => $event_order,
+                                        ':event_id' => $pictureDb->event_id
+                                    ]);
                                     $event_order++;
                                     // *** Remove connection ***
                                     $sql = "DELETE FROM humo_connections WHERE connect_id='" . $connectDb->connect_id . "'";
@@ -554,51 +362,7 @@ class EditorEvent
                             }
                         }
                     }
-
-                    /*
-                    $text.= '
-                    <script>
-                    $(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
-                        var mediastring = ""; 
-                        var media_arr = document.getElementsByClassName("mediamove"); 
-                        for (var z = 0; z < media_arr.length; z++) { 
-                            // create the new order after dragging to store in database with ajax
-                            mediastring = mediastring + media_arr[z].id + ";"; 
-                            // change the order numbers of the pics in the pulldown (that was generated before the drag
-                            // so that if one presses on delete before refresh the right pic will be deleted !!
-                        }
-                        mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-
-                        var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
-                        //var picdomclass = document.getElementsByClassName("pic_row2");
-                        //var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
-                        var nextnode = document.getElementById(\'pic_main_\' + media_arr[1].id); 
-
-                        for(var d=media_arr.length-1; d >=0 ; d--) {
-                            //parnode.insertBefore(document.getElementById(\'pic_row2_\' + media_arr[d].id),nextnode);
-                            //nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
-
-                            //parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
-                            //nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
-
-                            parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
-                            nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
-                        }
-
-                        $.ajax({ 
-                            url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
-                            success: function(data){
-                            } ,
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                alert(xhr.status);
-                                alert(thrownError);
-                            }
-                        });
-                    });
-                    </script>';
-                    */
                     ?>
-
                 </td>
             </tr>
             <?php
@@ -705,7 +469,7 @@ class EditorEvent
 
                                             <?php
                                             // *** Show name of event and [+] link ***
-                                            $newpers = "";
+                                            $newpers = '';
                                             if (isset($_GET['add_person'])) {
                                                 $newpers = "&amp;add_person=1";
                                             }
@@ -713,32 +477,6 @@ class EditorEvent
                                             <a href="index.php?page=<?= $page . $newpers; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?>&amp;event_drop=<?= $data_listDb->event_order; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>">
                                                 <img src="images/button_drop.png" border="0" alt="down">
                                             </a>
-
-                                            <?php
-                                            /*
-                                        // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
-                                        if ($data_listDb->event_order < $count_event) {
-                                        ?>
-                                            <a href="index.php?page=<?= $page; ?>&amp;event_down=<?= $data_listDb->event_order; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>&amp;dummy=<?= $data_listDb->event_id . $internal_link; ?>">
-                                                <img src="images/arrow_down.gif" border="0" alt="down">
-                                            </a>
-                                        <?php
-                                        } else {
-                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                        }
-
-                                        // *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
-                                        if ($data_listDb->event_order > 1) {
-                                        ?>
-                                            <a href="index.php?page=<?= $page; ?>&amp;event_up=<?= $data_listDb->event_order; ?>&amp;event_connect_kind=<?= $data_listDb->event_connect_kind; ?>&amp;event_kind=<?= $data_listDb->event_kind; ?><?= $event_kind == 'source_picture' ? '&amp;source_id=' . $data_listDb->event_connect_id : ''; ?>&amp;dummy=<?= $data_listDb->event_id . $internal_link; ?>">
-                                                <img src="images/arrow_up.gif" border="0" alt="down">
-                                            </a>
-                                        <?php
-                                        } else {
-                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                        }
-                                        */
-                                            ?>
                                         </div>
 
                                         <div class="col-md-11">
@@ -804,11 +542,11 @@ class EditorEvent
                                                 </div>
 
                                                 <!--
-                                            <div class="row">
-                                                <div class="col-3"></div>
-                                                <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
-                                            </div>
-                                            -->
+                                                <div class="row">
+                                                    <div class="col-3"></div>
+                                                    <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
+                                                </div>
+                                                -->
 
                                                 <div class="row mb-2">
                                                     <!-- <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label> -->
@@ -884,9 +622,7 @@ class EditorEvent
                                                         }
                                                     }
 
-                                                    // echo '<a href="../' . give_media_path($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
-                                                    //     print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
-                                                    echo '<a href="../' . give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
+                                                    echo '<a href="../' . $mediaPath->give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
                                                         $showMedia->print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                                     ?>
                                                 </div>
@@ -1106,15 +842,15 @@ class EditorEvent
                                                     echo __('Nickname') . ': ';
                                                 } elseif ($data_listDb->event_gedcom == '_RUFN') {
                                                     echo __('German Rufname') . ': ';
-                                                } elseif (language_name($data_listDb->event_gedcom)) {
-                                                    echo language_name($data_listDb->event_gedcom);
+                                                } elseif ($languagePersonName->language_name($data_listDb->event_gedcom)) {
+                                                    echo $languagePersonName->language_name($data_listDb->event_gedcom);
                                                 } else {
                                                     echo $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom) . ': ';
                                                 }
 
                                                 $event_text = $data_listDb->event_event;
                                                 if (!$event_text) {
-                                                    $event_text = language_event($data_listDb->event_gedcom);
+                                                    $event_text = $languageEventName->language_event($data_listDb->event_gedcom);
                                                 }
 
                                                 if ($check_sources_text) {
@@ -1382,7 +1118,7 @@ class EditorEvent
                                 $('#sortable_events<?= $sortable_id; ?>').sortable({
                                     handle: '.handle'
                                 }).bind('sortupdate', function() {
-                                    var orderstring = "";
+                                    var orderstring = '';
                                     var order_arr = document.getElementsByClassName("handle");
                                     for (var z = 0; z < order_arr.length; z++) {
                                         orderstring = orderstring + order_arr[z].id + ";";
@@ -1409,79 +1145,6 @@ class EditorEvent
             <?php
         } // *** Don't use this block for newly added person ***
 
-
-        // *** Directly add a first profession for new person ***
-        if (isset($_GET['add_person'])) {
-            if ($event_kind == 'profession') {
-            ?>
-                <tr>
-                    <td style="border-right:0px;"><?= __('Profession'); ?></td>
-                    <td colspan="2">
-                        <div class="row mb-2">
-                            <label for="event_profession" class="col-md-3 col-form-label"><?= __('Profession'); ?></label>
-                            <div class="col-md-7">
-                                <input type="text" name="event_profession" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <label for="event_date_profession" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
-                            <div class="col-md-7">
-                                <?php $editor_cls->date_show("", "event_date_profession", ""); ?>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <label for="event_place_profession" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
-                            <div class="col-md-7">
-                                <input type="text" name="event_place_profession" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <label for="event_text_profession" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
-                            <div class="col-md-7">
-                                <textarea rows="1" name="event_text_profession" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            <?php } elseif ($event_kind == 'religion') { ?>
-                <tr>
-                    <td style="border-right:0px;"><?= __('Religion'); ?></td>
-                    <td colspan="2">
-                        <div class="row mb-2">
-                            <label for="event_religion" class="col-md-3 col-form-label"><?= __('Religion'); ?></label>
-                            <div class="col-md-7">
-                                <input type="text" name="event_religion" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <label for="event_date_religion" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
-                            <div class="col-md-7">
-                                <?php $editor_cls->date_show("", "event_date_religion", ""); ?>
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <label for="event_place_religion" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
-                            <div class="col-md-7">
-                                <input type="text" name="event_place_religion" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
-                            </div>
-                        </div>
-
-                        <div class="row mb-2">
-                            <label for="event_text_religion" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
-                            <div class="col-md-7">
-                                <textarea rows="1" name="event_text_religion" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            <?php
-            }
-        }
 
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
             // get subfolders of media dir 
@@ -1540,77 +1203,10 @@ class EditorEvent
     <?php
         }
 
-        // *** Show events if save or arrow links are used ***
-        // Deels al vervangen door $_POST...
-        /*
-        if (isset($_GET['event_person']) OR isset($_GET['event_family']) OR isset($_GET['event_add'])){
-        // *** Script voor expand and collapse of items ***
-
-        $link_id='';
-        if (isset($_GET['event_person']) AND $_GET['event_person']=='1') $link_id='51';
-        if (isset($_GET['event_family']) AND $_GET['event_family']=='1') $link_id='52';
-        if (isset($_GET['event_kind'])){
-            if ($_GET['event_kind']=='name') $link_id='1';
-            if ($_GET['event_kind']=='npfx') $link_id='1';
-            if ($_GET['event_kind']=='nsfx') $link_id='1';
-            if ($_GET['event_kind']=='nobility') $link_id='1';
-            if ($_GET['event_kind']=='title') $link_id='1';
-            if ($_GET['event_kind']=='lordship') $link_id='1';
-            if ($_GET['event_kind']=='birth_declaration') $link_id='2';
-            if ($_GET['event_kind']=='baptism_witness') $link_id='3';
-            if ($_GET['event_kind']=='death_declaration') $link_id='4';
-            if ($_GET['event_kind']=='burial_witness') $link_id='5';
-            if ($_GET['event_kind']=='profession') $link_id='13';
-            if ($_GET['event_kind']=='religion') $link_id='14';
-            if ($_GET['event_kind']=='picture') $link_id='53';
-            if ($_GET['event_kind']=='marriage_witness') $link_id='8';
-            if ($_GET['event_kind']=='marriage_witness_rel') $link_id='10';
-        }
-
-        if (isset($_GET['event_add'])){
-//			if ($_GET['event_add']=='add_name') $link_id='1';
-//			if ($_GET['event_add']=='add_npfx') $link_id='1';
-//			if ($_GET['event_add']=='add_nsfx') $link_id='1';
-//			if ($_GET['event_add']=='add_nobility') $link_id='1';
-//			if ($_GET['event_add']=='add_title') $link_id='1';
-//			if ($_GET['event_add']=='add_lordship') $link_id='1';
-//			if ($_GET['event_add']=='add_birth_declaration') $link_id='2';
-//			if ($_GET['event_add']=='add_baptism_witness') $link_id='3';
-//			if ($_GET['event_add']=='add_death_declaration') $link_id='4';
-//			if ($_GET['event_add']=='add_burial_witness') $link_id='5';
-//			if ($_GET['event_add']=='add_profession') $link_id='13';
-//			if ($_GET['event_add']=='add_religion') $link_id='14';
-            if ($_GET['event_add']=='add_picture') $link_id='53';
-            if ($_GET['event_add']=='add_source_picture') $link_id='53';
-            if ($_GET['event_add']=='add_marriage_picture') $link_id='53';
-//			if ($_GET['event_add']=='add_marriage_witness') $link_id='8';
-//			if ($_GET['event_add']=='add_marriage_witness_rel') $link_id='10';
-        }
-
-        $text.='
-        <script>
-        function Show(el_id){
-            // *** Hide or show item ***
-            var arr = document.getElementsByClassName(\'row\'+el_id);
-            for (i=0; i<arr.length; i++){
-                arr[i].style.display="";
-            }
-            // *** Change [+] into [-] ***
-            document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
-        }
-        </script>';
-
-        $text.='<script>
-            Show("'.$link_id.'");
-        </script>';
-    }
-*/
-
         // TODO check return (no longer needed?).
         return $text;
-    }   // end function show_event
-
-}   // end class
+    }
+}
 
 
 function event_selection($event_gedcom)
@@ -1656,27 +1252,6 @@ function event_selection($event_gedcom)
     </optgroup>
 <?php
 }
-
-// *** Javascript for "search by file name of picture" feature ***
-// March 2022: no longer in use
-/*
-echo '<script>
-    function Search_pic(idnum, picnr, picarr){
-        var searchval = document.getElementById("inp_text_event" + idnum).value;
-        searchval = searchval.toLowerCase();
-        var countarr = 0;
-        // *** delete existing full list ***
-        document.getElementById("text_event" + idnum).options.length=0; 
-        for (var countpics=0; countpics<picnr; countpics++){
-            var picname = picarr[countpics].toLowerCase();
-            if(picname.indexOf(searchval) != -1) {
-                document.getElementById("text_event" + idnum).options[countarr]=new Option(picarr[countpics], picarr[countpics], true, false);
-                countarr++;
-            }
-        }
-    }
-    </script>';
-*/
 
 // *** If profession is added, jump to profession part of screen ***
 if (isset($_POST['event_event_profession']) && $_POST['event_event_profession'] != '') {

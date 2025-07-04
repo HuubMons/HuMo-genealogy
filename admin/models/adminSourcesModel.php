@@ -1,14 +1,14 @@
 <?php
-class AdminSourcesModel
+class AdminSourcesModel extends AdminBaseModel
 {
-    public function get_pers_gedcomnumber()
+    public function get_pers_gedcomnumber(): string
     {
         if (isset($_SESSION['admin_pers_gedcomnumber'])) {
             return $_SESSION['admin_pers_gedcomnumber'];
         }
     }
 
-    public function get_fam_gedcomnumber()
+    public function get_fam_gedcomnumber(): string
     {
         if (isset($_SESSION['admin_fam_gedcomnumber'])) {
             return $_SESSION['admin_fam_gedcomnumber'];
@@ -29,7 +29,7 @@ class AdminSourcesModel
         return $_GET['connect_connect_id'] ?? '';
     }
 
-    public function get_header_connect_kind($connect_sub_kind)
+    public function get_header_connect_kind($connect_sub_kind): array
     {
         $editSources['source_header'] = '';
         $editSources['connect_kind'] = '';

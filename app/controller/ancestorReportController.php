@@ -1,20 +1,20 @@
 <?php
 class AncestorReportController
 {
-    private $dbh;
+    private $config;
 
-    public function __construct($dbh)
+    public function __construct($config)
     {
-        $this->dbh = $dbh;
+        $this->config = $config;
     }
 
-    public function list($tree_id)
+    public function list($id): array
     {
-        $get_ancestorModel = new AncestorModel($this->dbh);
+        $get_ancestorModel = new AncestorModel($this->config);
 
-        $main_person = $get_ancestorModel->getMainPerson();
+        $main_person = $get_ancestorModel->getMainPerson2($id);
         $rom_nr = $get_ancestorModel->getNumberRoman();
-        $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor report', $tree_id, $main_person);
+        $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor report', $main_person);
 
         // TODO for now using extended class.
         $text_presentation =  $get_ancestorModel->getTextPresentation();

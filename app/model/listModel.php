@@ -1,16 +1,7 @@
 <?php
-class ListModel
+class ListModel extends BaseModel
 {
-    private $db_functions;
-
-    /*
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-    */
-
-    public function getIndexList()
+    public function getIndexList(): string
     {
         $index_list = 'quicksearch';
         // *** Reset if necessary ***
@@ -26,7 +17,7 @@ class ListModel
         return $index_list;
     }
 
-    public function getOrder()
+    public function getOrder(): int
     {
         $order = 0;
         if (isset($_SESSION['sort_desc'])) {
@@ -44,12 +35,12 @@ class ListModel
         return $order;
     }
 
-    public function getDescAsc($order)
+    public function getDescAsc($order): string
     {
         return $order == 1 ? " DESC " : " ASC ";
     }
 
-    public function getOrderSelect()
+    public function getOrderSelect(): string
     {
         $selectsort = '';
         if (isset($_SESSION['sort']) && !isset($_GET['sort'])) {
@@ -73,7 +64,9 @@ class ListModel
                 $selectsort = "sort_birthplace";
                 $_SESSION['sort'] = $selectsort;
             }
-            //if($_GET['sort']=="sort_baptdate") { $selectsort="sort_baptdate"; $_SESSION['sort']=$selectsort; }
+            //if($_GET['sort']=="sort_baptdate") {
+            //  $selectsort="sort_baptdate"; $_SESSION['sort']=$selectsort;
+            //}
             if ($_GET['sort'] == "sort_deathdate") {
                 $selectsort = "sort_deathdate";
                 $_SESSION['sort'] = $selectsort;
@@ -82,12 +75,14 @@ class ListModel
                 $selectsort = "sort_deathplace";
                 $_SESSION['sort'] = $selectsort;
             }
-            //if($_GET['sort']=="sort_burieddate") { $selectsort="sort_burieddate"; $_SESSION['sort']=$selectsort; }
+            //if($_GET['sort']=="sort_burieddate") {
+            //  $selectsort="sort_burieddate"; $_SESSION['sort']=$selectsort;
+            //}
         }
         return $selectsort;
     }
 
-    public function getSelectTrees($humo_option)
+    public function getSelectTrees(): string
     {
         // *** Search in 1 or more family trees ***
         $select_trees = 'tree_selected';
@@ -99,7 +94,7 @@ class ListModel
             $select_trees = $_GET['select_trees'];
             $_SESSION["save_select_trees"] = $select_trees;
         }
-        if (isset($humo_option['one_name_study']) && $humo_option['one_name_study'] == 'y') {
+        if (isset($this->humo_option['one_name_study']) && $this->humo_option['one_name_study'] == 'y') {
             $select_trees = "all_trees";
             $_SESSION["save_select_trees"] = $select_trees;
         }
@@ -110,11 +105,17 @@ class ListModel
         return $select_trees;
     }
 
-    public function getSelection()
+    public function getSelection(): array
     {
         $change = false;
 
         $selection['pers_firstname'] = '';
+
+        // Test to remember old extended search values (session is unset in ListController.php).
+        //if (isset($_SESSION["save_selection"])) {
+        //    $selection = $_SESSION["save_selection"];
+        //}
+
         if (isset($_POST['pers_firstname'])) {
             $selection['pers_firstname'] = $_POST['pers_firstname'];
             //$selection['pers_firstname']=htmlentities($_POST['pers_firstname'],ENT_QUOTES,'UTF-8');
@@ -172,8 +173,8 @@ class ListModel
             //$selection['pers_lastname']=htmlentities($_POST['pers_lastname'],ENT_QUOTES,'UTF-8');
             $change = true;
         }
-        if ((isset($humo_option['one_name_study']) and $humo_option['one_name_study'] == 'y') && (isset($_GET['adv_search']) && $_GET['adv_search'] == 1 || isset($_GET['index_list']) && $_GET['index_list'] == 'search' || isset($_GET['reset']) && $_GET['reset'] == 1)) {
-            $selection['pers_lastname'] = $humo_option['one_name_thename'];
+        if ((isset($this->humo_option['one_name_study']) and $this->humo_option['one_name_study'] == 'y') && (isset($_GET['adv_search']) && $_GET['adv_search'] == 1 || isset($_GET['index_list']) && $_GET['index_list'] == 'search' || isset($_GET['reset']) && $_GET['reset'] == 1)) {
+            $selection['pers_lastname'] = $this->humo_option['one_name_thename'];
             $change = true;
         }
         if (isset($_GET["pers_lastname"])) {
@@ -194,7 +195,7 @@ class ListModel
             $change = true;
         }
 
-        // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. *** //
+        // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. ***
         $selection['birth_place'] = '';
         if (isset($_POST['birth_place'])) {
             $selection['birth_place'] = $_POST['birth_place'];
@@ -377,7 +378,7 @@ class ListModel
         return $selection;
     }
 
-    public function getQueryOrderBy($user, $index_list, $desc_asc, $order_select)
+    public function getQueryOrderBy($index_list, $desc_asc, $order_select): array
     {
         // *** SOME DEFAULTS ***
         $last_or_patronym = " pers_lastname ";
@@ -389,7 +390,7 @@ class ListModel
         $make_date = ''; // we only need this when sorting by date
 
         $orderby = $last_or_patronym . $desc_asc . ", pers_firstname " . $desc_asc;
-        if ($user['group_kindindex'] == "j" && $index_list != 'patronym') {
+        if ($this->user['group_kindindex'] == "j" && $index_list != 'patronym') {
             $orderby = " concat_name " . $desc_asc;
         }
 
@@ -397,7 +398,7 @@ class ListModel
         if ($selectsort) {
             if ($selectsort == "sort_lastname") {
                 $orderby = $last_or_patronym . $desc_asc . ", pers_firstname " . $desc_asc;
-                if ($user['group_kindindex'] == "j" && $index_list != 'patronym') {
+                if ($this->user['group_kindindex'] == "j" && $index_list != 'patronym') {
                     $orderby = " concat_name " . $desc_asc;
                 }
             }
@@ -585,7 +586,7 @@ class ListModel
         return $data;
     }
 
-    public function getQuickSearch()
+    public function getQuickSearch(): string
     {
         $quicksearch = '';
         if (isset($_POST['quicksearch'])) {
@@ -604,10 +605,10 @@ class ListModel
         return $quicksearch;
     }
 
-    public function getAdvSearch($selection)
+    public function getAdvSearch($selection): bool
     {
         $adv_search = false;
-        // *** Link from "names" list, automatically use advanced search ***
+        // *** Link from "names" list, automatically uses advanced search ***
         if (isset($_GET['part_lastname'])) {
             $_GET['adv_search'] = '1';
             $_SESSION["save_selection"] = $selection;
@@ -631,7 +632,7 @@ class ListModel
         return $adv_search;
     }
 
-    public function getIndexPlaces($index_list)
+    public function getIndexPlaces($index_list): array
     {
         // *** For index places ***
         $data["place_name"] = '';
@@ -740,35 +741,35 @@ class ListModel
 
 
     // *** Search for (part of) first or lastname ***
-    private function name_qry($search_name, $search_part)
+    private function name_qry($search_name, $search_part): string
     {
-        $text = "LIKE '%" . safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
+        $safeTextDb = new SafeTextDb();
+
+        $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
         if ($search_part == 'equals') {
-            $text = "='" . safe_text_db($search_name) . "'";
+            $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
         }
         if ($search_part == 'starts_with') {
-            $text = "LIKE '" . safe_text_db($search_name) . "%'";
+            $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
         }
         return $text;
     }
 
-    public function build_query($dbh, $tree_id, $user, $humo_option)
+    public function build_query(): array
     {
-        // *******************
-        // *** BUILD QUERY ***
-        // *******************
+        $safeTextDb = new SafeTextDb();
 
         $query = '';
         $count_qry = '';
 
         $selection = $this->getSelection();
-        $select_trees = $this->getSelectTrees($humo_option);
+        $select_trees = $this->getSelectTrees($this->humo_option);
         $index_list = $this->getIndexList();
         $order = $this->getOrder();
         $desc_asc = $this->getDescAsc($order);
         $order_select = $this->getOrderSelect();
 
-        $get_orderby = $this->getQueryOrderBy($user, $index_list, $desc_asc, $order_select);
+        $get_orderby = $this->getQueryOrderBy($index_list, $desc_asc, $order_select);
         $orderby = $get_orderby["orderby"];
         $make_date = $get_orderby["make_date"];
         $quicksearch = $this->getQuickSearch();
@@ -792,7 +793,7 @@ class ListModel
                 if ($selection['pers_lastname'] == __('...')) {
                     $query .= $and . " pers_lastname=''";
                     $and = " AND ";
-                } elseif ($user['group_kindindex'] == "j") {
+                } elseif ($this->user['group_kindindex'] == "j") {
                     $query .= $and . " CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " .
                         $this->name_qry($selection['pers_lastname'], $selection['part_lastname']);
                     $and = " AND ";
@@ -807,7 +808,7 @@ class ListModel
                 $and = " AND ";
             } elseif ($selection['pers_prefix']) {
                 // *** Search results for: "van", "van " and "van_" ***
-                $pers_prefix = safe_text_db(str_replace(' ', '_', $selection['pers_prefix']));
+                $pers_prefix = $safeTextDb->safe_text_db(str_replace(' ', '_', $selection['pers_prefix']));
                 $query .= $and . "(pers_prefix='" . $pers_prefix . "' OR pers_prefix ='" . $pers_prefix . '_' . "')";
                 $and = " AND ";
             }
@@ -839,15 +840,15 @@ class ListModel
             if ($selection['birth_year']) {
                 if (!$selection['birth_year_end']) {   // filled in one year: exact date
                     // *** Also search for baptise ***
-                    $query .= $and . "(pers_birth_date LIKE '%" . safe_text_db($selection['birth_year']) . "%'";
+                    $query .= $and . "(pers_birth_date LIKE '%" . $safeTextDb->safe_text_db($selection['birth_year']) . "%'";
                     $and = " AND ";
-                    $query .= " OR pers_bapt_date LIKE '%" . safe_text_db($selection['birth_year']) . "%')";
+                    $query .= " OR pers_bapt_date LIKE '%" . $safeTextDb->safe_text_db($selection['birth_year']) . "%')";
                     $and = " AND ";
                 } else {
                     // *** Also search for baptise ***
-                    $query .= $and . "(RIGHT(pers_birth_date, 4)>='" . safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_birth_date, 4)<='" . safe_text_db($selection['birth_year_end']) . "'";
+                    $query .= $and . "(RIGHT(pers_birth_date, 4)>='" . $safeTextDb->safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_birth_date, 4)<='" . $safeTextDb->safe_text_db($selection['birth_year_end']) . "'";
                     $and = " AND ";
-                    $query .= " OR RIGHT(pers_bapt_date, 4)>='" . safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_bapt_date, 4)<='" . safe_text_db($selection['birth_year_end']) . "')";
+                    $query .= " OR RIGHT(pers_bapt_date, 4)>='" . $safeTextDb->safe_text_db($selection['birth_year']) . "' AND RIGHT(pers_bapt_date, 4)<='" . $safeTextDb->safe_text_db($selection['birth_year_end']) . "')";
                     $and = " AND ";
                 }
             }
@@ -855,15 +856,15 @@ class ListModel
             if ($selection['death_year']) {
                 if (!$selection['death_year_end']) {      // filled in one year: exact date
                     // ** Also search for buried date ***
-                    $query .= $and . "(pers_death_date LIKE '%" . safe_text_db($selection['death_year']) . "%'";
+                    $query .= $and . "(pers_death_date LIKE '%" . $safeTextDb->safe_text_db($selection['death_year']) . "%'";
                     $and = " AND ";
-                    $query .= "OR pers_buried_date LIKE '%" . safe_text_db($selection['death_year']) . "%')";
+                    $query .= "OR pers_buried_date LIKE '%" . $safeTextDb->safe_text_db($selection['death_year']) . "%')";
                     $and = " AND ";
                 } else {
                     // ** Also search for buried date ***
-                    $query .= $and . "(RIGHT(pers_death_date, 4)>='" . safe_text_db($selection['death_year']) . "' AND RIGHT(pers_death_date, 4)<='" . safe_text_db($selection['death_year_end']) . "'";
+                    $query .= $and . "(RIGHT(pers_death_date, 4)>='" . $safeTextDb->safe_text_db($selection['death_year']) . "' AND RIGHT(pers_death_date, 4)<='" . $safeTextDb->safe_text_db($selection['death_year_end']) . "'";
                     $and = " AND ";
-                    $query .= " OR RIGHT(pers_buried_date, 4)>='" . safe_text_db($selection['death_year']) . "' AND RIGHT(pers_buried_date, 4)<='" . safe_text_db($selection['death_year_end']) . "')";
+                    $query .= " OR RIGHT(pers_buried_date, 4)>='" . $safeTextDb->safe_text_db($selection['death_year']) . "' AND RIGHT(pers_buried_date, 4)<='" . $safeTextDb->safe_text_db($selection['death_year_end']) . "')";
                     $and = " AND ";
                 }
             }
@@ -944,13 +945,13 @@ class ListModel
 
                 $counter = 0;
                 $multi_tree = '';
-                foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $datapdo) {
-                    if ($select_trees == "all_but_this" && $datapdo['tree_id'] == $tree_id) {
+                foreach ($this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $datapdo) {
+                    if ($select_trees == "all_but_this" && $datapdo['tree_id'] == $this->tree_id) {
                         continue;
                     }
 
                     // *** Check is family tree is shown or hidden for user group ***
-                    $hide_tree_array = explode(";", $user['group_hide_trees']);
+                    $hide_tree_array = explode(";", $this->user['group_hide_trees']);
                     if (!in_array($datapdo['tree_id'], $hide_tree_array)) {
                         if ($counter > 0) {
                             $multi_tree .= ' OR ';
@@ -961,7 +962,7 @@ class ListModel
                 }
             } else {
                 // *** Start building query, search in 1 database ***
-                $multi_tree = " pers_tree_id='" . $tree_id . "'";
+                $multi_tree = " pers_tree_id='" . $this->tree_id . "'";
             }
 
             // *** Build query, only add events and addresses tables if necessary ***
@@ -978,7 +979,7 @@ class ListModel
             // Text isn't needed in results
             //	if ($add_text_qry) $query_select .= ", fam_text";
 
-            if ($user['group_kindindex'] == "j") {
+            if ($this->user['group_kindindex'] == "j") {
                 // *** Change ordering of index, using concat name ***
                 $query_select .= ", CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ";
             }
@@ -1038,8 +1039,8 @@ class ListModel
         if ($index_list == 'quicksearch') {
             // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
             $quicksearch = str_replace(' ', '%', $quicksearch);
-            if ($humo_option['one_name_study'] == 'y') {
-                $quicksearch .= '%' . $humo_option['one_name_thename'];
+            if ($this->humo_option['one_name_study'] == 'y') {
+                $quicksearch .= '%' . $this->humo_option['one_name_thename'];
             }
             // *** In case someone entered "Mons, Huub" using a comma ***
             $quicksearch = str_replace(',', '', $quicksearch);
@@ -1051,12 +1052,12 @@ class ListModel
                 $query = '';
                 $counter = 0;
                 $multi_tree = '';
-                foreach ($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
-                    if ($select_trees == "all_but_this" && $pdoresult['tree_id'] == $tree_id) {
+                foreach ($this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
+                    if ($select_trees == "all_but_this" && $pdoresult['tree_id'] == $this->tree_id) {
                         continue;
                     }
                     // *** Check if family tree is shown or hidden for user group ***
-                    $hide_tree_array = explode(";", $user['group_hide_trees']);
+                    $hide_tree_array = explode(";", $this->user['group_hide_trees']);
                     if (!in_array($pdoresult['tree_id'], $hide_tree_array)) {
                         if ($counter > 0) {
                             $multi_tree .= ' OR ';
@@ -1067,17 +1068,16 @@ class ListModel
                 }
             } else {
                 // *** Start building query, search in 1 database ***
-                $multi_tree = "pers_tree_id='" . $tree_id . "'";
+                $multi_tree = "pers_tree_id='" . $this->tree_id . "'";
             }
 
-            /*	******************************************
-            *** QUICKSEARCH QUERY ***
-            Aug 2017: changed for MySQL > 5.7.
-            Feb 2016: added search for patronym
-            ******************************************
-            */
-            // *** April 2023: added pers_firstname, event_event. To find "firstname eventname" (event could be a kind of lastname too). ***
-            // *** Nov. 2022: changed first patronymic line ***
+            /**
+             * Quicksearch query
+             * Feb 2016: added search for patronym
+             * Aug 2017: changed for MySQL > 5.7.
+             * Nov. 2022: changed first patronymic line
+             * April 2023: added pers_firstname, event_event. To find "firstname eventname" (event could be a kind of lastname too).
+             */
             $query .= "SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,
                 humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
                 " . $make_date . "
@@ -1089,16 +1089,16 @@ class ListModel
                     LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
                     WHERE (" . $multi_tree . ")
                         AND 
-                        ( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($quicksearch) . "%'
-                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . safe_text_db($quicksearch) . "%'
-                        OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . safe_text_db($quicksearch) . "%'
-                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . safe_text_db($quicksearch) . "%' 
-                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . safe_text_db($quicksearch) . "%'
+                        ( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
+                        OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
+                        OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
+                        OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
 
-                        OR CONCAT(pers_firstname,event_event) LIKE '%" . safe_text_db($quicksearch) . "%'
+                        OR CONCAT(pers_firstname,event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
                         )
                     GROUP BY pers_id, event_event, event_kind
                 ) as humo_persons1
@@ -1126,12 +1126,12 @@ class ListModel
 
             // *** Search birth place ***
             if ($data["select_birth"] == '1') {
-                if ($user['group_kindindex'] == "j") {
+                if ($this->user['group_kindindex'] == "j") {
                     $query = "(SELECT SQL_CALC_FOUND_ROWS *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_birth_place as place_order
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 } else {
                     $query = "(SELECT SQL_CALC_FOUND_ROWS *, pers_birth_place as place_order
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 }
 
                 if ($data["place_name"]) {
@@ -1151,11 +1151,11 @@ class ListModel
                 } else {
                     $calc = 'SQL_CALC_FOUND_ROWS ';
                 }
-                if ($user['group_kindindex'] == "j") {
+                if ($this->user['group_kindindex'] == "j") {
                     $query .= "(SELECT " . $calc . "*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_bapt_place as place_order
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 } else {
-                    $query .= "(SELECT " . $calc . "*, pers_bapt_place as place_order FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                    $query .= "(SELECT " . $calc . "*, pers_bapt_place as place_order FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 }
                 if ($data["place_name"]) {
                     $query .= " AND pers_bapt_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
@@ -1175,28 +1175,26 @@ class ListModel
                     $calc = 'SQL_CALC_FOUND_ROWS ';
                 }
 
-                if ($user['group_kindindex'] == "j") {
+                if ($this->user['group_kindindex'] == "j") {
                     //$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_place_index as place_order
-                    //FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+                    //FROM humo_persons WHERE pers_tree_id='".$this->tree_id."'";
 
                     $query .= "(SELECT " . $calc . "humo_persons.*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_addresses.address_place as place_order
                         FROM humo_persons, humo_connections, humo_addresses
                         WHERE connect_connect_id=pers_gedcomnumber
                         AND connect_tree_id=pers_tree_id
                         AND address_gedcomnr=connect_item_id AND address_tree_id=pers_tree_id
-                        AND pers_tree_id='" . $tree_id . "'
-                        ";
+                        AND pers_tree_id='" . $this->tree_id . "'";
                 } else {
                     //$query.= "(SELECT ".$calc."*, pers_place_index as place_order 
-                    //	FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+                    //	FROM humo_persons WHERE pers_tree_id='".$this->tree_id."'";
 
                     $query .= "(SELECT " . $calc . "humo_persons.*, humo_addresses.address_place as place_order
                         FROM humo_persons, humo_connections, humo_addresses
                         WHERE connect_connect_id=pers_gedcomnumber
                         AND connect_tree_id=pers_tree_id
                         AND address_gedcomnr=connect_item_id AND address_tree_id=pers_tree_id
-                        AND pers_tree_id='" . $tree_id . "'
-                        ";
+                        AND pers_tree_id='" . $this->tree_id . "'";
                 }
 
                 if ($data["place_name"]) {
@@ -1218,12 +1216,12 @@ class ListModel
                 } else {
                     $calc = 'SQL_CALC_FOUND_ROWS ';
                 }
-                if ($user['group_kindindex'] == "j") {
+                if ($this->user['group_kindindex'] == "j") {
                     $query .= "(SELECT " . $calc . "*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_death_place as place_order
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 } else {
                     $query .= "(SELECT " . $calc . "*, pers_death_place as place_order
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 }
                 if ($data["place_name"]) {
                     $query .= " AND pers_death_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
@@ -1242,12 +1240,12 @@ class ListModel
                 } else {
                     $calc = 'SQL_CALC_FOUND_ROWS ';
                 }
-                if ($user['group_kindindex'] == "j") {
+                if ($this->user['group_kindindex'] == "j") {
                     $query .= "(SELECT " . $calc . "*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,pers_buried_place as place_order
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 } else {
                     $query .= "(SELECT " . $calc . "*, pers_buried_place as place_order
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 }
                 if ($data["place_name"]) {
                     $query .= " AND pers_buried_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
@@ -1266,20 +1264,18 @@ class ListModel
                 } else {
                     $calc = 'SQL_CALC_FOUND_ROWS ';
                 }
-                if ($user['group_kindindex'] == "j") {
+                if ($this->user['group_kindindex'] == "j") {
                     $query .= "(SELECT " . $calc . "humo_persons.*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_events.event_place as place_order
                         FROM humo_persons, humo_events
                         WHERE event_connect_id=pers_gedcomnumber
                         AND event_tree_id=pers_tree_id
-                        AND pers_tree_id='" . $tree_id . "'
-                        ";
+                        AND pers_tree_id='" . $this->tree_id . "'";
                 } else {
                     $query .= "(SELECT " . $calc . "humo_persons.*, humo_events.event_place as place_order
                         FROM humo_persons, humo_events
                         WHERE event_connect_id=pers_gedcomnumber
                         AND event_tree_id=pers_tree_id
-                        AND pers_tree_id='" . $tree_id . "'
-                        ";
+                        AND pers_tree_id='" . $this->tree_id . "'";
                 }
 
                 if ($data["place_name"]) {
@@ -1293,7 +1289,7 @@ class ListModel
 
 
             // *** Order by place and name: "Mons, van" or: "van Mons" ***
-            if ($user['group_kindindex'] == "j") {
+            if ($this->user['group_kindindex'] == "j") {
                 $query .= ' ORDER BY place_order, concat_name';
             } else {
                 $query .= ' ORDER BY place_order, pers_lastname, pers_firstname';
@@ -1310,32 +1306,32 @@ class ListModel
         if ($index_list == 'patronym') {
             // *** Only in pers_patronym index if there is no pers_lastname! ***
             $query = "SELECT SQL_CALC_FOUND_ROWS * " . $make_date . " FROM humo_persons
-        WHERE pers_tree_id='" . $tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname='' ORDER BY " . $orderby;
+                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname='' ORDER BY " . $orderby;
         }
 
-        // **************************
-        // *** Generate indexlist ***
-        // **************************
+        /**
+         * Generate indexlist
+         */
 
         // *** Standard index ***
         if ($query == '' or $index_list == 'standard') {
-            $query = "SELECT * " . $make_date . " FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' ORDER BY " . $orderby;
+            $query = "SELECT * " . $make_date . " FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' ORDER BY " . $orderby;
 
             // Mons, van or: van Mons
-            if ($user['group_kindindex'] == "j") {
+            if ($this->user['group_kindindex'] == "j") {
                 $query = "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name " . $make_date . "
-                FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' ORDER BY " . $orderby;
+                    FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' ORDER BY " . $orderby;
             }
 
-            //$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+            //$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM humo_persons WHERE pers_tree_id='".$this->tree_id."'";
             // *** 31-03-2023 GROUP BY option is needed for COUNT: added GROUP BY and removed $make_date (not necessary) ***
-            $count_qry = "SELECT COUNT(pers_tree_id) as teller, pers_tree_id FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' GROUP BY pers_tree_id";
+            $count_qry = "SELECT COUNT(pers_tree_id) as teller, pers_tree_id FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' GROUP BY pers_tree_id";
         }
 
         // *** DEBUG/ TEST: SHOW QUERY ***
         //echo $query.'<br>';
 
-        //*** Show number of persons and pages *****************************************
+        //*** Show number of persons and pages ***
         $item = 0;
         if (isset($_GET['item']) && is_numeric($_GET['item'])) {
             $item = $_GET['item'];
@@ -1344,26 +1340,26 @@ class ListModel
         if (isset($_GET["start"]) && is_numeric($_GET["start"])) {
             $start = $_GET["start"];
         }
-        $nr_persons = $humo_option['show_persons'];
+        $nr_persons = $this->humo_option['show_persons'];
 
         if (!$selection['spouse_firstname'] && !$selection['spouse_lastname'] && $selection['parent_status'] != "motheronly" && $selection['parent_status'] != "fatheronly") {
-            $person_result = $dbh->query($query . " LIMIT " . $item . "," . $nr_persons);
+            $person_result = $this->dbh->query($query . " LIMIT " . $item . "," . $nr_persons);
 
             if ($count_qry) {
                 // *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
-                $result = $dbh->query($count_qry);
+                $result = $this->dbh->query($count_qry);
                 $resultDb = $result->fetch(PDO::FETCH_OBJ);
                 if ($resultDb) {
                     $count_persons = $resultDb->teller;
                 }
             } else {
                 // *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-                $result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+                $result = $this->dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
                 $rows = $result->fetch();
                 $count_persons = $rows['found_rows'];
             }
         } else {
-            $person_result = $dbh->query($query);
+            $person_result = $this->dbh->query($query);
             $count_persons = 0; // Isn't used if search is done for spouse or for people with only known mother or only known father...
         }
 

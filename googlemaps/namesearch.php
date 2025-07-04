@@ -2,18 +2,16 @@
 session_start();
 
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
-include_once(__DIR__ . "/../include/safe.php");
+include_once(__DIR__ . "/../include/safeTextDb.php");
 
 include_once(__DIR__ . "/../include/generalSettings.php");
-$GeneralSettings = new GeneralSettings();
-$user = $GeneralSettings->get_user_settings($dbh);
-$humo_option = $GeneralSettings->get_humo_option($dbh);
+$generalSettings = new GeneralSettings();
+$user = $generalSettings->get_user_settings($dbh);
+$humo_option = $generalSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/../include/personCls.php"); // for privacy
-include_once(__DIR__ . "/../include/language_date.php");
-include_once(__DIR__ . "/../include/date_place.php");
+include_once(__DIR__ . "/../include/personData.php"); // TODO check this.
 include_once(__DIR__ . '/../include/processLinks.php');
-$link_cls = new ProcessLinks();
+$processLinks = new ProcessLinks();
 
 $tree_id = $_SESSION['tree_id'];
 
@@ -57,7 +55,11 @@ if (isset($_GET['thisplace'])) {
 
 function mapbirthplace($place)
 {
-    global $dbh, $tree_id, $language, $map_max, $link_cls;
+    global $dbh, $tree_id, $language, $map_max, $processLinks;
+
+    $personName = new PersonName();
+    $personPrivacy = new PersonPrivacy();
+    $datePlace = new DatePlace();
 
     if (isset($_GET['namestring'])) {
         $temparray = explode("@", $_GET['namestring']);
@@ -149,9 +151,8 @@ function mapbirthplace($place)
         <div style="direction:ltr">
             <?php
             while ($maplistDb = $maplist->fetch(PDO::FETCH_OBJ)) {
-                $man_cls = new PersonCls($maplistDb);
-                $privacy_man = $man_cls->privacy;
-                $name = $man_cls->person_name($maplistDb);
+                $privacy_man = $personPrivacy->get_privacy($maplistDb);
+                $name = $personName->get_person_name($maplistDb, $privacy_man);
                 if ($name["show_name"] == true) {
                     $pers_family = '';
                     if ($maplistDb->pers_famc) {
@@ -162,7 +163,7 @@ function mapbirthplace($place)
                         $pers_family = $pers_fams[0];
                     }
                     $vars['pers_family'] = $pers_family;
-                    $link = $link_cls->get_link('', 'family', $maplistDb->pers_tree_id, true, $vars);
+                    $link = $processLinks->get_link('', 'family', $maplistDb->pers_tree_id, true, $vars);
                     $link .= "main_person=" . $maplistDb->pers_gedcomnumber;
                     echo '<a href=' . $link . ' target="blank">';
                 }
@@ -185,7 +186,7 @@ function mapbirthplace($place)
                     }
                 }
                 if (!$privacy_man and $date and $name["show_name"] == true) {
-                    echo ' (' . $sign . date_place($date, '') . ')';
+                    echo ' (' . $sign . $datePlace->date_place($date, '') . ')';
                 }
                 if ($name["show_name"] == true) {
                     echo '</a>';

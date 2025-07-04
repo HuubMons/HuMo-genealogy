@@ -4,13 +4,15 @@ if ($user['group_sources'] != 'j') {
     exit(__('You are not authorised to see this page.'));
 }
 
-$path = $link_cls->get_link($uri_path, 'sources', $tree_id, true);
+$path = $processLinks->get_link($uri_path, 'sources', $tree_id, true);
 $url_order = $path . 'start=1&amp;item=0';
 if ($data["source_search"] != '') {
     $url_order .=  '&amp;source_search=' . $data["source_search"];
 }
 
-$path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
+$path_form = $processLinks->get_link($uri_path, 'sources', $tree_id);
+
+$datePlace = new DatePlace();
 ?>
 
 <h1><?= __('Sources'); ?></h1>
@@ -99,7 +101,7 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
             $url = $uri_path . 'index.php?page=source&amp;tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
         }
         //$vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
-        //$sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
+        //$sourcestring = $processLinks->get_link('../', 'source', $tree_id, false, $vars);
         ?>
 
         <tr>
@@ -121,7 +123,7 @@ $path_form = $link_cls->get_link($uri_path, 'sources', $tree_id);
                     ?>
                 </a>
             </td>
-            <td><?= date_place($sourceDb->source_date, ''); ?></td>
+            <td><?= $datePlace->date_place($sourceDb->source_date, ''); ?></td>
             <td><?= $sourceDb->source_place; ?></td>
         </tr>
     <?php } ?>

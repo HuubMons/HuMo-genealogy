@@ -1,7 +1,7 @@
 <?php
 class OutlineReportModel extends FamilyModel
 {
-    public function getShowDetails()
+    public function getShowDetails(): bool
     {
         $show_details = false;
         if (isset($_GET["show_details"]) && is_numeric(($_GET["show_details"]))) {
@@ -13,7 +13,7 @@ class OutlineReportModel extends FamilyModel
         return $show_details;
     }
 
-    public function getShowDate()
+    public function getShowDate(): bool
     {
         $show_date = true;
         if (isset($_GET["show_date"]) && is_numeric($_GET["show_date"])) {
@@ -25,7 +25,7 @@ class OutlineReportModel extends FamilyModel
         return $show_date;
     }
 
-    public function getDatesBehindNames()
+    public function getDatesBehindNames(): bool
     {
         $dates_behind_names = true;
         if (isset($_GET["dates_behind_names"]) && is_numeric($_GET["dates_behind_names"])) {
@@ -37,9 +37,9 @@ class OutlineReportModel extends FamilyModel
         return $dates_behind_names;
     }
 
-    public function getNrGenerations($humo_option)
+    public function getNrGenerations(): int
     {
-        $nr_generations = ($humo_option["descendant_generations"] - 1);
+        $nr_generations = ($this->humo_option["descendant_generations"] - 1);
         if (isset($_GET["nr_generations"]) && is_numeric($_GET["nr_generations"])) {
             $nr_generations = $_GET["nr_generations"];
         }

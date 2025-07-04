@@ -5,8 +5,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 // *** Use a class to process person data ***
-global $person_cls, $statistics;
-$person_cls = new PersonCls;
+global $statistics;
 ?>
 
 <h1 class="center"><?= __('Statistics'); ?></h1>
@@ -22,7 +21,7 @@ $person_cls = new PersonCls;
         <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'visitors') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=visitors"><?= __('Visitors'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'statistics_old') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=statistics_old"><?= __('Old statistics'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'statistics_families') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=statistics_families"><?= __('Families'); ?></a>
     </li>
     <li class="nav-item me-1">
         <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'remove') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=remove"><?= __('Remove statistics'); ?></a>
@@ -38,8 +37,8 @@ $person_cls = new PersonCls;
         include(__DIR__ . '/statistics_date.php');
     } elseif ($statistics['tab'] == 'visitors') {
         include(__DIR__ . '/statistics_visitors.php');
-    } elseif ($statistics['tab'] == 'statistics_old') {
-        include(__DIR__ . '/statistics_old.php');
+    } elseif ($statistics['tab'] == 'statistics_families') {
+        include(__DIR__ . '/statistics_families.php');
     } else {
         // *** Default page ***
         include(__DIR__ . '/statistics_general.php');
@@ -90,8 +89,8 @@ function calender($month, $year, $thismonth)
     if ($month == '12') {
         $calender_head = __('December');
     }
-
 ?>
+
     <table class="table">
         <thead class="table-primary">
             <tr>
@@ -114,90 +113,93 @@ function calender($month, $year, $thismonth)
         $week = mktime(0, 0, 0, $month, 1, $year);
         $week_number = date("W", $week);
         $First_Day_Of_Month = date("w", mktime(0, 0, 0, $month, 1, $year));
+        ?>
 
-        echo "<tr><th>$week_number</th>";
+        <tr>
+            <th><?= $week_number; ?></th>
 
-        // If neccesary skip days at start of month
-        if ($First_Day_Of_Month > "1") {
-            echo '<td colspan="' . ($First_Day_Of_Month - 1) . '"><br></td>';
-        }
-        // Sunday:
-        if ($First_Day_Of_Month === "0") {
-            echo '<td colspan="6"><br></td>';
-        }
-
-        $Days_In_Month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        $day = 1;
-        $row = 1;
-        $field = $First_Day_Of_Month;
-        if ($field === '0') {
-            $field = 7;
-        }  // First day is sunday.
-
-        $i = 1;
-        for ($i; $i <= $Days_In_Month; $i++) {
-            $present_day = date("Y-n-d");
-            if ($day < 10) {
-                $day = '0' . $day;
+            <?php
+            // If neccesary skip days at start of month
+            if ($First_Day_Of_Month > "1") {
+                echo '<td colspan="' . ($First_Day_Of_Month - 1) . '"><br></td>';
             }
-            $date = $year . '-' . $month . '-' . $day;
-            $yesterday = strtotime($date);
-            $today = $yesterday + 86400;
-
-            $graph_labels[] = $i;
-
-            if ($statistics['tab'] == 'visitors') {
-                // *** Show visitors ***
-                $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today . ' GROUP BY stat_ip_address');
-            } else {
-                // *** Show families ***
-                $datasql = $dbh->query("SELECT * FROM humo_stat_date WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today);
+            // Sunday:
+            if ($First_Day_Of_Month === "0") {
+                echo '<td colspan="6"><br></td>';
             }
 
-            if ($datasql) {
-                $nr_statistics = $datasql->rowCount();
+            $Days_In_Month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            $day = 1;
+            $row = 1;
+            $field = $First_Day_Of_Month;
+            if ($field === '0') {
+                // First day is sunday.
+                $field = 7;
             }
 
-            // *** Use another colour for present day ***
-            $color = '';
-            if ($date === $present_day) {
-                $color = 'bgcolor="#00FFFF"';
-            }
-
-            echo "<td $color>$day <b>$nr_statistics</b></td>";
-
-            $day++;
-            if ($day <= $Days_In_Month) {
-                $field++;
-                if ($field == 8) {
-                    $week = mktime(0, 0, 0, $month, $day, $year);
-                    $week_number = date("W", $week);
-                    echo "</tr>\n";
-                    echo "<tr><th>$week_number</th>";
-                    $row++;
-                    $field = 1;
+            $i = 1;
+            for ($i; $i <= $Days_In_Month; $i++) {
+                $present_day = date("Y-n-d");
+                if ($day < 10) {
+                    $day = '0' . $day;
                 }
+                $date = $year . '-' . $month . '-' . $day;
+                $yesterday = strtotime($date);
+                $today = $yesterday + 86400;
+
+                $graph_labels[] = $i;
+
+                if ($statistics['tab'] == 'visitors') {
+                    // *** Show visitors ***
+                    $datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today . ' GROUP BY stat_ip_address');
+                } else {
+                    // *** Show families ***
+                    $datasql = $dbh->query("SELECT * FROM humo_stat_date WHERE stat_date_linux > " . $yesterday . " AND stat_date_linux < " . $today);
+                }
+
+                if ($datasql) {
+                    $nr_statistics = $datasql->rowCount();
+                }
+            ?>
+
+                <td <?= $date === $present_day ? 'class="table-secondary"' : ''; ?>><?= $day; ?> <b><?= $nr_statistics; ?></b></td>
+
+                <?php
+                $day++;
+                if ($day <= $Days_In_Month) {
+                    $field++;
+                    if ($field == 8) {
+                        $week = mktime(0, 0, 0, $month, $day, $year);
+                        $week_number = date("W", $week);
+                        echo "</tr>\n";
+                        echo "<tr><th>$week_number</th>";
+                        $row++;
+                        $field = 1;
+                    }
+                }
+
+                // *** Array for graphical statistics ***
+                $data[$day - 1] = $nr_statistics;
+
+                $graph_data[] = $nr_statistics;
             }
 
-            // *** Array for graphical statistics ***
-            $data[$day - 1] = $nr_statistics;
+            // Add end month spacers
+            if ((8 - $field) >= "1") {
+                ?>
+                <td colspan="<?= (8 - $field); ?>"><br></td>
+            <?php } ?>
+        </tr>
 
-            $graph_data[] = $nr_statistics;
-        }
-
-        // Add end month spacers
-        if ((8 - $field) >= "1") {
-            echo '<td colspan="' . (8 - $field) . '"><br></td></tr>';
-        }
-
-        // *** Always make 6 rows ***
+        <?php
+        // *** Always create 6 rows ***
         if ($row == 5) {
         ?>
-            </tr>
             <tr>
                 <td colspan=8><br></td>
             </tr>
         <?php } ?>
+
     </table><br>
 
     <?php

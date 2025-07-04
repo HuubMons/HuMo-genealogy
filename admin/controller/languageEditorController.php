@@ -1,9 +1,17 @@
 <?php
 class LanguageEditorController
 {
-    public function detail($dbh, $humo_option)
+    protected $admin_config;
+
+    public function __construct($admin_config)
     {
-        $language_model = new LanguageEditorModel($dbh, $humo_option);
+        $this->admin_config = $admin_config;
+    }
+
+    public function detail(): array
+    {
+        $language_model = new LanguageEditorModel($this->admin_config);
+
         $language_editor['language'] = $language_model->getLanguage();
         $language_editor['file'] = '../languages/' . $language_editor['language'] . '/' . $language_editor['language'] . '.po';
         $language_editor['message'] = $language_model->saveFile($language_editor);

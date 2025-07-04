@@ -1,11 +1,17 @@
 <?php
-// *** 25-12-2020: New combined module addresses and shared addresses -> Residences ***
-// *** Residences/addresses (was: extended addresses for HuMo-genealogy and dutch Haza-data program (Haza-data plus version) ***
-function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
+
+/**
+ * 25-12-2020: New combined module addresses and shared addresses -> Residences
+ * Residences/addresses (was: extended addresses for HuMo-genealogy and dutch Haza-data program (Haza-data plus version)
+ */
+function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id): string
 {
     global $dbh, $db_functions, $user, $uri_path;
     global $temp, $templ_person, $templ_relation; // *** PDF export ***
     global $tree_id, $humo_option, $data;
+
+    $datePlace = new DatePlace();
+    $processText = new ProcessText();
 
     $text = '';
     $address_nr = 0;
@@ -42,7 +48,9 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
             if ($temp && $connect_kind == 'person') {
                 $templ_person[$temp] .= ". ";
             }
-            //if($temp) { if ($connect_kind=='family') $templ_relation[$temp].=". "; }
+            //if ($temp && $connect_kind=='family'){
+            //      $templ_relation[$temp].=". ";
+            //}
 
             //$templ_person["address_exist"]=$residence.': ';
             //$temp="address_exist";
@@ -64,9 +72,6 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 
         // *** Show link to shared address ***
         if ($connectDb->address_shared == '1') {
-            //$text .= '<a href="' . $uri_path . 'address.php?gedcomnumber=' . $connectDb->connect_item_id . '">';
-            //$text .= '<a href="' . $uri_path . 'address.php?id=' . $connectDb->connect_item_id . '">';
-
             if ($humo_option["url_rewrite"] == "j") {
                 $text .= '<a href="' . $uri_path . 'address/' . $tree_id . '/' . $connectDb->connect_item_id . '">';
             } else {
@@ -75,7 +80,6 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
         }
 
         // *** Address ***
-        //if ($user['group_addresses']=='j' AND $connectDb->address_address){
         if ($user['group_living_place'] == 'j' && $connectDb->address_address) {
             $text .= ' ' . $connectDb->address_address . ' ';
 
@@ -132,7 +136,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
             }
             // *** Add date ***
             if ($connectDb->connect_date) {
-                $templ_person["address_address" . $address_nr] .= ' (' . date_place($connectDb->connect_date, '') . ')';
+                $templ_person["address_address" . $address_nr] .= ' (' . $datePlace->date_place($connectDb->connect_date, '') . ')';
             }
             if ($templ_person["address_address" . $address_nr] != '') {
                 $temp = "address_address" . $address_nr;
@@ -146,7 +150,7 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
             }
             // *** Add date ***
             if ($connectDb->connect_date) {
-                $templ_relation["address_address" . $address_nr] .= ' (' . date_place($connectDb->connect_date, '') . ')';
+                $templ_relation["address_address" . $address_nr] .= ' (' . $datePlace->date_place($connectDb->connect_date, '') . ')';
             }
             if ($templ_relation["address_address" . $address_nr] != '') {
                 $temp = "address_address" . $address_nr;
@@ -160,7 +164,6 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 
         // *** Phone number ***
         if ($connectDb->address_phone) {
-            //$text.=', '.$connectDb->address_phone;
             $text .= ', ' . __('phone') . ' ' . $connectDb->address_phone;
 
             // *** PDF export ***
@@ -173,29 +176,22 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 
         // *** Don't use address_date. Using connect_date for all addresses ***
         //if ($connectDb->address_date){
-        //	//$text.=date_place($connectDb->address_date,'').' ';
-        //	$text.=' ('.date_place($connectDb->address_date,'').')';
+        //	$text.=' ('.$datePlace->date_place($connectDb->address_date,'').')';
         //	// default, without place, place is processed later.
-        //	$templ_person["address_date".$address_nr]=' ('.date_place($connectDb->address_date,'').')';
+        //	$templ_person["address_date".$address_nr]=' ('.$datePlace->date_place($connectDb->address_date,'').')';
         //	$temp="address_date".$address_nr;
         //}
         if ($connectDb->connect_date) {
-            //$text.=date_place($connectDb->address_date,'').' ';
-            $text .= ' (' . date_place($connectDb->connect_date, '') . ')';
+            $text .= ' (' . $datePlace->date_place($connectDb->connect_date, '') . ')';
             // default, without place, place is processed later.
-            //$templ_person["address_date".$address_nr]=' ('.date_place($connectDb->connect_date,'').')';
+            //$templ_person["address_date".$address_nr]=' ('.$datePlace->date_place($connectDb->connect_date,'').')';
             //$temp="address_date".$address_nr;
         }
 
         // *** Address text ***
         if ($connectDb->address_text) {
-            $work_text = process_text($connectDb->address_text);
+            $work_text = $processText->process_text($connectDb->address_text);
             if ($work_text) {
-                //if($temp) { $templ_person[$temp].=", "; }
-                //$templ_person["address_text".$address_nr]=$work_text;
-                //$temp="address_text".$address_nr;
-                //$text.=', '.$work_text;
-
                 // *** PDF export ***
                 if ($connect_kind == 'person') {
                     $templ_person["address_text" . $address_nr] = ' ' . $connectDb->address_text;
@@ -216,13 +212,8 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 
         // *** Address extra text (connection table) ***
         if ($connectDb->connect_text) {
-            $work_text = process_text($connectDb->connect_text);
+            $work_text = $processText->process_text($connectDb->connect_text);
             if ($work_text) {
-                //if($temp) { $templ_person[$temp].=", "; }
-                //$templ_person["address_text".$address_nr]=$work_text;
-                //$temp="address_text".$address_nr;
-                //$text.=', '.$work_text;
-
                 // *** PDF export ***
                 if ($connect_kind == 'person') {
                     if (isset($templ_person["address_text" . $address_nr])) {
@@ -250,12 +241,6 @@ function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
         }
 
         // *** Show source by address ***
-        //if ($connect_kind=='person'){
-        //	$source_array=show_sources2("person","pers_address_source",$connectDb->address_gedcomnr);
-        //}
-        //else{
-        //	$source_array=show_sources2("family","fam_address_source",$connectDb->address_gedcomnr);
-        //}
         $source_array = show_sources2("address", "address_source", $connectDb->address_gedcomnr);
         if ($source_array) {
             // *** PDF export ***

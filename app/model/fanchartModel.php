@@ -1,7 +1,7 @@
 <?php
 class FanchartModel extends AncestorModel
 {
-    public function get_chosengen()
+    public function get_chosengen(): int
     {
         $chosengen = 5;
         if (isset($_GET["chosengen"])) {
@@ -13,7 +13,7 @@ class FanchartModel extends AncestorModel
         return $chosengen;
     }
 
-    public function get_fontsize()
+    public function get_fontsize(): int
     {
         $fontsize = 8;
         if (isset($_GET["fontsize"])) {
@@ -25,7 +25,7 @@ class FanchartModel extends AncestorModel
         return $fontsize;
     }
 
-    public function get_date_display()
+    public function get_date_display(): int
     {
         $date_display = 2;
         if (isset($_GET["date_display"])) {
@@ -37,7 +37,7 @@ class FanchartModel extends AncestorModel
         return $date_display;
     }
 
-    public function get_printing()
+    public function get_printing(): int
     {
         $printing = 1;
         if (isset($_GET["printing"])) {
@@ -49,7 +49,7 @@ class FanchartModel extends AncestorModel
         return $printing;
     }
 
-    public function get_fan_style()
+    public function get_fan_style(): int
     {
         $fan_style = 3;
         if (isset($_GET["fan_style"])) {
@@ -61,7 +61,7 @@ class FanchartModel extends AncestorModel
         return $fan_style;
     }
 
-    public function get_fan_width()
+    public function get_fan_width(): string
     {
         $fan_width = "auto";
         if (isset($_GET["fan_width"])) {
@@ -73,7 +73,7 @@ class FanchartModel extends AncestorModel
         return $fan_width;
     }
 
-    public function get_real_width($fan_width)
+    public function get_real_width($fan_width): int
     {
         if ($fan_width > 50 and $fan_width < 301) {
             $tmp_width = $fan_width;
@@ -85,7 +85,7 @@ class FanchartModel extends AncestorModel
         return $realwidth;
     }
 
-    public function generate_fanchart_item_array($chosengen)
+    public function generate_fanchart_item_array($chosengen): array
     {
         $fanchart_item = array();
         $maxperson = pow(2, $chosengen);

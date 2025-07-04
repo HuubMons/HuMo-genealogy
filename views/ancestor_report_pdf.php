@@ -10,18 +10,13 @@
  */
 
 $screen_mode = 'PDF';
-
 $pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
-
-include_once(__DIR__ . "/layout_pdf.php");
-
-
+$dirmark1 = '';
+$dirmark2 = '';
 
 // TODO create seperate controller script.
-require_once  __DIR__ . "/../app/model/familyModel.php";
-require_once  __DIR__ . "/../app/model/ancestorModel.php";
-$get_ancestor = new AncestorModel($dbh);
-$data["main_person"] = $get_ancestor->getMainPerson();
+$get_ancestor = new AncestorModel($config);
+$data["main_person"] = $get_ancestor->getMainPerson2('');
 $rom_nr = $get_ancestor->getNumberRoman();
 
 // TODO for now using extended class.
@@ -32,7 +27,7 @@ $data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
 
 
 // 2024: at this moment this can't be removed yet...
-//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in showMedia.php!!!
+//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in showMedia!!!
 // *** Set variable for queries ***
 $dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
     ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -51,15 +46,20 @@ $db_functions->check_person($data["main_person"]);
 $pdfdetails = array();
 $pdf_marriage = array();
 
-$pdf = new PDF();
+$pdf = new tFPDFextend();
 $persDb = $db_functions->get_person($data["main_person"]);
-// *** Use person class ***
-$pers_cls = new PersonCls($persDb);
-$name = $pers_cls->person_name($persDb);
 
-// $title not in use?
-//$title=pdf_convert(__('Ancestor report').__(' of ').str_replace("&quot;",'"',$name["standard_name"]),0,'C');
-$title = pdf_convert(__('Ancestor report') . __(' of ') . pdf_convert($name["standard_name"]), 0, 'C');
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$personName_extended = new PersonNameExtended;
+$personData = new PersonData;
+
+$privacy = $personPrivacy->get_privacy($persDb);
+$name = $personName->get_person_name($persDb, $privacy);
+
+$datePlace = new DatePlace();
+
+$title = $pdf->pdf_convert(__('Ancestor report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]), 0, 'C');
 
 $pdf->SetTitle($title, true);
 $pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
@@ -70,13 +70,12 @@ $pdf->AddFont('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', true);
 $pdf->AddFont('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
 $pdf->AddFont('DejaVu', 'BI', 'DejaVuSansCondensed-BoldOblique.ttf', true);
 
-$pdf->SetFont($pdf_font, 'B', 15);
+$pdf->SetFont($pdf->pdf_font, 'B', 15);
 $pdf->Ln(4);
-$name = $pers_cls->person_name($persDb);
-//$pdf->MultiCell(0,10,__('Ancestor report').__(' of ').$name["standard_name"],0,'C');
-$pdf->MultiCell(0, 10, __('Ancestor report') . __(' of ') . pdf_convert($name["standard_name"]), 0, 'C');
+
+$pdf->MultiCell(0, 10, __('Ancestor report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]), 0, 'C');
 $pdf->Ln(4);
-$pdf->SetFont($pdf_font, '', 12);
+$pdf->SetFont($pdf->pdf_font, '', 12);
 
 $ancestor_array2[] = $data["main_person"];
 $ancestor_number2[] = 1;
@@ -155,18 +154,18 @@ while (isset($ancestor_array2[0])) {
 
     //echo 'pdf generation<br>';
     $pdf->Cell(0, 2, "", 0, 1);
-    $pdf->SetFont($pdf_font, 'BI', 14);
+    $pdf->SetFont($pdf->pdf_font, 'BI', 14);
     $pdf->SetFillColor(200, 220, 255);
     if ($pdf->GetY() > 260) {
         $pdf->AddPage();
         $pdf->SetY(20);
     }
     if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
-        $pdf->Cell(0, 8, pdf_convert(__('generation ') . $rom_nr[$generation] . ' (' . $language["gen" . $generation] . ')'), 0, 1, 'C', true);
+        $pdf->Cell(0, 8, $pdf->pdf_convert(__('generation ') . $rom_nr[$generation] . ' (' . $language["gen" . $generation] . ')'), 0, 1, 'C', true);
     } elseif (isset($rom_nr[$generation])) {
-        $pdf->Cell(0, 8, pdf_convert(__('generation ') . $rom_nr[$generation]), 0, 1, 'C', true);
+        $pdf->Cell(0, 8, $pdf->pdf_convert(__('generation ') . $rom_nr[$generation]), 0, 1, 'C', true);
     }
-    $pdf->SetFont($pdf_font, '', 12);
+    $pdf->SetFont($pdf->pdf_font, '', 12);
     // *** Loop per generation ***
     $counter = count($ancestor_array);
 
@@ -189,53 +188,40 @@ while (isset($ancestor_array2[0])) {
 
         if ($ancestor_array[$i] != '0') {
             $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $man_cls = new PersonCls($person_manDb);
-            $privacy_man = $man_cls->privacy;
+            $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
             if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
                 $familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                 // *** Use privacy filter of woman ***
                 $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-                $woman_cls = new PersonCls($person_womanDb);
-                $privacy_woman = $woman_cls->privacy;
+                $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
-                // *** Use class for marriage ***
                 $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
-                $family_privacy = $marriage_cls->privacy;
+                $family_privacy = $marriage_cls->get_privacy();
             }
 
             unset($templ_person);
 
-            // pdf NUMBER + MAN NAME + DATA
-            // *** May 2021: changed, only number is shown **
-            //$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,$man_cls->name_extended("child"));
+            // PDF number
             $pdf->SetX(10);
             $pdf->pdf_ancestor_name($ancestor_number[$i], $person_manDb->pers_sexe, '');
-
-            //$pdf->SetX($pdf->GetX()+3);
-            //$pdf->MultiCell(0,8,$man_cls->name_extended("child"),0,"L");
-            //$pdf->SetFont($pdf_font,'',12);
-
-            //TEST WERKT (fout bij hogere nummers)
-            //$pdf->SetLeftMargin(38);
-            //$pdf->SetX($pdf->GetX()+3);
-            //$man_cls->name_extended("child");
-            //$pdf->Ln(7);
 
             // *** Name ***
             unset($templ_person);
             unset($templ_name);
-            $pdfdetails = $man_cls->name_extended("child");
+            $pdfdetails = $personName_extended->name_extended($person_manDb, $privacy_man, "child");
             if ($pdfdetails) {
+                // BUG: layout_pdf.php isn't used anymore. For some reason name is in smaller font.
+
                 //$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
                 $pdf->write_name($templ_name, $pdf->GetX() + 5, "long");
                 // *** Resets line ***
-                //$pdf->MultiCell(0,8,'',0,"L");
+                $pdf->MultiCell(0, 8, '', 0, "L");
             }
 
             if ($listednr == '') {
-                $pdfdetails = $man_cls->person_data("standard", $ancestor_array[$i]);
+                $pdfdetails = $personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
                 if ($pdfdetails) {
                     $pdf->SetLeftMargin(38);
                     $pdf->pdfdisplay($pdfdetails, "ancestor");
@@ -320,8 +306,7 @@ while (isset($ancestor_array2[0])) {
 
             // *** Show N.N. person ***
             $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $man_cls = new PersonCls($person_manDb);
-            $privacy_man = $man_cls->privacy;
+            $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
             unset($templ_person);
 
@@ -332,14 +317,14 @@ while (isset($ancestor_array2[0])) {
             $pdf->pdf_ancestor_name($ancestor_number[$i], '', '');
             //$pdf->SetX($pdf->GetX()+3);
             //$pdf->MultiCell(0,8,__('N.N.'),0,"L");
-            //$pdf->SetFont($pdf_font,'',12);
+            //$pdf->SetFont($pdf->pdf_font,'',12);
 
             $pdf->SetLeftMargin(38);
             $pdf->SetX($pdf->GetX() + 3);
-            $man_cls->name_extended("child");
+            $personName_extended->name_extended($person_manDb, $privacy_man, "child");
             $pdf->Ln(7);
 
-            $pdfdetails = $man_cls->person_data("standard", $ancestor_array[$i]);
+            $pdfdetails = $personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
             if ($pdfdetails) {
                 $pdf->pdfdisplay($pdfdetails, "ancestor");
             } elseif ($ancestor_number[$i] > 9999) {
@@ -362,13 +347,13 @@ while (isset($ancestor_array2[0])) {
 }    // loop ancestor report
 
 
-// Code for ancestor report PDF -- list appendix of sources
-if ($screen_mode == "PDF" and !empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user['group_sources'] == 'j')) {
+// List appendix of sources
+if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user['group_sources'] == 'j')) {
     include_once(__DIR__ . "/../include/show_source_pdf.php");
     $pdf->AddPage(); // appendix on new page
-    $pdf->SetFont($pdf_font, "B", 14);
+    $pdf->SetFont($pdf->pdf_font, "B", 14);
     $pdf->Write(8, __('Sources') . "\n\n");
-    $pdf->SetFont($pdf_font, '', 10);
+    $pdf->SetFont($pdf->pdf_font, '', 10);
     // the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
     $count = 0;
 
@@ -376,19 +361,19 @@ if ($screen_mode == "PDF" and !empty($pdf_source) and ($data["source_presentatio
         $count++;
         if (isset($pdf_source[$key])) {
             $pdf->SetLink($pdf_footnotes[$count - 1], -1);
-            $pdf->SetFont($pdf_font, 'B', 10);
+            $pdf->SetFont($pdf->pdf_font, 'B', 10);
             $pdf->Write(6, $count . ". ");
             if ($user['group_sources'] == 'j') {
                 source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
             } elseif ($user['group_sources'] == 't') {
                 $db_functions->get_source($pdf_source[$key]);
                 if ($sourceDb->source_title) {
-                    $pdf->SetFont($pdf_font, 'B', 10);
+                    $pdf->SetFont($pdf->pdf_font, 'B', 10);
                     $pdf->Write(6, __('Title:') . " ");
-                    $pdf->SetFont($pdf_font, '', 10);
+                    $pdf->SetFont($pdf->pdf_font, '', 10);
                     $txt = ' ' . trim($sourceDb->source_title);
                     if ($sourceDb->source_date || $sourceDb->source_place) {
-                        $txt .= " " . date_place($sourceDb->source_date, $sourceDb->source_place);
+                        $txt .= " " . $datePlace->date_place($sourceDb->source_date, $sourceDb->source_place);
                     }
                     $pdf->Write(6, $txt . "\n");
                 }

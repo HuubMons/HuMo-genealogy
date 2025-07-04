@@ -2,6 +2,8 @@
 // *** Show media file using secured folder ***
 // this checks if this is special url query for giving the file - it gives the file if user is authorized to get it
 if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['media_dir']) && isset($_GET['media_filename'])) {
+    $person_privay = new PersonPrivacy();
+
     if (isset($_GET['media_filename']) && $_GET['media_filename']) {
         $media_filename = $_GET['media_filename'];
     }
@@ -50,32 +52,29 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
     $media_qry = $dbh->query($qry);
     $media_qryDb = $media_qry->fetch(PDO::FETCH_OBJ);
 
-    //default var declaration
     $file_allowed = false;
 
     if ($media_qryDb && $media_qryDb->event_connect_kind === 'person') {
-        // echo 'person';
         $personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
-        $man_cls = new PersonCls($personmnDb);
-        if (is_object($man_cls->personDb) && !$man_cls->privacy) {
+        $man_privacy = $personPrivacy->get_privacy($personmnDb);
+        if ($personmnDb && !$man_privacy) {
             $file_allowed = true;
         } else {
             $file_allowed = false;
         }
     } elseif ($media_qryDb && $media_qryDb->event_connect_kind === 'family') {
-        // echo 'family';
         $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $media_qryDb->event_connect_id . "'";
         $family_qry = $dbh->query($qry2);
         $family_qryDb2 = $family_qry->fetch(PDO::FETCH_OBJ);
 
-        $personmnDb2 = $db_functions->get_person($family_qryDb2->fam_man);
-        $man_cls2 = new PersonCls($personmnDb2);
+        $personmnDb = $db_functions->get_person($family_qryDb2->fam_man);
+        $man_privacy = $personPrivacy->get_privacy($personmnDb);
 
-        $personmnDb3 = $db_functions->get_person($family_qryDb2->fam_woman);
-        $woman_cls = new PersonCls($personmnDb3);
+        $personwmnDb = $db_functions->get_person($family_qryDb2->fam_woman);
+        $woman_privacy = $personPrivacy->get_privacy($personwmnDb);
 
         // *** Only use this picture if both man and woman have disabled privacy options ***
-        if ($man_cls2->privacy == '' && $woman_cls->privacy == '') {
+        if ($man_privacy == '' && $woman_privacy == '') {
             $file_allowed = true;
         } else {
             $file_allowed = false;

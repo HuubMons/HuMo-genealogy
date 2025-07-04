@@ -1,22 +1,27 @@
 <?php
 class UserSettingsController
 {
-    public function user_settings($dbh, $dataDb, $humo_option, $user)
+    private $config;
+
+    public function __construct($config)
     {
-        $user_settingsModel = new UserSettingsModel();
+        $this->config = $config;
+    }
 
-        $get_user = $user_settingsModel->getUser($dbh);
+    public function user_settings($dataDb): array
+    {
+        $user_settingsModel = new UserSettingsModel($this->config);
 
-        $result_message = $user_settingsModel->updateSettings($dbh, $dataDb, $get_user, $humo_option);
+        $result_message = $user_settingsModel->updateSettings($dataDb);
 
         // Reload user settings (needed for 2FA).
-        $get_user = $user_settingsModel->getUser($dbh);
+        $user_settingsModel->getUser();
+        $twofa = $user_settingsModel->showQRcode();
 
-        $twofa = $user_settingsModel->showQRcode($dbh, $get_user, $user);
-
+        $get_userDb = $user_settingsModel->getUserDb();
 
         $data = array(
-            "user" => $get_user,
+            "user" => $get_userDb,
             "result_message" => $result_message
         );
 

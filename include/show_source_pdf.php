@@ -19,6 +19,8 @@ function source_display_pdf($sourcenum)
     global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language, $humo_option;
     global $bot_visit; // *** Don't remove. Is needed for source.php ***
 
+    $languageDate = new LanguageDate();
+
     // *** Check user authority ***
     if ($user['group_sources'] != 'j') {
         exit(__('You are not authorised to see this page.'));
@@ -48,7 +50,7 @@ function source_display_pdf($sourcenum)
         $pdf->SetFont('DejaVu', 'B', 10);
         $pdf->Write(6, __('Date') . ": ");
         $pdf->SetFont('DejaVu', '', 10);
-        $pdf->Write(6, language_date(strtolower($sourceDb->source_date)) . "\n");
+        $pdf->Write(6, $languageDate->language_date(strtolower($sourceDb->source_date)) . "\n");
     }
     if ($sourceDb->source_publ) {
         $source_publ = $sourceDb->source_publ;
@@ -138,7 +140,7 @@ function source_display_pdf($sourcenum)
 
     // *** Pictures by source ***
     //$showMedia = new ShowMedia;
-    //$result = $showMedia->show_media('source', $sourceDb->source_gedcomnr); // *** This function can be found in file: showMedia.php! ***
+    //$result = $showMedia->show_media('source', $sourceDb->source_gedcomnr);
     //echo $result[0];
 
 
@@ -147,4 +149,4 @@ function source_display_pdf($sourcenum)
     if ($repoDb) {
         // NO REPOSITORIES IN PDF YET...
     }
-} // end function source_display
+}

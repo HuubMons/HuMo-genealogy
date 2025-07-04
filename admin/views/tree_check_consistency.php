@@ -300,9 +300,13 @@ if (isset($_POST['mark_all'])) {
             $person = $dbh->query("SELECT * FROM humo_persons WHERE pers_id='" . $person_startDb['pers_id'] . "'");
             $personDb = $person->fetch();
 
-            /*	// using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
-            $persclass = new PersonCls($personDb);
-            $name=$persclass->person_name($personDb); 
+            /*
+            // using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
+            // >>>>> New PersonName class not tested yet. And: don't use "new PersonName" in this loop.
+            $personName = new PersonName();
+            $personPrivacy = new PersonPrivacy();
+            $privacy = $personPrivacy->get_privacy($personDb);
+            $name=$personName->get_person_name($personDb, $privacy); 
             */
             $name = $personDb['pers_lastname'] . ", " . $personDb['pers_firstname'] . ' ' . str_replace("_", " ", $personDb['pers_prefix']);
 
@@ -385,7 +389,7 @@ if (isset($_POST['mark_all'])) {
                 } elseif (isset($parentsDb->fam_marr_relation_date)) { // if non of above try relation date
                     $par_marr_date = $parentsDb->fam_relation_date;
                 }
-                //END NEW
+
                 if (isset($parentsDb->fam_woman)) {
                     $mother = $dbh->query("SELECT pers_birth_date, pers_fams FROM humo_persons
                         WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber = '" . $parentsDb->fam_woman . "'");
@@ -451,7 +455,6 @@ if (isset($_POST['mark_all'])) {
                         }
                     }
                 }
-                //END NEW
             }
 
             if (
@@ -543,10 +546,7 @@ if (isset($_POST['mark_all'])) {
                         $results_found++;
                     }
                 }
-
-                //END NEW
-
-            } // end if b_date!=''
+            }
 
             if ($bp_date != '') {
                 // ID 7 - Baptism date - after death/burial date

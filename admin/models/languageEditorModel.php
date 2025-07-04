@@ -1,7 +1,7 @@
 <?php
-class LanguageEditorModel
+class LanguageEditorModel extends AdminBaseModel
 {
-    public function getLanguage()
+    public function getLanguage(): string
     {
         $language = 'en';
         if (
@@ -28,7 +28,7 @@ class LanguageEditorModel
     }
     */
 
-    public function saveFile($language_editor)
+    public function saveFile($language_editor): string
     {
         $message = '';
         if (isset($_POST['save_button'])) {
@@ -104,7 +104,7 @@ class LanguageEditorModel
         return $message;
     }
 
-    private function msgstr_save($string)
+    private function msgstr_save($string): string
     {
         // formats the displayed msgstr text for saving in .po file (text that is displayed)
         $string = strip_tags($string);
@@ -123,7 +123,7 @@ class LanguageEditorModel
         return $string;
     }
 
-    private function msgstr_save2($string)
+    private function msgstr_save2($string): string
     {
         // formats the non displayed msgstr text for saving in .po file 
         if ($string && $string != "<br>") {

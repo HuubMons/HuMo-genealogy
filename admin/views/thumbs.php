@@ -5,9 +5,13 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 include_once(__DIR__ . "/../include/select_tree.php");
-include_once(__DIR__ . "/../include/media_inc.php");
-include_once(__DIR__ . "/../../include/showMedia.php");
+
 $showMedia = new ShowMedia;
+$resizePicture = new ResizePicture();
+
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$personLink = new PersonLink;
 
 $prefx = '../'; // to get out of the admin map
 
@@ -577,7 +581,13 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         ) DEFAULT CHARSET=utf8";
             $dbh->query($albumtbl);
             // Enter the default category with default name that can be changed by admin afterwards
-            $dbh->query("INSERT INTO humo_photocat (photocat_prefix,photocat_order,photocat_language,photocat_name) VALUES ('none','1','default','" . safe_text_db(__('Photos')) . "')");
+            $stmt = $dbh->prepare("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES (:prefix, :order, :language, :name)");
+            $stmt->execute([
+                ':prefix' => 'none',
+                ':order' => 1,
+                ':language' => 'default',
+                ':name' => __('Photos')
+            ]);
         }
 
         //echo '<h1 align=center>'.__('Photo album categories').'</h1>';
@@ -592,20 +602,53 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
         if (isset($_GET['cat_drop2']) && $_GET['cat_drop2'] == 1 && !isset($_POST['save_cat'])) {
             // delete category and make sure that the order sequence is restored
-            $dbh->query("UPDATE humo_photocat SET photocat_order = (photocat_order-1) WHERE photocat_order > '" . safe_text_db($_GET['cat_order']) . "'");
-            $dbh->query("DELETE FROM humo_photocat WHERE photocat_prefix = '" . safe_text_db($_GET['cat_prefix']) . "'");
+            $stmt1 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = (photocat_order-1) WHERE photocat_order > :cat_order");
+            $stmt1->execute([':cat_order' => $_GET['cat_order']]);
+
+            $stmt2 = $dbh->prepare("DELETE FROM humo_photocat WHERE photocat_prefix = :cat_prefix");
+            $stmt2->execute([':cat_prefix' => $_GET['cat_prefix']]);
         }
         if (isset($_GET['cat_up']) && !isset($_POST['save_cat'])) {
             // move category up
-            $dbh->query("UPDATE humo_photocat SET photocat_order = '999' WHERE photocat_order ='" . safe_text_db($_GET['cat_up']) . "'");  // set present one to temp
-            $dbh->query("UPDATE humo_photocat SET photocat_order = '" . $_GET['cat_up'] . "' WHERE photocat_order ='" . (safe_text_db($_GET['cat_up']) - 1) . "'");  // move the one above down
-            $dbh->query("UPDATE humo_photocat SET photocat_order = '" . (safe_text_db($_GET['cat_up']) - 1) . "' WHERE photocat_order = '999'");  // move this one up
+            // Use prepared statements for safety
+            $stmt1 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = :temp_order WHERE photocat_order = :current_order");
+            $stmt1->execute([
+                ':temp_order' => 999,
+                ':current_order' => $_GET['cat_up']
+            ]);
+
+            $stmt2 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = :new_order WHERE photocat_order = :above_order");
+            $stmt2->execute([
+                ':new_order' => $_GET['cat_up'],
+                ':above_order' => $_GET['cat_up'] - 1
+            ]);
+
+            $stmt3 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = :final_order WHERE photocat_order = :temp_order");
+            $stmt3->execute([
+                ':final_order' => GET['cat_up'] - 1,
+                ':temp_order' => 999
+            ]);
         }
         if (isset($_GET['cat_down']) && !isset($_POST['save_cat'])) {
             // move category down
-            $dbh->query("UPDATE humo_photocat SET photocat_order = '999' WHERE photocat_order ='" . safe_text_db($_GET['cat_down']) . "'");  // set present one to temp
-            $dbh->query("UPDATE humo_photocat SET photocat_order = '" . safe_text_db($_GET['cat_down']) . "' WHERE photocat_order ='" . (safe_text_db($_GET['cat_down']) + 1) . "'");  // move the one under it up
-            $dbh->query("UPDATE humo_photocat SET photocat_order = '" . (safe_text_db($_GET['cat_down']) + 1) . "' WHERE photocat_order = '999'");  // move this one down
+            // Use prepared statements for safety
+            $stmt1 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = :temp_order WHERE photocat_order = :current_order");
+            $stmt1->execute([
+                ':temp_order' => 999,
+                ':current_order' => $_GET['cat_down']
+            ]);
+
+            $stmt2 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = :new_order WHERE photocat_order = :below_order");
+            $stmt2->execute([
+                ':new_order' => $_GET['cat_down'],
+                ':below_order' => $_GET['cat_down'] + 1
+            ]);
+
+            $stmt3 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = :final_order WHERE photocat_order = :temp_order");
+            $stmt3->execute([
+                ':final_order' => $_GET['cat_down'] + 1,
+                ':temp_order' => 999
+            ]);
         }
 
         if (isset($_POST['save_cat'])) {  // the user decided to add a new category and/or save changes to names
@@ -620,20 +663,45 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 if (isset($_POST[$resultDb->photocat_prefix])) {
                     if ($language_tree != "default") {
                         // only update names for the chosen language
-                        $check_lang = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '" . $resultDb->photocat_prefix . "' AND photocat_language='" . safe_text_db($language_tree) . "'");
+                        $check_lang_stmt = $dbh->prepare("SELECT * FROM humo_photocat WHERE photocat_prefix = :prefix AND photocat_language = :language");
+                        $check_lang_stmt->execute([
+                            ':prefix' => $resultDb->photocat_prefix,
+                            ':language' => $language_tree
+                        ]);
                         if ($check_lang->rowCount() != 0) { // this language already has a name for this category - update it
-                            $dbh->query("UPDATE humo_photocat SET photocat_name = '" . safe_text_db($_POST[$resultDb->photocat_prefix]) . "'
-                                WHERE photocat_prefix = '" . $resultDb->photocat_prefix . "' AND photocat_language='" . safe_text_db($language_tree) . "'");
-                        } else {  // this language doesn't yet have a name for this category - create it
-                            $dbh->query("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES ('" . $resultDb->photocat_prefix . "', '" . $resultDb->photocat_order . "', '" . $language_tree . "', '" . safe_text_db($_POST[$resultDb->photocat_prefix]) . "')");
+                            $update_stmt = $dbh->prepare("UPDATE humo_photocat SET photocat_name = :cat_name WHERE photocat_prefix = :cat_prefix AND photocat_language = :cat_language");
+                            $update_stmt->execute([
+                                ':cat_name' => $_POST[$resultDb->photocat_prefix],
+                                ':cat_prefix' => $resultDb->photocat_prefix,
+                                ':cat_language' => $language_tree
+                            ]);
+                        } else {
+                            // this language doesn't yet have a name for this category - create it
+                            $insert_stmt = $dbh->prepare("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES (:cat_prefix, :cat_order, :cat_language, :cat_name)");
+                            $insert_stmt->execute([
+                                ':cat_prefix' => $resultDb->photocat_prefix,
+                                ':cat_order' => $resultDb->photocat_order,
+                                ':cat_language' => $language_tree,
+                                ':cat_name' => $_POST[$resultDb->photocat_prefix]
+                            ]);
                         }
-                    } else {  // update entered names for all languages 
+                    } else {
+                        // update entered names for all languages 
                         $check_default = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '" . $resultDb->photocat_prefix . "' AND photocat_language='default'");
                         if ($check_default->rowCount() != 0) {    // there is a default name for this language - update it
-                            $dbh->query("UPDATE humo_photocat SET photocat_name = '" . safe_text_db($_POST[$resultDb->photocat_prefix]) . "'
-                                WHERE photocat_prefix='" . $resultDb->photocat_prefix . "' AND photocat_language='default'");
-                        } else {  // no default name yet for this category - create it
-                            $dbh->query("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES ('" . $resultDb->photocat_prefix . "', '" . $resultDb->photocat_order . "', 'default', '" . safe_text_db($_POST[$resultDb->photocat_prefix]) . "')");
+                            $update_stmt = $dbh->prepare("UPDATE humo_photocat SET photocat_name = :cat_name WHERE photocat_prefix = :cat_prefix AND photocat_language = 'default'");
+                            $update_stmt->execute([
+                                ':cat_name' => $_POST[$resultDb->photocat_prefix],
+                                ':cat_prefix' => $resultDb->photocat_prefix
+                            ]);
+                        } else {
+                            // no default name yet for this category - create it
+                            $stmt_insert = $dbh->prepare("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES (:cat_prefix, :cat_order, 'default', :cat_name)");
+                            $stmt_insert->execute([
+                                ':cat_prefix' => $resultDb->photocat_prefix,
+                                ':cat_order' => $resultDb->photocat_order,
+                                ':cat_name' => $_POST[$resultDb->photocat_prefix]
+                            ]);
                         }
                     }
                 }
@@ -644,14 +712,16 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 if ($_POST['new_cat_prefix'] != "") {
                     $new_cat_prefix = $_POST['new_cat_prefix'];
                     $new_cat_name = $_POST['new_cat_name'];
-                    $warning_prefix = "";
-                    $warning_invalid_prefix = "";
+                    $warning_prefix = '';
+                    $warning_invalid_prefix = '';
                     if (preg_match('/^[a-z][a-z]_$/', $_POST['new_cat_prefix']) !== 1) {
                         $warning_invalid_prefix = __('Prefix has to be 2 letters and _');
                         $warning_prefix = $_POST['new_cat_prefix'];
                     } else {
-                        $warning_exist_prefix = "";
-                        $check_exist = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . safe_text_db($new_cat_prefix) . "'");
+                        $warning_exist_prefix = '';
+                        $check_exist_stmt = $dbh->prepare("SELECT * FROM humo_photocat WHERE photocat_prefix = :cat_prefix");
+                        $check_exist_stmt->execute([':cat_prefix' => $new_cat_prefix]);
+                        $check_exist = $check_exist_stmt;
                         if ($check_exist->rowCount() == 0) {
                             if ($_POST['new_cat_name'] == "") {
                                 $warning_noname = __('When creating a category you have to give it a name');
@@ -661,8 +731,13 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 $orderDb = $highest_order->fetch(PDO::FETCH_ASSOC);
                                 $order = $orderDb['maxorder'];
                                 $order++;
-                                $qry = "INSERT INTO humo_photocat (photocat_prefix,photocat_order,photocat_language,photocat_name) VALUES ('" . safe_text_db($new_cat_prefix) . "', '" . safe_text_db($order) . "', '" . safe_text_db($language_tree) . "', '" . safe_text_db($new_cat_name) . "')";
-                                $dbh->query($qry);
+                                $stmt_insert = $dbh->prepare("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES (:cat_prefix, :cat_order, :cat_language, :cat_name)");
+                                $stmt_insert->execute([
+                                    ':cat_prefix' => $new_cat_prefix,
+                                    ':cat_order' => $order,
+                                    ':cat_language' => $language_tree,
+                                    ':cat_name' => $new_cat_name
+                                ]);
                             }
                         } else {   // this category prefix already exists!
                             $warning_exist_prefix = __('A category with this prefix already exists!');
@@ -701,7 +776,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     </tr>
 
                     <?php
-                    $add = "";
+                    $add = '';
                     if (isset($_POST['add_new_cat'])) {
                         $add = "&amp;add_new_cat=1";
                     }
@@ -745,7 +820,12 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     $number = 1;  // number on list
 
                     while ($catDb = $cat_result->fetch(PDO::FETCH_OBJ)) {
-                        $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = '" . safe_text_db($language_tree) . "'");
+                        $stmt = $dbh->prepare("SELECT * FROM humo_photocat WHERE photocat_prefix = :prefix AND photocat_language = :language");
+                        $stmt->execute([
+                            ':prefix' => $catDb->photocat_prefix,
+                            ':language' => $language_tree
+                        ]);
+                        $name = $stmt;
                         if ($name->rowCount()) {  // there is a name for this language
                             $nameDb = $name->fetch(PDO::FETCH_OBJ);
                             $catname = $nameDb->photocat_name;
@@ -755,7 +835,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 $nameDb = $name->fetch(PDO::FETCH_OBJ);
                                 $catname = $nameDb->photocat_name;
                             } else {  // no name at all
-                                $catname = "";
+                                $catname = '';
                             }
                         }
 
@@ -804,7 +884,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <?php
                     }
 
-                    $content = "";
+                    $content = '';
                     if (isset($warning_prefix)) {
                         $content = $warning_prefix;
                     }
@@ -878,14 +958,17 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         if (file_exists($picture_path_old . $_POST['filename_old'])) {
             rename($picture_path_old . $_POST['filename_old'], $picture_path_new . $_POST['filename']);
             echo '<b>' . __('Changed filename:') . ' </b>' . $picture_path_old .  $_POST['filename_old'] . ' <b>' . __('into filename:') . '</b> ' . $picture_path_new .  $_POST['filename'] . '<br>';
-            if (check_media_type($picture_path_new, $_POST['filename']) && create_thumbnail($picture_path_new, $_POST['filename'])) {
+            if ($resizePicture->check_media_type($picture_path_new, $_POST['filename']) && $resizePicture->create_thumbnail($picture_path_new, $_POST['filename'])) {
                 echo '<b>' . __('Changed filename:') . ' ' . __('into filename:') . '</b> ' . $picture_path_new . 'thumb_' . $_POST['filename'] . '.jpg<br>';
             }
         }
 
-        $sql = "UPDATE humo_events SET
-            event_event='" . safe_text_db($_POST['filename']) . "' WHERE event_event='" . safe_text_db($_POST['filename_old']) . "'";
-        $result = $dbh->query($sql);
+        $sql = "UPDATE humo_events SET event_event = :new_event WHERE event_event = :old_event";
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute([
+            ':new_event' => $_POST['filename'],
+            ':old_event' => $_POST['filename_old']
+        ]);
     }
 
 
@@ -931,21 +1014,21 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         substr($filename, 0, 5) !== 'thumb' &&
                         isset($_POST["thumbnail"]) &&
                         !is_dir($selected_picture_folder . $filename)  &&
-                        check_media_type($selected_picture_folder, $filename)
+                        $resizePicture->check_media_type($selected_picture_folder, $filename)
                     ) {
 
                         if (
                             !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
                             empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
                         ) {    // don't create thumb if one exists
-                            create_thumbnail($selected_picture_folder, $filename); // in media_inc.php script 
+                            $resizePicture->create_thumbnail($selected_picture_folder, $filename);
                         }
                     }
 
                     // *** Show thumbnails ***
                     if (
                         substr($filename, 0, 5) !== 'thumb' &&
-                        check_media_type($selected_picture_folder, $filename) &&
+                        $resizePicture->check_media_type($selected_picture_folder, $filename) &&
                         !is_dir($selected_picture_folder . $filename)
                     ) {
         ?>
@@ -954,20 +1037,23 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             <?php
                             // *** Show name of connected persons ***
                             $picture_text = '';
-                            $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'
-                                AND event_connect_kind='person' AND event_kind='picture'
-                                AND LOWER(event_event)='" . safe_text_db(strtolower($filename)) . "'";
-                            $afbqry = $dbh->query($sql);
+                            $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                                AND event_connect_kind = 'person' AND event_kind = 'picture'
+                                AND LOWER(event_event) = :filename";
+                            $afbqry = $dbh->prepare($sql);
+                            $afbqry->execute([
+                                ':tree_id' => $tree_id,
+                                ':filename' => strtolower($filename)
+                            ]);
                             $picture_privacy = false;
                             while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                                $person_cls = new PersonCls;
                                 $db_functions->set_tree_id($tree_id);
                                 $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                                $name = $person_cls->person_name($personDb);
+                                $privacy = $personPrivacy->get_privacy($personDb);
+                                $name = $personName->get_person_name($personDb, $privacy);
 
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $uri_path = '../'; // *** Needed if url_rewrite is enabled ***
-                                $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                                $url = $personLink->get_person_link($personDb, '../');
                                 $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
                             }
                             echo $picture_text;

@@ -1,17 +1,18 @@
 <?php
-class MapsModel
+class MapsModel extends BaseModel
 {
-    public function select_world_map($humo_option)
+    // *** Get selected world map ***
+    public function select_world_map(): string
     {
         $select = 'Google';
-        if (isset($humo_option["use_world_map"]) && $humo_option["use_world_map"] == 'OpenStreetMap') {
+        if (isset($this->humo_option["use_world_map"]) && $this->humo_option["use_world_map"] == 'OpenStreetMap') {
             $select = 'OpenStreetMap';
         }
         return $select;
     }
 
     // *** Get list of selected family names ***
-    public function get_family_names()
+    public function get_family_names(): string
     {
         $family_names = '';
         if (isset($_POST['items'])) {
@@ -21,7 +22,7 @@ class MapsModel
     }
 
     // *** Show line of selected family names ***
-    public function show_family_names($family_names)
+    public function show_family_names($family_names): string
     {
         $names = '';
         if ($family_names) {
@@ -39,7 +40,7 @@ class MapsModel
         return $names;
     }
 
-    public function get_maps_type()
+    public function get_maps_type(): array
     {
         // *** Set birth or death display. Default values ***
         // *** BE AWARE: session values are used in google_initiate script. If these are disabled, the slider doesn't work ***
@@ -69,7 +70,7 @@ class MapsModel
     }
 
     // *** Slider settings ***
-    public function get_slider_settings($dbh, $tree_prefix_quoted)
+    public function get_slider_settings($tree_prefix_quoted): array
     {
         // *** Slider defaults ***
         $maps['slider_min'] = 1560;  // first year shown on slider
@@ -79,7 +80,7 @@ class MapsModel
 
         // check for stored min value, created with google maps admin menu
         $query = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_" . $tree_prefix_quoted . "' ";
-        $result = $dbh->query($query);
+        $result = $this->dbh->query($query);
         if ($result->rowCount() > 0) {
             $sliderDb = $result->fetch(PDO::FETCH_OBJ);
             $maps['slider_min'] = $sliderDb->setting_value;
@@ -88,7 +89,7 @@ class MapsModel
         }
 
         $qry = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_default_pos'";
-        $result = $dbh->query($qry);
+        $result = $this->dbh->query($qry);
         if ($result->rowCount() > 0) {
             $def = $result->fetch(); // defaults to array
             if ($def['setting_value'] == "off") {
@@ -111,9 +112,11 @@ class MapsModel
         return $maps;
     }
 
-    public function get_maps_descendants($dbh, $tree_id)
+    public function get_maps_descendants(): array
     {
         global $desc_array;
+
+        $descendants = new Descendants;
 
         // *** Find descendants of chosen person ***
         $maps['desc_chosen_name'] = '';
@@ -128,18 +131,15 @@ class MapsModel
             $persfams_arr = explode(';', $persfams);
 
             //also check privacy
-            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
+            $myresult = $this->dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
             $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
             $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
 
             // *** Start function here - recursive if started ***
             $desc_array = [];
 
-            // TODO improve code. Also check global anscestors_descendant script.
-            global $descendant_array;
-            $generation_number = 0; // generation number
-            $nr_generations = 20;
-            get_descendants($persfams_arr[0], $chosenperson, $generation_number, $nr_generations);
+            // EXAMPLE: $descendants->get_descendants($family_id,$main_person,$nr_generations);
+            $descendant_array = $descendants->get_descendants($persfams_arr[0], $chosenperson, 20);
             $desc_array = $descendant_array;
 
             if ($desc_array != '') {
@@ -156,11 +156,13 @@ class MapsModel
         return $maps;
     }
 
-    public function get_maps_ancestors($dbh, $tree_id)
+    public function get_maps_ancestors(): array
     {
         // *** Find ancestors ***
         // TODO $_GET['anc_persfams'] isn't used.
-        global $anc_array, $db_functions;
+        global $anc_array;
+
+        $ancestors = new Ancestors;
 
         $_SESSION['anc_array'] = '';
         if (isset($_GET['anc_persged']) && isset($_GET['anc_persfams'])) {
@@ -169,10 +171,10 @@ class MapsModel
             //$persfams_arr = explode(';', $persfams);
 
             //also check privacy
-            $myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
+            $myresult = $this->dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $chosenperson . "'");
             $myresultDb = $myresult->fetch(PDO::FETCH_OBJ);
             $chosenname = $myresultDb->pers_firstname . ' ' . strtolower(str_replace('_', '', $myresultDb->pers_prefix)) . ' ' . $myresultDb->pers_lastname;
-            $anc_array = get_ancestors($db_functions, $chosenperson);
+            $anc_array = $ancestors->get_ancestors($this->db_functions, $chosenperson);
             $_SESSION['anc_array'] = $anc_array; // for use in namesearch.php
         } else {
             $chosenname = '';
@@ -186,13 +188,16 @@ class MapsModel
     }
 
     // *** Sept. 2024: at this moment only used for OpenStreetMap ***
-    public function get_locations($dbh, $tree_id, $maps)
+    public function get_locations($maps): array
     {
         $maps['location'][] = '';
         $maps['latitude'][] = '';
         $maps['longitude'][] = '';
         $maps['location_text'][] = '';
         $maps['location_text_count'][] = '';
+
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
 
         $namesearch_string = '';
         if ($maps['family_names'] != '') {
@@ -207,26 +212,26 @@ class MapsModel
 
         if ($maps['display_birth']) {
             /*
-            $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
+            $persoon = $this->dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
                 ON humo_location.location_location = humo_persons.pers_birth_place
                 OR humo_location.location_location = humo_persons.pers_bapt_place
-                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
+                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $this->tree_id . "'");
             */
             // See problems with death / burial. Also change this birth/ baptise query.
-            $persoon = $dbh->query("SELECT * FROM humo_location
+            $persoon = $this->dbh->query("SELECT * FROM humo_location
                 LEFT JOIN humo_persons ON humo_location.location_location = humo_persons.pers_birth_place
-                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' " . $namesearch_string . " ORDER BY location_location");
+                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $this->tree_id . "' " . $namesearch_string . " ORDER BY location_location");
         } elseif ($maps['display_death']) {
             /*
-            $persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
+            $persoon = $this->dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
                 ON humo_location.location_location = humo_persons.pers_death_place
                 OR humo_location.location_location = humo_persons.pers_buried_place
-                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
+                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $this->tree_id . "'");
             */
 
-            $persoon = $dbh->query("SELECT * FROM humo_location
+            $persoon = $this->dbh->query("SELECT * FROM humo_location
                 LEFT JOIN humo_persons ON humo_location.location_location = humo_persons.pers_death_place
-                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "' " . $namesearch_string . " ORDER BY location_location");
+                WHERE location_lat IS NOT NULL AND pers_tree_id='" . $this->tree_id . "' " . $namesearch_string . " ORDER BY location_location");
         }
         while ($personDb = $persoon->fetch(PDO::FETCH_OBJ)) {
             if ($maps['display_birth']) {
@@ -258,10 +263,8 @@ class MapsModel
                 //}
             }
 
-            // *** Use person class ***
-            // TODO: this slows down page for large family trees. Use Javascript to show persons?
-            $person_cls = new PersonCls($personDb);
-            $name = $person_cls->person_name($personDb);
+            $privacy = $personPrivacy->get_privacy($personDb);
+            $name = $personName->get_person_name($personDb, $privacy);
 
             $key = array_search(htmlspecialchars($place), $maps['location']);
             if (isset($key) && $key > 0) {
@@ -287,12 +290,12 @@ class MapsModel
         return $maps;
     }
 
-    public function get_locations_google($dbh, $tree_id, $maps)
+    public function get_locations_google($maps): array
     {
         // TODO probably better not to load all places. Combine queries?
         // Allready done for openstreetmap.
         $locarray = [];
-        $location = $dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL ORDER BY location_location");
+        $location = $this->dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location WHERE location_lat IS NOT NULL ORDER BY location_location");
         while ($locationDb = $location->fetch(PDO::FETCH_OBJ)) {
             $locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
             $locarray[$locationDb->location_location][1] = $locationDb->location_lat;
@@ -322,22 +325,22 @@ class MapsModel
         if (isset($desc_asc_array) && $desc_asc_array != '') {
             foreach ($desc_asc_array as $value) {
                 if ($_SESSION['type_birth'] == 1) {
-                    $persoon = $dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                    $persoon = $this->dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'
                         AND pers_gedcomnumber ='" . $value . "'
                         AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
 
                     // TODO use join. Prebuild array not needed anymore.
-                    //$persoon = $dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
+                    //$persoon = $this->dbh->query("SELECT * FROM humo_location LEFT JOIN humo_persons
                     //ON humo_location.location_location = humo_persons.pers_birth_place
                     //OR humo_location.location_location = humo_persons.pers_bapt_place
-                    //WHERE location_lat IS NOT NULL AND pers_tree_id='" . $tree_id . "'");
+                    //WHERE location_lat IS NOT NULL AND pers_tree_id='" . $this->tree_id . "'");
 
 
                     $personDb = $persoon->fetch(PDO::FETCH_OBJ);
                 } elseif ($_SESSION['type_death'] == 1) {
-                    $persoon = $dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
-                        FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                    $persoon = $this->dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+                        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'
                         AND pers_gedcomnumber ='" . $value . "'
                         AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
                     $personDb = $persoon->fetch(PDO::FETCH_OBJ);
@@ -417,12 +420,12 @@ class MapsModel
             }
 
             if ($_SESSION['type_birth'] == 1) {
-                $persoon = $dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
-                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                $persoon = $this->dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+                    FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'
                     AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) " . $namesearch_string);
             } elseif ($_SESSION['type_death'] == 1) {
-                $persoon = $dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
-                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
+                $persoon = $this->dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+                    FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'
                     AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) " . $namesearch_string);
             }
             while ($personDb = $persoon->fetch(PDO::FETCH_OBJ)) {

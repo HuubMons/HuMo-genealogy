@@ -1,21 +1,21 @@
 <?php
 
-/*****************************************************************************
- * fanchart.php                                                              *
- * Original fan plotting code from PhpGedView (GNU/GPL licence)              *
- *                                                                           *
- * Rewritten and adapted for HuMo-genealogy by Yossi Beck  -  October 2009   *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 2 of the License, or         *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
- * GNU General Public License for more details.                              *
- ****************************************************************************/
+/*
+ * fanchart.php
+ * Original fan plotting code from PhpGedView (GNU/GPL licence)
+ *
+ * Rewritten and adapted for HuMo-genealogy by Yossi Beck  -  October 2009
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 
 // *** Tab menu: ancestors ***
 echo $data['ancestor_header'];
@@ -25,49 +25,45 @@ $maxgens = 7;
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-/*
-if (!isset($_POST['show_desc'])) {  // first entry into page - check cookie or session
-    if (isset($_COOKIE["humogen_showdesc"])) {
-        $showdesc = $_COOKIE["humogen_showdesc"];
-    } elseif (isset($_SESSION['save_show_desc'])) {
-        $showdesc = $_SESSION['save_show_desc'];
-    }
-}
-// The $_POST['show_desc'] and cookie setting is handled in header script before the headers are sent
-*/
+// *** The $_POST['show_desc'] and cookie setting is handled in header script before the headers are sent ***
 
 $data["fanchart_item"] = array();
 $maxperson = pow(2, $data["chosengen"]);
-// initialize array
+// *** Initialize array ***
 for ($i = 0; $i < $maxperson; $i++) {
-    for ($n = 0; $n < 6; $n++) {
-        $data["fanchart_item"][$i][$n] = "";
-    }
+    $data["fanchart_item"][$i]['pers_gedcomnumber'] = '';
+    $data["fanchart_item"][$i]['standard_name'] = '';
+    $data["fanchart_item"][$i]['birth_bapt_date'] = '';
+    $data["fanchart_item"][$i]['death_burr_date'] = '';
+    $data["fanchart_item"][$i]['pers_sexe'] = '';
+    $data["fanchart_item"][$i]['pers_fams'] = '';
+    $data["fanchart_item"][$i]['pers_famc'] = '';
 }
 
-function fillarray($nr, $famid)
+// *** Recursive function to fill the array with person data ***
+function fillarray($nr, $pers_gedcomnumber): void
 {
-    global $dbh, $db_functions, $maxperson, $data, $indexnr;
+    global $db_functions, $maxperson, $data, $indexnr;
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+
     if ($nr >= $maxperson) {
         return;
     }
-    if ($famid) {
-        $personmnDb = $db_functions->get_person($famid);
-
-        $man_cls = new PersonCls($personmnDb);
-        $man_privacy = $man_cls->privacy;
-
-        $name = $man_cls->person_name($personmnDb);
-        //$data["fanchart_item"][$nr][0]=$name["standard_name"];
-        $data["fanchart_item"][$nr][0] = html_entity_decode($name["standard_name"]);
+    if ($pers_gedcomnumber) {
+        $personmnDb = $db_functions->get_person($pers_gedcomnumber);
+        $man_privacy = $personPrivacy->get_privacy($personmnDb);
+        $name = $personName->get_person_name($personmnDb, $man_privacy);
+        //$data["fanchart_item"][$nr]['standard_name']=$name["standard_name"];
+        $data["fanchart_item"][$nr]['standard_name'] = html_entity_decode($name["standard_name"]);
 
         // *** Privacy filter ***
         if (!$man_privacy) {
-            $data["fanchart_item"][$nr][1] = $personmnDb->pers_birth_date ? $personmnDb->pers_birth_date : $personmnDb->pers_bapt_date;
-            $data["fanchart_item"][$nr][4] = $personmnDb->pers_death_date ? $personmnDb->pers_death_date : $personmnDb->pers_buried_date;
+            $data["fanchart_item"][$nr]['birth_bapt_date'] = $personmnDb->pers_birth_date ? $personmnDb->pers_birth_date : $personmnDb->pers_bapt_date;
+            $data["fanchart_item"][$nr]['death_burr_date'] = $personmnDb->pers_death_date ? $personmnDb->pers_death_date : $personmnDb->pers_buried_date;
         } else {
-            $data["fanchart_item"][$nr][1] = '';
-            $data["fanchart_item"][$nr][4] = '';
+            $data["fanchart_item"][$nr]['birth_bapt_date'] = '';
+            $data["fanchart_item"][$nr]['death_burr_date'] = '';
         }
 
         if ($nr == 1) {
@@ -82,9 +78,9 @@ function fillarray($nr, $famid)
             }
         }
 
-        $data["fanchart_item"][$nr][2] = $personmnDb->pers_fams;
-        $data["fanchart_item"][$nr][3] = $famid;
-        $data["fanchart_item"][$nr][5] = $personmnDb->pers_sexe;
+        $data["fanchart_item"][$nr]['pers_fams'] = $personmnDb->pers_fams;
+        $data["fanchart_item"][$nr]['pers_gedcomnumber'] = $pers_gedcomnumber;
+        $data["fanchart_item"][$nr]['pers_sexe'] = $personmnDb->pers_sexe;
 
         if ($personmnDb->pers_famc) {
             $record_family = $db_functions->get_family($personmnDb->pers_famc);
@@ -97,7 +93,7 @@ function fillarray($nr, $famid)
         }
 
         // *** famc ***
-        $data["fanchart_item"][$nr][6] = $personmnDb->pers_famc;
+        $data["fanchart_item"][$nr]['pers_famc'] = $personmnDb->pers_famc;
     }
 }
 
@@ -109,26 +105,26 @@ fillarray(1, $data["main_person"]);
  * @param int $maxlen max length of each line
  * @return string $text output string
  */
-function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
+function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr): string
 {
     $lines = explode("\n", $data);
     // more than 1 line : recursive calls
     if (count($lines) > 1) {
-        $text = "";
+        $text = '';
         foreach ($lines as $indexval => $line) $text .= split_align_text($line, $maxlen, $rtlflag, $nameflag, $gennr) . "\n";
         return $text;
     }
 
     // process current line word by word
     $split = explode(" ", $data);
-    $text = "";
-    $line = "";
+    $text = '';
+    $line = '';
 
     if ($rtlflag == 1 && $nameflag == 1) {    // rtl name has to be re-positioned
         if ($data["fan_style"] == 2 && ($gennr == 1 || $gennr == 2)) {
+            // half-circle has different position for 2nd 3rd generation
             $maxlen *= 1.5;
-        } // half-circle has different position for 2nd 3rd generation
-        else {
+        } else {
             $maxlen *= 2;
         }
     }
@@ -183,9 +179,13 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr)
  * @param int $fanw fan width in px (default=840)
  * @param int $fandeg fan size in deg (default=270)
  */
-function print_fan_chart($data, $fanw = 840, $fandeg = 270)
+function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 {
-    global $dbh, $tree_id, $db_functions, $language, $selected_language, $china_message;
+    global $dbh, $tree_id, $db_functions;
+
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $languageDate = new LanguageDate;
 
     // check for GD 2.x library
     /*
@@ -243,27 +243,27 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
     }
 
     // *** Border colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#6E6E6E";
     $grey = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Text colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#000000";
     $color = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Background colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#EEEEEE";
     $bgcolor = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Man colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#B2DFEE";
     $bgcolorM = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** wife colour ***
-    $rgb = "";
+    $rgb = '';
     if (empty($rgb)) $rgb = "#FFE4C4";
     $bgcolorF = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
@@ -292,9 +292,9 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
 
         // draw each cell
         while ($sosa >= $p2) {
-            $pid = $data["fanchart_item"][$sosa][0];
-            $birthyr = $data["fanchart_item"][$sosa][1];
-            $deathyr = $data["fanchart_item"][$sosa][4];
+            $pid = $data["fanchart_item"][$sosa]['standard_name'];
+            $birthyr = $data["fanchart_item"][$sosa]['birth_bapt_date'];
+            $deathyr = $data["fanchart_item"][$sosa]['death_burr_date'];
             $fontpx = $data["fontsize"];
             if ($sosa >= 16 && $fandeg == 180) {
                 $fontpx = $data["fontsize"] - 1;
@@ -306,9 +306,9 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                 if ($sosa % 2) $bg = $bgcolorF;
                 else $bg = $bgcolorM;
                 if ($sosa == 1) {
-                    if ($data["fanchart_item"][$sosa][5] == "F") {
+                    if ($data["fanchart_item"][$sosa]['pers_sexe'] == "F") {
                         $bg = $bgcolorF;
-                    } elseif ($data["fanchart_item"][$sosa][5] == "M") {
+                    } elseif ($data["fanchart_item"][$sosa]['pers_sexe'] == "M") {
                         $bg = $bgcolorM;
                     } else {
                         $bg = $bgcolor; // sex unknown
@@ -336,12 +336,11 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                 }
                 $fontfile = "include/fanchart/dejavusans.ttf"; // this default font serves: Latin,Hebrew,Arabic,Persian,Russian
 
-                //if(preg_match('/(*UTF8)\p{Han}/',$name)!==0) {	// String is Chinese so use a Chinese ttf font if present in the folder
+                /*
                 if (preg_match('/(*UTF8)\p{Han}/', $name) === 1) {    // String is Chinese so use a Chinese ttf font if present in the folder
                     if (is_dir("include/fanchart/chinese")) {
                         $dh = opendir("include/fanchart/chinese");
                         while (false !== ($filename = readdir($dh))) {
-                            //if (strtolower(substr($filename, -3)) == "ttf"){
                             if (strtolower(substr($filename, -3)) === "otf" || strtolower(substr($filename, -3)) === "ttf") {
                                 $fontfile = "include/fanchart/chinese/" . $filename;
                             }
@@ -351,9 +350,10 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                         $china_message = 1;
                     }
                 }
+                */
 
                 $text = $name; // names
-                $text2 = ""; // dates
+                $text2 = ''; // dates
                 if ($data["date_display"] == 1) {  // don't show dates
                 } else if ($data["date_display"] == 2) { //show years only
                     // years only chosen but we also do this if no place in outer circles
@@ -365,10 +365,10 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else {  // full dates
                         if ($birthyr) {
-                            $text2 .= __('b.') . language_date($birthyr) . "\n";
+                            $text2 .= __('b.') . $languageDate->language_date($birthyr) . "\n";
                         }
                         if ($deathyr) {
-                            $text2 .= __('d.') . language_date($deathyr);
+                            $text2 .= __('d.') . $languageDate->language_date($deathyr);
                         }
                     }
                 }
@@ -460,30 +460,45 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270)
                 $imagemap .= "$tx, $ty";
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $person_cls = new PersonCls;
-                $url = $person_cls->person_url2($tree_id, $data["fanchart_item"][$sosa][6], $data["fanchart_item"][$sosa][2], $data["fanchart_item"][$sosa][3]);
+                $personLinkDb = new stdClass();
+                $personLinkDb->pers_tree_id = $tree_id;
+                $personLinkDb->pers_famc = $data["fanchart_item"][$sosa]['pers_famc'];
+                $personLinkDb->pers_fams = $data["fanchart_item"][$sosa]['pers_fams'];
+                $personLinkDb->pers_gedcomnumber = $data["fanchart_item"][$sosa]['pers_gedcomnumber'];
+
+                $personLink = new PersonLink();
+                $url = $personLink->get_person_link($personLinkDb);
+
                 $imagemap .= "\" href=\"" . $url . "\"";
-                //}
 
                 // *** Add first spouse to base person's tooltip ***
-                $spousename = "";
-                if ($gen == 0 && $data["fanchart_item"][1][2] != "") {
-                    // base person and has spouse
-                    $spouse = $data["fanchart_item"][1][5] == "F" ? "fam_man" : "fam_woman";
-                    $spouse_result = $dbh->query("SELECT " . $spouse . " FROM humo_families
-                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $data["fanchart_item"][1][2] . "'");
-                    $spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
-                    $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
+                $spousename = '';
+                if ($gen == 0 && $data["fanchart_item"][1]['pers_fams'] != "") {
+                    // *** Variable $data["fanchart_item"][1]['pers_fams'] could be: F191;F192 (multiple marriages) ***
+                    $first_fam_gedcomnumber = explode(";", $data["fanchart_item"][1]['pers_fams']);
+                    if (count($first_fam_gedcomnumber) > 1) {
+                        $first_fam_gedcomnumber = $first_fam_gedcomnumber[0];
+                    } else {
+                        $first_fam_gedcomnumber = $data["fanchart_item"][1]['pers_fams'];
+                    }
 
-                    $spouse_cls = new PersonCls($spouse2Db);
-                    $spname = $spouse_cls->person_name($spouse2Db);
-                    $spouse_lan = $data["fanchart_item"][1][5] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
+                    // base person and has spouse
+                    $spouse = $data["fanchart_item"][1]['pers_sexe'] == "F" ? "fam_man" : "fam_woman";
+                    $spouse_result = $dbh->query("SELECT " . $spouse . " FROM humo_families
+                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $first_fam_gedcomnumber . "'");
+                    $spouseDb = $spouse_result->fetch();
+
+                    $spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
+                    $privacy = $personPrivacy->get_privacy($spouse2Db);
+                    $spname = $personName->get_person_name($spouse2Db, $privacy);
+                    $spouse_lan = $data["fanchart_item"][1]['pers_sexe'] == "F" ? "SPOUSE_MALE" : "SPOUSE_FEMALE";
                     if ($spname != "") {
                         $spousename = "\n(" . __($spouse_lan) . ": " . $spname["standard_name"] . ")";
                     }
                 }
 
-                $imagemap .= " alt=\"" . $pid . "\" title=\"" . $pid . $spousename . "\">";
+                // *** Use str_replace to avoid double quotes in pid and spouse name (used for nicknames) ***
+                $imagemap .= " alt=\"" . str_replace('"', "'", $pid) . "\" title=\"" . str_replace('"', "'", $pid) . $spousename . "\">";
             }
             $deg1 -= $angle;
             $deg2 -= $angle;
@@ -562,10 +577,8 @@ if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone c
     $menu_fan = "auto";
 }
 
-//$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, true);
-//$path_tmp .= 'id=' . $data["main_person"];
 $vars['id'] = $data['main_person'];
-$path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
+$path_tmp = $processLinks->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
 ?>
 
 <!-- Menu -->
@@ -595,7 +608,7 @@ $path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
             <select name="fontsize">
                 <?php for ($i = 5; $i <= 12; $i++) {; ?>
                     <option value="<?= $i; ?>" <?php if ($i == $data["fontsize"]) echo ' selected'; ?>><?= $i; ?></option>
-                <?php }; ?>
+                <?php } ?>
             </select><br>
         </div>
         <div class="col">
@@ -638,8 +651,7 @@ $path_tmp = $link_cls->get_link($uri_path, 'fanchart', $tree_id, false, $vars);
 </form>
 
 <?php
-$china_message = 0;
-// *** Container for fanchart ***
+//$china_message = 0;
 ?>
 <div style="top:60px; left:135px; width:<?= (840 * $data["fan_width"] / 100); ?>px">
     <div style="padding:5px">
@@ -648,18 +660,18 @@ $china_message = 0;
 </div>
 
 <?php
-// TODO check download link. Use sourceforge?
+/* Disabled because of old download links. Variable $china_message is disabled.
 if ($china_message == 1) {
 ?>
-    <!-- <div style="border:2px solid red;background-color:white;padding:5px;position:relative;length:300px;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;font-size:120%;text-align:center;"> -->
     <div style="border:2px solid red;background-color:white;padding:5px;position:relative;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;font-size:120%;text-align:center;">
         <?= __('No Chinese ttf font file found'); ?><br>
-        <?= __('Download link'); ?>: <a href="http://humogen.com/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>
-        <?= __('or'); ?> <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>
+        <?= __('Download link'); ?>: <a href="http://LINK_NO_LONGER_EXISTS/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>
+        <?= __('or'); ?> <a href="http://LINK_NO_LONGER_EXISTS/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>
         <?= __('Unzip and place in "include/fanchart/chinese/" folder'); ?>
     </div>
 <?php
 }
+*/
 
 // *** Show descendants ***
 /*
@@ -671,6 +683,3 @@ if ($showdesc == "1") {
     echo '<iframe src="descendant/' . $tree_prefix . '/' . $indexnr . '?main_person=' . $data["main_person"] . '&amp;menu=1" id="iframe1"  style="position:absolute;top:' . $top_pos . 'px;left:0px;width:100%;height:700px;" ;" ></iframe';
 }
 */
-?>
-
-<br><br><br>

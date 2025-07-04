@@ -9,7 +9,7 @@ session_start();
 if (isset($_SESSION['admin_tree_id'])) {
     $ADMIN = TRUE; // *** Override "no database" message for admin ***
     include_once(__DIR__ . "/../../include/db_login.php"); // *** Database login ***
-    include_once(__DIR__ . "/../../include/safe.php");
+    include_once(__DIR__ . "/../../include/safeTextDb.php");
 
     echo "Data Submitted succesfully";
 

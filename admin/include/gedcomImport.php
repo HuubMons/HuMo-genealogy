@@ -1,18 +1,19 @@
 <?php
-class GedcomCls
+class GedcomImport
 {
     private $dbh;
     private $tree_id, $tree_prefix;
     private $humo_option;
     //private $gen_program;
-    private $level;
+    private $level, $buffer;
     private $processed, $not_processed;
 
     private $nrsource, $source;
     private $nraddress2, $address_order, $address_array;
     private $connect_nr, $connect;
-    private $event_nr, $event;
-    private $event2_nr, $event2;
+
+    private $event_nr, $event, $event_status;
+    private $event_nr1, $event_nr2; // $event_nr1 = for 1st event level, $event_nr2 = for 2nd event level.
 
     private $calculated_event_id;
     private $calculated_connect_id;
@@ -30,11 +31,16 @@ class GedcomCls
 
         $this->connect_nr = 0;
         $this->event_nr = 0;
-        $this->event2_nr = 0;
+        //$this->event2_nr = 0;
+
+        $this->event_nr1 = 0;
+        $this->event_nr2 = 0;
 
         /* Insert a temporary line into database to get latest id.
-        *  Must be done because table can be empty when reloading GEDCOM file...
+        *  This is done because table can be empty when reloading GEDCOM file...
         *  Even in an empty table, latest id can be a high number...
+        *  And: LastInsertId() can't be used for 1 selected table (without insert).
+        *  May 2025: even AI suggested to do this.
         */
         $dbh->query("INSERT INTO humo_events SET event_tree_id='" . $tree_id . "'");
         $this->calculated_event_id = $dbh->lastInsertId();
@@ -66,46 +72,46 @@ class GedcomCls
         // Use array for new variables.
         unset($person);  //Reset array
 
-        $person["pers_patronym"] = "";
-        $person["pers_prefix"] = "";
-        $person["pers_text"] = "";
-        $person["pers_own_code"] = "";
+        $person["pers_patronym"] = '';
+        $person["pers_prefix"] = '';
+        $person["pers_text"] = '';
+        $person["pers_own_code"] = '';
 
         //$pers_callname='';
         $pers_firstname = '';
         $pers_lastname = '';
         $pers_name_text = '';
-        $fams = "";
-        $pers_famc = "";
-        $pers_birth_date = "";
-        $pers_birth_time = "";
-        $pers_birth_place = "";
-        $pers_birth_text = "";
+        $fams = '';
+        $pers_famc = '';
+        $pers_birth_date = '';
+        $pers_birth_time = '';
+        $pers_birth_place = '';
+        $pers_birth_text = '';
         $pers_stillborn = '';
-        $pers_bapt_date = "";
-        $pers_bapt_place = "";
-        $pers_bapt_text = "";
-        $pers_religion = "";
-        $pers_death_date = "";
-        $pers_death_time = "";
-        $pers_death_place = "";
-        $pers_death_text = "";
-        $pers_buried_date = "";
-        $pers_buried_place = "";
-        $pers_buried_text = "";
-        $pers_cremation = "";
-        $pers_death_cause = "";
+        $pers_bapt_date = '';
+        $pers_bapt_place = '';
+        $pers_bapt_text = '';
+        $pers_religion = '';
+        $pers_death_date = '';
+        $pers_death_time = '';
+        $pers_death_place = '';
+        $pers_death_text = '';
+        $pers_buried_date = '';
+        $pers_buried_place = '';
+        $pers_buried_text = '';
+        $pers_cremation = '';
+        $pers_death_cause = '';
         $person["pers_death_age"] = '';
         $person["pers_cal_date"] = '';
-        $pers_sexe = "";
+        $pers_sexe = '';
         $person["pers_quality"] = '';
         $person["pers_unprocessed_tags"] = '';
         $person["new_date"] = "1970-01-01";
         $person["new_time"] = "00:00:01";
-        $person["new_user_id"] = "";
-        $person["changed_date"] = "";
-        $person["changed_time"] = "";
-        $person["changed_user_id"] = "";
+        $person["new_user_id"] = '';
+        $person["changed_date"] = '';
+        $person["changed_time"] = '';
+        $person["changed_user_id"] = '';
         $pers_birth_date_hebnight = '';
         $pers_death_date_hebnight = '';
         $pers_buried_date_hebnight = '';
@@ -114,15 +120,17 @@ class GedcomCls
         if ($gen_program == 'Haza-Data') {
             $pers_alive = 'deceased';
         }
-        //if ($gen_program=='HuMo-gen' OR $gen_program=='HuMo-genealogy'){ $pers_alive='deceased'; }
+        //if ($gen_program=='HuMo-gen' OR $gen_program=='HuMo-genealogy'){
+        //  $pers_alive='deceased';
+        //}
 
-        $event_status = "";
+        $this->event_status = false;
 
         $surname_processed = false;
 
         // *** For event table ***
         $this->event_nr = 0;
-        $this->event2_nr = 0;
+        //$this->event2_nr = 0;
 
         // *** Save addresses in a seperate table ***
         $this->nraddress2 = 0;
@@ -137,69 +145,66 @@ class GedcomCls
         // *** For source connect table ***
         $this->connect_nr = 0;
 
-        // **********************************************************************************************
-        // *** Person ***
-        // **********************************************************************************************
+        /**
+         * Person
+         */
 
         // 0 @I1@ INDI
         // *** Process 1st line ***
-        $buffer = $line2[0];
+        $this->buffer[0] = $line2[0];
         // Old code: it is alowed to read tags like: I_1;
-        //$buffer = str_replace("_", "", $buffer); //Aldfaer numbers
-        $pers_gedcomnumber = substr($buffer, 3, -6);
+        //$this->buffer[0] = str_replace("_", "", $this->buffer[0]); //Aldfaer numbers
+        $pers_gedcomnumber = substr($this->buffer[0], 3, -6);
         if ($add_tree == true || $reassign == true) {
             $pers_gedcomnumber = $this->reassign_ged($pers_gedcomnumber, 'I');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
-            print "$pers_gedcomnumber ";
+            echo $pers_gedcomnumber . ' ';
         }
 
         // *** FOR TEST ONLY: Show endtime (see also show time at the end of person function) ***
         //$person_time=microtime();
 
         // *** Save level0 ***
-        $this->level[0] = substr($buffer, 2);
-        $this->level[1] = "";
-        $this->level['1a'] = "";
-        $this->level[2] = "";
-        $this->level[3] = "";
-        $this->level[4] = "";
+        $this->level[0] = substr($this->buffer[0], 2);
+        $this->level[1] = '';
+        $this->level['1a'] = '';
+        $this->level[2] = '';
+        $this->level[3] = '';
+        $this->level[4] = '';
 
         // *** Process other lines ***
         $loop = count($line2) - 2;
         for ($z = 1; $z <= $loop; $z++) {
             $this->processed = false;
-            $buffer = $line2[$z];
-            $buffer = rtrim($buffer, "\n\r");  // strip newline
+            $this->buffer[0] = $line2[$z];
+            $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
 
             // TEST: show memory usage
             //if (!isset($memory)){ $memory=memory_get_usage(); }
             //$calc_memory=(memory_get_usage()-$memory);
-            //echo '<br>&nbsp;&nbsp;&nbsp;'.memory_get_usage().' '.$calc_memory.'# '.$buffer;
+            //echo '<br>&nbsp;&nbsp;&nbsp;'.memory_get_usage().' '.$calc_memory.'# '.$this->buffer[0];
             //$memory=memory_get_usage();
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
-                $buffer = ltrim($buffer, " ");
+                $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $buffer1 = substr($buffer, 0, 1);
-            $buffer5 = substr($buffer, 0, 5);
-            $buffer6 = substr($buffer, 0, 6);
-            $buffer7 = substr($buffer, 0, 7);
-            $buffer8 = substr($buffer, 0, 8);
+            $this->set_buffer();
 
-            //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
+            //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Save level1 ***
-            if ($buffer1 === '1') {
-                $this->level[1] = rtrim(substr($buffer, 2, 5));  // *** rtrim voor CHR_. Update: rtrim not really neccesary anymore? ***
-                if (substr($buffer, 0, 6) === '1 CHR ') {
+            if ($this->buffer[1] === '1') {
+                $this->level[1] = rtrim(substr($this->buffer[0], 2, 5));  // *** rtrim voor CHR_. Update: rtrim not neccesary anymore? ***
+                if (substr($this->buffer[0], 0, 6) === '1 CHR ') {
+                    // *** Update sep 2015: better processing of HZ-21 line: 1 CHR Ned. Herv ***
                     $this->level[1] = 'CHR';
-                } // *** Update sep 2015: this is better to process HZ-21 line: 1 CHR Ned. Herv ***
+                }
 
-                $this->level['1a'] = rtrim($buffer);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
-                $event_status = '';
+                $this->level['1a'] = rtrim($this->buffer[0]);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
+                $this->event_status = false;
                 $event_start = '1';
                 $this->level[2] = '';
                 $this->level[3] = '';
@@ -207,32 +212,32 @@ class GedcomCls
                 $famc = '';
             }
             // *** Save level2 ***
-            elseif ($buffer1 === '2') {
-                $this->level[2] = substr($buffer, 2, 4);
-                $this->level[3] = "";
-                $this->level[4] = "";
+            elseif ($this->buffer[1] === '2') {
+                $this->level[2] = substr($this->buffer[0], 2, 4);
+                $this->level[3] = '';
+                $this->level[4] = '';
 
                 // *** Possible bug in Haza-21 program: 2 @S167@ SOUR. Rebuild to: 2 SOUR @S167@ ***
-                if ($gen_program == 'Haza-21' && substr($buffer, -4) === 'SOUR') {
-                    $buffer = substr($buffer, 0, 2) . 'SOUR ' . substr($buffer, 2, -5);
-                    $this->level[2] = substr($buffer, 2, 4);
+                if ($gen_program == 'Haza-21' && substr($this->buffer[0], -4) === 'SOUR') {
+                    $this->buffer[0] = substr($this->buffer[0], 0, 2) . 'SOUR ' . substr($this->buffer[0], 2, -5);
+                    $this->level[2] = substr($this->buffer[0], 2, 4);
                 }
             }
             // *** Save level3 ***
-            elseif ($buffer1 === '3') {
-                $this->level[3] = substr($buffer, 2, 4);
-                $this->level[4] = "";
+            elseif ($this->buffer[1] === '3') {
+                $this->level[3] = substr($this->buffer[0], 2, 4);
+                $this->level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 === '4') {
-                $this->level[4] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '4') {
+                $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
             // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $person["new_date"] = $created_changed["date"];
@@ -249,7 +254,7 @@ class GedcomCls
             //1 CHAN
             //2 DATE 04 AUG 2004
             if ($this->level[1] == 'CHAN') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $person["changed_date"] = $created_changed["date"];
@@ -265,35 +270,40 @@ class GedcomCls
             // *** Parents ***
             if ($this->level[1] == 'FAMC') {
                 // 1 FAMC @F1@
-                if ($buffer8 === '1 FAMC @') {
+                if ($this->buffer[8] === '1 FAMC @') {
                     if ($pers_famc) {
                         // *** Second famc, used for adoptive parents ***
                         $this->processed = true;
-                        $famc = substr($buffer, 8, -1); // Needed for Aldfaer adoptive parents
+                        $famc = substr($this->buffer[0], 8, -1); // Needed for Aldfaer adoptive parents
                         if ($gen_program != 'ALDFAER') {
-                            $pers_famc2 = substr($buffer, 8, -1);
+                            $pers_famc2 = substr($this->buffer[0], 8, -1);
                             if ($add_tree == true || $reassign == true) {
                                 $pers_famc2 = $this->reassign_ged($pers_famc2, 'F');
                             }
                             $this->event_nr++;
+                            $this->event_nr1 = $this->event_nr;
                             $this->calculated_event_id++;
-                            $this->event['connect_kind'][$this->event_nr] = 'person';
-                            $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                            $this->event['connect_kind2'][$this->event_nr] = '';
-                            $this->event['connect_id2'][$this->event_nr] = '';
-                            $this->event['kind'][$this->event_nr] = 'adoption';
-                            $this->event['event'][$this->event_nr] = $pers_famc2;
-                            $this->event['event_extra'][$this->event_nr] = '';
-                            $this->event['gedcom'][$this->event_nr] = 'FAMC';
-                            $this->event['date'][$this->event_nr] = '';
-                            $this->event['text'][$this->event_nr] = '';
-                            $this->event['place'][$this->event_nr] = '';
+
+                            // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                            $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                            $this->event['level'][$this->event_nr1] = '1';
+                            $this->event['connect_kind'][$this->event_nr1] = 'person';
+                            $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                            $this->event['connect_kind2'][$this->event_nr1] = '';
+                            $this->event['connect_id2'][$this->event_nr1] = '';
+                            $this->event['kind'][$this->event_nr1] = 'adoption';
+                            $this->event['event'][$this->event_nr1] = $pers_famc2;
+                            $this->event['event_extra'][$this->event_nr1] = '';
+                            $this->event['gedcom'][$this->event_nr1] = 'FAMC';
+                            $this->event['date'][$this->event_nr1] = '';
+                            $this->event['text'][$this->event_nr1] = '';
+                            $this->event['place'][$this->event_nr1] = '';
                         }
                     } else {
                         // *** Normal parents ***
                         $this->processed = true;
-                        $famc = substr($buffer, 8, -1); // Needed for Aldfaer adoptive parents
-                        $pers_famc = substr($buffer, 8, -1);
+                        $famc = substr($this->buffer[0], 8, -1); // Needed for Aldfaer adoptive parents
+                        $pers_famc = substr($this->buffer[0], 8, -1);
                         if ($add_tree == true || $reassign == true) {
                             $pers_famc = $this->reassign_ged($pers_famc, 'F');
                         }
@@ -301,12 +311,12 @@ class GedcomCls
                 }
 
                 // *** Aldfaer adopted/ steph/ legal/ foster childs ***
-                //2 PEDI adopted
-                //2 PEDI steph
-                //2 PEDI legal
-                //2 PEDI foster
-                //2 PEDI birth     is in use in Aldfaer 8.
-                if ($buffer7 === '2 PEDI ' && $buffer !== '2 PEDI birth') {
+                // 2 PEDI adopted
+                // 2 PEDI steph
+                // 2 PEDI legal
+                // 2 PEDI foster
+                // 2 PEDI birth     is in use in Aldfaer 8.
+                if ($this->buffer[7] === '2 PEDI ' && $this->buffer[0] !== '2 PEDI birth') {
                     // *** Adoption by person ***
                     $this->processed = true;
                     $pers_famc2 = $famc;
@@ -314,19 +324,24 @@ class GedcomCls
                         $pers_famc2 = $this->reassign_ged($famc, 'F');
                     }
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'adoption_by_person';
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'adoption_by_person';
                     // *** BE AWARE: in gedcom_import.php step 4 further processing is done, famc is converted into a person number!!! ***
-                    $this->event['event'][$this->event_nr] = $pers_famc2;
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = substr($buffer, 7); // *** adopted, steph, legal or foster. ***
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['event'][$this->event_nr1] = $pers_famc2;
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = substr($this->buffer[0], 7); // *** adopted, steph, legal or foster. ***
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
 
                     if ($pers_famc == $famc) {
                         $pers_famc = '';
@@ -337,9 +352,9 @@ class GedcomCls
             // *** Own families ***
             // 1 FAMS @F5@
             // 1 FAMS @F11@
-            if ($buffer8 === '1 FAMS @') {
+            if ($this->buffer[8] === '1 FAMS @') {
                 $this->processed = true;
-                $tempnr = substr($buffer, 8, -1);
+                $tempnr = substr($this->buffer[0], 8, -1);
                 if ($add_tree == true || $reassign == true) {
                     $tempnr = $this->reassign_ged($tempnr, 'F');
                 }
@@ -396,30 +411,29 @@ class GedcomCls
             // 2 _RELN kloosternaam
             // 2 _OTHN andere naam
             // 1 TITL Sr.
-            // *************************************
 
             // *** Pro-gen titles by name ***
             // 1 _TITL2 = title between first and last name.
-            if ($buffer8 === '1 _TITL2') {
+            if ($this->buffer[8] === '1 _TITL2') {
                 $this->level[1] = 'NAME';
                 //$this->level[2]='NPFX';
                 $this->level[2] = 'SPFX';
-                //$buffer='2 NPFX'.substr($buffer, 8);
-                $buffer = '2 SPFX' . substr($buffer, 8);
-                $buffer6 = substr($buffer, 0, 6);
+                //$this->buffer[0]='2 NPFX'.substr($this->buffer[0], 8);
+                $this->buffer[0] = '2 SPFX' . substr($this->buffer[0], 8);
+                $this->buffer[6] = substr($this->buffer[0], 0, 6);
             }
             // 1 _TITL3 = title behind lastname.
-            if ($buffer8 === '1 _TITL3') {
+            if ($this->buffer[8] === '1 _TITL3') {
                 $this->level[1] = 'NAME';
                 $this->level[2] = 'NSFX';
-                $buffer = '2 NSFX' . substr($buffer, 8);
-                $buffer6 = substr($buffer, 0, 6);
+                $this->buffer[0] = '2 NSFX' . substr($this->buffer[0], 8);
+                $this->buffer[6] = substr($this->buffer[0], 0, 6);
             }
 
             if ($this->level[1] == 'NAME') {
-                if ($buffer6 === '1 NAME') {
+                if ($this->buffer[6] === '1 NAME') {
                     $this->processed = true;
-                    $name = str_replace("_", " ", $buffer);
+                    $name = str_replace("_", " ", $this->buffer[0]);
                     $name = str_replace("~", " ", $name);
 
                     // *** Second line "1 NAME" is a callname ***
@@ -452,18 +466,23 @@ class GedcomCls
 
                             $this->processed = true;
                             $this->event_nr++;
+                            $this->event_nr1 = $this->event_nr;
                             $this->calculated_event_id++;
-                            $this->event['connect_kind'][$this->event_nr] = 'person';
-                            $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                            $this->event['connect_kind2'][$this->event_nr] = '';
-                            $this->event['connect_id2'][$this->event_nr] = '';
-                            $this->event['kind'][$this->event_nr] = 'name';
-                            $this->event['event'][$this->event_nr] = $pers_aka;
-                            $this->event['event_extra'][$this->event_nr] = '';
-                            $this->event['gedcom'][$this->event_nr] = 'NICK';
-                            $this->event['date'][$this->event_nr] = '';
-                            $this->event['text'][$this->event_nr] = '';
-                            $this->event['place'][$this->event_nr] = '';
+
+                            // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                            $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                            $this->event['level'][$this->event_nr1] = '1';
+                            $this->event['connect_kind'][$this->event_nr1] = 'person';
+                            $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                            $this->event['connect_kind2'][$this->event_nr1] = '';
+                            $this->event['connect_id2'][$this->event_nr1] = '';
+                            $this->event['kind'][$this->event_nr1] = 'name';
+                            $this->event['event'][$this->event_nr1] = $pers_aka;
+                            $this->event['event_extra'][$this->event_nr1] = '';
+                            $this->event['gedcom'][$this->event_nr1] = 'NICK';
+                            $this->event['date'][$this->event_nr1] = '';
+                            $this->event['text'][$this->event_nr1] = '';
+                            $this->event['place'][$this->event_nr1] = '';
                         }
                     } else {
                         $position = strpos($name, "/");
@@ -500,18 +519,18 @@ class GedcomCls
                 // 2 SURN Hanzl
                 // 1 NAME /Hanzly/
                 // 2 SURN Hanzly
-                if ($buffer6 === '2 GIVN') {
+                if ($this->buffer[6] === '2 GIVN') {
                     $this->processed = true;
-                    $pers_firstname = substr($buffer, 7);
+                    $pers_firstname = substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '2 SURN') {
+                if ($this->buffer[6] === '2 SURN') {
                     if (!$surname_processed) {
                         $this->processed = true;
-                        $pers_lastname = substr($buffer, 7);
+                        $pers_lastname = substr($this->buffer[0], 7);
                         $surname_processed = true;
                     } else {
                         $this->processed = true;
-                        $pers_lastname .= ', ' . substr($buffer, 7);
+                        $pers_lastname .= ', ' . substr($this->buffer[0], 7);
                     }
 
                     // *** REMARK: processing of prefixes is done later in script (around line 1800) ***
@@ -527,192 +546,217 @@ class GedcomCls
                 // 1 NAME Sipkje /Visser/
                 // 2 TYPE aka
                 // *** Change "NICK" into "_AKA" ***
-                if (strtoupper($buffer) === '2 TYPE AKA') {
+                if (strtoupper($this->buffer[0]) === '2 TYPE AKA') {
                     $this->processed = true;
                     //$pers_aka=str_replace("/", " ", $pers_aka);
                     //$pers_aka=str_replace("  ", " ", $pers_aka);
                     //$pers_aka=rtrim($pers_aka);
 
-                    //$this->processed = true; $this->event_nr++; $this->calculated_event_id++;
-                    //$this->event['connect_kind'][$this->event_nr]='person';
-                    //$this->event['connect_id'][$this->event_nr]=$pers_gedcomnumber;
-                    //$this->event['connect_kind2'][$this->event_nr] = '';
-                    //$this->event['connect_id2'][$this->event_nr] = '';   
-                    //$this->event['kind'][$this->event_nr]='name';
-                    //$this->event['event'][$this->event_nr]=$pers_aka;
-                    //$this->event['event_extra'][$this->event_nr]='';
-                    $this->event['gedcom'][$this->event_nr] = '_AKA';
-                    //$this->event['date'][$this->event_nr]='';
-                    //$this->event['text'][$this->event_nr]='';
-                    //$this->event['place'][$this->event_nr]='';
+                    //$this->processed = true;
+                    //$this->event_nr++;
+                    //$this->event_nr1 = $this->event_nr;
+                    //$this->calculated_event_id++;
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    //$this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    //$this->event['level'][$this->event_nr1] = '1'; 
+                    //$this->event['connect_kind'][$this->event_nr1]='person';
+                    //$this->event['connect_id'][$this->event_nr1]=$pers_gedcomnumber;
+                    //$this->event['connect_kind2'][$this->event_nr1] = '';
+                    //$this->event['connect_id2'][$this->event_nr1] = '';   
+                    //$this->event['kind'][$this->event_nr1]='name';
+                    //$this->event['event'][$this->event_nr1]=$pers_aka;
+                    //$this->event['event_extra'][$this->event_nr1]='';
+                    $this->event['gedcom'][$this->event_nr1] = '_AKA';
+                    //$this->event['date'][$this->event_nr1]='';
+                    //$this->event['text'][$this->event_nr1]='';
+                    //$this->event['place'][$this->event_nr1]='';
 
                     // *** Empty original pers_call_name ***
                     //$pers_callname=$pers_callname_org;
                 }
 
                 // *** GEDCOM 5.5 lastname prefix: 2 SPFX Le ***
-                if ($buffer6 === '2 SPFX') {
+                if ($this->buffer[6] === '2 SPFX') {
                     $this->processed = true;
-                    $person["pers_prefix"] = substr($buffer, 7) . '_';
+                    $person["pers_prefix"] = substr($this->buffer[0], 7) . '_';
                     $person["pers_prefix"] = str_replace(" ", "_", $person["pers_prefix"]);
                 }
 
                 // *** Title in GEDCOM 5.5: 2 NPFX Prof. ***
-                if ($buffer6 === '2 NPFX') {
+                if ($this->buffer[6] === '2 NPFX') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'NPFX';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'NPFX';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'NPFX';
+                    $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'NPFX';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // *** GEDCOM 5.5 name addition: 2 NSFX Jr. ***
-                if ($buffer6 === '2 NSFX') {
+                if ($this->buffer[6] === '2 NSFX') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'NSFX';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = $this->level[1];
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'NSFX';
+                    $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = $this->level[1];
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
 
                 if ($this->level[2] == 'NOTE') {
-                    $pers_name_text = $this->process_texts($pers_name_text, $buffer, '2');
+                    $pers_name_text = $this->process_texts($pers_name_text, '2');
                 }
 
                 if ($gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
-                    $pers_name_text = $this->process_texts($pers_name_text, $buffer, '3');
+                    $pers_name_text = $this->process_texts($pers_name_text, '3');
                 }
 
                 // *** Source by pers_name ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_name_source', $pers_gedcomnumber, $buffer, '2');
+                    $this->process_sources('person', 'pers_name_source', $pers_gedcomnumber, '2');
                 }
 
                 $process_event = false;
-                if ($buffer7 === '2 _AKAN') {
+                if ($this->buffer[7] === '2 _AKAN') {
                     $process_event = true;
                 }
                 // *** MyHeritage uses _AKA
-                if ($buffer6 === '2 _AKA') {
+                if ($this->buffer[6] === '2 _AKA') {
                     $process_event = true;
                     //  *** Replace optional / characters: 2 _AKA Sijpkje /Visser/ ***
-                    $buffer = str_replace("/", " ", $buffer);
-                    $buffer = str_replace("  ", " ", $buffer);
-                    $buffer = rtrim($buffer);
+                    $this->buffer[0] = str_replace("/", " ", $this->buffer[0]);
+                    $this->buffer[0] = str_replace("  ", " ", $this->buffer[0]);
+                    $this->buffer[0] = rtrim($this->buffer[0]);
                 }
 
                 // *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
                 // *** Users can change nickname for BK in language file! ***
-                if ($buffer6 === '2 NICK') {
+                if ($this->buffer[6] === '2 NICK') {
                     $process_event = true;
                 }
 
                 // *** PG: 2 _ALIA ***
-                if ($buffer7 === '2 _ALIA') {
+                if ($this->buffer[7] === '2 _ALIA') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _SHON') {
+                if ($this->buffer[7] === '2 _SHON') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _ADPN') {
+                if ($this->buffer[7] === '2 _ADPN') {
                     $process_event = true;
                 }
-                //if ($buffer7=='1 _HEBN'){ $process_event=true; }
-                if ($buffer7 === '2 _HEBN') {
+                //if ($this->buffer[7]=='1 _HEBN'){ $process_event=true; }
+                if ($this->buffer[7] === '2 _HEBN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _CENN') {
+                if ($this->buffer[7] === '2 _CENN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _MARN') {
+                if ($this->buffer[7] === '2 _MARN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _GERN') {
+                if ($this->buffer[7] === '2 _GERN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _FARN') {
+                if ($this->buffer[7] === '2 _FARN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _BIRN') {
+                if ($this->buffer[7] === '2 _BIRN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _INDN') {
+                if ($this->buffer[7] === '2 _INDN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _FKAN') {
+                if ($this->buffer[7] === '2 _FKAN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _CURN') {
+                if ($this->buffer[7] === '2 _CURN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _SLDN') {
+                if ($this->buffer[7] === '2 _SLDN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _FRKA') {
+                if ($this->buffer[7] === '2 _FRKA') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _RELN') {
+                if ($this->buffer[7] === '2 _RELN') {
                     $process_event = true;
                 }
-                if ($buffer7 === '2 _OTHN') {
+                if ($this->buffer[7] === '2 _OTHN') {
                     $process_event = true;
                 }
 
                 // *** For German "2 _RUFN" entries. BK uses "2 _RUFNAME" ***
-                if ($buffer7 === '2 _RUFN') {
+                // 2 _RUFNAME needs the isset($this->buffer[0][10] check a few lines below
+                if ($this->buffer[7] === '2 _RUFN') {
                     $process_event = true;
-                }  // 2 _RUFNAME needs the isset($buffer[10] check a few lines below
+                }
 
                 if ($process_event) {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'name';
 
-                    // *** $buffer[7] = check 8th character.***
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'name';
+
+                    // *** $this->buffer[0][7] = check 8th character.***
                     // *** There maybe is a problem for texts like: "1 tekst" or "A text". ***
                     // *** 2 _AKA Also known as ***
-                    if (isset($buffer[6]) && $buffer[6] === ' ') {
-                        $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                    if (isset($this->buffer[0][6]) && $this->buffer[0][6] === ' ') {
+                        $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
                     }
                     // *** 2 _ALIA Alias ***
-                    elseif (isset($buffer[7]) && $buffer[7] === ' ') {
-                        $this->event['event'][$this->event_nr] = substr($buffer, 8);
+                    elseif (isset($this->buffer[0][7]) && $this->buffer[0][7] === ' ') {
+                        $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 8);
                     }
                     // *** X _MARNM ??  MyHeritage ***
-                    elseif (isset($buffer[8]) && $buffer[8] === ' ') {
-                        $this->event['event'][$this->event_nr] = substr($buffer, 9);
+                    elseif (isset($this->buffer[0][8]) && $this->buffer[0][8] === ' ') {
+                        $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 9);
                     }
-                    //elseif (isset($buffer[10]) AND $buffer[10]==' ') {$this->event['event'][$this->event_nr]=substr($buffer,11);}
+                    //elseif (isset($this->buffer[0][10]) AND $this->buffer[0][10]==' ') {
+                    //  $this->event['event'][$this->event_nr1]=substr($this->buffer[0],11);
+                    //}
 
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = trim(substr($buffer, 2, 5));
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = trim(substr($this->buffer[0], 2, 5));
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // Proces name-source and name-date (BK)
@@ -721,14 +765,15 @@ class GedcomCls
                 //  3 NOTE text by Naam censusnaam
                 //  4 CONT 2nd line
                 //  4 CONT 3rd line
-                if ($buffer6 === '3 DATE') {
+                if ($this->buffer[6] === '3 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
 
                 // *** Source by person event (name) ***
                 if ($this->level[3] == 'SOUR') {
-                    $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '3');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_sources('person', 'pers_event_source', $event_id, '3');
                 }
 
                 if ($this->level[3] == 'NOTE') {
@@ -738,10 +783,10 @@ class GedcomCls
                     // 2 GIVN Wilhelmina
                     // 2 SURN Brink
                     // 3 NOTE Naam kan ook zijn: Brink
-                    if (isset($this->event['text'][$this->event_nr])) {
-                        $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '3');
+                    if (isset($this->event['text'][$this->event_nr1])) {
+                        $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], '3');
                     } else {
-                        $pers_name_text = $this->process_texts($pers_name_text, $buffer, '3');
+                        $pers_name_text = $this->process_texts($pers_name_text, '3');
                     }
                 }
             }
@@ -749,68 +794,73 @@ class GedcomCls
             // *** Quality ***
             // BELONGS TO A 1 xxxx ITEM????
             // Certain/ uncertain person (onzeker persoon) HZ
-            if ($gen_program == 'Haza-Data' && $buffer8 === '2 QUAY 0') {
+            if ($gen_program == 'Haza-Data' && $this->buffer[8] === '2 QUAY 0') {
                 $this->processed = true;
                 $pers_firstname = '(?) ' . $pers_firstname;
             }
-            //if ($buffer6=='2 QUAY'){ $this->processed = true; $person["pers_quality"]=$this->process_quality($buffer); }
+            //if ($this->buffer[6]=='2 QUAY'){ $this->processed = true; $person["pers_quality"]=$this->process_quality(); }
 
             // *** Pro-gen: 1 _PATR Jans ***
-            if ($buffer7 === '1 _PATR') {
+            if ($this->buffer[7] === '1 _PATR') {
                 $this->processed = true;
-                $person["pers_patronym"] = substr($buffer, 8);
+                $person["pers_patronym"] = substr($this->buffer[0], 8);
             }
 
             // *** Own code ***
-            if ($buffer6 === '1 REFN') {
+            if ($this->buffer[6] === '1 REFN') {
                 $this->processed = true;
-                $person["pers_own_code"] = substr($buffer, 7);
+                $person["pers_own_code"] = substr($this->buffer[0], 7);
             }
 
             // *** Finnish genealogy program SukuJutut (and some other genealogical programs) ***
             // 1 ALIA Frederik Hektor /McLean/
-            if ($buffer6 === '1 ALIA') {
+            if ($this->buffer[6] === '1 ALIA') {
                 //$this->processed = true;
-                //$buffer = str_replace("/", "", $buffer);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
+                //$this->buffer[0] = str_replace("/", "", $this->buffer[0]);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
                 //if ($pers_callname){
-                //	$pers_callname=$pers_callname.", ".substr($buffer, 7);
+                //	$pers_callname=$pers_callname.", ".substr($this->buffer[0], 7);
                 //}
                 //else {
-                //	$pers_callname=substr($buffer,7);
+                //	$pers_callname=substr($this->buffer[0],7);
                 //}
                 //$pers_callname=rtrim($pers_callname);
 
                 $this->processed = true;
-                $pers_aka = substr($buffer, 7);
+                $pers_aka = substr($this->buffer[0], 7);
                 $pers_aka = str_replace("/", "", $pers_aka);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
                 $pers_aka = rtrim($pers_aka);
 
                 $this->processed = true;
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
                 $this->calculated_event_id++;
-                $this->event['connect_kind'][$this->event_nr] = 'person';
-                $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                $this->event['connect_kind2'][$this->event_nr] = '';
-                $this->event['connect_id2'][$this->event_nr] = '';
-                $this->event['kind'][$this->event_nr] = 'name';
-                $this->event['event'][$this->event_nr] = $pers_aka;
-                $this->event['event_extra'][$this->event_nr] = '';
-                $this->event['gedcom'][$this->event_nr] = 'NICK';
-                $this->event['date'][$this->event_nr] = '';
-                $this->event['text'][$this->event_nr] = '';
-                $this->event['place'][$this->event_nr] = '';
+
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                $this->event['level'][$this->event_nr1] = '1';
+                $this->event['connect_kind'][$this->event_nr1] = 'person';
+                $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                $this->event['connect_kind2'][$this->event_nr1] = '';
+                $this->event['connect_id2'][$this->event_nr1] = '';
+                $this->event['kind'][$this->event_nr1] = 'name';
+                $this->event['event'][$this->event_nr1] = $pers_aka;
+                $this->event['event_extra'][$this->event_nr1] = '';
+                $this->event['gedcom'][$this->event_nr1] = 'NICK';
+                $this->event['date'][$this->event_nr1] = '';
+                $this->event['text'][$this->event_nr1] = '';
+                $this->event['place'][$this->event_nr1] = '';
             }
 
             // *** December 2021: now processed as event **
             // *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
             /*
-            if ($buffer6=='2 NICK'){
+            if ($this->buffer[6]=='2 NICK'){
                 $this->processed = true;
                 if ($pers_callname){
-                    $pers_callname=$pers_callname.", ".substr($buffer,7);
+                    $pers_callname=$pers_callname.", ".substr($this->buffer[0],7);
                 }
                 else {
-                    $pers_callname=substr($buffer,7);
+                    $pers_callname=substr($this->buffer[0],7);
                 }
                 $pers_callname=rtrim($pers_callname);
             }
@@ -818,11 +868,11 @@ class GedcomCls
 
             // *** Text(s) by person ***
             if ($this->level[1] == 'NOTE') {
-                $person["pers_text"] = $this->process_texts($person["pers_text"], $buffer, '1');
+                $person["pers_text"] = $this->process_texts($person["pers_text"], '1');
 
                 // BK: source by text
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_text_source', $pers_gedcomnumber, $buffer, '2');
+                    $this->process_sources('person', 'pers_text_source', $pers_gedcomnumber, '2');
                 }
             }
 
@@ -831,19 +881,19 @@ class GedcomCls
             // 2 NOTE De moeder trouwde met David Hoofien-de koetsier van haar
             // 3 CONT vader- en werd daarom onterft.Deze was van de fam.
             if ($this->level[1] == 'ANCI') {
-                //if (substr($buffer, 0, 6)=='1 ANCI'){ $this->processed = true; $person["pers_text"].="<br>".substr($buffer,7); }
-                if ($buffer6 === '1 ANCI') {
+                //if (substr($this->buffer[0], 0, 6)=='1 ANCI'){ $this->processed = true; $person["pers_text"].="<br>".substr($this->buffer[0],7); }
+                if ($this->buffer[6] === '1 ANCI') {
                     $this->processed = true;
-                    $person["pers_text"] .= substr($buffer, 7);
+                    $person["pers_text"] .= substr($this->buffer[0], 7);
                 }
-                $person["pers_text"] = $this->process_texts($person["pers_text"], $buffer, '2');
+                $person["pers_text"] = $this->process_texts($person["pers_text"], '2');
             }
 
-            // ******************************************************************************************
-            // *** Address(es) ***
-            // ******************************************************************************************
-            if ($buffer6 === '1 ADDR' || $this->level[1] == 'RESI') {
-                $this->process_addresses('person', 'person_address', $pers_gedcomnumber, $buffer);
+            /**
+             * Address(es)
+             */
+            if ($this->buffer[6] === '1 ADDR' || $this->level[1] == 'RESI') {
+                $this->process_addresses('person', 'person_address', $pers_gedcomnumber);
             }
 
             // *** Birth, baptism, death and buried ***
@@ -875,261 +925,267 @@ class GedcomCls
             // Newer versions of Aldfaer:
             //2 SOUR @S7177@
 
-            // ******************************************************************************************
-            // *** Birth ***
+            /**
+             * Birth
+             */
             if ($this->level[1] == 'BIRT') {
-                if ($buffer6 === '1 BIRT') {
+                if ($this->buffer[6] === '1 BIRT') {
                     $this->processed = true;
                 }
 
                 // *** Date ***
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
                     //FTM and dorotree programs can have multiple birth dates, only first one is saved:
                     if ($pers_birth_date === '' || $pers_birth_date === '0') {
-                        $pers_birth_date = trim(substr($buffer, 7));
+                        $pers_birth_date = trim(substr($this->buffer[0], 7));
                     }
                 }
-                if ($buffer7 === '2 _HNIT') {
+                if ($this->buffer[7] === '2 _HNIT') {
                     $pers_heb_flag = 1;
                     $this->processed = true;
-                    $pers_birth_date_hebnight = substr($buffer, 8);
+                    $pers_birth_date_hebnight = substr($this->buffer[0], 8);
                 }
                 // *** Aldfaer time ***
                 // 2 _ALDFAER_TIME 08:00:00
-                if (substr($buffer, 0, 15) === '2 _ALDFAER_TIME') {
+                if (substr($this->buffer[0], 0, 15) === '2 _ALDFAER_TIME') {
                     $this->processed = true;
-                    $pers_birth_time = substr($buffer, 16);
+                    $pers_birth_time = substr($this->buffer[0], 16);
                 }
                 // *** Pro-gen time NOT TESTED ***
                 // 2 TIME 22.40
-                if ($buffer6 === '2 TIME') {
+                if ($this->buffer[6] === '2 TIME') {
                     $this->processed = true;
-                    $pers_birth_time = substr($buffer, 7);
+                    $pers_birth_time = substr($this->buffer[0], 7);
                 }
 
                 // *** Place ***
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $pers_birth_place = $this->process_place(substr($buffer, 7));
+                        $pers_birth_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_birth_place, $buffer);
+                    $this->process_places($pers_birth_place);
                 }
 
                 // *** Texts ***
                 if ($this->level[2] == 'NOTE') {
-                    $pers_birth_text = $this->process_texts($pers_birth_text, $buffer, '2');
+                    $pers_birth_text = $this->process_texts($pers_birth_text, '2');
                 }
 
                 // *** Text for SukuJutut***
                 if ($gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
-                    $pers_birth_text = $this->process_texts($pers_birth_text, $buffer, '3');
+                    $pers_birth_text = $this->process_texts($pers_birth_text, '3');
                 }
 
                 // *** Process sources Pro-gen and (older versions of) Aldfaer etc. ***
                 // *** Source by person birth ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_birth_source', $pers_gedcomnumber, $buffer, '2');
+                    $this->process_sources('person', 'pers_birth_source', $pers_gedcomnumber, '2');
                 }
 
                 // *** Birth witness Pro-Gen. _WITN = GEDCOM 5.5.1 ***
-                if ($buffer7 === '2 _WITN') {
-                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                if ($this->buffer[7] === '2 _WITN') {
+                    $this->buffer[0] = str_replace("2 _WITN", "2 WITN", $this->buffer[0]);
                     $this->level[2] = 'WITN';
                 }
                 // 2 WITN Witness//
                 // *** Old GEDCOM files < GEDCOM 5.5.1 ***
                 if ($this->level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) === 'WITN') {
+                    if (substr($this->buffer[0], 2, 4) === 'WITN') {
                         $this->processed = true;
-                        $buffer = str_replace("/", " ", $buffer);
-                        $buffer = str_replace("  ", " ", $buffer);
-                        $buffer = trim($buffer);
+                        $this->buffer[0] = str_replace("/", " ", $this->buffer[0]);
+                        $this->buffer[0] = str_replace("  ", " ", $this->buffer[0]);
+                        $this->buffer[0] = trim($this->buffer[0]);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
                         $this->calculated_event_id++;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'birth_declaration';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                        $this->event['level'][$this->event_nr1] = '1';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'birth_declaration';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
 
-                        //$this->event['kind'][$this->event_nr] = 'birth_declaration';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['kind'][$this->event_nr1] = 'birth_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
-                        if (substr($buffer, 7, 1) === '@') {
+                        if (substr($this->buffer[0], 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
-                    if ($buffer6 === '3 CONT') {
+                    if ($this->buffer[6] === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 === '3 CONC') {
+                    if ($this->buffer[6] === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
                 }
 
                 // *** Stillborn child ***
                 // 1 BIRT
                 // 2 TYPE stillborn
-                if (substr($buffer, 0, 16) === '2 TYPE stillborn') {
+                if (substr($this->buffer[0], 0, 16) === '2 TYPE stillborn') {
                     $this->processed = true;
                     $pers_stillborn = 'y';
                 }
 
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('person', $pers_gedcomnumber, 'picture_birth', $buffer);
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_birth');
                 }
             }
 
-            // *******************************************************************************************
-            // *** Baptise ***
-            // *******************************************************************************************
+            /**
+             * Baptise
+             */
 
             // *** FTW ***
             //1 EVEN
             //2 TYPE Doopgetuigen
             //2 PLAC Petrus Verdeurmen, Judoca De Grauw
-            //if gen_program='FTW' then begin
-            ////if buf='2 TYPE Doopgetuigen' then buf:='1 CHR';
-            ////if (level1='CHR') and (copy(buf,1,6)='2 PLAC') then buf:='2 WITN'+copy(buf,7,length(buf));
-            //  if buf='2 TYPE Doopgetuigen' then buf:='1 XXX';
-            //  if (level1='XXX') and (copy(buf,1,6)='2 PLAC') then doopgetuigen:=copy(buf,8,length(buf));
-            //end;
 
             // Geneanet/ Geneweb
             // 1 BAPM
             // 2 DATE 23 APR 1658
             // 2 PLAC Venlo
-            if ($gen_program == 'GeneWeb' && $buffer == '1 BAPM') {
+            if ($gen_program == 'GeneWeb' && $this->buffer[0] == '1 BAPM') {
                 $this->level[1] = 'CHR';
-                $buffer = '1 CHR';
-                $buffer5 = '1 CHR';
-                $buffer6 = '1 CHR';
+                $this->buffer[0] = '1 CHR';
+                $this->buffer[5] = '1 CHR';
+                $this->buffer[6] = '1 CHR';
             }
 
-            //$buffer = str_replace("1 CHR ", "1 CHR", $buffer);  // For Aldfaer etc.
+            //$this->buffer[0] = str_replace("1 CHR ", "1 CHR", $this->buffer[0]);  // For Aldfaer etc.
             if ($this->level[1] == 'CHR') {
-                if ($buffer5 === '1 CHR') {
+                if ($this->buffer[5] === '1 CHR') {
                     $this->processed = true;
                 }
 
                 // HZ-21
                 // 1 CHR Ned. Herv.
-                if ($buffer5 === '1 CHR' && substr($buffer, 7)) {
+                if ($this->buffer[5] === '1 CHR' && substr($this->buffer[0], 7)) {
                     $this->processed = true;
-                    $pers_religion = substr($buffer, 7);
+                    $pers_religion = substr($this->buffer[0], 7);
                 }
 
                 // *** Date ***
-                //if ($buffer6=='2 DATE'){ $this->processed = true; $pers_bapt_date=substr($buffer, 7); }
-                if ($buffer6 === '2 DATE') {
+                //if ($this->buffer[6]=='2 DATE'){
+                //  $this->processed = true;
+                //  $pers_bapt_date=substr($this->buffer[0], 7);
+                //}
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
                     //dorotree programm can have multiple bapt dates, only first one is saved:
                     if ($pers_bapt_date === '' || $pers_bapt_date === '0') {
-                        $pers_bapt_date = trim(substr($buffer, 7));
+                        $pers_bapt_date = trim(substr($this->buffer[0], 7));
                     }
                 }
 
                 // *** Place ***
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $pers_bapt_place = $this->process_place(substr($buffer, 7));
+                        $pers_bapt_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_bapt_place, $buffer);
+                    $this->process_places($pers_bapt_place);
                 }
 
                 // *** Texts ***
                 if ($this->level[2] == 'NOTE') {
-                    $pers_bapt_text = $this->process_texts($pers_bapt_text, $buffer, '2');
+                    $pers_bapt_text = $this->process_texts($pers_bapt_text, '2');
                 }
 
                 if ($gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
-                    $pers_bapt_text = $this->process_texts($pers_bapt_text, $buffer, '3');
+                    $pers_bapt_text = $this->process_texts($pers_bapt_text, '3');
                 }
 
                 // *** Process sources for Pro-gen and Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_bapt_source', $pers_gedcomnumber, $buffer, '2');
+                    $this->process_sources('person', 'pers_bapt_source', $pers_gedcomnumber, '2');
                 }
 
                 // *** Baptise witnesses GEDCOM 5.x. ***
                 // Pro-gen: 2 _WITN Anna van Wely
-                if ($buffer7 === '2 _WITN') {
-                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                if ($this->buffer[7] === '2 _WITN') {
+                    $this->buffer[0] = str_replace("2 _WITN", "2 WITN", $this->buffer[0]);
                     $this->level[2] = 'WITN';
                 }
                 if ($this->level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) === 'WITN') {
+                    if (substr($this->buffer[0], 2, 4) === 'WITN') {
                         $this->processed = true;
-                        $buffer = str_replace("/", " ", $buffer);
-                        $buffer = str_replace("  ", " ", $buffer);
-                        $buffer = trim($buffer);
+                        $this->buffer[0] = str_replace("/", " ", $this->buffer[0]);
+                        $this->buffer[0] = str_replace("  ", " ", $this->buffer[0]);
+                        $this->buffer[0] = trim($this->buffer[0]);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
                         $this->calculated_event_id++;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'CHR';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                        $this->event['level'][$this->event_nr1] = '1';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'CHR';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
 
-                        //$this->event['kind'][$this->event_nr] = 'baptism_witness';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['kind'][$this->event_nr1] = 'baptism_witness';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
-                        if (substr($buffer, 7, 1) === '@') {
+                        if (substr($this->buffer[0], 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
 
                     // Haza-data uses "i.p.v." (instead of).
                     // 2 WITN Doopgetuige1//
                     // 3 TYPE locum
                     // 2 WITN Doopgetuige2//
-                    if (substr($buffer, 0, 12) === '3 TYPE locum') {
+                    if (substr($this->buffer[0], 0, 12) === '3 TYPE locum') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= " i.p.v. ";
+                        $this->event['event'][$this->event_nr1] .= " i.p.v. ";
                     }
 
-                    if ($buffer6 === '3 CONT') {
+                    if ($this->buffer[6] === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 === '3 CONC') {
+                    if ($this->buffer[6] === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
                 }
 
@@ -1145,83 +1201,27 @@ class GedcomCls
                 // 2 ASSO @I7@
                 // 3 ROLE GODP (only use GEDCOM 7.x. defined list: WITN, CLERGY, etc.)
 
-                /*
+                // *** Oct. 2024: New function to process ASSO ***
                 if ($this->level[2] == 'ASSO') {
-                    if (substr($buffer, 0, 6) === '2 ASSO') {
-                        $this->processed = true;
-                        $this->event_nr++;
-                        $this->calculated_event_id++;
-
-                        // Jan 2024: Database example
-                        // event_connect_id = I1 (main person)
-                        // event_connect_id2 = I2012 (witness)
-
-                        //$this->event['connect_kind'][$this->event_nr] = $this->level[1]; // CHR, BAPT
-                        $this->event['connect_kind'][$this->event_nr] = 'CHR';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
-
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = '';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
-
-                        // *** oct 2024: if there is @VOID@, the name should be in: 2 PHRASE Mr Stockdale.
-                        if (substr($buffer, 7, 1) == '@') {
-                            // 2 ASSO @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
-                        } else {
-                            // NOT tested, probably not needed for geneweb.
-                            // 2 ASSO Godfather//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                        }
-                    }
-
-                    // GEDCOM 5.x
-                    if (substr($buffer, 0, 11) === '3 TYPE INDI') {
-                        $this->processed = true;
-                    }
-                    // GEDCOM 5.x
-                    if (substr($buffer, 0, 11) === '3 RELA GODP') {
-                        $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['gedcom'][$this->event_nr] = 'GODP';
-                    }
-
-                    // GEDCOM 7.x
-                    if ($buffer6 == '3 ROLE') {
-                        $this->processed = true;
-                        $this->event['gedcom'][$this->event_nr] = substr($buffer, 7);
-                    }
-                }
-                */
-                // TODO: use this new function to process ASSO. Check script first.
-                // Oct. 2024: New function to process ASSO.
-                if ($this->level[2] == 'ASSO') {
-                    //process_association($buffer, $buffer6, $buffer8, $gedcomnumber, $connect_kind = 'person');
-                    $this->process_association($buffer, $buffer6, $buffer8, $pers_gedcomnumber, 'CHR');
+                    $this->process_association($pers_gedcomnumber, 'CHR');
                 }
 
                 // *** Religion (1 RELI = event) ***
-                if ($buffer6 === '2 RELI') {
+                if ($this->buffer[6] === '2 RELI') {
                     $this->processed = true;
-                    $pers_religion = substr($buffer, 7);
+                    $pers_religion = substr($this->buffer[0], 7);
                 }
 
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('person', $pers_gedcomnumber, 'picture_bapt', $buffer);
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_bapt');
                 }
             }
 
-            // ******************************************************************************************
-            // *** Deceased ***
+            /**
+             * Deceased
+             */
             if ($this->level[1] == 'DEAT') {
-                if ($buffer6 === '1 DEAT') {
+                if ($this->buffer[6] === '1 DEAT') {
                     $this->processed = true;
                 }
 
@@ -1231,151 +1231,159 @@ class GedcomCls
                 $pers_alive = 'deceased';
 
                 // *** Date ***
-                //if ($buffer6=='2 DATE'){ $this->processed = true; $pers_death_date=substr($buffer, 7); }
-                if ($buffer6 === '2 DATE') {
+                //if ($this->buffer[6]=='2 DATE'){
+                //  $this->processed = true;
+                //  $pers_death_date=substr($this->buffer[0], 7);
+                //}
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
                     //dorotree programm can have multiple death dates, only first one is saved:
                     if (!$pers_death_date) {
-                        $pers_death_date = trim(substr($buffer, 7));
+                        $pers_death_date = trim(substr($this->buffer[0], 7));
                     }
                 }
-                if ($buffer7 === '2 _HNIT') {
+                if ($this->buffer[7] === '2 _HNIT') {
                     $pers_heb_flag = 1;
                     $this->processed = true;
-                    $pers_death_date_hebnight = substr($buffer, 8);
+                    $pers_death_date_hebnight = substr($this->buffer[0], 8);
                 }
                 // *** Aldfaer time ***
                 // 2 _ALDFAER_TIME 08:00:00
-                if (substr($buffer, 0, 15) === '2 _ALDFAER_TIME') {
+                if (substr($this->buffer[0], 0, 15) === '2 _ALDFAER_TIME') {
                     $this->processed = true;
-                    $pers_death_time = substr($buffer, 16);
+                    $pers_death_time = substr($this->buffer[0], 16);
                 }
                 // *** Pro-gen time ***
                 // 2 TIME 22.40
-                if ($buffer6 === '2 TIME') {
+                if ($this->buffer[6] === '2 TIME') {
                     $this->processed = true;
-                    $pers_death_time = substr($buffer, 7);
+                    $pers_death_time = substr($this->buffer[0], 7);
                 }
 
                 // *** Place ***
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $pers_death_place = $this->process_place(substr($buffer, 7));
+                        $pers_death_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_death_place, $buffer);
+                    $this->process_places($pers_death_place);
                 }
 
                 // *** Texts ***
                 if ($this->level[2] == 'NOTE') {
-                    $pers_death_text = $this->process_texts($pers_death_text, $buffer, '2');
+                    $pers_death_text = $this->process_texts($pers_death_text, '2');
                 }
 
                 if ($gen_program == "Sukujutut" && $this->level == 'NOTE') {
                     // *** Texts ***
-                    $pers_death_text = $this->process_texts($pers_death_text, $buffer, '3');
+                    $pers_death_text = $this->process_texts($pers_death_text, '3');
                 }
 
                 // *** Process source for Pro-gen, Aldfaer, etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_death_source', $pers_gedcomnumber, $buffer, '2');
+                    $this->process_sources('person', 'pers_death_source', $pers_gedcomnumber, '2');
                 }
 
                 // *** Death witness Pro-Gen ***
                 // Pro-gen: 2 _WITN Anna van Wely
-                if ($buffer7 === '2 _WITN') {
-                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                if ($this->buffer[7] === '2 _WITN') {
+                    $this->buffer[0] = str_replace("2 _WITN", "2 WITN", $this->buffer[0]);
                     $this->level[2] = 'WITN';
                 }
                 if ($this->level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) === 'WITN') {
+                    if (substr($this->buffer[0], 2, 4) === 'WITN') {
 
                         // TODO split into declaration and declaration_witness.
 
                         $this->processed = true;
-                        $buffer = str_replace("/", " ", $buffer);
-                        $buffer = str_replace("  ", " ", $buffer);
-                        $buffer = trim($buffer);
+                        $this->buffer[0] = str_replace("/", " ", $this->buffer[0]);
+                        $this->buffer[0] = str_replace("  ", " ", $this->buffer[0]);
+                        $this->buffer[0] = trim($this->buffer[0]);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
                         $this->calculated_event_id++;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'death_declaration';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                        $this->event['level'][$this->event_nr1] = '1';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'death_declaration';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
 
-                        //$this->event['kind'][$this->event_nr] = 'death_declaration';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['kind'][$this->event_nr1] = 'death_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
-                        if (substr($buffer, 7, 1) === '@') {
+                        if (substr($this->buffer[0], 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
-                    if ($buffer6 === '3 CONT') {
+                    if ($this->buffer[6] === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 === '3 CONC') {
+                    if ($this->buffer[6] === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
                 }
 
                 // *** Pers_death_cause ***
-                if ($buffer6 === '2 CAUS') {
+                if ($this->buffer[6] === '2 CAUS') {
                     $this->processed = true;
-                    $pers_death_cause = rtrim(substr($buffer, 7));
+                    $pers_death_cause = rtrim(substr($this->buffer[0], 7));
                 }
 
                 // *** Pers_death_age ***
-                if ($buffer5 === '2 AGE') {
+                if ($this->buffer[5] === '2 AGE') {
                     $this->processed = true;
-                    $person["pers_death_age"] = substr($buffer, 6);
+                    $person["pers_death_age"] = substr($this->buffer[0], 6);
                 }
 
                 // *** Pers_death_cause Haza-data ***
-                if ($buffer6 === '2 TYPE') {
+                if ($this->buffer[6] === '2 TYPE') {
                     $this->processed = true;
-                    $pers_death_cause = rtrim(substr($buffer, 7));
+                    $pers_death_cause = rtrim(substr($this->buffer[0], 7));
                 }
                 if ($pers_death_cause === 'died single') {
                     $pers_death_cause = 'died unmarried';
                 }
 
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('person', $pers_gedcomnumber, 'picture_death', $buffer);
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_death');
                 }
             }
 
-            // ****************************************************************************************
-            // *** Burial ***
+            /**
+             * Burial
+             */
 
             //Pro-gen:
             //1 CREM
             //2 DATE 02 MAY 2003
             //2 PLAC Schagen
 
-            if ($buffer6 === '1 CREM') {
+            if ($this->buffer[6] === '1 CREM') {
                 $this->level[1] = 'BURI';
-                $buffer = '2 TYPE cremation';
+                $this->buffer[0] = '2 TYPE cremation';
             }
             if ($this->level[1] == 'BURI') {
-                if ($buffer6 === '1 BURI') {
+                if ($this->buffer[6] === '1 BURI') {
                     $this->processed = true;
                 }
 
@@ -1383,127 +1391,132 @@ class GedcomCls
                 $pers_alive = 'deceased';
 
                 // *** Date ***
-                //if ($buffer6=='2 DATE'){ $this->processed = true; $pers_buried_date=substr($buffer, 7); }
-                if ($buffer6 === '2 DATE') {
+                //if ($this->buffer[6]=='2 DATE'){
+                //  $this->processed = true;
+                //  $pers_buried_date=substr($this->buffer[0], 7);
+                //}
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
                     //dorotree programm can have multiple burial dates, only first one is saved:
                     if (!$pers_buried_date) {
-                        $pers_buried_date = trim(substr($buffer, 7));
+                        $pers_buried_date = trim(substr($this->buffer[0], 7));
                     }
                 }
-                if ($buffer7 === '2 _HNIT') {
+                if ($this->buffer[7] === '2 _HNIT') {
                     $pers_heb_flag = 1;
                     $this->processed = true;
-                    $pers_buried_date_hebnight = substr($buffer, 8);
+                    $pers_buried_date_hebnight = substr($this->buffer[0], 8);
                 }
                 // *** Place ***
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $pers_buried_place = $this->process_place(substr($buffer, 7));
+                        $pers_buried_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_buried_place, $buffer);
+                    $this->process_places($pers_buried_place);
                 }
 
                 // *** Texts ***
                 if ($this->level[2] == 'NOTE') {
-                    $pers_buried_text = $this->process_texts($pers_buried_text, $buffer, '2');
+                    $pers_buried_text = $this->process_texts($pers_buried_text, '2');
                 }
 
                 if ($gen_program == "Sukujutut" && $this->level[3] == 'NOTE') {
                     // *** Texts ***
-                    $pers_buried_text = $this->process_texts($pers_buried_text, $buffer, '3');
+                    $pers_buried_text = $this->process_texts($pers_buried_text, '3');
                 }
 
                 // *** Process sources for Pro-gen, Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_buried_source', $pers_gedcomnumber, $buffer, '2');
+                    $this->process_sources('person', 'pers_buried_source', $pers_gedcomnumber, '2');
                 }
 
                 // *** Burial witness Pro-Gen ***
                 // Pro-gen: 2 _WITN Anna van Wely
-                if ($buffer7 === '2 _WITN') {
-                    $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+                if ($this->buffer[7] === '2 _WITN') {
+                    $this->buffer[0] = str_replace("2 _WITN", "2 WITN", $this->buffer[0]);
                     $this->level[2] = 'WITN';
                 }
                 if ($this->level[2] == 'WITN') {
-                    if (substr($buffer, 2, 4) === 'WITN') {
+                    if (substr($this->buffer[0], 2, 4) === 'WITN') {
                         $this->processed = true;
-                        $buffer = str_replace("/", " ", $buffer);
-                        $buffer = str_replace("  ", " ", $buffer);
-                        $buffer = trim($buffer);
+                        $this->buffer[0] = str_replace("/", " ", $this->buffer[0]);
+                        $this->buffer[0] = str_replace("  ", " ", $this->buffer[0]);
+                        $this->buffer[0] = trim($this->buffer[0]);
                         $this->event_nr++;
+                        $this->event_nr1 = $this->event_nr;
                         $this->calculated_event_id++;
 
-                        //$this->event['connect_kind'][$this->event_nr] = 'person';
-                        $this->event['connect_kind'][$this->event_nr] = 'BURI';
-                        $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                        $this->event['connect_kind2'][$this->event_nr] = '';
-                        $this->event['connect_id2'][$this->event_nr] = '';
+                        // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                        $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                        $this->event['level'][$this->event_nr1] = '1';
+                        //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                        $this->event['connect_kind'][$this->event_nr1] = 'BURI';
+                        $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                        $this->event['connect_kind2'][$this->event_nr1] = '';
+                        $this->event['connect_id2'][$this->event_nr1] = '';
 
-                        //$this->event['kind'][$this->event_nr] = 'burial_witness';
-                        $this->event['kind'][$this->event_nr] = 'ASSO';
-                        $this->event['event'][$this->event_nr] = '';
+                        //$this->event['kind'][$this->event_nr1] = 'burial_witness';
+                        $this->event['kind'][$this->event_nr1] = 'ASSO';
+                        $this->event['event'][$this->event_nr1] = '';
 
-                        if (substr($buffer, 7, 1) === '@') {
+                        if (substr($this->buffer[0], 7, 1) === '@') {
                             // 2 WITN @I1@
-                            $this->event['connect_kind2'][$this->event_nr] = 'person';
-                            $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                            $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                            $this->event['connect_id2'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
                         } else {
                             // 2 WITN Doopgetuige1//
-                            $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                            $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
                         }
 
-                        $this->event['event_extra'][$this->event_nr] = '';
-                        $this->event['gedcom'][$this->event_nr] = 'WITN';
-                        $this->event['date'][$this->event_nr] = '';
-                        $this->event['text'][$this->event_nr] = '';
-                        $this->event['place'][$this->event_nr] = '';
+                        $this->event['event_extra'][$this->event_nr1] = '';
+                        $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                        $this->event['date'][$this->event_nr1] = '';
+                        $this->event['text'][$this->event_nr1] = '';
+                        $this->event['place'][$this->event_nr1] = '';
                     }
-                    if ($buffer6 === '3 CONT') {
+                    if ($this->buffer[6] === '3 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
-                    if ($buffer6 === '3 CONC') {
+                    if ($this->buffer[6] === '3 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
-                        $buffer = ""; // to prevent use of this text in other text!
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($this->buffer[0], 7));
+                        $this->buffer[0] = ''; // to prevent use of this text in other text!
                     }
                 }
 
                 // Oct. 2024: New function to process ASSO.
                 if ($this->level[2] == 'ASSO') {
-                    //process_association($buffer, $buffer6, $buffer8, $gedcomnumber, $connect_kind = 'person')
-                    $this->process_association($buffer, $buffer6, $buffer8, $pers_gedcomnumber, 'BURI');
+                    $this->process_association($pers_gedcomnumber, 'BURI');
                 }
 
                 // *** Method of burial ***
-                if (substr($buffer, 0, 16) === '2 TYPE cremation') {
+                if (substr($this->buffer[0], 0, 16) === '2 TYPE cremation') {
                     $this->processed = true;
                     $pers_cremation = '1';
                 }
-                if (substr($buffer, 0, 16) === '2 TYPE resomated') {
+                if (substr($this->buffer[0], 0, 16) === '2 TYPE resomated') {
                     $this->processed = true;
                     $pers_cremation = 'R';
                 }
                 // 2 TYPE sailor's grave in GEDOM file
-                if (substr($buffer, 0, 13) === '2 TYPE sailor') {
+                if (substr($this->buffer[0], 0, 13) === '2 TYPE sailor') {
                     $this->processed = true;
                     $pers_cremation = 'S';
                 }
                 // 2 TYPE donated to science in GEDCOM file
-                if (substr($buffer, 0, 14) === '2 TYPE donated') {
+                if (substr($this->buffer[0], 0, 14) === '2 TYPE donated') {
                     $this->processed = true;
                     $pers_cremation = 'D';
                 }
 
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('person', $pers_gedcomnumber, 'picture_buried', $buffer);
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_buried');
                 }
             }
 
-            // *******************************************************************************************
             // *** Aldfaer witnesses GEDCOM 5.5.1 ***
             // *** Oct. 2024: BE AWARE Aldfaer GEDCOM 5.x is probably wrong. ASSO should be by main person, not by witness. ***
             // *** This is changed in Aldfaer GEDCOM 7! ***
@@ -1558,10 +1571,15 @@ class GedcomCls
 
             // THIS CODE IS USED FOR Aldfaer GEDCOM 5.x.
             if ($this->level[1] == 'ASSO') {
-                if ($buffer6 === '1 ASSO') {
+                if ($this->buffer[6] === '1 ASSO') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
 
                     // *** Changed in jan. 2023 ***
                     // Jan 2024: Database example
@@ -1575,219 +1593,231 @@ class GedcomCls
                     // TODO check for GEDCOM 5 or 7 AND check for Aldfaer GEDCOM.
 
                     // TODO if this code is used for GEDCOM 7: switch connect_id and connect_id2.
-                    //$this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_kind'][$this->event_nr] = 'BURI';
-                    $this->event['connect_id'][$this->event_nr] = substr($buffer, 8, -1);
-
-                    $this->event['connect_kind2'][$this->event_nr] = 'person';
-                    $this->event['connect_id2'][$this->event_nr] = $pers_gedcomnumber;
+                    //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_kind'][$this->event_nr1] = 'BURI';
+                    $this->event['connect_id'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
+                    $this->event['connect_kind2'][$this->event_nr1] = 'person';
+                    $this->event['connect_id2'][$this->event_nr1] = $pers_gedcomnumber;
                     //}
                     // *** This code isn't needed? OR: use this code for HuMo-gen. ***
                     //else{
-                    //$this->event['connect_kind'][$this->event_nr] = 'person';
-                    //$this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    //$this->event['connect_kind2'][$this->event_nr] = 'person';
-                    //$this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                    //$this->event['connect_kind'][$this->event_nr1] = 'person';
+                    //$this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    //$this->event['connect_kind2'][$this->event_nr1] = 'person';
+                    //$this->event['connect_id2'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
                     //}
 
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
-                    $this->event['event'][$this->event_nr] = '';
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'WITN';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
+                    $this->event['event'][$this->event_nr1] = '';
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'WITN';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 TYPE INDI') {
+                if ($this->buffer[0] == '2 TYPE INDI') {
                     $this->processed = true;
                     if ($add_tree == true || $reassign == true) {
-                        $this->event['connect_id'][$this->event_nr] = $this->reassign_ged($this->event['connect_id'][$this->event_nr], 'I');
+                        $this->event['connect_id'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id'][$this->event_nr1], 'I');
 
                         //TODO this line isn't tested yet.
-                        $this->event['connect_id2'][$this->event_nr] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr], 'I');
+                        $this->event['connect_id2'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr1], 'I');
                     }
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 TYPE FAM') {
+                if ($this->buffer[0] == '2 TYPE FAM') {
                     $this->processed = true;
-                    //$this->event['connect_kind'][$this->event_nr] = 'family';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR';
+                    //$this->event['connect_kind'][$this->event_nr1] = 'family';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR';
                     if ($add_tree == true || $reassign == true) {
-                        $this->event['connect_id'][$this->event_nr] = $this->reassign_ged($this->event['connect_id'][$this->event_nr], 'F');
+                        $this->event['connect_id'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id'][$this->event_nr1], 'F');
 
                         //TODO this line isn't tested yet.
-                        $this->event['connect_id2'][$this->event_nr] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr], 'F');
+                        $this->event['connect_id2'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id2'][$this->event_nr1], 'F');
                     }
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 RELA birth registration') {
+                if ($this->buffer[0] == '2 RELA birth registration') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'birth_declaration';
-                    $this->event['connect_kind'][$this->event_nr] = 'birth_declaration';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'birth_declaration';
+                    $this->event['connect_kind'][$this->event_nr1] = 'birth_declaration';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 RELA baptize') {
+                if ($this->buffer[0] == '2 RELA baptize') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'baptism_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'CHR';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'baptism_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'CHR';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 RELA death registration') {
+                if ($this->buffer[0] == '2 RELA death registration') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'death_declaration';
-                    $this->event['connect_kind'][$this->event_nr] = 'death_declaration';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'death_declaration';
+                    $this->event['connect_kind'][$this->event_nr1] = 'death_declaration';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 RELA burial') {
+                if ($this->buffer[0] == '2 RELA burial') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'burial_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'BURI';
-                    $this->event['kind'][$this->event_nr] = 'ASSO';
+                    //$this->event['kind'][$this->event_nr1] = 'burial_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'BURI';
+                    $this->event['kind'][$this->event_nr1] = 'ASSO';
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 RELA civil') {
+                if ($this->buffer[0] == '2 RELA civil') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'marriage_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR';
+                    //$this->event['kind'][$this->event_nr1] = 'marriage_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR';
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 RELA witness') {
+                if ($this->buffer[0] == '2 RELA witness') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'marriage_witness';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR';
+                    //$this->event['kind'][$this->event_nr1] = 'marriage_witness';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR';
                 }
                 // GEDCOM 5.x
-                if ($buffer == '2 RELA religious') {
+                if ($this->buffer[0] == '2 RELA religious') {
                     $this->processed = true;
-                    //$this->event['kind'][$this->event_nr] = 'marriage_witness_rel';
-                    $this->event['connect_kind'][$this->event_nr] = 'MARR_REL';
+                    //$this->event['kind'][$this->event_nr1] = 'marriage_witness_rel';
+                    $this->event['connect_kind'][$this->event_nr1] = 'MARR_REL';
                 }
             }
 
-            // ******************************************************************************************
-            // *** Occupation ***
+            /**
+             * Occupation
+             */
             if ($this->level[1] == 'OCCU') {
-                if ($buffer6 === '1 OCCU') {
+                if ($this->buffer[6] === '1 OCCU') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'profession';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'OCCU';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'profession';
+                    $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'OCCU';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // *** Occupation, Haza-21 uses empty OCCU events... Isn't strange? ***
                 // 1 OCCU lerares
                 if ($this->level[1] == 'OCCU') {
-                    if ($buffer6 === '1 OCCU' && substr($buffer, 7)) {
+                    if ($this->buffer[6] === '1 OCCU' && substr($this->buffer[0], 7)) {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                        $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
                     }
                     // *** Long occupation ***
-                    if ($buffer6 === '2 CONT') {
+                    if ($this->buffer[6] === '2 CONT') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->cont(substr($this->buffer[0], 7));
                     }
-                    if ($buffer6 === '2 CONC') {
+                    if ($this->buffer[6] === '2 CONC') {
                         $this->processed = true;
-                        $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                        $this->event['event'][$this->event_nr1] .= $this->conc(substr($this->buffer[0], 7));
                     }
                 }
 
                 // *** Text by occupation ***
                 if ($this->level[2] == 'NOTE') {
-                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '2'); // BK
+                    $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], '2'); // BK
                 }
 
                 // *** Occupation in iFamily program ***
                 // 1 OCCU
                 // 2 TYPE baas van de herberg
-                if ($buffer6 === '2 TYPE') {
+                if ($this->buffer[6] === '2 TYPE') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= substr($buffer, 7);
+                    $this->event['event'][$this->event_nr1] .= substr($this->buffer[0], 7);
                 }
 
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($this->buffer[0], 7);
                 } // BK
-                if ($buffer6 === '2 PLAC') {
+                if ($this->buffer[6] === '2 PLAC') {
                     $this->processed = true;
-                    $this->event['place'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['place'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
 
                 // *** Source by person occupation ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '2');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_sources('person', 'pers_event_source', $event_id, '2');
                 }
             }
 
             // *** BK, FTM, HuMo-genealogy & Aldfaer: 1 RELI RK ***
             // *** Nov. 2022 religion now saved as event ***
             if ($this->level[1] == 'RELI') {
-                if ($buffer6 === '1 RELI') {
-                    //$this->processed = true; $pers_religion=substr($buffer, 7);
+                if ($this->buffer[6] === '1 RELI') {
+                    //$this->processed = true; $pers_religion=substr($this->buffer[0], 7);
 
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'religion';
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'RELI';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'religion';
+                    $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 7);
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'RELI';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
-                if ($buffer6 === '2 CONT') {
+                if ($this->buffer[6] === '2 CONT') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
-                    $buffer = ""; // to prevent use of this text in other text!
+                    $this->event['event'][$this->event_nr1] .= $this->cont(substr($this->buffer[0], 7));
+                    $this->buffer[0] = ''; // to prevent use of this text in other text!
                 }
-                if ($buffer6 === '2 CONC') {
+                if ($this->buffer[6] === '2 CONC') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
-                    $buffer = ""; // to prevent use of this text in other text!
+                    $this->event['event'][$this->event_nr1] .= $this->conc(substr($this->buffer[0], 7));
+                    $this->buffer[0] = ''; // to prevent use of this text in other text!
                 }
 
                 // *** Text by occupation ***
                 if ($this->level[2] == 'NOTE') {
-                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '2');
+                    $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], '2');
                 }
 
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '2 PLAC') {
+                if ($this->buffer[6] === '2 PLAC') {
                     $this->processed = true;
-                    $this->event['place'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['place'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
 
                 // *** Source by person occupation ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '2');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_sources('person', 'pers_event_source', $event_id, '2');
                 }
             }
 
-            // *** Pictures by person ********************************
+            // *** Pictures by person ***
 
             // *** Haza-21 pictures ***
             // 1 OBJE H:\haza21v3\Scannen0001.jpg
@@ -1810,70 +1840,80 @@ class GedcomCls
             // *** External object/ image ***
             // 1 OBJE @O3@
             if ($this->level[1] == 'OBJE') {
-                $this->process_picture('person', $pers_gedcomnumber, 'picture', $buffer);
+                $this->process_picture('person', $pers_gedcomnumber, 'picture');
             }
 
             // *** Haza-data pictures ***
             //1 PHOTO @#Aplaatjes\beert&id.jpg jpg@
             if ($this->level[1] == 'PHOTO') {
-                if ($buffer7 === '1 PHOTO') {
+                if ($this->buffer[7] === '1 PHOTO') {
                     $this->processed = true;
-                    $photo = substr($buffer, 11, -6);
+                    $photo = substr($this->buffer[0], 11, -6);
                     $photo = $this->humo_basename($photo);
 
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'picture';
-                    $this->event['event'][$this->event_nr] = $photo;
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = 'PHOTO';
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
-                    $this->event['place'][$this->event_nr] = '';
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'picture';
+                    $this->event['event'][$this->event_nr1] = $photo;
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = 'PHOTO';
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
-                if ($buffer6 === '2 DSCR' || $buffer6 === '2 NAME') {
+                if ($this->buffer[6] === '2 DSCR' || $this->buffer[6] === '2 NAME') {
                     $this->processed = true;
-                    $this->event['text'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['text'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
             }
 
             // *** Sex: F or M ***
             if (substr($this->level[1], 0, 3) === 'SEX') { // *** 1 SEX F/ 1 SEX M ***
-                if ($buffer5 === '1 SEX') {
+                if ($this->buffer[5] === '1 SEX') {
                     $this->processed = true;
-                    $pers_sexe = substr($buffer, 6);
+                    $pers_sexe = substr($this->buffer[0], 6);
                 }
                 // *** Source by person sex ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('person', 'pers_sexe_source', $pers_gedcomnumber, $buffer, '2');
+                    $this->process_sources('person', 'pers_sexe_source', $pers_gedcomnumber, '2');
                 }
             }
 
             // *** Colour mark by a person ***
             // 1 _COLOR 1
-            if ($buffer8 === '1 _COLOR') {
+            if ($this->buffer[8] === '1 _COLOR') {
                 $this->processed = true;
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
                 $this->calculated_event_id++;
-                $this->event['connect_kind'][$this->event_nr] = 'person';
-                $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                $this->event['connect_kind2'][$this->event_nr] = '';
-                $this->event['connect_id2'][$this->event_nr] = '';
-                $this->event['kind'][$this->event_nr] = 'person_colour_mark';
-                $this->event['event'][$this->event_nr] = substr($buffer, 9);
-                $this->event['event_extra'][$this->event_nr] = '';
-                $this->event['gedcom'][$this->event_nr] = '_COLOR';
-                $this->event['date'][$this->event_nr] = '';
-                $this->event['text'][$this->event_nr] = '';
-                $this->event['place'][$this->event_nr] = '';
+
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                $this->event['level'][$this->event_nr1] = '1';
+                $this->event['connect_kind'][$this->event_nr1] = 'person';
+                $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                $this->event['connect_kind2'][$this->event_nr1] = '';
+                $this->event['connect_id2'][$this->event_nr1] = '';
+                $this->event['kind'][$this->event_nr1] = 'person_colour_mark';
+                $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 9);
+                $this->event['event_extra'][$this->event_nr1] = '';
+                $this->event['gedcom'][$this->event_nr1] = '_COLOR';
+                $this->event['date'][$this->event_nr1] = '';
+                $this->event['text'][$this->event_nr1] = '';
+                $this->event['place'][$this->event_nr1] = '';
             }
 
             // *******************
@@ -1883,423 +1923,162 @@ class GedcomCls
             // *** Gramps ***
             // 1 FACT Aaron ben Halevy
             // 2 TYPE Hebrew Name
-            if ($buffer6 === '1 FACT') {
-                $buffer = '1 EVEN ' . substr($buffer, 7);
-                $buffer6 = '1 EVEN';
+            if ($this->buffer[6] === '1 FACT') {
+                $this->buffer[0] = '1 EVEN ' . substr($this->buffer[0], 7);
+                $this->buffer[6] = '1 EVEN';
                 $this->level[1] = 'EVEN';
                 $fact = true;
             }
 
             // *** Aldfaer not married ***
-            if ($buffer == '1 _NOPARTNER') {
-                $buffer = '1 _NMAR';
-                $buffer7 = '1 _NMAR';
+            if ($this->buffer[0] == '1 _NOPARTNER') {
+                $this->buffer[0] = '1 _NMAR';
+                $this->buffer[7] = '1 _NMAR';
                 $this->level[1] = '_NMAR';
             }
 
-            // ALL ITEMS: process text by item, like: if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
-            if ($buffer6 === '1 ADOP') { // Adopted
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer7 === '1 _ADPF') { // Adopted by father
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _ADPM') { // Adopted by mother
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer6 === '1 BAPL') { // LDS baptised
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 BARM') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 BASM') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 BLES') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 CENS') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 CHRA') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 CONF') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 CONL') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 EMIG') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 ENDL') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 FCOM') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer7 === '1 _FNRL') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer6 === '1 GRAD') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 IMMI') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 NATU') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 ORDN') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 PROB') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 RETI') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 SLGC') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 WILL') { // Will
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer7 === '1 _YART') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _INTE') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _BRTM') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _NLIV') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _NMAR') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer6 === '1 NCHI') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
             // BK
             //1 _MILT militaire dienst  Location: Amsterdam
             //2 DATE 3 APR 1996
             //2 NOTE Goedgekeurd.
             //3 CONT 2nd line gebeurtenis bij persoon.
             //3 CONT 3rd line.
-            if ($buffer7 === '1 _MILT') {
-                $buffer = str_replace("_MILT", "MILI", $buffer);
-                $buffer6 = '1 MILI';
+            if ($this->buffer[7] === '1 _MILT') {
+                $this->buffer[0] = str_replace("_MILT", "MILI", $this->buffer[0]);
+                $this->buffer[6] = '1 MILI';
                 $this->level[1] = 'MILI';
             }
-            if ($buffer6 === '1 MILI') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            //RELI Religion
-            if ($buffer6 === '1 EDUC') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 NATI') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 CAST') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            //REFN Ref. nr.  (oown code)
-            if ($buffer5 === '1 AFN') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 6)) {
-                    $event_temp = substr($buffer, 6);
-                }
-            }
-            if ($buffer5 === '1 SSN') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 6)) {
-                    $event_temp = substr($buffer, 6);
-                }
-            }
-            if ($buffer7 === '1 _PRMN') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer6 === '1 IDNO') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer7 === '1 _HEIG') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _WEIG') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _EYEC') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer7 === '1 _HAIR') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer6 === '1 DSCR') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer7 === '1 _MEDC') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
-                }
-            }
-            if ($buffer6 === '1 NCHI') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 ANCI') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 DESI') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 PROP') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
 
-            // *** Other events (no BK?) ***
-            if ($buffer6 === '1 ARVL') { // arrived
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 BAPM') { // baptised as child
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 DIVF') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 DPRT') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-
-            if ($buffer6 === '1 LEGI') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 SLGL') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-            if ($buffer6 === '1 TXPY') {
-                $this->processed = true;
-                $event_status = "1";
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
-            }
-
-            // *** Aldfaer, title by name: 1 TITL Ir. ***
-            if ($buffer6 === '1 TITL') {
-                $this->processed = true;
-                $event_status = '1';
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
-                }
+            // *** Check for event ***
+            if ($this->buffer[6] === '1 ADOP') {
+                // *** Adoption ***
+                // 1 ADOP
+                // 2 DATE 15 MAR 2025
+                // 2 FAMC @F2@
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[7] === '1 _ADPF') {
+                // Adopted by father
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _ADPM') {
+                // Adopted by mother
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 BAPL') {
+                // LDS baptised
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BARM') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BASM') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BLES') {
+                // LDS blessed
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CENS') {
+                // Census
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CHRA') {
+                // LDS christened
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CONF') {
+                // LDS confirmed
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CONL') {
+                // LDS confirmation
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 EMIG') {
+                // Emigration
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 ENDL') {
+                // LDS endowment
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 FCOM') {
+                // LDS first communion
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[7] === '1 _FNRL') {
+                // LDS funeral
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 GRAD') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 IMMI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 NATU') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 ORDN') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 PROB') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 RETI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 SLGC') {
+                // LDS sealing to spouse
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 WILL') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[7] === '1 _YART') {
+                // Yahrzeit
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _INTE') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _BRTM') {
+                // Brit Milah
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _NLIV') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[7] === '1 _NMAR') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 NCHI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 MILI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 EDUC') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 NATI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 CAST') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 AFN') {
+                $event_temp = $this->check_event(6);
+            } elseif ($this->buffer[6] === '1 SSN') {
+                $event_temp = $this->check_event(6);
+            } elseif ($this->buffer[6] === '1 _PRMN') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 IDNO') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 _HEIG') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 _WEIG') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 _EYEC') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 _HAIR') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 DSCR') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 _MEDC') {
+                $event_temp = $this->check_event(8);
+            } elseif ($this->buffer[6] === '1 ANCI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 DESI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 PROP') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 ARVL') {
+                // Arrived
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 BAPM') {
+                // Baptised as child
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 DIVF') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 DPRT') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 LEGI') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 SLGL') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 TXPY') {
+                $event_temp = $this->check_event(7);
+            } elseif ($this->buffer[6] === '1 TITL') {
+                $event_temp = $this->check_event(7);
             }
 
             // *** Aldfaer ***
@@ -2322,34 +2101,34 @@ class GedcomCls
             // 2 SOUR @S18@
 
             if ($this->level[1] == 'EVEN') {
-                if ($buffer6 === '1 EVEN') {
+                if ($this->buffer[6] === '1 EVEN') {
                     $this->processed = true;
                     // *** Process text after 1 EVEN ***
-                    if (substr($buffer, 7)) {
-                        $event_temp = substr($buffer, 7);
+                    if (substr($this->buffer[0], 7)) {
+                        $event_temp = substr($this->buffer[0], 7);
                         $this->processed = true;
-                        $event_status = "1";
+                        $this->event_status = true;
                     }
                 }
 
                 // *** Haza-data ***
-                //1 EVEN
-                //2 TYPE living
-                if (substr($buffer, 0, 13) === '2 TYPE living') {
+                // 1 EVEN
+                // 2 TYPE living
+                if (substr($this->buffer[0], 0, 13) === '2 TYPE living') {
                     $this->processed = true;
                     $pers_alive = 'alive';
-                    $event_status = "";
-                    $this->level[1] = "";
+                    $this->event_status = false;
+                    $this->level[1] = '';
                 }
 
                 // *** Humo-genealogy ***
-                //1 EVEN
-                //2 TYPE deceased
-                if (substr($buffer, 0, 15) === '2 TYPE deceased') {
+                // 1 EVEN
+                // 2 TYPE deceased
+                if (substr($this->buffer[0], 0, 15) === '2 TYPE deceased') {
                     $this->processed = true;
                     $pers_alive = 'deceased';
-                    $event_status = "";
-                    $this->level[1] = "";
+                    $this->event_status = false;
+                    $this->level[1] = '';
                 }
 
                 // *** Rootsmagic ***
@@ -2358,51 +2137,56 @@ class GedcomCls
                 // 2 DATE BET 15 FEB 1988 AND 15 AUG 1989
                 // 2 PLAC Amsterdam
                 // 2 ADDR Damrak 1
-                if (substr($buffer, 0, 24) === '2 TYPE Militairy service') {
-                    $this->event['gedcom'][$this->event_nr] = 'MILI';
+                if (substr($this->buffer[0], 0, 24) === '2 TYPE Militairy service') {
+                    $this->event['gedcom'][$this->event_nr1] = 'MILI';
                 }
             }
 
-            if ($event_status) {
+            if ($this->event_status) {
                 if ($event_start) {
                     $event_start = '';
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
-                    $this->event['connect_kind'][$this->event_nr] = 'person';
-                    $this->event['connect_id'][$this->event_nr] = $pers_gedcomnumber;
-                    $this->event['connect_kind2'][$this->event_nr] = '';
-                    $this->event['connect_id2'][$this->event_nr] = '';
-                    $this->event['kind'][$this->event_nr] = 'event';
-                    $this->event['event'][$this->event_nr] = '';
-                    $this->event['event_extra'][$this->event_nr] = '';
-                    $this->event['gedcom'][$this->event_nr] = $this->level[1];
-                    $this->event['date'][$this->event_nr] = '';
-                    $this->event['text'][$this->event_nr] = '';
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr1] = '1';
+                    $this->event['connect_kind'][$this->event_nr1] = 'person';
+                    $this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
+                    $this->event['connect_kind2'][$this->event_nr1] = '';
+                    $this->event['connect_id2'][$this->event_nr1] = '';
+                    $this->event['kind'][$this->event_nr1] = 'event';
+                    $this->event['event'][$this->event_nr1] = '';
+                    $this->event['event_extra'][$this->event_nr1] = '';
+                    $this->event['gedcom'][$this->event_nr1] = $this->level[1];
+                    $this->event['date'][$this->event_nr1] = '';
+                    $this->event['text'][$this->event_nr1] = '';
 
                     // *** Aldfaer, title by name: 1 TITL Ir. ***
                     if ($this->level[1] == 'TITL') {
-                        $this->event['kind'][$this->event_nr] = 'title';
+                        $this->event['kind'][$this->event_nr1] = 'title';
                     }
 
                     // Text by GEDCOM TAG of event:
-                    //1 _MILT militaire dienst  Location: Amsterdam
+                    // 1 _MILT militairy service
                     if (isset($event_temp)) {
-                        //$this->event['text'][$this->event_nr]=$this->merge_texts ($this->event['text'][$this->event_nr],', ',$event_temp);
-                        $this->event['event'][$this->event_nr] = $this->merge_texts($this->event['text'][$this->event_nr], ', ', $event_temp);
+                        //$this->event['text'][$this->event_nr1] = $this->merge_texts($this->event['text'][$this->event_nr1], ', ',$event_temp);
+                        $this->event['event'][$this->event_nr1] = $this->merge_texts($this->event['text'][$this->event_nr1], ', ', $event_temp);
                         $event_temp = '';
                     }
 
-                    $this->event['place'][$this->event_nr] = '';
+                    $this->event['place'][$this->event_nr1] = '';
                 }
 
                 // *** Save event type ***
-                if ($buffer6 === '2 TYPE') {
+                if ($this->buffer[6] === '2 TYPE') {
                     // *** Gramps ***
                     // 1 FACT Aaron ben Halevy
                     // 2 TYPE Hebrew Name
                     if (isset($fact)) {
                         $this->processed = true;
-                        $this->event['text'][$this->event_nr] = substr($buffer, 7);
+                        $this->event['text'][$this->event_nr1] = substr($this->buffer[0], 7);
                     }
 
                     // *** For Aldfaer ***
@@ -2410,39 +2194,39 @@ class GedcomCls
                     // 2 TYPE birth registration
                     // 2 DATE 21 FEB 1965
                     // 2 SOUR @S9@
-                    if ($buffer == '2 TYPE birth registration') {
+                    if ($this->buffer[0] == '2 TYPE birth registration') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'birth_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'birth_declaration';
                     }
-                    if ($buffer == '2 TYPE death registration') {
+                    if ($this->buffer[0] == '2 TYPE death registration') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'death_declaration';
+                        $this->event['kind'][$this->event_nr1] = 'death_declaration';
                     }
 
                     // *** Aldfaer nobility (predikaat) by name ***
                     // 1 EVEN Jhr.
                     // 2 TYPE predikaat
-                    if ($buffer == '2 TYPE predikaat') {
+                    if ($this->buffer[0] == '2 TYPE predikaat') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'nobility';
+                        $this->event['kind'][$this->event_nr1] = 'nobility';
                     }
 
                     // *** Aldfaer, lordship (heerlijkheid) after a name: 1 PROP Heerlijkheid ***
-                    if ($buffer == '2 TYPE heerlijkheid') {
+                    if ($this->buffer[0] == '2 TYPE heerlijkheid') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'lordship';
+                        $this->event['kind'][$this->event_nr1] = 'lordship';
                     }
 
                     // *** HZ-21, ash dispersion ***
-                    if ($buffer == '2 TYPE ash dispersion') {
+                    if ($this->buffer[0] == '2 TYPE ash dispersion') {
                         $this->processed = true;
-                        $this->event['kind'][$this->event_nr] = 'ash dispersion';
+                        $this->event['kind'][$this->event_nr1] = 'ash dispersion';
                     }
 
                     // *** Legacy ***
-                    if ($buffer == '2 TYPE Property') {
+                    if ($this->buffer[0] == '2 TYPE Property') {
                         $this->processed = true;
-                        $this->event['gedcom'][$this->event_nr] = 'PROP';
+                        $this->event['gedcom'][$this->event_nr1] = 'PROP';
                     }
 
                     // *** Aldfaer if 1 EVEN has no text, but 2 TYPE has text, use that for title of event  ***
@@ -2453,9 +2237,9 @@ class GedcomCls
                     // 1 EVEN
                     // 2 TYPE Telefoon
                     // 2 NOTE @N456@
-                    if (substr($buffer, 7) && $this->level[1] == 'EVEN' && $this->event['kind'][$this->event_nr] == 'event' && $this->event['event'][$this->event_nr] == '') {
+                    if (substr($this->buffer[0], 7) && $this->level[1] == 'EVEN' && $this->event['kind'][$this->event_nr1] == 'event' && $this->event['event'][$this->event_nr1] == '') {
                         $this->processed = true;
-                        $this->event['gedcom'][$this->event_nr] = substr($buffer, 7) . ":";
+                        $this->event['gedcom'][$this->event_nr1] = substr($this->buffer[0], 7) . ":";
                     }
                 }
 
@@ -2467,20 +2251,20 @@ class GedcomCls
 
                 // check for GEDCOM 7?
                 if ($this->level[2] == 'ASSO') {
-                    $this->process_association($buffer, $buffer6, $buffer8, $pers_gedcomnumber);
+                    $this->process_association($pers_gedcomnumber);
                 }
 
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '2 PLAC') {
+                if ($this->buffer[6] === '2 PLAC') {
                     $this->processed = true;
-                    $this->event['place'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['place'][$this->event_nr1] = substr($this->buffer[0], 7);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '2');
+                    $this->event['text'][$this->event_nr1] = $this->process_texts($this->event['text'][$this->event_nr1], '2');
                 }
 
                 // *** Ancestry FTM: Normally there is a 2 NOTE > 3 CONC/ 3 CONT structure... ***
@@ -2488,23 +2272,23 @@ class GedcomCls
                 //2 CONC John.
                 if ($this->level[2] == 'CONT') {
                     $this->processed = true;
-                    $this->event['text'][$this->event_nr] .= $this->cont(substr($buffer, 7));
+                    $this->event['text'][$this->event_nr1] .= $this->cont(substr($this->buffer[0], 7));
                 }
                 if ($this->level[2] == 'CONC') {
                     $this->processed = true;
-                    $this->event['text'][$this->event_nr] .= $this->conc(substr($buffer, 7));
+                    $this->event['text'][$this->event_nr1] .= $this->conc(substr($this->buffer[0], 7));
                 }
 
                 // *** Aldfaer has source by event: 2 SOUR @S9@
                 // *** Source by person event ***
                 if ($this->level[2] == 'SOUR') {
-                    if ($this->event['kind'][$this->event_nr] == 'birth_declaration') {
-                        $this->process_sources('person', 'birth_decl_source', $pers_gedcomnumber, $buffer, '2');
-                    } elseif ($this->event['kind'][$this->event_nr] == 'death_declaration') {
-                        $this->process_sources('person', 'death_decl_source', $pers_gedcomnumber, $buffer, '2');
+                    if ($this->event['kind'][$this->event_nr1] == 'birth_declaration') {
+                        $this->process_sources('person', 'birth_decl_source', $pers_gedcomnumber, '2');
+                    } elseif ($this->event['kind'][$this->event_nr1] == 'death_declaration') {
+                        $this->process_sources('person', 'death_decl_source', $pers_gedcomnumber, '2');
                     } else {
-
-                        $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, '2');
+                        $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                        $this->process_sources('person', 'pers_event_source', $event_id, '2');
                     }
                 }
 
@@ -2517,14 +2301,24 @@ class GedcomCls
                 // 3 _TYPE PHOTO
                 // *** Picture is connected to event_id column (=$this->calculated_event_id) ***
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('person', $pers_gedcomnumber, 'picture_event_' . $this->calculated_event_id, $buffer);
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr1];
+                    $this->process_picture('person', $pers_gedcomnumber, 'picture_event_' . $event_id);
+                }
+
+                // *** Added may 2025: Adoption ***
+                // 1 ADOP
+                // 2 DATE 15 MAR 2025
+                // 2 FAMC @F2@
+                if ($this->level[1] == 'ADOP' && $this->buffer[6] === '2 FAMC') {
+                    $this->event['kind'][$this->event_nr1] = 'adoption';
+                    $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
                 }
             }
 
             // Process here because of: 2 TYPE living
-            if ($buffer == '1 EVEN') {
+            if ($this->buffer[0] == '1 EVEN') {
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
 
             //*** Person source ***
@@ -2533,34 +2327,34 @@ class GedcomCls
             //2 ROLE Persoonskaart
             //2 DATE
             if ($this->level[1] == 'SOUR') {
-                $this->process_sources('person', 'person_source', $pers_gedcomnumber, $buffer, '1');
+                $this->process_sources('person', 'person_source', $pers_gedcomnumber, '1');
             }
 
-            // ********************************************************************************************
-            // *** Save non processed GEDCOM items ***
-            // ********************************************************************************************
-            $buffer = trim($buffer);
+            /**
+             * Save non processed GEDCOM items
+             */
+            $this->buffer[0] = trim($this->buffer[0]);
             // Skip these lines
-            if ($buffer === '0 TRLR') {
+            if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
             }
 
             // Aldfaer picture info
-            if (strtolower($buffer) === '2 form jpg') {
+            if (strtolower($this->buffer[0]) === '2 form jpg') {
                 $this->processed = true;
             }
 
-            if ($buffer6 === '1 RIN ') {
+            if ($this->buffer[6] === '1 RIN ') {
                 $this->processed = true;
             }
-            if ($buffer5 === '1 RFN') {
+            if ($this->buffer[5] === '1 RFN') {
                 $this->processed = true;
             }
 
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
-                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $buffer;
-                    //$this->non_processed_items($buffer);
+                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
+                    //$this->non_processed_items($this->buffer[0]);
                 }
                 if ($person["pers_unprocessed_tags"]) {
                     $person["pers_unprocessed_tags"] .= "<br>\n";
@@ -2577,7 +2371,7 @@ class GedcomCls
                 if ($this->level[4]) {
                     $person["pers_unprocessed_tags"] .= '|3 ' . $this->level[3];
                 }
-                $person["pers_unprocessed_tags"] .= '|' . $buffer;
+                $person["pers_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
         }  //end explode
 
@@ -2800,11 +2594,23 @@ class GedcomCls
         if ($this->event_nr > 0) {
             $event_order = 0;
             $check_event_kind = $this->event['kind']['1'];
+            // Oct 2024
+            $check_event_connect_kind = $this->event['connect_kind']['1'];
             for ($i = 1; $i <= $this->event_nr; $i++) {
                 $event_order++;
-                if ($check_event_kind != $this->event['kind'][$i]) {
-                    $event_order = 1;
-                    $check_event_kind = $this->event['kind'][$i];
+
+                // *** Level 2 event (picture or association) ***
+                if ($this->event['level'][$i] == '1') {
+                    if ($check_event_kind != $this->event['kind'][$i]) {
+                        $event_order = 1;
+                        $check_event_kind = $this->event['kind'][$i];
+                    }
+                } else {
+                    if ($check_event_kind != $this->event['kind'][$i] || $check_event_connect_kind != $this->event['connect_kind'][$i]) {
+                        $event_order = 1;
+                        $check_event_kind = $this->event['kind'][$i];
+                        $check_event_connect_kind = $this->event['connect_kind'][$i];
+                    }
                 }
                 $gebeurtsql = "INSERT IGNORE INTO humo_events SET
                     event_tree_id='" . $this->tree_id . "',
@@ -2817,6 +2623,13 @@ class GedcomCls
                     event_connect_kind2='" . $this->text_process($this->event['connect_kind2'][$i]) . "',
                     event_connect_id2='" . $this->text_process($this->event['connect_id2'][$i]) . "',";
                 }
+                /* Used to be part of previous code.
+                if (isset($this->event2['connect_kind2'][$i])) {
+                    $gebeurtsql .= "
+                    event_connect_kind2='" . $this->text_process($this->event2['connect_kind2'][$i]) . "',
+                    event_connect_id2='" . $this->text_process($this->event2['connect_id2'][$i]) . "',";
+                }
+                */
 
                 $gebeurtsql .= "
                     event_kind='" . $this->text_process($this->event['kind'][$i]) . "',
@@ -2827,52 +2640,16 @@ class GedcomCls
                     event_text='" . $this->text_process($this->event['text'][$i]) . "',
                     event_place='" . $this->text_process($this->event['place'][$i]) . "'";
                 $this->dbh->query($gebeurtsql);
+
+                //TEST LINES to check calculated_event_id.
+                //echo $this->event['calculated_event_id'][$i] . ' ';
+                //echo $this->dbh->lastInsertId() . ' ' . $this->event['kind'][$i] . '<br>';
             }
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->event);
             //echo ' '.memory_get_usage().'@ ';
-        }
-
-        // *** Save events CONNECTED TO EVENTS (e.g. picture by event) in seperate table ***
-        if ($this->event2_nr > 0) {
-            $event_order = 0;
-            $check_event_kind = $this->event2['kind']['1'];
-            // Oct 2024
-            $check_event_connect_kind = $this->event2['connect_kind']['1'];
-            for ($i = 1; $i <= $this->event2_nr; $i++) {
-                $this->calculated_event_id++;
-                $event_order++;
-                if ($check_event_kind != $this->event2['kind'][$i] || $check_event_connect_kind != $this->event2['connect_kind'][$i]) {
-                    $event_order = 1;
-                    $check_event_kind = $this->event2['kind'][$i];
-                    $check_event_connect_kind = $this->event2['connect_kind'][$i];
-                }
-                $gebeurtsql = "INSERT IGNORE INTO humo_events SET
-                event_tree_id='" . $this->tree_id . "',
-                event_order='" . $event_order . "',
-
-                event_connect_kind='" . $this->text_process($this->event2['connect_kind'][$i]) . "',
-                event_connect_id='" . $this->text_process($this->event2['connect_id'][$i]) . "',";
-
-                if (isset($this->event2['connect_kind2'][$i])) {
-                    $gebeurtsql .= "
-                    event_connect_kind2='" . $this->text_process($this->event2['connect_kind2'][$i]) . "',
-                    event_connect_id2='" . $this->text_process($this->event2['connect_id2'][$i]) . "',";
-                }
-
-                $gebeurtsql .= "event_kind='" . $this->text_process($this->event2['kind'][$i]) . "',
-                event_event='" . $this->text_process($this->event2['event'][$i]) . "',
-                event_event_extra='" . $this->text_process($this->event2['event_extra'][$i]) . "',
-                event_gedcom='" . $this->text_process($this->event2['gedcom'][$i]) . "',
-                event_date='" . $this->process_date($this->text_process($this->event2['date'][$i])) . "',
-                event_text='" . $this->text_process($this->event2['text'][$i]) . "',
-                event_place='" . $this->text_process($this->event2['place'][$i]) . "'";
-                $this->dbh->query($gebeurtsql);
-            }
-            //$this->event2=null;
-            unset($this->event2);
         }
 
         // *** Add a general source to all persons in this GEDCOM file (source_id is temporary number!) ***
@@ -2881,7 +2658,7 @@ class GedcomCls
             $this->connect_nr++;
             $this->calculated_connect_id++;
 
-            // *** Seperate numbering, because there can be sources by a address ***
+            // *** Seperate numbering, because there can be sources by an address ***
             $address_connect_nr = $this->connect_nr;
 
             $this->connect['kind'][$this->connect_nr] = 'person';
@@ -2926,8 +2703,7 @@ class GedcomCls
                 connect_page='" . $this->text_process($this->connect['page'][$i]) . "',
                 connect_role='" . $this->text_process($this->connect['role'][$i]) . "',
                 connect_date='" . $this->process_date($this->text_process($this->connect['date'][$i])) . "',
-                connect_place='" . $this->text_process($this->connect['place'][$i]) . "'
-                ";
+                connect_place='" . $this->text_process($this->connect['place'][$i]) . "'";
 
                 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
                 $this->dbh->query($gebeurtsql);
@@ -2935,7 +2711,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($connect);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -2947,22 +2723,19 @@ class GedcomCls
         //$process_time=time()-$person_time;
         //echo ':'.$process_time.'<br>';
 
-    } //end person
+    }
 
 
-    // ************************************************************************************************
-    // *** Process families ***
-    // ************************************************************************************************
+    /**
+     * Process families
+     */
     function process_family($family_array, $first_marr, $second_marr): void
     {
         global $gen_program, $add_tree, $reassign;
 
-        $line = $family_array;
-        $line2 = explode("\n", $line);
+        //$line = $family_array;
+        $line2 = explode("\n", $family_array);
 
-        //********************************************************************************************
-        // *** Family ***
-        //********************************************************************************************
         // 0 @F1@ FAM
         // 0 @F1389_1390@ FAM aldfaer
 
@@ -2971,55 +2744,55 @@ class GedcomCls
         // *** For source connect table ***
         $this->connect_nr = 0;
 
-        $family["fam_religion"] = "";
-        $family["fam_kind"] = "";
-        $family["fam_text"] = "";
-        $family["fam_marr_church_notice_date"] = "";
-        $family["fam_marr_church_notice_place"] = "";
-        $family["fam_marr_church_notice_text"] = "";
-        $family["fam_marr_church_date"] = "";
-        $family["fam_marr_church_place"] = "";
-        $family["fam_marr_church_text"] = "";
+        $family["fam_religion"] = '';
+        $family["fam_kind"] = '';
+        $family["fam_text"] = '';
+        $family["fam_marr_church_notice_date"] = '';
+        $family["fam_marr_church_notice_place"] = '';
+        $family["fam_marr_church_notice_text"] = '';
+        $family["fam_marr_church_date"] = '';
+        $family["fam_marr_church_place"] = '';
+        $family["fam_marr_church_text"] = '';
         // *** Living together ***
-        $family["fam_relation_date"] = "";
-        $family["fam_relation_place"] = "";
-        $family["fam_relation_text"] = "";
-        $family["fam_relation_end_date"] = "";
+        $family["fam_relation_date"] = '';
+        $family["fam_relation_place"] = '';
+        $family["fam_relation_text"] = '';
+        $family["fam_relation_end_date"] = '';
         $family["fam_man_age"] = '';
         $family["fam_woman_age"] = '';
-        $family["fam_marr_notice_date"] = "";
-        $family["fam_marr_notice_place"] = "";
-        $family["fam_marr_notice_text"] = "";
-        $family["fam_marr_date"] = "";
-        $family["fam_marr_place"] = "";
-        $family["fam_marr_text"] = "";
-        $family["fam_marr_authority"] = "";
+        $family["fam_marr_notice_date"] = '';
+        $family["fam_marr_notice_place"] = '';
+        $family["fam_marr_notice_text"] = '';
+        $family["fam_marr_date"] = '';
+        $family["fam_marr_place"] = '';
+        $family["fam_marr_text"] = '';
+        $family["fam_marr_authority"] = '';
         $family["fam_div"] = false;
-        $family["fam_div_date"] = "";
-        $family["fam_div_place"] = "";
-        $family["fam_div_text"] = "";
-        $family["fam_div_authority"] = "";
-        $family["fam_cal_date"] = "";
-        $family["fam_unprocessed_tags"] = "";
+        $family["fam_div_date"] = '';
+        $family["fam_div_place"] = '';
+        $family["fam_div_text"] = '';
+        $family["fam_div_authority"] = '';
+        $family["fam_cal_date"] = '';
+        $family["fam_unprocessed_tags"] = '';
 
         $family["new_date"] = "1970-01-01";
         $family["new_time"] = "00:00:01";
-        $family["new_user_id"] = "";
+        $family["new_user_id"] = '';
 
-        $family["changed_date"] = "";
-        $family["changed_time"] = "";
-        $family["changed_user_id"] = "";
+        $family["changed_date"] = '';
+        $family["changed_time"] = '';
+        $family["changed_user_id"] = '';
 
-        $family["fam_marr_date_hebnight"] = "";
-        $family["fam_marr_notice_date_hebnight"] = "";
-        $family["fam_marr_church_date_hebnight"] = "";
-        $family["fam_marr_church_notice_date_hebnight"] = "";
-        $heb_flag = "";
-        $fam_children = "";
+        $family["fam_marr_date_hebnight"] = '';
+        $family["fam_marr_notice_date_hebnight"] = '';
+        $family["fam_marr_church_date_hebnight"] = '';
+        $family["fam_marr_church_notice_date_hebnight"] = '';
+        $heb_flag = '';
+        $fam_children = '';
         $fam_man = 0;
         $fam_woman = 0;
 
-        $event_status = "";
+        $this->event_status = false;
         $this->event_nr = 0;
 
         // *** Save addresses in a seperate table ***
@@ -3032,8 +2805,8 @@ class GedcomCls
         $this->geocode_nr = 0;
 
         // *** Process 1st line ***
-        $buffer = $line2[0];
-        $gedcomnumber = substr($buffer, 3, -5);
+        $this->buffer[0] = $line2[0];
+        $gedcomnumber = substr($this->buffer[0], 3, -5);
 
         if ($second_marr > 0) {
             $gedcomnumber .= "U1";
@@ -3043,15 +2816,15 @@ class GedcomCls
             $gedcomnumber = $this->reassign_ged($gedcomnumber, 'F');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
-            print "$gedcomnumber ";
+            echo $gedcomnumber . ' ';
         }
 
         // *** Save Level0 ***
-        $this->level[0] = substr($buffer, 2);
-        $this->level[1] = "";
-        $this->level[2] = "";
-        $this->level[3] = "";
-        $this->level[4] = "";
+        $this->level[0] = substr($this->buffer[0], 2);
+        $this->level[1] = '';
+        $this->level[2] = '';
+        $this->level[3] = '';
+        $this->level[4] = '';
         $this->level['1a'] = '';
 
         $temp_kind = ''; // marriage kind
@@ -3069,35 +2842,31 @@ class GedcomCls
             } // skip lines that belong to 1st marriage
 
             $this->processed = false;
-            $buffer = $line2[$z];
-            $buffer = rtrim($buffer, "\n\r");  //newline strippen
+            $this->buffer[0] = $line2[$z];
+            $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  //newline strippen
 
-            $buffer1 = substr($buffer, 0, 1);
-            $buffer5 = substr($buffer, 0, 5);
-            $buffer6 = substr($buffer, 0, 6);
-            $buffer7 = substr($buffer, 0, 7);
-            $buffer8 = substr($buffer, 0, 8);
+            $this->set_buffer();
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
-                $buffer = ltrim($buffer, " ");
+                $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
+            //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Save level1 ***
-            if ($buffer1 === '1') {
-                $this->level[1] = rtrim(substr($buffer, 2, 5));  //rtrim for DIV_/ CHR_
-                $this->level['1a'] = rtrim($buffer);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
+            if ($this->buffer[1] === '1') {
+                $this->level[1] = rtrim(substr($this->buffer[0], 2, 5));  //rtrim for DIV_/ CHR_
+                $this->level['1a'] = rtrim($this->buffer[0]);  // *** Needed to test for 1 RESI @. Update: rtrim not really neccesary anymore? ***
 
-                $event_status = '';
+                $this->event_status = false;
                 $event_start = '1';
-                $this->level[2] = "";
-                $this->level[3] = "";
-                $this->level[4] = "";
+                $this->level[2] = '';
+                $this->level[3] = '';
+                $this->level[4] = '';
 
                 // *** Same couple: second marriage in BK program (in 1 @FAM part) ***
-                $search_marr = rtrim(substr($buffer, 2, 5));
+                $search_marr = rtrim(substr($this->buffer[0], 2, 5));
                 if ($gen_program == 'BROSKEEP' && ($search_marr === "MARR" || $search_marr === "MARB" || $search_marr === "MARL")) {
                     if ($marr_flag == 1 && $family["fam_div"] == true) {
                         // this is a second MARR in this @FAM after a divorce so second marriage of these people
@@ -3115,26 +2884,26 @@ class GedcomCls
                 }
             }
             // *** Save level2 ***
-            elseif ($buffer1 === '2') {
-                $this->level[2] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '2') {
+                $this->level[2] = substr($this->buffer[0], 2, 4);
                 $this->level[3] = '';
                 $this->level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 === '3') {
-                $this->level[3] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '3') {
+                $this->level[3] = substr($this->buffer[0], 2, 4);
                 $this->level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 === '4') {
-                $this->level[4] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '4') {
+                $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
             // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $family["new_date"] = $created_changed["date"];
@@ -3151,7 +2920,7 @@ class GedcomCls
             // 1 CHAN
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == 'CHAN') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $family["changed_date"] = $created_changed["date"];
@@ -3165,16 +2934,20 @@ class GedcomCls
             }
 
             // *** Witnesses ***
-            // 1 WITN Doeko/Mons/
-            // 1 WITN Rene/Mansveld/
-            if ($buffer6 === '1 WITN') {
+            // 1 WITN John/Doe/
+            // 1 WITN Jane/Doe/
+            if ($this->buffer[6] === '1 WITN') {
                 $this->processed = true;
-                $buffer = str_replace("/", " ", $buffer);
-                $buffer = str_replace("  ", " ", $buffer);
-                $buffer = trim($buffer);
+                $this->buffer[0] = str_replace("/", " ", $this->buffer[0]);
+                $this->buffer[0] = str_replace("  ", " ", $this->buffer[0]);
+                $this->buffer[0] = trim($this->buffer[0]);
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
                 $this->calculated_event_id++;
 
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+                $this->event['level'][$this->event_nr] = '1';
                 //$this->event['connect_kind'][$this->event_nr] = 'family';
                 $this->event['connect_kind'][$this->event_nr] = 'MARR';
                 $this->event['connect_id'][$this->event_nr] = $gedcomnumber;
@@ -3183,7 +2956,7 @@ class GedcomCls
 
                 //$this->event['kind'][$this->event_nr] = 'marriage_witness';
                 $this->event['kind'][$this->event_nr] = 'ASSO';
-                $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                $this->event['event'][$this->event_nr] = substr($this->buffer[0], 7);
                 $this->event['event_extra'][$this->event_nr] = '';
                 $this->event['gedcom'][$this->event_nr] = 'WITN';
                 $this->event['date'][$this->event_nr] = '';
@@ -3194,66 +2967,71 @@ class GedcomCls
             // *** Oct. 2024: New function to process ASSO. ***
             if ($this->level[2] == 'ASSO') {
                 if ($temp_kind === 'religious') {
-                    $this->process_association($buffer, $buffer6, $buffer8, $gedcomnumber, 'MARR_REL');
+                    $this->process_association($gedcomnumber, 'MARR_REL');
                 } else {
-                    $this->process_association($buffer, $buffer6, $buffer8, $gedcomnumber, 'MARR');
+                    $this->process_association($gedcomnumber, 'MARR');
                 }
             }
 
             // *** Type relation (LAT etc.) ***
-            if ($buffer6 === '1 TYPE') {
+            if ($this->buffer[6] === '1 TYPE') {
                 $this->processed = true;
-                $family["fam_kind"] = substr($buffer, 7);
+                $family["fam_kind"] = substr($this->buffer[0], 7);
             }
 
             // *** Gedcomnumber man: 1 HUSB @I14@ ***
-            if ($buffer8 === '1 HUSB @') {
+            if ($this->buffer[8] === '1 HUSB @') {
                 $this->processed = true;
-                $fam_man = substr($buffer, 8, -1);
+                $fam_man = substr($this->buffer[0], 8, -1);
                 if ($add_tree == true || $reassign == true) {
                     $fam_man = $this->reassign_ged($fam_man, 'I');
                 }
                 if ($second_marr > 0) {
                     $this->dbh->query("UPDATE humo_persons SET pers_fams = CONCAT(pers_fams,';','" . $gedcomnumber . "')
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_man . "'");
+                        WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_man . "'");
                 }
             }
 
             // *** Gedcomnumber woman: 1 WIFE @I14@ ***
-            if ($buffer8 === '1 WIFE @') {
+            if ($this->buffer[8] === '1 WIFE @') {
                 $this->processed = true;
-                $fam_woman = substr($buffer, 8, -1);
+                $fam_woman = substr($this->buffer[0], 8, -1);
                 if ($add_tree == true || $reassign == true) {
                     $fam_woman = $this->reassign_ged($fam_woman, 'I');
                 }
                 if ($second_marr > 0) {
                     $this->dbh->query("UPDATE humo_persons SET pers_fams = CONCAT(pers_fams,';','" . $gedcomnumber . "')
-                WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_woman . "'");
+                        WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $fam_woman . "'");
                 }
             }
             // *** Gedcomnumbers children ***
             // 1 CHIL @I13@
             // 1 CHIL @I14@
             if ($second_marr == 0) { // only show children in first marriage of same people
-                if ($buffer8 === '1 CHIL @') {
+                if ($this->buffer[8] === '1 CHIL @') {
                     $this->processed = true;
-                    $tempnum = substr($buffer, 8, -1);
+                    $tempnum = substr($this->buffer[0], 8, -1);
                     if ($add_tree == true || $reassign == true) {
                         $tempnum = $this->reassign_ged($tempnum, 'I');
                     }
                     $fam_children = $this->merge_texts($fam_children, ';', $tempnum);
                 }
 
-
                 // *** Adoption by person, used in Legacy and RootsMagic ***
                 // 2 _FREL Adopted ===>>> Adopted by father.
                 // 2 _MREL Adopted ===>>> Adopted by mother.
                 /*
-                if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
+                if ($this->buffer[7]=='2 _FREL' OR $this->buffer[7]=='2 _MREL'){
                     $this->processed = true;
                     $child_array=explode(";",$fam_children); $count_children=count($child_array);
 
-                    $this->event_nr++; $this->calculated_event_id++;
+                    $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
+                    $this->calculated_event_id++;
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr] = '1';
                     $this->event['connect_kind'][$this->event_nr]='person';
                     $this->event['connect_id'][$this->event_nr]=$child_array[$count_children-1];
                     $this->event['connect_kind2'][$this->event_nr] = '';
@@ -3261,7 +3039,7 @@ class GedcomCls
                     $this->event['kind'][$this->event_nr]='adoption_by_person';
                     $this->event['event'][$this->event_nr]=$gedcomnumber;
                     $this->event['event_extra'][$this->event_nr]='';
-                    $this->event['gedcom'][$this->event_nr]=substr($buffer,8); // *** adopted, steph, legal or foster. ***
+                    $this->event['gedcom'][$this->event_nr]=substr($this->buffer[0],8); // *** adopted, steph, legal or foster. ***
                     $this->event['date'][$this->event_nr]='';
                     //$this->event['source'][$this->event_nr]='';
                     $this->event['text'][$this->event_nr]='';
@@ -3282,106 +3060,107 @@ class GedcomCls
             //2 NOTE tekst ondertr wet
             //3 CONT 2nd line
 
-            // ***************************************************************************************
-            // *** Marriage license church ***
+            /**
+             * Marriage license church
+             */
 
             // *** Marriage license Aldfaer ***
             if ($this->level[1] == 'MARL' && $gen_program == 'ALDFAER') {
                 $this->level[1] = "MARB";
-                if ($buffer6 === '1 MARL') {
+                if ($this->buffer[6] === '1 MARL') {
                     $this->processed = true;
                 }
             }
 
             if ($this->level[1] == 'MARB' && $temp_kind === 'religious') {
-                if ($buffer6 === '1 MARB') {
+                if ($this->buffer[6] === '1 MARB') {
                     $this->processed = true;
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_marr_church_notice_date"])   $family["fam_marr_church_notice_date"] = trim(substr($buffer, 7));
+                    if (!$family["fam_marr_church_notice_date"])   $family["fam_marr_church_notice_date"] = trim(substr($this->buffer[0], 7));
                 }
-                if ($buffer7 === '2 _HNIT') {
+                if ($this->buffer[7] === '2 _HNIT') {
                     $heb_flag = 1;
                     $this->processed = true;
-                    $family["fam_marr_church_notice_date_hebnight"] = substr($buffer, 8);
+                    $family["fam_marr_church_notice_date_hebnight"] = substr($this->buffer[0], 8);
                 }
 
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $family["fam_marr_church_notice_place"] = $this->process_place(substr($buffer, 7));
+                        $family["fam_marr_church_notice_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_church_notice_place"], $buffer);
+                    $this->process_places($family["fam_marr_church_notice_place"]);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $family["fam_marr_church_notice_text"] = $this->process_texts($family["fam_marr_church_notice_text"], $buffer, '2');
+                    $family["fam_marr_church_notice_text"] = $this->process_texts($family["fam_marr_church_notice_text"], '2');
                 }
 
                 // *** Process sources for Pro-gen, Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_marr_church_notice_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_marr_church_notice_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage church notice ********************************
+                // *** Pictures by marriage church notice ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church_notice', $buffer);
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church_notice');
                 }
             }
 
-            // ******************************************************************************************
-            // *** Marriage license ***
-            // ******************************************************************************************
+            /**
+             * Marriage license
+             */
             if ($this->level[1] == 'MARB' && $temp_kind !== 'religious') {
                 // *** Type marriage / relation (civil or religious) ***
-                if ($buffer6 === '2 TYPE') {
+                if ($this->buffer[6] === '2 TYPE') {
                     $this->processed = true;
-                    $temp_kind = strtolower(substr($buffer, 7));
+                    $temp_kind = strtolower(substr($this->buffer[0], 7));
                 }
-                if ($buffer6 === '1 MARB') {
+                if ($this->buffer[6] === '1 MARB') {
                     $this->processed = true;
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
                     if (!$family["fam_marr_notice_date"]) {
-                        $family["fam_marr_notice_date"] = trim(substr($buffer, 7));
+                        $family["fam_marr_notice_date"] = trim(substr($this->buffer[0], 7));
                     }
                 }
-                if ($buffer7 === '2 _HNIT') {
+                if ($this->buffer[7] === '2 _HNIT') {
                     $heb_flag = 1;
                     $this->processed = true;
-                    $family["fam_marr_notice_date_hebnight"] = substr($buffer, 8);
+                    $family["fam_marr_notice_date_hebnight"] = substr($this->buffer[0], 8);
                 }
 
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $family["fam_marr_notice_place"] = $this->process_place(substr($buffer, 7));
+                        $family["fam_marr_notice_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_notice_place"], $buffer);
+                    $this->process_places($family["fam_marr_notice_place"]);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $family["fam_marr_notice_text"] = $this->process_texts($family["fam_marr_notice_text"], $buffer, '2');
+                    $family["fam_marr_notice_text"] = $this->process_texts($family["fam_marr_notice_text"], '2');
                 }
 
                 // *** Process sources for Pro-gen, Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_marr_notice_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_marr_notice_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage licence ********************************
+                // *** Pictures by marriage licence ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_notice', $buffer);
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_notice');
                 }
 
                 // *** SAME CODE IS USED FOR AGE BY MARRIAGE_NOTICE AND MARRIAGE! ***
@@ -3389,55 +3168,54 @@ class GedcomCls
                 // 2 HUSB
                 // 3 AGE 42y
                 if ($this->level[2] == 'HUSB') {
-                    if ($buffer6 === '2 HUSB') {
+                    if ($this->buffer[6] === '2 HUSB') {
                         $this->processed = true;
                     }
-                    if ($buffer5 === '3 AGE') {
+                    if ($this->buffer[5] === '3 AGE') {
                         $this->processed = true;
-                        $family["fam_man_age"] = substr($buffer, 6);
+                        $family["fam_man_age"] = substr($this->buffer[0], 6);
                     }
                 }
                 // *** Woman age ***
                 // 2 WIFE
                 // 3 AGE 42y 6m
                 if ($this->level[2] == 'WIFE') {
-                    if ($buffer6 === '2 WIFE') {
+                    if ($this->buffer[6] === '2 WIFE') {
                         $this->processed = true;
                     }
-                    if ($buffer5 === '3 AGE') {
+                    if ($this->buffer[5] === '3 AGE') {
                         $this->processed = true;
-                        $family["fam_woman_age"] = substr($buffer, 6);
+                        $family["fam_woman_age"] = substr($this->buffer[0], 6);
                     }
                 }
             }
 
-            // *******************************************************************************************
-            // *** Marriage church ***
-            // *******************************************************************************************
-
+            /**
+             * Marriage church
+             */
             if ($this->level[1] == 'MARR') {
                 // *** fam_religion ***
                 // Haza-data
                 // 1 MARR
                 // 2 TYPE religious
                 // 2 RELI Hervormd
-                if ($buffer6 === '2 RELI') {
+                if ($this->buffer[6] === '2 RELI') {
                     $this->processed = true;
-                    $family["fam_religion"] = substr($buffer, 7);
+                    $family["fam_religion"] = substr($this->buffer[0], 7);
                 }
 
                 // *** Haza-data marriage authority ***
                 // 1 MARR
                 // 2 AGNC alkmaar gemeente wettelijk
-                if ($buffer6 === '2 AGNC') {
+                if ($this->buffer[6] === '2 AGNC') {
                     $this->processed = true;
-                    $family["fam_marr_authority"] = substr($buffer, 7);
+                    $family["fam_marr_authority"] = substr($this->buffer[0], 7);
                 }
 
                 // *** Type marriage / relation (civil or religious) ***
-                if ($buffer6 === '2 TYPE') {
+                if ($this->buffer[6] === '2 TYPE') {
                     $this->processed = true;
-                    $temp_kind = strtolower(substr($buffer, 7));
+                    $temp_kind = strtolower(substr($this->buffer[0], 7));
 
                     // Ahnenblatt uses "2 TYPE RELI". Other programs: "2 TYPE religious"
                     if ($temp_kind == 'reli') {
@@ -3458,15 +3236,15 @@ class GedcomCls
                     // 2 TYPE partners
                     if ($temp_kind === 'partners') {
                         $family["fam_kind"] = 'partners';
-                        //$buffer = '1 _LIV';
+                        //$this->buffer[0] = '1 _LIV';
                         //$this->level[1] = '_LIV';
                     } elseif ($temp_kind === 'registered') {
                         $family["fam_kind"] = 'registered';
-                        //$buffer = '1 _LIV';
+                        //$this->buffer[0] = '1 _LIV';
                         //$this->level[1] = '_LIV';
                     } elseif ($temp_kind === 'unknown') {
                         $family["fam_kind"] = 'unknown';
-                        //$buffer = '1 _LIV';
+                        //$this->buffer[0] = '1 _LIV';
                         //$this->level[1] = '_LIV';
                     }
                 }
@@ -3476,11 +3254,11 @@ class GedcomCls
             // 1 ORDI
             // 2 DATE 01 JUN 1749
             // 2 PLAC Huizen
-            // if (substr($buffer,0,1)=='1'){
+            // if (substr($this->buffer[0],0,1)=='1'){
             //   $temp_kind="";
             // }
-            if ($buffer6 === '1 ORDI') {
-                $buffer = "1 MARR";
+            if ($this->buffer[6] === '1 ORDI') {
+                $this->buffer[0] = "1 MARR";
                 $temp_kind = "religious";
                 $this->level[1] = 'MARR';
             }
@@ -3492,16 +3270,20 @@ class GedcomCls
             // 2 _WITN Aam Pieter Borgman, oud 48 jaar, herbergier, wonende te
             // 3 CONT bla bla
             // 3 CONT bla bla
-            if ($buffer7 === '2 _WITN') {
-                $buffer = str_replace("2 _WITN", "2 WITN", $buffer);
+            if ($this->buffer[7] === '2 _WITN') {
+                $this->buffer[0] = str_replace("2 _WITN", "2 WITN", $this->buffer[0]);
                 $this->level[2] = 'WITN';
             }
             if ($this->level[2] == 'WITN') {
-                if ($buffer6 === '2 WITN') {
+                if ($this->buffer[6] === '2 WITN') {
                     $this->processed = true;
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
 
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr] = '1';
                     //$this->event['connect_kind'][$this->event_nr] = 'family';
                     $this->event['connect_kind'][$this->event_nr] = 'MARR';
                     $this->event['connect_id'][$this->event_nr] = $gedcomnumber;
@@ -3517,14 +3299,14 @@ class GedcomCls
 
                     $this->event['event'][$this->event_nr] = '';
 
-                    if (substr($buffer, 7, 1) === '@') {
+                    if (substr($this->buffer[0], 7, 1) === '@') {
                         // 2 WITN @I1@
                         //$this->event['connect_kind2'][$this->event_nr] = 'family';
                         $this->event['connect_kind2'][$this->event_nr] = 'person';
-                        $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
+                        $this->event['connect_id2'][$this->event_nr] = substr($this->buffer[0], 8, -1);
                     } else {
                         // 2 WITN Doopgetuige1//
-                        $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                        $this->event['event'][$this->event_nr] = substr($this->buffer[0], 7);
                     }
 
                     $this->event['event_extra'][$this->event_nr] = '';
@@ -3533,109 +3315,109 @@ class GedcomCls
                     $this->event['text'][$this->event_nr] = '';
                     $this->event['place'][$this->event_nr] = '';
                 }
-                if ($buffer6 === '3 CONT') {
+                if ($this->buffer[6] === '3 CONT') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= $this->cont(substr($buffer, 7));
-                    $buffer = ""; // to prevent use of this text in text marriage!
+                    $this->event['event'][$this->event_nr] .= $this->cont(substr($this->buffer[0], 7));
+                    $this->buffer[0] = ''; // to prevent use of this text in text marriage!
                 }
-                if ($buffer6 === '3 CONC') {
+                if ($this->buffer[6] === '3 CONC') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] .= $this->conc(substr($buffer, 7));
-                    $buffer = ""; // to prevent use of this text in text marriage!
+                    $this->event['event'][$this->event_nr] .= $this->conc(substr($this->buffer[0], 7));
+                    $this->buffer[0] = ''; // to prevent use of this text in text marriage!
                 }
             }
 
             // Quick & dirty method to solve 2 TYPE problem in Ahnenblatt GEDCOM.
             // 2 TYPE isn't used directly after 1 MARR. So just assume 2nd MARR = religious.
-            if ($buffer6 === '1 MARR' && $gen_program == 'AHN' && $count_civil_religion > 0) {
+            if ($this->buffer[6] === '1 MARR' && $gen_program == 'AHN' && $count_civil_religion > 0) {
                 $temp_kind = 'religious'; // Just assume second MARR is religious.
             }
 
             if ($this->level[1] == 'MARR' && $temp_kind === 'religious') {
-                if ($buffer6 === '1 MARR') {
+                if ($this->buffer[6] === '1 MARR') {
                     $this->processed = true;
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_marr_church_date"])   $family["fam_marr_church_date"] = trim(substr($buffer, 7));
+                    if (!$family["fam_marr_church_date"])   $family["fam_marr_church_date"] = trim(substr($this->buffer[0], 7));
                 }
-                if ($buffer7 === '2 _HNIT') {
+                if ($this->buffer[7] === '2 _HNIT') {
                     $heb_flag = 1;
                     $this->processed = true;
-                    $family["fam_marr_church_date_hebnight"] = substr($buffer, 8);
+                    $family["fam_marr_church_date_hebnight"] = substr($this->buffer[0], 8);
                 }
 
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $family["fam_marr_church_place"] = $this->process_place(substr($buffer, 7));
+                        $family["fam_marr_church_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_church_place"], $buffer);
+                    $this->process_places($family["fam_marr_church_place"]);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $family["fam_marr_church_text"] = $this->process_texts($family["fam_marr_church_text"], $buffer, '2');
+                    $family["fam_marr_church_text"] = $this->process_texts($family["fam_marr_church_text"], '2');
                 }
 
                 // *** Process sources for Pro-gen, Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_marr_church_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_marr_church_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage church ********************************
+                // *** Pictures by marriage church ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church', $buffer);
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr_church');
                 }
             }
 
-            // **********************************************************************************************
-            // *** Marriage ***
-            // **********************************************************************************************
+            /**
+             * Marriage
+             */
             if ($this->level[1] == 'MARR' && $temp_kind !== 'religious' && $gen_program != 'SukuJutut') {
 
-                if ($buffer6 === '1 MARR') {
+                if ($this->buffer[6] === '1 MARR') {
                     $this->processed = true;
 
                     $count_civil_religion++; // Needed for Ahnenblatt.
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_marr_date"])  $family["fam_marr_date"] = trim(substr($buffer, 7));
+                    if (!$family["fam_marr_date"])  $family["fam_marr_date"] = trim(substr($this->buffer[0], 7));
                 }
-                if ($buffer7 === '2 _HNIT') {
+                if ($this->buffer[7] === '2 _HNIT') {
                     $heb_flag = 1;
                     $this->processed = true;
-                    $family["fam_marr_date_hebnight"] = substr($buffer, 8);
+                    $family["fam_marr_date_hebnight"] = substr($this->buffer[0], 8);
                 }
 
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $family["fam_marr_place"] = $this->process_place(substr($buffer, 7));
+                        $family["fam_marr_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_place"], $buffer);
+                    $this->process_places($family["fam_marr_place"]);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $family["fam_marr_text"] = $this->process_texts($family["fam_marr_text"], $buffer, '2');
+                    $family["fam_marr_text"] = $this->process_texts($family["fam_marr_text"], '2');
                 }
 
                 // *** Process sources for Pro-gen, Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_marr_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_marr_source', $gedcomnumber, '2');
                 }
 
-                // *** Pictures by marriage ********************************
+                // *** Pictures by marriage ***
                 // 2 OBJE
                 // 3 FORM jpg
                 // 3 FILE C:\Documents and Settings\Mijn documenten\test.jpg
                 // 3 TITL test
                 if ($this->level[2] == 'OBJE') {
-                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr', $buffer);
+                    $this->process_picture('family', $gedcomnumber, 'picture_fam_marr');
                 }
 
                 // *** SAME CODE IS USED FOR AGE BY MARRIAGE_NOTICE AND MARRIAGE! ***
@@ -3643,54 +3425,53 @@ class GedcomCls
                 // 2 HUSB
                 // 3 AGE 42y
                 if ($this->level[2] == 'HUSB') {
-                    if ($buffer6 === '2 HUSB') {
+                    if ($this->buffer[6] === '2 HUSB') {
                         $this->processed = true;
                     }
-                    if ($buffer5 === '3 AGE') {
+                    if ($this->buffer[5] === '3 AGE') {
                         $this->processed = true;
-                        $family["fam_man_age"] = substr($buffer, 6);
+                        $family["fam_man_age"] = substr($this->buffer[0], 6);
                     }
                 }
                 // *** Woman age ***
                 // 2 WIFE
                 // 3 AGE 42y 6m
                 if ($this->level[2] == 'WIFE') {
-                    if ($buffer6 === '2 WIFE') {
+                    if ($this->buffer[6] === '2 WIFE') {
                         $this->processed = true;
                     }
-                    if ($buffer5 === '3 AGE') {
+                    if ($this->buffer[5] === '3 AGE') {
                         $this->processed = true;
-                        $family["fam_woman_age"] = substr($buffer, 6);
+                        $family["fam_woman_age"] = substr($this->buffer[0], 6);
                     }
                 }
             }
 
-            // ******************************************************************************************
             // Finnish program SukuJutut uses its own code for type of relation
             if ($this->level[1] == 'MARR' && $gen_program == 'SukuJutut') {
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
                     $finrelation = 'marr';
-                    if (substr($buffer, 7, 9) === 'AVOLIITTO') {
+                    if (substr($this->buffer[0], 7, 9) === 'AVOLIITTO') {
                         $family["fam_kind"] = "living together";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) === 'LIITTO 2') {
+                    } elseif (substr($this->buffer[0], 7, 8) === 'LIITTO 2') {
                         $family["fam_kind"] = "living together";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) === 'LIITTO 3') {
+                    } elseif (substr($this->buffer[0], 7, 8) === 'LIITTO 3') {
                         $family["fam_kind"] = "engaged";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) === 'LIITTO 4') {
+                    } elseif (substr($this->buffer[0], 7, 8) === 'LIITTO 4') {
                         $family["fam_kind"] = "homosexual";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) === 'LIITTO 5') {
+                    } elseif (substr($this->buffer[0], 7, 8) === 'LIITTO 5') {
                         $family["fam_kind"] = "unknown";
                         $finrelation = 'relation';
-                    } elseif (substr($buffer, 7, 8) === 'LIITTO 6') {
+                    } elseif (substr($this->buffer[0], 7, 8) === 'LIITTO 6') {
                         $family["fam_kind"] = "non-marital"; // originally: father/mother of child (no relation - just conception)
                         $finrelation = 'relation';
                     } else {
-                        $family["fam_marr_date"] = substr($buffer, 7);
+                        $family["fam_marr_date"] = substr($this->buffer[0], 7);
                     }
                 }
                 if ($finrelation === 'relation' && isset($family["fam_marr_date"])) {
@@ -3699,35 +3480,34 @@ class GedcomCls
                 }
 
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $family["fam_" . $finrelation . "_place"] = $this->process_place(substr($buffer, 7));
+                        $family["fam_" . $finrelation . "_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_" . $finrelation . "_place"], $buffer);
+                    $this->process_places($family["fam_" . $finrelation . "_place"]);
                 }
 
                 //TODO check these lines.
                 if ($this->level[2] == 'NOTE') {
-                    //$family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], $buffer, '2');
-                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], $buffer, '2');
+                    //$family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], '2');
+                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], '2');
                 }
                 if ($this->level[3] == 'NOTE') {
-                    //$family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], $buffer, '3');
-                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], $buffer, '3');
+                    //$family["fam_" . $finrelation . "_text"] = $this->process_texts($person["pers_text"], '3');
+                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], '3');
                 }
 
                 // ***  Process sources ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_' . $finrelation . '_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_' . $finrelation . '_source', $gedcomnumber, '2');
                 }
             }
 
-            // ******************************************************************************************
-            // *** Living together ***
-            // ******************************************************************************************
-
+            /**
+             * Living together
+             */
             // NOT TESTED *** BK living together ***
-            if ($buffer7 === '1 _COML') {
+            if ($this->buffer[7] === '1 _COML') {
                 $this->processed = true;
                 $family["fam_kind"] = "living together";
             }
@@ -3742,7 +3522,7 @@ class GedcomCls
             // 3 PAGE Brief  2 october 2001
             // 1 _MSTAT Partners
             // *** Code _NMR is used TWICE in this file ***
-            if ($buffer6 === '1 _NMR') {
+            if ($this->buffer[6] === '1 _NMR') {
                 $this->processed = true;
                 $family["fam_kind"] = "non-marital";
             }
@@ -3755,8 +3535,8 @@ class GedcomCls
             // 1 _END
             // 2 DATE 02 FEB 2003
             //Haza-data: 1 TYPE non-marital > convert to '1 _LIV'
-            if (substr($buffer, 0, 18) === '1 TYPE non-marital') {
-                $buffer = '1 _LIV';
+            if (substr($this->buffer[0], 0, 18) === '1 TYPE non-marital') {
+                $this->buffer[0] = '1 _LIV';
                 $this->level[1] = '_LIV';
             }
 
@@ -3767,261 +3547,277 @@ class GedcomCls
             // 1 _END
             // 2 DATE 2006
             if ($this->level[1] == '_STRT') {
-                if ($buffer7 === '1 _STRT') {
+                if ($this->buffer[7] === '1 _STRT') {
                     $this->processed = true;
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_relation_date"])  $family["fam_relation_date"] = trim(substr($buffer, 7));
+                    if (!$family["fam_relation_date"])  $family["fam_relation_date"] = trim(substr($this->buffer[0], 7));
                 }
             }
             if ($this->level[1] == '_END') {
-                if ($buffer6 === '1 _END') {
+                if ($this->buffer[6] === '1 _END') {
                     $this->processed = true;
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_relation_end_date"])  $family["fam_relation_end_date"] = trim(substr($buffer, 7));
+                    if (!$family["fam_relation_end_date"])  $family["fam_relation_end_date"] = trim(substr($this->buffer[0], 7));
                 }
             }
 
             // *** Pro-gen & HuMo-genealogy living together: 1 _LIV ***
-            //if ($buffer6=='1 _LIV'){ $this->processed = true; $family["fam_kind"]="living together"; }
+            //if ($this->buffer[6]=='1 _LIV'){
+            //  $this->processed = true;
+            //  $family["fam_kind"]="living together";
+            //}
             if ($this->level[1] == '_LIV') {
-                if ($buffer6 === '1 _LIV') {
+                if ($this->buffer[6] === '1 _LIV') {
                     $this->processed = true;
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_relation_date"])  $family["fam_relation_date"] = substr($buffer, 7);
+                    if (!$family["fam_relation_date"])  $family["fam_relation_date"] = substr($this->buffer[0], 7);
                 }
 
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $family["fam_relation_place"] = $this->process_place(substr($buffer, 7));
+                        $family["fam_relation_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_relation_place"], $buffer);
+                    $this->process_places($family["fam_relation_place"]);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], $buffer, '2');
+                    $family["fam_relation_text"] = $this->process_texts($family["fam_relation_text"], '2');
                 }
 
                 // *** Process sources for Pro-gen, Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_relation_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_relation_source', $gedcomnumber, '2');
                 }
             }
 
-            // *****************************************************************************************
-            // *** Divorce ***
-            // *****************************************************************************************
-
-            // *** Divorce BK ***
-            //1 _SEPR
-            //2 DATE 1933
-            //2 SOUR @S326@
-            //2 NOTE He left his family.
-            if ($buffer7 === '1 _SEPR') {
-                $buffer = str_replace("1 _SEPR", "1 DIV", $buffer);
+            /**
+             * Divorce
+             * 
+             * Divorce BK
+             * 1 _SEPR
+             * 2 DATE 1933
+             * 2 SOUR @S326@
+             * 2 NOTE He left his family.
+             */
+            if ($this->buffer[7] === '1 _SEPR') {
+                $this->buffer[0] = str_replace("1 _SEPR", "1 DIV", $this->buffer[0]);
                 $this->level[1] = 'DIV';
             }
 
             //if ($this->level[1]=='DIV'){
             if (substr($this->level[1], 0, 3) === 'DIV') {
-                if (substr($buffer, 0, 5) === '1 DIV') {
+                if (substr($this->buffer[0], 0, 5) === '1 DIV') {
                     $this->processed = true;
                     $family["fam_div"] = true;
                 }
 
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_div_date"])  $family["fam_div_date"] = trim(substr($buffer, 7));
+                    if (!$family["fam_div_date"])  $family["fam_div_date"] = trim(substr($this->buffer[0], 7));
                 }
 
                 if ($this->level[2] == 'PLAC') {
-                    if ($buffer6 === '2 PLAC') {
+                    if ($this->buffer[6] === '2 PLAC') {
                         $this->processed = true;
-                        $family["fam_div_place"] = $this->process_place(substr($buffer, 7));
+                        $family["fam_div_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_div_place"], $buffer);
+                    $this->process_places($family["fam_div_place"]);
                 }
 
                 if ($this->level[2] == 'NOTE') {
-                    $family["fam_div_text"] = $this->process_texts($family["fam_div_text"], $buffer, '2');
+                    $family["fam_div_text"] = $this->process_texts($family["fam_div_text"], '2');
                 }
 
                 // *** Process sources for Pro-gen, Aldfaer etc. ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_div_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_div_source', $gedcomnumber, '2');
                 }
 
                 // *** Haza-data div. authority ***
                 // 1 DIV
                 // 2 AGNC alkmaar scheiding
-                if ($buffer6 === '2 AGNC') {
+                if ($this->buffer[6] === '2 AGNC') {
                     $this->processed = true;
-                    $family["fam_div_authority"] = substr($buffer, 7);
+                    $family["fam_div_authority"] = substr($this->buffer[0], 7);
                 }
             }
 
-            // **********************************************************************************************
-            // *** Text by family ***
+            /**
+             * Text by family
+             */
             if ($this->level[1] == 'NOTE') {
-                $family["fam_text"] = $this->process_texts($family["fam_text"], $buffer, '1');
+                $family["fam_text"] = $this->process_texts($family["fam_text"], '1');
 
                 // *** BK: source by family text ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_text_source', $gedcomnumber, $buffer, '2');
+                    $this->process_sources('family', 'fam_text_source', $gedcomnumber, '2');
                 }
             }
 
-            // *** Pictures by family ********************************
+            // *** Pictures by family ***
             // 1 OBJE
             // 2 FORM jpg
             // 2 FILE C:\Documents and Settings\Mijn documenten\test.jpg
             // 2 TITL test
-            //if ($this->level[1]=='OBJE') $this->process_picture('','','picture', $buffer);
+            //if ($this->level[1]=='OBJE') $this->process_picture('','','picture', $this->buffer[0]);
             if ($this->level[1] == 'OBJE') {
-                $this->process_picture('family', $gedcomnumber, 'picture', $buffer);
+                $this->process_picture('family', $gedcomnumber, 'picture');
             }
 
-            // *********************************************************************
-            // *** Events ***
-            // *********************************************************************
-            //1 MILI
-            //2 TYPE militaire dienst
-            //2 DATE 01 JAN 1999
-            //2 NOTE test
+            /**
+             * Events
+             *
+             * 1 MILI
+             * 2 TYPE militaire dienst
+             * 2 DATE 01 JAN 1999
+             * 2 NOTE test
+             * 
+             * 1 EVEN
+             * 2 TYPE gebeurtenis
+             * 2 DATE 01 JAN 2001
+             * 2 PLAC Alkmaar
+             * 2 NOTE gebeurtenis
+             */
 
-            //1 EVEN
-            //2 TYPE gebeurtenis
-            //2 DATE 01 JAN 2001
-            //2 PLAC Alkmaar
-            //2 NOTE gebeurtenis
+            // TODO use function check_event.
+            //$event_temp = check_event(7);
 
-            if ($buffer7 == '1 _MBON') {
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
+            if ($this->buffer[7] == '1 _MBON') {
+                if (substr($this->buffer[0], 8)) {
+                    $event_temp = substr($this->buffer[0], 8);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 MARC') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 MARC') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
             // *** Aldfaer: MARL = marriage license! ***
-            if ($buffer6 == '1 MARL' and $gen_program != 'ALDFAER') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 MARL' and $gen_program != 'ALDFAER') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 MARS') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 MARS') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 DIVF') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 DIVF') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 ANUL') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 ANUL') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 ENGA') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 ENGA') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 SLGS') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 SLGS') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 CENS') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 CENS') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
             // *** Code _NMR is twice in this file ***
-            if ($buffer6 == '1 _NMR') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 _NMR') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer7 == '1 _COML') {
-                if (substr($buffer, 8)) {
-                    $event_temp = substr($buffer, 8);
+            if ($this->buffer[7] == '1 _COML') {
+                if (substr($this->buffer[0], 8)) {
+                    $event_temp = substr($this->buffer[0], 8);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 NCHI') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 NCHI') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer5 == '1 RFN') {
-                if (substr($buffer, 6)) {
-                    $event_temp = substr($buffer, 6);
+            if ($this->buffer[5] == '1 RFN') {
+                if (substr($this->buffer[0], 6)) {
+                    $event_temp = substr($this->buffer[0], 6);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
-            if ($buffer6 == '1 REFN') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            if ($this->buffer[6] == '1 REFN') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
 
             // Other events (no BK?)
-            //if ($buffer=='1 EVEN'){$this->processed = true; $event_status="1";}
-            if ($buffer6 == '1 EVEN') {
-                if (substr($buffer, 7)) {
-                    $event_temp = substr($buffer, 7);
+            //if ($this->buffer[0]=='1 EVEN'){
+            //  $this->processed = true;
+            //  $this->event_status = true;
+            //}
+            if ($this->buffer[6] == '1 EVEN') {
+                if (substr($this->buffer[0], 7)) {
+                    $event_temp = substr($this->buffer[0], 7);
                 }
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
 
-            if ($buffer == '1 SLGL') {
+            if ($this->buffer[0] == '1 SLGL') {
                 $this->processed = true;
-                $event_status = "1";
+                $this->event_status = true;
             }
 
-            if ($event_status) {
+            if ($this->event_status) {
                 if ($event_start) {
                     $event_start = '';
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr] = '1';
                     $this->event['connect_kind'][$this->event_nr] = 'family';
                     $this->event['connect_id'][$this->event_nr] = $gedcomnumber;
                     $this->event['connect_kind2'][$this->event_nr] = '';
@@ -4042,27 +3838,28 @@ class GedcomCls
                     }
                 }
                 // *** Save type ***
-                if ($buffer6 === '2 TYPE') {
+                if ($this->buffer[6] === '2 TYPE') {
                     $this->processed = true;
-                    $this->event['event'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['event'][$this->event_nr] = substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr] = substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '2 PLAC') {
+                if ($this->buffer[6] === '2 PLAC') {
                     $this->processed = true;
-                    $this->event['place'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['place'][$this->event_nr] = substr($this->buffer[0], 7);
                 }
                 //if (copy(buf,1,6)='2 TYPE') AND (gen_program='BROSKEEP') then gebeurttekst[nrgebeurtenis]:=gebeurttekst[nrgebeurtenis]+', '+copy(buf,8,length(buf)); //Voor BK!!!
 
                 if ($this->level[2] == 'NOTE') {
-                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, '2');
+                    $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], '2');
                 }
 
                 // *** Source by family event ***
                 if ($this->level[2] == 'SOUR') {
-                    $this->process_sources('family', 'fam_event_source', $this->calculated_event_id, $buffer, '2');
+                    $event_id = $this->event['calculated_event_id'][$this->event_nr];
+                    $this->process_sources('family', 'fam_event_source', $event_id, '2');
                 }
             }
 
@@ -4076,7 +3873,7 @@ class GedcomCls
             //2 NOTE informatie citaat bron
             //1 SOUR @S3@
             if ($this->level[1] == 'SOUR') {
-                $this->process_sources('family', 'family_source', $gedcomnumber, $buffer, '1');
+                $this->process_sources('family', 'family_source', $gedcomnumber, '1');
             }
 
             // *** Address/Living place for family BK & HuMo-genealogy ***
@@ -4088,32 +3885,32 @@ class GedcomCls
             //2 EMAIL mail
             //2 WWW website
             if ($this->level[1] == 'RESI') {
-                $this->process_addresses('family', 'family_address', $gedcomnumber, $buffer);
+                $this->process_addresses('family', 'family_address', $gedcomnumber);
             }
 
-            //*******************************************************************************************
-            // *** Save non-processed items ***
-            // ******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             // Skip these lines
-            if ($buffer == '2 ADDR') {
+            if ($this->buffer[0] == '2 ADDR') {
                 $this->processed = true;
             }
-            //if ($buffer=='1 RESI'){ $this->processed = true; }
-            if ($buffer == '1 REPO') {
+            //if ($this->buffer[0]=='1 RESI'){ $this->processed = true; }
+            if ($this->buffer[0] == '1 REPO') {
                 $this->processed = true;
             }
-            if ($buffer == '0 TRLR') {
+            if ($this->buffer[0] == '0 TRLR') {
                 $this->processed = true;
             }
 
-            if ($buffer5 === '1 RFN') {
+            if ($this->buffer[5] === '1 RFN') {
                 $this->processed = true;
             }
 
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
-                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $buffer;
-                    //$this->non_processed_items($buffer);
+                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
+                    //$this->non_processed_items($this->buffer[0]);
                 }
 
                 if ($family["fam_unprocessed_tags"]) {
@@ -4131,9 +3928,9 @@ class GedcomCls
                 if ($this->level[4]) {
                     $family["fam_unprocessed_tags"] .= '|3 ' . $this->level[3];
                 }
-                $family["fam_unprocessed_tags"] .= '|' . $buffer;
+                $family["fam_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        }  //end explode
+        }
 
         // SAVE
         // Pro-gen: special treatment for woman without a man... :-)
@@ -4257,10 +4054,8 @@ class GedcomCls
             fam_div_text='" . $this->text_process($family["fam_div_text"]) . "',
             fam_div_authority='" . $this->text_process($family["fam_div_authority"]) . "',
             fam_cal_date='" . $this->process_date($this->text_process($family["fam_cal_date"])) . "',
-
             fam_new_user_id='" . $family["new_user_id"] . "',
             fam_changed_user_id='" . $family["changed_user_id"] . "',
-
             fam_new_datetime = '" . date('Y-m-d H:i:s', strtotime($family["new_date"] . ' ' . $family["new_time"]))  . "'
             " . $this->changed_datetime('fam_changed_datetime', $family["changed_date"], $family["changed_time"]);
         $this->dbh->query($sql);
@@ -4276,37 +4071,33 @@ class GedcomCls
             $this->dbh->query($sql);
         }
 
-        //echo '!!!!'.$this->nrsource.'<br>';;
         // *** Save sources ***
         if ($this->nrsource > 0) {
             for ($i = 1; $i <= $this->nrsource; $i++) {
                 $sql = "INSERT IGNORE INTO humo_sources SET
-            source_tree_id='" . $this->tree_id . "',
-            source_gedcomnr='" . $this->text_process($this->source["source_gedcomnr"][$i]) . "',
-            source_status='" . $this->source["source_status"][$i] . "',
-            source_title='" . $this->text_process($this->source["source_title"][$i]) . "',
-            source_abbr='" . $this->text_process($this->source["source_abbr"][$i]) . "',
-            source_date='" . $this->process_date($this->text_process($this->source["source_date"][$i])) . "',
-            source_publ='" . $this->text_process($this->source["source_publ"][$i]) . "',
-            source_place='" . $this->text_process($this->source["source_place"][$i]) . "',
-            source_refn='" . $this->text_process($this->source["source_refn"][$i]) . "',
-            source_auth='" . $this->text_process($this->source["source_auth"][$i]) . "',
-            source_subj='" . $this->text_process($this->source["source_subj"][$i]) . "',
-            source_item='" . $this->text_process($this->source["source_item"][$i]) . "',
-            source_kind='" . $this->text_process($this->source["source_kind"][$i]) . "',
-            source_text='" . $this->text_process($this->source["source_text"][$i]) . "',
-            source_repo_name='" . $this->text_process($this->source["source_repo_name"][$i]) . "',
-            source_repo_caln='" . $this->text_process($this->source["source_repo_caln"][$i]) . "',
-            source_repo_page='" . $this->text_process($this->source["source_repo_page"][$i]) . "',
-            source_repo_gedcomnr='" . $this->text_process($this->source["source_repo_gedcomnr"][$i]) . "',
+                    source_tree_id='" . $this->tree_id . "',
+                    source_gedcomnr='" . $this->text_process($this->source["source_gedcomnr"][$i]) . "',
+                    source_status='" . $this->source["source_status"][$i] . "',
+                    source_title='" . $this->text_process($this->source["source_title"][$i]) . "',
+                    source_abbr='" . $this->text_process($this->source["source_abbr"][$i]) . "',
+                    source_date='" . $this->process_date($this->text_process($this->source["source_date"][$i])) . "',
+                    source_publ='" . $this->text_process($this->source["source_publ"][$i]) . "',
+                    source_place='" . $this->text_process($this->source["source_place"][$i]) . "',
+                    source_refn='" . $this->text_process($this->source["source_refn"][$i]) . "',
+                    source_auth='" . $this->text_process($this->source["source_auth"][$i]) . "',
+                    source_subj='" . $this->text_process($this->source["source_subj"][$i]) . "',
+                    source_item='" . $this->text_process($this->source["source_item"][$i]) . "',
+                    source_kind='" . $this->text_process($this->source["source_kind"][$i]) . "',
+                    source_text='" . $this->text_process($this->source["source_text"][$i]) . "',
+                    source_repo_name='" . $this->text_process($this->source["source_repo_name"][$i]) . "',
+                    source_repo_caln='" . $this->text_process($this->source["source_repo_caln"][$i]) . "',
+                    source_repo_page='" . $this->text_process($this->source["source_repo_page"][$i]) . "',
+                    source_repo_gedcomnr='" . $this->text_process($this->source["source_repo_gedcomnr"][$i]) . "',
+                    source_new_user_id='" . $this->source["new_user_id"] . "',
+                    source_changed_user_id='" . $this->source["changed_user_id"] . "',
+                    source_new_datetime = '" . date('Y-m-d H:i:s', strtotime($this->source['new_date'][$i] . ' ' . $this->source['new_time'][$i]))  . "'
+                    " . $this->changed_datetime('source_changed_datetime', $this->source['changed_date'][$i], $this->source['changed_time'][$i]);
 
-            source_new_user_id='" . $this->source["new_user_id"] . "',
-            source_changed_user_id='" . $this->source["changed_user_id"] . "',
-
-            source_new_datetime = '" . date('Y-m-d H:i:s', strtotime($this->source['new_date'][$i] . ' ' . $this->source['new_time'][$i]))  . "'
-            " . $this->changed_datetime('source_changed_datetime', $this->source['changed_date'][$i], $this->source['changed_time'][$i]);
-
-                //echo $sql.' FAM<br>';
                 $this->dbh->query($sql);
             }
             //$source_id=$this->dbh->lastInsertId();
@@ -4333,6 +4124,7 @@ class GedcomCls
                 //echo $gebeurtsql.'<br>';
                 $this->dbh->query($gebeurtsql);
             }
+            unset($this->address_array);
         }
         // Unprocessed items???
 
@@ -4395,7 +4187,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->event);
             //$event=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -4441,112 +4233,107 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
     }
 
-    // ************************************************************************************************
-    // *** Import GEDCOM texts ***
-    // ************************************************************************************************
+    /**
+     * Import GEDCOM texts
+     */
     function process_text($text_array): void
     {
         global $gen_program, $add_tree, $reassign;
 
-        $line = $text_array;
-        $line2 = explode("\n", $line);
-        $buffer = $line2[0];
+        //$line = $text_array;
+        $line2 = explode("\n", $text_array);
+        $this->buffer[0] = $line2[0];
         $text['text_text'] = '';
-        $text["text_unprocessed_tags"] = "";
+        $text["text_unprocessed_tags"] = '';
         $text["new_date"] = '1970-01-01';
         $text["new_time"] = '00:00:01';
-        $text["new_user_id"] = "";
+        $text["new_user_id"] = '';
 
         $text["changed_date"] = '';
         $text["changed_time"] = '';
-        $text["changed_user_id"] = "";
+        $text["changed_user_id"] = '';
 
         // *** For source connect table ***
         $this->connect_nr = 0;
 
-
         // 0 @N954@ NOTE
         // *** Save as N954 ***
         // *** Strpos: we can search for the character, ignoring anything before the offset ***
-        $second_char = strpos($buffer, '@', 3);
-        //$text['text_gedcomnr']=substr($buffer, 2, $second_char-1);
-        $text['text_gedcomnr'] = substr($buffer, 3, $second_char - 3);
+        $second_char = strpos($this->buffer[0], '@', 3);
+        //$text['text_gedcomnr']=substr($this->buffer[0], 2, $second_char-1);
+        $text['text_gedcomnr'] = substr($this->buffer[0], 3, $second_char - 3);
 
         if ($add_tree == true || $reassign == true) {
             $text['text_gedcomnr'] = $this->reassign_ged($text['text_gedcomnr'], 'N');
         }
 
         // *** Check for text after "NOTE":
-        if (strlen($buffer) > $second_char + 7) {
-            $text['text_text'] = substr($buffer, $second_char + 7);
+        if (strlen($this->buffer[0]) > $second_char + 7) {
+            $text['text_text'] = substr($this->buffer[0], $second_char + 7);
         }
 
         if (isset($_POST['show_gedcomnumbers'])) {
-            print str_replace("@", "", $text['text_gedcomnr']) . " ";
+            echo str_replace("@", "", $text['text_gedcomnr']) . " ";
         }
 
         // *** Save level0 ***
-        $this->level[0] = substr($buffer, 2);
-        $this->level[1] = "";
-        $this->level[2] = "";
-        $this->level[3] = "";
-        $this->level[4] = "";
+        $this->level[0] = substr($this->buffer[0], 2);
+        $this->level[1] = '';
+        $this->level[2] = '';
+        $this->level[3] = '';
+        $this->level[4] = '';
 
         $loop = count($line2) - 2;
         for ($z = 1; $z <= $loop; $z++) {
             $this->processed = false;
-            $buffer = $line2[$z];
-            $buffer = rtrim($buffer, "\n\r");  // strip newline
+            $this->buffer[0] = $line2[$z];
+            $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
-                $buffer = ltrim($buffer, " ");
+                $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $buffer1 = substr($buffer, 0, 1);
-            $buffer5 = substr($buffer, 0, 5);
-            $buffer6 = substr($buffer, 0, 6);
-            $buffer7 = substr($buffer, 0, 7);
-            $buffer8 = substr($buffer, 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
-            if ($buffer1 === '1') {
-                $this->level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
-                $event_status = '';
-                $event_start = '1';
-                $this->level[2] = "";
-                $this->level[3] = "";
-                $this->level[4] = "";
+            if ($this->buffer[1] === '1') {
+                $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
+                //$this->event_status = false;
+                //$event_start = '1';
+                $this->level[2] = '';
+                $this->level[3] = '';
+                $this->level[4] = '';
             }
             // *** Save level2 ***
-            elseif ($buffer1 === '2') {
-                $this->level[2] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '2') {
+                $this->level[2] = substr($this->buffer[0], 2, 4);
                 $this->level[3] = '';
                 $this->level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 === '3') {
-                $this->level[3] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '3') {
+                $this->level[3] = substr($this->buffer[0], 2, 4);
                 $this->level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 === '4') {
-                $this->level[4] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '4') {
+                $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
-            if ($this->level[1] == 'CONC' && substr($buffer, 2, 4) === 'CONC') {
+            if ($this->level[1] == 'CONC' && substr($this->buffer[0], 2, 4) === 'CONC') {
                 $this->processed = true;
-                $text['text_text'] .= substr($buffer, 7);
+                $text['text_text'] .= substr($this->buffer[0], 7);
             }
-            if ($this->level[1] == 'CONT' && substr($buffer, 2, 4) === 'CONT') {
+            if ($this->level[1] == 'CONT' && substr($this->buffer[0], 2, 4) === 'CONT') {
                 $this->processed = true;
-                $text['text_text'] .= "\n" . substr($buffer, 7);
+                $text['text_text'] .= "\n" . substr($this->buffer[0], 7);
             }
 
             // *** Reunion program: source by text ***
@@ -4555,17 +4342,17 @@ class GedcomCls
             2 SOUR @S16@
             2 SOUR @S16@
             2 SOUR @S20@
-        */
+            */
             if ($this->level[2] === 'SOUR') {
-                //echo $buffer.'<br>';
-                $this->process_sources('ref_text', 'ref_text_source', $text['text_gedcomnr'], $buffer, '2');
+                //echo $this->buffer[0].'<br>';
+                $this->process_sources('ref_text', 'ref_text_source', $text['text_gedcomnr'], '2');
             }
 
             // *** New date/ time ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $text["new_date"] = $created_changed["date"];
@@ -4582,7 +4369,7 @@ class GedcomCls
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == 'CHAN') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $text["changed_date"] = $created_changed["date"];
@@ -4595,17 +4382,17 @@ class GedcomCls
                 }
             }
 
-            //*******************************************************************************************
-            // *** Save non-processed items ***
-            // ******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             // *** Skip these lines ***
-            if ($buffer === '0 TRLR') {
+            if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
             }
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
-                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $buffer;
-                    //$this->non_processed_items($buffer);
+                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
+                    //$this->non_processed_items($this->buffer[0]);
                 }
 
                 if ($text["text_unprocessed_tags"]) {
@@ -4623,9 +4410,9 @@ class GedcomCls
                 if ($this->level[4]) {
                     $text["text_unprocessed_tags"] .= '|3 ' . $this->level[3];
                 }
-                $text["text_unprocessed_tags"] .= '|' . $buffer;
+                $text["text_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         // *** Aldfaer e-mail addressses have a double @. ***
         $text['text_text'] = str_replace('@@', '@', $text['text_text']);
@@ -4635,10 +4422,8 @@ class GedcomCls
         text_tree_id='" . $this->tree_id . "',
         text_gedcomnr='" . $this->text_process($text['text_gedcomnr']) . "',
         text_text='" . $this->text_process($text['text_text']) . "',
-
         text_new_user_id='" . $text["new_user_id"] . "',
         text_changed_user_id='" . $text["changed_user_id"] . "',
-
         text_new_datetime = '" . date('Y-m-d H:i:s', strtotime($text['new_date'] . ' ' . $text['new_time']))  . "'
         " . $this->changed_datetime('text_changed_datetime', $text['changed_date'], $text['changed_time']);
 
@@ -4679,7 +4464,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -4696,9 +4481,9 @@ class GedcomCls
         }
     }
 
-    // ************************************************************************************************
-    // *** Process sources ***
-    // ************************************************************************************************
+    /**
+     * Process sources
+     */
     function process_source($source_array): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -4706,99 +4491,96 @@ class GedcomCls
         $this->connect_nr = 0;
         $this->event_nr = 0;
 
-        $line = $source_array;
-        $line2 = explode("\n", $line);
-        $buffer = $line2[0];
+        //$line = $source_array;
+        $line2 = explode("\n", $source_array);
+        $this->buffer[0] = $line2[0];
 
         unset($source);  //Reset array
-        $source["source_status"] = "";
-        $source["source_title"] = "";
-        $source["source_abbr"] = "";
-        $source["source_date"] = "";
-        $source["source_publ"] = "";
-        $source["source_place"] = "";
-        $source["source_refn"] = "";
-        $source["source_auth"] = "";
-        $source["source_subj"] = "";
-        $source["source_item"] = "";
-        $source["source_kind"] = "";
-        $source["source_text"] = "";
-        $source["source_repo_name"] = "";
-        $source["source_repo_caln"] = "";
-        $source["source_repo_page"] = "";
-        $source["source_repo_gedcomnr"] = "";
-        $source["source_unprocessed_tags"] = "";
-        $source["new_date"] = '1970-01-01';
-        $source["new_time"] = '00:00:01';
-        $source["new_user_id"] = "";
-        $source["changed_date"] = '';
-        $source["changed_time"] = '';
-        $source["changed_user_id"] = "";
-        //$source["source_shared"]="1";
+        $source = [
+            "source_status" => "",
+            "source_title" => "",
+            "source_abbr" => "",
+            "source_date" => "",
+            "source_publ" => "",
+            "source_place" => "",
+            "source_refn" => "",
+            "source_auth" => "",
+            "source_subj" => "",
+            "source_item" => "",
+            "source_kind" => "",
+            "source_text" => "",
+            "source_repo_name" => "",
+            "source_repo_caln" => "",
+            "source_repo_page" => "",
+            "source_repo_gedcomnr" => "",
+            "source_unprocessed_tags" => "",
+            "new_date" => '1970-01-01',
+            "new_time" => '00:00:01',
+            "new_user_id" => "",
+            "changed_date" => '',
+            "changed_time" => '',
+            "changed_user_id" => ""
+        ];
 
         //0 @S1@ SOUR
-        $source["id"] = substr($buffer, 3, -6);
+        $source["id"] = substr($this->buffer[0], 3, -6);
         if ($add_tree == true || $reassign == true) {
             $source["id"] = $this->reassign_ged($source["id"], 'S');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
-            print $source["id"] . " ";
+            echo $source["id"] . " ";
         }
 
         // *** Save level0 ***
-        $this->level[0] = substr($buffer, 2);
-        $this->level[1] = "";
-        $this->level[2] = "";
-        $this->level[3] = "";
-        $this->level[4] = "";
+        $this->level[0] = substr($this->buffer[0], 2);
+        $this->level[1] = '';
+        $this->level[2] = '';
+        $this->level[3] = '';
+        $this->level[4] = '';
 
         $loop = count($line2) - 2;
         for ($z = 1; $z <= $loop; $z++) {
             $this->processed = false;
-            $buffer = $line2[$z];
-            $buffer = rtrim($buffer, "\n\r");  // strip newline
-            //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
+            $this->buffer[0] = $line2[$z];
+            $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
+            //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
-                $buffer = ltrim($buffer, " ");
+                $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $buffer1 = substr($buffer, 0, 1);
-            $buffer5 = substr($buffer, 0, 5);
-            $buffer6 = substr($buffer, 0, 6);
-            $buffer7 = substr($buffer, 0, 7);
-            $buffer8 = substr($buffer, 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
-            if ($buffer1 === '1') {
-                //$this->level[1]=rtrim(substr($buffer,2,4));  //rtrim for CHR_
-                $this->level[1] = rtrim(substr($buffer, 2, 5));  //rtrim voor CHR_
-                $event_status = '';
-                $event_start = '1';
-                $this->level[2] = "";
-                $this->level[3] = "";
-                $this->level[4] = "";
+            if ($this->buffer[1] === '1') {
+                //$this->level[1]=rtrim(substr($this->buffer[0],2,4));  //rtrim for CHR_
+                $this->level[1] = rtrim(substr($this->buffer[0], 2, 5));  //rtrim voor CHR_
+                //$this->event_status = false;
+                //$event_start = '1';
+                $this->level[2] = '';
+                $this->level[3] = '';
+                $this->level[4] = '';
             }
             // *** Save level2 ***
-            elseif ($buffer1 === '2') {
-                $this->level[2] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '2') {
+                $this->level[2] = substr($this->buffer[0], 2, 4);
                 $this->level[3] = '';
                 $this->level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 === '3') {
-                $this->level[3] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '3') {
+                $this->level[3] = substr($this->buffer[0], 2, 4);
                 $this->level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 === '4') {
-                $this->level[4] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '4') {
+                $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
-            // ****************************************************************************************
-            // *** Sources 0 @S1@ SOUR ***
-            // ****************************************************************************************
+            /**
+             * Sources 0 @S1@ SOUR
+             */
 
             // *** Source BK ***
             //0 @S3@ SOUR
@@ -4827,129 +4609,129 @@ class GedcomCls
             //1 WWW website
 
             // *** Restricted source ***
-            if (substr($buffer, 2, 12) === 'RESN privacy') {
+            if (substr($this->buffer[0], 2, 12) === 'RESN privacy') {
                 $this->processed = true;
                 $source["source_status"] = 'restricted';
             }
 
-            if (substr($buffer, 2, 4) === 'DATE') {
-                // *** New date/ time ***
-                //1 _NEW
-                //2 DATE 04 AUG 2004
-                if ($this->level[1] === '_NEW') {
-                    // processed later in file
-                }
+            // Used by GEDCOM 7 files.
+            if ($this->buffer[6] == '1 DATA') {
+                $this->processed = true;
+            }
+            if ($this->buffer[6] == '2 EVEN') {
+                $this->processed = true;
+            }
 
-                // *** Changed date/ time ***
-                //1 CHAN
-                //2 DATE 04 AUG 2004
-                elseif ($this->level[1] === 'CHAN') {
-                    // processed later in file
-                } else {
-                    $this->processed = true;
-                    $source["source_date"] = substr($buffer, 7);
-                }
+            //if ($this->buffer[6] == '1 DATE') {
+            if (substr($this->buffer[0], 2, 4) === 'DATE') {
+                $this->processed = true;
+                $source["source_date"] = substr($this->buffer[0], 7);
             }
 
             if ($this->level[1] === 'TITL') {
-                if (substr($buffer, 2, 4) === 'TITL') {
+                if (substr($this->buffer[0], 2, 4) === 'TITL') {
                     $this->processed = true;
-                    $source["source_title"] = substr($buffer, 7);
+                    $source["source_title"] = substr($this->buffer[0], 7);
                 }
-                if (substr($buffer, 2, 4) === 'CONT') {
+                if (substr($this->buffer[0], 2, 4) === 'CONT') {
                     $this->processed = true;
-                    $source["source_title"] .= $this->cont(substr($buffer, 7));
+                    $source["source_title"] .= $this->cont(substr($this->buffer[0], 7));
                 }
-                if (substr($buffer, 2, 4) === 'CONC') {
+                if (substr($this->buffer[0], 2, 4) === 'CONC') {
                     $this->processed = true;
-                    $source["source_title"] .= $this->conc(substr($buffer, 7));
+                    $source["source_title"] .= $this->conc(substr($this->buffer[0], 7));
                 }
             }
 
-            if (substr($buffer, 2, 4) === 'PLAC') {
+            if (substr($this->buffer[0], 2, 4) === 'PLAC') {
                 $this->processed = true;
-                $source["source_place"] = substr($buffer, 7);
+                $source["source_place"] = substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) === 'REFN') {
+            if (substr($this->buffer[0], 2, 4) === 'REFN') {
                 $this->processed = true;
-                $source["source_refn"] = substr($buffer, 7);
+                $source["source_refn"] = substr($this->buffer[0], 7);
             }
 
-            if (substr($buffer, 2, 4) === 'PUBL') {
+            if (substr($this->buffer[0], 2, 4) === 'PUBL') {
                 $this->processed = true;
-                $source["source_publ"] = substr($buffer, 7);
+                $source["source_publ"] = substr($this->buffer[0], 7);
             }  // BK
             if ($this->level[1] === 'PUBL') {
                 if ($this->level[2] === 'CONT') {
                     $this->processed = true;
-                    $source["source_publ"] .= $this->cont(substr($buffer, 7));
+                    $source["source_publ"] .= $this->cont(substr($this->buffer[0], 7));
                 }
                 if ($this->level[2] === 'CONC') {
                     $this->processed = true;
-                    $source["source_publ"] .= $this->conc(substr($buffer, 7));
+                    $source["source_publ"] .= $this->conc(substr($this->buffer[0], 7));
                 }
             }
 
             if ($this->level[1] === 'TEXT') {
-                if (substr($buffer, 2, 4) === 'TEXT') {
+                if (substr($this->buffer[0], 2, 4) === 'TEXT') {
                     $this->processed = true;
-                    $source["source_text"] = $this->merge_texts($source["source_text"], ', ', substr($buffer, 7));
+                    $source["source_text"] = $this->merge_texts($source["source_text"], ', ', substr($this->buffer[0], 7));
                 }
-                if (substr($buffer, 2, 4) === 'CONC') {
+                if (substr($this->buffer[0], 2, 4) === 'CONC') {
                     $this->processed = true;
-                    $source["source_text"] .= $this->conc(substr($buffer, 7));
+                    $source["source_text"] .= $this->conc(substr($this->buffer[0], 7));
                 }
-                if (substr($buffer, 2, 4) === 'CONT') {
+                if (substr($this->buffer[0], 2, 4) === 'CONT') {
                     $this->processed = true;
-                    $source["source_text"] .= $this->cont(substr($buffer, 7));
+                    $source["source_text"] .= $this->cont(substr($this->buffer[0], 7));
                 }
             }
 
             if ($this->level[1] === 'NOTE') {
-                $source["source_text"] = $this->process_texts($source["source_text"], $buffer, '1');
+                $source["source_text"] = $this->process_texts($source["source_text"], '1');
             }
 
-            if (substr($buffer, 2, 4) === 'SUBJ') {
+            if (substr($this->buffer[0], 2, 4) === 'SUBJ') {
                 $this->processed = true;
-                $source["source_subj"] = substr($buffer, 7);
+                $source["source_subj"] = substr($this->buffer[0], 7);
             }
             if ($this->level[1] === 'AUTH') {
-                if (substr($buffer, 2, 4) === 'AUTH') {
+                if (substr($this->buffer[0], 2, 4) === 'AUTH') {
                     $this->processed = true;
-                    $source["source_auth"] = substr($buffer, 7);
+                    $source["source_auth"] = substr($this->buffer[0], 7);
                 } // BK
-                if (substr($buffer, 2, 4) === 'CONC') {
+                if (substr($this->buffer[0], 2, 4) === 'CONC') {
                     $this->processed = true;
-                    $source["source_auth"] .= $this->conc(substr($buffer, 7));
+                    $source["source_auth"] .= $this->conc(substr($this->buffer[0], 7));
                 }
-                if (substr($buffer, 2, 4) === 'CONT') {
+                if (substr($this->buffer[0], 2, 4) === 'CONT') {
                     $this->processed = true;
-                    $source["source_auth"] .= $this->cont(substr($buffer, 7));
+                    $source["source_auth"] .= $this->cont(substr($this->buffer[0], 7));
                 }
             }
-            if (substr($buffer, 2, 4) === 'ITEM') {
+            if (substr($this->buffer[0], 2, 4) === 'ITEM') {
                 $this->processed = true;
-                $source["source_item"] = substr($buffer, 7);
+                $source["source_item"] = substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) === 'KIND') {
+            if (substr($this->buffer[0], 2, 4) === 'KIND') {
                 $this->processed = true;
-                $source["source_kind"] = substr($buffer, 7);
+                $source["source_kind"] = substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) === 'ABBR') {
+            if (substr($this->buffer[0], 2, 4) === 'ABBR') {
                 $this->processed = true;
-                $source["source_abbr"] = substr($buffer, 7);
+                $source["source_abbr"] = substr($this->buffer[0], 7);
             } // BK
 
             // *** Haza-data pictures ***
             //1 PHOTO @#Aplaatjes\beert&id.jpg jpg@
             if ($this->level[1] === 'PHOTO') {
-                if ($buffer7 === '1 PHOTO') {
+                if ($this->buffer[7] === '1 PHOTO') {
                     $this->processed = true;
-                    $photo = substr($buffer, 11, -6);
+                    $photo = substr($this->buffer[0], 11, -6);
                     $photo = $this->humo_basename($photo);
 
                     $this->event_nr++;
+                    $this->event_nr1 = $this->event_nr;
                     $this->calculated_event_id++;
+
+                    // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                    $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+                    $this->event['level'][$this->event_nr] = '1';
                     $this->event['connect_kind'][$this->event_nr] = 'source';
                     $this->event['connect_id'][$this->event_nr] = $source["id"];
                     $this->event['kind'][$this->event_nr] = 'picture';
@@ -4960,45 +4742,45 @@ class GedcomCls
                     $this->event['text'][$this->event_nr] = '';
                     $this->event['place'][$this->event_nr] = '';
                 }
-                if ($buffer6 === '2 DSCR' || $buffer6 === '2 NAME') {
+                if ($this->buffer[6] === '2 DSCR' || $this->buffer[6] === '2 NAME') {
                     $this->processed = true;
-                    $this->event['text'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['text'][$this->event_nr] = substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                    $this->event['date'][$this->event_nr] = substr($this->buffer[0], 7);
                 }
             }
 
             // *** 1 OBJE ***
             if ($this->level[1] === 'OBJE') {
-                $this->process_picture('source', $source["id"], 'picture', $buffer);
+                $this->process_picture('source', $source["id"], 'picture');
             }
 
             // x REPO name
             // x REPO @R1@
-            if (substr($buffer, 2, 4) === 'REPO') {
+            if (substr($this->buffer[0], 2, 4) === 'REPO') {
                 $this->processed = true;
-                if (substr($buffer, 2, 6) === 'REPO @') {
-                    $source["source_repo_gedcomnr"] = substr($buffer, 8, -1);
+                if (substr($this->buffer[0], 2, 6) === 'REPO @') {
+                    $source["source_repo_gedcomnr"] = substr($this->buffer[0], 8, -1);
                     if ($add_tree == true || $reassign == true) {
                         $source["source_repo_gedcomnr"] = $this->reassign_ged($source["source_repo_gedcomnr"], 'RP');
                     }
                 } else {
-                    $source["source_repo_name"] = substr($buffer, 7);
+                    $source["source_repo_name"] = substr($this->buffer[0], 7);
                 }
             }
 
-            if (substr($buffer, 2, 4) === 'CALN') {
+            if (substr($this->buffer[0], 2, 4) === 'CALN') {
                 $this->processed = true;
-                $source["source_repo_caln"] = substr($buffer, 7);
+                $source["source_repo_caln"] = substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) === 'PAGE') {
+            if (substr($this->buffer[0], 2, 4) === 'PAGE') {
                 $this->processed = true;
-                $source["source_repo_page"] = substr($buffer, 7);
+                $source["source_repo_page"] = substr($this->buffer[0], 7);
             }
 
-            ////*** Picture text ********************************
+            ////*** Picture text ***
             //if level1='PHOT' then begin //Foto omschrijving
             //  if copy(buf,1,6)='2 DSCR' then afbeeldtekst[nrafbeelding]:=copy(buf,8,length(buf));
             //  if copy(buf,1,6)='2 NAME' then afbeeldtekst[nrafbeelding]:=copy(buf,8,length(buf)); //VOOR ANDERE GEDCOM VERSIES!
@@ -5011,7 +4793,7 @@ class GedcomCls
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $source["new_date"] = $created_changed["date"];
@@ -5028,7 +4810,7 @@ class GedcomCls
             // 1 CHAN
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == 'CHAN') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $source["changed_date"] = $created_changed["date"];
@@ -5042,18 +4824,18 @@ class GedcomCls
             }
 
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
-            if ($buffer === '0 TRLR') {
+            if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
             }
-            //if ($buffer=='1 REPO'){ $this->processed = true; }
+            //if ($this->buffer[0]=='1 REPO'){ $this->processed = true; }
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
-                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $buffer;
-                    //$this->non_processed_items($buffer);
+                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
+                    //$this->non_processed_items($this->buffer[0]);
                 }
 
                 if ($source["source_unprocessed_tags"]) {
@@ -5071,9 +4853,9 @@ class GedcomCls
                 if ($this->level[4]) {
                     $source["source_unprocessed_tags"] .= '|3 ' . $this->level[3];
                 }
-                $source["source_unprocessed_tags"] .= '|' . $buffer;
+                $source["source_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         // Don't use this anymore. Because HuMo-genealogy sources will be changed when using EXPORT and IMPORT of GEDCOM ***
         // *** Generate title if there is no title in GEDCOM file (BK etc.). ***
@@ -5131,7 +4913,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->event);
             //$event=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5176,7 +4958,7 @@ class GedcomCls
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5203,10 +4985,8 @@ class GedcomCls
             source_repo_caln='" . $this->text_process($source["source_repo_caln"]) . "',
             source_repo_page='" . $this->text_process($source["source_repo_page"]) . "',
             source_repo_gedcomnr='" . $this->text_process($source["source_repo_gedcomnr"]) . "',
-
             source_new_user_id='" . $source["new_user_id"] . "',
             source_changed_user_id='" . $source["changed_user_id"] . "',
-
             source_new_datetime = '" . date('Y-m-d H:i:s', strtotime($source['new_date'] . ' ' . $source['new_time']))  . "'
             " . $this->changed_datetime('source_changed_datetime', $source['changed_date'], $source['changed_time']);
 
@@ -5224,36 +5004,39 @@ class GedcomCls
         }
     }
 
-    // ************************************************************************************************
-    // *** Process repository ***
-    // ************************************************************************************************
+    /**
+     * Process repository
+     */
     function process_repository($repo_array): void
     {
         global $gen_program, $add_tree, $reassign;
 
-        $line = $repo_array;
-        $line2 = explode("\n", $line);
-        $buffer = $line2[0];
+        //$line = $repo_array;
+        $line2 = explode("\n", $repo_array);
+        $this->buffer[0] = $line2[0];
 
         unset($repo);  //Reset array
-        // TODO: change array variable names $repo["repo_gedcomnr"] -> $repo["gedcomnr"]
-        $repo["repo_gedcomnr"] = "";
-        $repo["repo_name"] = "";
-        $repo["repo_address"] = "";
-        $repo["repo_zip"] = "";
-        $repo["repo_place"] = "";
-        $repo["repo_phone"] = "";
-        $repo["repo_date"] = "";
-        $repo["repo_text"] = "";
-        $repo["repo_mail"] = "";
-        $repo["repo_url"] = "";
-        $repo["repo_unprocessed_tags"] = "";
-        $repo["repo_new_date"] = "1970-01-01";
-        $repo["repo_new_time"] = "00:00:01";
-        $repo["repo_new_user_id"] = "";
-        $repo["repo_changed_date"] = "";
-        $repo["repo_changed_time"] = "";
-        $repo["repo_changed_user_id"] = "";
+        // TODO: change array variable names repo_gedcomnr -> gedcomnr
+        $repo = array(
+            "repo_gedcomnr" => "",
+            "repo_name" => "",
+            "repo_address" => "",
+            "repo_zip" => "",
+            "repo_place" => "",
+            "repo_phone" => "",
+            "repo_date" => "",
+            "repo_text" => "",
+            "repo_mail" => "",
+            "repo_url" => "",
+            "repo_unprocessed_tags" => "",
+            "repo_new_date" => '1970-01-01',
+            "repo_new_time" => '00:00:01',
+            "repo_new_user_id" => "",
+            "repo_changed_date" => '',
+            "repo_changed_time" => '',
+            "repo_changed_user_id" => ""
+        );
+
         /*
         Example of repository record in GEDCOM file:
         0 @R2@ REPO
@@ -5279,120 +5062,122 @@ class GedcomCls
         */
 
         //0 @R1@ REPO
-        $repo["repo_gedcomnr"] = substr($buffer, 3, -6);
+        $repo["repo_gedcomnr"] = substr($this->buffer[0], 3, -6);
         if ($add_tree == true || $reassign == true) {
             $repo["repo_gedcomnr"] = $this->reassign_ged($repo["repo_gedcomnr"], 'RP');
         }
-        //if (isset($_POST['show_gedcomnumbers'])){ print substr($repo["repo_gedcomnr"],0,-1)." "; }
+        //if (isset($_POST['show_gedcomnumbers'])){
+        //  echo substr($repo["repo_gedcomnr"],0,-1)." ";
+        //}
         if (isset($_POST['show_gedcomnumbers'])) {
-            print $repo["repo_gedcomnr"] . " ";
+            echo $repo["repo_gedcomnr"] . " ";
         }
 
         // *** Save level0 ***
-        $this->level[0] = substr($buffer, 2);
-        $this->level[1] = "";
-        $this->level[2] = "";
-        $this->level[3] = "";
-        $this->level[4] = "";
+        $this->level[0] = substr($this->buffer[0], 2);
+        $this->level[1] = '';
+        $this->level[2] = '';
+        $this->level[3] = '';
+        $this->level[4] = '';
 
         $loop = count($line2) - 2;
         for ($z = 1; $z <= $loop; $z++) {
             $this->processed = false;
-            $buffer = $line2[$z];
-            $buffer = rtrim($buffer, "\n\r");  // strip newline
-            //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
+            $this->buffer[0] = $line2[$z];
+            $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
+            //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
-                $buffer = ltrim($buffer, " ");
+                $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $buffer1 = substr($buffer, 0, 1);
-            $buffer5 = substr($buffer, 0, 5);
-            $buffer6 = substr($buffer, 0, 6);
-            $buffer7 = substr($buffer, 0, 7);
-            $buffer8 = substr($buffer, 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
-            if ($buffer1 === '1') {
-                $this->level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
-                $event_status = '';
-                $event_start = '1';
-                $this->level[2] = "";
-                $this->level[3] = "";
-                $this->level[4] = "";
+            if ($this->buffer[1] === '1') {
+                $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
+                //$this->event_status = false;
+                //$event_start = '1';
+                $this->level[2] = '';
+                $this->level[3] = '';
+                $this->level[4] = '';
             }
             // *** Save level2 ***
-            elseif ($buffer1 === '2') {
-                $this->level[2] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '2') {
+                $this->level[2] = substr($this->buffer[0], 2, 4);
                 $this->level[3] = '';
                 $this->level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 === '3') {
-                $this->level[3] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '3') {
+                $this->level[3] = substr($this->buffer[0], 2, 4);
                 $this->level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 === '4') {
-                $this->level[4] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '4') {
+                $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
-            if (substr($buffer, 2, 4) === 'NAME') {
+            if ($this->level[1] === 'DATE') {
                 $this->processed = true;
-                $repo["repo_name"] = substr($buffer, 7);
+                $repo["repo_date"] = substr($this->buffer[0], 7);
+            }
+
+            if (substr($this->buffer[0], 2, 4) === 'NAME') {
+                $this->processed = true;
+                $repo["repo_name"] = substr($this->buffer[0], 7);
             }
 
             if ($this->level[1] === 'ADDR') {
-                if (substr($buffer, 2, 4) === 'ADDR') {
+                if (substr($this->buffer[0], 2, 4) === 'ADDR') {
                     $this->processed = true;
-                    $repo["repo_address"] = substr($buffer, 7);
+                    $repo["repo_address"] = substr($this->buffer[0], 7);
                 }
-                if (substr($buffer, 2, 4) === 'CONC') {
+                if (substr($this->buffer[0], 2, 4) === 'CONC') {
                     $this->processed = true;
-                    $repo["repo_address"] .= $this->conc(substr($buffer, 7));
+                    $repo["repo_address"] .= $this->conc(substr($this->buffer[0], 7));
                 }
-                if (substr($buffer, 2, 4) === 'CONT') {
+                if (substr($this->buffer[0], 2, 4) === 'CONT') {
                     $this->processed = true;
-                    $repo["repo_address"] .= $this->cont(substr($buffer, 7));
+                    $repo["repo_address"] .= $this->cont(substr($this->buffer[0], 7));
                 }
             }
 
-            if (substr($buffer, 2, 4) === 'POST') {
+            if (substr($this->buffer[0], 2, 4) === 'POST') {
                 $this->processed = true;
-                $repo["repo_zip"] = substr($buffer, 7);
+                $repo["repo_zip"] = substr($this->buffer[0], 7);
             }
 
-            if (substr($buffer, 2, 4) === 'CITY') {
+            if (substr($this->buffer[0], 2, 4) === 'PLAC') {
                 $this->processed = true;
-                $repo["repo_place"] = substr($buffer, 7);
+                $repo["repo_place"] = substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) == 'STAE') {
+            if (substr($this->buffer[0], 2, 4) === 'CITY') {
+                $this->processed = true;
+                $repo["repo_place"] = substr($this->buffer[0], 7);
+            }
+            if (substr($this->buffer[0], 2, 4) == 'STAE') {
                 if ($repo["repo_place"]) {
                     $repo["repo_place"] .= ', ';
                 }
                 $this->processed = true;
-                $repo["repo_place"] .= substr($buffer, 7);
+                $repo["repo_place"] .= substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) == 'CTRY') {
+            if (substr($this->buffer[0], 2, 4) == 'CTRY') {
                 if ($repo["repo_place"]) {
                     $repo["repo_place"] .= ', ';
                 }
                 $this->processed = true;
-                $repo["repo_place"] .= substr($buffer, 7);
+                $repo["repo_place"] .= substr($this->buffer[0], 7);
             }
 
             // 1 PHON +1-801-240-2331 (information)
             // 1 PHON +1-801-240-1278 (gifts & donations)
             // 1 PHON +1-801-240-2584 (support)
-            if (substr($buffer, 2, 4) === 'PHON') {
+            if (substr($this->buffer[0], 2, 4) === 'PHON') {
                 $this->processed = true;
-                $repo["repo_phone"] = substr($buffer, 7);
-            }
-
-            if (substr($buffer, 2, 4) === 'DATE') {
-                $this->processed = true;
-                $repo["repo_date"] = substr($buffer, 7);
+                $repo["repo_phone"] = substr($this->buffer[0], 7);
             }
 
             //SOURCE
@@ -5401,10 +5186,10 @@ class GedcomCls
             //3 CONC e death records from July 1, 1907.  They have marriage reco
             //3 CONC rds from January 1, 1968.
             if ($this->level[2] === 'NOTE') {
-                $repo["repo_text"] = $this->process_texts($repo["repo_text"], $buffer, '2');
+                $repo["repo_text"] = $this->process_texts($repo["repo_text"], '2');
             }
             if ($this->level[1] === 'NOTE') {
-                $repo["repo_text"] = $this->process_texts($repo["repo_text"], $buffer, '1');
+                $repo["repo_text"] = $this->process_texts($repo["repo_text"], '1');
             }
 
             // *** Process photo bij repository ***
@@ -5412,40 +5197,32 @@ class GedcomCls
             //
 
             // 1 _EMAIL fhl@ldschurch.org
-            if (substr($buffer, 2, 6) === '_EMAIL') {
+            if (substr($this->buffer[0], 2, 6) === '_EMAIL') {
                 $this->processed = true;
-                $repo["repo_email"] = substr($buffer, 7);
+                $repo["repo_mail"] = substr($this->buffer[0], 8);
+            }
+            // GEDCOM 7
+            if (substr($this->buffer[0], 2, 5) === 'EMAIL') {
+                $this->processed = true;
+                $repo["repo_mail"] = substr($this->buffer[0], 8);
             }
 
             // 1 _URL http://www.familysearch.org
-            if (substr($buffer, 2, 4) === '_URL') {
+            if (substr($this->buffer[0], 2, 4) === '_URL') {
                 $this->processed = true;
-                $repo["repo_email"] = substr($buffer, 7);
+                $repo["repo_url"] = substr($this->buffer[0], 7);
+            }
+            // GEDCOM 7
+            if (substr($this->buffer[0], 2, 3) === 'WWW') {
+                $this->processed = true;
+                $repo["repo_url"] = substr($this->buffer[0], 6);
             }
 
             // *** New date/ time ***
-            //1 _NEW
-            //2 DATE 04 AUG 2004
-            /*
-            if ($this->level[1] === '_NEW') {
-                if ($buffer6 === '1 _NEW') {
-                    $this->processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $this->processed = true;
-                    $repo["repo_new_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $this->processed = true;
-                    $repo["repo_new_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $repo["repo_new_date"] = $created_changed["date"];
@@ -5463,7 +5240,7 @@ class GedcomCls
             // 1 CHAN
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == 'CHAN') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $repo["repo_changed_date"] = $created_changed["date"];
@@ -5476,17 +5253,17 @@ class GedcomCls
                 }
             }
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
-            if ($buffer === '0 TRLR') {
+            if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
             }
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
-                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $buffer;
-                    //$this->non_processed_items($buffer);
+                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
+                    //$this->non_processed_items($this->buffer[0]);
                 }
 
                 if ($repo["repo_unprocessed_tags"]) {
@@ -5504,9 +5281,9 @@ class GedcomCls
                 if ($this->level[4]) {
                     $repo["repo_unprocessed_tags"] .= '|3 ' . $this->level[3];
                 }
-                $repo["repo_unprocessed_tags"] .= '|' . $buffer;
+                $repo["repo_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         if (($add_tree == true or $reassign == true) && $repo["repo_text"]) {
             $repo["repo_text"] = $this->reassign_ged($repo["repo_text"], 'N');
@@ -5525,7 +5302,6 @@ class GedcomCls
             repo_text='" . $this->text_process($repo["repo_text"]) . "',
             repo_mail='" . $this->text_process($repo["repo_mail"]) . "',
             repo_url='" . $this->text_process($repo["repo_url"]) . "',
-
             repo_new_user_id='" . $repo["repo_new_user_id"] . "',
             repo_changed_user_id='" . $repo["repo_changed_user_id"] . "',
             repo_new_datetime = '" . date('Y-m-d H:i:s', strtotime($repo['repo_new_date'] . ' ' . $repo['repo_new_time']))  . "'
@@ -5544,9 +5320,9 @@ class GedcomCls
         }
     }
 
-    // ************************************************************************************************
-    // *** Process (shared) addresses ***
-    // ************************************************************************************************
+    /**
+     * Process (shared) addresses
+     */
     function process_address($line): void
     {
         global $gen_program, $add_tree, $reassign;
@@ -5554,11 +5330,12 @@ class GedcomCls
         $this->connect_nr = 0;
 
         $line2 = explode("\n", $line);
-        $buffer = $line2[0];
+        $this->buffer[0] = $line2[0];
 
-        // *********************************************************************************************
-        // *** Addressses Haza-Plus & HuMo-genealogy shared addresses ***
-        // *********************************************************************************************
+        /**
+         * Addressses Haza-Plus & HuMo-genealogy shared addresses
+         */
+
         //0 @R1@ RESI
         //1 ADDR Lange Houtstraat 100
         //1 ZIP 1234 AB
@@ -5569,130 +5346,114 @@ class GedcomCls
 
         unset($address);  //Reset array
         $address["address_shared"] = "1";
-        $address["address"] = "";
-        $address["address_zip"] = "";
-        $address["address_place"] = "";
-        $address["address_phone"] = "";
-        $address["address_text"] = "";
-        $address["address_gedcomnr"] = substr($buffer, 3, -6);
+        $address["address"] = '';
+        $address["address_zip"] = '';
+        $address["address_place"] = '';
+        $address["address_phone"] = '';
+        $address["address_text"] = '';
+        $address["address_gedcomnr"] = substr($this->buffer[0], 3, -6);
         if ($add_tree == true || $reassign == true) {
             $address["address_gedcomnr"] = $this->reassign_ged($address["address_gedcomnr"], 'R');
         }
-        $address["address_unprocessed_tags"] = "";
+        $address["address_unprocessed_tags"] = '';
         $address["new_date"] = '1970-01-01';
         $address["new_time"] = '00:00:01';
-        $address["new_user_id"] = "";
+        $address["new_user_id"] = '';
         $address["changed_date"] = '';
         $address["changed_time"] = '';
-        $address["changed_user_id"] = "";
+        $address["changed_user_id"] = '';
 
-        //if (isset($_POST['show_gedcomnumbers'])){ print substr($address["id"],0,-1)." "; }
+        //if (isset($_POST['show_gedcomnumbers'])){
+        //  echo substr($address["id"],0,-1)." ";
+        //}
         if (isset($_POST['show_gedcomnumbers'])) {
             echo $address["address_gedcomnr"] . " ";
         }
 
-        $this->level[0] = substr($buffer, 2);
-        $this->level[1] = "";
-        $this->level[2] = "";
-        $this->level[3] = "";
-        $this->level[4] = "";
+        $this->level[0] = substr($this->buffer[0], 2);
+        $this->level[1] = '';
+        $this->level[2] = '';
+        $this->level[3] = '';
+        $this->level[4] = '';
 
         $loop = count($line2) - 2;
         for ($z = 1; $z <= $loop; $z++) {
             $this->processed = false;
-            $buffer = $line2[$z];
-            $buffer = rtrim($buffer, "\n\r");  // strip newline
-            //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
+            $this->buffer[0] = $line2[$z];
+            $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
+            //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
-                $buffer = ltrim($buffer, " ");
+                $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $buffer1 = substr($buffer, 0, 1);
-            $buffer5 = substr($buffer, 0, 5);
-            $buffer6 = substr($buffer, 0, 6);
-            $buffer7 = substr($buffer, 0, 7);
-            $buffer8 = substr($buffer, 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
-            if ($buffer1 === '1') {
-                $this->level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
-                $event_status = '';
-                $event_start = '1';
-                $this->level[2] = "";
-                $this->level[3] = "";
-                $this->level[4] = "";
+            if ($this->buffer[1] === '1') {
+                $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
+                //$this->event_status = false;
+                //$event_start = '1';
+                $this->level[2] = '';
+                $this->level[3] = '';
+                $this->level[4] = '';
             }
             // *** Save level2 ***
-            elseif ($buffer1 === '2') {
-                $this->level[2] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '2') {
+                $this->level[2] = substr($this->buffer[0], 2, 4);
                 $this->level[3] = '';
                 $this->level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 === '3') {
-                $this->level[3] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '3') {
+                $this->level[3] = substr($this->buffer[0], 2, 4);
                 $this->level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 === '4') {
-                $this->level[4] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '4') {
+                $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
-            if (substr($buffer, 2, 4) === 'ADDR') {
+            if (substr($this->buffer[0], 2, 4) === 'ADDR') {
                 $this->processed = true;
-                $address["address"] = substr($buffer, 7);
+                $address["address"] = substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) === 'ZIP ') {
+            if (substr($this->buffer[0], 2, 4) === 'ZIP ') {
                 $this->processed = true;
-                $address["address_zip"] = substr($buffer, 6);
+                $address["address_zip"] = substr($this->buffer[0], 6);
             }  //Voor BK
-            //if (substr($buffer,2,4)=='DATE '){ $this->processed = true; $address["datum"]=substr($buffer,7); }
-            if (substr($buffer, 2, 4) === 'PLAC') {
+            //if (substr($this->buffer[0],2,4)=='DATE '){
+            //  $this->processed = true; $address["datum"]=substr($this->buffer[0],7);
+            //}
+            if (substr($this->buffer[0], 2, 4) === 'PLAC') {
                 $this->processed = true;
-                $address["address_place"] = substr($buffer, 7);
+                $address["address_place"] = substr($this->buffer[0], 7);
             }
-            if (substr($buffer, 2, 4) === 'PHON') {
+            if (substr($this->buffer[0], 2, 4) === 'PHON') {
                 $this->processed = true;
-                $address["address_phone"] = substr($buffer, 7);
+                $address["address_phone"] = substr($this->buffer[0], 7);
             }
 
             // *** Text by address ***
-            $address["address_text"] = $this->process_texts($address["address_text"], $buffer, '1');
+            $address["address_text"] = $this->process_texts($address["address_text"], '1');
 
             // *** Source by shared address ***
             if ($this->level[2] === 'SOUR') {
-                $this->process_sources('address', 'address_source', $address["address_gedcomnr"], $buffer, '2');
+                $this->process_sources('address', 'address_source', $address["address_gedcomnr"], '2');
             }
 
             //1 PHOTO @#APLAATJES\AKTEMONS.GIF GIF@
-            //if ($buffer7=='1 PHOTO'){
-            //	$this->processed = true; $address["address_photo"]=$this->merge_texts($address["address_photo"], ';', substr($buffer,11,-5)); }
+            //if ($this->buffer[7]=='1 PHOTO'){
+            //	$this->processed = true;
+            //  $address["address_photo"]=$this->merge_texts($address["address_photo"], ';', substr($this->buffer[0],11,-5));
+            //}
 
             // *** New date/ time ***
-            //1 _NEW
-            //2 DATE 04 AUG 2004
-            /*
-            if ($this->level[1] === '_NEW') {
-                if ($buffer6 === '1 _NEW') {
-                    $this->processed = true;
-                }
-                if ($buffer6 === '2 DATE') {
-                    $this->processed = true;
-                    $address["new_date"] = substr($buffer, 7);
-                }
-                if ($buffer6 === '3 TIME') {
-                    $this->processed = true;
-                    $address["new_time"] = substr($buffer, 7);
-                }
-            }
-            */
-            // *** Save date ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $address["new_date"] = $created_changed["date"];
@@ -5709,7 +5470,7 @@ class GedcomCls
             // 1 CHAN
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == 'CHAN') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $address["changed_date"] = $created_changed["date"];
@@ -5722,18 +5483,18 @@ class GedcomCls
                 }
             }
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
-            if ($buffer === '0 TRLR') {
+            if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
             }
 
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
-                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $buffer;
-                    //$this->non_processed_items($buffer);
+                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
+                    //$this->non_processed_items($this->buffer[0]);
                 }
 
                 if ($address["address_unprocessed_tags"]) {
@@ -5751,9 +5512,9 @@ class GedcomCls
                 if ($this->level[4]) {
                     $address["address_unprocessed_tags"] .= '|3 ' . $this->level[3];
                 }
-                $address["address_unprocessed_tags"] .= '|' . $buffer;
+                $address["address_unprocessed_tags"] .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         // *** NEW april 2022: Save connections in seperate table ***
         if ($this->connect_nr > 0) {
@@ -5787,15 +5548,14 @@ class GedcomCls
                 connect_page='" . $this->text_process($this->connect['page'][$i]) . "',
                 connect_role='" . $this->text_process($this->connect['role'][$i]) . "',
                 connect_date='" . $this->process_date($this->text_process($this->connect['date'][$i])) . "',
-                connect_place='" . $this->text_process($this->connect['place'][$i]) . "'
-                ";
+                connect_place='" . $this->text_process($this->connect['place'][$i]) . "'";
                 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
                 $this->dbh->query($gebeurtsql);
             }
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
-            unset($event);
+            unset($this->connect);
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5811,10 +5571,8 @@ class GedcomCls
             address_place='" . $this->text_process($address["address_place"]) . "',
             address_phone='" . $this->text_process($address["address_phone"]) . "',
             address_text='" . $this->text_process($address["address_text"]) . "',
-
             address_new_user_id='" . $address["new_user_id"] . "',
             address_changed_user_id='" . $address["changed_user_id"] . "',
-
             address_new_datetime = '" . date('Y-m-d H:i:s', strtotime($address['new_date'] . ' ' . $address['new_time']))  . "'
             " . $this->changed_datetime('address_changed_datetime', $address['changed_date'], $address['changed_time']);
 
@@ -5833,20 +5591,17 @@ class GedcomCls
     }
 
 
-    // ************************************************************************************************
-    // *** Process objects ***
-    // ************************************************************************************************
+    /**
+     * Process objects
+     */
     function process_object($object_array): void
     {
         global $gen_program, $add_tree, $reassign;
 
-        $line = $object_array;
-        $line2 = explode("\n", $line);
-        $buffer = $line2[0];
+        //$line = $object_array;
+        $line2 = explode("\n", $object_array);
+        $this->buffer[0] = $line2[0];
 
-        // *********************************************************************************************
-        // *** Objects ***
-        // *********************************************************************************************
         // 0 @O123@ OBJE
         // 1 FORM jpeg
         // 1 TITL Fred Smith
@@ -5855,7 +5610,7 @@ class GedcomCls
         // 2 DATE 4 JUN 2010
         // 3 TIME 09:19:50
 
-        $this->event['gedcomnr'] = substr($buffer, 3, -6);
+        $this->event['gedcomnr'] = substr($this->buffer[0], 3, -6);
         if ($add_tree == true || $reassign == true) {
             $this->event['gedcomnr'] = $this->reassign_ged($this->event['gedcomnr'], 'O');
         }
@@ -5864,85 +5619,81 @@ class GedcomCls
         $this->event['date'] = '';
         $this->event['place'] = '';
         $this->event['text'] = ''; // $this->event['source']='';
-        $event_unprocessed_tags = "";
+        $event_unprocessed_tags = '';
         $this->event["new_date"] = '1970-01-01';
         $this->event["new_time"] = '00:00:01';
-        $this->event["new_user_id"] = "";
+        $this->event["new_user_id"] = '';
         $this->event["changed_date"] = '';
         $this->event["changed_time"] = '';
-        $this->event["changed_user_id"] = "";
+        $this->event["changed_user_id"] = '';
 
         if (isset($_POST['show_gedcomnumbers'])) {
-            print $this->event['gedcomnr'] . " ";
+            echo $this->event['gedcomnr'] . " ";
         }
 
-        $this->level[0] = substr($buffer, 2);
-        $this->level[1] = "";
-        $this->level[2] = "";
-        $this->level[3] = "";
-        $this->level[4] = "";
+        $this->level[0] = substr($this->buffer[0], 2);
+        $this->level[1] = '';
+        $this->level[2] = '';
+        $this->level[3] = '';
+        $this->level[4] = '';
 
         $loop = count($line2) - 2;
         for ($z = 1; $z <= $loop; $z++) {
             $this->processed = false;
-            $buffer = $line2[$z];
-            $buffer = rtrim($buffer, "\n\r");  // strip newline
-            //echo "BUFFER: ".$z."-".$buffer."!".count($line2)."<br>";
+            $this->buffer[0] = $line2[$z];
+            $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
+            //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
             if ($gen_program == 'PRO-GEN') {
-                $buffer = ltrim($buffer, " ");
+                $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
-            $buffer1 = substr($buffer, 0, 1);
-            $buffer5 = substr($buffer, 0, 5);
-            $buffer6 = substr($buffer, 0, 6);
-            $buffer7 = substr($buffer, 0, 7);
-            $buffer8 = substr($buffer, 0, 8);
+            $this->set_buffer();
 
             // *** Save level1 ***
-            if ($buffer1 === '1') {
-                $this->level[1] = rtrim(substr($buffer, 2, 4));  //rtrim for CHR_
-                $event_status = '';
-                $event_start = '1';
-                $this->level[2] = "";
-                $this->level[3] = "";
-                $this->level[4] = "";
+            if ($this->buffer[1] === '1') {
+                $this->level[1] = rtrim(substr($this->buffer[0], 2, 4));  //rtrim for CHR_
+                //$this->event_status = false;
+                //$event_start = '1';
+                $this->level[2] = '';
+                $this->level[3] = '';
+                $this->level[4] = '';
             }
             // *** Save level2 ***
-            elseif ($buffer1 === '2') {
-                $this->level[2] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '2') {
+                $this->level[2] = substr($this->buffer[0], 2, 4);
                 $this->level[3] = '';
                 $this->level[4] = '';
             }
             // *** Save level3 ***
-            elseif ($buffer1 === '3') {
-                $this->level[3] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '3') {
+                $this->level[3] = substr($this->buffer[0], 2, 4);
                 $this->level[4] = '';
             }
             // *** Save level4 ***
-            elseif ($buffer1 === '4') {
-                $this->level[4] = substr($buffer, 2, 4);
+            elseif ($this->buffer[1] === '4') {
+                $this->level[4] = substr($this->buffer[0], 2, 4);
             }
 
-            if ($buffer6 === '1 FILE') {
+            if ($this->buffer[6] === '1 FILE') {
                 $this->processed = true;
-                $photo = substr($buffer, 7);
+                $photo = substr($this->buffer[0], 7);
                 // *** Aldfaer sometimes uses: 2 FILE \bestand.jpg ***
                 $photo = $this->humo_basename($photo);
                 $this->event['event'] = $photo;
             }
-            //if ($buffer6=='1 TITL'){
-            if ($buffer6 === '1 TITL' || $buffer6 === '2 TITL') {
+            //if ($this->buffer[6]=='1 TITL'){
+            if ($this->buffer[6] === '1 TITL' || $this->buffer[6] === '2 TITL') {
                 $this->processed = true;
-                $this->event['text'] = substr($buffer, 7);
+                $this->event['text'] = substr($this->buffer[0], 7);
             }
 
             // *** New date/ time ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == '_NEW' || $this->level[1] == 'CREA') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $this->event["new_date"] = $created_changed["date"];
@@ -5955,12 +5706,11 @@ class GedcomCls
                 }
             }
 
-
             // *** Changed date/ time ***
             // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
             // 2 DATE 04 AUG 2004
             if ($this->level[1] == 'CHAN') {
-                $created_changed = $this->get_created_changed($buffer, $buffer6);
+                $created_changed = $this->get_created_changed();
                 $this->processed = $created_changed["processed"];
                 if ($created_changed["date"]) {
                     $this->event["changed_date"] = $created_changed["date"];
@@ -5973,18 +5723,18 @@ class GedcomCls
                 }
             }
 
-            //********************************************************************************************
-            // *** Save non-processed items ***
-            // *******************************************************************************************
+            /**
+             * Save non-processed items
+             */
             //Skip these lines
-            if ($buffer === '0 TRLR') {
+            if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
             }
 
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
-                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $buffer;
-                    //$this->non_processed_items($buffer);
+                    $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
+                    //$this->non_processed_items($this->buffer[0]);
                 }
 
                 if ($event_unprocessed_tags) {
@@ -6002,9 +5752,9 @@ class GedcomCls
                 if ($this->level[4]) {
                     $event_unprocessed_tags .= '|3 ' . $this->level[3];
                 }
-                $event_unprocessed_tags .= '|' . $buffer;
+                $event_unprocessed_tags .= '|' . $this->buffer[0];
             }
-        } //end explode
+        }
 
         if ($add_tree == true || $reassign == true) {
             $this->event['text'] = $this->reassign_ged($this->event['text'], 'O');
@@ -6050,13 +5800,13 @@ class GedcomCls
      */
 
     /*
-    function non_processed_items($buffer){
+    function non_processed_items($this->buffer[0]){
         // *** Not processed items for list by reading of GEDCOM ***
         $this->not_processed_tmp='0 '.$this->level[0].'</td><td>1 '.$this->level[1].'<br></td><td>';
         if ($this->level[2]){ $this->not_processed_tmp.="2 $this->level[2]"; }
         $this->not_processed_tmp.="<br></td><td>";
         if ($this->level[3]){ $this->not_processed_tmp.="3 $this->level[3]"; }
-        $this->not_processed_tmp.="<br></td><td>$buffer";
+        $this->not_processed_tmp.="<br></td><td>$this->buffer[0]";
         $this->not_processed[]=$this->not_processed_tmp;
 
         //if ($process){ $process.="<br>\n"; }
@@ -6064,17 +5814,18 @@ class GedcomCls
         //if ($this->level[2]){ $process.='|1 '.$this->level[1]; }
         //if ($this->level[3]){ $process.='|2 '.$this->level[2]; }
         //if ($this->level[4]){ $process.='|3 '.$this->level[3]; }
-        //$process.='|'.$buffer;
+        //$process.='|'.$this->buffer[0];
         //return $process;
     }
     */
 
+    // TODO same as class safeTextDb?
     function text_process($text, $long_text = false)
     {
         //if ($long_text==true){
         //	$text = str_replace("\r\n", "\n", $text);
         //}
-        //$text=safe_text_db($text);
+        //$text=$safeTextDb->safe_text_db($text);
         //return $text;
 
         $return_text = '';
@@ -6142,26 +5893,26 @@ class GedcomCls
     // 2 CONT 2nd line.
     // 2 CONT 3rd line
     // 2 CONC remaining text of 3rd line.
-    function process_texts($text, $buffer, $number)
+    function process_texts($text, $number)
     {
-        $buffer6 = substr($buffer, 0, 6);
-        if ($buffer6 === ($number) . ' NOTE') {
+        $this->buffer[6] = substr($this->buffer[0], 0, 6);
+        if ($this->buffer[6] === ($number) . ' NOTE') {
             // *** Seperator for multiple texts ***
             if ($text != '') {
                 $text .= "|";
             }
             $this->processed = true;
-            $text .= substr($buffer, 7);
-        } elseif ($buffer6 === ($number) . ' TITL') {
+            $text .= substr($this->buffer[0], 7);
+        } elseif ($this->buffer[6] === ($number) . ' TITL') {
             $this->processed = true;
-            $text .= substr($buffer, 7);
+            $text .= substr($this->buffer[0], 7);
         }    // 1 OBJE -> 2 TITL 
-        elseif ($buffer6 === ($number + 1) . ' CONT') {
+        elseif ($this->buffer[6] === ($number + 1) . ' CONT') {
             $this->processed = true;
-            $text .= $this->cont(substr($buffer, 7));
-        } elseif ($buffer6 === ($number + 1) . ' CONC') {
+            $text .= $this->cont(substr($this->buffer[0], 7));
+        } elseif ($this->buffer[6] === ($number + 1) . ' CONC') {
             $this->processed = true;
-            $text .= $this->conc(substr($buffer, 7));
+            $text .= $this->conc(substr($this->buffer[0], 7));
         }
         return $text;
     }
@@ -6200,11 +5951,11 @@ class GedcomCls
     // 3 = Direct and primary evidence used, or by dominance of the evidence
     // Example:
     // 2 QUAY 0
-    function process_quality($buffer)
+    function process_quality()
     {
         global $gen_program;
 
-        $text = substr($buffer, -1);
+        $text = substr($this->buffer[0], -1);
         // Ancestry uses 1 - 4 in stead of 0 - 3, adjust numbers:
         if ($gen_program == "Ancestry.com Family Trees") {
             $text--;
@@ -6257,21 +6008,20 @@ class GedcomCls
     }
 
     // *** Process places ***
-    function process_places($map_place, $buffer): void
+    function process_places($map_place): void
     {
         // 2 PLAC Cleveland, Ohio, USA
         // 3 MAP
         // 4 LATI N41.500347
         // 4 LONG W81.66687
         if (substr($this->level[3], 0, 3) === 'MAP') {
-            $buffer6 = substr($buffer, 0, 6);
-            //if ($buffer6==$number.' PLAC'){ $this->processed = true; $place=substr($buffer, 7); }
+            //if ($this->buffer[6]==$number.' PLAC'){ $this->processed = true; $place=substr($this->buffer[0], 7); }
 
-            if (substr($buffer, 0, 5) === '3 MAP') {
+            if (substr($this->buffer[0], 0, 5) === '3 MAP') {
                 $this->processed = true;
                 $this->geocode_nr++;
                 $this->geocode_plac[$this->geocode_nr] = $map_place;
-                $this->geocode_type[$this->geocode_nr] = ""; // needed to enter location_status as "humo3_death" later
+                $this->geocode_type[$this->geocode_nr] = ''; // needed to enter location_status as "humo3_death" later
                 if ($this->level[1] == 'BIRT') {
                     $this->geocode_type[$this->geocode_nr] = "birth";
                 } elseif ($this->level[1] == 'BAPT') {
@@ -6281,14 +6031,14 @@ class GedcomCls
                 } elseif ($this->level[1] == 'BURI') {
                     $this->geocode_type[$this->geocode_nr] = "buried";
                 }
-            } elseif ($buffer6 === '4 LATI') {
+            } elseif ($this->buffer[6] === '4 LATI') {
                 $this->processed = true;
-                $geocode = (substr($buffer, 7));
+                $geocode = (substr($this->buffer[0], 7));
                 $geocode = substr($geocode, 0, 1) === 'S' ? '-' . substr($geocode, 1) : substr($geocode, 1);
                 $this->geocode_lati[$this->geocode_nr] = $geocode;
-            } elseif ($buffer6 === '4 LONG') {
+            } elseif ($this->buffer[6] === '4 LONG') {
                 $this->processed = true;
-                $geocode = (substr($buffer, 7));
+                $geocode = (substr($this->buffer[0], 7));
                 $geocode = substr($geocode, 0, 1) === 'W' ? '-' . substr($geocode, 1) : substr($geocode, 1);
                 $this->geocode_long[$this->geocode_nr] = $geocode;
             }
@@ -6298,11 +6048,9 @@ class GedcomCls
 
 
     // *** Process addresses by person and relation ***
-    function process_addresses($connect_kind, $connect_sub_kind, $connect_id, $buffer): void
+    function process_addresses($connect_kind, $connect_sub_kind, $connect_id): void
     {
         global $gen_program, $add_tree, $reassign;
-
-        $buffer6 = substr($buffer, 0, 6);
 
         // *** Living place ***
         //Haza-Data 7.2
@@ -6310,7 +6058,7 @@ class GedcomCls
         //1 ADDR Slikkerveer
         //1 ADDR Alkmaar
         //1 ADDR Heerhugowaard
-        if ($buffer6 === '1 ADDR') {
+        if ($this->buffer[6] === '1 ADDR') {
             $address_gedcomnr = 'R' . $_SESSION['new_address_gedcomnr'];
             if ($add_tree == true || $reassign == true) {
                 $address_gedcomnr = $this->reassign_ged('R' . $_SESSION['new_address_gedcomnr'], 'R');
@@ -6318,14 +6066,14 @@ class GedcomCls
             $_SESSION['address_gedcomnr'] = $address_gedcomnr;
             $this->nraddress2++;
             $this->address_array["gedcomnr"][$this->nraddress2] = $address_gedcomnr;
-            $this->address_array["place"][$this->nraddress2] = "";
-            $this->address_array["address"][$this->nraddress2] = "";
-            $this->address_array["zip"][$this->nraddress2] = "";
-            $this->address_array["phone"][$this->nraddress2] = "";
-            $this->address_array["date"][$this->nraddress2] = "";
-            $this->address_array["text"][$this->nraddress2] = "";
+            $this->address_array["place"][$this->nraddress2] = '';
+            $this->address_array["address"][$this->nraddress2] = '';
+            $this->address_array["zip"][$this->nraddress2] = '';
+            $this->address_array["phone"][$this->nraddress2] = '';
+            $this->address_array["date"][$this->nraddress2] = '';
+            $this->address_array["text"][$this->nraddress2] = '';
             $this->processed = true;
-            $this->address_array["place"][$this->nraddress2] = substr($buffer, 7);
+            $this->address_array["place"][$this->nraddress2] = substr($this->buffer[0], 7);
 
             // *** Used for general numbering of connections ***
             $this->connect_nr++;
@@ -6366,7 +6114,7 @@ class GedcomCls
             // *** Use connection table to store addresses ***
             // *** Check for address links (shared addresses), @R34@ links ***
             if (substr($this->level['1a'], 0, 8) === '1 RESI @') {
-                if ($buffer6 === '1 RESI') {
+                if ($this->buffer[6] === '1 RESI') {
                     $this->processed = true;
 
                     // *** Used for general numbering of connections ***
@@ -6385,7 +6133,7 @@ class GedcomCls
                     $this->connect['source_id'][$this->connect_nr] = '';
                     $this->connect['text'][$this->connect_nr] = '';
                     // *** Save place GEDCOM number in connect_item_id field ***
-                    $this->connect['item_id'][$this->connect_nr] = substr($buffer, 8, -1);
+                    $this->connect['item_id'][$this->connect_nr] = substr($this->buffer[0], 8, -1);
                     if ($add_tree == true || $reassign == true) {
                         $this->connect['item_id'][$this->connect_nr] = $this->reassign_ged($this->connect['item_id'][$this->connect_nr], 'R');
                     }
@@ -6400,43 +6148,43 @@ class GedcomCls
                 }
 
                 // *** Address role ***
-                if ($buffer6 === '2 ROLE') {
+                if ($this->buffer[6] === '2 ROLE') {
                     $this->processed = true;
-                    $this->connect['role'][$this->connect_nr] = substr($buffer, 7);
+                    $this->connect['role'][$this->connect_nr] = substr($this->buffer[0], 7);
                 }
                 // *** Address date ***
-                if ($buffer6 === '2 DATE') {
+                if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    $this->connect['date'][$this->connect_nr] = substr($buffer, 7);
+                    $this->connect['date'][$this->connect_nr] = substr($this->buffer[0], 7);
                 }
                 // *** Extra text by address in HuMo-genealogy ***
                 // 2 DATA
                 // 3 TEXT text ..... => Extra text by address...
                 // 4 CONT ..........
-                if ($buffer6 === '2 DATA') {
-                    $this->processed = true; //$this->connect['text'][$this->connect_nr]=substr($buffer, 7);
+                if ($this->buffer[6] === '2 DATA') {
+                    $this->processed = true; //$this->connect['text'][$this->connect_nr]=substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '3 TEXT') {
+                if ($this->buffer[6] === '3 TEXT') {
                     if ($this->connect['text'][$this->connect_nr]) {
                         $this->connect['text'][$this->connect_nr] .= '<br>';
                     }
                     $this->processed = true;
-                    $this->connect['text'][$this->connect_nr] .= substr($buffer, 7);
+                    $this->connect['text'][$this->connect_nr] .= substr($this->buffer[0], 7);
                 }
-                if ($buffer6 === '4 CONT') {
+                if ($this->buffer[6] === '4 CONT') {
                     $this->processed = true;
-                    $this->connect['text'][$this->connect_nr] .= $this->cont(substr($buffer, 7));
+                    $this->connect['text'][$this->connect_nr] .= $this->cont(substr($this->buffer[0], 7));
                 }
-                if ($buffer6 === '4 CONC') {
+                if ($this->buffer[6] === '4 CONC') {
                     $this->processed = true;
-                    $this->connect['text'][$this->connect_nr] .= $this->conc(substr($buffer, 7));
+                    $this->connect['text'][$this->connect_nr] .= $this->conc(substr($this->buffer[0], 7));
                 }
 
                 if ($this->level[2] == 'SOUR') {
                     if ($connect_kind == 'person') {
-                        $this->process_sources('person', 'pers_address_connect_source', $this->calculated_connect_id, $buffer, '2');
+                        $this->process_sources('person', 'pers_address_connect_source', $this->calculated_connect_id, '2');
                     } else {
-                        $this->process_sources('family', 'fam_address_connect_source', $this->calculated_connect_id, $buffer, '2');
+                        $this->process_sources('family', 'fam_address_connect_source', $this->calculated_connect_id, '2');
                     }
                 }
             }
@@ -6450,8 +6198,8 @@ class GedcomCls
             //2 DATE 10 JUL 1934
             //2 PLAC AMSTERDAM-AMSTELDIJK 93/1
             //2 NOTE Tijdens ondertrouw.
-            //if ($buffer6=='1 RESI' AND $gen_program!='Haza-Data' AND $gen_program!='HuMo-genealogy'){
-            if ($buffer6 === '1 RESI' && substr($buffer, 7, 1) !== '@') {
+            //if ($this->buffer[6]=='1 RESI' AND $gen_program!='Haza-Data' AND $gen_program!='HuMo-genealogy'){
+            if ($this->buffer[6] === '1 RESI' && substr($this->buffer[0], 7, 1) !== '@') {
                 $this->processed = true;
                 $this->nraddress2++;
 
@@ -6461,19 +6209,19 @@ class GedcomCls
                 }
                 $_SESSION['address_gedcomnr'] = $address_gedcomnr;
                 $this->address_array["gedcomnr"][$this->nraddress2] = $address_gedcomnr;
-                $this->address_array["place"][$this->nraddress2] = "";
-                $this->address_array["address"][$this->nraddress2] = "";
-                $this->address_array["zip"][$this->nraddress2] = "";
-                $this->address_array["phone"][$this->nraddress2] = "";
-                $this->address_array["date"][$this->nraddress2] = "";
-                $this->address_array["text"][$this->nraddress2] = "";
+                $this->address_array["place"][$this->nraddress2] = '';
+                $this->address_array["address"][$this->nraddress2] = '';
+                $this->address_array["zip"][$this->nraddress2] = '';
+                $this->address_array["phone"][$this->nraddress2] = '';
+                $this->address_array["date"][$this->nraddress2] = '';
+                $this->address_array["text"][$this->nraddress2] = '';
                 //$address_source[$this->nraddress2]="";
 
                 // FTM:
                 // 1 RESI Owner of the house, 6 
                 // 2 CONC Lane.
-                if (substr($buffer, 7)) {
-                    $this->address_array["address"][$this->nraddress2] = substr($buffer, 7);
+                if (substr($this->buffer[0], 7)) {
+                    $this->address_array["address"][$this->nraddress2] = substr($this->buffer[0], 7);
                 }
 
                 // *** Used for general numbering of connections ***
@@ -6508,11 +6256,11 @@ class GedcomCls
             // 2 CONC Lane.
             if ($this->level[2] == 'CONC') {
                 $this->processed = true;
-                $this->address_array["address"][$this->nraddress2] .= substr($buffer, 7);
+                $this->address_array["address"][$this->nraddress2] .= substr($this->buffer[0], 7);
             }
             if ($this->level[2] == 'CONT') {
                 $this->processed = true;
-                $this->address_array["address"][$this->nraddress2] .= "\n" . substr($buffer, 7);
+                $this->address_array["address"][$this->nraddress2] .= "\n" . substr($this->buffer[0], 7);
             }
 
             // *** Restore HuMo-genealogy address GEDCOM numbers ***
@@ -6520,8 +6268,8 @@ class GedcomCls
             // 2 RIN 1 (GEDCOM number without R).
             if (($gen_program == 'HuMo-gen' or $gen_program == 'HuMo-genealogy') && $this->level[2] == 'RIN ') {
                 $this->processed = true;
-                //echo substr($buffer,6).'<br>';
-                $address_gedcomnr = 'R' . substr($buffer, 6);
+                //echo substr($this->buffer[0],6).'<br>';
+                $address_gedcomnr = 'R' . substr($this->buffer[0], 6);
                 if ($add_tree == true || $reassign == true) {
                     $address_gedcomnr = $this->reassign_ged($address_gedcomnr, 'R');
                 }
@@ -6537,11 +6285,11 @@ class GedcomCls
             //2 ADDR Citystreet 18
             //3 CITY Wellen
             if ($this->level[2] == 'ADDR') {
-                if ($buffer6 === '2 ADDR') {
-                    $this->address_array["address"][$this->nraddress2] .= substr($buffer, 7);
+                if ($this->buffer[6] === '2 ADDR') {
+                    $this->address_array["address"][$this->nraddress2] .= substr($this->buffer[0], 7);
                     $this->processed = true;
                 }
-                $this->address_array["address"][$this->nraddress2] = $this->process_texts($this->address_array["address"][$this->nraddress2], $buffer, '2');
+                $this->address_array["address"][$this->nraddress2] = $this->process_texts($this->address_array["address"][$this->nraddress2], '2');
             }
 
             // *** Living place for Aldfaer ***
@@ -6549,12 +6297,12 @@ class GedcomCls
             //2 ADDR Oosteind 44
             //3 CONT Zwaag
             //3 CITY Zwaag
-            if ($buffer6 === '3 CITY') {
+            if ($this->buffer[6] === '3 CITY') {
                 $this->processed = true;
                 if ($this->address_array["place"][$this->nraddress2]) {
                     $this->address_array["place"][$this->nraddress2] .= ', ';
                 }
-                $this->address_array["place"][$this->nraddress2] .= substr($buffer, 7);
+                $this->address_array["place"][$this->nraddress2] .= substr($this->buffer[0], 7);
             }
 
             // GRAMPS:
@@ -6565,81 +6313,82 @@ class GedcomCls
             // 3 POST 55555
             // 3 CTRY Mexico
             // 2 PHON 52 (55) 1234-5xxx
-            if ($buffer6 === '3 STAE') {
+            if ($this->buffer[6] === '3 STAE') {
                 $this->processed = true;
                 if ($this->address_array["place"][$this->nraddress2]) {
                     $this->address_array["place"][$this->nraddress2] .= ', ';
                 }
-                $this->address_array["place"][$this->nraddress2] .= substr($buffer, 7);
+                $this->address_array["place"][$this->nraddress2] .= substr($this->buffer[0], 7);
             }
-            if ($buffer6 === '3 CTRY') {
+            if ($this->buffer[6] === '3 CTRY') {
                 $this->processed = true;
                 if ($this->address_array["place"][$this->nraddress2]) {
                     $this->address_array["place"][$this->nraddress2] .= ', ';
                 }
-                $this->address_array["place"][$this->nraddress2] .= substr($buffer, 7);
+                $this->address_array["place"][$this->nraddress2] .= substr($this->buffer[0], 7);
             }
 
-            if ($buffer6 === '3 POST') {
+            if ($this->buffer[6] === '3 POST') {
                 $this->processed = true;
-                $this->address_array["zip"][$this->nraddress2] = substr($buffer, 7);
+                $this->address_array["zip"][$this->nraddress2] = substr($this->buffer[0], 7);
             }
 
-            if ($buffer6 === '2 PHON') {
+            if ($this->buffer[6] === '2 PHON') {
                 $this->processed = true;
-                $this->address_array["phone"][$this->nraddress2] = substr($buffer, 7);
+                $this->address_array["phone"][$this->nraddress2] = substr($this->buffer[0], 7);
             }
 
             // *** Living place for BK ***
-            if ($buffer6 === '2 PLAC') {
+            if ($this->buffer[6] === '2 PLAC') {
                 $this->processed = true;
                 if ($this->address_array["place"][$this->nraddress2]) {
                     $this->address_array["place"][$this->nraddress2] .= ', ';
                 }
-                $this->address_array["place"][$this->nraddress2] .= substr($buffer, 7);
+                $this->address_array["place"][$this->nraddress2] .= substr($this->buffer[0], 7);
             }
 
             // *** Texts by living places for BK, Aldfaer ***
             if ($this->level[2] == 'NOTE') {
-                if ($this->address_array["text"][$this->nraddress2]) {
-                    $this->address_array["text"][$this->nraddress2] .= '. ';
-                }
-                $this->address_array["text"][$this->nraddress2] = $this->process_texts($this->address_array["text"][$this->nraddress2], $buffer, '2');
+                // TODO check this code.
+                //if ($this->address_array["text"][$this->nraddress2]) {
+                //    $this->address_array["text"][$this->nraddress2] .= '. ';
+                //}
+                $this->address_array["text"][$this->nraddress2] = $this->process_texts($this->address_array["text"][$this->nraddress2], '2');
             }
 
             // *** Texts by living place for SukuJutut ***
             if ($gen_program == "SukuJutut") {
-                if ($this->address_array["text"][$this->nraddress2]) {
-                    $this->address_array["text"][$this->nraddress2] .= '. ';
-                }
-                $this->address_array["text"][$this->nraddress2] = $this->process_texts($this->address_array["text"][$this->nraddress2], $buffer, '3');
+                //if ($this->address_array["text"][$this->nraddress2]) {
+                //    $this->address_array["text"][$this->nraddress2] .= '. ';
+                //}
+                $this->address_array["text"][$this->nraddress2] = $this->process_texts($this->address_array["text"][$this->nraddress2], '3');
             }
 
             // *** Date by living place for BK etc. ***
-            //if ($buffer6=='2 DATE'){ $this->processed = true; $this->address_array["date"][$this->nraddress2]=substr($buffer,7); }
-            if ($buffer6 === '2 DATE') {
+            //if ($this->buffer[6]=='2 DATE'){ $this->processed = true; $this->address_array["date"][$this->nraddress2]=substr($this->buffer[0],7); }
+            if ($this->buffer[6] === '2 DATE') {
                 $this->processed = true;
-                $this->connect['date'][$this->connect_nr] = substr($buffer, 7);
+                $this->connect['date'][$this->connect_nr] = substr($this->buffer[0], 7);
             }
 
             // *** Source by address ***
             // *** Source also uses the connect table, so an extra SESSION is needed to store the address GEDCOM number ***
             if ($this->level[2] == 'SOUR') {
                 //if ($connect_kind=='person'){
-                //	$this->process_sources('person','pers_address_source',$_SESSION['address_gedcomnr'],$buffer,'2');
+                //	$this->process_sources('person','pers_address_source',$_SESSION['address_gedcomnr'], '2');
                 //}
                 //else{
-                //	$this->process_sources('family','fam_address_source',$_SESSION['address_gedcomnr'],$buffer,'2');
+                //	$this->process_sources('family','fam_address_source',$_SESSION['address_gedcomnr'], '2');
                 //}
 
                 if ($connect_kind == 'person') {
-                    $this->process_sources('person', 'pers_address_connect_source', $this->calculated_connect_id, $buffer, '2');
+                    $this->process_sources('person', 'pers_address_connect_source', $this->calculated_connect_id, '2');
                 } else {
-                    $this->process_sources('family', 'fam_address_connect_source', $this->calculated_connect_id, $buffer, '2');
+                    $this->process_sources('family', 'fam_address_connect_source', $this->calculated_connect_id, '2');
                 }
 
                 // *** Source by address ***
-                //$this->process_sources('address','address_source',$this->calculated_connect_id,$buffer,'2');
+                //$this->process_sources('address','address_source',$this->calculated_connect_id, '2');
             }
         }
     }
@@ -6647,15 +6396,13 @@ class GedcomCls
 
 
     // *** Process all kind of STANDARD sources ***
-    function process_sources($connect_kind2, $connect_sub_kind2, $connect_connect_id2, $buffer, $number): void
+    function process_sources($connect_kind2, $connect_sub_kind2, $connect_connect_id2, $number): void
     {
-        global $largest_source_ged, $add_tree, $reassign, $buffer6;
+        global $largest_source_ged, $add_tree, $reassign;
 
         // 2 SOUR Source text
-        $buffer6 = substr($buffer, 0, 6);
-
         // *** Store source - connections ***
-        if ($buffer6 === $number . ' SOUR') {
+        if ($this->buffer[6] === $number . ' SOUR') {
             $this->processed = true;
             $this->connect_nr++;
             $this->calculated_connect_id++;
@@ -6674,13 +6421,13 @@ class GedcomCls
 
             // *** Check for @ characters (=link to shared source), or save text ***
             // 1 SOUR @S1@
-            if (substr($buffer, 7, 1) === '@') {
+            if (substr($this->buffer[0], 7, 1) === '@') {
                 // *** Trim needed for MyHeritage (double spaces behind a source line) ***
-                $buffer = trim($buffer);
+                $this->buffer[0] = trim($this->buffer[0]);
 
-                $this->connect['source_id'][$this->connect_nr] = substr($buffer, 8, -1);
+                $this->connect['source_id'][$this->connect_nr] = substr($this->buffer[0], 8, -1);
                 if ($add_tree == true || $reassign == true) {
-                    $this->connect['source_id'][$this->connect_nr] = $this->reassign_ged(substr($buffer, 8, -1), 'S');
+                    $this->connect['source_id'][$this->connect_nr] = $this->reassign_ged(substr($this->buffer[0], 8, -1), 'S');
                 }
             } else {
                 // *** Jan. 2021: all sources are stored in the source table ***
@@ -6713,12 +6460,12 @@ class GedcomCls
                 $this->source["source_unprocessed_tags"][$this->nrsource] = '';
                 $this->source["new_date"][$this->nrsource] = '1970-01-01';
                 $this->source["new_time"][$this->nrsource] = '00:00:01';
-                $this->source["new_user_id"] = "";
+                $this->source["new_user_id"] = '';
                 $this->source["changed_date"][$this->nrsource] = '';
                 $this->source["changed_time"][$this->nrsource] = '';
-                $this->source["changed_user_id"] = "";
+                $this->source["changed_user_id"] = '';
 
-                $this->source["source_text"][$this->nrsource] .= substr($buffer, 7);
+                $this->source["source_text"][$this->nrsource] .= substr($this->buffer[0], 7);
 
                 // *** Next GEDCOM number ***
                 $_SESSION['new_source_gedcomnr'] += 1;
@@ -6727,13 +6474,13 @@ class GedcomCls
 
         // *** Source text ***
         if ($this->level[$number] == 'SOUR') {
-            if ($buffer6 === ($number + 1) . ' CONT') {
+            if ($this->buffer[6] === ($number + 1) . ' CONT') {
                 $this->processed = true;
-                $this->source["source_text"][$this->nrsource] .= $this->cont(substr($buffer, 7));
+                $this->source["source_text"][$this->nrsource] .= $this->cont(substr($this->buffer[0], 7));
             }
-            if ($buffer6 === ($number + 1) . ' CONC') {
+            if ($this->buffer[6] === ($number + 1) . ' CONC') {
                 $this->processed = true;
-                $this->source["source_text"][$this->nrsource] .= $this->conc(substr($buffer, 7));
+                $this->source["source_text"][$this->nrsource] .= $this->conc(substr($this->buffer[0], 7));
             }
         }
 
@@ -6745,40 +6492,54 @@ class GedcomCls
         // 3 CONC links to SOURCE records.
         // 3 CONT Here is a new line of text from the source.
         if ($number < 3 && $this->level[$number + 1] == 'TEXT') {
-            if ($buffer6 === ($number + 1) . ' TEXT') {
+            if ($this->buffer[6] === ($number + 1) . ' TEXT') {
                 $this->processed = true;
                 if ($this->source["source_text"][$this->nrsource]) {
                     $this->source["source_text"][$this->nrsource] .= '<br>';
                 }
-                $this->source["source_text"][$this->nrsource] .= substr($buffer, 7);
+                $this->source["source_text"][$this->nrsource] .= substr($this->buffer[0], 7);
             }
-            if ($buffer6 === ($number + 2) . ' CONT') {
+            if ($this->buffer[6] === ($number + 2) . ' CONT') {
                 $this->processed = true;
-                $this->source["source_text"][$this->nrsource] .= $this->cont(substr($buffer, 7));
+                $this->source["source_text"][$this->nrsource] .= $this->cont(substr($this->buffer[0], 7));
             }
-            if ($buffer6 === ($number + 2) . ' CONC') {
+            if ($this->buffer[6] === ($number + 2) . ' CONC') {
                 $this->processed = true;
-                $this->source["source_text"][$this->nrsource] .= $this->conc(substr($buffer, 7));
+                $this->source["source_text"][$this->nrsource] .= $this->conc(substr($this->buffer[0], 7));
             }
         }
+
+        // *** Source citation ***
         if (isset($this->level[$number + 1]) && $this->level[$number + 1] == 'DATA') {
-            if ($buffer6 === ($number + 1) . ' DATA') {
-                $this->processed = true; //$this->connect['text'][$this->connect_nr]=substr($buffer, 7);
+            if ($this->buffer[6] === ($number + 1) . ' DATA') {
+                $this->processed = true; //$this->connect['text'][$this->connect_nr]=substr($this->buffer[0], 7);
             }
-            if ($buffer6 === ($number + 2) . ' TEXT') {
+
+            // *** Source date ***
+            if ($this->buffer[6] === ($number + 2) . ' DATE') {
+                $this->processed = true;
+                $this->connect['date'][$this->connect_nr] = substr($this->buffer[0], 7);
+            }
+            // *** Source place ***
+            if ($this->buffer[6] === ($number + 2) . ' PLAC') {
+                $this->processed = true;
+                $this->connect['place'][$this->connect_nr] = substr($this->buffer[0], 7);
+            }
+
+            if ($this->buffer[6] === ($number + 2) . ' TEXT') {
                 if ($this->connect['text'][$this->connect_nr]) {
                     $this->connect['text'][$this->connect_nr] .= '<br>';
                 }
                 $this->processed = true;
-                $this->connect['text'][$this->connect_nr] .= substr($buffer, 7);
+                $this->connect['text'][$this->connect_nr] .= substr($this->buffer[0], 7);
             }
-            if ($buffer6 === ($number + 3) . ' CONT') {
+            if ($this->buffer[6] === ($number + 3) . ' CONT') {
                 $this->processed = true;
-                $this->connect['text'][$this->connect_nr] .= $this->cont(substr($buffer, 7));
+                $this->connect['text'][$this->connect_nr] .= $this->cont(substr($this->buffer[0], 7));
             }
-            if ($buffer6 === ($number + 3) . ' CONC') {
+            if ($this->buffer[6] === ($number + 3) . ' CONC') {
                 $this->processed = true;
-                $this->connect['text'][$this->connect_nr] .= $this->conc(substr($buffer, 7));
+                $this->connect['text'][$this->connect_nr] .= $this->conc(substr($this->buffer[0], 7));
             }
         }
 
@@ -6793,69 +6554,56 @@ class GedcomCls
 
         //if ($this->level[3]=='OBJE'){
         //SKIP @xx@, otherwise this will process errors: 3 OBJE @M1@
-        if ($this->level[3] == 'OBJE' && substr($buffer, 7, 1) !== '@') {
-            $this->process_picture('connect', $this->calculated_connect_id, 'picture', $buffer);
+        if ($this->level[3] == 'OBJE' && substr($this->buffer[0], 7, 1) !== '@') {
+            $this->process_picture('connect', $this->calculated_connect_id, 'picture');
         }
 
         // *** Source reference (own code) ***
-        if ($buffer6 === ($number + 1) . ' REFN') {
+        if ($this->buffer[6] === ($number + 1) . ' REFN') {
             $this->processed = true;
-            $this->source["source_refn"][$this->nrsource] = substr($buffer, 7);
+            $this->source["source_refn"][$this->nrsource] = substr($this->buffer[0], 7);
         }
 
         // *** Source page ***
         if ($number < 3 && $this->level[$number + 1] == 'PAGE') {
-            if ($buffer6 === ($number + 1) . ' PAGE') {
+            if ($this->buffer[6] === ($number + 1) . ' PAGE') {
                 $this->processed = true;
-                $this->connect['page'][$this->connect_nr] = substr($buffer, 7);
+                $this->connect['page'][$this->connect_nr] = substr($this->buffer[0], 7);
             }
-            if ($buffer6 === ($number + 2) . ' CONT') {
+            if ($this->buffer[6] === ($number + 2) . ' CONT') {
                 $this->processed = true;
-                $this->connect['page'][$this->connect_nr] .= $this->cont(substr($buffer, 7));
+                $this->connect['page'][$this->connect_nr] .= $this->cont(substr($this->buffer[0], 7));
             }
-            if ($buffer6 === ($number + 2) . ' CONC') {
+            if ($this->buffer[6] === ($number + 2) . ' CONC') {
                 $this->processed = true;
-                $this->connect['page'][$this->connect_nr] .= $this->conc(substr($buffer, 7));
+                $this->connect['page'][$this->connect_nr] .= $this->conc(substr($this->buffer[0], 7));
             }
         }
 
         // *** Source role ***
-        if ($buffer6 === ($number + 1) . ' ROLE') {
+        if ($this->buffer[6] === ($number + 1) . ' ROLE') {
             $this->processed = true;
-            $this->connect['role'][$this->connect_nr] = substr($buffer, 7);
-        }
-
-        // *** Source date ***
-        if ($buffer6 === ($number + 1) . ' DATE') {
-            $this->processed = true;
-            $this->connect['date'][$this->connect_nr] = substr($buffer, 7);
-            //$this->processed = true; $this->source["source_date"][$this->nrsource]=substr($buffer, 7);
-        }
-        // *** Source place ***
-        if ($buffer6 === ($number + 1) . ' PLAC') {
-            $this->processed = true;
-            $this->connect['place'][$this->connect_nr] = substr($buffer, 7);
-            //$this->processed = true; $this->source["source_place"][$this->nrsource]=substr($buffer, 7);
+            $this->connect['role'][$this->connect_nr] = substr($this->buffer[0], 7);
         }
 
         // *** Aldfaer time ***
         //2 _ALDFAER_TIME 08:00:00
-        //if (substr($buffer,0,15)=='2 _ALDFAER_TIME'){
+        //if (substr($this->buffer[0],0,15)=='2 _ALDFAER_TIME'){
         //	if (nrbron>0) then BronDate[nrbron]:=copy(buf,8,length(buf));
         //}
 
         // *** Source quality, stored in connection table ***
-        if ($buffer6 === ($number + 1) . ' QUAY') {
+        if ($this->buffer[6] === ($number + 1) . ' QUAY') {
             $this->processed = true;
-            $this->connect['quality'][$this->connect_nr] = $this->process_quality($buffer);
+            $this->connect['quality'][$this->connect_nr] = $this->process_quality();
         }
 
         // *** Added oct. 2024 NOT TESTED YET ***
         // *** Save date ***
         // 1 _NEW (GEDCOM 5.5.1) or: 1 CREA (GEDCOM 7.x)
         // 2 DATE 04 AUG 2004
-        if ($buffer6 === ($number + 1) . '_NEW' || $buffer6 === ($number + 1) . 'CREA') {
-            $created_changed = $this->get_created_changed($buffer, $buffer6);
+        if ($this->buffer[6] === ($number + 1) . '_NEW' || $this->buffer[6] === ($number + 1) . 'CREA') {
+            $created_changed = $this->get_created_changed();
             $this->processed = $created_changed["processed"];
             if ($created_changed["date"]) {
                 $this->source["new_date"] = $created_changed["date"];
@@ -6872,8 +6620,8 @@ class GedcomCls
         // *** Save date ***
         // 1 CHAN
         // 2 DATE 04 AUG 2004
-        if ($buffer6 === ($number + 1) . 'CHAN') {
-            $created_changed = $this->get_created_changed($buffer, $buffer6);
+        if ($this->buffer[6] === ($number + 1) . 'CHAN') {
+            $created_changed = $this->get_created_changed();
             $this->processed = $created_changed["processed"];
             if ($created_changed["date"]) {
                 $this->source["changed_date"] = $created_changed["date"];
@@ -6888,67 +6636,54 @@ class GedcomCls
     }
 
     /* EXAMPLES
-    * if ($this->level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_birth', $buffer);
-    * if ($this->level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$this->calculated_event_id, $buffer);
-    * if ($this->level[2]=='OBJE') $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice', $buffer);
-    * if ($this->level[3]=='OBJE' AND substr($buffer,7,1)!='@'){ $this->process_picture('connect',$this->calculated_connect_id,'picture', $buffer); }
-    * if ($this->level[1]=='OBJE') $this->process_picture('source',$source["id"],'picture', $buffer);
+    * if ($this->level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_birth');
+    * if ($this->level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$this->calculated_event_id);
+    * if ($this->level[2]=='OBJE') $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice');
+    * if ($this->level[3]=='OBJE' AND substr($this->buffer[0],7,1)!='@'){ $this->process_picture('connect',$this->calculated_connect_id,'picture'); }
+    * if ($this->level[1]=='OBJE') $this->process_picture('source',$source["id"],'picture');
     */
-    function process_picture($connect_kind, $connect_id, $picture, $buffer): void
+    function process_picture($connect_kind, $connect_id, $picture): void
     {
         global $add_tree, $reassign;
 
         $event_picture = false;
-        $buffer6 = substr($buffer, 0, 6);
-
         // *** Just for sure: set default values ***
-        $test_level = 'level2';
         $test_number1 = '1';
         $test_number2 = '2';
         // *** picture = person or family picture ***
         if ($picture == 'picture') {
-            $test_level = 'level2';
             $test_number1 = '1';
             $test_number2 = '2';
         } elseif ($picture == 'picture_birth') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         } elseif ($picture == 'picture_bapt') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         }
         // *** picture_death = pictures or cards etc. by death ***
         elseif ($picture == 'picture_death') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         } elseif ($picture == 'picture_buried') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         } elseif ($picture == 'picture_fam_marr_church_notice') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         } elseif ($picture == 'picture_fam_marr_notice') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         } elseif ($picture == 'picture_fam_marr_church') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         } elseif ($picture == 'picture_fam_marr') {
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         }
         // *** Picture by event ***
         elseif (substr($picture, 0, 13) === 'picture_event') {
             $event_picture = true;
-            $test_level = 'level3';
             $test_number1 = '2';
             $test_number2 = '3';
         }
@@ -6960,14 +6695,13 @@ class GedcomCls
         // 4 NOTE @N26@
         // 4 FILE ImgFile.JPG
         if ($connect_kind == 'connect' && $picture == 'picture') {
-            $test_level = 'level4';
             $test_number1 = '3';
             $test_number2 = '4';
         }
 
         // *** External object/ image (could be multiple lines, they will be processed!) ***
         // 1 OBJE @O3@
-        if ($buffer6 === $test_number1 . ' OBJE' && substr($buffer, 7, 1) === '@') {
+        if ($this->buffer[6] === $test_number1 . ' OBJE' && substr($this->buffer[0], 7, 1) === '@') {
             // *** Connection to seperate object (image) stored in connection table ***
             $this->processed = true;
             $this->connect_nr++;
@@ -6990,14 +6724,14 @@ class GedcomCls
             $this->connect['source_id'][$this->connect_nr] = '';
             $this->connect['item_id'][$this->connect_nr] = '';
             //$this->connect['text'][$this->connect_nr]='';
-            if (substr($buffer, 7, 1) === '@') {
+            if (substr($this->buffer[0], 7, 1) === '@') {
                 // *** Saved as source_id in database, but connect_item_id is probably better... ***
-                $this->connect['source_id'][$this->connect_nr] = substr($buffer, 8, -1);
+                $this->connect['source_id'][$this->connect_nr] = substr($this->buffer[0], 8, -1);
                 if ($add_tree == true || $reassign == true) {
-                    $this->connect['source_id'][$this->connect_nr] = $this->reassign_ged(substr($buffer, 8, -1), 'O');
+                    $this->connect['source_id'][$this->connect_nr] = $this->reassign_ged(substr($this->buffer[0], 8, -1), 'O');
                 }
             } else {
-                $this->connect['text'][$this->connect_nr] .= substr($buffer, 7);
+                $this->connect['text'][$this->connect_nr] .= substr($this->buffer[0], 7);
             }
             $this->connect['quality'][$this->connect_nr] = '';
             //PLACE NOT IN USE YET
@@ -7010,24 +6744,34 @@ class GedcomCls
         // *** Objects without reference ***
         // 3 OBJE H:\haza21v3\plaatjes\IM000247.jpg
         // *** Skip link to object with reference: 1 OBJE @O3@ ***
-        if ($buffer6 === $test_number1 . ' OBJE' && substr($buffer, 7, 1) !== '@') {
+        if ($this->buffer[6] === $test_number1 . ' OBJE' && substr($this->buffer[0], 7, 1) !== '@') {
             $this->processed = true;
             if ($event_picture == true) {
                 // *** Process picture by event ***
+                $this->event_nr++;
+                $this->event_nr2 = $this->event_nr;
                 $this->calculated_event_id++;
-                $this->event2_nr++;
-                $this->event2['connect_kind'][$this->event2_nr] = $connect_kind;
-                $this->event2['connect_id'][$this->event2_nr] = $connect_id;
-                $this->event2['kind'][$this->event2_nr] = $picture; // picture = person or family picture.
-                $this->event2['event'][$this->event2_nr] = '';
-                $this->event2['event_extra'][$this->event2_nr] = '';
-                $this->event2['gedcom'][$this->event2_nr] = 'OBJE';
-                $this->event2['date'][$this->event2_nr] = '';
-                $this->event2['text'][$this->event2_nr] = '';
-                $this->event2['place'][$this->event2_nr] = '';
+
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr2] = $this->calculated_event_id;
+                $this->event['level2'][$this->event_nr2] = '2';
+                $this->event['connect_kind'][$this->event_nr2] = $connect_kind;
+                $this->event['connect_id'][$this->event_nr2] = $connect_id;
+                $this->event['kind'][$this->event_nr2] = $picture; // picture = person or family picture.
+                $this->event['event'][$this->event_nr2] = '';
+                $this->event['event_extra'][$this->event_nr2] = '';
+                $this->event['gedcom'][$this->event_nr2] = 'OBJE';
+                $this->event['date'][$this->event_nr2] = '';
+                $this->event['text'][$this->event_nr2] = '';
+                $this->event['place'][$this->event_nr2] = '';
             } else {
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
                 $this->calculated_event_id++;
+
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+                $this->event['level'][$this->event_nr] = '1';
                 $this->event['connect_kind'][$this->event_nr] = $connect_kind;
                 $this->event['connect_id'][$this->event_nr] = $connect_id;
                 $this->event['kind'][$this->event_nr] = $picture; // picture = person or family picture.
@@ -7040,12 +6784,12 @@ class GedcomCls
             }
 
             // *** Haza-data picture ***
-            if (substr($buffer, 7)) {
+            if (substr($this->buffer[0], 7)) {
                 $this->processed = true;
-                $photo = substr($buffer, 7);
+                $photo = substr($this->buffer[0], 7);
                 $photo = $this->humo_basename($photo);
                 if ($event_picture == true) {
-                    $this->event2['event'][$this->event2_nr] = $photo;
+                    $this->event['event'][$this->event_nr2] = $photo;
                 } else {
                     $this->event['event'][$this->event_nr] = $photo;
                 }
@@ -7057,22 +6801,22 @@ class GedcomCls
         // 2 FORM URL
         // 2 TITL GEDCOM 5.5 documentation web site
         // 2 FILE http://homepages.rootsweb.com/~pmcbride/gedcom/55gctoc.htm
-        if (substr($buffer, 0, 10) === $test_number2 . ' FORM URL') {
+        if (substr($this->buffer[0], 0, 10) === $test_number2 . ' FORM URL') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['kind'][$this->event2_nr] = 'URL';
+                $this->event['kind'][$this->event_nr2] = 'URL';
             } else {
                 $this->event['kind'][$this->event_nr] = 'URL';
             }
         }
 
-        if ($buffer6 === $test_number2 . ' FILE') {
+        if ($this->buffer[6] === $test_number2 . ' FILE') {
             $this->processed = true;
-            $photo = substr($buffer, 7);
+            $photo = substr($this->buffer[0], 7);
             // *** Aldfaer sometimes uses: 2 FILE \bestand.jpg ***
             $photo = $this->humo_basename($photo);
             if ($event_picture == true) {
-                $this->event2['event'][$this->event2_nr] = $photo;
+                $this->event['event'][$this->event_nr2] = $photo;
             } else {
                 $this->event['event'][$this->event_nr] = $photo;
             }
@@ -7085,9 +6829,9 @@ class GedcomCls
         if ($this->level[$test_number2] == 'TITL') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['text'][$this->event2_nr] = $this->process_texts($this->event2['text'][$this->event2_nr], $buffer, $test_number2);
+                $this->event['text'][$this->event_nr2] = $this->process_texts($this->event['text'][$this->event_nr2], $test_number2);
             } else {
-                $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, $test_number2);
+                $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $test_number2);
             }
         }
 
@@ -7096,27 +6840,27 @@ class GedcomCls
         if ($this->level[$test_number2] == 'FORM') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['event_extra'][$this->event2_nr] = substr($buffer, 7);
+                $this->event['event_extra'][$this->event_nr2] = substr($this->buffer[0], 7);
             } else {
-                $this->event['event_extra'][$this->event_nr] = substr($buffer, 7);
+                $this->event['event_extra'][$this->event_nr] = substr($this->buffer[0], 7);
             }
         }
 
         // *** Text by photo Haza-21 ***
         if ($this->level[2] == 'NOTE') {
             if ($event_picture == true) {
-                $this->event2['text'][$this->event2_nr] = $this->process_texts($this->event2['text'][$this->event2_nr], $buffer, $test_number2);
+                $this->event['text'][$this->event_nr2] = $this->process_texts($this->event['text'][$this->event_nr2], $test_number2);
             } else {
-                $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $buffer, $test_number2);
+                $this->event['text'][$this->event_nr] = $this->process_texts($this->event['text'][$this->event_nr], $test_number2);
             }
         }
 
-        if ($buffer6 === $test_number2 . ' DATE') {
+        if ($this->buffer[6] === $test_number2 . ' DATE') {
             $this->processed = true;
             if ($event_picture == true) {
-                $this->event2['date'][$this->event2_nr] = substr($buffer, 7);
+                $this->event['date'][$this->event_nr2] = substr($this->buffer[0], 7);
             } else {
-                $this->event['date'][$this->event_nr] = substr($buffer, 7);
+                $this->event['date'][$this->event_nr] = substr($this->buffer[0], 7);
             }
         }
 
@@ -7126,7 +6870,8 @@ class GedcomCls
         } elseif ($this->level[2] == 'SOUR' && $this->level[3] != 'OBJE') {
             //if ($this->level[2]=='SOUR'){
             // *** Don't process a source by a object by a source. The script will stop with error ***
-            $this->process_sources('person', 'pers_event_source', $this->calculated_event_id, $buffer, $test_number2);
+            $event_id = $this->event['calculated_event_id'][$this->event_nr];
+            $this->process_sources('person', 'pers_event_source', $event_id, $test_number2);
         }
     }
 
@@ -7139,31 +6884,31 @@ class GedcomCls
         return $changed_datetime;
     }
 
-    function get_created_changed($buffer, $buffer6)
+    function get_created_changed()
     {
         $created_changed = [];
         $created_changed["processed"] = false;
-        $created_changed["date"] = "";
-        $created_changed["time"] = "";
-        $created_changed["user_id"] = "";
+        $created_changed["date"] = '';
+        $created_changed["time"] = '';
+        $created_changed["user_id"] = '';
 
-        if ($buffer6 === '1 _NEW' || $buffer6 === '1 CREA' || $buffer6 === '1 CHAN') {
+        if ($this->buffer[6] === '1 _NEW' || $this->buffer[6] === '1 CREA' || $this->buffer[6] === '1 CHAN') {
             $created_changed["processed"] = true;
         }
-        if ($buffer6 === '2 DATE') {
+        if ($this->buffer[6] === '2 DATE') {
             $created_changed["processed"] = true;
-            $created_changed["date"] = substr($buffer, 7);
+            $created_changed["date"] = substr($this->buffer[0], 7);
         }
-        if ($buffer6 === '3 TIME') {
+        if ($this->buffer[6] === '3 TIME') {
             $created_changed["processed"] = true;
-            $created_changed["time"] = substr($buffer, 7);
+            $created_changed["time"] = substr($this->buffer[0], 7);
         }
 
         // 1 CHAN also supports notes for GEDCOM 7. BUT: multiple dates by change notes are not supported.
 
         // *** Oct. 2024 process: 2 _USR 1 ***
-        if ($buffer6 === '2 _USR') {
-            $user_id = substr($buffer, 7);
+        if ($this->buffer[6] === '2 _USR') {
+            $user_id = substr($this->buffer[0], 7);
             if (is_numeric($user_id)) {
                 $created_changed["processed"] = true;
                 $created_changed["user_id"] = $user_id;
@@ -7173,21 +6918,21 @@ class GedcomCls
         return $created_changed;
     }
 
-    function process_association($buffer, $buffer6, $buffer8, $gedcomnumber, $connect_kind = 'person')
+    function process_association($gedcomnumber, $connect_kind = 'person')
     {
         // *** Sept. 2024: Aldfaer GEDCOM 7 ***
         // CHECK FOR GEDCOM 7.
-        // 1 EVEN
+        // 1 EVEN ==>> EVENT level 1
         // 2 TYPE birth registration
         // 2 DATE 2 JAN 1980
         // 2 SOUR @S5@
         // 2 _OBJE
         // 3 FILE 0d0d3dfdf7eb5ec8d94609dc49079b2a.jpg
-        // 2 ASSO @I4@
+        // 2 ASSO @I4@ ==>> EVENT level 2
         // 3 ROLE OFFICIATOR
         // 2 ASSO @I3@
         // 3 ROLE WITN
-        // 2 ASSO @I5@
+        // 2 ASSO @I5@ ==>> EVENT level 2
         // 3 ROLE OTHER
         // 4 PHRASE informant
 
@@ -7204,9 +6949,8 @@ class GedcomCls
         // 3 ROLE OTHER
         // 4 PHRASE Teacher -> event_event_extra
 
-        if ($buffer6 === '2 ASSO') {
+        if ($this->buffer[6] === '2 ASSO') {
             $this->processed = true;
-            $this->calculated_event_id++;
 
             // Database example
             // event_connect_id = I1 (main person)
@@ -7214,42 +6958,46 @@ class GedcomCls
 
             // *** Remark: date, place, text, source isn't needed for ASSO's (and not supported in GEDCOM 7). These items are stored in one "birth/ death declaration event ***
             if ($this->level[1] == 'EVEN') {
-                $this->event2_nr++;
+                $this->event_nr++;
+                $this->event_nr2 = $this->event_nr;
+                $this->calculated_event_id++;
 
-                $this->event2['connect_kind'][$this->event2_nr] = '';
-                if ($this->event['kind'][$this->event_nr] == 'birth_declaration') {
-                    $this->event2['connect_kind'][$this->event2_nr] = 'birth_declaration';
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr2] = $this->calculated_event_id;
+                $this->event['level'][$this->event_nr2] = '2';
+                $this->event['connect_kind'][$this->event_nr2] = '';
+                if ($this->event['kind'][$this->event_nr1] == 'birth_declaration') {
+                    $this->event['connect_kind'][$this->event_nr2] = 'birth_declaration';
                 }
-                if ($this->event['kind'][$this->event_nr] == 'death_declaration') {
-                    $this->event2['connect_kind'][$this->event2_nr] = 'death_declaration';
+                if ($this->event['kind'][$this->event_nr1] == 'death_declaration') {
+                    $this->event['connect_kind'][$this->event_nr2] = 'death_declaration';
                 }
-                $this->event2['connect_id'][$this->event2_nr] = $gedcomnumber;
-
-                $this->event2['connect_kind2'][$this->event2_nr] = 'person';
-                $this->event2['connect_id2'][$this->event2_nr] = substr($buffer, 8, -1);
-
-                $this->event2['kind'][$this->event2_nr] = 'ASSO';
-                $this->event2['event'][$this->event2_nr] = '';
-                $this->event2['event_extra'][$this->event2_nr] = '';
-                $this->event2['gedcom'][$this->event2_nr] = '';
-
-                $this->event2['date'][$this->event2_nr] = '';
-                $this->event2['place'][$this->event2_nr] = '';
-                $this->event2['text'][$this->event2_nr] = '';
+                $this->event['connect_id'][$this->event_nr2] = $gedcomnumber;
+                $this->event['connect_kind2'][$this->event_nr2] = 'person';
+                $this->event['connect_id2'][$this->event_nr2] = substr($this->buffer[0], 8, -1);
+                $this->event['kind'][$this->event_nr2] = 'ASSO';
+                $this->event['event'][$this->event_nr2] = '';
+                $this->event['event_extra'][$this->event_nr2] = '';
+                $this->event['gedcom'][$this->event_nr2] = '';
+                $this->event['date'][$this->event_nr2] = '';
+                $this->event['place'][$this->event_nr2] = '';
+                $this->event['text'][$this->event_nr2] = '';
             } else {
                 $this->event_nr++;
+                $this->event_nr1 = $this->event_nr;
+                $this->calculated_event_id++;
 
+                // *** Also save calculated_event_id in array, so it can be used to check event_id ***
+                $this->event['calculated_event_id'][$this->event_nr] = $this->calculated_event_id;
+                $this->event['level'][$this->event_nr] = '1';
                 $this->event['connect_kind'][$this->event_nr] = $connect_kind;
                 $this->event['connect_id'][$this->event_nr] = $gedcomnumber;
-
                 $this->event['connect_kind2'][$this->event_nr] = 'person';
-                $this->event['connect_id2'][$this->event_nr] = substr($buffer, 8, -1);
-
+                $this->event['connect_id2'][$this->event_nr] = substr($this->buffer[0], 8, -1);
                 $this->event['kind'][$this->event_nr] = 'ASSO';
                 $this->event['event'][$this->event_nr] = '';
                 $this->event['event_extra'][$this->event_nr] = '';
                 $this->event['gedcom'][$this->event_nr] = '';
-
                 $this->event['date'][$this->event_nr] = '';
                 $this->event['place'][$this->event_nr] = '';
                 $this->event['text'][$this->event_nr] = '';
@@ -7257,12 +7005,12 @@ class GedcomCls
 
             // 2 ASSO @VOID@
             // 3 PHRASE Mr Stockdale -> event_event
-            if (substr($buffer, 7, 6) == '@VOID@') {
+            if (substr($this->buffer[0], 7, 6) == '@VOID@') {
                 $this->processed = true;
 
                 if ($this->level[1] == 'EVEN') {
-                    $this->event2['connect_kind2'][$this->event2_nr] = '';
-                    $this->event2['connect_id2'][$this->event2_nr] = '';
+                    $this->event['connect_kind2'][$this->event_nr2] = '';
+                    $this->event['connect_id2'][$this->event_nr2] = '';
                 } else {
                     $this->event['connect_kind2'][$this->event_nr] = '';
                     $this->event['connect_id2'][$this->event_nr] = '';
@@ -7273,36 +7021,36 @@ class GedcomCls
         // GEDCOM 7.x
         // 2 ASSO @VOID@
         // 3 PHRASE Mr Stockdale -> event_event
-        if ($buffer8 == '3 PHRASE') {
+        if ($this->buffer[8] == '3 PHRASE') {
             $this->processed = true;
 
             if ($this->level[1] == 'EVEN') {
-                $this->event2['event'][$this->event2_nr] = substr($buffer, 9);
+                $this->event['event'][$this->event_nr2] = substr($this->buffer[0], 9);
             } else {
-                $this->event['event'][$this->event_nr] = substr($buffer, 9);
+                $this->event['event'][$this->event_nr1] = substr($this->buffer[0], 9);
             }
         }
 
         // GEDCOM 7.x
-        if ($buffer6 == '3 ROLE') {
+        if ($this->buffer[6] == '3 ROLE') {
             //TODO: only import allowed roles (see GEDCOM 7.x):
             //CHIL, CLERGY, FATH, FRIEND, GODP, HUSB, MOTH, MULTIPLE, NGHBR, OFFICIATOR, PARENT, SPOU, WIFE, WITN, OTHER.
             $this->processed = true;
             if ($this->level[1] == 'EVEN') {
-                $this->event2['gedcom'][$this->event2_nr] = substr($buffer, 7);
+                $this->event['gedcom'][$this->event_nr2] = substr($this->buffer[0], 7);
             } else {
-                $this->event['gedcom'][$this->event_nr] = substr($buffer, 7);
+                $this->event['gedcom'][$this->event_nr1] = substr($this->buffer[0], 7);
             }
         }
 
         // GEDCOM 7.x
-        if ($buffer8 == '4 PHRASE') {
-            //if ($event_gedcom == 'OTHER'  && $buffer8 == '4 PHRASE'){
+        if ($this->buffer[8] == '4 PHRASE') {
+            //if ($event_gedcom == 'OTHER'  && $this->buffer[8] == '4 PHRASE'){
             $this->processed = true;
             if ($this->level[1] == 'EVEN') {
-                $this->event2['event_extra'][$this->event2_nr] = substr($buffer, 9);
+                $this->event['event_extra'][$this->event_nr2] = substr($this->buffer[0], 9);
             } else {
-                $this->event['event_extra'][$this->event_nr] = substr($buffer, 9);
+                $this->event['event_extra'][$this->event_nr1] = substr($this->buffer[0], 9);
             }
         }
     }
@@ -7310,5 +7058,25 @@ class GedcomCls
     public function get_not_processed()
     {
         return $this->not_processed;
+    }
+
+    function check_event($length)
+    {
+        $this->processed = true;
+        $this->event_status = true;
+        $event_temp = '';
+        if (substr($this->buffer[0], $length)) {
+            $event_temp = substr($this->buffer[0], $length);
+        }
+        return $event_temp;
+    }
+
+    function set_buffer(): void
+    {
+        $this->buffer[1] = $this->buffer[0][0]; // *** first character ***
+        $this->buffer[5] = substr($this->buffer[0], 0, 5);
+        $this->buffer[6] = substr($this->buffer[0], 0, 6);
+        $this->buffer[7] = substr($this->buffer[0], 0, 7);
+        $this->buffer[8] = substr($this->buffer[0], 0, 8);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-/*******************************************************
- * Only these origins will be allowed to upload images *
- ******************************************************/
+/**
+ * Only these origins will be allowed to upload images
+ */
 //$accepted_origins = array("http://localhost", "http://192.168.1.1", "http://example.com");
 
 session_start();
@@ -17,13 +17,13 @@ if (!isset($_SESSION["user_name_admin"])) {
 include_once('../../../include/db_login.php'); // *** Database login ***
 
 include_once(__DIR__ . "../../../include/generalSettings.php");
-$GeneralSettings = new GeneralSettings();
-//$user = $GeneralSettings->get_user_settings($dbh);
-$humo_option = $GeneralSettings->get_humo_option($dbh);
+$generalSettings = new GeneralSettings();
+//$user = $generalSettings->get_user_settings($dbh);
+$humo_option = $generalSettings->get_humo_option($dbh);
 
-/*********************************************
- * Change this line to set the upload folder *
- *********************************************/
+/**
+ * Change this line to set the upload folder
+ */
 //$imageFolder = "images/";
 $imageFolder = $humo_option["cms_images_path"] . '/';
 if (substr($imageFolder, 0, 1) == '|') $imageFolder = '../../../media/cms/';

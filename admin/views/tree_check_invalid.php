@@ -120,9 +120,7 @@ $found = false; // if this stays false, displays message that no problems where 
         <tr>
             <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
         </tr>
-    <?php
-    }
-    ?>
+    <?php } ?>
 
     <tr>
         <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid connection dates:'); ?></td>
@@ -141,9 +139,7 @@ $found = false; // if this stays false, displays message that no problems where 
         <tr>
             <td colspan="4" style="color:red"><?= __('No invalid dates found'); ?></td>
         </tr>
-    <?php
-    }
-    ?>
+    <?php } ?>
 
     <tr>
         <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid address dates:'); ?></td>

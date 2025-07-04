@@ -1,38 +1,18 @@
 <?php
-class AddressModel
+class AddressModel extends BaseModel
 {
-    private $db_functions;
-
-    public function __construct($db_functions)
-    {
-        $this->db_functions = $db_functions;
-    }
-
-    public function getAddressAuthorised($user)
+    public function getAddressAuthorised(): string
     {
         $authorised = '';
-        if ($user['group_addresses'] != 'j') {
+        if ($this->user['group_addresses'] != 'j') {
             $authorised = __('You are not authorised to see this page.');
         }
         return $authorised;
     }
 
-    /*
-    public function getId()
-    {
-        return $this->id;
-    }
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-    */
-
-    public function getById($id)
+    public function getById($id): object
     {
         $addressDb = $this->db_functions->get_address($id);
-
-        //$this->Connection = null;
         return $addressDb;
     }
 
@@ -40,28 +20,31 @@ class AddressModel
     {
         // *** Show source by addresss ***
         $source_array = show_sources2("address", "address_source", $id);
-        //$this->Connection = null;
         if ($source_array) {
             return $source_array['text'];
         }
         return null;
     }
 
-    public function getAddressConnectedPersons($id)
+    public function getAddressConnectedPersons($id): string
     {
         $text = '';
-        $person_cls = new PersonCls;
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $personLink = new PersonLink();
+
         // *** Search address in connections table ***
-        //$event_qry = $db_functions->get_connections('person_address', $_GET['gedcomnumber']);
-        $event_qry = $this->db_functions->get_connections('person_address', $_GET['id']);
+        $event_qry = $this->db_functions->get_connections('person_address', $id);
         foreach ($event_qry as $eventDb) {
             // *** Person address ***
             if ($eventDb->connect_connect_id) {
                 $personDb = $this->db_functions->get_person($eventDb->connect_connect_id);
-                $name = $person_cls->person_name($personDb);
+                $privacy = $personPrivacy->get_privacy($personDb);
+                $name = $personName->get_person_name($personDb, $privacy);
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                $url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+                $url = $personLink->get_person_link($personDb);
+
                 $text .= __('Address by person') . ': <a href="' . $url . '">' . $name["standard_name"] . '</a>';
 
                 if ($eventDb->connect_role) {
@@ -71,8 +54,6 @@ class AddressModel
             }
         }
         unset($event_qry);
-
-        //$this->Connection = null;
         return $text;
     }
 }

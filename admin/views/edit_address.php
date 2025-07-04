@@ -32,13 +32,13 @@ if (isset($tree_id) && $tree_id) {
             <input type="submit" name="dummy7" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
         </form>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <?php if (isset($_POST['address_remove2'])) { ?>
     <div class="alert alert-success">
         <strong><?= __('Address has been removed!'); ?></strong>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <form method="POST" action="index.php?page=edit_addresses" style="display : inline;">
     <div class="p-3 my-md-2 genealogy_search container-md">

@@ -1,7 +1,7 @@
 <?php
-class RelationsModel
+class RelationsModel extends BaseModel
 {
-    private $db_functions, $selected_language;
+    private $selected_language;
 
     private $search_name1 = '', $search_name2 = '';
     private $search_gednr1 = '', $search_gednr2 = '';
@@ -57,9 +57,9 @@ class RelationsModel
         'dutch_text' => ''
     ];
 
-    public function __construct($db_functions, $selected_language)
+    public function __construct($config, $selected_language)
     {
-        $this->db_functions = $db_functions;
+        parent::__construct($config);
         $this->selected_language = $selected_language;
     }
 
@@ -80,7 +80,7 @@ class RelationsModel
         }
     }
 
-    public function get_variables()
+    public function get_variables(): array
     {
         $relation = $this->relation;
 
@@ -117,7 +117,7 @@ class RelationsModel
     }
 
     // *** Several variables used double. For standard and marital relationship calculator. ***
-    public function get_variables_standard_extended()
+    public function get_variables_standard_extended(): array
     {
         // TODO jan. 2025 for now just add all variables to "standard_extended" array. Must be refactored.
         $relation['standard_extended'] = $this->relation;
@@ -154,7 +154,7 @@ class RelationsModel
         return $relation;
     }
 
-    public function set_control_variables()
+    public function set_control_variables(): void
     {
         //$this->start_calculation = isset($_POST["calculator"]) || isset($_POST["switch"]); // Jan. 2025: doesn't work properly.
         $this->start_calculation = isset($_POST["calculator"]);
@@ -163,6 +163,8 @@ class RelationsModel
 
     public function checkInput(): void
     {
+        $safeTextDb = new SafeTextDb();
+
         if (isset($_POST["button_search_name1"]) || isset($_POST["button_search_id1"])) {
             $_SESSION["button_search_name1"] = 1;
         }
@@ -173,22 +175,24 @@ class RelationsModel
         // *** Link from person pop-up menu ***
         if (isset($_GET['pers_id'])) {
             $_SESSION["button_search_name1"] = 1;
-            $_SESSION["search_pers_id"] = safe_text_db($_GET['pers_id']);
+            $_SESSION["search_pers_id"] = $safeTextDb->safe_text_db($_GET['pers_id']);
             unset($_SESSION["search_pers_id2"]);
             $_SESSION['rel_search_name'] = '';
         }
     }
 
-    public function getSelectedPersons($person_cls)
+    public function getSelectedPersons(): void
     {
-        // *** GEDCOM number: must be pattern like: Ixxxx ***
-        $pattern = '/^^[a-z,A-Z][0-9]{1,}$/';
+        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName();
+        $validateGedcomber = new ValidateGedcomnumber();
 
-        if (isset($_POST["person1"]) && preg_match($pattern, $_POST["person1"])) {
+        // *** GEDCOM number: must be pattern like: Ixxxx ***
+        if (isset($_POST["person1"]) && $validateGedcomber->validate($_POST["person1"])) {
             $this->relation["person1"] = $_POST['person1'];
         }
 
-        if (isset($_POST["person2"]) && preg_match($pattern, $_POST["person2"])) {
+        if (isset($_POST["person2"]) && $validateGedcomber->validate($_POST["person2"])) {
             $this->relation["person2"] = $_POST['person2'];
         }
 
@@ -197,7 +201,8 @@ class RelationsModel
             $searchDb = $this->db_functions->get_person($this->relation["person1"]);
             if (isset($searchDb)) {
                 $this->relation['gednr1'] = $searchDb->pers_gedcomnumber;
-                $name = $person_cls->person_name($searchDb);
+                $privacy = $personPrivacy->get_privacy($searchDb);
+                $name = $personName->get_person_name($searchDb, $privacy);
                 $this->relation['name1'] = $name["name"];
                 //$this->relation['sexe1'] = $searchDb->pers_sexe == 'M' ? 'm' : 'f';
                 $this->relation['sexe1'] = $searchDb->pers_sexe;
@@ -210,12 +215,13 @@ class RelationsModel
                 $this->relation['family_id1'] = $searchDb->pers_famc;
             }
             //$vars['pers_family'] = $this->relation['family_id1'];
-            //$relation['link1'] = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+            //$relation['link1'] = $processLinks->get_link($this->uri_path, 'family', $tree_id, true, $vars);
 
             $searchDb2 = $this->db_functions->get_person($this->relation["person2"]);
             if (isset($searchDb2)) {
                 $this->relation['gednr2'] = $searchDb2->pers_gedcomnumber;
-                $name = $person_cls->person_name($searchDb2);
+                $privacy = $personPrivacy->get_privacy($searchDb2);
+                $name = $personName->get_person_name($searchDb2, $privacy);
                 $this->relation['name2'] = $name["name"];
                 //$this->relation['sexe2'] = $searchDb2->pers_sexe == 'M' ? 'm' : 'f';
                 $this->relation['sexe2'] = $searchDb2->pers_sexe;
@@ -228,15 +234,17 @@ class RelationsModel
                 $this->relation['family_id2'] = $searchDb2->pers_famc;
             }
             //$vars['pers_family'] = $this->relation['family_id2'];
-            //$relation['link2'] = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+            //$relation['link2'] = $processLinks->get_link($this->uri_path, 'family', $tree_id, true, $vars);
         }
     }
 
-    public function getNames()
+    public function getNames(): void
     {
+        $safeTextDb = new SafeTextDb();
+
         // *** Person 1 ***
         if (isset($_POST["search_name"]) && !isset($_POST["switch"])) {
-            $this->search_name1 = safe_text_db($_POST['search_name']);
+            $this->search_name1 = $safeTextDb->safe_text_db($_POST['search_name']);
             $_SESSION['rel_search_name'] = $this->search_name1;
         }
         if (isset($_SESSION['rel_search_name'])) {
@@ -248,7 +256,7 @@ class RelationsModel
 
         // *** Person 2 ***
         if (isset($_POST["search_name2"]) && !isset($_POST["switch"])) {
-            $this->search_name2 = safe_text_db($_POST['search_name2']);
+            $this->search_name2 = $safeTextDb->safe_text_db($_POST['search_name2']);
             $_SESSION['rel_search_name2'] = $this->search_name2;
         }
         if (isset($_SESSION['rel_search_name2'])) {
@@ -259,10 +267,12 @@ class RelationsModel
         }
     }
 
-    public function getGEDCOMnumbers()
+    public function getGEDCOMnumbers(): void
     {
+        $safeTextDb = new SafeTextDb();
+
         if (isset($_POST["search_gednr"]) && !isset($_POST["switch"])) {
-            $this->search_gednr1 = strtoupper(safe_text_db($_POST['search_gednr']));
+            $this->search_gednr1 = strtoupper($safeTextDb->safe_text_db($_POST['search_gednr']));
             $_SESSION['rel_search_gednr'] = $this->search_gednr1;
         }
         if (isset($_SESSION['rel_search_gednr'])) {
@@ -273,7 +283,7 @@ class RelationsModel
         }
 
         if (isset($_POST["search_gednr2"]) && !isset($_POST["switch"])) {
-            $this->search_gednr2 = strtoupper(safe_text_db($_POST['search_gednr2']));
+            $this->search_gednr2 = strtoupper($safeTextDb->safe_text_db($_POST['search_gednr2']));
             $_SESSION['rel_search_gednr2'] = $this->search_gednr2;
         }
         if (isset($_SESSION['rel_search_gednr2'])) {
@@ -284,7 +294,7 @@ class RelationsModel
         }
     }
 
-    public function switchPersons()
+    public function switchPersons(): void
     {
         // *** Switch person 1 and 2 ***
         if (isset($_POST["switch"])) {
@@ -313,14 +323,16 @@ class RelationsModel
         }
     }
 
-    public function process_standard_calculation($tree_id, $link_cls, $uri_path)
+    public function process_standard_calculation(): void
     {
         if ($this->start_calculation && $this->search_results) {
+            $processLinks = new ProcessLinks();
+
             $vars['pers_family'] = $this->relation['family_id1'];
-            $this->link1 = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+            $this->link1 = $processLinks->get_link($this->uri_path, 'family', $this->tree_id, true, $vars);
 
             $vars['pers_family'] = $this->relation['family_id2'];
-            $this->link2 = $link_cls->get_link($uri_path, 'family', $tree_id, true, $vars);
+            $this->link2 = $processLinks->get_link($this->uri_path, 'family', $this->tree_id, true, $vars);
 
             // *** Used in sentence: Firstname Lastname IS 2nd cousin 4 times removed of husband of Firstname Lastname ***
             $this->language_is = ' ' . __('is') . ' ';
@@ -341,7 +353,7 @@ class RelationsModel
         }
     }
 
-    public function process_extended_calculation()
+    public function process_extended_calculation(): void
     {
         $firstcall1 = array();
         $firstcall1[0] = $this->relation["person1"] . "@fst@fst@fst" . $this->relation["person1"];
@@ -352,7 +364,7 @@ class RelationsModel
         //$total_arr = array();
 
         if (isset($_POST["extended"]) && !isset($_POST["next_path"])) {
-            $_SESSION["couple"] = "";
+            $_SESSION["couple"] = '';
             // session[couple] flags that persons A & B are a couple. consequences: 
             // 1. don't display that (has already been done in regular calculator)
             // 2. in the extended_calculator function don't search thru the fam of the couple, since this gives errors.
@@ -375,7 +387,7 @@ class RelationsModel
         $this->extended_calculator($firstcall1, $firstcall2);
     }
 
-    public function process_marriage_relationship()
+    public function process_marriage_relationship(): void
     {
         /**
          * Marital relationship
@@ -433,19 +445,17 @@ class RelationsModel
                 if ($ancestor_id[$i] != '0') {
                     $person_manDb = $this->db_functions->get_person($ancestor_id[$i], 'famc-fams');
                     /*
-                    $man_cls = new PersonCls($person_manDb);
-                    $man_privacy=$man_cls->privacy;
+                    $personPrivacy = new PersonPrivacy();
+                    $man_privacy=$personPrivacy->get_privacy($person_manDb);
                     if (strtolower($person_manDb->pers_sexe)=='m' && $ancestor_number[$i]>1){
                         $familyDb=$this->db_functions->get_family($marriage_number[$i]);
 
                         // *** Use privacy filter of woman ***
-                        $person_womanDb=$this->db_functions->get_person($familyDb->fam_woman);
-                        $woman_cls = new PersonCls($person_womanDb);
-                        $woman_privacy=$woman_cls->privacy;
+                        $person_womanDb=$this->db_functions->get_person();
+                        $woman_privacy=$personPrivacy->get_privacy($familyDb->fam_woman);
 
-                        // *** Use class for marriage ***
                         $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
-                        $family_privacy=$marriage_cls->privacy;
+                        $family_privacy=$marriage_cls->get_privacy();
                     }
                     */
 
@@ -752,7 +762,7 @@ class RelationsModel
         }
     }
 
-    private function spanish_degrees($pers)
+    private function spanish_degrees($pers): string
     {
         $spantext = '';
         //if ($pers == 2) {
@@ -833,7 +843,7 @@ class RelationsModel
         return $spantext;
     }
 
-    private function calculate_ancestor($pers)
+    private function calculate_ancestor($pers): void
     {
         $ancestortext = '';
         $parent = $this->relation['sexe1'] == 'M' ? __('father') : __('mother');
@@ -1259,7 +1269,7 @@ class RelationsModel
         }
     }
 
-    private function dutch_ancestors($gennr)
+    private function dutch_ancestors($gennr): string
     {
         $ancestortext = '';
         $rest = '';
@@ -1313,7 +1323,7 @@ class RelationsModel
         return $ancestortext . $rest;
     }
 
-    private function calculate_descendant($pers)
+    private function calculate_descendant($pers): void
     {
         $child = $this->relation['sexe1'] == 'M' ? __('son') : __('daughter');
 
@@ -1697,7 +1707,7 @@ class RelationsModel
             $this->relation['rel_text'] .= '是';
         } elseif ($this->selected_language == "fr") {
             if ($this->relation['sexe1'] == 'M') {
-                $gend = "";
+                $gend = '';
             } else {
                 $gend = "e";
             }
@@ -1767,7 +1777,7 @@ class RelationsModel
         }
     }
 
-    private function calculate_nephews($generX)
+    private function calculate_nephews($generX): void
     {
         // handed generations x is removed from common ancestor
         // *** Greek***
@@ -2084,7 +2094,7 @@ class RelationsModel
         } elseif ($this->selected_language == "fr") {
             if ($this->relation['sexe1'] == 'M') {
                 $nephniece = __('nephew');
-                $gend = "";
+                $gend = '';
             } else {
                 $nephniece = __('niece');
                 $gend = "e";
@@ -2142,7 +2152,7 @@ class RelationsModel
     }
 
     // handed generations y is removed from common ancestor
-    private function calculate_uncles($generY)
+    private function calculate_uncles($generY): void
     {
         if ($this->relation['sexe1'] == 'M') {
             $uncleaunt = __('uncle');
@@ -2639,7 +2649,7 @@ class RelationsModel
         }
     }
 
-    private function calculate_cousins($generX, $generY)
+    private function calculate_cousins($generX, $generY): void
     {
         if ($this->selected_language == "es") {
             $gendiff = abs($generX - $generY);
@@ -2874,7 +2884,7 @@ class RelationsModel
             }
             $gendiff = abs($generX - $generY);
             if ($gendiff == 0) {
-                $removenr = "";
+                $removenr = '';
             } elseif ($gendiff == 1) {
                 $removenr = 'בהפרש ' . __('once removed');
             } else {
@@ -3357,7 +3367,7 @@ class RelationsModel
         } else {
             $gendiff = abs($generX - $generY);
             if ($gendiff == 0) {
-                $removenr = "";
+                $removenr = '';
             } elseif ($gendiff == 1) {
                 $removenr = ' ' . __('once removed');
             } elseif ($gendiff == 2) {
@@ -3398,9 +3408,10 @@ class RelationsModel
     }
 
     // TODO function used once
-    private function search_marital()
+    private function search_marital(): void
     {
-        $pers_cls = new PersonCls;
+        $personName = new PersonName();
+        $privacy = new PersonPrivacy();
 
         if ($this->relation['fams1'] != '') {
             $marrcount = count($this->fams1_array);
@@ -3421,7 +3432,8 @@ class RelationsModel
                     $this->calculate_rel();
 
                     $spouseidDb = $this->db_functions->get_person($thespouse);
-                    $name = $pers_cls->person_name($spouseidDb);
+                    $privacy = $privacy->get_privacy($spouseidDb);
+                    $name = $personName->get_person_name($spouseidDb, $privacy);
                     $this->relation['spousenameX'] = $name["name"];
 
                     break;
@@ -3444,7 +3456,8 @@ class RelationsModel
                     $this->relation['famspouseY'] = $this->fams2_array[$x];
                     $this->calculate_rel();
                     $spouseidDb = $this->db_functions->get_person($thespouse2);
-                    $name = $pers_cls->person_name($spouseidDb);
+                    $privacy = $privacy->get_privacy($spouseidDb);
+                    $name = $personName->get_person_name($spouseidDb, $privacy);
                     $this->relation['spousenameY'] = $name["name"];
                     break;
                 }
@@ -3474,11 +3487,13 @@ class RelationsModel
                         $this->calculate_rel();
 
                         $spouseidDb = $this->db_functions->get_person($thespouse);
-                        $name = $pers_cls->person_name($spouseidDb);
+                        $privacy_spouse = $privacy->get_privacy($spouseidDb);
+                        $name = $personName->get_person_name($spouseidDb, $privacy_spouse);
                         $this->relation['spousenameX'] = $name["name"];
 
                         $spouseidDb = $this->db_functions->get_person($thespouse2);
-                        $name = $pers_cls->person_name($spouseidDb);
+                        $privacy_spouse2 = $privacy->get_privacy($spouseidDb);
+                        $name = $personName->get_person_name($spouseidDb, $privacy_spouse2);
                         $this->relation['spousenameY'] = $name["name"];
 
                         $this->relation['famspouseX'] = $this->fams1_array[$x];
@@ -3504,7 +3519,6 @@ class RelationsModel
 
         $this->count++;
         if ($this->count > 400000) {
-            //echo "Database too large!";
             $this->show_extended_message = "Database too large!";
             exit;
         }
@@ -3800,7 +3814,7 @@ class RelationsModel
         }
     }
 
-    private function ext_calc_join_path($workarr, $path2, $pers2, $ref)
+    private function ext_calc_join_path($workarr, $path2, $pers2, $ref): string
     {
         // we have two trails. one from person A to the common person and one from person B to the common person (A ---> common <---- B)
         // we have to create one trail from A to B
@@ -3818,13 +3832,13 @@ class RelationsModel
 
         // now turn around the second trail and adjust par, chd, spo values accordingly
         $secpath = explode(";", $path2);
-        $new_path2 = "";
+        $new_path2 = '';
         $changepath = array();
         $commonpers = ";" . $fstcommon . $pers2;
         if ($ref == "par" && $fstcommon == "par") {
             // the common person is a child of both sides - discard child and make right person spouse of left!
             $changepath[count($secpath) - 1] = "spo" . substr($secpath[count($secpath) - 1], 3);
-            $commonpers = "";
+            $commonpers = '';
             $_SESSION['next_path'] .= substr($secpath[count($secpath) - 1], 3) . "@"; // add parent from side B to ignore string for next path
             $par1str = substr($path1, 0, strrpos($path1, ";"));  // first take off last (=common) person
             $_SESSION['next_path'] .= substr($par1str, strrpos($par1str, ";") + 4) . "@";     // add parent from side A to ignore string for next path
@@ -3848,5 +3862,15 @@ class RelationsModel
             $new_path2 .= ";" . $changepath[$w];
         }  // the entire trail from person A to B
         return (substr($path1, 0, strpos($path1, $pers2) - 4) . $commonpers . $new_path2);
+    }
+
+    public function get_links()
+    {
+        $processLinks = new ProcessLinks();
+        // http://localhost/HuMo-genealogy/family/3/F116?main_person=I202
+        $relation['fam_path'] = $processLinks->get_link($this->uri_path, 'family', $this->tree_id, true);
+        $relation['rel_path'] = $processLinks->get_link($this->uri_path, 'relations', $this->tree_id);
+
+        return $relation;
     }
 }

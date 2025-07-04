@@ -1,14 +1,15 @@
 <?php
 class IndexController
 {
-    public function detail($dbh, $humo_option, $user)
+    public function detail($dbh, $humo_option, $user): array
     {
         $indexModel = new IndexModel();
+        $getVisitorIP = new GetVisitorIP();
+        $setTimezone = new SetTimezone();
 
         // TODO check if these variables can be used in multiple scripts. Only use in index page?
         $index['db_functions'] = new DbFunctions($dbh);
-        $index['visitor_ip'] = visitorIP();
-        $index['person_cls'] = new PersonCls;
+        $index['visitor_ip'] = $getVisitorIP->visitorIP();
 
         // *** Debug HuMo-genealogy front pages ***
         if ($humo_option["debug_front_pages"] == 'y') {
@@ -22,7 +23,7 @@ class IndexController
             exit;
         }
 
-        timezone();
+        $setTimezone->timezone();
         // *** TIMEZONE TEST ***
         //echo date("Y-m-d H:i");
 
@@ -49,8 +50,23 @@ class IndexController
         $route = $indexModel->get_model_route($humo_option);
         $index = array_merge($index, $route);
 
-        $family_tree = $indexModel->get_family_tree($dbh, $index['db_functions'], $user); // Get tree_id, tree_prefix.
+        // *** Get tree_id, tree_prefix ***
+        $family_tree = $indexModel->get_family_tree($dbh, $index['db_functions'], $user);
         $index = array_merge($index, $family_tree);
+
+        /* TODO create $index['screen_mode'] variable
+        //$index['page'] == 'ancestor_report_pdf'
+        if (substr($index['page'], -3) == 'pdf') {
+            $screen_mode = "PDF";
+
+            // *** PDF page, so no direction markers needed ***
+            $index['dirmark1'] = '';
+            $index['dirmark2'] = '';
+        }
+        elseif (substr($index['page'], -3) == 'rtf') {
+            $screen_mode = "RTF";
+        }
+        */
 
         $index['page404'] = $indexModel->get_page404();
         $index['page301'] = $indexModel->get_page301();

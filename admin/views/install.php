@@ -949,7 +949,7 @@ if (isset($_POST['install_tables2'])) {
             KEY (event_connect_id2),
             KEY (event_kind)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-    } // *** End of family tree tables ***
+    }
     ?><br>
 
     <b><?= __('No errors above? This means that the database has been processed!'); ?></b><br>

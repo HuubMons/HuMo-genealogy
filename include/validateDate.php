@@ -67,16 +67,20 @@ class ValidateDate
         ) {
             return "month" . $month; // flags valid month
         } elseif ($month == "EST" or $month == "CAL") {
-            if (strlen($date) > ($strlen + 4)) return null; // EST and CAL should not have anything in front of them!
-            else {
+            if (strlen($date) > ($strlen + 4)) {
+                // EST and CAL should not have anything in front of them!
+                return null;
+            } else {
+                // flags valid EST or CAL with nothing in front
                 return $month;
-            } // flags valid EST or CAL with nothing in front
+            }
         } elseif ($month == "BEF" or $month == "AFT" or $month == "ABT" or $month == "INT") {
             if (strlen($date) == $strlen + 8 and (substr($date, 0, 3) == "EST" or substr($date, 0, 3) == "CAL")) return $month; //valid "EST ABT" etc.
             elseif (strlen($date) > ($strlen + 4)) return null; // these texts should not have anything in front of them except EST or CAL!
             else {
+                // flags valid 3 letter text with nothing in front
                 return $month;
-            } // flags valid 3 letter text with nothing in front
+            }
         } elseif ($month == " TO") {
             if (substr($date, 0, 4) != "FROM") return null; // TO must have FROM up front!
             else {
@@ -88,8 +92,9 @@ class ValidateDate
                 return "AND";
             }
         } else {
+            // if we found "BET" or "FROM" that is also invalid - they can't occur before the last date!
             return null;
-        } // if we found "BET" or "FROM" that is also invalid - they can't occur before the last date!
+        }
     }
 
     function check_day($date)
@@ -118,11 +123,13 @@ class ValidateDate
             }
 
             if ($day) {
-                if (is_numeric($day)) { //in above examples will accept "12", "8", " 8" but will not accept "BT"
+                if (is_numeric($day)) {
+                    //in above examples will accept "12", "8", " 8" but will not accept "BT"
                     $day = (int)$day;
                     // check if max day fits month
                     $max = 31;
-                    if (substr($month, 5, 3) === "FEB") {  // check for leap year
+                    if (substr($month, 5, 3) === "FEB") {
+                        // check for leap year
                         if ($year % 400 == 0) {
                             $max = 29;
                         } elseif ($year % 100 == 0) {
@@ -140,13 +147,15 @@ class ValidateDate
 
                     if ($day > 0 && $day <= $max) {
                         $strlen += $day_len;
-                        if ($strlen == strlen($date)) { // nothing before the day digit(s)
+                        if ($strlen == strlen($date)) {
+                            // nothing before the day digit(s)
                             return $day;
                         }
                     } else {
                         return null;
                     }
-                } else { // not numeric for ex. in "ABT FEB 1950", $day will be "BT". We have a case of a month with a prefix
+                } else {
+                    // not numeric for ex. in "ABT FEB 1950", $day will be "BT". We have a case of a month with a prefix
                     $strlen -= 2; // we have to search back from beginning of month name
                 }
             }
@@ -170,8 +179,9 @@ class ValidateDate
                 } elseif ($text == " TO") {
                     if (substr($date, 0, 4) != "FROM") return null; // TO must have FROM up front
                     else {
+                        // must have text in front of it (FROM ... TO ...)
                         return " TO";
-                    } // must have text in front of it (FROM ... TO ...)
+                    }
                 } elseif ($text == "AND") {
                     if (substr($date, 0, 3) != "BET") return null; // AND must have BET in front!
                     else {
@@ -230,4 +240,4 @@ class ValidateDate
             return (int)$year;
         }
     }
-} // *** End of class ***
+}

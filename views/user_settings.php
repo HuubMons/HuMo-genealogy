@@ -12,8 +12,8 @@ if ($humo_option["url_rewrite"] == "j") {
     $action = 'index.php?page=user_settings';
     $action2 = 'index.php?page=user_settings&amp;';
 }
-//$action = $link_cls->get_link($uri_path, 'user_settings');
-//$action2 = $link_cls->get_link($uri_path, 'user_settings',true);
+//$action = $processLinks->get_link($uri_path, 'user_settings');
+//$action2 = $processLinks->get_link($uri_path, 'user_settings',true);
 
 
 if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y') {

@@ -1,12 +1,8 @@
 <?php
 class UpdateCls
 {
-
     public function update_v3_1(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 1 (V3.1) ***
-        // ********************************
         global $dbh;
         $update_check = false;
         try {
@@ -66,9 +62,6 @@ class UpdateCls
 
     public function update_v4_6(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 4 (V4.6) ***
-        // ********************************
         global $dbh;
         $update_check_sql = false;
         try {
@@ -109,9 +102,6 @@ class UpdateCls
 
     public function update_v4_2(): void
     {
-        // *********************************
-        // *** HuMo-genealogy update 3 (V 4.2) ***
-        // *********************************
         global $dbh;
         // *** Change names of languages in table humo_tree_texts ***
         $sql = 'UPDATE humo_tree_texts SET treetext_language="nl" WHERE treetext_language="talen/taal-nederlands.php"';
@@ -129,9 +119,6 @@ class UpdateCls
 
     public function update_v3_2(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 2 (V3.2) ***
-        // ********************************
         global $dbh;
 
         $update_check = false;
@@ -235,9 +222,6 @@ class UpdateCls
 
     public function update_v4_6_update_2(): void
     {
-        // ********************************
-        // *** HuMo-genealogy update 4 (V4.6) ***
-        // ********************************
         global $dbh;
         $update_check_sql = false;
         try {
@@ -778,13 +762,10 @@ class UpdateCls
                 $dbh->query($sql);
 
                 echo ' Tree updated!';
-            } // *** End of tabel check ***
+            }
 
 
 
-            // ******************************
-            // *** AUTOMATIC UPDATES HERE ***
-            // ******************************
             // *** Automatic installation or update ***
             if (isset($field)) {
                 unset($field);
@@ -962,44 +943,39 @@ class UpdateCls
             }
 
 
-            // *****************************
             // *** CHANGE OF TABLES HERE ***
-            // *****************************
             if ($translate_tables == true) {
-
                 // *** Update person table (html to utf-8) ***
                 $read_pers_sql = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "person");
                 while ($read_persDb = $read_pers_sql->fetch(PDO::FETCH_OBJ)) {
                     $sql = 'UPDATE ' . $updateDb->tree_prefix . 'person SET
-                    pers_firstname="' . safe_text_db($read_persDb->pers_firstname) . '",
-                    pers_callname="' . safe_text_db($read_persDb->pers_callname) . '",
-                    pers_prefix="' . safe_text_db($read_persDb->pers_prefix) . '",
-                    pers_lastname="' . safe_text_db($read_persDb->pers_lastname) . '",
-                    pers_patronym="' . safe_text_db($read_persDb->pers_patronym) . '",
-                    pers_name_text="' . safe_text_db($read_persDb->pers_name_text) . '",
-                    pers_name_source="' . safe_text_db($read_persDb->pers_name_source) . '",
-                    pers_own_code="' . safe_text_db($read_persDb->pers_own_code) . '",
-                    pers_birth_place="' . safe_text_db($read_persDb->pers_birth_place) . '",
-                    pers_birth_text="' . safe_text_db($read_persDb->pers_birth_text) . '",
-                    pers_birth_source="' . safe_text_db($read_persDb->pers_birth_source) . '",
-                    pers_bapt_place="' . safe_text_db($read_persDb->pers_bapt_place) . '",
-                    pers_bapt_text="' . safe_text_db($read_persDb->pers_bapt_text) . '",
-                    pers_bapt_source="' . safe_text_db($read_persDb->pers_bapt_source) . '",
-                    pers_religion="' . safe_text_db($read_persDb->pers_religion) . '",
-                    pers_death_place="' . safe_text_db($read_persDb->pers_death_place) . '",
-                    pers_death_text="' . safe_text_db($read_persDb->pers_death_text) . '",
-                    pers_death_source="' . safe_text_db($read_persDb->pers_death_source) . '",
-                    pers_death_cause="' . safe_text_db($read_persDb->pers_death_cause) . '",
-                    pers_buried_place="' . safe_text_db($read_persDb->pers_buried_place) . '",
-                    pers_buried_text="' . safe_text_db($read_persDb->pers_buried_text) . '",
-                    pers_buried_source="' . safe_text_db($read_persDb->pers_buried_source) . '",
-                    pers_place_index="' . safe_text_db($read_persDb->pers_place_index) . '",
-                    pers_text="' . safe_text_db($read_persDb->pers_text) . '",
-                    pers_text_source="' . safe_text_db($read_persDb->pers_text_source) . '"
+                    pers_firstname="' . $read_persDb->pers_firstname . '",
+                    pers_callname="' . $read_persDb->pers_callname . '",
+                    pers_prefix="' . $read_persDb->pers_prefix . '",
+                    pers_lastname="' . $read_persDb->pers_lastname . '",
+                    pers_patronym="' . $read_persDb->pers_patronym . '",
+                    pers_name_text="' . $read_persDb->pers_name_text . '",
+                    pers_name_source="' . $read_persDb->pers_name_source . '",
+                    pers_own_code="' . $read_persDb->pers_own_code . '",
+                    pers_birth_place="' . $read_persDb->pers_birth_place . '",
+                    pers_birth_text="' . $read_persDb->pers_birth_text . '",
+                    pers_birth_source="' . $read_persDb->pers_birth_source . '",
+                    pers_bapt_place="' . $read_persDb->pers_bapt_place . '",
+                    pers_bapt_text="' . $read_persDb->pers_bapt_text . '",
+                    pers_bapt_source="' . $read_persDb->pers_bapt_source . '",
+                    pers_religion="' . $read_persDb->pers_religion . '",
+                    pers_death_place="' . $read_persDb->pers_death_place . '",
+                    pers_death_text="' . $read_persDb->pers_death_text . '",
+                    pers_death_source="' . $read_persDb->pers_death_source . '",
+                    pers_death_cause="' . $read_persDb->pers_death_cause . '",
+                    pers_buried_place="' . $read_persDb->pers_buried_place . '",
+                    pers_buried_text="' . $read_persDb->pers_buried_text . '",
+                    pers_buried_source="' . $read_persDb->pers_buried_source . '",
+                    pers_place_index="' . $read_persDb->pers_place_index . '",
+                    pers_text="' . $read_persDb->pers_text . '",
+                    pers_text_source="' . $read_persDb->pers_text_source . '"
                     WHERE pers_id="' . $read_persDb->pers_id . '"';
-                    //$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
                     $sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-                    //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
                     $dbh->query($sql);
                 }
@@ -1009,48 +985,42 @@ class UpdateCls
                 while ($read_persDb = $read_pers_sql->fetch(PDO::FETCH_OBJ)) {
                     $sql = 'UPDATE ' . $updateDb->tree_prefix . 'family SET
                     fam_id="' . $read_persDb->fam_id . '",
-                    fam_relation_place="' . safe_text_db($read_persDb->fam_relation_place) . '",
-                    fam_relation_text="' . safe_text_db($read_persDb->fam_relation_text) . '",
-                    fam_relation_source="' . safe_text_db($read_persDb->fam_relation_source) . '",
-                    fam_marr_notice_place="' . safe_text_db($read_persDb->fam_marr_notice_place) . '",
-                    fam_marr_notice_text="' . safe_text_db($read_persDb->fam_marr_notice_text) . '",
-                    fam_marr_notice_source="' . safe_text_db($read_persDb->fam_marr_notice_source) . '",
-                    fam_marr_place="' . safe_text_db($read_persDb->fam_marr_place) . '",
-                    fam_marr_text="' . safe_text_db($read_persDb->fam_marr_text) . '",
-                    fam_marr_source="' . safe_text_db($read_persDb->fam_marr_source) . '",
-                    fam_marr_authority="' . safe_text_db($read_persDb->fam_marr_authority) . '",
-                    fam_marr_church_notice_place="' . safe_text_db($read_persDb->fam_marr_church_notice_place) . '",
-                    fam_marr_church_notice_text="' . safe_text_db($read_persDb->fam_marr_church_notice_text) . '",
-                    fam_marr_church_notice_source="' . safe_text_db($read_persDb->fam_marr_church_notice_source) . '",
-                    fam_marr_church_place="' . safe_text_db($read_persDb->fam_marr_church_place) . '",
-                    fam_marr_church_text="' . safe_text_db($read_persDb->fam_marr_church_text) . '",
-                    fam_marr_church_source="' . safe_text_db($read_persDb->fam_marr_church_source) . '",
-                    fam_religion="' . safe_text_db($read_persDb->fam_religion) . '",
-                    fam_div_place="' . safe_text_db($read_persDb->fam_div_place) . '",
-                    fam_div_text="' . safe_text_db($read_persDb->fam_div_text) . '",
-                    fam_div_source="' . safe_text_db($read_persDb->fam_div_source) . '",
-                    fam_div_authority="' . safe_text_db($read_persDb->fam_div_authority) . '",
-                    fam_text="' . safe_text_db($read_persDb->fam_text) . '",
-                    fam_text_source="' . safe_text_db($read_persDb->fam_text_source) . '"
+                    fam_relation_place="' . $read_persDb->fam_relation_place . '",
+                    fam_relation_text="' . $read_persDb->fam_relation_text . '",
+                    fam_relation_source="' . $read_persDb->fam_relation_source . '",
+                    fam_marr_notice_place="' . $read_persDb->fam_marr_notice_place . '",
+                    fam_marr_notice_text="' . $read_persDb->fam_marr_notice_text . '",
+                    fam_marr_notice_source="' . $read_persDb->fam_marr_notice_source . '",
+                    fam_marr_place="' . $read_persDb->fam_marr_place . '",
+                    fam_marr_text="' . $read_persDb->fam_marr_text . '",
+                    fam_marr_source="' . $read_persDb->fam_marr_source . '",
+                    fam_marr_authority="' . $read_persDb->fam_marr_authority . '",
+                    fam_marr_church_notice_place="' . $read_persDb->fam_marr_church_notice_place . '",
+                    fam_marr_church_notice_text="' . $read_persDb->fam_marr_church_notice_text . '",
+                    fam_marr_church_notice_source="' . $read_persDb->fam_marr_church_notice_source . '",
+                    fam_marr_church_place="' . $read_persDb->fam_marr_church_place . '",
+                    fam_marr_church_text="' . $read_persDb->fam_marr_church_text . '",
+                    fam_marr_church_source="' . $read_persDb->fam_marr_church_source . '",
+                    fam_religion="' . $read_persDb->fam_religion . '",
+                    fam_div_place="' . $read_persDb->fam_div_place . '",
+                    fam_div_text="' . $read_persDb->fam_div_text . '",
+                    fam_div_source="' . $read_persDb->fam_div_source . '",
+                    fam_div_authority="' . $read_persDb->fam_div_authority . '",
+                    fam_text="' . $read_persDb->fam_text . '",
+                    fam_text_source="' . $read_persDb->fam_text_source . '"
                     WHERE fam_id="' . $read_persDb->fam_id . '"';
-                    //$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
                     $sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-                    //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
-                    //$update.=$sql.'<br>';
                     $dbh->query($sql);
                 }
 
                 // *** Update text table (html to utf-8) ***
                 $read_pers_sql = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "texts");
                 while ($read_persDb = $read_pers_sql->fetch(PDO::FETCH_OBJ)) {
-                    $sql = 'UPDATE ' . $updateDb->tree_prefix . 'texts SET text_text="' . safe_text_db($read_persDb->text_text) . '"
+                    $sql = 'UPDATE ' . $updateDb->tree_prefix . 'texts SET text_text="' . $read_persDb->text_text . '"
                     WHERE text_id="' . $read_persDb->text_id . '"';
-                    //$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
                     $sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-                    //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
-                    //$update.=$sql.'<br>';
                     $dbh->query($sql);
                 }
 
@@ -1058,25 +1028,22 @@ class UpdateCls
                 $read_pers_sql = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "sources");
                 while ($read_persDb = $read_pers_sql->fetch(PDO::FETCH_OBJ)) {
                     $sql = 'UPDATE ' . $updateDb->tree_prefix . 'sources SET
-                    source_title="' . safe_text_db($read_persDb->source_title) . '",
-                    source_abbr="' . safe_text_db($read_persDb->source_abbr) . '",
-                    source_publ="' . safe_text_db($read_persDb->source_publ) . '",
-                    source_place="' . safe_text_db($read_persDb->source_place) . '",
-                    source_refn="' . safe_text_db($read_persDb->source_refn) . '",
-                    source_auth="' . safe_text_db($read_persDb->source_auth) . '",
-                    source_subj="' . safe_text_db($read_persDb->source_subj) . '",
-                    source_item="' . safe_text_db($read_persDb->source_item) . '",
-                    source_kind="' . safe_text_db($read_persDb->source_kind) . '",
-                    source_text="' . safe_text_db($read_persDb->source_text) . '",
-                    source_repo_name="' . safe_text_db($read_persDb->source_repo_name) . '",
-                    source_repo_caln="' . safe_text_db($read_persDb->source_repo_caln) . '",
-                    source_repo_page="' . safe_text_db($read_persDb->source_repo_page) . '"
+                    source_title="' . $read_persDb->source_title . '",
+                    source_abbr="' . $read_persDb->source_abbr . '",
+                    source_publ="' . $read_persDb->source_publ . '",
+                    source_place="' . $read_persDb->source_place . '",
+                    source_refn="' . $read_persDb->source_refn . '",
+                    source_auth="' . $read_persDb->source_auth . '",
+                    source_subj="' . $read_persDb->source_subj . '",
+                    source_item="' . $read_persDb->source_item . '",
+                    source_kind="' . $read_persDb->source_kind . '",
+                    source_text="' . $read_persDb->source_text . '",
+                    source_repo_name="' . $read_persDb->source_repo_name . '",
+                    source_repo_caln="' . $read_persDb->source_repo_caln . '",
+                    source_repo_page="' . $read_persDb->source_repo_page . '"
                     WHERE source_id="' . $read_persDb->source_id . '"';
-                    //$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
                     $sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-                    //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
-                    //$update.=$sql.'<br>';
                     $dbh->query($sql);
                 }
 
@@ -1084,20 +1051,17 @@ class UpdateCls
                 $read_pers_sql = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "addresses");
                 while ($read_persDb = $read_pers_sql->fetch(PDO::FETCH_OBJ)) {
                     $sql = 'UPDATE ' . $updateDb->tree_prefix . 'addresses SET
-                    address_address="' . safe_text_db($read_persDb->address_address) . '",
-                    address_zip="' . safe_text_db($read_persDb->address_zip) . '",
-                    address_place="' . safe_text_db($read_persDb->address_place) . '",
-                    address_phone="' . safe_text_db($read_persDb->address_phone) . '",
-                    address_date="' . safe_text_db($read_persDb->address_date) . '",
-                    address_source="' . safe_text_db($read_persDb->address_source) . '",
-                    address_text="' . safe_text_db($read_persDb->address_text) . '",
-                    address_photo="' . safe_text_db($read_persDb->address_photo) . '"
+                    address_address="' . $read_persDb->address_address . '",
+                    address_zip="' . $read_persDb->address_zip . '",
+                    address_place="' . $read_persDb->address_place . '",
+                    address_phone="' . $read_persDb->address_phone . '",
+                    address_date="' . $read_persDb->address_date . '",
+                    address_source="' . $read_persDb->address_source . '",
+                    address_text="' . $read_persDb->address_text . '",
+                    address_photo="' . $read_persDb->address_photo . '"
                     WHERE address_id="' . $read_persDb->address_id . '"';
-                    //$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
                     $sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-                    //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
-                    //$update.=$sql.'<br>';
                     $dbh->query($sql);
                 }
 
@@ -1105,38 +1069,30 @@ class UpdateCls
                 $read_pers_sql = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "events");
                 while ($read_persDb = $read_pers_sql->fetch(PDO::FETCH_OBJ)) {
                     $sql = 'UPDATE ' . $updateDb->tree_prefix . 'events SET
-                    event_person_id="' . safe_text_db($read_persDb->event_person_id) . '",
-                    event_family_id="' . safe_text_db($read_persDb->event_family_id) . '",
-                    event_kind="' . safe_text_db($read_persDb->event_kind) . '",
-                    event_event="' . safe_text_db($read_persDb->event_event) . '",
-                    event_gedcom="' . safe_text_db($read_persDb->event_gedcom) . '",
-                    event_date="' . safe_text_db($read_persDb->event_date) . '",
-                    event_place="' . safe_text_db($read_persDb->event_place) . '",
-                    event_source="' . safe_text_db($read_persDb->event_source) . '",
-                    event_text="' . safe_text_db($read_persDb->event_text) . '"
+                    event_person_id="' . $read_persDb->event_person_id . '",
+                    event_family_id="' . $read_persDb->event_family_id . '",
+                    event_kind="' . $read_persDb->event_kind . '",
+                    event_event="' . $read_persDb->event_event . '",
+                    event_gedcom="' . $read_persDb->event_gedcom . '",
+                    event_date="' . $read_persDb->event_date . '",
+                    event_place="' . $read_persDb->event_place . '",
+                    event_source="' . $read_persDb->event_source . '",
+                    event_text="' . $read_persDb->event_text . '"
                     WHERE event_id="' . $read_persDb->event_id . '"';
-                    //$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
                     $sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-                    //$sql = str_replace("<br>\n", "\n", $sql);
                     $sql = str_replace("<br>", "", $sql);
-                    //$update.=$sql.'<br>';
                     $dbh->query($sql);
                 }
-            } // end translate of tables
-        } // End of reading family trees ***
+            }
+        }
 
         echo '<br>';
 
         echo '</td></tr>';
-        // *** End of update version 4.6 ***
     }
 
     public function update_v4_7(): void
     {
-        // ************************************
-        // *** Update procedure version 4.7 ***
-        // ************************************
-
         global $dbh;
         $start_time = time();
 
@@ -1296,10 +1252,6 @@ class UpdateCls
 
     public function update_v4_8(): void
     {
-        // ************************************
-        // *** Update procedure version 4.8 ***
-        // ************************************
-
         global $dbh, $updateDb;
         $start_time = time();
 
@@ -1647,10 +1599,6 @@ class UpdateCls
 
     public function update_v4_8_2(): void
     {
-        // **************************************
-        // *** Update procedure version 4.8.2 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.8.2</td><td style="background-color:#00FF00">';
@@ -1694,10 +1642,6 @@ class UpdateCls
 
     public function update_v4_8_8(): void
     {
-        // **************************************
-        // *** Update procedure version 4.8.8 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.8.8</td><td style="background-color:#00FF00">';
@@ -1724,10 +1668,6 @@ class UpdateCls
 
     public function update_v4_8_9(): void
     {
-        // ************************************
-        // *** Update procedure version 4.8.9 ***
-        // ************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.8.9</td><td style="background-color:#00FF00">';
@@ -1831,10 +1771,6 @@ class UpdateCls
 
     public function update_v4_9_1(): void
     {
-        // **************************************
-        // *** Update procedure version 4.9.1 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V4.9.1</td><td style="background-color:#00FF00">';
@@ -1854,10 +1790,6 @@ class UpdateCls
 
     public function update_v5_0(): void
     {
-        // ************************************
-        // *** Update procedure version 5.0 ***
-        // ************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.0</td><td style="background-color:#00FF00">';
@@ -1899,10 +1831,6 @@ class UpdateCls
 
     public function update_v5_1(): void
     {
-        // ************************************
-        // *** Update procedure version 5.1 ***
-        // ************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.1</td><td style="background-color:#00FF00">';
@@ -2331,57 +2259,104 @@ class UpdateCls
             $dbh->beginTransaction();
             $sql_get = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "person");
             while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
-                $sql_put = "INSERT INTO humo_persons SET
-                pers_gedcomnumber='" . $getDb->pers_gedcomnumber . "',
-                pers_tree_id='" . $updateDb->tree_id . "',
-                pers_tree_prefix='" . $getDb->pers_tree_prefix . "',
-                pers_famc='" . $getDb->pers_famc . "',
-                pers_fams='" . $getDb->pers_fams . "',
-                pers_indexnr='" . $getDb->pers_indexnr . "',
-                pers_firstname='" . safe_text_db($getDb->pers_firstname) . "',
-                pers_callname='" . safe_text_db($getDb->pers_callname) . "',
-                pers_prefix='" . safe_text_db($getDb->pers_prefix) . "',
-                pers_lastname='" . safe_text_db($getDb->pers_lastname) . "',
-                pers_patronym='" . safe_text_db($getDb->pers_patronym) . "',
-                pers_name_text='" . safe_text_db($getDb->pers_name_text) . "',
-                pers_sexe='" . $getDb->pers_sexe . "',
-                pers_own_code='" . safe_text_db($getDb->pers_own_code) . "',
-            pers_birth_place='" . safe_text_db($getDb->pers_birth_place) . "',
-            pers_birth_date='" . $getDb->pers_birth_date . "',
-            pers_birth_time='" . $getDb->pers_birth_time . "',
-            pers_birth_text='" . safe_text_db($getDb->pers_birth_text) . "',
-            pers_stillborn='" . $getDb->pers_stillborn . "',
-            pers_bapt_place='" . safe_text_db($getDb->pers_bapt_place) . "',
-            pers_bapt_date='" . $getDb->pers_bapt_date . "',
-            pers_bapt_text='" . safe_text_db($getDb->pers_bapt_text) . "',
-            pers_religion='" . $getDb->pers_religion . "',
-            pers_death_place='" . safe_text_db($getDb->pers_death_place) . "',
-            pers_death_date='" . $getDb->pers_death_date . "',
-            pers_death_time='" . $getDb->pers_death_time . "',
-            pers_death_text='" . safe_text_db($getDb->pers_death_text) . "',
-            pers_death_cause='" . safe_text_db($getDb->pers_death_cause) . "',
-            pers_buried_place='" . safe_text_db($getDb->pers_buried_place) . "',
-            pers_buried_date='" . $getDb->pers_buried_date . "',
-            pers_buried_text='" . safe_text_db($getDb->pers_buried_text) . "',
-            pers_cremation='" . $getDb->pers_cremation . "',
-                pers_place_index='" . safe_text_db($getDb->pers_place_index) . "',
-                pers_text='" . safe_text_db($getDb->pers_text) . "',
-                pers_alive='" . $getDb->pers_alive . "',
-                pers_quality='" . $getDb->pers_quality . "',
-                pers_new_date='" . $getDb->pers_new_date . "',
-                pers_new_time='" . $getDb->pers_new_time . "',
-                pers_changed_date='" . $getDb->pers_changed_date . "',
-                pers_changed_time='" . $getDb->pers_changed_time . "'";
-                $dbh->query($sql_put);
-                //echo $sql_put.'<br>';
+                $sql_put = $dbh->prepare("INSERT INTO humo_persons SET
+                    pers_gedcomnumber = :pers_gedcomnumber,
+                    pers_tree_id = :pers_tree_id,
+                    pers_tree_prefix = :pers_tree_prefix,
+                    pers_famc = :pers_famc,
+                    pers_fams = :pers_fams,
+                    pers_indexnr = :pers_indexnr,
+                    pers_firstname = :pers_firstname,
+                    pers_callname = :pers_callname,
+                    pers_prefix = :pers_prefix,
+                    pers_lastname = :pers_lastname,
+                    pers_patronym = :pers_patronym,
+                    pers_name_text = :pers_name_text,
+                    pers_sexe = :pers_sexe,
+                    pers_own_code = :pers_own_code,
+                    pers_birth_place = :pers_birth_place,
+                    pers_birth_date = :pers_birth_date,
+                    pers_birth_time = :pers_birth_time,
+                    pers_birth_text = :pers_birth_text,
+                    pers_stillborn = :pers_stillborn,
+                    pers_bapt_place = :pers_bapt_place,
+                    pers_bapt_date = :pers_bapt_date,
+                    pers_bapt_text = :pers_bapt_text,
+                    pers_religion = :pers_religion,
+                    pers_death_place = :pers_death_place,
+                    pers_death_date = :pers_death_date,
+                    pers_death_time = :pers_death_time,
+                    pers_death_text = :pers_death_text,
+                    pers_death_cause = :pers_death_cause,
+                    pers_buried_place = :pers_buried_place,
+                    pers_buried_date = :pers_buried_date,
+                    pers_buried_text = :pers_buried_text,
+                    pers_cremation = :pers_cremation,
+                    pers_place_index = :pers_place_index,
+                    pers_text = :pers_text,
+                    pers_alive = :pers_alive,
+                    pers_quality = :pers_quality,
+                    pers_new_date = :pers_new_date,
+                    pers_new_time = :pers_new_time,
+                    pers_changed_date = :pers_changed_date,
+                    pers_changed_time = :pers_changed_time
+                ");
+                $sql_put->execute([
+                    ':pers_gedcomnumber' => $getDb->pers_gedcomnumber,
+                    ':pers_tree_id' => $updateDb->tree_id,
+                    ':pers_tree_prefix' => $getDb->pers_tree_prefix,
+                    ':pers_famc' => $getDb->pers_famc,
+                    ':pers_fams' => $getDb->pers_fams,
+                    ':pers_indexnr' => $getDb->pers_indexnr,
+                    ':pers_firstname' => $getDb->pers_firstname,
+                    ':pers_callname' => $getDb->pers_callname,
+                    ':pers_prefix' => $getDb->pers_prefix,
+                    ':pers_lastname' => $getDb->pers_lastname,
+                    ':pers_patronym' => $getDb->pers_patronym,
+                    ':pers_name_text' => $getDb->pers_name_text,
+                    ':pers_sexe' => $getDb->pers_sexe,
+                    ':pers_own_code' => $getDb->pers_own_code,
+                    ':pers_birth_place' => $getDb->pers_birth_place,
+                    ':pers_birth_date' => $getDb->pers_birth_date,
+                    ':pers_birth_time' => $getDb->pers_birth_time,
+                    ':pers_birth_text' => $getDb->pers_birth_text,
+                    ':pers_stillborn' => $getDb->pers_stillborn,
+                    ':pers_bapt_place' => $getDb->pers_bapt_place,
+                    ':pers_bapt_date' => $getDb->pers_bapt_date,
+                    ':pers_bapt_text' => $getDb->pers_bapt_text,
+                    ':pers_religion' => $getDb->pers_religion,
+                    ':pers_death_place' => $getDb->pers_death_place,
+                    ':pers_death_date' => $getDb->pers_death_date,
+                    ':pers_death_time' => $getDb->pers_death_time,
+                    ':pers_death_text' => $getDb->pers_death_text,
+                    ':pers_death_cause' => $getDb->pers_death_cause,
+                    ':pers_buried_place' => $getDb->pers_buried_place,
+                    ':pers_buried_date' => $getDb->pers_buried_date,
+                    ':pers_buried_text' => $getDb->pers_buried_text,
+                    ':pers_cremation' => $getDb->pers_cremation,
+                    ':pers_place_index' => $getDb->pers_place_index,
+                    ':pers_text' => $getDb->pers_text,
+                    ':pers_alive' => $getDb->pers_alive,
+                    ':pers_quality' => $getDb->pers_quality,
+                    ':pers_new_date' => $getDb->pers_new_date,
+                    ':pers_new_time' => $getDb->pers_new_time,
+                    ':pers_changed_date' => $getDb->pers_changed_date,
+                    ':pers_changed_time' => $getDb->pers_changed_time
+                ]);
+
                 $pers_id = $dbh->lastInsertId();
 
                 if ($getDb->pers_unprocessed_tags) {
-                    $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-                        tag_pers_id='" . $pers_id . "',
-                        tag_tree_id='" . $updateDb->tree_id . "',
-                        tag_tag='" . safe_text_db($getDb->pers_unprocessed_tags) . "'";
-                    $dbh->query($gebeurtsql);
+                    $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                        tag_pers_id = :pers_id,
+                        tag_tree_id = :tree_id,
+                        tag_tag = :tag
+                    ");
+                    $gebeurtsql->execute([
+                        ':pers_id' => $pers_id,
+                        ':tree_id' => $updateDb->tree_id,
+                        ':tag' => $getDb->pers_unprocessed_tags
+                    ]);
                 }
             }
 
@@ -2398,54 +2373,96 @@ class UpdateCls
             $dbh->beginTransaction();
             $sql_get = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "family");
             while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
-                $sql_put = "INSERT INTO humo_families SET
-                fam_gedcomnumber='" . $getDb->fam_gedcomnumber . "',
-                fam_tree_id='" . $updateDb->tree_id . "',
-                fam_man='" . $getDb->fam_man . "',
-                fam_woman='" . $getDb->fam_woman . "',
-                fam_children='" . $getDb->fam_children . "',
-                fam_kind='" . $getDb->fam_kind . "',
-            fam_relation_date='" . $getDb->fam_relation_date . "',
-            fam_relation_place='" . safe_text_db($getDb->fam_relation_place) . "',
-            fam_relation_text='" . safe_text_db($getDb->fam_relation_text) . "',
-            fam_relation_end_date='" . $getDb->fam_relation_end_date . "',
-            fam_marr_notice_date='" . $getDb->fam_marr_notice_date . "',
-            fam_marr_notice_place='" . safe_text_db($getDb->fam_marr_notice_place) . "',
-            fam_marr_notice_text='" . safe_text_db($getDb->fam_marr_notice_text) . "',
-            fam_marr_date='" . $getDb->fam_marr_date . "',
-            fam_marr_place='" . safe_text_db($getDb->fam_marr_place) . "',
-            fam_marr_text='" . safe_text_db($getDb->fam_marr_text) . "',
-            fam_marr_authority='" . safe_text_db($getDb->fam_marr_authority) . "',
-            fam_marr_church_notice_date='" . $getDb->fam_marr_church_notice_date . "',
-            fam_marr_church_notice_place='" . safe_text_db($getDb->fam_marr_church_notice_place) . "',
-            fam_marr_church_notice_text='" . safe_text_db($getDb->fam_marr_church_notice_text) . "',
-            fam_marr_church_date='" . $getDb->fam_marr_church_date . "',
-            fam_marr_church_place='" . safe_text_db($getDb->fam_marr_church_place) . "',
-            fam_marr_church_text='" . safe_text_db($getDb->fam_marr_church_text) . "',
-            fam_religion='" . safe_text_db($getDb->fam_religion) . "',
-            fam_div_date='" . $getDb->fam_div_date . "',
-            fam_div_place='" . safe_text_db($getDb->fam_div_place) . "',
-            fam_div_text='" . safe_text_db($getDb->fam_div_text) . "',
-            fam_div_authority='" . safe_text_db($getDb->fam_div_authority) . "',
-                fam_text='" . safe_text_db($getDb->fam_text) . "',
-                fam_alive='" . $getDb->fam_alive . "',
-                fam_quality='" . $getDb->fam_quality . "',
-                fam_counter='" . $getDb->fam_counter . "',
-                fam_new_date='" . $getDb->fam_new_date . "',
-                fam_new_time='" . $getDb->fam_new_time . "',
-                fam_changed_date='" . $getDb->fam_changed_date . "',
-                fam_changed_time='" . $getDb->fam_changed_time . "'";
-                $dbh->query($sql_put);
-                //echo $sql_put.'<br>';
+                $sql_put = $dbh->prepare("INSERT INTO humo_families SET
+                    fam_gedcomnumber = :fam_gedcomnumber,
+                    fam_tree_id = :fam_tree_id,
+                    fam_man = :fam_man,
+                    fam_woman = :fam_woman,
+                    fam_children = :fam_children,
+                    fam_kind = :fam_kind,
+                    fam_relation_date = :fam_relation_date,
+                    fam_relation_place = :fam_relation_place,
+                    fam_relation_text = :fam_relation_text,
+                    fam_relation_end_date = :fam_relation_end_date,
+                    fam_marr_notice_date = :fam_marr_notice_date,
+                    fam_marr_notice_place = :fam_marr_notice_place,
+                    fam_marr_notice_text = :fam_marr_notice_text,
+                    fam_marr_date = :fam_marr_date,
+                    fam_marr_place = :fam_marr_place,
+                    fam_marr_text = :fam_marr_text,
+                    fam_marr_authority = :fam_marr_authority,
+                    fam_marr_church_notice_date = :fam_marr_church_notice_date,
+                    fam_marr_church_notice_place = :fam_marr_church_notice_place,
+                    fam_marr_church_notice_text = :fam_marr_church_notice_text,
+                    fam_marr_church_date = :fam_marr_church_date,
+                    fam_marr_church_place = :fam_marr_church_place,
+                    fam_marr_church_text = :fam_marr_church_text,
+                    fam_religion = :fam_religion,
+                    fam_div_date = :fam_div_date,
+                    fam_div_place = :fam_div_place,
+                    fam_div_text = :fam_div_text,
+                    fam_div_authority = :fam_div_authority,
+                    fam_text = :fam_text,
+                    fam_alive = :fam_alive,
+                    fam_quality = :fam_quality,
+                    fam_counter = :fam_counter,
+                    fam_new_date = :fam_new_date,
+                    fam_new_time = :fam_new_time,
+                    fam_changed_date = :fam_changed_date,
+                    fam_changed_time = :fam_changed_time
+                ");
+                $sql_put->execute([
+                    ':fam_gedcomnumber' => $getDb->fam_gedcomnumber,
+                    ':fam_tree_id' => $updateDb->tree_id,
+                    ':fam_man' => $getDb->fam_man,
+                    ':fam_woman' => $getDb->fam_woman,
+                    ':fam_children' => $getDb->fam_children,
+                    ':fam_kind' => $getDb->fam_kind,
+                    ':fam_relation_date' => $getDb->fam_relation_date,
+                    ':fam_relation_place' => $getDb->fam_relation_place,
+                    ':fam_relation_text' => $getDb->fam_relation_text,
+                    ':fam_relation_end_date' => $getDb->fam_relation_end_date,
+                    ':fam_marr_notice_date' => $getDb->fam_marr_notice_date,
+                    ':fam_marr_notice_place' => $getDb->fam_marr_notice_place,
+                    ':fam_marr_notice_text' => $getDb->fam_marr_notice_text,
+                    ':fam_marr_date' => $getDb->fam_marr_date,
+                    ':fam_marr_place' => $getDb->fam_marr_place,
+                    ':fam_marr_text' => $getDb->fam_marr_text,
+                    ':fam_marr_authority' => $getDb->fam_marr_authority,
+                    ':fam_marr_church_notice_date' => $getDb->fam_marr_church_notice_date,
+                    ':fam_marr_church_notice_place' => $getDb->fam_marr_church_notice_place,
+                    ':fam_marr_church_notice_text' => $getDb->fam_marr_church_notice_text,
+                    ':fam_marr_church_date' => $getDb->fam_marr_church_date,
+                    ':fam_marr_church_place' => $getDb->fam_marr_church_place,
+                    ':fam_marr_church_text' => $getDb->fam_marr_church_text,
+                    ':fam_religion' => $getDb->fam_religion,
+                    ':fam_div_date' => $getDb->fam_div_date,
+                    ':fam_div_place' => $getDb->fam_div_place,
+                    ':fam_div_text' => $getDb->fam_div_text,
+                    ':fam_div_authority' => $getDb->fam_div_authority,
+                    ':fam_text' => $getDb->fam_text,
+                    ':fam_alive' => $getDb->fam_alive,
+                    ':fam_quality' => $getDb->fam_quality,
+                    ':fam_counter' => $getDb->fam_counter,
+                    ':fam_new_date' => $getDb->fam_new_date,
+                    ':fam_new_time' => $getDb->fam_new_time,
+                    ':fam_changed_date' => $getDb->fam_changed_date,
+                    ':fam_changed_time' => $getDb->fam_changed_time
+                ]);
 
                 $fam_id = $dbh->lastInsertId();
 
                 if ($getDb->fam_unprocessed_tags) {
-                    $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-                        tag_rel_id='" . $fam_id . "',
-                        tag_tree_id='" . $updateDb->tree_id . "',
-                        tag_tag='" . safe_text_db($getDb->fam_unprocessed_tags) . "'";
-                    $dbh->query($gebeurtsql);
+                    $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                        tag_rel_id = :fam_id,
+                        tag_tree_id = :tree_id,
+                        tag_tag = :tag
+                    ");
+                    $gebeurtsql->execute([
+                        ':fam_id' => $fam_id,
+                        ':tree_id' => $updateDb->tree_id,
+                        ':tag' => $getDb->fam_unprocessed_tags
+                    ]);
                 }
             }
 
@@ -2464,26 +2481,46 @@ class UpdateCls
             if ($updateDb->tree_prefix != 'humo_') {
                 $sql_get = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "repositories");
                 while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
-                    $sql_put = "INSERT INTO humo_repositories SET
-                repo_gedcomnr='" . $getDb->repo_gedcomnr . "',
-                repo_tree_id='" . $updateDb->tree_id . "',
-                repo_name='" . safe_text_db($getDb->repo_name) . "',
-                repo_address='" . safe_text_db($getDb->repo_address) . "',
-                repo_zip='" . $getDb->repo_zip . "',
-                repo_place='" . safe_text_db($getDb->repo_place) . "',
-                repo_phone='" . $getDb->repo_phone . "',
-                repo_date='" . $getDb->repo_date . "',
-                repo_text='" . safe_text_db($getDb->repo_text) . "',
-                repo_photo='" . safe_text_db($getDb->repo_photo) . "',
-                repo_mail='" . $getDb->repo_mail . "',
-                repo_url='" . $getDb->repo_url . "',
-                repo_quality='" . $getDb->repo_quality . "',
-                repo_unprocessed_tags='" . safe_text_db($getDb->repo_unprocessed_tags) . "',
-                repo_new_date='" . $getDb->repo_new_date . "',
-                repo_new_time='" . $getDb->repo_new_time . "',
-                repo_changed_date='" . $getDb->repo_changed_date . "',
-                repo_changed_time='" . $getDb->repo_changed_time . "'";
-                    $dbh->query($sql_put);
+                    $sql_put = $dbh->prepare("INSERT INTO humo_repositories SET
+                        repo_gedcomnr = :gedcomnr,
+                        repo_tree_id = :tree_id,
+                        repo_name = :name,
+                        repo_address = :address,
+                        repo_zip = :zip,
+                        repo_place = :place,
+                        repo_phone = :phone,
+                        repo_date = :date,
+                        repo_text = :text,
+                        repo_photo = :photo,
+                        repo_mail = :mail,
+                        repo_url = :url,
+                        repo_quality = :quality,
+                        repo_unprocessed_tags = :unprocessed_tags,
+                        repo_new_date = :new_date,
+                        repo_new_time = :new_time,
+                        repo_changed_date = :changed_date,
+                        repo_changed_time = :changed_time
+                    ");
+                    $sql_put->execute([
+                        ':gedcomnr' => $getDb->repo_gedcomnr,
+                        ':tree_id' => $updateDb->tree_id,
+                        ':name' => $getDb->repo_name,
+                        ':address' => $getDb->repo_address,
+                        ':zip' => $getDb->repo_zip,
+                        ':place' => $getDb->repo_place,
+                        ':phone' => $getDb->repo_phone,
+                        ':date' => $getDb->repo_date,
+                        ':text' => $getDb->repo_text,
+                        ':photo' => $getDb->repo_photo,
+                        ':mail' => $getDb->repo_mail,
+                        ':url' => $getDb->repo_url,
+                        ':quality' => $getDb->repo_quality,
+                        ':unprocessed_tags' => $getDb->repo_unprocessed_tags,
+                        ':new_date' => $getDb->repo_new_date,
+                        ':new_time' => $getDb->repo_new_time,
+                        ':changed_date' => $getDb->repo_changed_date,
+                        ':changed_time' => $getDb->repo_changed_time
+                    ]);
                 }
 
                 // *** Remove old humo[nr]_repositories table ***
@@ -2494,34 +2531,62 @@ class UpdateCls
                 $dbh->beginTransaction();
                 $sql_get = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "sources");
                 while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
-                    $sql_put = "INSERT INTO humo_sources SET
-                    source_tree_id='" . $updateDb->tree_id . "',
-                    source_status='" . $getDb->source_status . "',
-                    source_gedcomnr='" . $getDb->source_gedcomnr . "',
-                    source_order='" . $getDb->source_order . "',
-                    source_title='" . safe_text_db($getDb->source_title) . "',
-                    source_abbr='" . safe_text_db($getDb->source_abbr) . "',
-                    source_date='" . $getDb->source_date . "',
-                    source_place='" . safe_text_db($getDb->source_place) . "',
-                    source_publ='" . safe_text_db($getDb->source_publ) . "',
-                    source_refn='" . safe_text_db($getDb->source_refn) . "',
-                    source_auth='" . safe_text_db($getDb->source_auth) . "',
-                    source_subj='" . safe_text_db($getDb->source_subj) . "',
-                    source_item='" . safe_text_db($getDb->source_item) . "',
-                    source_kind='" . safe_text_db($getDb->source_kind) . "',
-                    source_text='" . safe_text_db($getDb->source_text) . "',
-                    source_photo='" . safe_text_db($getDb->source_photo) . "',
-                    source_repo_name='" . safe_text_db($getDb->source_repo_name) . "',
-                    source_repo_caln='" . safe_text_db($getDb->source_repo_caln) . "',
-                    source_repo_page='" . safe_text_db($getDb->source_repo_page) . "',
-                    source_repo_gedcomnr='" . $getDb->source_repo_gedcomnr . "',
-                    source_quality='" . $getDb->source_quality . "',
-                    source_unprocessed_tags='" . safe_text_db($getDb->source_unprocessed_tags) . "',
-                    source_new_date='" . $getDb->source_new_date . "',
-                    source_new_time='" . $getDb->source_new_time . "',
-                    source_changed_date='" . $getDb->source_changed_date . "',
-                    source_changed_time='" . $getDb->source_changed_time . "'";
-                    $dbh->query($sql_put);
+                    $sql_put = $dbh->prepare("INSERT INTO humo_sources SET
+                        source_tree_id = :tree_id,
+                        source_status = :status,
+                        source_gedcomnr = :gedcomnr,
+                        source_order = :order,
+                        source_title = :title,
+                        source_abbr = :abbr,
+                        source_date = :date,
+                        source_place = :place,
+                        source_publ = :publ,
+                        source_refn = :refn,
+                        source_auth = :auth,
+                        source_subj = :subj,
+                        source_item = :item,
+                        source_kind = :kind,
+                        source_text = :text,
+                        source_photo = :photo,
+                        source_repo_name = :repo_name,
+                        source_repo_caln = :repo_caln,
+                        source_repo_page = :repo_page,
+                        source_repo_gedcomnr = :repo_gedcomnr,
+                        source_quality = :quality,
+                        source_unprocessed_tags = :unprocessed_tags,
+                        source_new_date = :new_date,
+                        source_new_time = :new_time,
+                        source_changed_date = :changed_date,
+                        source_changed_time = :changed_time
+                    ");
+                    $sql_put->execute([
+                        ':tree_id' => $updateDb->tree_id,
+                        ':status' => $getDb->source_status,
+                        ':gedcomnr' => $getDb->source_gedcomnr,
+                        ':order' => $getDb->source_order,
+                        ':title' => $getDb->source_title,
+                        ':abbr' => $getDb->source_abbr,
+                        ':date' => $getDb->source_date,
+                        ':place' => $getDb->source_place,
+                        ':publ' => $getDb->source_publ,
+                        ':refn' => $getDb->source_refn,
+                        ':auth' => $getDb->source_auth,
+                        ':subj' => $getDb->source_subj,
+                        ':item' => $getDb->source_item,
+                        ':kind' => $getDb->source_kind,
+                        ':text' => $getDb->source_text,
+                        ':photo' => $getDb->source_photo,
+                        ':repo_name' => $getDb->source_repo_name,
+                        ':repo_caln' => $getDb->source_repo_caln,
+                        ':repo_page' => $getDb->source_repo_page,
+                        ':repo_gedcomnr' => $getDb->source_repo_gedcomnr,
+                        ':quality' => $getDb->source_quality,
+                        ':unprocessed_tags' => $getDb->source_unprocessed_tags,
+                        ':new_date' => $getDb->source_new_date,
+                        ':new_time' => $getDb->source_new_time,
+                        ':changed_date' => $getDb->source_changed_date,
+                        ':changed_time' => $getDb->source_changed_time
+                    ]);
                 }
                 // *** Commit data in database ***
                 $dbh->commit();
@@ -2534,17 +2599,28 @@ class UpdateCls
                 $dbh->beginTransaction();
                 $sql_get = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "texts");
                 while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
-                    $sql_put = "INSERT INTO humo_texts SET
-                    text_tree_id='" . $updateDb->tree_id . "',
-                    text_gedcomnr='" . $getDb->text_gedcomnr . "',
-                    text_text='" . safe_text_db($getDb->text_text) . "',
-                    text_quality='" . $getDb->text_quality . "',
-                    text_unprocessed_tags='" . safe_text_db($getDb->text_unprocessed_tags) . "',
-                    text_new_date='" . $getDb->text_new_date . "',
-                    text_new_time='" . $getDb->text_new_time . "',
-                    text_changed_date='" . $getDb->text_changed_date . "',
-                    text_changed_time='" . $getDb->text_changed_time . "'";
-                    $dbh->query($sql_put);
+                    $sql_put = $dbh->prepare("INSERT INTO humo_texts SET
+                        text_tree_id = :tree_id,
+                        text_gedcomnr = :gedcomnr,
+                        text_text = :text,
+                        text_quality = :quality,
+                        text_unprocessed_tags = :unprocessed_tags,
+                        text_new_date = :new_date,
+                        text_new_time = :new_time,
+                        text_changed_date = :changed_date,
+                        text_changed_time = :changed_time
+                    ");
+                    $sql_put->execute([
+                        ':tree_id' => $updateDb->tree_id,
+                        ':gedcomnr' => $getDb->text_gedcomnr,
+                        ':text' => $getDb->text_text,
+                        ':quality' => $getDb->text_quality,
+                        ':unprocessed_tags' => $getDb->text_unprocessed_tags,
+                        ':new_date' => $getDb->text_new_date,
+                        ':new_time' => $getDb->text_new_time,
+                        ':changed_date' => $getDb->text_changed_date,
+                        ':changed_time' => $getDb->text_changed_time
+                    ]);
                 }
                 // *** Commit data in database ***
                 $dbh->commit();
@@ -2581,28 +2657,50 @@ class UpdateCls
                         $connect_sub_kind = 'fam_address_source';
                     }
 
-                    $sql_put = "INSERT INTO humo_connections SET
-                    connect_tree_id='" . $updateDb->tree_id . "',
-                    connect_order='" . $getDb->connect_order . "',
-                    connect_kind='" . $getDb->connect_kind . "',
-                    connect_sub_kind='" . $connect_sub_kind . "',
-                    connect_connect_id='" . $getDb->connect_connect_id . "',
-                    connect_date='" . $getDb->connect_date . "',
-                    connect_place='" . safe_text_db($getDb->connect_place) . "',
-                    connect_time='" . safe_text_db($getDb->connect_time) . "',
-                    connect_page='" . safe_text_db($getDb->connect_page) . "',
-                    connect_role='" . safe_text_db($getDb->connect_role) . "',
-                    connect_text='" . safe_text_db($getDb->connect_text) . "',
-                    connect_source_id='" . $getDb->connect_source_id . "',
-                    connect_item_id='" . $getDb->connect_item_id . "',
-                    connect_status='" . $getDb->connect_status . "',
-                    connect_quality='" . $getDb->connect_quality . "',
-                    connect_unprocessed_tags='" . safe_text_db($getDb->connect_unprocessed_tags) . "',
-                    connect_new_date='" . $getDb->connect_new_date . "',
-                    connect_new_time='" . $getDb->connect_new_time . "',
-                    connect_changed_date='" . $getDb->connect_changed_date . "',
-                    connect_changed_time='" . $getDb->connect_changed_time . "'";
-                    $dbh->query($sql_put);
+                    $sql_put = $dbh->prepare("INSERT INTO humo_connections SET
+                        connect_tree_id = :tree_id,
+                        connect_order = :order,
+                        connect_kind = :kind,
+                        connect_sub_kind = :sub_kind,
+                        connect_connect_id = :connect_id,
+                        connect_date = :date,
+                        connect_place = :place,
+                        connect_time = :time,
+                        connect_page = :page,
+                        connect_role = :role,
+                        connect_text = :text,
+                        connect_source_id = :source_id,
+                        connect_item_id = :item_id,
+                        connect_status = :status,
+                        connect_quality = :quality,
+                        connect_unprocessed_tags = :unprocessed_tags,
+                        connect_new_date = :new_date,
+                        connect_new_time = :new_time,
+                        connect_changed_date = :changed_date,
+                        connect_changed_time = :changed_time
+                    ");
+                    $sql_put->execute([
+                        ':tree_id' => $updateDb->tree_id,
+                        ':order' => $getDb->connect_order,
+                        ':kind' => $getDb->connect_kind,
+                        ':sub_kind' => $connect_sub_kind,
+                        ':connect_id' => $getDb->connect_connect_id,
+                        ':date' => $getDb->connect_date,
+                        ':place' => $getDb->connect_place,
+                        ':time' => $getDb->connect_time,
+                        ':page' => $getDb->connect_page,
+                        ':role' => $getDb->connect_role,
+                        ':text' => $getDb->connect_text,
+                        ':source_id' => $getDb->connect_source_id,
+                        ':item_id' => $getDb->connect_item_id,
+                        ':status' => $getDb->connect_status,
+                        ':quality' => $getDb->connect_quality,
+                        ':unprocessed_tags' => $getDb->connect_unprocessed_tags,
+                        ':new_date' => $getDb->connect_new_date,
+                        ':new_time' => $getDb->connect_new_time,
+                        ':changed_date' => $getDb->connect_changed_date,
+                        ':changed_time' => $getDb->connect_changed_time
+                    ]);
                 }
                 // *** Commit data in database ***
                 $dbh->commit();
@@ -2616,26 +2714,46 @@ class UpdateCls
                 $dbh->beginTransaction();
                 $sql_get = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "addresses");
                 while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
-                    $sql_put = "INSERT INTO humo_addresses SET
-                    address_tree_id='" . $updateDb->tree_id . "',
-                    address_gedcomnr='" . $getDb->address_gedcomnr . "',
-                    address_order='" . $getDb->address_order . "',
-                    address_person_id='" . $getDb->address_person_id . "',
-                    address_family_id='" . $getDb->address_family_id . "',
-                    address_address='" . safe_text_db($getDb->address_address) . "',
-                    address_zip='" . safe_text_db($getDb->address_zip) . "',
-                    address_place='" . safe_text_db($getDb->address_place) . "',
-                    address_phone='" . safe_text_db($getDb->address_phone) . "',
-                    address_date='" . $getDb->address_date . "',
-                    address_text='" . safe_text_db($getDb->address_text) . "',
-                    address_photo='" . safe_text_db($getDb->address_photo) . "',
-                    address_quality='" . $getDb->address_quality . "',
-                    address_unprocessed_tags='" . safe_text_db($getDb->address_unprocessed_tags) . "',
-                    address_new_date='" . $getDb->address_new_date . "',
-                    address_new_time='" . $getDb->address_new_time . "',
-                    address_changed_date='" . $getDb->address_changed_date . "',
-                    address_changed_time='" . $getDb->address_changed_time . "'";
-                    $dbh->query($sql_put);
+                    $sql_put = $dbh->prepare("INSERT INTO humo_addresses SET
+                        address_tree_id = :tree_id,
+                        address_gedcomnr = :gedcomnr,
+                        address_order = :order,
+                        address_person_id = :person_id,
+                        address_family_id = :family_id,
+                        address_address = :address,
+                        address_zip = :zip,
+                        address_place = :place,
+                        address_phone = :phone,
+                        address_date = :date,
+                        address_text = :text,
+                        address_photo = :photo,
+                        address_quality = :quality,
+                        address_unprocessed_tags = :unprocessed_tags,
+                        address_new_date = :new_date,
+                        address_new_time = :new_time,
+                        address_changed_date = :changed_date,
+                        address_changed_time = :changed_time
+                    ");
+                    $sql_put->execute([
+                        ':tree_id' => $updateDb->tree_id,
+                        ':gedcomnr' => $getDb->address_gedcomnr,
+                        ':order' => $getDb->address_order,
+                        ':person_id' => $getDb->address_person_id,
+                        ':family_id' => $getDb->address_family_id,
+                        ':address' => $getDb->address_address,
+                        ':zip' => $getDb->address_zip,
+                        ':place' => $getDb->address_place,
+                        ':phone' => $getDb->address_phone,
+                        ':date' => $getDb->address_date,
+                        ':text' => $getDb->address_text,
+                        ':photo' => $getDb->address_photo,
+                        ':quality' => $getDb->address_quality,
+                        ':unprocessed_tags' => $getDb->address_unprocessed_tags,
+                        ':new_date' => $getDb->address_new_date,
+                        ':new_time' => $getDb->address_new_time,
+                        ':changed_date' => $getDb->address_changed_date,
+                        ':changed_time' => $getDb->address_changed_time
+                    ]);
 
                     // PROCESS connection id's
                     // UPDATE connection table
@@ -2667,26 +2785,46 @@ class UpdateCls
                 $sql_get = $dbh->query("SELECT * FROM " . $updateDb->tree_prefix . "events");
                 while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
                     //event_event='".$getDb->event_event."',
-                    $sql_put = "INSERT INTO humo_events SET
-                    event_tree_id='" . $updateDb->tree_id . "',
-                    event_gedcomnr='" . $getDb->event_gedcomnr . "',
-                    event_order='" . $getDb->event_order . "',
-                    event_person_id='" . $getDb->event_person_id . "',
-                    event_family_id='" . $getDb->event_family_id . "',
-                    event_kind='" . $getDb->event_kind . "',
-                    event_event='" . safe_text_db($getDb->event_event) . "',
-                    event_event_extra='" . safe_text_db($getDb->event_event_extra) . "',
-                    event_gedcom='" . $getDb->event_gedcom . "',
-                    event_date='" . $getDb->event_date . "',
-                    event_place='" . safe_text_db($getDb->event_place) . "',
-                    event_text='" . safe_text_db($getDb->event_text) . "',
-                    event_quality='" . $getDb->event_quality . "',
-                    event_unprocessed_tags='" . safe_text_db($getDb->event_unprocessed_tags) . "',
-                    event_new_date='" . $getDb->event_new_date . "',
-                    event_new_time='" . $getDb->event_new_time . "',
-                    event_changed_date='" . $getDb->event_changed_date . "',
-                    event_changed_time='" . $getDb->event_changed_time . "'";
-                    $dbh->query($sql_put);
+                    $sql_put = $dbh->prepare("INSERT INTO humo_events SET
+                        event_tree_id = :tree_id,
+                        event_gedcomnr = :gedcomnr,
+                        event_order = :order,
+                        event_person_id = :person_id,
+                        event_family_id = :family_id,
+                        event_kind = :kind,
+                        event_event = :event,
+                        event_event_extra = :event_extra,
+                        event_gedcom = :gedcom,
+                        event_date = :date,
+                        event_place = :place,
+                        event_text = :text,
+                        event_quality = :quality,
+                        event_unprocessed_tags = :unprocessed_tags,
+                        event_new_date = :new_date,
+                        event_new_time = :new_time,
+                        event_changed_date = :changed_date,
+                        event_changed_time = :changed_time
+                    ");
+                    $sql_put->execute([
+                        ':tree_id' => $updateDb->tree_id,
+                        ':gedcomnr' => $getDb->event_gedcomnr,
+                        ':order' => $getDb->event_order,
+                        ':person_id' => $getDb->event_person_id,
+                        ':family_id' => $getDb->event_family_id,
+                        ':kind' => $getDb->event_kind,
+                        ':event' => $getDb->event_event,
+                        ':event_extra' => $getDb->event_event_extra,
+                        ':gedcom' => $getDb->event_gedcom,
+                        ':date' => $getDb->event_date,
+                        ':place' => $getDb->event_place,
+                        ':text' => $getDb->event_text,
+                        ':quality' => $getDb->event_quality,
+                        ':unprocessed_tags' => $getDb->event_unprocessed_tags,
+                        ':new_date' => $getDb->event_new_date,
+                        ':new_time' => $getDb->event_new_time,
+                        ':changed_date' => $getDb->event_changed_date,
+                        ':changed_time' => $getDb->event_changed_time
+                    ]);
 
                     // PROCESS connection id's
                     // UPDATE connection table
@@ -2729,11 +2867,16 @@ class UpdateCls
         $sql = "SELECT source_id, source_tree_id, source_unprocessed_tags FROM humo_sources WHERE source_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-                tag_tree_id='" . $qryDb->source_tree_id . "',
-                tag_source_id='" . $qryDb->source_id . "',
-                tag_tag='" . safe_text_db($qryDb->source_unprocessed_tags) . "'";
-            $dbh->query($gebeurtsql);
+            $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                tag_tree_id = :tree_id,
+                tag_source_id = :source_id,
+                tag_tag = :tag
+            ");
+            $gebeurtsql->execute([
+                ':tree_id' => $qryDb->source_tree_id,
+                ':source_id' => $qryDb->source_id,
+                ':tag' => $qryDb->source_unprocessed_tags
+            ]);
         }
         // *** Commit data in database ***
         $dbh->commit();
@@ -2745,11 +2888,16 @@ class UpdateCls
         $sql = "SELECT repo_id, repo_tree_id, repo_unprocessed_tags FROM humo_repositories WHERE repo_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-            tag_tree_id='" . $qryDb->repo_tree_id . "',
-            tag_repo_id='" . $qryDb->repo_id . "',
-            tag_tag='" . safe_text_db($qryDb->repo_unprocessed_tags) . "'";
-            $dbh->query($gebeurtsql);
+            $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                tag_tree_id = :tree_id,
+                tag_repo_id = :repo_id,
+                tag_tag = :tag
+            ");
+            $gebeurtsql->execute([
+                ':tree_id' => $qryDb->repo_tree_id,
+                ':repo_id' => $qryDb->repo_id,
+                ':tag' => $qryDb->repo_unprocessed_tags
+            ]);
         }
         // *** Remove tags from repositories table ***
         $qry = "ALTER TABLE humo_repositories DROP repo_unprocessed_tags;";
@@ -2761,11 +2909,16 @@ class UpdateCls
         $sql = "SELECT text_id, text_tree_id, text_unprocessed_tags FROM humo_texts WHERE text_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-                tag_tree_id='" . $qryDb->text_tree_id . "',
-                tag_text_id='" . $qryDb->text_id . "',
-                tag_tag='" . safe_text_db($qryDb->text_unprocessed_tags) . "'";
-            $dbh->query($gebeurtsql);
+            $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                tag_tree_id = :tree_id,
+                tag_text_id = :text_id,
+                tag_tag = :tag
+            ");
+            $gebeurtsql->execute([
+                ':tree_id' => $qryDb->text_tree_id,
+                ':text_id' => $qryDb->text_id,
+                ':tag' => $qryDb->text_unprocessed_tags
+            ]);
         }
         // *** Commit data in database ***
         $dbh->commit();
@@ -2779,11 +2932,16 @@ class UpdateCls
         $sql = "SELECT connect_id, connect_tree_id, connect_unprocessed_tags FROM humo_connections WHERE connect_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-                tag_tree_id='" . $qryDb->connect_tree_id . "',
-                tag_connect_id='" . $qryDb->connect_id . "',
-                tag_tag='" . safe_text_db($qryDb->connect_unprocessed_tags) . "'";
-            $dbh->query($gebeurtsql);
+            $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                tag_tree_id = :tree_id,
+                tag_connect_id = :connect_id,
+                tag_tag = :tag
+            ");
+            $gebeurtsql->execute([
+                ':tree_id' => $qryDb->connect_tree_id,
+                ':connect_id' => $qryDb->connect_id,
+                ':tag' => $qryDb->connect_unprocessed_tags
+            ]);
         }
         // *** Commit data in database ***
         $dbh->commit();
@@ -2797,11 +2955,16 @@ class UpdateCls
         $sql = "SELECT address_id, address_tree_id, address_unprocessed_tags FROM humo_addresses WHERE address_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-                tag_tree_id='" . $qryDb->address_tree_id . "',
-                tag_address_id='" . $qryDb->address_id . "',
-                tag_tag='" . safe_text_db($qryDb->address_unprocessed_tags) . "'";
-            $dbh->query($gebeurtsql);
+            $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                tag_tree_id = :tree_id,
+                tag_address_id = :address_id,
+                tag_tag = :tag
+            ");
+            $gebeurtsql->execute([
+                ':tree_id' => $qryDb->address_tree_id,
+                ':address_id' => $qryDb->address_id,
+                ':tag' => $qryDb->address_unprocessed_tags
+            ]);
         }
         // *** Commit data in database ***
         $dbh->commit();
@@ -2815,11 +2978,16 @@ class UpdateCls
         $sql = "SELECT event_id, event_tree_id, event_unprocessed_tags FROM humo_events WHERE event_unprocessed_tags LIKE '_%'";
         $qry = $dbh->query($sql);
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-            $gebeurtsql = "INSERT INTO humo_unprocessed_tags SET
-                tag_tree_id='" . $qryDb->event_tree_id . "',
-                tag_event_id='" . $qryDb->event_id . "',
-                tag_tag='" . safe_text_db($qryDb->event_unprocessed_tags) . "'";
-            $dbh->query($gebeurtsql);
+            $gebeurtsql = $dbh->prepare("INSERT INTO humo_unprocessed_tags SET
+                tag_tree_id = :tree_id,
+                tag_event_id = :event_id,
+                tag_tag = :tag
+            ");
+            $gebeurtsql->execute([
+                ':tree_id' => $qryDb->event_tree_id,
+                ':event_id' => $qryDb->event_id,
+                ':tag' => $qryDb->event_unprocessed_tags
+            ]);
         }
         // *** Commit data in database ***
         $dbh->commit();
@@ -2836,10 +3004,6 @@ class UpdateCls
 
     public function update_v5_1_6(): void
     {
-        // **************************************
-        // *** Update procedure version 5.1.6 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.1.6</td><td style="background-color:#00FF00">';
@@ -2908,10 +3072,6 @@ class UpdateCls
 
     public function update_v5_1_9(): void
     {
-        // **************************************
-        // *** Update procedure version 5.1.9 ***
-        // **************************************
-
         global $dbh;
 
         echo '<tr><td>HuMo-genealogy update V5.1.9</td><td style="background-color:#00FF00">';
@@ -3046,10 +3206,6 @@ class UpdateCls
 
     public function update_v5_2_5(): void
     {
-        // **************************************
-        // *** Update procedure version 5.2.5 ***
-        // **************************************
-
         global $dbh;
 
         // *** Show update status ***
@@ -3228,10 +3384,6 @@ class UpdateCls
 
     public function update_v5_6_1(): void
     {
-        // **************************************
-        // *** Update procedure version 5.6.1 ***
-        // **************************************
-
         global $dbh;
 
         // *** Show update status ***
@@ -3365,10 +3517,6 @@ class UpdateCls
 
     public function update_v5_7(): void
     {
-        // ************************************
-        // *** Update procedure version 5.7 ***
-        // ************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3410,8 +3558,6 @@ class UpdateCls
             WHERE address_tree_id='" . $updateDb->tree_id . "'
             AND (address_connect_kind='person' OR address_connect_kind='family')");
             while ($addressDb = $address_qry->fetch(PDO::FETCH_OBJ)) {
-                //connect_order='".$count."',
-                //$address_connect_sub_kind='person_address';
                 $sql = "INSERT INTO humo_connections SET
                 connect_tree_id='" . $updateDb->tree_id . "',
                 connect_item_id='R" . $new_gedcomnumber . "',
@@ -3423,18 +3569,16 @@ class UpdateCls
                     $sql .= "connect_kind='family', connect_sub_kind='family_address',";
                 }
                 $sql .= "connect_connect_id='" . $addressDb->address_connect_id . "'";
-                //echo $sql.'<br>';
                 $dbh->query($sql);
 
                 $sql = "UPDATE humo_addresses SET
                 address_gedcomnr='R" . $new_gedcomnumber . "',
-                address_order='',
+                address_order=0,
                 address_date='',
                 address_connect_kind='',
                 address_connect_sub_kind='',
                 address_connect_id=''
                 WHERE address_id='" . $addressDb->address_id . "'";
-                //echo $sql.'<br><br>';
                 $dbh->query($sql);
 
                 $new_gedcomnumber++;
@@ -3463,24 +3607,30 @@ class UpdateCls
             AND substring(connect_sub_kind, -7)='_source' AND connect_source_id NOT LIKE '_%'";
             $qry = $dbh->query($sql);
             while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                $sql = "INSERT INTO humo_sources SET
-                source_tree_id='" . $updateDb->tree_id . "',
-                source_gedcomnr='S" . $new_gedcomnumber . "',
-                source_status='',
-                source_title='',
-                source_date='" . $qryDb->connect_date . "',
-                source_place='',
-                source_publ='',
-                source_refn='',
-                source_auth='',
-                source_subj='',
-                source_item='',
-                source_kind='',
-                source_repo_caln='',
-                source_repo_page='',
-                source_repo_gedcomnr='',
-                source_text='" . safe_text_db($qryDb->connect_text) . "'";
-                $dbh->query($sql);
+                $sql = $dbh->prepare("INSERT INTO humo_sources SET
+                    source_tree_id = :tree_id,
+                    source_gedcomnr = :gedcomnr,
+                    source_status = '',
+                    source_title = '',
+                    source_date = :date,
+                    source_place = '',
+                    source_publ = '',
+                    source_refn = '',
+                    source_auth = '',
+                    source_subj = '',
+                    source_item = '',
+                    source_kind = '',
+                    source_repo_caln = '',
+                    source_repo_page = '',
+                    source_repo_gedcomnr = '',
+                    source_text = :text
+                ");
+                $sql->execute([
+                    ':tree_id' => $updateDb->tree_id,
+                    ':gedcomnr' => 'S' . $new_gedcomnumber,
+                    ':date' => $qryDb->connect_date,
+                    ':text' => $qryDb->connect_text
+                ]);
 
                 $sql = "UPDATE humo_connections SET connect_text='', connect_source_id='S" . $new_gedcomnumber . "' WHERE connect_id='" . $qryDb->connect_id . "'";
                 $dbh->query($sql);
@@ -3508,10 +3658,6 @@ class UpdateCls
 
     public function update_v5_9(): void
     {
-        // ************************************
-        // *** Update procedure version 5.9 ***
-        // ************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3556,17 +3702,20 @@ class UpdateCls
         //$dbh->beginTransaction();
         $sql_get = $dbh->query("SELECT pers_gedcomnumber,pers_tree_id,pers_callname FROM humo_persons WHERE pers_callname LIKE '_%'");
         while ($getDb = $sql_get->fetch(PDO::FETCH_OBJ)) {
-            $sql_put = "INSERT INTO humo_events SET
-            event_tree_id='" . $getDb->pers_tree_id . "',
-            event_order='1',
-            event_connect_kind='person',
-            event_connect_id='" . $getDb->pers_gedcomnumber . "',
-            event_kind='name',
-            event_event='" . safe_text_db($getDb->pers_callname) . "',
-            event_gedcom='NICK'";
-            //echo $sql_put.'<br>';
-            $dbh->query($sql_put);
-            //$pers_id=$dbh->lastInsertId();
+            $sql_put = $dbh->prepare("INSERT INTO humo_events SET
+                event_tree_id = :event_tree_id,
+                event_order = 1,
+                event_connect_kind = 'person',
+                event_connect_id = :event_connect_id,
+                event_kind = 'name',
+                event_event = :event_event,
+                event_gedcom = 'NICK'
+            ");
+            $sql_put->execute([
+                ':event_tree_id' => $getDb->pers_tree_id,
+                ':event_connect_id' => $getDb->pers_gedcomnumber,
+                ':event_event' => $getDb->pers_callname
+            ]);
         }
         // *** Commit data in database ***
         //$dbh->commit();
@@ -3587,10 +3736,6 @@ class UpdateCls
 
     public function update_v6_0_1(): void
     {
-        // **************************************
-        // *** Update procedure version 6.0.1 ***
-        // **************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3678,10 +3823,6 @@ class UpdateCls
 
     public function update_v6_4_1(): void
     {
-        // **************************************
-        // *** Update procedure version 6.4.1 ***
-        // **************************************
-
         global $dbh, $db_functions;
 
         // *** Show update status ***
@@ -3867,10 +4008,6 @@ class UpdateCls
 
     public function update_v6_7_2(): void
     {
-        // **************************************
-        // *** Update procedure version 6.7.2 ***
-        // **************************************
-
         global $dbh;
 
         // *** Show update status ***
@@ -4005,10 +4142,6 @@ class UpdateCls
 
     public function update_v6_7_9($dbh): void
     {
-        // **************************************
-        // *** Update procedure version 6.7.9 ***
-        // **************************************
-
         // *** Show update status ***
         //ob_start();
         ?>
@@ -4077,26 +4210,40 @@ class UpdateCls
         // *** Add seperate general birth_declaration and death_declaration events ***
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             if ($qryDb->event_date || $qryDb->event_place || $qryDb->event_text) {
-                $sql_put = "INSERT INTO humo_events SET
-                    event_tree_id='" . $qryDb->event_tree_id . "',
-                    event_gedcomnr='',
-                    event_order='" . $qryDb->event_order . "',
-                    event_connect_kind='person',
-                    event_connect_id='" . $qryDb->event_connect_id . "',
-                    event_kind='" . $qryDb->event_connect_kind . "',
-                    event_event='',
-                    event_event_extra='" . safe_text_db($qryDb->event_event_extra) . "',
-                    event_gedcom='EVEN',
-                    event_date='" . $qryDb->event_date . "',
-                    event_place='" . safe_text_db($qryDb->event_place) . "',
-                    event_text='" . safe_text_db($qryDb->event_text) . "',
-                    event_quality='" . $qryDb->event_quality . "',
-                    event_new_user_id='" . $qryDb->event_new_user_id . "',
-                    event_new_datetime='" . $qryDb->event_new_datetime . "',
-                    event_changed_user_id='" . $qryDb->event_changed_user_id . "',
-                    event_changed_datetime='" . $qryDb->event_changed_datetime . "'";
-
-                $dbh->query($sql_put);
+                $sql_put = $dbh->prepare("INSERT INTO humo_events SET
+                    event_tree_id = :event_tree_id,
+                    event_gedcomnr = '',
+                    event_order = :event_order,
+                    event_connect_kind = 'person',
+                    event_connect_id = :event_connect_id,
+                    event_kind = :event_kind,
+                    event_event = '',
+                    event_event_extra = :event_event_extra,
+                    event_gedcom = 'EVEN',
+                    event_date = :event_date,
+                    event_place = :event_place,
+                    event_text = :event_text,
+                    event_quality = :event_quality,
+                    event_new_user_id = :event_new_user_id,
+                    event_new_datetime = :event_new_datetime,
+                    event_changed_user_id = :event_changed_user_id,
+                    event_changed_datetime = :event_changed_datetime
+                ");
+                $sql_put->execute([
+                    ':event_tree_id' => $qryDb->event_tree_id,
+                    ':event_order' => $qryDb->event_order,
+                    ':event_connect_id' => $qryDb->event_connect_id,
+                    ':event_kind' => $qryDb->event_connect_kind,
+                    ':event_event_extra' => $qryDb->event_event_extra,
+                    ':event_date' => $qryDb->event_date,
+                    ':event_place' => $qryDb->event_place,
+                    ':event_text' => $qryDb->event_text,
+                    ':event_quality' => $qryDb->event_quality,
+                    ':event_new_user_id' => $qryDb->event_new_user_id,
+                    ':event_new_datetime' => $qryDb->event_new_datetime,
+                    ':event_changed_user_id' => $qryDb->event_changed_user_id,
+                    ':event_changed_datetime' => $qryDb->event_changed_datetime,
+                ]);
                 $last_insert = $dbh->lastInsertId();
 
                 // *** Update sources connected to these events connections ***
@@ -4137,10 +4284,6 @@ class UpdateCls
 
     public function update_v6_7_9a($dbh): void
     {
-        // ***************************************
-        // *** Update procedure version 6.7.9a ***
-        // ***************************************
-
         // *** Show update status ***
         //ob_start();
         ?>
@@ -4168,26 +4311,40 @@ class UpdateCls
         // *** Add seperate general birth_declaration and death_declaration events ***
         while ($qryDb = $qry->fetch(PDO::FETCH_OBJ)) {
             if ($qryDb->event_date || $qryDb->event_place || $qryDb->event_text) {
-                $sql_put = "INSERT INTO humo_events SET
-                    event_tree_id='" . $qryDb->event_tree_id . "',
+                $sql_put = $dbh->prepare("INSERT INTO humo_events SET
+                    event_tree_id=:event_tree_id,
                     event_gedcomnr='',
-                    event_order='" . $qryDb->event_order . "',
+                    event_order=:event_order,
                     event_connect_kind='person',
-                    event_connect_id='" . $qryDb->event_connect_id . "',
-                    event_kind='" . $qryDb->event_connect_kind . "',
+                    event_connect_id=:event_connect_id,
+                    event_kind=:event_kind,
                     event_event='',
-                    event_event_extra='" . safe_text_db($qryDb->event_event_extra) . "',
+                    event_event_extra=:event_event_extra,
                     event_gedcom='EVEN',
-                    event_date='" . $qryDb->event_date . "',
-                    event_place='" . safe_text_db($qryDb->event_place) . "',
-                    event_text='" . safe_text_db($qryDb->event_text) . "',
-                    event_quality='" . $qryDb->event_quality . "',
-                    event_new_user_id='" . $qryDb->event_new_user_id . "',
-                    event_new_datetime='" . $qryDb->event_new_datetime . "',
-                    event_changed_user_id='" . $qryDb->event_changed_user_id . "',
-                    event_changed_datetime='" . $qryDb->event_changed_datetime . "'";
-
-                $dbh->query($sql_put);
+                    event_date=:event_date,
+                    event_place=:event_place,
+                    event_text=:event_text,
+                    event_quality=:event_quality,
+                    event_new_user_id=:event_new_user_id,
+                    event_new_datetime=:event_new_datetime,
+                    event_changed_user_id=:event_changed_user_id,
+                    event_changed_datetime=:event_changed_datetime
+                ");
+                $sql_put->execute([
+                    ':event_tree_id' => $qryDb->event_tree_id,
+                    ':event_order' => $qryDb->event_order,
+                    ':event_connect_id' => $qryDb->event_connect_id,
+                    ':event_kind' => $qryDb->event_connect_kind,
+                    ':event_event_extra' => $qryDb->event_event_extra,
+                    ':event_date' => $qryDb->event_date,
+                    ':event_place' => $qryDb->event_place,
+                    ':event_text' => $qryDb->event_text,
+                    ':event_quality' => $qryDb->event_quality,
+                    ':event_new_user_id' => $qryDb->event_new_user_id,
+                    ':event_new_datetime' => $qryDb->event_new_datetime,
+                    ':event_changed_user_id' => $qryDb->event_changed_user_id,
+                    ':event_changed_datetime' => $qryDb->event_changed_datetime,
+                ]);
                 $last_insert = $dbh->lastInsertId();
 
                 // *** Update sources connected to these events connections ***
@@ -4261,4 +4418,4 @@ class UpdateCls
         //ob_flush();
         flush();
     */
-} // *** End of update_cls ***
+}

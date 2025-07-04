@@ -1,11 +1,18 @@
 <?php
 class LatestChangesController
 {
-    public function list($dbh, $tree_id)
-    {
-        $latest_changesModel = new latestChangesModel();
-        $listchanges = $latest_changesModel->listChanges($dbh, $tree_id);
+    private $config;
 
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
+
+    public function list(): array
+    {
+        $latest_changesModel = new latestChangesModel($this->config);
+
+        $listchanges = $latest_changesModel->listChanges();
         return $listchanges;
     }
 }

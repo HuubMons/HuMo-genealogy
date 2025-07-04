@@ -8,20 +8,18 @@ header('Content-type: application/xml; charset=UTF-8');
  */
 
 include_once(__DIR__ . "/include/db_login.php");
-include_once(__DIR__ . "/include/safe.php");
+include_once(__DIR__ . "/include/safeTextDb.php");
 
 // *** Needed for privacy filter ***
 include_once(__DIR__ . "/include/generalSettings.php");
-$GeneralSettings = new GeneralSettings();
-$user = $GeneralSettings->get_user_settings($dbh);
-$humo_option = $GeneralSettings->get_humo_option($dbh);
+$generalSettings = new GeneralSettings();
+$user = $generalSettings->get_user_settings($dbh);
+$humo_option = $generalSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/include/personCls.php");
+include_once(__DIR__ . "/include/personData.php");
 
 include_once(__DIR__ . "/include/dbFunctions.php");
 $db_functions = new DbFunctions($dbh);
-
-$person_cls = new PersonCls;
 
 // *** Example, see: http://www.sitemaps.org/protocol.html ***
 /*
@@ -52,15 +50,14 @@ $filenumber = 0;
 // *** Family trees ***
 $datasql = $db_functions->get_trees();
 foreach ($datasql as $dataDb) {
-    // *** Check is family tree is shown or hidden for user group ***
+    // *** Check if family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($dataDb->tree_id, $hide_tree_array)) {
         // *** Get all family pages ***
         $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
-            // *** Use class for privacy filter ***
-            //$person_cls = new PersonCls($personDb);
-            //$privacy=$person_cls->privacy;
+            //$personPrivacy = new PersonPrivacy();
+            //$privacy=$personPrivacy->get_privacy($personDb);
 
             // *** Completely filter person ***
             //if ($user["group_pers_hide_totally_act"]=='j'
@@ -106,9 +103,8 @@ foreach ($datasql as $dataDb) {
         $person_qry = $dbh->query("SELECT pers_tree_id, pers_famc, pers_fams, pers_gedcomnumber, pers_own_code FROM humo_persons
             WHERE pers_tree_id='" . $dataDb->tree_id . "' AND pers_famc='' AND pers_fams=''");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
-            // *** Use class for privacy filter ***
-            //$person_cls = new PersonCls($personDb);
-            //$privacy=$person_cls->privacy;
+            //$personPrivacy = new PersonPrivacy();
+            //$privacy=$personPrivacy->get_privacy($personDb);
 
             // *** Completely filter person ***
             if (

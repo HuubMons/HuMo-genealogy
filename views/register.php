@@ -41,7 +41,7 @@ if ($register["show_form"]) {
         if ($humo_option["url_rewrite"] == "j") {
             $path = 'register';
         }
-        //$menu_path_register = $link_cls->get_link($uri_path, 'register');
+        //$menu_path_register = $processLinks->get_link($uri_path, 'register');
     ?>
 
         <h1 class="my-4"><?= __('User registration form'); ?></h1>

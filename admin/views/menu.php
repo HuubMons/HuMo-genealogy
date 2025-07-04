@@ -5,7 +5,9 @@
  */
 
 $popup_style = '';
-//if ($popup == true) $popup_style = ' style="top:0px;"';
+//if ($popup == true){
+//  $popup_style = ' style="top:0px;"';
+//}
 
 if ($page != 'login' && $page != 'update') {
     if (isset($_GET['page'])) {
@@ -36,7 +38,6 @@ if ($popup == false) {
         </button>
 
         <div class="collapse navbar-collapse" id="main_nav">
-
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle <?php if ($page == 'admin') echo 'active'; ?>" href="<?= $path_tmp; ?>page=admin" data-bs-toggle="dropdown">
@@ -50,7 +51,7 @@ if ($popup == false) {
 
                         <?php if (isset($_SESSION["user_name_admin"])) {; ?>
                             <li><a class="dropdown-item" href="<?= $menu_path_logoff ?>"><?= __('Logoff'); ?></a></li>
-                        <?php }; ?>
+                        <?php } ?>
                     </ul>
                 </li>
 
@@ -89,7 +90,7 @@ if ($popup == false) {
                                 <li><a class="dropdown-item <?php if ($page == 'statistics') echo 'active'; ?>" href="<?= $path_tmp; ?>page=statistics"><?= __('Statistics'); ?></a></li>
                             </ul>
                         </li>
-                    <?php }; ?>
+                    <?php } ?>
 
                     <!-- Editor -->
                     <li class="nav-item dropdown">
@@ -115,20 +116,27 @@ if ($popup == false) {
                                 <li><a class="dropdown-item <?php if ($page == 'log') echo 'active'; ?>" href="<?= $path_tmp; ?>page=log"><?= __('Log'); ?></a></li>
                             </ul>
                         </li>
-                    <?php }; ?>
-                <?php }; ?>
+                    <?php } ?>
+                <?php } ?>
 
                 <!-- Select language using country flags -->
                 <li class="nav-item dropdown">
                     <?php include_once(__DIR__ . "/../../views/partial/select_language.php"); ?>
                     <?php /*
-                    $language_path = $link_cls->get_link('', 'language', '', true);
+                    $language_path = $processLinks->get_link('', 'language', '', true);
                     */
                     ?>
                     <?php $language_path = 'index.php?'; ?>
                     <?= show_country_flags($selected_language, '../', 'language_choice', $language_path); ?>
                 </li>
 
+                <?php if ($main_admin['show_menu'] == true and $page != 'login') {; ?>
+                    <div class="pt-2 ms-3">
+                        <!-- Extra link: Add person -->
+                        &nbsp;&nbsp;&nbsp;<a href="index.php?page=editor&amp;add_person=1">
+                            <img src="images/person_connect.gif" border="0" title="<?= __('Add person'); ?>" alt="<?= __('Add person'); ?>"> <?= __('Add person'); ?></a>
+                    </div>
+                <?php } ?>
             </ul>
 
             <!-- Button to open the offcanvas sidebar -->
@@ -141,4 +149,3 @@ if ($popup == false) {
 
 <?php
 }
- // *** END OF MENU ***

@@ -8,12 +8,13 @@ class IndexModel
     {
         return $this->page404;
     }
+
     public function get_page301()
     {
         return $this->page301;
     }
 
-    public function login($dbh, $db_functions, $visitor_ip)
+    public function login($dbh, $db_functions, $visitor_ip): array
     {
         // *** Log in ***
         $valid_user = false;
@@ -71,12 +72,16 @@ class IndexModel
 
                     // *** Save succesful login into log! ***
                     $sql = "INSERT INTO humo_user_log SET
-                        log_date='" . date("Y-m-d H:i") . "',
-                        log_username='" . $resultDb->user_name . "',
-                        log_ip_address='" . $visitor_ip . "',
-                        log_user_admin='user',
-                        log_status='success'";
-                    $dbh->query($sql);
+                        log_date = :log_date,
+                        log_username = :log_username,
+                        log_ip_address = :log_ip_address,
+                        log_user_admin = 'user',
+                        log_status = 'success'";
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+                    $stmt->bindValue(':log_username', $resultDb->user_name, PDO::PARAM_STR);
+                    $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+                    $stmt->execute();
 
                     // *** Send to secured page ***
                     // TODO check link
@@ -90,18 +95,22 @@ class IndexModel
 
                 // *** Save failed login into log! ***
                 $sql = "INSERT INTO humo_user_log SET
-                    log_date='" . date("Y-m-d H:i") . "',
-                    log_username='" . safe_text_db($_POST["username"]) . "',
-                    log_ip_address='" . $visitor_ip . "',
-                    log_user_admin='user',
-                    log_status='failed'";
-                $dbh->query($sql);
+                    log_date = :log_date,
+                    log_username = :log_username,
+                    log_ip_address = :log_ip_address,
+                    log_user_admin = 'user',
+                    log_status = 'failed'";
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+                $stmt->bindValue(':log_username', $_POST["username"], PDO::PARAM_STR);
+                $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+                $stmt->execute();
             }
         }
         return $index;
     }
 
-    public function get_model_route($humo_option)
+    public function get_model_route($humo_option): array
     {
         // *** New routing script sept. 2023. Search route, return match or not found ***
         $index['page'] = 'index';
@@ -154,7 +163,7 @@ class IndexModel
         return $index;
     }
 
-    public function process_ltr_rtl($language)
+    public function process_ltr_rtl($language): array
     {
         // *** Process LTR and RTL variables ***
         $index['dirmark1'] = "&#x200E;";  //ltr marker
@@ -178,7 +187,7 @@ class IndexModel
         return $index;
     }
 
-    public function get_family_tree($dbh, $db_functions, $user)
+    public function get_family_tree($dbh, $db_functions, $user): array
     {
         $check_tree_id = 0; // *** Check new selected tree_id ***
         if (isset($_SESSION['tree_id']) && $_SESSION['tree_id']) {

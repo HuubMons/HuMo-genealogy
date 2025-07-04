@@ -69,7 +69,7 @@ $groupresult = $dbh->query($groupsql);
 <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
     <form method="POST" action="index.php?page=groups" style="display : inline;">
         <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
-        <input type="submit" name="submit" value="<?php echo ($groupDb->group_name == '') ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
+        <input type="submit" name="submit" value="<?= $groupDb->group_name == '' ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
     </form>
 <?php } ?>
 
@@ -653,7 +653,7 @@ If possible, try to filter with that'); ?></i>
         <?php
         $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
         while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
-            $treetext = show_tree_text($data3Db->tree_id, $selected_language);
+            $treetext = $showTreeText->show_tree_text($data3Db->tree_id, $selected_language);
             $treetext_name = $treetext['name'];
         ?>
             <tr>

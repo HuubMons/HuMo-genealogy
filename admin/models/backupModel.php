@@ -1,7 +1,7 @@
 <?php
-class BackupModel
+class BackupModel extends AdminBaseModel
 {
-    function get_menu_tab()
+    function get_menu_tab(): string
     {
         $menu_tab = 'database_backup';
         if (isset($_POST['menu_tab'])) {
@@ -14,7 +14,7 @@ class BackupModel
         return $menu_tab;
     }
 
-    public function process_old_files()
+    public function process_old_files(): void
     {
         // *** Rename and remove files from previous backup procedure ***
         if (file_exists('humo_backup.sql.zip')) {
@@ -31,7 +31,7 @@ class BackupModel
         }
     }
 
-    public function upload_backup_file()
+    public function upload_backup_file(): string
     {
         $upload_status = '';
         if (isset($_POST['upload_the_file'])) {

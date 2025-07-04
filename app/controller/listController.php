@@ -1,9 +1,16 @@
 <?php
 class ListController
 {
-    public function list_names($dbh, $tree_id, $user, $humo_option)
+    private $config;
+
+    public function __construct($config)
     {
-        $listModel = new ListModel();
+        $this->config = $config;
+    }
+
+    public function list_names(): array
+    {
+        $listModel = new ListModel($this->config);
 
         // *** Only used in Advanced search. A standard reset HTML button doesn't work if search is allready done! ***
         if (isset($_POST['reset_all'])) {
@@ -14,7 +21,6 @@ class ListController
         }
 
         if (isset($_POST['pers_firstname']) || isset($_GET['pers_lastname']) || isset($_GET['pers_firstname']) || isset($_GET['reset']) || isset($_POST['quicksearch'])) {
-            //unset($_SESSION["save_search_tree_prefix"]);
             unset($_SESSION["save_select_trees"]);
             unset($_SESSION["save_adv_search"]);
 
@@ -27,9 +33,9 @@ class ListController
         $desc_asc = $listModel->getDescAsc($order);
         $order_select = $listModel->getOrderSelect();
 
-        $get_orderby = $listModel->getQueryOrderBy($user, $index_list, $desc_asc, $order_select);
+        $get_orderby = $listModel->getQueryOrderBy($index_list, $desc_asc, $order_select);
 
-        $select_trees = $listModel->getSelectTrees($humo_option);
+        $select_trees = $listModel->getSelectTrees();
         $selection = $listModel->getSelection();
 
         $quicksearch = $listModel->getQuickSearch();
@@ -38,7 +44,7 @@ class ListController
         $get_data = $listModel->getIndexPlaces($index_list);
 
 
-        $person_result = $listModel->build_query($dbh, $tree_id, $user, $humo_option);
+        $person_result = $listModel->build_query();
         return array(
             "index_list" => $index_list,
             "order" => $order,

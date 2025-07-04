@@ -1,9 +1,9 @@
 <?php
-class ExtensionsModel
+class ExtensionsModel extends AdminBaseModel
 {
-    public function get_theme_folders()
+    public function get_theme_folders(): array
     {
-        // *** Read theme's ***
+        // *** Read themes ***
         $folder = opendir('../styles/');
         $theme_folders = [];
         while (false !== ($file = readdir($folder))) {
@@ -15,7 +15,7 @@ class ExtensionsModel
         return $theme_folders;
     }
 
-    public function save_settings($db_functions, $humo_option, $language_file, $extensions)
+    public function save_settings($language_file, $extensions): void
     {
         if (isset($_POST['save_option'])) {
             // *** Update settings / Language choice ***
@@ -23,7 +23,7 @@ class ExtensionsModel
             $counter = count($language_file);
             for ($i = 0; $i < $counter; $i++) {
                 // *** Get language name ***
-                if ($language_file[$i] == $humo_option["default_language"] || $language_file[$i] == $humo_option["default_language_admin"]) {
+                if ($language_file[$i] == $this->humo_option["default_language"] || $language_file[$i] == $this->humo_option["default_language_admin"]) {
                     // *** Don't hide default languages ***
                 } elseif (!isset($_POST["$language_file[$i]"])) {
                     if ($language_total !== '') {
@@ -32,7 +32,7 @@ class ExtensionsModel
                     $language_total .= $language_file[$i];
                 }
             }
-            $db_functions->update_settings('hide_languages', $language_total);
+            $this->db_functions->update_settings('hide_languages', $language_total);
 
             // *** Update settings / Theme choice ***
             $theme_total = '';
@@ -48,7 +48,7 @@ class ExtensionsModel
                     $theme_total .= $theme;
                 }
             }
-            $db_functions->update_settings('hide_themes', $theme_total);
+            $this->db_functions->update_settings('hide_themes', $theme_total);
         }
     }
 }

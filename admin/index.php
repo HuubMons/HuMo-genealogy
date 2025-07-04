@@ -48,37 +48,31 @@ session_start();
 $page = 'index';
 
 /**
- *  Dec. 2024: Added autoload.
- *  Name of class = AdminSomethingClass
- *  Name of script: adminSomethingClass.php ***
+ * Dec. 2024: Added autoload.
+ * Name of class = AdminSomethingClass
+ * Name of script: adminSomethingClass.php ***
+ *  
+ * Examples of autoload files:
+ * include/editor_cls.php
+ * include/gedcomImport.php
+ * include/updateCls.php
+ *
+ * models/groupsmodel.php
+ * 
+ * ../include/dbFunctions.php
+ * ../include/processLinks.php
+ * ../include/personData.php
+ * ../include/calculateDates.php
+ * 
+ * ../languages/languageCls.php
  */
 function admin_custom_autoload($class_name)
 {
-    // Examples of autoload files:
-    // include/editor_cls.php
-    // include/gedcomCls.php
-    // include/updateCls.php
-
-    // models/groupsmodel.php
-
-    // ../include/dbFunctions.php
-    // ../include/processLinks.php
-    // ../include/personCls.php
-    // ../include/calculateDates.php
-
-    // ../languages/languageCls.php
-
-    // *** At this moment only a few classes are autoloaded. Under construction ***
-    $include = array(
-        'DbFunctions',
-        'ProcessLinks',
-        'PersonCls',
-        'CalculateDates'
-    );
     $admin_include = array(
         'Editor_cls',
         'EditorEvent',
-        'GedcomCls',
+        'GedcomImport',
+        'GedcomExport',
         'UpdateCls'
     );
 
@@ -88,10 +82,10 @@ function admin_custom_autoload($class_name)
         require __DIR__ . '/controller/' . lcfirst($class_name) . '.php';
     } elseif (substr($class_name, -5) == 'Model') {
         require __DIR__ . '/models/' . lcfirst($class_name) . '.php';
-    } elseif (in_array($class_name, $include)) {
-        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
     } elseif (in_array($class_name, $admin_include)) {
         require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
+    } elseif (is_file(__DIR__ . '/../include/' . lcfirst($class_name) . '.php')) {
+        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
     }
 }
 spl_autoload_register('admin_custom_autoload');
@@ -107,20 +101,20 @@ if (isset($_GET['log_off'])) {
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
 include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
 
-include_once(__DIR__ . "/../include/safe.php"); // Variables
-
-// *** Function to show family tree texts ***
-include_once(__DIR__ . '/../include/show_tree_text.php');
+$safeTextDb = new SafeTextDb();
+$showTreeText = new ShowTreeText();
 
 if (isset($dbh)) {
     $db_functions = new DbFunctions($dbh);
 }
 
 // *** Added october 2023: generate links to frontsite ***
-$link_cls = new ProcessLinks();
+$processLinks = new ProcessLinks();
 
-include_once(__DIR__ . "/../include/get_visitor_ip.php");
-$visitor_ip = visitorIP();
+$mediaPath = new MediaPath();
+
+$getVisitorIP = new GetVisitorIP;
+$visitor_ip = $getVisitorIP->visitorIP();
 
 
 
@@ -148,13 +142,9 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
     }
 
     if ($check_tables) {
-        include_once(__DIR__ . "/../include/generalSettings.php");
-        $GeneralSettings = new GeneralSettings();
-        $user = $GeneralSettings->get_user_settings($dbh);
-        $humo_option = $GeneralSettings->get_humo_option($dbh);
-
-        // *** Added may 2020, needed for some user settings in admin section ***
-        include_once(__DIR__ . "/../include/generalSettings.php"); // USER variables
+        $generalSettings = new GeneralSettings();
+        $user = $generalSettings->get_user_settings($dbh);
+        $humo_option = $generalSettings->get_humo_option($dbh);
 
         // **** Temporary update scripts ***
         //
@@ -208,8 +198,8 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
 }
 
 // *** Set timezone ***
-include_once(__DIR__ . "/../include/timezone.php"); // set timezone
-timezone();
+$setTimezone = new setTimezone;
+$setTimezone->timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
 
@@ -308,25 +298,33 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
             // *** Add login in logbook ***
             $sql = "INSERT INTO humo_user_log SET
-                log_date='" . date("Y-m-d H:i") . "',
-                log_username='" . $resultDb->user_name . "',
-                log_ip_address='" . $visitor_ip . "',
-                log_user_admin='admin',
-                log_status='success'";
-            $dbh->query($sql);
+                log_date = :log_date,
+                log_username = :log_username,
+                log_ip_address = :log_ip_address,
+                log_user_admin = 'admin',
+                log_status = 'success'";
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+            $stmt->bindValue(':log_username', $resultDb->user_name, PDO::PARAM_STR);
+            $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+            $stmt->execute();
         }
     } else {
         // *** No valid user or password ***
         $fault = true;
 
-        // *** Save log! ***
+        // *** Save log ***
         $sql = "INSERT INTO humo_user_log SET
-            log_date='" . date("Y-m-d H:i") . "',
-            log_username='" . safe_text_db($_POST["username"]) . "',
-            log_ip_address='" . $visitor_ip . "',
-            log_user_admin='admin',
-            log_status='failed'";
-        $dbh->query($sql);
+            log_date = :log_date,
+            log_username = :log_username,
+            log_ip_address = :log_ip_address,
+            log_user_admin = 'admin',
+            log_status = 'failed'";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':log_date', date("Y-m-d H:i"), PDO::PARAM_STR);
+        $stmt->bindValue(':log_username', $_POST["username"], PDO::PARAM_STR);
+        $stmt->bindValue(':log_ip_address', $visitor_ip, PDO::PARAM_STR);
+        $stmt->execute();
     }
 }
 
@@ -334,6 +332,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 $group_administrator = '';
 $group_edit_trees = '';
 if (isset($database_check) && $database_check) {
+    // TODO: htaccess login will be removed in a future version.
     if (isset($_SERVER["PHP_AUTH_USER"])) {
         // *** Logged in using .htacess ***
 
@@ -343,9 +342,12 @@ if (isset($database_check) && $database_check) {
 
         // *** If .htaccess is used, check usergroup for admin rights ***
         $query = "SELECT * FROM humo_users LEFT JOIN humo_groups
-            ON humo_users.user_group_id=humo_groups.group_id
-            WHERE humo_users.user_name='" . $_SERVER["PHP_AUTH_USER"] . "'";
-        $result = $dbh->query($query);
+            ON humo_users.user_group_id = humo_groups.group_id
+            WHERE humo_users.user_name = :username";
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':username', $_SERVER["PHP_AUTH_USER"], PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt;
         if ($result->rowCount() > 0) {
             $resultDb = $result->fetch(PDO::FETCH_OBJ);
             $group_administrator = $resultDb->group_admin;
@@ -378,11 +380,13 @@ if (isset($database_check) && $database_check) {
         if ($result !== FALSE) {
             if ($result->rowCount() > 0) {
                 // *** humo-users table exists, check admin log in ***
-                if (isset($_SESSION["group_id_admin"])) {
+                if (isset($_SESSION["group_id_admin"]) && is_numeric($_SESSION["group_id_admin"]) && isset($_SESSION["user_id_admin"])) {
                     // *** Logged in as admin... ***
 
                     // *** Read group settings ***
-                    $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $_SESSION["group_id_admin"] . "'");
+                    $groepsql = $dbh->prepare("SELECT * FROM humo_groups WHERE group_id = :group_id");
+                    $groepsql->bindValue(':group_id', $_SESSION["group_id_admin"], PDO::PARAM_INT);
+                    $groepsql->execute();
                     $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
 
                     // *** Check if user is an administrator ***
@@ -397,7 +401,9 @@ if (isset($database_check) && $database_check) {
                         $page = '';
                     }
                     // *** Edit family trees [USER SETTING] ***
-                    $user_result2 = $dbh->query("SELECT * FROM humo_users WHERE user_id=" . $_SESSION['user_id_admin']);
+                    $user_result2 = $dbh->prepare("SELECT * FROM humo_users WHERE user_id = :user_id");
+                    $user_result2->bindValue(':user_id', $_SESSION['user_id_admin'], PDO::PARAM_INT);
+                    $user_result2->execute();
                     $resultDb = $user_result2->fetch(PDO::FETCH_OBJ);
                     if (isset($resultDb->user_edit_trees) && $resultDb->user_edit_trees) {
                         if ($group_edit_trees) {
@@ -424,8 +430,7 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 
 // *** Use your own favicon.ico in media folder ***
 if (file_exists('../media/favicon.ico')) {
-    include_once(__DIR__ . '/../include/give_media_path.php');
-    $favicon = '<link href="../' . give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
+    $favicon = '<link href="../' . $mediaPath->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
 } else {
     $favicon = '<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">';
 }
@@ -679,7 +684,7 @@ if ($popup == false) {
                             <li><a href="index.php?page=backup"><?= __('Database backup'); ?></a></li>
                             <li><a href="index.php?page=statistics"><?= __('Statistics'); ?></a></li>
                         </ul>
-                    <?php }; ?>
+                    <?php } ?>
 
                     <!-- Editor -->
                     <ul>
@@ -704,8 +709,8 @@ if ($popup == false) {
                                 </ul>
                             </li>
                         </ul>
-                    <?php }; ?>
-                <?php }; ?>
+                    <?php } ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -722,13 +727,37 @@ if ($popup == false) {
         <?php
         define('ADMIN_PAGE', true); // *** Safety line ***
 
+        /**
+         * General config array. May 2025: added adminBaseModel.php.
+         * 
+         * In controller:
+         * private $admin_config;
+         *   public function __construct($admin_config)
+         *   {
+         *       $this->admin_config = $admin_config;
+         *   }
+         *
+         * In model: class installModel extends AdminBaseModel.
+         * Then use: $this->dbh, $this->db_functions, $this->tree_id, $this->humo_option.
+         */
+        if (isset($dbh)) {
+            $admin_config = array(
+                "dbh" => $dbh,
+                "db_functions" => $db_functions,
+                "tree_id" => $tree_id,
+                "humo_option" => $humo_option
+            );
+        }
+        //"user" => $user,
+
         if ($page === 'install') {
+            // *** Don't use $admin_config because of new installation ***
             $controllerObj = new InstallController();
             $install = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/install.php");
         } elseif ($page === 'extensions') {
-            $controllerObj = new ExtensionsController();
-            $extensions = $controllerObj->detail($dbh, $db_functions, $humo_option, $language_file);
+            $controllerObj = new ExtensionsController($admin_config);
+            $extensions = $controllerObj->detail($language_file);
             include_once(__DIR__ . "/views/extensions.php");
         } elseif ($page === 'login') {
             include_once(__DIR__ . "/views/login.php");
@@ -736,14 +765,12 @@ if ($popup == false) {
             //TODO refactor
             include_once(__DIR__ . "/include/select_tree.php");
 
-            $controllerObj = new TreesController();
-            $trees = $controllerObj->detail($dbh, $tree_id, $db_functions, $selected_language);
+            $controllerObj = new TreesController($admin_config);
+            $trees = $controllerObj->detail($selected_language);
             include_once(__DIR__ . "/views/trees.php");
         } elseif ($page === 'editor') {
             // TODO refactor.
             include_once(__DIR__ . "/include/select_tree.php");
-            // *** Used for person color selection for descendants and ancestors, etc. ***
-            include_once(__DIR__ . "/../include/ancestors_descendants.php");
 
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
@@ -751,139 +778,142 @@ if ($popup == false) {
                 $db_functions->set_tree_id($tree_id);
             }
 
-            $controllerObj = new EditorController();
-            $editor = $controllerObj->detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option);
+            $controllerObj = new EditorController($admin_config);
+            $editor = $controllerObj->detail($tree_prefix);
             include_once(__DIR__ . "/views/editor.php");
         } elseif ($page === 'editor_sources') {
-            $controllerObj = new AdminSourcesController();
-            $editSources = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            $controllerObj = new AdminSourcesController($admin_config);
+            $editSources = $controllerObj->detail();
             include_once(__DIR__ . "/views/editor_sources.php");
         } elseif ($page === 'edit_sources') {
             // TODO refactor
             include_once(__DIR__ . "/include/select_tree.php");
 
-            $controllerObj = new AdminSourceController();
-            $editSource = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            $controllerObj = new AdminSourceController($admin_config);
+            $editSource = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_source.php");
         } elseif ($page === 'edit_repositories') {
             // TODO refactor
             include_once(__DIR__ . "/include/select_tree.php");
 
-            $controllerObj = new AdminRepositoryController();
-            $editRepository = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            $controllerObj = new AdminRepositoryController($admin_config);
+            $editRepository = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_repository.php");
         } elseif ($page === 'edit_addresses') {
             // TODO refactor.
             include_once(__DIR__ . "/include/select_tree.php");
 
-            $controllerObj = new AdminAddressController();
-            $editAddress = $controllerObj->detail($dbh, $tree_id, $db_functions);
+            $controllerObj = new AdminAddressController($admin_config);
+            $editAddress = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_address.php");
         } elseif ($page === 'edit_places') {
             // TODO refactor
             include_once(__DIR__ . "/include/select_tree.php");
 
-            $controllerObj = new RenamePlaceController();
-            $place = $controllerObj->detail($dbh, $tree_id);
+            $controllerObj = new RenamePlaceController($admin_config);
+            $place = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_rename_place.php");
         } elseif ($page === 'editor_place_select') {
+            // TODO: split into model & view files.
             include_once(__DIR__ . "/include/editor_place_select.php");
         } elseif ($page === 'editor_person_select') {
+            // TODO: split into model & view files.
             include_once(__DIR__ . "/include/editor_person_select.php");
         } elseif ($page === 'editor_relation_select') {
+            // TODO: split into model & view files.
             include_once(__DIR__ . "/include/editor_relation_select.php");
         } elseif ($page === 'editor_media_select') {
+            // TODO: split into model & view files.
             include_once(__DIR__ . "/include/editor_media_select.php");
         } elseif ($page === 'check') {
-            // TODO refactor
-            include_once(__DIR__ . "/../include/language_date.php");
             include_once(__DIR__ . "/include/select_tree.php");
 
-            $controllerObj = new TreeCheckController();
-            $tree_check = $controllerObj->detail($dbh);
+            $controllerObj = new TreeCheckController($admin_config);
+            $tree_check = $controllerObj->detail();
             include_once(__DIR__ . "/views/tree_check.php");
         } elseif ($page === 'latest_changes') {
             include_once(__DIR__ . "/views/tree_check.php");
-            //} elseif ($page === 'gedcom') {
-            //    include_once(__DIR__ . "/views/gedcom_import.php");
         } elseif ($page === 'settings') {
-            $controllerObj = new AdminSettingsController();
-            $settings = $controllerObj->detail($dbh, $db_functions, $humo_option);
+            $controllerObj = new AdminSettingsController($admin_config);
+            $settings = $controllerObj->detail();
             include_once(__DIR__ . "/views/settings_admin.php");
         } elseif ($page === 'thumbs') {
-            $controllerObj = new ThumbsController();
-            $thumbs = $controllerObj->detail($dbh, $tree_id);
+            $controllerObj = new ThumbsController($admin_config);
+            $thumbs = $controllerObj->detail();
             include_once(__DIR__ . "/views/thumbs.php");
             //} elseif ($page == 'favorites') {
             //    include_once(__DIR__ . "/include/favorites.php");
         } elseif ($page === 'users') {
-            $controllerObj = new UsersController();
-            $edit_users = $controllerObj->detail($dbh);
+            $controllerObj = new UsersController($admin_config);
+            $edit_users = $controllerObj->detail();
             include_once(__DIR__ . "/views/users.php");
         } elseif ($page === 'editor_user_settings') {
+            // TODO: split into model & view files.
             include_once(__DIR__ . "/include/editor_user_settings.php");
         } elseif ($page === 'groups') {
-            $controllerObj = new GroupsController();
-            $groups = $controllerObj->detail($dbh);
+            $controllerObj = new GroupsController($admin_config);
+            $groups = $controllerObj->detail();
             include_once(__DIR__ . "/views/groups.php");
         } elseif ($page === 'edit_cms_pages') {
-            $controllerObj = new AdminCmsPagesController();
-            $edit_cms_pages = $controllerObj->detail($dbh);
+            $controllerObj = new AdminCmsPagesController($admin_config);
+            $edit_cms_pages = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_cms_pages.php");
         } elseif ($page === 'backup') {
-            $controllerObj = new BackupController();
-            $backup = $controllerObj->detail($dbh);
+            $controllerObj = new BackupController($admin_config);
+            $backup = $controllerObj->detail();
             include_once(__DIR__ . "/views/backup.php");
         } elseif ($page === 'notes') {
-            $controllerObj = new NotesController();
-            $notes = $controllerObj->detail($dbh);
+            $controllerObj = new NotesController($admin_config);
+            $notes = $controllerObj->detail();
             include_once(__DIR__ . "/views/notes.php");
         } elseif ($page === 'cal_date') {
-            //$controllerObj = new CalculateDateController();
-            //$cal_date = $controllerObj->detail($dbh);
+            //$controllerObj = new CalculateDateController($admin_config);
+            //$cal_date = $controllerObj->detail();
             include_once(__DIR__ . "/views/cal_date.php");
         } elseif ($page === 'export') {
-            $controllerObj = new GedcomExportController();
-            $export = $controllerObj->detail($dbh, $tree_id, $humo_option, $db_functions);
+            $controllerObj = new GedcomExportController($admin_config);
+            $export = $controllerObj->detail();
             include_once(__DIR__ . "/views/gedcom_export.php");
         } elseif ($page === 'log') {
-            $controllerObj = new LogController();
-            $log = $controllerObj->detail($dbh);
+            $controllerObj = new LogController($admin_config);
+            $log = $controllerObj->detail();
             include_once(__DIR__ . "/views/log.php");
         } elseif ($page === 'language_editor') {
-            $controllerObj = new LanguageEditorController();
-            $language_editor = $controllerObj->detail($dbh, $humo_option);
+            $controllerObj = new LanguageEditorController($admin_config);
+            $language_editor = $controllerObj->detail();
             include_once(__DIR__ . "/views/language_editor.php");
         } elseif ($page === 'prefix_editor') {
             include_once(__DIR__ . "/views/prefix_editor.php");
         } elseif ($page === 'maps') {
-            $controllerObj = new MapsController();
-            $maps = $controllerObj->detail($dbh, $db_functions);
+            $controllerObj = new AdminMapsController($admin_config);
+            $maps = $controllerObj->detail();
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
-            $controllerObj = new AdminStatisticsController();
-            $statistics = $controllerObj->detail($dbh, $db_functions);
+            $controllerObj = new AdminStatisticsController($admin_config);
+            $statistics = $controllerObj->detail();
             include_once(__DIR__ . "/views/admin_statistics.php");
         } elseif ($page === 'install_update') {
             include_once(__DIR__ . "/update/install_update.php");
         } elseif ($page === 'update') {
             include_once(__DIR__ . "/include/update.php");
         } elseif ($page === 'gedcom_import2') {
-            $controllerObj = new TreesController();
-            $trees = $controllerObj->detail($dbh, $tree_id, $db_functions, $selected_language);
+            $controllerObj = new TreesController($admin_config);
+            $trees = $controllerObj->detail($selected_language);
             include_once(__DIR__ . "/views/gedcom_import2.php");
         }
-        //elseif ($page=='photoalbum'){ include_once (__DIR__ . "/include/photoalbum_categories.php"); }
+        //elseif ($page=='photoalbum'){
+        //    include_once (__DIR__ . "/include/photoalbum_categories.php");
+        //}
 
         // *** Edit event by person ***
-        //elseif ($page=='editor_person_event'){ include_once (__DIR__ . "/include/editor_person_event.php"); }
+        //elseif ($page=='editor_person_event'){
+        //  include_once (__DIR__ . "/include/editor_person_event.php");
+        //}
 
         // *** Default page for editor ***
         elseif ($group_administrator != 'j' && $group_edit_trees) {
             // TODO refactor.
             include_once(__DIR__ . "/include/select_tree.php");
-            // *** Used for person color selection for descendants and ancestors, etc. ***
-            include_once(__DIR__ . "/../include/ancestors_descendants.php");
 
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
@@ -891,8 +921,8 @@ if ($popup == false) {
                 $db_functions->set_tree_id($tree_id);
             }
 
-            $controllerObj = new EditorController();
-            $editor = $controllerObj->detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option);
+            $controllerObj = new EditorController($admin_config);
+            $editor = $controllerObj->detail($tree_prefix);
             include_once(__DIR__ . "/views/editor.php");
         }
 
@@ -910,8 +940,19 @@ if ($popup == false) {
             include_once(__DIR__ . "/views/index_admin.php");
         }
         ?>
-
     </div>
+
+    <!-- May 2025: Bootstrap popover -->
+    <script>
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+    </script>
+
+    <!-- May 2025: Bootstrap tooltip -->
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
 
     </body>
 

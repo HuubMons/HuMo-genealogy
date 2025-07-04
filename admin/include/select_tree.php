@@ -3,6 +3,8 @@ function select_tree($dbh, $page, $tree_id, $menu_tab = '')
 {
     global $group_edit_trees, $group_administrator, $selected_language;
 
+    $showTreeText = new ShowTreeText();
+
     // *** Select family tree ***
     $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
     $tree_search_result = $dbh->query($tree_search_sql);
@@ -21,7 +23,7 @@ function select_tree($dbh, $page, $tree_id, $menu_tab = '')
                 $edit_tree_array = explode(";", $group_edit_trees);
                 // *** Administrator can always edit in all family trees ***
                 if ($group_administrator == 'j' || in_array($tree_searchDb->tree_id, $edit_tree_array)) {
-                    $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                    $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
             ?>
                     <option value="<?= $tree_searchDb->tree_id; ?>" <?= isset($tree_id) && $tree_searchDb->tree_id == $tree_id ? 'selected' : ''; ?>>
                         <?= $treetext['name']; ?>

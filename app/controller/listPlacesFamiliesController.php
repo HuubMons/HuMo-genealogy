@@ -1,14 +1,19 @@
 <?php
 class ListPlacesFamiliesController
 {
+    private $config;
 
-    //public function list_places_names($dbh, $tree_id, $user, $humo_option)
-    public function list_places_names($tree_id)
+    public function __construct($config)
     {
-        $listPlacesFamiliesModel = new ListPlacesFamiliesModel();
+        $this->config = $config;
+    }
+
+    public function list_places_names(): array
+    {
+        $listPlacesFamiliesModel = new ListPlacesFamiliesModel($this->config);
 
         $get_data = $listPlacesFamiliesModel->getSelection();
-        $query = $listPlacesFamiliesModel->build_query($tree_id);
+        $query = $listPlacesFamiliesModel->build_query();
 
         return array(
             "place_name" => $get_data["place_name"],
@@ -17,12 +22,7 @@ class ListPlacesFamiliesController
             "select_marriage_notice_religious" => $get_data["select_marriage_notice_religious"],
             "select_marriage_religious" => $get_data["select_marriage_religious"],
             "part_place_name" => $get_data["part_place_name"],
-
             "query" => $query
         );
-
-        // TODO use array merge
-        // *** Add array $person_data:
-        //$data = array_merge($data, $person_data);  
     }
 }

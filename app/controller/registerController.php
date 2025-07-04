@@ -1,22 +1,22 @@
 <?php
 class RegisterController
 {
-    private $db_functions;
+    private $config;
 
-    public function __construct($db_functions)
+    public function __construct($config)
     {
-        $this->db_functions = $db_functions;
+        $this->config = $config;
     }
 
-    public function get_register_data($dbh, $dataDb, $humo_option)
+    public function get_register_data($dataDb): array
     {
-        $registerModel = new RegisterModel($this->db_functions);
+        $registerModel = new RegisterModel($this->config);
 
         $register_form = $registerModel->getFormdata();
-        $register_allowed["register_allowed"] = $registerModel->register_allowed($humo_option);
+        $register_allowed["register_allowed"] = $registerModel->register_allowed();
         $register_array = array_merge($register_form, $register_allowed);
 
-        $register_user = $registerModel->register_user($dbh, $dataDb, $humo_option, $register_array);
+        $register_user = $registerModel->register_user($dataDb, $register_array);
 
         $register_array = array_merge($register_array, $register_user);
         return $register_array;

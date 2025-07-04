@@ -1,26 +1,21 @@
 <?php
 class AddressesController
 {
-    private $dbh, $user, $tree_id, $link_cls, $uri_path, $humo_option;
+    private $config;
 
-    public function __construct($dbh, $user, $tree_id, $link_cls, $uri_path, $humo_option)
+    public function __construct($config)
     {
-        $this->dbh = $dbh;
-        $this->user = $user;
-        $this->tree_id = $tree_id;
-        $this->link_cls = $link_cls;
-        $this->uri_path = $uri_path;
-        $this->humo_option = $humo_option;
+        $this->config = $config;
     }
 
-    public function list()
+    public function list(): array
     {
-        $addressesModel = new AddressesModel($this->dbh);
+        $addressesModel = new AddressesModel($this->config);
 
-        $authorised = $addressesModel->getAddressAuthorised($this->user);
+        $authorised = $addressesModel->getAddressAuthorised();
         $addressesModel->process_variables();
-        $addresses = $addressesModel->listAddresses($this->dbh, $this->tree_id, $this->humo_option);
-        $line_pages = $addressesModel->line_pages($this->tree_id, $this->link_cls, $this->uri_path);
+        $addresses = $addressesModel->listAddresses();
+        $line_pages = $addressesModel->line_pages();
         $address_image = $addressesModel->getAddressImage();
         $place_image = $addressesModel->getPlaceImage();
         $select_sort = $addressesModel->getSelectSort();

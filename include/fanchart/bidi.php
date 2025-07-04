@@ -491,7 +491,7 @@ class bidi
                     if ((($chardata[$j]['type'] == 'B') or ($chardata[$j]['type'] == 'S')) or
                         (($j == ($numchars - 1)) and ($chardata[$j]['type'] == 'WS'))
                     ) {
-                        $chardata[$i]['level'] = $pel;;
+                        $chardata[$i]['level'] = $pel;
                         break;
                     } elseif ($chardata[$j]['type'] != 'WS') {
                         break;

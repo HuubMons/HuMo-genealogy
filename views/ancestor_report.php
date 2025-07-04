@@ -12,6 +12,10 @@
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
+$personPrivacy = new PersonPrivacy();
+$personName_extended = new PersonNameExtended;
+$personData = new PersonData;
+
 //echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
 echo $data["ancestor_header"];
 
@@ -108,11 +112,19 @@ while (isset($ancestor_array2[0])) {
                 // Show pdf button
 
                 //$vars['id'] = $data["main_person"];
-                //$link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
+                //$link = $processLinks->get_link($uri_path, 'ancestor_report', $tree_id, true, $vars);
                 //$link .= 'screen_mode=ancestor_chart&amp;show_sources=1';
 
-                $link = $uri_path . 'views/ancestor_report_pdf.php';
+                // TODO improve variables (use router).
+                if ($humo_option["url_rewrite"] == "j") {
+                    //$link = $uri_path . 'ancestor_report_pdf/' . $tree_id . '/' . $data["family_id"] . '?main_person=' . $data["main_person"];
+                    $link = $uri_path . 'ancestor_report_pdf';
+                } else {
+                    //$link = $uri_path . 'index.php?page=ancestor_report_pdf&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"];
+                    $link = $uri_path . 'index.php?page=ancestor_report_pdf';
+                }
             ?>
+
                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
@@ -130,7 +142,7 @@ while (isset($ancestor_array2[0])) {
             if ($user["group_rtf_button"] == 'y' && $language["dir"] != "rtl") {
                 // Show rtf button
                 $vars['id'] = $data["main_person"];
-                $link = $link_cls->get_link($uri_path, 'ancestor_report_rtf', $tree_id, true, $vars);
+                $link = $processLinks->get_link($uri_path, 'ancestor_report_rtf', $tree_id, true, $vars);
                 $link .= 'show_sources=1';
             ?>
                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
@@ -171,20 +183,17 @@ while (isset($ancestor_array2[0])) {
 
             if ($ancestor_array[$i] != '0') {
                 $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-                $man_cls = new PersonCls($person_manDb);
-                $privacy_man = $man_cls->privacy;
+                $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
                 if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
                     $familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                     // *** Use privacy filter of woman ***
                     $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-                    $woman_cls = new PersonCls($person_womanDb);
-                    $privacy_woman = $woman_cls->privacy;
+                    $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
-                    // *** Use class for marriage ***
                     $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
-                    $family_privacy = $marriage_cls->privacy;
+                    $family_privacy = $marriage_cls->get_privacy();
                 }
         ?>
 
@@ -194,9 +203,9 @@ while (isset($ancestor_array2[0])) {
                         <!-- Show data man -->
                         <div class="parent1">
                             <!-- Use "child", to show a link for own family. -->
-                            <?= $man_cls->name_extended("child"); ?>
+                            <?= $personName_extended->name_extended($person_manDb, $privacy_man, "child"); ?>
                             <?php if ($listednr == '') { ?>
-                                <?= $man_cls->person_data("standard", $ancestor_array[$i]); ?>
+                                <?= $personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]); ?>
                             <?php } else { ?>
                                 <strong> (<?= __('Already listed above as number ') . $listednr; ?>) </strong>
                             <?php } ?>
@@ -259,8 +268,7 @@ while (isset($ancestor_array2[0])) {
 
                 // *** Show N.N. person ***
                 $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-                $man_cls = new PersonCls($person_manDb);
-                $privacy_man = $man_cls->privacy;
+                $privacy_man = $personPrivacy->get_privacy($person_manDb);
                 ?>
 
                 <tr>
@@ -270,8 +278,8 @@ while (isset($ancestor_array2[0])) {
                         <div class="parent1">
                             <?php
                             // ***  Use "child", to show a link to own family. ***
-                            echo $man_cls->name_extended("child");
-                            echo $man_cls->person_data("standard", $ancestor_array[$i]);
+                            echo $personName_extended->name_extended($person_manDb, $privacy_man, "child");
+                            echo $personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]);
                             ?>
                         </div>
                     </td>

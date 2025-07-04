@@ -23,7 +23,7 @@ $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
                     if ($familyDb->tree_prefix) {
                         $tree_id = $familyDb->tree_id;
                         // *** Show family tree name ***
-                        $treetext = show_tree_text($familyDb->tree_id, $selected_language);
+                        $treetext = $showTreeText ->show_tree_text($familyDb->tree_id, $selected_language);
                     ?>
                         <td><?= $treetext['name']; ?></td>
                     <?php } else { ?>
@@ -239,7 +239,12 @@ $family_qry = $dbh->query("SELECT humo_stat_date.* , humo_trees.tree_id, humo_tr
 // *** Show 1 statistics line ***
 function statistics_line($familyDb)
 {
-    global $dbh, $language, $person_cls, $selected_language, $db_functions, $link_cls;
+    global $selected_language, $db_functions;
+
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $showTreeText = new showTreeText();
+    $processLinks = new ProcessLinks();
 
     $tree_id = $familyDb->tree_id;
     if (isset($tree_id) && $tree_id) {
@@ -252,7 +257,7 @@ function statistics_line($familyDb)
         <?php
         }
 
-        $treetext = show_tree_text($familyDb->tree_id, $selected_language);
+        $treetext = $showTreeText ->show_tree_text($familyDb->tree_id, $selected_language);
         ?>
         <td><?= $treetext['name']; ?></td>
 
@@ -273,7 +278,7 @@ function statistics_line($familyDb)
             <?php
             if ($check == true) {
                 $vars['pers_family'] = $familyDb->stat_gedcom_fam;
-                $link = $link_cls->get_link('../', 'family', $familyDb->tree_id, false, $vars);
+                $link = $processLinks->get_link('../', 'family', $familyDb->tree_id, false, $vars);
                 echo '<a href="' . $link . '">' . __('Family') . ': </a>';
 
                 //*** Man ***
@@ -282,7 +287,8 @@ function statistics_line($familyDb)
                 if (!$familyDb->stat_gedcom_man) {
                     echo 'N.N.';
                 } else {
-                    $name = $person_cls->person_name($personDb);
+                    $privacy = $personPrivacy->get_privacy($personDb);
+                    $name = $personName->get_person_name($personDb, $privacy);
                     echo $name["standard_name"];
                 }
 
@@ -293,7 +299,8 @@ function statistics_line($familyDb)
                 if (!$familyDb->stat_gedcom_woman) {
                     echo 'N.N.';
                 } else {
-                    $name = $person_cls->person_name($personDb);
+                    $privacy = $personPrivacy->get_privacy($personDb);
+                    $name = $personName->get_person_name($personDb, $privacy);
                     echo $name["standard_name"];
                 }
             } else {

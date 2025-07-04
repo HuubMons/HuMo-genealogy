@@ -37,7 +37,7 @@
     if ($datasql) {
         $count_lines = $datasql->rowCount();
         while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            $treetext = show_tree_text($dataDb->tree_id, $trees['language']);
+            $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $trees['language']);
     ?>
             <li class="list-group-item <?= $dataDb->tree_id == $trees['tree_id'] ? 'list-group-item-secondary' : ''; ?>">
                 <div class="row">
@@ -67,7 +67,10 @@
 
                     <div class="col-md-6">
                         <?php if ($dataDb->tree_prefix != 'EMPTY') { ?>
+                            <?php /*
                             <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $dataDb->tree_id; ?>&tree_prefix=<?= $dataDb->tree_prefix; ?>&step1=read_gedcom">
+                            */ ?>
+                            <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $dataDb->tree_id; ?>&amp;step1=read_gedcom">
                                 <img src="images/import.jpg" title="gedcom import" alt="gedcom import">
                             </a>
                         <?php
@@ -87,8 +90,8 @@
                 </div>
             </li>
 
-        <?php }; ?>
-    <?php }; ?>
+        <?php } ?>
+    <?php } ?>
 </ul>
 
 <!-- Order items using drag and drop using jquery and jqueryui -->

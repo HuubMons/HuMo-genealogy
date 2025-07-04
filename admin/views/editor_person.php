@@ -1,4 +1,8 @@
 <!-- Start of editor table -->
+<?php
+$languageDate = new LanguageDate;
+?>
+
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="person" value="<?= $pers_gedcomnumber; ?>">
@@ -16,8 +20,7 @@
         }
     ?>
 
-        <!-- Archives ->
-        <!-- <div class="p-3 m-2 genealogy_search"> -->
+        <!-- Archives -->
         <div class="p-2 m-2 genealogy_search">
             <div class="row">
 
@@ -159,7 +162,7 @@
                                         <!-- geen aparte 'link' maar heeft de regel als link, door target steeds zelfde window -->
                                         <a href="<?= $OAresult["url"]; ?>" target="openarch.nl">
                                             <?= $OAresult["personname"]; ?> (<?= $OAresult["relationtype"]; ?>),
-                                            <?= $OAresult["eventtype"]; ?> <?= $OAeventdate; ?> <?= $OAresult["eventplace"]; ?>,
+                                            <?= $OAresult["eventtype"]; ?> <?= $OAeventdate; ?> <?= $OAresult["eventplace"][0]; ?>,
                                             <?= $OAresult["archive"]; ?>/<?= $OAresult["sourcetype"]; ?>
                                         </a><br>
                                     </div>
@@ -221,7 +224,7 @@
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-auto">
-                                <input type="submit" name="search_period" value="<?= __('Search using period'); ?>">
+                                <input type="submit" name="search_period" value="<?= __('Search using period'); ?>" class="btn btn-sm btn-success">
                             </div>
                         </div>
                 <?php
@@ -317,31 +320,25 @@
         </div>
     <?php } ?>
 
-
-
     <table class="table table-light" id="table_editor">
         <?php if ($editor['add_person'] == false) { ?>
             <?php
             // *** Show message if age < 0 or > 120 ***
-            $error_color = '';
-            $show_message = '&nbsp;';
+            $show_age_message = '';
             if (($person->pers_bapt_date || $person->pers_birth_date) && $person->pers_death_date) {
                 $process_age = new CalculateDates;
                 $age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
                 if ($age && ($age < 0 || $age > 120)) {
-                    $error_color = 'background-color:#FFAA80;';
-                    $show_message = '&nbsp;' . __('age') . ' ' . $age . ' ' . __('year');
+                    $show_age_message = $age;
                 }
             }
             ?>
 
-            <!-- TODO improve layout of message, use bootstrap message? -->
-            <?php if ($show_message) { ?>
-                <div style="<?= $error_color; ?>">
-                    <?= $show_message; ?>
+            <?php if ($show_age_message) { ?>
+                <div class="alert alert-danger my-4" role="alert">
+                    &nbsp;<?= ucfirst(__('age')); ?> <?= $age; ?> <?= __('year'); ?>
                 </div>
             <?php } ?>
-
         <?php } ?>
 
         <thead class="table-primary">
@@ -359,8 +356,16 @@
 
                         // *** Add person to admin favourite list ***
                         $fav_qry = "SELECT * FROM humo_settings
-                        WHERE setting_variable='admin_favourite' AND setting_tree_id='" . safe_text_db($tree_id) . "' AND setting_value='" . $pers_gedcomnumber . "'";
-                        $fav_result = $dbh->query($fav_qry);
+                            WHERE setting_variable = :setting_variable
+                            AND setting_tree_id = :setting_tree_id
+                            AND setting_value = :setting_value";
+                        $fav_stmt = $dbh->prepare($fav_qry);
+                        $fav_stmt->execute([
+                            ':setting_variable' => 'admin_favourite',
+                            ':setting_tree_id' => $tree_id,
+                            ':setting_value' => $pers_gedcomnumber
+                        ]);
+                        $fav_result = $fav_stmt;
                         $rows = $fav_result->rowCount();
                         if ($rows > 0) {
                             echo '<a href="index.php?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="../images/favorite_blue.png" style="border: 0px"></a>';
@@ -396,7 +401,9 @@
                         <b>
                             <?php
                             echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
-                            if ($pers_name_text) echo ' <img src="images/text.png" height="16">';
+                            if ($pers_name_text) {
+                                echo ' <img src="images/text.png" height="16">';
+                            }
                             echo ' ' . $check_sources_text;
                             ?>
                         </b>
@@ -449,55 +456,54 @@
                     </div>
 
                     <?php
-
                     //TEST Ajax script
                     /*
-?>
-<script>
-    $(document).ready(function() {
-        $("#submit_ajax").click(function() {
-            var tree_id='<?= $tree_id;?>';
-            var pers_gedcomnumber='<?= $pers_gedcomnumber;?>';
-            var pers_firstname = $("#pers_firstname").val();
-            var pers_lastname = $("#pers_lastname").val();
-            //if (name == '' || email == '' || contact == '' || gender == '' || msg == '') {
-            //	alert("Insertion Failed Some Fields are Blank....!!");
-            //} else {
-                // Returns successful data submission message when the entered information is stored in database.
-                $.post("include/editor_ajax.php", {
-                    tree_id1: tree_id,
-                    pers_gedcomnumber1: pers_gedcomnumber,
-                    pers_firstname1: pers_firstname,
-                    pers_lastname1: pers_lastname,
-                }, function(data) {
-                    alert(data);
-                    //$('#form_ajax')[0].reset(); // To reset form fields
-                });
-            //}
+                    ?>
+                    <script>
+                        $(document).ready(function() {
+                            $("#submit_ajax").click(function() {
+                                var tree_id='<?= $tree_id;?>';
+                                var pers_gedcomnumber='<?= $pers_gedcomnumber;?>';
+                                var pers_firstname = $("#pers_firstname").val();
+                                var pers_lastname = $("#pers_lastname").val();
+                                //if (name == '' || email == '' || contact == '' || gender == '' || msg == '') {
+                                //	alert("Insertion Failed Some Fields are Blank....!!");
+                                //} else {
+                                    // Returns successful data submission message when the entered information is stored in database.
+                                    $.post("include/editor_ajax.php", {
+                                        tree_id1: tree_id,
+                                        pers_gedcomnumber1: pers_gedcomnumber,
+                                        pers_firstname1: pers_firstname,
+                                        pers_lastname1: pers_lastname,
+                                    }, function(data) {
+                                        alert(data);
+                                        //$('#form_ajax')[0].reset(); // To reset form fields
+                                    });
+                                //}
 
-            // Show name in <div>
-            document.getElementById("ajax_pers_firstname").innerHTML = pers_firstname;
-            document.getElementById("ajax_pers_lastname").innerHTML = pers_lastname;
+                                // Show name in <div>
+                                document.getElementById("ajax_pers_firstname").innerHTML = pers_firstname;
+                                document.getElementById("ajax_pers_lastname").innerHTML = pers_lastname;
 
-            // TEST for hideshow of item.
-            hideShow(1);
-        });
-    });
-</script>
+                                // TEST for hideshow of item.
+                                hideShow(1);
+                            });
+                        });
+                    </script>
 
-<br><br>
-<div id="ajax_pers_fullname"><?= $pers_firstname.' '.$pers_lastname; ?></div>
-<div id="ajax_pers_firstname"><?= $pers_firstname; ?></div>
-<div id="ajax_pers_lastname"><?= $pers_lastname; ?></div>
+                    <br><br>
+                    <div id="ajax_pers_fullname"><?= $pers_firstname.' '.$pers_lastname; ?></div>
+                    <div id="ajax_pers_firstname"><?= $pers_firstname; ?></div>
+                    <div id="ajax_pers_lastname"><?= $pers_lastname; ?></div>
 
-<label>Name:</label>
-<input id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" type="text">
-<label>Name:</label>
-<input id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" type="text">
-<input id="submit_ajax" type="button" value="Submit" class="btn btn-sm btn-success">
-    <?php
-// END TEST SCRIPT
-*/
+                    <label>Name:</label>
+                    <input id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" type="text">
+                    <label>Name:</label>
+                    <input id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" type="text">
+                    <input id="submit_ajax" type="button" value="Submit" class="btn btn-sm btn-success">
+                    <?php
+                    // END TEST SCRIPT
+                    */
 
 
                     // *** Source by name ***
@@ -521,13 +527,31 @@
 
         <?php
         if ($editor['add_person'] == false) {
-            // *** Event name (also show ADD line for prefix, suffix, title etc. ***
+            // *** Event name (also show ADD line for prefix, suffix, title etc.) ***
+            // TODO SEE ALSO: function edit_event_name in editor.php.
+            // *** Nickname, alias, adopted name, hebrew name, etc. ***
+            // *** Remark: in editorModel.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
+        ?>
+            <tr class="table_header_large">
+                <td></td>
+                <td colspan="2">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <select size="1" name="event_gedcom_add" id="event_gedcom_add" class="form-select form-select-sm">
+                                <?php event_selection(''); ?>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="event_event_name" id="event_event_name" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="" size="35" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" name="event_add_name" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <?php
             echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'name');
-
-            //TEST if editing is done in table, Ajax could be used.
-            //echo '<tr><td></td><td colspan="2"><table class="humo">';
-            //echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'name');
-            //echo '</table></td></tr>';
 
             // *** NPFX Name prefix like: Lt. Cmndr. ***
             echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'NPFX');
@@ -546,26 +570,17 @@
         }
 
         // *** Alive ***
-
         // *** Disable radio boxes if person is deceased ***
         $disabled = '';
         if ($pers_death_date || $pers_death_place || $pers_buried_date || $pers_buried_place) {
             $disabled = ' disabled';
         }
-
-        if ($pers_alive == 'deceased') {
-            $selected_alive = '';
-            $selected_deceased = ' checked';
-        } else {
-            $selected_alive = ' checked';
-            $selected_deceased = '';
-        }
         ?>
         <tr>
             <td><?= __('Privacy filter'); ?></td>
             <td colspan="2">
-                <input type="radio" name="pers_alive" value="alive" <?= $selected_alive . $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
-                <input type="radio" name="pers_alive" value="deceased" <?= $selected_deceased . $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
+                <input type="radio" name="pers_alive" value="alive" <?= $pers_alive == 'alive' ? 'checked' : ''; ?> <?= $disabled; ?> class="form-check-input"> <?= __('alive'); ?>
+                <input type="radio" name="pers_alive" value="deceased" <?= $pers_alive == 'deceased' ? 'checked' : ''; ?> <?= $disabled; ?> class="form-check-input"> <?= __('deceased'); ?>
                 <?= $disabled ? '<input type="hidden" name="pers_alive" value="deceased">' : ''; ?>
 
                 <!-- Estimated/ calculated (birth) date, can be used for privacy filter -->
@@ -573,30 +588,19 @@
                     $pers_cal_date = 'dd mmm yyyy';
                 } ?>
                 <span style="color:#6D7B8D;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= language_date($pers_cal_date); ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date"><?= __('Calculated birth date'); ?>:</a> <?= $languageDate->language_date($pers_cal_date); ?>
                 </span>
 
                 <?php
                 /*
                 <?= edit_privacyfilter('pers_alive', ''); ?>
-*/
+                */
                 ?>
-
-
             </td>
         </tr>
 
         <?php
         // *** Sexe ***
-        $colour = '';
-        // *** If sexe = unknown then show a red line (new person = other colour). ***
-        if ($pers_sexe == '') {
-            $colour = ' bgcolor="#FFAA80"';
-        }
-        if ($editor['add_person'] == true && $pers_sexe == '') {
-            $colour = ' bgcolor="#FFAA80"';
-        }
-
         $check_sources_text = '';
         if ($pers_gedcomnumber) {
             $check_sources_text = check_sources('person', 'pers_sexe_source', $pers_gedcomnumber);
@@ -604,7 +608,7 @@
         ?>
         <tr>
             <td><a name="sex"></a><?= __('Sex'); ?></td>
-            <td <?= $colour; ?> colspan="2">
+            <td <?= $pers_sexe == '' ? 'class="table-danger"' : ''; ?> colspan="2">
                 <input type="radio" name="pers_sexe" value="M" <?= $pers_sexe == 'M' ? 'checked' : '' ?> class="form-check-input"> <?= __('male'); ?>
                 <input type="radio" name="pers_sexe" value="F" <?= $pers_sexe == 'F' ? 'checked' : ''; ?> class="form-check-input"> <?= __('female'); ?>
                 <input type="radio" name="pers_sexe" value="" <?= $pers_sexe == '' ? 'checked' : ''; ?> class="form-check-input"> ?
@@ -622,7 +626,6 @@
                 <?= edit_sexe('pers_sexe2', $pers_sexe); ?>
                 */
                 ?>
-
             </td>
         </tr>
 
@@ -727,9 +730,9 @@
             $birth_decl_text = $birth_declDb->event_text;
         } else {
             $birth_decl_id = '';
-            $birth_decl_date = "";
-            $birth_decl_place = "";
-            $birth_decl_text = "";
+            $birth_decl_date = '';
+            $birth_decl_place = '';
+            $birth_decl_text = '';
         }
         ?>
         <tr>
@@ -738,8 +741,8 @@
 
                 <input type="hidden" name="birth_decl_id" value="<?= $birth_decl_id; ?>">
             </td>
-            <td colspan="2">
 
+            <td colspan="2">
                 <?php
                 $hideshow_text = hideshow_date_place($birth_decl_date, $birth_decl_place);
                 if ($pers_gedcomnumber) {
@@ -808,7 +811,6 @@
             echo $EditorEvent->show_event('birth_declaration', $pers_gedcomnumber, 'witness');
         }
 
-
         // **** BRIT MILA ***
         if ($humo_option['admin_brit'] == "y" && $pers_sexe != "F") {
 
@@ -827,9 +829,9 @@
                 $brittext = $britDb->event_text;
             } else {
                 $britid = '';
-                $britdate = "";
-                $britplace = "";
-                $brittext = "";
+                $britdate = '';
+                $britplace = '';
+                $brittext = '';
             }
             //$britDb = $result->fetch(PDO::FETCH_OBJ);
         ?>
@@ -914,22 +916,16 @@
                 $barplace =  $barmDb->event_place;
                 $bartext =  $barmDb->event_text;
             } else {
-                $barid = "";
-                $bardate = "";
-                $barplace = "";
-                $bartext = "";
+                $barid = '';
+                $bardate = '';
+                $barplace = '';
+                $bartext = '';
             }
         ?>
 
             <tr>
                 <td>
-                    <?php
-                    if ($pers_sexe == "F") {
-                        echo __('Bat Mitzvah');
-                    } else {
-                        echo __('Bar Mitzvah');
-                    }
-                    ?>
+                    <?= $pers_sexe == "F" ? __('Bat Mitzvah') : __('Bar Mitzvah'); ?>
                 </td>
 
                 <td colspan="2">
@@ -981,11 +977,8 @@
                                     ?>
                                 </div>
                             </div>
-                        <?php
-                        }
-
-                        echo '<i>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"') . '</i>';
-                        ?>
+                        <?php } ?>
+                        <i><?= __('To display this, the option "Show events" has to be checked in "Users -> Groups"'); ?></i>
                     </span>
                 </td>
             </tr>
@@ -1067,8 +1060,7 @@
                                 ?>
                             </div>
                         </div>
-                    <?php
-                    } ?>
+                    <?php } ?>
 
                 </span>
             </td>
@@ -1086,7 +1078,6 @@
         $hideshow = '4';
         // *** If items are missing show all editor fields ***
         $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
-
         ?>
         <tr>
             <td><a name="died"></a>
@@ -1277,9 +1268,9 @@
             $death_decl_text = $death_declDb->event_text;
         } else {
             $death_decl_id = '';
-            $death_decl_date = "";
-            $death_decl_place = "";
-            $death_decl_text = "";
+            $death_decl_date = '';
+            $death_decl_place = '';
+            $death_decl_text = '';
         }
         ?>
         <tr>
@@ -1288,8 +1279,8 @@
 
                 <input type="hidden" name="death_decl_id" value="<?= $death_decl_id; ?>">
             </td>
-            <td colspan="2">
 
+            <td colspan="2">
                 <?php
                 $hideshow_text = hideshow_date_place($death_decl_date, $death_decl_place);
                 if ($pers_gedcomnumber) {
@@ -1446,10 +1437,9 @@
         if ($editor['add_person'] == false) {
             echo $EditorEvent->show_event('BURI', $pers_gedcomnumber, 'ASSO');
         }
-
-
-        // *** General text by person ***
         ?>
+
+        <!-- General text by person -->
         <tr>
             <td><a name="text_person"></a><?= __('Text for person'); ?></td>
             <td colspan="2">
@@ -1496,11 +1486,9 @@
                     <?php } ?>
                 </td>
             </tr>
-        <?php
-        }
+        <?php } ?>
 
-        // *** Own code ***
-        ?>
+        <!-- Own code -->
         <tr>
             <td><?= ucfirst(__('own code')); ?></td>
             <td colspan="2">
@@ -1509,38 +1497,196 @@
                     <div class="col-md-7">
                         <div class="input-group">
                             <input type="text" name="pers_own_code" value="<?= htmlspecialchars($pers_own_code); ?>" class="form-control form-control-sm">
-                            <!-- HELP POPUP for own code -->
-                            &nbsp;&nbsp;
-                            <div class=" <?= $rtlmarker; ?>sddm" style="display:inline;">
-                                <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu3',100,400)" onmouseout="mclosetime()">
-                                    <img src="../images/help.png" height="16" width="16">
-                                </a>
-                                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                    <b><?= __('Use own code for your own remarks.<br>
-It\'s possible to use own code for special privacy options, see Admin > Users > Groups.<br>
-It\'s also possible to add your own icons by a person! Add the icon in the images folder e.g. \'person.gif\', and add \'person\' in the own code field.'); ?></b><br>
-                                </div>
-                            </div>
+
+                            <!-- Help popover for own code -->
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                data-bs-toggle="popover" data-bs-placement="bottom" data-bs-custom-class="popover-wide" data-bs-html="true"
+                                data-bs-title="<?= ucfirst(__('own code')); ?>"
+                                data-bs-content="
+                                <ul>
+                                    <li>
+                                        <?= __('Use own code for your own remarks.'); ?>
+                                    </li>
+                                    <li>
+                                        <?= __('It\'s possible to use own code for special privacy options, see Admin > Users > Groups.'); ?>
+                                    </li>
+                                    <li>
+                                        <?= __('You can add your own icons by a person! Add the icon in the images folder e.g. \'person.gif\', and add \'person\' in the own code field.'); ?>
+                                        </li>
+                                </ul>
+                                ">
+                                ?
+                            </button>
+
                         </div>
                     </div>
                 </div>
             </td>
         </tr>
+
         <?php
+        // TODO SEE ALSO: function edit_event_profession in editor.php. 
+        ?>
+        <!-- Profession(s) -->
+        <tr class="table_header_large" id="profession">
+            <td style="border-right:0px;">
+                <b><?= __('Profession'); ?></b>
+            </td>
+            <td colspan="2">
+                <?php
+                // *** Skip for newly added person ***
+                // *** Remark: in editorModel.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
+                if (!isset($_GET['add_person'])) {
+                ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="text" name="event_event_profession" value="" size="35" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" name="event_add_profession" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
+                        </div>
+                    </div>
+                <?php } ?>
+            </td>
+        </tr>
 
-        // *** Profession(s) ***
-        echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'profession');
+        <?php if (isset($_GET['add_person'])) { ?>
+            <!-- Directly add a first profession for new person -->
+            <tr>
+                <td style="border-right:0px;"><?= __('Profession'); ?></td>
+                <td colspan="2">
+                    <div class="row mb-2">
+                        <label for="event_profession" class="col-md-3 col-form-label"><?= __('Profession'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_profession" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
 
-        // *** Religion ***
+                    <div class="row mb-2">
+                        <label for="event_date_profession" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show("", "event_date_profession", ""); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_place_profession" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_place_profession" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_text_profession" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" name="event_text_profession" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <?php } ?>
+
+        <?= $EditorEvent->show_event('person', $pers_gedcomnumber, 'profession'); ?>
+
+        <!-- Religion -->
+        <tr class="table_header_large" id="religion">
+            <td style="border-right:0px;"><?= __('Religion'); ?></td>
+            <td colspan="2">
+                <?php
+                // *** Skip for newly added person ***
+                if (!isset($_GET['add_person'])) {
+                    // *** Remark: in editorModel.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
+                ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="text" name="event_event_religion" value="" size="35" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" name="event_add_religion" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
+                        </div>
+                    </div>
+                <?php } ?>
+            </td>
+        </tr>
+
+        <?php if (isset($_GET['add_person'])) { ?>
+            <!-- Directly add a religion for new person -->
+            <tr>
+                <td style="border-right:0px;"><?= __('Religion'); ?></td>
+                <td colspan="2">
+                    <div class="row mb-2">
+                        <label for="event_religion" class="col-md-3 col-form-label"><?= __('Religion'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_religion" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_date_religion" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
+                        <div class="col-md-7">
+                            <?php $editor_cls->date_show("", "event_date_religion", ""); ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_place_religion" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
+                        <div class="col-md-7">
+                            <input type="text" name="event_place_religion" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <label for="event_text_religion" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
+                        <div class="col-md-7">
+                            <textarea rows="1" name="event_text_religion" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show(""); ?></textarea>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <?php } ?>
+
+        <?php
         echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'religion');
 
         if (!isset($_GET['add_person'])) {
             // *** Show and edit places by person ***
-            edit_addresses('person', 'person_address', $pers_gedcomnumber);
-        } // *** End of check for new person ***
+            $connect_kind = 'person';
+            $connect_sub_kind = 'person_address';
+            $connect_connect_id = $pers_gedcomnumber;
+            include_once __DIR__ . '/partial/editor_addresses.php';
+        }
 
         if (!isset($_GET['add_person'])) {
-            // *** Person event editor ***
+        ?>
+            <!-- Person events -->
+            <tr class="table_header_large" id="event_person_link">
+                <td><?= __('Events'); ?></td>
+                <td colspan="2">
+                    <div class="row">
+                        <!-- Add person event -->
+                        <div class="col-4">
+                            <select size="1" name="event_kind" class="form-select form-select-sm">
+                                <option value="event"><?= __('Event'); ?></option>
+                                <option value="adoption"><?= __('Adoption'); ?></option>
+                                <option value="URL"><?= __('URL/ Internet link'); ?></option>
+                                <option value="person_colour_mark"><?= __('Colour mark by person'); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="col-3">
+                            <input type="submit" name="person_event_add" value="<?= __('Add event'); ?>" class="btn btn-sm btn-outline-primary">
+
+                            <!-- Help popover for events -->
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide"
+                                data-bs-content="<?= __('For items like:') . ' ' . __('Event') . ', ' . __('baptized as child') . ', ' . __('depart') . ' ' . __('etc.'); ?>">
+                                ?
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <?php
             echo $EditorEvent->show_event('person', $pers_gedcomnumber, 'person');
 
             // *** Picture ***
@@ -1575,7 +1721,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             if (isset($tagDb->tag_tag)) {
                 $tags_array = explode('<br>', $tagDb->tag_tag);
                 $num_rows = count($tags_array);
-        ?>
+            ?>
                 <tr class="humo_tags_pers">
                     <td>
                         <a href="#humo_tags_pers" onclick="hideShow(61);"><span id="hideshowlink61">[+]</span></a>
@@ -1601,39 +1747,42 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
             }
 
             // *** Show editor notes ***
-            show_editor_notes('person');
+            $note_connect_kind = 'person';
+            include_once __DIR__ . '/partial/editor_notes.php';
 
             // *** Show user added notes ***
             $note_qry = "SELECT * FROM humo_user_notes WHERE note_tree_id='" . $tree_id . "'
                 AND note_kind='user' AND note_connect_kind='person' AND note_connect_id='" . $pers_gedcomnumber . "'";
             $note_result = $dbh->query($note_qry);
             $num_rows = $note_result->rowCount();
+            ?>
 
-            echo '<tr class="table_header_large"><td>';
-            if ($num_rows) {
-                echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a> ';
-            }
-            echo __('User notes') . '</td><td colspan="2">';
-            if ($num_rows) {
-                printf(__('There are %d user added notes.'), $num_rows);
-            } else {
-                printf(__('There are %d user added notes.'), 0);
-            }
-            echo '</td></tr>';
+            <tr class="table_header_large">
+                <td>
+                    <?php if ($num_rows) { ?>
+                        <a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a>
+                    <?php } ?>
+                    <?= __('User notes'); ?>
+                </td>
+                <td colspan="2">
+                    <?php
+                    if ($num_rows) {
+                        printf(__('There are %d user added notes.'), $num_rows);
+                    } else {
+                        printf(__('There are %d user added notes.'), 0);
+                    }
+                    ?>
+                </td>
+            </tr>
 
+            <?php
             while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
-                $user_name = '';
-                if ($noteDb->note_new_user_id) {
-                    $user_qry = "SELECT * FROM humo_users WHERE user_id='" . $noteDb->note_new_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    $user_name = $userDb->user_name;
-                }
+                $user_name = $db_functions->get_user_name($noteDb->note_new_user_id);
             ?>
                 <tr class="row62" style="display:none;">
                     <td></td>
                     <td colspan="2">
-                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= show_datetime($noteDb->note_new_datetime); ?>)<br>
+                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>)<br>
                         <b><?= $noteDb->note_names; ?></b><br>
                         <textarea readonly rows="1" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
                     </td>
@@ -1643,39 +1792,23 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
             // *** Person added by user ***
             if ($person->pers_new_user_id || $person->pers_new_datetime) {
-                $user_name = '';
-                if ($person->pers_new_user_id) {
-                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_new_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    if ($userDb) {
-                        $user_name = $userDb->user_name;
-                    }
-                }
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Added by'); ?></td>
-                    <td colspan="2"><?= show_datetime($person->pers_new_datetime) . ' ' . $user_name; ?></td>
+                    <td colspan="2">
+                        <?= $languageDate->show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
+                    </td>
                 </tr>
             <?php
             }
 
             // *** Person changed by user ***
             if ($person->pers_changed_user_id || $person->pers_changed_datetime) {
-                $user_name = '';
-                if ($person->pers_changed_user_id) {
-                    $user_qry = "SELECT user_name FROM humo_users WHERE user_id='" . $person->pers_changed_user_id . "'";
-                    $user_result = $dbh->query($user_qry);
-                    $userDb = $user_result->fetch(PDO::FETCH_OBJ);
-                    if ($userDb) {
-                        $user_name = $userDb->user_name;
-                    }
-                }
             ?>
                 <tr class="table_header_large">
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2">
-                        <?= show_datetime($person->pers_changed_datetime) . ' ' . $user_name; ?>
+                        <?= $languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
                     </td>
                 </tr>
         <?php
@@ -1687,20 +1820,15 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
         <tr class="table_header_large">
             <td></td>
             <td colspan="2">
-                <?php
-                if ($editor['add_person'] == false) {
-                ?>
+                <?php if ($editor['add_person'] == false) { ?>
                     <input type="submit" name="person_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
                     <?= __('or'); ?>
                     <input type="submit" name="person_remove" value="<?= __('Delete person'); ?>" class="btn btn-sm btn-secondary">
-                <?php
-                } else {
-                    echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
-                }
-                ?>
+                <?php } else { ?>
+                    <input type="submit" name="person_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                <?php } ?>
             </td>
         </tr>
 
     </table><br>
-    <!-- End of person form -->
 </form>

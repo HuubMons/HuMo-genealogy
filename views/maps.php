@@ -1,8 +1,8 @@
 <script src="googlemaps/namesearch.js"></script>
 
 <?php
-$link = $link_cls->get_link($uri_path, 'maps', $tree_id);
-$link2 = $link_cls->get_link($uri_path, 'maps', $tree_id, true);
+$link = $processLinks->get_link($uri_path, 'maps', $tree_id);
+$link2 = $processLinks->get_link($uri_path, 'maps', $tree_id, true);
 
 // *** Select family tree ***
 $tree_id_string = " AND ( ";
@@ -14,6 +14,9 @@ $tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " 
 $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
 $tree_search_result = $dbh->query($tree_search_sql);
 $count = 0;
+
+$personPrivacy = new PersonPrivacy();
+$datePlace = new DatePlace();
 ?>
 
 <div class="p-3 m-2 genealogy_search">
@@ -58,7 +61,7 @@ $count = 0;
                                 $db_functions->set_tree_id($tree_id);
                                 $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                             }
-                            $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                            $treetext = $showTreeText ->show_tree_text($tree_searchDb->tree_id, $selected_language);
                             $count++;
                     ?>
                             <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>><?= $treetext['name']; ?></option>
@@ -428,14 +431,14 @@ if (isset($_POST['descmap'])) {
                         while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
                             $countmarr = 1;
                             $selected = '';
-                            //if($desc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
-                            $man_cls = new PersonCls($desc_searchDb);
-                            $privacy_man = $man_cls->privacy;
+                            //if($desc_searchDb->pers_gedcomnumber == $chosenperson) {
+                            //  $selected = ' selected ';
+                            //}
+                            $privacy_man = $personPrivacy->get_privacy($desc_searchDb);
                             $date = '';
                             if (!$privacy_man) {
                                 // if a person has privacy set (even if only for data, not for name,
                                 // we won't put them on the list. Most likely it concerns recent people.
-                                // Also, using the $man_cls->person_name functions takes too much time...
                                 $b_date = $desc_searchDb->pers_birth_date;
                                 $b_sign = __('born') . ' ';
                                 if (!$desc_searchDb->pers_birth_date && $desc_searchDb->pers_bapt_date) {
@@ -450,13 +453,13 @@ if (isset($_POST['descmap'])) {
                                 }
                                 $date = '';
                                 if ($b_date && !$d_date) {
-                                    $date = ' (' . $b_sign . date_place($b_date, '') . ')';
+                                    $date = ' (' . $b_sign . $datePlace->date_place($b_date, '') . ')';
                                 }
                                 if ($b_date && $d_date) {
-                                    $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
+                                    $date .= ' (' . $b_sign . $datePlace->date_place($b_date, '') . ' - ' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                                 if (!$b_date && $d_date) {
-                                    $date = '(' . $d_sign . date_place($d_date, '') . ')';
+                                    $date = '(' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                                 $name = '';
                                 $pref = '';
@@ -552,21 +555,23 @@ if (isset($_POST['ancmap'])) {
                     $fam_arr = explode(";", $anc_searchDb->pers_fams);
                     foreach ($fam_arr as $value) {
                         if ($countmarr == 1) {
+                            //this person is already listed
                             break;
-                        } //this person is already listed
+                        }
                         $chld_var = $value;
                         $chld_prep->execute();
                         while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
                             $countmarr = 1;
                             $selected = '';
-                            //if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' selected '; }
-                            $man_cls = new PersonCls($anc_searchDb);
-                            $privacy_man = $man_cls->privacy;
+                            //if($anc_searchDb->pers_gedcomnumber == $chosenperson) {
+                            //  $selected = ' selected ';
+                            //}
+                            $privacy_man = $personPrivacy->get_privacy($anc_searchDb);
                             $date = '';
-                            if (!$privacy_man) { // don't show dates if privacy is set for this person
+                            if (!$privacy_man) {
+                                // don't show dates if privacy is set for this person
                                 // if a person has privacy set (even if only for data, not for name,
                                 // we won't put them on the list. Most likely it concerns recent people.
-                                // Also, using the $man_cls->person_name functions takes too much time...
                                 $b_date = $anc_searchDb->pers_birth_date;
                                 $b_sign = __('born') . ' ';
                                 if (!$anc_searchDb->pers_birth_date && $anc_searchDb->pers_bapt_date) {
@@ -581,13 +586,13 @@ if (isset($_POST['ancmap'])) {
                                 }
                                 $date = '';
                                 if ($b_date && !$d_date) {
-                                    $date = ' (' . $b_sign . date_place($b_date, '') . ')';
+                                    $date = ' (' . $b_sign . $datePlace->date_place($b_date, '') . ')';
                                 }
                                 if ($b_date && $d_date) {
-                                    $date .= ' (' . $b_sign . date_place($b_date, '') . ' - ' . $d_sign . date_place($d_date, '') . ')';
+                                    $date .= ' (' . $b_sign . $datePlace->date_place($b_date, '') . ' - ' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                                 if (!$b_date && $d_date) {
-                                    $date = '(' . $d_sign . date_place($d_date, '') . ')';
+                                    $date = '(' . $d_sign . $datePlace->date_place($d_date, '') . ')';
                                 }
                             }
                             if (!$privacy_man || ($privacy_man && $user['group_filter_name'] == "j")) {

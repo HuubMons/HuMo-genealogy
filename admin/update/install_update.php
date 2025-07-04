@@ -143,9 +143,11 @@ if (isset($_GET['re_install'])) {
                 <?php printf(__('Download and unzip new %s version'), 'HuMo-genealogy'); ?>
             </a><br>
 
+            <?php /*
             <h2><?php printf(__('%s version history'), 'HuMo-genealogy'); ?></h2>
 
             <p><iframe height=" 300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe></p>
+            */ ?>
             <?php
         }
 
@@ -508,9 +510,7 @@ if (isset($_GET['re_install'])) {
                 ?>
 
                     <br><br><?= __('Update completed and installation files removed!'); ?><br><br>
-                <?php
-                }
-                ?>
+                <?php } ?>
             </form>
         <?php
         }
@@ -591,6 +591,8 @@ if (isset($_GET['re_install'])) {
         <?php printf(__('Check regularly for %s updates.'), 'HuMo-genealogy'); ?><br>
     </form>
 
+    <?php /*
     <p><iframe height=" 300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe></p>
+    */ ?>
 <?php
 }

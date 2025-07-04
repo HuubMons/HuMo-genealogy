@@ -12,8 +12,12 @@ $selection = $list["selection"];
 $start = $list["start"];
 
 
-$list_var = $link_cls->get_link($uri_path, 'list', $tree_id, false);
-$list_var2 = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+$list_var = $processLinks->get_link($uri_path, 'list', $tree_id, false);
+$list_var2 = $processLinks->get_link($uri_path, 'list', $tree_id, true);
+
+$personPrivacy = new PersonPrivacy();
+$datePlace = new DatePlace();
+$safeTextShow = new SafeTextShow();
 
 if ($list["index_list"] == 'places') {
 ?>
@@ -91,7 +95,7 @@ if ($list["index_list"] == 'places') {
                 </div>
 
                 <div class="col-2">
-                    <input type="text" name="place_name" value="<?= safe_text_show($list["place_name"]); ?>" size="15" class="form-control form-control-sm">
+                    <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($list["place_name"]); ?>" size="15" class="form-control form-control-sm">
                 </div>
 
                 <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -113,7 +117,6 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
             <!-- Standard search box -->
             <?php if ($list["adv_search"] == false) { ?>
-
                 <div class="row">
                     <div class="col-sm-2"></div>
 
@@ -134,7 +137,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         <input type="hidden" name="index_list" value="quicksearch">
                         <?php
                         if ($humo_option['min_search_chars'] == 1) {
-                            $pattern = "";
+                            $pattern = '';
                             $min_chars = " 1 ";
                         } else {
                             $pattern = 'pattern=".{' . $humo_option['min_search_chars'] . ',}"';
@@ -168,7 +171,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
             <!-- Advanced search box -->
             <?php if ($list["adv_search"] == true) { ?>
                 <div class="row ms-md-1">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['pers_firstname'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('First name'); ?>:
 
                         <div class="input-group mb-3">
@@ -177,7 +180,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_firstname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_firstname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="pers_firstname" value="<?= safe_text_show($selection['pers_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="pers_firstname" value="<?= $safeTextShow->safe_text_show($selection['pers_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
 
                             <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="<?= __('Also searches for special names like nickname, alias, birth name, soldier name, etc.'); ?>">?</button>
                         </div>
@@ -191,22 +194,22 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         }
                     ?>
 
-                        <div class="col-sm-auto">
+                        <div class="col-sm-auto <?= $pers_prefix ? ' bg-primary-subtle' : ''; ?>">
                             <?= ucfirst(__('prefix')); ?>:
                             <div class="input-group mb-3">
                                 <div class="input-group-text">
                                     <!-- Optional search for prefix -->
                                     <input class="form-check-input mt-0" type="checkbox" name="use_pers_prefix" value="" <?= $selection['use_pers_prefix'] == 'USED' ? 'checked' : ''; ?>>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
+                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= $safeTextShow->safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
                             </div>
                         </div>
 
-                        <div class="col-sm-auto">
+                        <div class="col-sm-auto <?= $selection['pers_lastname'] ? ' bg-primary-subtle' : ''; ?>">
                             <?= __('Last name'); ?>:
                             <div class="input-group mb-3">
                                 <?php /*
-                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
+                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= $safeTextShow->safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
                                 */ ?>
 
                                 <!--  Lastname -->
@@ -215,7 +218,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                     <option value="equals" <?php if ($selection['part_lastname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                     <option value="starts_with" <?php if ($selection['part_lastname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                                 </select>
-                                <input type="text" class="form-control form-control-sm" name="pers_lastname" value="<?= safe_text_show($selection['pers_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
+                                <input type="text" class="form-control form-control-sm" name="pers_lastname" value="<?= $safeTextShow->safe_text_show($selection['pers_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
                             </div>
                         </div>
                     <?php } else { ?>
@@ -226,7 +229,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     <?php } ?>
 
                     <!-- GEDCOM number -->
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 <?= $selection['gednr'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('gedcomnumber (ID)')); ?>:
                         <div class="input-group mb-3">
                             <select class="form-select form-select-sm" name="part_gednr" id="inputGroupGedcomnumber">
@@ -234,21 +237,21 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="contains" <?php if ($selection['part_gednr'] == 'contains') echo ' selected'; ?>><?= __('Contains'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_gednr'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="gednr" value="<?= safe_text_show($selection['gednr']); ?>" size="15" placeholder="<?= ucfirst(__('gedcomnumber (ID)')); ?>">
+                            <input type="text" class="form-control form-control-sm" name="gednr" value="<?= $safeTextShow->safe_text_show($selection['gednr']); ?>" size="15" placeholder="<?= ucfirst(__('gedcomnumber (ID)')); ?>">
                         </div>
                     </div>
                 </div>
 
                 <div class="row ms-md-1">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['birth_year'] || $selection['birth_year_end'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-sm" name="birth_year" value="<?= safe_text_show($selection['birth_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
-                            <input type="text" class="form-control form-control-sm" name="birth_year_end" value="<?= safe_text_show($selection['birth_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="birth_year" value="<?= $safeTextShow->safe_text_show($selection['birth_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="birth_year_end" value="<?= $safeTextShow->safe_text_show($selection['birth_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['birth_place'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_birth_place" class="form-select form-select-sm">
@@ -256,19 +259,19 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_birth_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_birth_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="birth_place" value="<?= safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="birth_place" value="<?= $safeTextShow->safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 <?= $selection['death_year'] || $selection['death_year_end'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?>:
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-sm" name="death_year" value="<?= safe_text_show($selection['death_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
-                            <input type="text" class="form-control form-control-sm" name="death_year_end" value="<?= safe_text_show($selection['death_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="death_year" value="<?= $safeTextShow->safe_text_show($selection['death_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="death_year_end" value="<?= $safeTextShow->safe_text_show($selection['death_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['death_place'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_death_place" class="form-select form-select-sm">
@@ -276,7 +279,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_death_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_death_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="death_place" value="<?= safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="death_place" value="<?= $safeTextShow->safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
                 </div>
@@ -295,7 +298,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
                 <div class="row ms-md-1">
                     <!-- Research status -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['parent_status'] != '' && $selection['parent_status'] != 'allpersons' ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Research status:'); ?>
                         <select name="parent_status" class="form-select form-select-sm">
                             <option value="noparents" <?php if ($selection['parent_status'] == "noparents") echo 'selected'; ?>><?= __('parents unknown'); ?></option>
@@ -306,7 +309,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
 
                     <!-- Text -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['text'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Text'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_text" class="form-select form-select-sm">
@@ -314,12 +317,12 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 echo '<option value="equals" <?php if ($selection['part_text'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_text'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="text" value="<?= safe_text_show($selection['text']); ?>" size="15" placeholder="<?= __('Text'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="text" value="<?= $safeTextShow->safe_text_show($selection['text']); ?>" size="15" placeholder="<?= __('Text'); ?>">
                         </div>
                     </div>
 
                     <!-- Profession -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['pers_profession'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Profession'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_profession" class="form-select form-select-sm">
@@ -327,12 +330,12 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_profession'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_profession'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="pers_profession" value="<?= safe_text_show($selection['pers_profession']); ?>" size="15" placeholder="<?= __('Profession'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="pers_profession" value="<?= $safeTextShow->safe_text_show($selection['pers_profession']); ?>" size="15" placeholder="<?= __('Profession'); ?>">
                         </div>
                     </div>
 
                     <!-- Own code -->
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 <?= $selection['own_code'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Own code'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_own_code" class="form-select form-select-sm">
@@ -340,13 +343,13 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_own_code'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_own_code'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="own_code" value="<?= safe_text_show($selection['own_code']); ?>" size="15" placeholder="<?= __('Own code'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="own_code" value="<?= $safeTextShow->safe_text_show($selection['own_code']); ?>" size="15" placeholder="<?= __('Own code'); ?>">
                         </div>
                     </div>
                 </div>
 
                 <div class="row ms-md-1">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['sexe'] != '' && $selection['sexe'] != 'both' ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Choose sex:'); ?>
                         <select size="1" name="sexe" class="form-select form-select-sm">
                             <option value="both"><?= __('All'); ?></option>
@@ -357,7 +360,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     </div>
 
                     <!-- Living place -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['pers_place'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Place'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_place" class="form-select form-select-sm">
@@ -365,12 +368,12 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="pers_place" value="<?= safe_text_show($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="pers_place" value="<?= $safeTextShow->safe_text_show($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
                     <!-- Zip code -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['zip_code'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Zip code'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_zip_code" class="form-select form-select-sm">
@@ -378,7 +381,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_zip_code'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_zip_code'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="zip_code" value="<?= safe_text_show($selection['zip_code']); ?>" size="15" placeholder="<?= __('Zip code'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="zip_code" value="<?= $safeTextShow->safe_text_show($selection['zip_code']); ?>" size="15" placeholder="<?= __('Zip code'); ?>">
                         </div>
                     </div>
 
@@ -386,7 +389,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
                 <div class="row ms-md-1">
                     <!-- Witness -->
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['witness'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('witness')); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_witness" class="form-select form-select-sm">
@@ -394,11 +397,11 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_witness'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_witness'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="witness" value="<?= safe_text_show($selection['witness']); ?>" size="15" placeholder="<?= ucfirst(__('witness')); ?>">
+                            <input type="text" class="form-control form-control-sm" name="witness" value="<?= $safeTextShow->safe_text_show($selection['witness']); ?>" size="15" placeholder="<?= ucfirst(__('witness')); ?>">
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['spouse_firstname'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Partner firstname'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_spouse_firstname" class="form-select form-select-sm">
@@ -406,11 +409,11 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_spouse_firstname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_spouse_firstname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="spouse_firstname" value="<?= safe_text_show($selection['spouse_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="spouse_firstname" value="<?= $safeTextShow->safe_text_show($selection['spouse_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div class="col-sm-3 <?= $selection['spouse_lastname'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= __('Partner lastname'); ?>:
                         <div class="input-group mb-3">
                             <select size="1" name="part_spouse_lastname" class="form-select form-select-sm">
@@ -418,7 +421,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_spouse_lastname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_spouse_lastname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="spouse_lastname" value="<?= safe_text_show($selection['spouse_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="spouse_lastname" value="<?= $safeTextShow->safe_text_show($selection['spouse_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
                         </div>
                     </div>
 
@@ -429,8 +432,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         </div>
                     </div>
                 </div>
-                    -->
-
+                -->
 
                 <div class="row mb-3 ms-md-1">
                     <?php if ($num_rows2 > 1 && $humo_option['one_name_study'] == 'n') { ?>
@@ -486,7 +488,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 <?php
 }
 
-$uri_path_string = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+$uri_path_string = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
 // *** Check for search results ***
 if ($list["person_result"]->rowCount() > 0) {
@@ -592,7 +594,7 @@ if ($list["person_result"]->rowCount() > 0) {
 </div>
 
 <?php
-$dir = "";
+$dir = '';
 if ($language["dir"] == "rtl") {
     $dir = "rtl"; // loads the proper CSS for rtl display (rtlindex_list2):
 }
@@ -604,21 +606,22 @@ $listnr = "2";      // default 20% margin
 //}
 //echo '<div class="'.$dir.'index_list'.$listnr.'">';
 
-//*** Show persons ******************************************************************
+//*** Show persons ***
 $privcount = 0; // *** Count privacy persons ***
 
-$selected_place = "";
+$selected_place = '';
 
 // TODO Allready added in model. But needed for spouse in this script for now...
 // *** Search for (part of) first or lastname ***
 function name_qry($search_name, $search_part)
 {
-    $text = "LIKE '%" . safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
+    $safeTextDb = new SafeTextDb;
+    $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
     if ($search_part == 'equals') {
-        $text = "='" . safe_text_db($search_name) . "'";
+        $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
     }
     if ($search_part == 'starts_with') {
-        $text = "LIKE '" . safe_text_db($search_name) . "%'";
+        $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
     }
     return $text;
 }
@@ -641,7 +644,7 @@ function name_qry($search_name, $search_part)
 
     <?php
     if ($list["index_list"] != 'places') {
-        $link = $link_cls->get_link($uri_path, 'list', $tree_id, true);
+        $link = $processLinks->get_link($uri_path, 'list', $tree_id, true);
     ?>
         <thead class="table-primary">
             <tr>
@@ -775,11 +778,10 @@ function name_qry($search_name, $search_part)
                 }
 
                 if ($personDb->pers_gedcomnumber == $famDb->fam_man) {
-                    $spouse_qry .= ' pers_gedcomnumber="' . safe_text_db($famDb->fam_woman) . '"';
+                    $spouse_qry .= ' pers_gedcomnumber="' . $safeTextDb->safe_text_db($famDb->fam_woman) . '"';
                 } else {
-                    $spouse_qry .= ' pers_gedcomnumber="' . safe_text_db($famDb->fam_man) . '"';
+                    $spouse_qry .= ' pers_gedcomnumber="' . $safeTextDb->safe_text_db($famDb->fam_man) . '"';
                 }
-
                 if ($selection['spouse_lastname']) {
                     if ($selection['spouse_lastname'] == __('...')) {
                         $spouse_qry .= " AND pers_lastname=''";
@@ -789,32 +791,29 @@ function name_qry($search_name, $search_part)
                         $spouse_qry .= " AND pers_lastname " . name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
                     }
                 }
-                //if ($selection['pers_prefix']){
-                // $spouse_qry.=" AND pers_prefix='".$selection['pers_prefix']."'";
-                //}
                 if ($selection['spouse_firstname']) {
                     $spouse_qry .= " AND pers_firstname " . name_qry($selection['spouse_firstname'], $selection['part_spouse_firstname']);
                 }
                 $spouse_result = $dbh->query($spouse_qry);
+
                 $spouseDb = $spouse_result->fetch(PDO::FETCH_OBJ);
                 if (isset($spouseDb->pers_id)) {
                     $spouse_found = true;
                     break;
                 }
             }
-        } // End of spouse search
+        }
 
         // *** Search parent status (no parents, only mother, only father) ***
         $parent_status_found = '1';
         if ($list["adv_search"] == true && $selection['parent_status'] != "allpersons" && $selection['parent_status'] != "noparents") {
             $parent_status_found = '0';
-            $par_famc = "";
+            $par_famc = '';
             if (isset($personDb->pers_famc)) {
                 $par_famc = $personDb->pers_famc;
             }
             if ($par_famc != "") {
                 $parDb = $db_functions->get_family($par_famc, 'man-woman');
-
                 if (
                     $selection['parent_status'] == "fatheronly" && substr($parDb->fam_man, 0, 1) === "I" && substr($parDb->fam_woman, 0, 1) !== "I"
                 ) {
@@ -830,8 +829,7 @@ function name_qry($search_name, $search_part)
         // *** Show search results ***
         if ($spouse_found == true && ($parent_status_found === '1' || $parent_status_found !== '1' && !isset($_POST['adv_search']))) {
             $pers_counter++; // needed for spouses search and mother/father only search
-            $person_cls = new PersonCls($personDb);
-            $privacy = $person_cls->privacy;
+            $privacy = $personPrivacy->get_privacy($personDb);
 
             if ($privacy and ($selection['birth_place'] != '' or $selection['birth_year'] != '' or $selection['death_place'] != '' or $selection['death_year'] != '')) {
                 $privcount++;
@@ -874,7 +872,7 @@ echo '<script>
 
 echo '<br>';
 //for testing only:
-//echo 'Query: <pre>'.$query."</pre> LIMIT ".safe_text_db($list["item"]).",".$list["nr_persons"].'<br>';
+//echo 'Query: <pre>'.$query."</pre> LIMIT ".$list["item"].",".$list["nr_persons"].'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';
 //echo '<p>index_list: '.$list["index_list"];
 //echo '<br>nr. of persons: '.$list["count_persons"];
@@ -883,16 +881,18 @@ echo '<br>';
 // *** show person ***
 function show_person($personDb)
 {
-    global $dbh, $db_functions, $selected_place, $language, $user;
-    global $bot_visit, $humo_option, $uri_path, $select_trees, $list_expanded;
-    global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
-    global $list;
+    global $dbh, $db_functions, $selected_place, $user, $humo_option, $select_trees, $list_expanded;
+    global $selected_language, $privacy, $dirmark1, $dirmark2, $list;
+
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $personPopup = new PersonPopup();
+    $datePlace = new DatePlace();
+    $showTreeText = new ShowTreeText();
 
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
-    // *** Person class used for name and person pop-up data ***
-    $person_cls = new PersonCls($personDb);
-    $name = $person_cls->person_name($personDb);
+    $name = $personName->get_person_name($personDb, $privacy);
 
     // *** Show name ***
     $index_name = '';
@@ -941,11 +941,18 @@ function show_person($personDb)
                 if ($list["select_place"] == '1') {
                     // *** Check if this is the living place of a person. Can't be checked using query variables... ***
                     $query = "SELECT address_place FROM humo_addresses, humo_connections
-                        WHERE address_tree_id='" . $personDb->pers_tree_id . "' AND connect_tree_id='" . $personDb->pers_tree_id . "'
-                        AND connect_connect_id='" . $personDb->pers_gedcomnumber . "'
-                        AND connect_item_id=address_gedcomnr
-                        AND address_place='" . safe_text_db($personDb->place_order) . "'";
-                    $result = $dbh->query($query);
+                        WHERE address_tree_id = :tree_id
+                        AND connect_tree_id = :tree_id
+                        AND connect_connect_id = :gedcomnumber
+                        AND connect_item_id = address_gedcomnr
+                        AND address_place = :place_order";
+                    $stmt = $dbh->prepare($query);
+                    $stmt->execute([
+                        ':tree_id' => $personDb->pers_tree_id,
+                        ':gedcomnumber' => $personDb->pers_gedcomnumber,
+                        ':place_order' => $personDb->place_order
+                    ]);
+                    $result = $stmt;
                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
                     //if ($selected_place==$personDb->pers_place_index)
@@ -976,9 +983,16 @@ function show_person($personDb)
                 if ($list["select_event"] == '1') {
                     // *** Check if this is the living place of a person. Can't be checked using query variables... ***
                     $query = "SELECT event_place FROM humo_events
-                        WHERE event_tree_id='" . $personDb->pers_tree_id . "' AND event_connect_id='" . $personDb->pers_gedcomnumber . "'
-                        AND event_place='" . safe_text_db($personDb->place_order) . "'";
-                    $result = $dbh->query($query);
+                        WHERE event_tree_id = :tree_id
+                        AND event_connect_id = :gedcomnumber
+                        AND event_place = :place_order";
+                    $stmt = $dbh->prepare($query);
+                    $stmt->execute([
+                        ':tree_id' => $personDb->pers_tree_id,
+                        ':gedcomnumber' => $personDb->pers_gedcomnumber,
+                        ':place_order' => $personDb->place_order
+                    ]);
+                    $result = $stmt;
                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
                     if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
@@ -993,7 +1007,7 @@ function show_person($personDb)
 
         <td valign="top" style="border-right:0px; white-space:nowrap;">
             <!-- Show person popup menu -->
-            <?= $person_cls->person_popup_menu($personDb); ?>
+            <?= $personPopup->person_popup_menu($personDb, $privacy); ?>
             <?= $dirmark1; ?>
 
             <?php
@@ -1042,7 +1056,8 @@ function show_person($personDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $start_url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+            $personLink = new PersonLink();
+            $start_url = $personLink->get_person_link($personDb);
 
             //echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';
             // *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
@@ -1076,8 +1091,8 @@ function show_person($personDb)
 
                     if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
-                        $partner_cls = new PersonCls;
-                        $name = $partner_cls->person_name($partnerDb);
+                        $privacy_partner = $personPrivacy->get_privacy($partnerDb);
+                        $name = $personName->get_person_name($partnerDb, $privacy_partner);
                     } else {
                         $name["standard_name"] = __('N.N.');
                     }
@@ -1100,17 +1115,16 @@ function show_person($personDb)
                     echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]) . '</span>';
                 }
             }
-            // *** End spouse/ partner ***
             ?>
         </td>
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_bapt_date) {
-                $info = __('~') . ' ' . date_place($personDb->pers_bapt_date, '');
+                $info = __('~') . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
             }
             if ($personDb->pers_birth_date) {
-                $info = __('*') . ' ' . date_place($personDb->pers_birth_date, '');
+                $info = __('*') . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
             }
             if ($privacy && $info) {
                 $info =  __('PRIVACY FILTER');
@@ -1120,7 +1134,7 @@ function show_person($personDb)
         </td>
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_bapt_place) {
                 $info = __('~') . ' ' . $personDb->pers_bapt_place;
             }
@@ -1135,12 +1149,12 @@ function show_person($personDb)
         </td>
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_buried_date) {
-                $info = __('[]') . ' ' . date_place($personDb->pers_buried_date, '');
+                $info = __('[]') . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
             }
             if ($personDb->pers_death_date) {
-                $info = __('&#134;') . ' ' . date_place($personDb->pers_death_date, '');
+                $info = __('&#134;') . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
             }
             if ($privacy && $info) {
                 $info =  __('PRIVACY FILTER');
@@ -1150,7 +1164,7 @@ function show_person($personDb)
         </td>
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($personDb->pers_buried_place) {
                 $info = __('[]') . ' ' . $personDb->pers_buried_place;
             }
@@ -1167,7 +1181,7 @@ function show_person($personDb)
         <?php
         // *** Show name of family tree, if search in multiple family trees is used ***
         if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
-            $treetext = show_tree_text($personDb->pers_tree_id, $selected_language);
+            $treetext = $showTreeText ->show_tree_text($personDb->pers_tree_id, $selected_language);
         ?>
             <td>
                 <i>
@@ -1198,4 +1212,4 @@ function show_person($personDb)
     ?>
 
 <?php
-} // *** end function show person ***
+}

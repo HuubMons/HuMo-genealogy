@@ -2,18 +2,21 @@
 class EditorController
 {
     private $editor_cls;
+    protected $admin_config;
 
-    public function __construct()
+    public function __construct($admin_config)
     {
+        $this->admin_config = $admin_config;
         $this->editor_cls = new Editor_cls;
     }
 
-    public function detail($dbh, $tree_id, $tree_prefix, $db_functions, $humo_option)
+    public function detail($tree_prefix): array
     {
-        $editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $this->editor_cls, $humo_option);
+        $editorModel = new EditorModel($this->admin_config, $tree_prefix, $this->editor_cls);
 
+        //$editorModel->set_pers_alive();
         $editorModel->set_hebrew_night();
-        $editorModel->set_pers_gedcomnumber($db_functions);
+        $editorModel->set_pers_gedcomnumber();
         $editorModel->set_search_name();
         $editorModel->set_marriage();
 
@@ -25,7 +28,7 @@ class EditorController
         $editor['search_id'] = $editorModel->get_search_id();
         $editor['search_name'] = $editorModel->get_search_name();
         $editor['new_tree'] = $editorModel->get_new_tree();
-        $editorModel->set_favorite($dbh, $tree_id);
+        $editorModel->set_favorite();
         $editor['marriage'] = $editorModel->get_marriage();
 
         // *** Check for new person ***

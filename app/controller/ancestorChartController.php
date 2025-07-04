@@ -1,21 +1,20 @@
 <?php
 class AncestorChartController
 {
-    private $dbh, $db_functions;
+    private $config;
 
-    public function __construct($dbh, $db_functions)
+    public function __construct($config)
     {
-        $this->dbh = $dbh;
-        $this->db_functions = $db_functions;
+        $this->config = $config;
     }
 
-    public function list($tree_id)
+    public function list($id): array
     {
-        $get_ancestorModel = new AncestorModel($this->dbh);
+        $get_ancestorModel = new AncestorModel($this->config);
 
-        $main_person = $get_ancestorModel->getMainPerson();
-        $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor chart', $tree_id, $main_person);
-        $get_ancestors = $get_ancestorModel->get_ancestors($this->db_functions, $main_person);
+        $main_person = $get_ancestorModel->getMainPerson2($id);
+        $ancestor_header = $get_ancestorModel->getAncestorHeader('Ancestor chart', $main_person);
+        $get_ancestors = $get_ancestorModel->get_ancestors2($main_person);
 
         $data = array(
             "main_person" => $main_person,

@@ -17,7 +17,7 @@ $editor_cls = $editSource['editor_cls'];
 
 // *** Process queries (needed to order and delete pictures) ***
 $editor_cls = new Editor_cls;
-$editorModel = new EditorModel($dbh, $tree_id, $tree_prefix, $db_functions, $editor_cls, $humo_option);
+$editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
 // TODO this picture remove confirm box is shown above the header.
@@ -45,18 +45,17 @@ if (isset($tree_id) && $tree_id) {
 }
 
 // TODO: this is a temporary copy of script in views/editor.php.
-include_once(__DIR__ . "/../../include/language_date.php");
-include_once(__DIR__ . "/../../include/date_place.php");
-// TODO: this is a temporary copy of script in views/editor.php.
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
+    $datePlace = new DatePlace();
+
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;
     if (isset($hideshow_date) && substr($hideshow_date, -1) === '!') {
         $check_date = true;
         $hideshow_date = substr($hideshow_date, 0, -1);
     }
-    $text = date_place($hideshow_date, $hideshow_place);
+    $text = $datePlace->date_place($hideshow_date, $hideshow_place);
     if ($check_date) {
         $text = '<span style="background-color:#FFAA80">' . $text . '</span>';
     }
@@ -72,7 +71,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
     <div class="alert alert-success">
         <?= __('Source is removed!'); ?>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <?php if (isset($_POST['source_remove'])) { ?>
     <div class="alert alert-danger">
@@ -84,7 +83,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
             <input type="submit" name="dummy5" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
         </form>
     </div>
-<?php }; ?>
+<?php } ?>
 
 <div class="p-3 my-md-2 genealogy_search container-md">
     <form method="POST" action="index.php?page=edit_sources" style="display : inline;">
@@ -371,7 +370,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
     // *** Source example in IFRAME ***
     if (!isset($_POST['add_source'])) {
         $vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
-        $sourcestring = $link_cls->get_link('../', 'source', $tree_id, false, $vars);
+        $sourcestring = $processLinks->get_link('../', 'source', $tree_id, false, $vars);
     ?>
         <br><br><?= __('Preview'); ?><br>
         <iframe src="<?= $sourcestring; ?>" class="iframe">

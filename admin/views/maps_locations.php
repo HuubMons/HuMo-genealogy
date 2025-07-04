@@ -116,7 +116,7 @@ if (isset($_POST['check_new'])) {
     <?php if (isset($_POST['loc_delete']) && (is_numeric($_POST['location_id']))) { ?>
         <input type="hidden" name="location_id" value="<?= $_POST['location_id']; ?>">
         <div class="alert alert-danger" role="alert">
-            <?php printf(__('Are your sure you want to delete location "%s"?'), str_replace("\'", "'", safe_text_db($_POST['location_location']))); ?>
+            <?php printf(__('Are your sure you want to delete location "%s"?'), str_replace("\'", "'", $safeTextDb->safe_text_db($_POST['location_location']))); ?>
             <input type="submit" value="<?= __('Yes'); ?>" name="loc_delete2" class="btn btn-sm btn-danger">
             <input type="submit" value="<?= __('No'); ?>" name="" class="btn btn-sm btn-primary">
         </div>
@@ -148,7 +148,7 @@ if (isset($_POST['check_new'])) {
                     <option value="0"><?= __('All family trees'); ?></option>
                     <?php
                     while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-                        $treetext = show_tree_text($tree_searchDb->tree_id, $selected_language);
+                        $treetext = $showTreeText -> show_tree_text($tree_searchDb->tree_id, $selected_language);
                     ?>
                         <option value="<?= $tree_searchDb->tree_id; ?>" <?= $tree_searchDb->tree_id == $maps['geo_tree_id'] ? 'selected' : ''; ?>>
                             <?= $treetext['name']; ?>
@@ -184,7 +184,7 @@ if (isset($_POST['check_new'])) {
                 $tree_search_sql2 = "SELECT * FROM humo_trees WHERE tree_id='" . $maps['geo_tree_id'] . "'";
                 $tree_search_result2 = $dbh->query($tree_search_sql2);
                 $tree_searchDb2 = $tree_search_result2->fetch(PDO::FETCH_OBJ);
-                $treetext2 = show_tree_text($tree_searchDb2->tree_id, $selected_language);
+                $treetext2 = $showTreeText -> show_tree_text($tree_searchDb2->tree_id, $selected_language);
                 $one_tree = "<b>" . __('Family tree') . " " . $treetext2['name'] . ": </b>";
             }
         ?>
@@ -282,9 +282,17 @@ if (isset($_POST['check_new'])) {
                     $longitude = $json->results[0]->geometry->location->lng;
 
                     if (isset($_POST['non_exist_locations'])) {
-                        $dbh->query("UPDATE humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $latitude . "', location_lng='" . $longitude . "' WHERE location_location='" . safe_text_db($value) . "'");
+                        $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location, location_lat = :lat, location_lng = :lng WHERE location_location = :location");
+                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                        $stmt->bindValue(':lat', $latitude, PDO::PARAM_STR);
+                        $stmt->bindValue(':lng', $longitude, PDO::PARAM_STR);
+                        $stmt->execute();
                     } else {
-                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $latitude . "', location_lng='" . $longitude . "'");
+                        $stmt = $dbh->prepare("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES (:location, :lat, :lng)");
+                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                        $stmt->bindValue(':lat', $latitude, PDO::PARAM_STR);
+                        $stmt->bindValue(':lng', $longitude, PDO::PARAM_STR);
+                        $stmt->execute();
                     }
 
                     sleep(1);
@@ -294,7 +302,9 @@ if (isset($_POST['check_new'])) {
                     //$map_count_notfound++;
 
                     if (!isset($_POST['non_exist_locations'])) {
-                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "'");
+                        $stmt = $dbh->prepare("INSERT INTO humo_location (location_location) VALUES (:location)");
+                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                        $stmt->execute();
                     }
 
                     sleep(1);
@@ -350,11 +360,18 @@ if (isset($_POST['check_new'])) {
                     $lat = $json_output['results'][0]['geometry']['location']['lat'];
                     $lng = $json_output['results'][0]['geometry']['location']['lng'];
 
-                    //$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('" . safe_text_db($value) . "', '" . $lat . "', '" . $lng . "') ");
                     if (isset($_POST['non_exist_locations'])) {
-                        $dbh->query("UPDATE humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $lat . "', location_lng='" . $lng . "' WHERE location_location='" . safe_text_db($value) . "'");
+                        $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location, location_lat = :lat, location_lng = :lng WHERE location_location = :location");
+                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                        $stmt->bindValue(':lat', $lat, PDO::PARAM_STR);
+                        $stmt->bindValue(':lng', $lng, PDO::PARAM_STR);
+                        $stmt->execute();
                     } else {
-                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "', location_lat='" . $lat . "', location_lng='" . $lng . "'");
+                        $stmt = $dbh->prepare("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES (:location, :lat, :lng)");
+                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                        $stmt->bindValue(':lat', $lat, PDO::PARAM_STR);
+                        $stmt->bindValue(':lng', $lng, PDO::PARAM_STR);
+                        $stmt->execute();
                     }
 
                     sleep(1);  // crucial, otherwise google kicks you out after a few queries
@@ -363,7 +380,9 @@ if (isset($_POST['check_new'])) {
                     $map_count_notfound++;
 
                     if (!isset($_POST['non_exist_locations'])) {
-                        $dbh->query("INSERT INTO humo_location SET location_location='" . safe_text_db($value) . "'");
+                        $stmt = $dbh->prepare("INSERT INTO humo_location (location_location) VALUES (:location)");
+                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                        $stmt->execute();
                     }
 
                     sleep(1);  // crucial, otherwise google kicks you out after a few queries
@@ -476,7 +495,10 @@ if (isset($_POST['check_new'])) {
                 if (isset($_POST['flag_form'])) {
                     // TODO check for numeric
                     // the pulldown was used -- so show the place that was chosen
-                    $result = $dbh->query("SELECT * FROM humo_location WHERE location_id = " . safe_text_db($_POST['loc_find']));
+                    $stmt = $dbh->prepare("SELECT * FROM humo_location WHERE location_id = :location_id");
+                    $stmt->bindValue(':location_id', $_POST['loc_find'], PDO::PARAM_INT);
+                    $stmt->execute();
+                    $result = $stmt;
                 } else {
                     // page was newly entered -- so show map+marker for first on list
                     $result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
@@ -596,7 +618,7 @@ if (isset($_POST['check_new'])) {
                         });
                     }
                 </script>
-            <?php }; ?>
+            <?php } ?>
 
             <div class="row mb-2">
                 <div class="col-md-6">
@@ -608,13 +630,12 @@ if (isset($_POST['check_new'])) {
                         $pos = strpos($_POST['add_name'], $_POST['location_location']);
 
                         if (!isset($_POST['cancel_change']) && ($pos !== false || isset($_POST['yes_change']))) {  // the name in pulldown appears in the name in the search box
-                            $dbh->query("UPDATE humo_location SET
-                                location_location ='" . safe_text_db($_POST['location_location']) . "',
-                                location_lat =" . floatval($_POST['location_lat']) . ",
-                                location_lng = " . floatval($_POST['location_lng']) . " 
-                                WHERE location_id = '" . $_POST['location_id'] . "'");
-
-                            //echo '<span style="color:red;font-weight:bold;">' . __('Changed location:') . ' ' . str_replace("\'", "'", safe_text_db($_POST['location_location'])) . '</span><br>';
+                            $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location_location, location_lat = :location_lat, location_lng = :location_lng WHERE location_id = :location_id");
+                            $stmt->bindValue(':location_location', $_POST['location_location'], PDO::PARAM_STR);
+                            $stmt->bindValue(':location_lat', floatval($_POST['location_lat']));
+                            $stmt->bindValue(':location_lng', floatval($_POST['location_lng']));
+                            $stmt->bindValue(':location_id', $_POST['location_id'], PDO::PARAM_INT);
+                            $stmt->execute();
                         } elseif (isset($_POST['cancel_change'])) {
                             $leave_bottom = true;
                         } else {
@@ -641,17 +662,24 @@ if (isset($_POST['check_new'])) {
 
                     // *** Add or change location ***
                     if (isset($_POST['loc_add'])) {
-                        $result = $dbh->query("SELECT location_location FROM humo_location WHERE location_location = '" . safe_text_db($_POST['add_name']) . "'");
+                        $stmt = $dbh->prepare("SELECT location_location FROM humo_location WHERE location_location = :location_location");
+                        $stmt->bindValue(':location_location', $_POST['add_name'], PDO::PARAM_STR);
+                        $stmt->execute();
+                        $result = $stmt;
                         if ($result->rowCount() == 0) {
                             // doesn't exist yet
-                            $dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('" . safe_text_db($_POST['add_name']) . "','" . floatval($_POST['location_lat']) . "','" . floatval($_POST['location_lng']) . "') ");
-                            //echo '<span style="color:red;font-weight:bold;">' . __('Added location:') . ' ' . str_replace("\'", "'", safe_text_db($_POST['add_name'])) . '</span><br>';
+                            $stmt = $dbh->prepare("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES (:location, :lat, :lng)");
+                            $stmt->bindValue(':location', $_POST['add_name'], PDO::PARAM_STR);
+                            $stmt->bindValue(':lat', floatval($_POST['location_lat']));
+                            $stmt->bindValue(':lng', floatval($_POST['location_lng']));
+                            $stmt->execute();
                         } elseif (is_numeric($_POST['location_id'])) {
-                            $dbh->query("UPDATE humo_location SET
-                                location_location ='" . safe_text_db($_POST['add_name']) . "',
-                                location_lat = " . floatval($_POST['location_lat']) . ",
-                                location_lng = " . floatval($_POST['location_lng']) . "
-                                WHERE location_id = '" . $_POST['location_id'] . "'");
+                            $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location_location, location_lat = :location_lat, location_lng = :location_lng WHERE location_id = :location_id");
+                            $stmt->bindValue(':location_location', $_POST['add_name'], PDO::PARAM_STR);
+                            $stmt->bindValue(':location_lat', floatval($_POST['location_lat']));
+                            $stmt->bindValue(':location_lng', floatval($_POST['location_lng']));
+                            $stmt->bindValue(':location_id', $_POST['location_id'], PDO::PARAM_INT);
+                            $stmt->execute();
                         ?>
                             <span style="color:red;font-weight:bold;"><?= __('Location already exists. Updated latitude/longitude'); ?></span><br>
                     <?php
@@ -702,7 +730,10 @@ if (isset($_POST['check_new'])) {
                     <?php
                     if (isset($_POST['loc_add'])) {
                         // we have added or changed a location - so show that location after page load
-                        $result = $dbh->query("SELECT * FROM humo_location WHERE location_location = '" . safe_text_db($_POST['add_name']) . "'");
+                        $stmt = $dbh->prepare("SELECT * FROM humo_location WHERE location_location = :location_location");
+                        $stmt->bindValue(':location_location', $_POST['add_name'], PDO::PARAM_STR);
+                        $stmt->execute();
+                        $result = $stmt;
                     } elseif (isset($_POST['loc_change']) || isset($_POST['yes_change']) || isset($_POST['cancel_change'])) {
                         // we have changed a location by "Change" or by "YES" - so show that location after page load
                         // or we pushed the "NO" button and want to leave the situation as it was

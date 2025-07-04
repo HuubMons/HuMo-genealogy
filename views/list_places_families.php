@@ -3,10 +3,6 @@
  * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
-// **************************
-// *** Generate indexlist ***
-// **************************
-
 // *** Show number of persons and pages ***
 $item = 0;
 if (isset($_GET['item'])) {
@@ -17,8 +13,10 @@ if (isset($_GET["start"])) {
     $start = $_GET["start"];
 }
 $nr_persons = $humo_option['show_persons'];
-
 $person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_persons);
+
+$personPrivacy = new PersonPrivacy();
+$safeTextShow = new SafeTextShow();
 
 //TODO use COUNT
 //if ($count_qry) {
@@ -33,7 +31,7 @@ $rows = $result->fetch();
 $count_persons = $rows['found_rows'];
 //}
 
-$link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
+$link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
 ?>
 
 <!-- Search places -->
@@ -89,7 +87,7 @@ $link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
             </div>
 
             <div class="col-2">
-                <input type="text" name="place_name" value="<?= safe_text_show($data["place_name"]); ?>" size="15" class="form-control form-control-sm">
+                <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($data["place_name"]); ?>" size="15" class="form-control form-control-sm">
             </div>
 
             <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -99,7 +97,7 @@ $link = $link_cls->get_link($uri_path, 'list_places_families', $tree_id);
 </form>
 
 <?php
-$uri_path_string = $link_cls->get_link($uri_path, 'list_places_families', $tree_id, true);
+$uri_path_string = $processLinks->get_link($uri_path, 'list_places_families', $tree_id, true);
 
 // *** Check for search results ***
 if ($person_result->rowCount() == 0) {
@@ -190,7 +188,7 @@ if ($person_result->rowCount() == 0) {
 </div>
 
 <?php
-$dir = "";
+$dir = '';
 if ($language["dir"] == "rtl") {
     $dir = "rtl"; // loads the proper CSS for rtl display (rtlindex_list2):
 }
@@ -198,10 +196,10 @@ if ($language["dir"] == "rtl") {
 // with extra sort date column, set smaller left margin
 $listnr = "2";      // default 20% margin
 
-//*** Show persons ******************************************************************
+//*** Show persons ***
 $privcount = 0; // *** Count privacy persons ***
 
-$selected_place = "";
+$selected_place = '';
 ?>
 <!-- Table to hold left sort date column (when necessary) and right person list column -->
 <table class="table table-sm">
@@ -218,17 +216,14 @@ $selected_place = "";
     while ($familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
         // *** Man privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_man);
-        // *** Person class used for name and person pop-up data ***
-        $man_cls = new PersonCls($personDb);
+        $man_privacy = $personPrivacy->get_privacy($personDb);
 
         // *** Woman privacy filter ***
         $personDb = $db_functions->get_person($familyDb->fam_woman);
-        // *** Person class used for name and person pop-up data ***
-        $woman_cls = new PersonCls($personDb);
+        $woman_privacy = $personPrivacy->get_privacy($personDb);
 
-        // *** Proces marriage using a class ***
-        $marriage_cls = new MarriageCls($familyDb, $man_cls->privacy, $woman_cls->privacy);
-        $family_privacy = $marriage_cls->privacy;
+        $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
+        $family_privacy = $marriage_cls->get_privacy();
 
         // *** $family_privacy=true => filter ***
         if ($family_privacy) {
@@ -248,22 +243,20 @@ $selected_place = "";
 <br>
 
 <?php
-// *** show person ***
 function show_person($familyDb)
 {
-    global $dbh, $db_functions, $tree_id, $selected_place, $language, $user;
-    global $bot_visit, $humo_option, $uri_path, $search_database, $list_expanded;
-    global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
-    global $data;
+    global $db_functions, $selected_place, $list_expanded;
+    global $privacy, $dirmark1, $dirmark2, $data;
+
+    $personPrivacy = new PersonPrivacy();
+    $personName = new PersonName();
+    $personPopup = new PersonPopup();
+    $datePlace = new DatePlace();
 
     $selected_person1 = $familyDb->fam_man ? $familyDb->fam_man : $familyDb->fam_woman;
     $personDb = $db_functions->get_person($selected_person1);
-
-    // *** Person class used for name and person pop-up data ***
-    $person_cls = new PersonCls($personDb);
-    $privacy = $person_cls->privacy;
-
-    $name = $person_cls->person_name($personDb);
+    $privacy = $personPrivacy->get_privacy($personDb);
+    $name = $personName->get_person_name($personDb, $privacy);
 
     // *** Show name ***
     $index_name = '';
@@ -283,7 +276,7 @@ function show_person($familyDb)
         <tr>
             <td colspan="7"><b><?= $dirmark2 . $familyDb->place_order; ?></b></td>
         </tr>
-    <?php }; ?>
+    <?php } ?>
     <?php $selected_place = $familyDb->place_order; ?>
     <tr>
         <td valign="top" style="white-space:nowrap;width:90px">
@@ -325,7 +318,7 @@ function show_person($familyDb)
         <td valign="top" style="border-right:0px; white-space:nowrap;">
             <?php
             // *** Show person popup menu ***
-            echo $person_cls->person_popup_menu($personDb);
+            echo $personPopup->person_popup_menu($personDb, $privacy);
 
             // *** Show picture man or wife ***
             if ($personDb->pers_sexe == "M") {
@@ -335,7 +328,6 @@ function show_person($familyDb)
             } else {
                 echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
             }
-
             ?>
         </td>
 
@@ -343,7 +335,8 @@ function show_person($familyDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $start_url = $person_cls->person_url2($personDb->pers_tree_id, $personDb->pers_famc, $personDb->pers_fams, $personDb->pers_gedcomnumber);
+            $personLink = new PersonLink();
+            $start_url = $personLink->get_person_link($personDb);
             echo ' <a href="' . $start_url . '">' . rtrim($index_name) . '</a>';
 
             //*** Show spouse/ partner ***
@@ -372,10 +365,8 @@ function show_person($familyDb)
 
                     if ($partner_id != '0' && $partner_id != '') {
                         $partnerDb = $db_functions->get_person($partner_id);
-
-                        $partner_cls = new PersonCls;
-                        $privacy2 = $person_cls->privacy;
-                        $name = $partner_cls->person_name($partnerDb);
+                        $privacy = $personPrivacy->get_privacy($partnerDb);
+                        $name = $personName->get_person_name($partnerDb, $privacy);
                     } else {
                         $name["standard_name"] = __('N.N.');
                     }
@@ -406,18 +397,17 @@ function show_person($familyDb)
                     }
                 }
             }
-            // *** End spouse/ partner ***
             ?>
         </td>
 
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_notice_date) {
-                $info = __('o') . ' ' . date_place($familyDb->fam_marr_church_notice_date, '');
+                $info = __('o') . ' ' . $datePlace->date_place($familyDb->fam_marr_church_notice_date, '');
             }
             if ($familyDb->fam_marr_notice_date) {
-                $info = __('&infin;') . ' ' . date_place($familyDb->fam_marr_notice_date, '');
+                $info = __('&infin;') . ' ' . $datePlace->date_place($familyDb->fam_marr_notice_date, '');
             }
             //echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
             if ($privacy && $info) {
@@ -430,7 +420,7 @@ function show_person($familyDb)
 
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_notice_place) {
                 $info = __('o') . ' ' . $familyDb->fam_marr_church_notice_place;
             }
@@ -447,12 +437,12 @@ function show_person($familyDb)
 
         <td style="white-space:nowrap;">
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_date) {
-                $info = __('x') . ' ' . date_place($familyDb->fam_marr_church_date, '');
+                $info = __('x') . ' ' . $datePlace->date_place($familyDb->fam_marr_church_date, '');
             }
             if ($familyDb->fam_marr_date) {
-                $info = __('X') . ' ' . date_place($familyDb->fam_marr_date, '');
+                $info = __('X') . ' ' . $datePlace->date_place($familyDb->fam_marr_date, '');
             }
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');
@@ -464,7 +454,7 @@ function show_person($familyDb)
 
         <td>
             <?php
-            $info = "";
+            $info = '';
             if ($familyDb->fam_marr_church_place) {
                 $info = __('x') . ' ' . $familyDb->fam_marr_church_place;
             }
@@ -480,4 +470,4 @@ function show_person($familyDb)
         </td>
     </tr>
 <?php
-} // *** end function show person ***
+}

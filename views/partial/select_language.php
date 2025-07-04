@@ -12,6 +12,12 @@ function show_country_flags($selected_language, $path, $variable, $language_path
 
     <ul class="dropdown-menu genealogy_menu">
         <?php
+        if (isset($humo_option["hide_languages"])){
+            $humo_option["hide_languages"] = $humo_option["hide_languages"];
+        } else {
+            $humo_option["hide_languages"] = "";
+        }
+
         $hide_languages_array = explode(";", $humo_option["hide_languages"]);
         for ($i = 0; $i < count($language_file); $i++) {
             // *** Get language name ***

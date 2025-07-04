@@ -56,9 +56,16 @@ $parSimple->setIndentRight(0.5);
 
 // *** Generate title of RTF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
-// *** Use person class ***
-$pers_cls = new PersonCls($persDb);
-$name = $pers_cls->person_name($persDb);
+
+$personPrivacy = new PersonPrivacy();
+$personName = new PersonName();
+$personName_extended = new PersonNameExtended;
+$personData = new PersonData();
+
+$privacy = $personPrivacy->get_privacy($persDb);
+$name = $personName->get_person_name($persDb, $privacy);
+
+
 $title = __('Ancestor report') . __(' of ') . $name["standard_name"];
 
 //$sect->writeText($title, $arial14, new PHPRtfLite_ParFormat());
@@ -178,20 +185,17 @@ while (isset($ancestor_array2[0])) {
 
         if ($ancestor_array[$i] != '0') {
             $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $man_cls = new PersonCls($person_manDb);
-            $privacy_man = $man_cls->privacy;
+            $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
             if (strtolower($person_manDb->pers_sexe) === 'm' && $ancestor_number[$i] > 1) {
                 $familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
                 // *** Use privacy filter of woman ***
                 $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-                $woman_cls = new PersonCls($person_womanDb);
-                $privacy_woman = $woman_cls->privacy;
+                $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
-                // *** Use class for marriage ***
                 $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
-                $family_privacy = $marriage_cls->privacy;
+                $family_privacy = $marriage_cls->get_privacy();
             }
             $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
             $table = $sect->addTable();
@@ -202,7 +206,7 @@ while (isset($ancestor_array2[0])) {
             $cell = $table->getCell(1, 1);
             $cell->writeText($rtf_text, $arial10, $parNames);
 
-            $rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
+            $rtf_text = strip_tags($personName_extended->name_extended($person_manDb, $privacy_man, "child"), "<b><i>");
             $cell = $table->getCell(1, 2);
 
             if ($person_manDb->pers_sexe == "M") {
@@ -216,7 +220,7 @@ while (isset($ancestor_array2[0])) {
             $cell = $table->getCell(1, 3);
             $cell->writeText($rtf_text, $arial12, $parNames);
             if ($listednr == '') {
-                $rtf_text = strip_tags($man_cls->person_data("standard", $ancestor_array[$i]), "<b><i>");
+                $rtf_text = strip_tags($personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]), "<b><i>");
                 //$rtf_text = substr($rtf_text, 0, -1); // take off newline
             } else { // person was already listed
                 $rtf_text = strip_tags('(' . __('Already listed above as number ') . $listednr . ') ', "<b><i>");
@@ -311,11 +315,9 @@ while (isset($ancestor_array2[0])) {
                 }
             }
         } else {
-
             // *** Show N.N. person ***
             $person_manDb = $db_functions->get_person($ancestor_array[$i]);
-            $man_cls = new PersonCls($person_manDb);
-            $privacy_man = $man_cls->privacy;
+            $privacy_man = $personPrivacy->get_privacy($person_manDb);
 
             $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
             $table = $sect->addTable();
@@ -335,18 +337,18 @@ while (isset($ancestor_array2[0])) {
                 $cell->addImage('images/unknown.jpg', null);
             }
 
-            $rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
+            $rtf_text = strip_tags($personName_extended->name_extended($person_manDb , $privacy_man, "child"), "<b><i>");
             $cell = $table->getCell(1, 3);
             $cell->writeText($rtf_text, $arial12, $parNames);
-            if ($man_cls->person_data("standard", $ancestor_array[$i])) {
-                $rtf_text = strip_tags($man_cls->person_data("standard", $ancestor_array[$i]), "<b><i>");
+            if ($personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i])) {
+                $rtf_text = strip_tags($personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]), "<b><i>");
                 //$rtf_text = substr($rtf_text, 0, -1); // take off newline
             }
             $cell->writeText($rtf_text, $arial12, $parNames);
         }
-    }    // loop per generation
+    }
     $generation++;
-}    // loop ancestor report
+}
 
 // *** Added juli 2024: If source footnotes are selected, show them here ***
 // TODO check layout of footnotes.
@@ -365,7 +367,7 @@ if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_prese
 $rtf->save($file_name);
 
 $vars['id'] = $data["main_person"];
-$link = $link_cls->get_link($uri_path, 'ancestor_report', $tree_id, false, $vars);
+$link = $processLinks->get_link($uri_path, 'ancestor_report', $tree_id, false, $vars);
 ?>
 
 <br><br><a href="<?= $file_name; ?>"><?= __('Download RTF report.'); ?></a>

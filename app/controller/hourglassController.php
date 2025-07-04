@@ -1,9 +1,16 @@
 <?php
 class HourglassController
 {
-    public function getHourglass($dbh, $tree_id)
+    private $config;
+
+    public function __construct($config)
     {
-        $descendantModel = new DescendantModel($dbh);
+        $this->config = $config;
+    }
+
+    public function getHourglass(): array
+    {
+        $descendantModel = new DescendantModel($this->config);
 
         // *** Sets hourglass to true. Hourglass uses descendant chart and ancestor chart ***
         $descendantModel->setHourglass(true);
@@ -20,7 +27,7 @@ class HourglassController
         //$number_generation = $descendantModel->getNumberGeneration();
         //$descendant_report = $descendantModel->getDescendantReport();
         $descendant_report = true;
-        $descendant_header = $descendantModel->getDescendantHeader('Descendant chart', $tree_id, $family_id, $main_person);
+        $descendant_header = $descendantModel->getDescendantHeader('Descendant chart', $family_id, $main_person);
 
         // Also add these variables for hourglass in descendant_chart.php
         $dna = $descendantModel->getDNA();
@@ -32,8 +39,8 @@ class HourglassController
 
 
         //TODO remove temp. global.
-        global $db_functions, $data, $user;
-        $genarray = $descendantModel->Prepare_genarray($db_functions, $data, $user);
+        global $data;
+        $genarray = $descendantModel->Prepare_genarray($data);
         $genarray = $descendantModel->generate($genarray);
 
         $hsize = $descendantModel->getHsize();
@@ -67,8 +74,8 @@ class HourglassController
         );
 
         // *** Ancestors ***
-        $get_ancestorModel = new AncestorModel($dbh);
-        $get_ancestors = $get_ancestorModel->get_ancestors($db_functions, $main_person);
+        $get_ancestorModel = new AncestorModel($this->config);
+        $get_ancestors = $get_ancestorModel->get_ancestors2($main_person);
         $data = array_merge($data, $get_ancestors);
 
         return $data;
