@@ -392,13 +392,17 @@ if (!defined('ADMIN_PAGE')) {
         $check_admin_pw = false;
         $check_login = $dbh->query("SELECT * FROM humo_users WHERE user_group_id='1'");
         while ($check_loginDb = $check_login->fetch(PDO::FETCH_OBJ)) {
+            $check_password = false;
             if ($check_loginDb->user_name == 'admin') {
                 $check_admin_user = true;
             }
             if ($check_loginDb->user_password == MD5('humogen')) {
                 $check_admin_pw = true;
-            } // *** Check old password method ***
-            $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
+            }
+            // *** Check old password method ***
+            if ($check_loginDb->user_password_salted) {
+                $check_password = password_verify('humogen', $check_loginDb->user_password_salted);
+            }
             if ($check_password) {
                 $check_admin_pw = true;
             }
@@ -462,81 +466,6 @@ if (!defined('ADMIN_PAGE')) {
 
                 <div class="col-md-8">
                     <?= $check_login2; ?>
-                </div>
-            </div>
-
-
-            <?php
-            // TODO: check this. This situation doesn't occur?
-            $index['wrong_username'] = true;
-            // *** Check login ***
-            if (isset($_SESSION["user_name_admin"])) {
-                $index['wrong_username'] = false;
-            } elseif (isset($_SERVER["PHP_AUTH_USER"])) {
-                $index['wrong_username'] = false;
-            }
-            ?>
-            <div class="row mb-2">
-                <div class="col-md-4">
-                    <?= __('Login control'); ?>
-                </div>
-
-                <div class="col-md-8 <?= $index['wrong_username'] ? 'bg-warning' : ''; ?> ">
-                    <?php
-                    // *** Check login ***
-                    if (isset($_SESSION["user_name_admin"])) {
-                        echo __('At the moment you are logged in through PHP-MySQL.');
-                    } elseif (isset($_SERVER["PHP_AUTH_USER"])) {
-                        echo __('At the moment you are logged in through an .htacces file.');
-                    } else {
-                        echo '<b>' . __('The folder "admin" has NOT YET been secured.') . '</b>';
-                    }
-                    ?>
-
-                    <form method="POST" action="index.php" style="display : inline;">
-                        <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('INFO'); ?>">
-                    </form>
-
-                    <?php if (isset($_POST['login_info'])) { ?>
-                        <div id="security_remark">
-
-                            <?php printf(__('After installation of the tables (click on the left at Install) the admin folder will be secured with PHP-MySQL security.
-<p>You can have better security with .htaccess (server security).<br>
-If the administration panel of your webhost has an option to password-protect directories, use this option on the \"admin\" folder of %s. If you don\'t have such an option, you can make an .htaccess file yourself.<br>
-Make a file .htaccess:'), 'HuMo-genealogy'); ?>
-
-                            <p>AuthType Basic<br>
-                                AuthName "<?= __('Secured website'); ?>"<br>
-                                AuthUserFile <?= $_SERVER['DOCUMENT_ROOT']; ?>/humo-gen/admin/.htpasswd<br>
-                                &lt;LIMIT GET POST&gt;<br>
-                                require valid-user<br>
-                                &lt;/LIMIT&gt;';
-
-                            <p><?= __('Next, you need a file with user names and passwords.<br>
-For example go to: http://www.htaccesstools.com/htpasswd-generator/<br>
-The file .htpasswd will look something like this:<br>'); ?>
-
-                            <p>Huub:mmb95Tozzk3a2</p>
-
-                            <form method="POST" action="index.php" style="display : inline;">
-                                <p><?= __('You can also try this password generator:'); ?><br>
-                                    <input type="hidden" name="page" value="<?= $page; ?>">
-                                    <input type="text" name="username" value="username" class="form-control" size="20"><br>
-                                    <input type="text" name="password" value="password" class="form-control" size="20"><br>
-                                    <input type="submit" name="login_info" class="btn btn-sm btn-success" value="<?= __('Generate new ht-password'); ?>">
-                            </form>
-
-                            <?php
-                            if (isset($_POST['username'])) {
-                                //$htpassword=crypt(trim($_POST['password']),base64_encode(CRYPT_STD_DES));
-                                $htpassword2 = crypt($_POST['password'], base64_encode($_POST['password']));
-                                //echo $_POST['username'].":".$htpassword.'<br>';
-                                echo $_POST['username'] . ":" . $htpassword2;
-                            }
-                            ?>
-                        </div>
-                    <?php } ?>
                 </div>
             </div>
 

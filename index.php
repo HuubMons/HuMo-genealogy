@@ -90,6 +90,7 @@ if (isset($_GET['log_off'])) {
 include_once(__DIR__ . "/include/db_login.php"); // Connect to database
 
 $safeTextDb = new SafeTextDb();
+
 $generalSettings = new GeneralSettings();
 $user = $generalSettings->get_user_settings($dbh);
 $humo_option = $generalSettings->get_humo_option($dbh);

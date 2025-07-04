@@ -3573,7 +3573,7 @@ class UpdateCls
 
                 $sql = "UPDATE humo_addresses SET
                 address_gedcomnr='R" . $new_gedcomnumber . "',
-                address_order='',
+                address_order=0,
                 address_date='',
                 address_connect_kind='',
                 address_connect_sub_kind='',

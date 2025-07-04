@@ -332,6 +332,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 $group_administrator = '';
 $group_edit_trees = '';
 if (isset($database_check) && $database_check) {
+    // TODO: htaccess login will be removed in a future version.
     if (isset($_SERVER["PHP_AUTH_USER"])) {
         // *** Logged in using .htacess ***
 
@@ -341,9 +342,12 @@ if (isset($database_check) && $database_check) {
 
         // *** If .htaccess is used, check usergroup for admin rights ***
         $query = "SELECT * FROM humo_users LEFT JOIN humo_groups
-            ON humo_users.user_group_id=humo_groups.group_id
-            WHERE humo_users.user_name='" . $_SERVER["PHP_AUTH_USER"] . "'";
-        $result = $dbh->query($query);
+            ON humo_users.user_group_id = humo_groups.group_id
+            WHERE humo_users.user_name = :username";
+        $stmt = $dbh->prepare($query);
+        $stmt->bindValue(':username', $_SERVER["PHP_AUTH_USER"], PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt;
         if ($result->rowCount() > 0) {
             $resultDb = $result->fetch(PDO::FETCH_OBJ);
             $group_administrator = $resultDb->group_admin;
@@ -376,11 +380,13 @@ if (isset($database_check) && $database_check) {
         if ($result !== FALSE) {
             if ($result->rowCount() > 0) {
                 // *** humo-users table exists, check admin log in ***
-                if (isset($_SESSION["group_id_admin"])) {
+                if (isset($_SESSION["group_id_admin"]) && is_numeric($_SESSION["group_id_admin"]) && isset($_SESSION["user_id_admin"])) {
                     // *** Logged in as admin... ***
 
                     // *** Read group settings ***
-                    $groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='" . $_SESSION["group_id_admin"] . "'");
+                    $groepsql = $dbh->prepare("SELECT * FROM humo_groups WHERE group_id = :group_id");
+                    $groepsql->bindValue(':group_id', $_SESSION["group_id_admin"], PDO::PARAM_INT);
+                    $groepsql->execute();
                     $groepDb = $groepsql->fetch(PDO::FETCH_OBJ);
 
                     // *** Check if user is an administrator ***
@@ -395,7 +401,9 @@ if (isset($database_check) && $database_check) {
                         $page = '';
                     }
                     // *** Edit family trees [USER SETTING] ***
-                    $user_result2 = $dbh->query("SELECT * FROM humo_users WHERE user_id=" . $_SESSION['user_id_admin']);
+                    $user_result2 = $dbh->prepare("SELECT * FROM humo_users WHERE user_id = :user_id");
+                    $user_result2->bindValue(':user_id', $_SESSION['user_id_admin'], PDO::PARAM_INT);
+                    $user_result2->execute();
                     $resultDb = $user_result2->fetch(PDO::FETCH_OBJ);
                     if (isset($resultDb->user_edit_trees) && $resultDb->user_edit_trees) {
                         if ($group_edit_trees) {

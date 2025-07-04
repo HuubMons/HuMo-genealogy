@@ -762,9 +762,11 @@ class DbFunctions
                 ]);
                 $result_array = $stmt->fetchAll(PDO::FETCH_OBJ);
                 foreach ($result_array as $resultDb) {
-                    $gednum = (int)(preg_replace('/\D/', '', $resultDb->address_gedcomnr));
-                    if ($gednum > $new_gedcomnumber) {
-                        $new_gedcomnumber = $gednum;
+                    if ($resultDb->address_gedcomnr) {
+                        $gednum = (int)(preg_replace('/\D/', '', $resultDb->address_gedcomnr));
+                        if ($gednum > $new_gedcomnumber) {
+                            $new_gedcomnumber = $gednum;
+                        }
                     }
                 }
             }

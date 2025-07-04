@@ -150,7 +150,13 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
 
     $mail_message = __('This is in response to your request for password reset at ') . $resetpassword['site_url'];
 
-    $resetpassword['site_url'] .= "?ak=$key&userid=$row->user_id";
+    if ($humo_option["url_rewrite"] == "j") {
+        $resetpassword['site_url'] .='?';
+    }
+    else{
+        $resetpassword['site_url'] .='&amp;';
+    }
+    $resetpassword['site_url'] .= "ak=$key&userid=$row->user_id";
 
     $mail_message .= '<br>' . __('Username') . ":" . $row->user_name . '<br>';
     $mail_message .= __('To reset your password, please visit this link or copy and paste this link in your browser window ') . ":";
