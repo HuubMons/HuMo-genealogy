@@ -68,21 +68,13 @@ $page = 'index';
  */
 function admin_custom_autoload($class_name)
 {
-    $admin_include = array(
-        'Editor_cls',
-        'EditorEvent',
-        'GedcomImport',
-        'GedcomExport',
-        'UpdateCls'
-    );
-
     if ($class_name == 'LanguageCls') {
         require __DIR__ . '/../languages/languageCls.php';
     } elseif (substr($class_name, -10) == 'Controller') {
         require __DIR__ . '/controller/' . lcfirst($class_name) . '.php';
     } elseif (substr($class_name, -5) == 'Model') {
         require __DIR__ . '/models/' . lcfirst($class_name) . '.php';
-    } elseif (in_array($class_name, $admin_include)) {
+    } elseif (is_file(__DIR__ . '/include/' . lcfirst($class_name) . '.php')) {
         require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
     } elseif (is_file(__DIR__ . '/../include/' . lcfirst($class_name) . '.php')) {
         require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
@@ -103,6 +95,7 @@ include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
 
 $safeTextDb = new SafeTextDb();
 $showTreeText = new ShowTreeText();
+$selectTree = new SelectTree();
 
 if (isset($dbh)) {
     $db_functions = new DbFunctions($dbh);
@@ -762,16 +755,10 @@ if ($popup == false) {
         } elseif ($page === 'login') {
             include_once(__DIR__ . "/views/login.php");
         } elseif ($group_administrator == 'j' && $page === 'tree') {
-            //TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new TreesController($admin_config);
             $trees = $controllerObj->detail($selected_language);
             include_once(__DIR__ . "/views/trees.php");
         } elseif ($page === 'editor') {
-            // TODO refactor.
-            include_once(__DIR__ . "/include/select_tree.php");
-
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
             if (isset($tree_id) && $tree_id) {
@@ -786,30 +773,18 @@ if ($popup == false) {
             $editSources = $controllerObj->detail();
             include_once(__DIR__ . "/views/editor_sources.php");
         } elseif ($page === 'edit_sources') {
-            // TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new AdminSourceController($admin_config);
             $editSource = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_source.php");
         } elseif ($page === 'edit_repositories') {
-            // TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new AdminRepositoryController($admin_config);
             $editRepository = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_repository.php");
         } elseif ($page === 'edit_addresses') {
-            // TODO refactor.
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new AdminAddressController($admin_config);
             $editAddress = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_address.php");
         } elseif ($page === 'edit_places') {
-            // TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new RenamePlaceController($admin_config);
             $place = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_rename_place.php");
@@ -826,8 +801,6 @@ if ($popup == false) {
             // TODO: split into model & view files.
             include_once(__DIR__ . "/include/editor_media_select.php");
         } elseif ($page === 'check') {
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new TreeCheckController($admin_config);
             $tree_check = $controllerObj->detail();
             include_once(__DIR__ . "/views/tree_check.php");
@@ -912,9 +885,6 @@ if ($popup == false) {
 
         // *** Default page for editor ***
         elseif ($group_administrator != 'j' && $group_edit_trees) {
-            // TODO refactor.
-            include_once(__DIR__ . "/include/select_tree.php");
-
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
             if (isset($tree_id) && $tree_id) {

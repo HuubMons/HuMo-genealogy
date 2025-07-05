@@ -84,9 +84,10 @@ $person_found = true;
                         if (isset($pers_id)) {
                             $counter = count($pers_id);
                             for ($i = 0; $i < $counter; $i++) {
-                                $person2_qry = "SELECT * FROM humo_persons WHERE pers_id='" . $pers_id[$i] . "'";
-                                $person2_result = $dbh->query($person2_qry);
-                                $person2 = $person2_result->fetch(PDO::FETCH_OBJ);
+                                $person2_qry = "SELECT * FROM humo_persons WHERE pers_id = :pers_id";
+                                $person2_stmt = $dbh->prepare($person2_qry);
+                                $person2_stmt->execute([':pers_id' => $pers_id[$i]]);
+                                $person2 = $person2_stmt->fetch(PDO::FETCH_OBJ);
                                 if ($person2) {
                                     $pers_user = '';
                                     if ($person2->pers_new_user_id) {
@@ -112,7 +113,7 @@ $person_found = true;
         <div class="row">
 
             <div class="col-md-3">
-                <?= select_tree($dbh, $page, $tree_id); ?>
+                <?= $selectTree->select_tree($dbh, $page, $tree_id); ?>
             </div>
 
             <div class="col-md-auto">
@@ -405,6 +406,7 @@ if ($check_person) {
                     if (!$previousDb) {
                         $check_pers_gedcomnumber = (substr($person->pers_gedcomnumber, 1) - 2);
                         $check_pers_gedcomnumber = 'I' . $check_pers_gedcomnumber;
+                        // TODO use db function.
                         $previous_qry = "SELECT pers_gedcomnumber FROM humo_persons
                             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $check_pers_gedcomnumber . "'";
                         $previous_result = $dbh->query($previous_qry);
@@ -938,9 +940,15 @@ function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
     global $tree_id, $dbh, $db_functions;
 
     $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
-        WHERE connect_tree_id='" . $tree_id . "'
-        AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
-    $connect_sql = $dbh->query($connect_qry);
+        WHERE connect_tree_id = :tree_id
+        AND connect_sub_kind = :connect_sub_kind AND connect_connect_id = :connect_connect_id";
+    $connect_stmt = $dbh->prepare($connect_qry);
+    $connect_stmt->execute([
+        ':tree_id' => $tree_id,
+        ':connect_sub_kind' => $connect_sub_kind,
+        ':connect_connect_id' => $connect_connect_id
+    ]);
+    $connect_sql = $connect_stmt;
     $source_count = $connect_sql->rowCount();
     $source_error = 0;
     while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {

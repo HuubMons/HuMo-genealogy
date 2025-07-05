@@ -44,7 +44,7 @@ if (isset($tree_id) && $tree_id) {
     <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row mb-2">
             <div class="col-md-3">
-                <?= select_tree($dbh, $page, $tree_id); ?>
+                <?= $selectTree->select_tree($dbh, $page, $tree_id); ?>
             </div>
 
             <div class="col-md-3">

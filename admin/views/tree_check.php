@@ -17,7 +17,7 @@ $db_functions->set_tree_id($tree_id);
         </label>
     </div>
     <div class="col-auto">
-        <?= select_tree($dbh, 'check', $tree_id); ?>
+        <?= $selectTree->select_tree($dbh, 'check', $tree_id); ?>
     </div>
 </div>
 

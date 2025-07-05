@@ -13,8 +13,9 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 // *** Selected family tree ***
-$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $trees['tree_id']);
-$data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
+$stmt = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_id = :tree_id");
+$stmt->execute([':tree_id' => $trees['tree_id']]);
+$data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 ?>
 
 <h1 class="center"><?= __('Family tree administration'); ?></h1>
@@ -40,7 +41,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
     </div>
 
     <div class="col-3">
-        <?= select_tree($dbh, 'tree', $trees['tree_id']); ?>
+        <?= $selectTree->select_tree($dbh, 'tree', $trees['tree_id']); ?>
     </div>
 </div>
 

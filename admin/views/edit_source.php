@@ -30,8 +30,10 @@ $field_text_large = 'style="height: 100px; width:550px"';
 // TODO check if code could be improved. Also in editorModel.php.
 // *** Show picture ***
 // *** get path of pictures folder 
-$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
-$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+$stmt = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_prefix = :tree_prefix");
+$stmt->bindValue(':tree_prefix', $tree_prefix, PDO::PARAM_STR);
+$stmt->execute();
+$dataDb = $stmt->fetch(PDO::FETCH_OBJ);
 $tree_pict_path = $dataDb->tree_pict_path;
 if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
@@ -89,7 +91,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
     <form method="POST" action="index.php?page=edit_sources" style="display : inline;">
         <div class="row mb-2">
             <div class="col-md-3">
-                <?= select_tree($dbh, $page, $tree_id); ?>
+                <?= $selectTree->select_tree($dbh, $page, $tree_id); ?>
             </div>
 
             <div class="col-md-3">
@@ -162,7 +164,10 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
         $source_repo_page = '';
         $source_repo_gedcomnr = '';
     } else {
-        $source_qry = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='" . $tree_id . "' AND source_id='" . $editSource['source_id'] . "'");
+        $source_qry = $dbh->prepare("SELECT * FROM humo_sources WHERE source_tree_id = :tree_id AND source_id = :source_id");
+        $source_qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+        $source_qry->bindValue(':source_id', $editSource['source_id'], PDO::PARAM_STR);
+        $source_qry->execute();
         //$sourceDb=$db_functions->get_source ($sourcenum);
 
         $die_message = __('No valid source number.');
@@ -189,7 +194,9 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
         $source_repo_gedcomnr = $sourceDb->source_repo_gedcomnr;
     }
 
-    $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
+    $repo_qry = $dbh->prepare("SELECT * FROM humo_repositories WHERE repo_tree_id = :tree_id ORDER BY repo_name, repo_place");
+    $repo_qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+    $repo_qry->execute();
 ?>
     <form method="POST" action="index.php?page=edit_sources" style="display : inline;" enctype="multipart/form-data" name="form3" id="form3">
         <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
