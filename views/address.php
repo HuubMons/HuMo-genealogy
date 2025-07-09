@@ -4,6 +4,8 @@ if ($data["authorised"] != '') {
     echo $data["authorised"];
     exit();
 }
+
+$showSourcesFootnotes = new Genealogy\Include\ShowSourcesFootnotes();
 ?>
 
 <table class="table">
@@ -66,5 +68,5 @@ if ($data["authorised"] != '') {
 <?php
 // *** If source footnotes are selected, show them here ***
 if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
-    echo show_sources_footnotes();
+    echo $showSourcesFootnotes->show_sources_footnotes();
 }

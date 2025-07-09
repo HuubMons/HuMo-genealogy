@@ -6,8 +6,8 @@
 
 $personDb = $db_functions->get_person($id);
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
+$personPrivacy = new Genealogy\Include\PersonPrivacy();
+$personName = new Genealogy\Include\PersonName();
 
 $privacy = $personPrivacy->get_privacy($personDb);
 if ($privacy) {

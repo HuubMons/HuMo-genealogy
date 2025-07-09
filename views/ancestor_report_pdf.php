@@ -10,13 +10,13 @@
  */
 
 $screen_mode = 'PDF';
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
+$pdf_source = array();  // is set in show_sources with sourcenr as key to be used in source appendix
 $dirmark1 = '';
 $dirmark2 = '';
 
 // TODO create seperate controller script.
-$get_ancestor = new AncestorModel($config);
-$data["main_person"] = $get_ancestor->getMainPerson2('');
+$get_ancestor = new \Genealogy\App\Model\AncestorModel($config);
+$data["main_person"] = $get_ancestor->getMainPerson2('', __FILE__);
 $rom_nr = $get_ancestor->getNumberRoman();
 
 // TODO for now using extended class.
@@ -49,15 +49,15 @@ $pdf_marriage = array();
 $pdf = new tFPDFextend();
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personName_extended = new PersonNameExtended;
-$personData = new PersonData;
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personName_extended = new \Genealogy\Include\PersonNameExtended();
+$personData = new \Genealogy\Include\PersonData();
+$showSourcePDF = new \Genealogy\Include\ShowSourcePDF();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
-
-$datePlace = new DatePlace();
+$datePlace = new \Genealogy\Include\DatePlace();
 
 $title = $pdf->pdf_convert(__('Ancestor report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]), 0, 'C');
 
@@ -197,7 +197,7 @@ while (isset($ancestor_array2[0])) {
                 $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
                 $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
-                $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
+                $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $privacy_man, $privacy_woman);
                 $family_privacy = $marriage_cls->get_privacy();
             }
 
@@ -344,17 +344,16 @@ while (isset($ancestor_array2[0])) {
         }
     }    // loop per generation
     $generation++;
-}    // loop ancestor report
+}
 
 
 // List appendix of sources
 if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user['group_sources'] == 'j')) {
-    include_once(__DIR__ . "/../include/show_source_pdf.php");
     $pdf->AddPage(); // appendix on new page
     $pdf->SetFont($pdf->pdf_font, "B", 14);
     $pdf->Write(8, __('Sources') . "\n\n");
     $pdf->SetFont($pdf->pdf_font, '', 10);
-    // the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
+    // the $pdf_source array is set in show_sources with sourcenr as key and value if a linked source is given
     $count = 0;
 
     foreach ($pdf_source as $key => $value) {
@@ -364,7 +363,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
             $pdf->SetFont($pdf->pdf_font, 'B', 10);
             $pdf->Write(6, $count . ". ");
             if ($user['group_sources'] == 'j') {
-                source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
+                $showSourcePDF->source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
             } elseif ($user['group_sources'] == 't') {
                 $db_functions->get_source($pdf_source[$key]);
                 if ($sourceDb->source_title) {

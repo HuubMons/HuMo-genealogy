@@ -15,8 +15,8 @@ $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tre
 $tree_search_result = $dbh->query($tree_search_sql);
 $count = 0;
 
-$personPrivacy = new PersonPrivacy();
-$datePlace = new DatePlace();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$datePlace = new \Genealogy\Include\DatePlace();
 ?>
 
 <div class="p-3 m-2 genealogy_search">

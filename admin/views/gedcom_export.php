@@ -35,7 +35,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 @set_time_limit(3000);
-$validateGedcomnumber = new ValidateGedcomnumber();
+$validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 ?>
 
 <h1 class="center"><?= __('GEDCOM file export'); ?></h1>
@@ -68,7 +68,7 @@ if (isset($_POST['submit_button'])) {
 <?php
 // *** Start GEDCOM export ***
 if (isset($tree_id) and isset($_POST['submit_button'])) {
-    $gedcomExport = new GedcomExport($dbh, $db_functions, $humo_option, $tree_id);
+    $gedcomExport = new \Genealogy\Include\GedcomExport($dbh, $db_functions, $humo_option, $tree_id);
     $gedcomExport->exportGedcom($export);
 ?>
     <?= __('GEDCOM file is generated'); ?><br>

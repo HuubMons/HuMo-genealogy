@@ -12,7 +12,7 @@ if ($data["source_search"] != '') {
 
 $path_form = $processLinks->get_link($uri_path, 'sources', $tree_id);
 
-$datePlace = new DatePlace();
+$datePlace = new \Genealogy\Include\DatePlace();
 ?>
 
 <h1><?= __('Sources'); ?></h1>

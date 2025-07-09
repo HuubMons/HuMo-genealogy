@@ -145,10 +145,10 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
     global $db_functions, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $user;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName_extended = new PersonNameExtended;
-    $personData = new PersonData;
-    $languageDate = new LanguageDate;
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName_extended = new \Genealogy\Include\PersonNameExtended();
+    $personData = new \Genealogy\Include\PersonData();
+    $languageDate = new \Genealogy\Include\LanguageDate();
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -198,7 +198,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
         $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
-        $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
+        $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $privacy_man, $privacy_woman);
         $family_privacy = $marriage_cls->get_privacy();
 
         /**

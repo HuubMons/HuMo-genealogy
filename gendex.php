@@ -1,22 +1,21 @@
 <?php
 header('Content-type: text/plain; charset=iso-8859-1');
 
+// *** Autoload composer classes ***
+require __DIR__ . '/vendor/autoload.php';
+
 include_once(__DIR__ . "/include/db_login.php"); //Inloggen database.
-include_once(__DIR__ . "/include/safeTextDb.php"); //Variabelen
 
 // *** Needed for privacy filter ***
-include_once(__DIR__ . "/include/generalSettings.php");
-$generalSettings = new GeneralSettings();
-$user = $generalSettings->get_user_settings($dbh);
+$generalSettings = new \Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/include/personData.php");
+$userSettings = new \Genealogy\Include\UserSettings();
+$user = $userSettings->get_user_settings($dbh);
 
-include_once(__DIR__ . "/include/dbFunctions.php");
-$db_functions = new DbFunctions($dbh);
+$db_functions = new \Genealogy\Include\DbFunctions($dbh);
 
-include_once(__DIR__ . "/include/personPrivacy.php");
-$personPrivacy = new PersonPrivacy();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
 
 // *** Database ***
 $datasql = $db_functions->get_trees();

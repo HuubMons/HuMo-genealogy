@@ -11,12 +11,35 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
         array (
             'PHPMailer\\PHPMailer\\' => 20,
         ),
+        'G' => 
+        array (
+            'Genealogy\\Languages\\' => 20,
+            'Genealogy\\Include\\' => 18,
+            'Genealogy\\App\\' => 14,
+            'Genealogy\\Admin\\' => 16,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
+        'Genealogy\\Languages\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/languages',
+        ),
+        'Genealogy\\Include\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/include',
+        ),
+        'Genealogy\\App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
+        ),
+        'Genealogy\\Admin\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/admin',
         ),
     );
 

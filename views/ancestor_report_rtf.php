@@ -57,10 +57,10 @@ $parSimple->setIndentRight(0.5);
 // *** Generate title of RTF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personName_extended = new PersonNameExtended;
-$personData = new PersonData();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personName_extended = new \Genealogy\Include\PersonNameExtended();
+$personData = new \Genealogy\Include\PersonData();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
@@ -194,7 +194,7 @@ while (isset($ancestor_array2[0])) {
                 $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
                 $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
-                $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
+                $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $privacy_man, $privacy_woman);
                 $family_privacy = $marriage_cls->get_privacy();
             }
             $sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
@@ -227,7 +227,7 @@ while (isset($ancestor_array2[0])) {
             }
             $cell->writeText($rtf_text, $arial12, $parNames);
 
-            $showMedia = new ShowMedia;
+            $showMedia = new \Genealogy\Include\ShowMedia();
             $result = $showMedia->show_media('person', $person_manDb->pers_gedcomnumber);
             if (isset($result[1]) && count($result[1]) > 0) {
                 $break = 1;
@@ -358,7 +358,8 @@ if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_prese
     $parGen->setSpaceAfter(8);
     $parGen->setBackgroundColor('#baf4c1');
 
-    $rtf_text = strip_tags(show_sources_footnotes(), "<b><i>");
+    $showSourcesFootnotes = new \Genealogy\Include\ShowSourcesFootnotes();
+    $rtf_text = strip_tags($showSourcesFootnotes->show_sources_footnotes(), "<b><i>");
     $sect->writeText($rtf_text, $arial14, $parGen);
 }
 

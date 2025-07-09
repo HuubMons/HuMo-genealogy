@@ -44,8 +44,8 @@ if (!defined('ADMIN_PAGE')) {
 <?php
 $path_prefix = '../';
 
-$editor_cls = new Editor_cls; // TODO editor_cls is also added in controller.
-$EditorEvent = new EditorEvent($dbh);
+$editor_cls = new \Genealogy\Include\Editor_cls; // TODO editor_cls is also added in controller.
+$EditorEvent = new \Genealogy\Include\EditorEvent($dbh);
 
 // *** Temp variables ***
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
@@ -446,16 +446,16 @@ if ($check_person) {
                         $firstDb = $first_result->fetch(PDO::FETCH_OBJ);
                     }
             ?>
-                    <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="person" value="<?= $firstDb->pers_gedcomnumber; ?>">
                         <input type="submit" value="<<">
                     </form>
 
+
+
                     <?php if ($previousDb) { ?>
-                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
-                            <input type="hidden" name="person" value="<?= $previousDb->pers_gedcomnumber; ?>">
                             <input type="submit" value="<">
                         </form>
                     <?php
@@ -502,9 +502,8 @@ if ($check_person) {
                 }
                 if ($nextDb) {
                 ?>
-                    <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $nextDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="person" value="<?= $nextDb->pers_gedcomnumber; ?>">
                         <input type="submit" value=">">
                     </form>
                 <?php } else { ?>
@@ -523,9 +522,8 @@ if ($check_person) {
                     $lastDb = $last_result->fetch(PDO::FETCH_OBJ);
                     if (substr($lastDb->pers_gedcomnumber, 2) > substr($person->pers_gedcomnumber, 2)) {
                     ?>
-                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $lastDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
-                            <input type="hidden" name="person" value="<?= $lastDb->pers_gedcomnumber; ?>">
                             <input type="submit" value=">>">
                         </form>
                     <?php } else { ?>
@@ -924,7 +922,7 @@ if ($check_person) {
 // *** Show event options ***
 function event_option($event_gedcom, $event)
 {
-    $languageEventName = new LanguageEventName();
+    $languageEventName = new \Genealogy\Include\LanguageEventName();
 
     $selected = '';
     if ($event_gedcom == $event) {
@@ -971,7 +969,7 @@ function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
     if ($source_error == '2') {
         // *** Source is empty, colour = yellow ***
         $style = ' style="background-color:#FFFF00"';
-    } 
+    }
 
     if ($source_count) {
         //return '<span ' . $style . '>[' . $source_count . ']</span>';
@@ -1075,12 +1073,13 @@ function edit_patronymic($name, $value): void
 
 function edit_event_name($name_select, $name_text, $value): void
 {
+    $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
     <div class="row mb-2">
         <div class="col-md-3">
             <select size="1" name="<?= $name_select; ?>" class="form-select form-select-sm">
                 <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-                <?php event_selection(''); ?>
+                <?php $editorEventSelection->event_selection(''); ?>
             </select>
         </div>
         <div class="col-md-7">
@@ -1141,7 +1140,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 {
     global $db_functions, $page;
 
-    $datePlace = new DatePlace();
+    $datePlace = new \Genealogy\Include\DatePlace();
 
     if ($gedcomnumber) {
         $personDb = $db_functions->get_person($gedcomnumber);
@@ -1183,7 +1182,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
-    $datePlace = new DatePlace();
+    $datePlace = new \Genealogy\Include\DatePlace();
 
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;

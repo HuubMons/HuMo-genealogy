@@ -24,7 +24,7 @@
     <div class="mt-2"><a href="index.php?page=update&proceed=1"><?= __('Start update procedure'); ?></a></div>
 <?php
 } else {
-    $update_cls = new UpdateCls;
+    $update_cls = new \Genealogy\Include\UpdateCls;
 
     // *** UPDATE PROCEDURES ***
     $humo_update = 0;

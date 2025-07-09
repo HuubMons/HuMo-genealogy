@@ -1,3 +1,7 @@
+<?php
+$showTreeDate = new \Genealogy\Include\ShowTreeDate();
+?>
+
 <div class="row my-3">
     <div class="col-md-8">
         <table class="table">
@@ -12,7 +16,7 @@
             <!-- Latest family tree update -->
             <tr>
                 <td><?= __('Latest update'); ?></td>
-                <td align="center"><i><?= show_tree_date($dataDb->tree_date); ?></i></td>
+                <td align="center"><i><?= $showTreeDate->show_tree_date($dataDb->tree_date); ?></i></td>
                 <td><br></td>
             </tr>
 

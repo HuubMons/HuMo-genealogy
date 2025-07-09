@@ -9,12 +9,15 @@
  * July 2011: translated all variables to english by: Huub Mons.
  */
 
+use Genealogy\Include\MarriageCls;
+
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
 
-$personPrivacy = new PersonPrivacy();
-$personName_extended = new PersonNameExtended;
-$personData = new PersonData;
+$personPrivacy = new Genealogy\Include\PersonPrivacy();
+$personName_extended = new Genealogy\Include\PersonNameExtended();
+$personData = new Genealogy\Include\PersonData();
+$showSourcesFootnotes = new Genealogy\Include\ShowSourcesFootnotes();
 
 //echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
 echo $data["ancestor_header"];
@@ -294,6 +297,6 @@ while (isset($ancestor_array2[0])) {
 
 <!-- If source footnotes are selected, show them here -->
 <?php if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') { ?>
-    <?= show_sources_footnotes(); ?>
+    <?= $showSourcesFootnotes->show_sources_footnotes(); ?>
 <?php } ?>
 <br><br>

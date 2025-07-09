@@ -1,21 +1,29 @@
 <?php
 session_start();
 
-include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
-include_once(__DIR__ . "/../include/safeTextDb.php");
+use Genealogy\Include\GeneralSettings;
+use Genealogy\Include\UserSettings;
+use Genealogy\Include\ProcessLinks;
+use Genealogy\Include\DbFunctions;
+use Genealogy\Include\PersonName;
+use Genealogy\Include\PersonPrivacy;
+use Genealogy\Include\DatePlace;
 
-include_once(__DIR__ . "/../include/generalSettings.php");
+// *** Autoload composer classes ***
+require __DIR__ . '/../vendor/autoload.php';
+
+include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
+
 $generalSettings = new GeneralSettings();
-$user = $generalSettings->get_user_settings($dbh);
 $humo_option = $generalSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/../include/personData.php"); // TODO check this.
-include_once(__DIR__ . '/../include/processLinks.php');
+$userSettings = new UserSettings();
+$user = $userSettings->get_user_settings($dbh);
+
 $processLinks = new ProcessLinks();
 
 $tree_id = $_SESSION['tree_id'];
 
-include_once(__DIR__ . "/../include/dbFunctions.php");
 $db_functions = new DbFunctions($dbh);
 $db_functions->set_tree_id($tree_id);
 

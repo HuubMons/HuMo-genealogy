@@ -5,13 +5,13 @@ if ($user['group_pictures'] != 'j' || $user['group_photobook'] != 'j') {
     exit();
 }
 
-$showMedia = new ShowMedia();
-$mediaPath = new MediaPath();
+$showMedia = new \Genealogy\Include\ShowMedia();
+$mediaPath = new \Genealogy\Include\MediaPath();
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$datePlace = new DatePlace();
-$safeTextShow = new SafeTextShow();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$datePlace = new \Genealogy\Include\DatePlace();
+$safeTextShow = new \Genealogy\Include\SafeTextShow();
 
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
@@ -139,7 +139,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
                 if (!$privacy) {
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $personLink = new PersonLink();
+                    $personLink = new \Genealogy\Include\PersonLink();
                     $url = $personLink->get_person_link($personDb);
                     $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
                     $picture_text2 .= $name["standard_name"];
@@ -175,7 +175,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
                     if (!$privacy) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $personLink = new PersonLink();
+                        $personLink = new \Genealogy\Include\PersonLink();
                         $url = $personLink->get_person_link($personDb);
                         if ($picture_text !== '' && $picture_text !== '0') {
                             $picture_text .= '<br>';

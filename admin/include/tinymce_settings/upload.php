@@ -18,7 +18,6 @@ include_once('../../../include/db_login.php'); // *** Database login ***
 
 include_once(__DIR__ . "../../../include/generalSettings.php");
 $generalSettings = new GeneralSettings();
-//$user = $generalSettings->get_user_settings($dbh);
 $humo_option = $generalSettings->get_humo_option($dbh);
 
 /**

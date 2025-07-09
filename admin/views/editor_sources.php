@@ -18,12 +18,12 @@ if ($event_family) {
 }
 
 // *** Process queries ***
-$editor_cls = new Editor_cls;
-$editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
+$editor_cls = new \Genealogy\Include\Editor_cls;
+$editorModel = new \Genealogy\Admin\Models\EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
-$languageDate = new LanguageDate();
-$validateGedcomnumber = new ValidateGedcomnumber();
+$languageDate = new \Genealogy\Include\LanguageDate();
+$validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 
 $db_functions->set_tree_id($tree_id);
 

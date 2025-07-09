@@ -11,7 +11,7 @@ if (!defined('ADMIN_PAGE')) {
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-$EditorEvent = new EditorEvent($dbh);
+$EditorEvent = new Genealogy\Include\EditorEvent($dbh);
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {

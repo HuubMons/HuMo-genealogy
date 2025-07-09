@@ -1,5 +1,5 @@
 <?php
-$languageDate = new LanguageDate();
+$languageDate = new Genealogy\Include\LanguageDate();
 
 // *** $note_connect_id = I123 or F123 ***
 $note_connect_id = $pers_gedcomnumber;

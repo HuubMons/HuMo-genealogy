@@ -70,10 +70,10 @@
 // TODO create function to show person.
 // TODO use a popup selection screen to select persons?
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$datePlace = new DatePlace();
-$safeTextShow = new SafeTextShow();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$datePlace = new \Genealogy\Include\DatePlace();
+$safeTextShow = new \Genealogy\Include\SafeTextShow();
 
 $limit = 500; // *** Limit results ***
 
@@ -784,8 +784,8 @@ function ext_calc_display_result($result, $db_functions, $relation)
     // example: parI232;parI65;chdI2304;spoI212;parI304
     // the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
 
     $map = array();    // array that will hold all data needed for the graphical display
     $tracks = explode(";", $result); // $tracks is array with each person in the trail
@@ -882,7 +882,7 @@ function ext_calc_display_result($result, $db_functions, $relation)
                             $name = $personName->get_person_name($ancDb, $privacy);
 
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $personLink = new PersonLink();
+                            $personLink = new \Genealogy\Include\PersonLink();
                             $url = $personLink->get_person_link($ancDb);
 
                             $colsp = true;
@@ -945,9 +945,9 @@ function display_table($relation)
 {
     global $db_functions, $tree_id, $uri_path;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $processLinks = new ProcessLinks();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
+    $processLinks = new \Genealogy\Include\ProcessLinks();
 
     $vars['pers_family'] = $relation['famspouseX'];
     $linkSpouseX = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);

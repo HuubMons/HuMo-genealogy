@@ -4,12 +4,12 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$showMedia = new ShowMedia;
-$resizePicture = new ResizePicture();
+$showMedia = new \Genealogy\Include\ShowMedia();
+$resizePicture = new \Genealogy\Include\ResizePicture();
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personLink = new PersonLink;
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personLink = new \Genealogy\Include\PersonLink();
 
 $prefx = '../'; // to get out of the admin map
 

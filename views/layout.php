@@ -88,6 +88,13 @@ if (isset($_POST['show_desc'])) {
 }
 */
 
+use Genealogy\Include\MediaPath;
+use Genealogy\Include\ShowTreeText;
+use Genealogy\Include\SafeTextShow;
+use Genealogy\Include\PersonName;
+use Genealogy\Include\PersonPrivacy;
+
+
 // ----------- RTL by Dr Maleki ------------------
 $html_text = '';
 if ($language["dir"] == "rtl") {   // right to left language

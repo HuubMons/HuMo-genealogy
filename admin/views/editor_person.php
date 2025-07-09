@@ -1,6 +1,7 @@
 <!-- Start of editor table -->
 <?php
-$languageDate = new LanguageDate;
+$languageDate = new \Genealogy\Include\LanguageDate;
+$editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
 
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
@@ -326,7 +327,7 @@ $languageDate = new LanguageDate;
             // *** Show message if age < 0 or > 120 ***
             $show_age_message = '';
             if (($person->pers_bapt_date || $person->pers_birth_date) && $person->pers_death_date) {
-                $process_age = new CalculateDates;
+                $process_age = new \Genealogy\Include\CalculateDates;
                 $age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
                 if ($age && ($age < 0 || $age > 120)) {
                     $show_age_message = $age;
@@ -538,7 +539,7 @@ $languageDate = new LanguageDate;
                     <div class="row">
                         <div class="col-md-4">
                             <select size="1" name="event_gedcom_add" id="event_gedcom_add" class="form-select form-select-sm">
-                                <?php event_selection(''); ?>
+                                <?php $editorEventSelection->event_selection(''); ?>
                             </select>
                         </div>
                         <div class="col-md-4">

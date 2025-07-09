@@ -8,9 +8,9 @@
  * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
  */
 
- $datePlace = new DatePlace();
- $languageDate = new LanguageDate;
- $validateGedcomnumber = new ValidateGedcomnumber();
+$datePlace = new \Genealogy\Include\DatePlace();
+$languageDate = new \Genealogy\Include\LanguageDate;
+$validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 ?>
 
 <div class="p-1 m-2 genealogy_search">

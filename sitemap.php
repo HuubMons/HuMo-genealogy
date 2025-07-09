@@ -7,19 +7,19 @@ header('Content-type: application/xml; charset=UTF-8');
  * If number of records > 50.000: multiple sitemap files are created, and sitemap index is used.
  */
 
+// *** Autoload composer classes ***
+require __DIR__ . '/vendor/autoload.php';
+
 include_once(__DIR__ . "/include/db_login.php");
-include_once(__DIR__ . "/include/safeTextDb.php");
 
 // *** Needed for privacy filter ***
-include_once(__DIR__ . "/include/generalSettings.php");
-$generalSettings = new GeneralSettings();
-$user = $generalSettings->get_user_settings($dbh);
+$generalSettings = new \Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 
-include_once(__DIR__ . "/include/personData.php");
+$userSettings = new \Genealogy\Include\UserSettings();
+$user = $userSettings->get_user_settings($dbh);
 
-include_once(__DIR__ . "/include/dbFunctions.php");
-$db_functions = new DbFunctions($dbh);
+$db_functions = new \Genealogy\Include\DbFunctions($dbh);
 
 // *** Example, see: http://www.sitemaps.org/protocol.html ***
 /*

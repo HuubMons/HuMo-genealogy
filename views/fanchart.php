@@ -44,8 +44,8 @@ for ($i = 0; $i < $maxperson; $i++) {
 function fillarray($nr, $pers_gedcomnumber): void
 {
     global $db_functions, $maxperson, $data, $indexnr;
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
 
     if ($nr >= $maxperson) {
         return;
@@ -183,9 +183,9 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 {
     global $dbh, $tree_id, $db_functions;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $languageDate = new LanguageDate;
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
+    $languageDate = new \Genealogy\Include\LanguageDate();
 
     // check for GD 2.x library
     /*
@@ -460,13 +460,14 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                 $imagemap .= "$tx, $ty";
 
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                // TODO check this
                 $personLinkDb = new stdClass();
                 $personLinkDb->pers_tree_id = $tree_id;
                 $personLinkDb->pers_famc = $data["fanchart_item"][$sosa]['pers_famc'];
                 $personLinkDb->pers_fams = $data["fanchart_item"][$sosa]['pers_fams'];
                 $personLinkDb->pers_gedcomnumber = $data["fanchart_item"][$sosa]['pers_gedcomnumber'];
 
-                $personLink = new PersonLink();
+                $personLink = new \Genealogy\Include\PersonLink();
                 $url = $personLink->get_person_link($personLinkDb);
 
                 $imagemap .= "\" href=\"" . $url . "\"";

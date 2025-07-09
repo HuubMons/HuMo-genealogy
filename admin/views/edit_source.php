@@ -16,8 +16,8 @@ $phpself = 'index.php';
 $editor_cls = $editSource['editor_cls'];
 
 // *** Process queries (needed to order and delete pictures) ***
-$editor_cls = new Editor_cls;
-$editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
+$editor_cls = new Genealogy\Include\Editor_cls;
+$editorModel = new Genealogy\Admin\Models\EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
 // TODO this picture remove confirm box is shown above the header.
@@ -39,7 +39,7 @@ if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }
 
-$EditorEvent = new EditorEvent($dbh);
+$EditorEvent = new Genealogy\Include\EditorEvent($dbh);
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {
@@ -49,7 +49,7 @@ if (isset($tree_id) && $tree_id) {
 // TODO: this is a temporary copy of script in views/editor.php.
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
-    $datePlace = new DatePlace();
+    $datePlace = new Genealogy\Include\DatePlace();
 
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;

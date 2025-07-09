@@ -20,10 +20,10 @@ $max_age = '110';
 $last_cal_day = 0;
 $months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
 
-$personLink = new PersonLink;
-$personName = new PersonName();
-$personPrivacy = new PersonPrivacy();
-$languageDate = new LanguageDate;
+$personLink = new Genealogy\Include\PersonLink;
+$personName = new Genealogy\Include\PersonName();
+$personPrivacy = new Genealogy\Include\PersonPrivacy();
+$languageDate = new Genealogy\Include\LanguageDate;
 ?>
 
 <!-- *** Center page *** -->

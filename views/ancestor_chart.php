@@ -133,10 +133,10 @@ function ancestor_chart_person($id, $box_appearance)
 {
     global $db_functions, $user, $data, $dirmark1, $dirmark2;
 
-    $personName = new PersonName();
-    $personPrivacy = new PersonPrivacy();
-    $personPopup = new PersonPopup();
-    $datePlace = new DatePlace();
+    $personName = new \Genealogy\Include\PersonName();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personPopup = new \Genealogy\Include\PersonPopup();
+    $datePlace = new \Genealogy\Include\DatePlace();
 
     $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
     if (strpos($box_appearance, "hour") !== false) {
@@ -269,7 +269,7 @@ function ancestor_chart_person($id, $box_appearance)
                 // *** Only show 1st picture ***
                 if (isset($picture_qry[0])) {
                     $pictureDb = $picture_qry[0];
-                    $showMedia = new ShowMedia();
+                    $showMedia = new \Genealogy\Include\ShowMedia();
                     $text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 80, 70, 'float:left; margin:5px;');
                 }
             }

@@ -29,6 +29,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Genealogy\Include\GeneralSettings;
+use Genealogy\Include\ProcessLinks;
+use Genealogy\Include\SafeTextDb;
+use Genealogy\Include\ShowTreeText;
+use Genealogy\Include\UserSettings;
+use Genealogy\App\Controller\AddressController;
+use Genealogy\App\Controller\AddressesController;
+use Genealogy\App\Controller\AncestorChartController;
+use Genealogy\App\Controller\AncestorReportController;
+use Genealogy\App\Controller\AncestorSheetController;
+use Genealogy\App\Controller\AnniversaryController;
+use Genealogy\App\Controller\CmsPagesController;
+use Genealogy\App\Controller\DescendantChartController;
+use Genealogy\App\Controller\FamilyController;
+use Genealogy\App\Controller\FanchartController;
+use Genealogy\App\Controller\HourglassController;
+use Genealogy\App\Controller\IndexController;
+use Genealogy\App\Controller\LatestChangesController;
+use Genealogy\App\Controller\ListController;
+use Genealogy\App\Controller\ListNamesController;
+use Genealogy\App\Controller\ListPlacesFamiliesController;
+use Genealogy\App\Controller\MailformController;
+use Genealogy\App\Controller\MapsController;
+use Genealogy\App\Controller\OutlineReportController;
+use Genealogy\App\Controller\PhotoalbumController;
+use Genealogy\App\Controller\RegisterController;
+use Genealogy\App\Controller\RelationsController;
+use Genealogy\App\Controller\ResetPasswordController;
+use Genealogy\App\Controller\SourceController;
+use Genealogy\App\Controller\SourcesController;
+use Genealogy\App\Controller\StatisticsController;
+use Genealogy\App\Controller\TimelineController;
+use Genealogy\App\Controller\UserSettingsController;
+
 // *** Disabled 18-01-2023 ***
 //ini_set('url_rewriter.tags','');
 
@@ -37,45 +71,8 @@ session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
 //session_regenerate_id();
 
-/**
- *  Dec. 2024: Added autoload.
- *  Name of class = SomethingClass
- *  Name of script: somethingClass.php ***
- * 
- *  Examples of autoload files:
- *  app/model/ All scripts are autoloading.
- *  app/model/adresModel.php
- *
- *  controller/ All scripts are autoloading.
- *  controller/addressController.php
- *
- *  include/dbFunctions.php
- *  include/marriage_cls
- *  include/personData.php
- *  include/calculateDates.php
- *  include/processLinks.php
- *  include/validateDate.php
- *
- *  languages/languageCls.php
- */
-// TODO add autoload in gendex.php, sitemap.php, editor_ajax.php, namesearch.php.
-function custom_autoload($class_name)
-{
-    if ($class_name == 'LanguageCls') {
-        require __DIR__ . '/languages/languageCls.php';
-    } elseif (substr($class_name, -10) == 'Controller') {
-        require __DIR__ . '/app/controller/' . lcfirst($class_name) . '.php';
-    } elseif (substr($class_name, -5) == 'Model') {
-        require __DIR__ . '/app/model/' . lcfirst($class_name) . '.php';
-    } elseif ($class_name == 'tFPDF' || $class_name == 'tFPDFextend') {
-        // *** No lcfirst used, because of name of class ***
-        require __DIR__ . '/include/tfpdf/' . $class_name . '.php';
-    } elseif (is_file(__DIR__ . '/include/' . lcfirst($class_name) . '.php')) {
-        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
-    }
-}
-spl_autoload_register('custom_autoload');
-
+// *** Autoload composer classes ***
+require __DIR__ . '/vendor/autoload.php';
 
 // TODO move to model script (should be processed before setttings_user).
 if (isset($_GET['log_off'])) {
@@ -92,13 +89,12 @@ include_once(__DIR__ . "/include/db_login.php"); // Connect to database
 $safeTextDb = new SafeTextDb();
 
 $generalSettings = new GeneralSettings();
-$user = $generalSettings->get_user_settings($dbh);
 $humo_option = $generalSettings->get_humo_option($dbh);
 
+$userSettings = new UserSettings();
+$user = $userSettings->get_user_settings($dbh);
+
 $showTreeText = new ShowTreeText();
-
-include_once(__DIR__ . '/app/routing/router.php'); // Page routing.
-
 
 
 // *** Added dec. 2024 ***
@@ -199,9 +195,6 @@ $processLinks = new ProcessLinks($uri_path);
 include_once(__DIR__ . "/include/config.php");
 
 if ($index['page'] == 'address') {
-    // TODO refactor
-    include_once(__DIR__ . "/include/show_sources.php");
-
     $controllerObj = new AddressController($config);
     $data = $controllerObj->detail();
 } elseif ($index['page'] == 'addresses') {

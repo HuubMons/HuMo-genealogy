@@ -15,9 +15,9 @@ $start = $list["start"];
 $list_var = $processLinks->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
-$personPrivacy = new PersonPrivacy();
-$datePlace = new DatePlace();
-$safeTextShow = new SafeTextShow();
+$personPrivacy = new Genealogy\Include\PersonPrivacy();
+$datePlace = new  Genealogy\Include\DatePlace();
+$safeTextShow = new Genealogy\Include\SafeTextShow();
 
 if ($list["index_list"] == 'places') {
 ?>
@@ -615,7 +615,7 @@ $selected_place = '';
 // *** Search for (part of) first or lastname ***
 function name_qry($search_name, $search_part)
 {
-    $safeTextDb = new SafeTextDb;
+    $safeTextDb = new Genealogy\Include\SafeTextDb;
     $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
     if ($search_part == 'equals') {
         $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
@@ -884,11 +884,11 @@ function show_person($personDb)
     global $dbh, $db_functions, $selected_place, $user, $humo_option, $select_trees, $list_expanded;
     global $selected_language, $privacy, $dirmark1, $dirmark2, $list;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $personPopup = new PersonPopup();
-    $datePlace = new DatePlace();
-    $showTreeText = new ShowTreeText();
+    $personPrivacy = new Genealogy\Include\PersonPrivacy();
+    $personName = new Genealogy\Include\PersonName();
+    $personPopup = new Genealogy\Include\PersonPopup();
+    $datePlace = new Genealogy\Include\DatePlace();
+    $showTreeText = new Genealogy\Include\ShowTreeText();
 
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
@@ -1056,7 +1056,7 @@ function show_person($personDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $personLink = new PersonLink();
+            $personLink = new Genealogy\Include\PersonLink();
             $start_url = $personLink->get_person_link($personDb);
 
             //echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';

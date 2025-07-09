@@ -6,6 +6,23 @@ BrowserMatchNoCase "Python/3.10 aiohttp/3.9.3" bad_bot
 Order Deny,Allow
 Deny from env=bad_bot
 
+# Apache <= 2.2
+#<IfModule !mod_authz_core.c>
+#    <IfModule mod_authz_host.c>
+#        Order Allow,Deny
+#        Allow from all
+#        Deny from env=bad_bot
+#        </IfModule>
+#</IfModule>
+
+# Apache > 2.2
+#<IfModule mod_authz_core.c>
+#    <RequireAll>
+#        Require all granted
+#        Require not env bad_bot
+#    </RequireAll>
+#</IfModule>
+
 # # Blocking Bot traffic except search bots. Explanation of RewriteCond lines:
 # Line 1 stops unidentified bots.
 # Line 2 stops bots including text: bot, crawl of robot zit.

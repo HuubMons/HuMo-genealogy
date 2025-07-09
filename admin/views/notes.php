@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$languageDate = new LanguageDate();
+$languageDate = new \Genealogy\Include\LanguageDate();
 
 $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 $tree_result = $dbh->query($tree_sql);
