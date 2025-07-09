@@ -204,7 +204,7 @@ $found = false; // if this stays false, displays message that no problems where 
 function invalid($date, $gednr, $table)
 {
     global $dbh, $db_functions, $tree_id, $dirmark2;
-    $validateDate = new \Genealogy\Include\validateDate;
+    $validateDate = new \Genealogy\Include\ValidateDate;
     $compare_date = $date;
     if (strpos($date, '/') > 0) { // check for combined julian/gregorian date entries like 1654/5 and check the first part
         $temp = explode('/', $date);

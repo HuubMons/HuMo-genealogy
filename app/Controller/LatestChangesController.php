@@ -2,7 +2,7 @@
 
 namespace Genealogy\App\Controller;
 
-use Genealogy\App\Model\latestChangesModel;
+use Genealogy\App\Model\LatestChangesModel;
 
 class LatestChangesController
 {
@@ -15,7 +15,7 @@ class LatestChangesController
 
     public function list(): array
     {
-        $latest_changesModel = new latestChangesModel($this->config);
+        $latest_changesModel = new LatestChangesModel($this->config);
 
         $listchanges = $latest_changesModel->listChanges();
         return $listchanges;

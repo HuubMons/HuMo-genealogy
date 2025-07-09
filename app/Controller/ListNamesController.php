@@ -2,7 +2,7 @@
 
 namespace Genealogy\App\Controller;
 
-use Genealogy\App\Model\listNamesModel;
+use Genealogy\App\Model\ListNamesModel;
 
 class ListNamesController
 {
@@ -15,7 +15,7 @@ class ListNamesController
 
     public function list_names($last_name): array
     {
-        $list_namesModel = new listNamesModel($this->config);
+        $list_namesModel = new ListNamesModel($this->config);
 
         $list_names['alphabet_array'] = $list_namesModel->getAlphabetArray();
         $list_names['max_cols'] = $list_namesModel->getMaxCols();
