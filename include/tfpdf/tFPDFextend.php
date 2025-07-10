@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/tFPDF.php';
+
 class tFPDFextend extends tFPDF
 {
     /**

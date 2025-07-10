@@ -53,8 +53,8 @@ if (isset($_POST['descendant_report'])) {
 
 $pdfdetails = array();
 $pdf_marriage = array();
-// *** Loading without namespace/ autoload ***
-require_once __DIR__ . '/../Include/tfpdf/tFPDFextend.php';
+// *** Loading without autoload ***
+require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
 $pdf = new tFPDFextend();
 
 // *** Generate title of PDF file ***

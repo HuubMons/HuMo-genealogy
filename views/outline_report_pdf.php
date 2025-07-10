@@ -79,7 +79,10 @@ $personName = new \Genealogy\Include\PersonName();
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
 
-$pdf = new Genealogy\Include\TFPDF\TFPDFextend();
+// *** Loading without autoload ***
+require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
+$pdf = new tFPDFextend();
+
 $title = $pdf->pdf_convert(__('Outline report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]));
 $pdf->SetTitle($title, true);
 $pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');

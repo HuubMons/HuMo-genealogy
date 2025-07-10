@@ -46,7 +46,10 @@ $db_functions->check_person($data["main_person"]);
 $pdfdetails = array();
 $pdf_marriage = array();
 
-$pdf = new Genealogy\Include\TFPDF\TFPDFextend();
+// *** Loading without autoload ***
+require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
+$pdf = new tFPDFextend();
+
 $persDb = $db_functions->get_person($data["main_person"]);
 
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
