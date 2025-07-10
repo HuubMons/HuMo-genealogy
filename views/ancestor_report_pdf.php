@@ -46,7 +46,7 @@ $db_functions->check_person($data["main_person"]);
 $pdfdetails = array();
 $pdf_marriage = array();
 
-$pdf = new tFPDFextend();
+$pdf = new Genealogy\Include\TFPDF\TFPDFextend();
 $persDb = $db_functions->get_person($data["main_person"]);
 
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();

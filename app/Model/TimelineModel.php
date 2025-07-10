@@ -12,8 +12,10 @@ class TimelineModel extends BaseModel
 {
     private $languageDate;
 
-    public function __construct()
+    public function __construct($config)
     {
+        parent::__construct($config);
+
         $this->languageDate = new LanguageDate();
     }
 

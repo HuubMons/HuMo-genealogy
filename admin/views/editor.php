@@ -446,7 +446,7 @@ if ($check_person) {
                         $firstDb = $first_result->fetch(PDO::FETCH_OBJ);
                     }
             ?>
-                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="submit" value="<<">
                     </form>
@@ -454,7 +454,7 @@ if ($check_person) {
 
 
                     <?php if ($previousDb) { ?>
-                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="submit" value="<">
                         </form>
@@ -502,7 +502,7 @@ if ($check_person) {
                 }
                 if ($nextDb) {
                 ?>
-                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $nextDb->pers_gedcomnumber; ?>" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $nextDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="submit" value=">">
                     </form>
@@ -522,7 +522,7 @@ if ($check_person) {
                     $lastDb = $last_result->fetch(PDO::FETCH_OBJ);
                     if (substr($lastDb->pers_gedcomnumber, 2) > substr($person->pers_gedcomnumber, 2)) {
                     ?>
-                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id;?>&amp;person=<?= $lastDb->pers_gedcomnumber; ?>" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $lastDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
                             <input type="submit" value=">>">
                         </form>

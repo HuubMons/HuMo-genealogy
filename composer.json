@@ -8,9 +8,10 @@
             "Genealogy\\Include\\": "include/",
             "Genealogy\\Languages\\": "languages/",
             "Genealogy\\Admin\\": "admin/"
-        }
-    },
-    "classmap": [
-        "include/"
-    ]
+        },
+        "classmap": [
+            "include/",
+            "include/tfpdf/"
+        ]
+    }
 }

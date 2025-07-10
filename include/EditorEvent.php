@@ -1219,15 +1219,15 @@ class EditorEvent
     }
 }
 
-// TODO check these lines. Should be removed from this part of the script.
+// TODO check these lines. Should be removed from this part of the script?
 
 // *** If profession is added, jump to profession part of screen ***
-if (isset($_POST['event_event_profession']) && $_POST['event_event_profession'] != '') {
+if (isset($_POST['event_add_profession']) && $_POST['event_add_profession'] != '') {
     echo '<script>window.location = window.location.origin + window.location.pathname + "#profession";</script>';
 }
 
 // *** If religion is added, jump to religion part of screen ***
-if (isset($_POST['event_event_religion']) && $_POST['event_event_religion'] != '') {
+if (isset($_POST['event_add_religion']) && $_POST['event_add_religion'] != '') {
     echo '<script>window.location = window.location.origin + window.location.pathname + "#religion";</script>';
 }
 

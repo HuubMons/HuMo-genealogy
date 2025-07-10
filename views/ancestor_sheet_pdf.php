@@ -294,7 +294,7 @@ $personName = new \Genealogy\Include\PersonName();
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
 
-$pdf = new tFPDFextend();
+$pdf = new Genealogy\Include\TFPDF\TFPDFextend();
 $title = $pdf->pdf_convert(__('Ancestor sheet') . __(' of ') . $name["standard_name"]);
 $pdf->SetTitle($title, true);
 $pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
