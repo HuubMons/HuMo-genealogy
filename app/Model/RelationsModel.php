@@ -76,17 +76,12 @@ class RelationsModel extends BaseModel
     public function resetValues(): void
     {
         // *** Reset values ***
-        //if ( !isset($_POST["search1"]) && !isset($_POST["search2"]) && !isset($_POST["calculator"]) && !isset($_POST["switch"]) && !isset($_POST["extended"]) && !isset($_POST["next_path"]) && !isset($_GET['pers_id']) && !isset($_POST["search_id1"]) && !isset($_POST["search_id2"])) {
         if (!isset($_POST["calculator"]) && !isset($_POST["switch"]) && !isset($_POST["extended"]) && !isset($_POST["next_path"]) && !isset($_GET['pers_id']) && !isset($_POST["search_id1"]) && !isset($_POST["search_id2"])) {
             // No button pressed: this is a fresh entry from frontpage link: start clean search form
-            //$_SESSION["search1"] = '';
-            //$_SESSION["search2"] = '';
             $_SESSION['rel_search_name'] = '';
             $_SESSION['rel_search_name2'] = '';
             $_SESSION['rel_search_gednr'] = '';
             $_SESSION['rel_search_gednr2'] = '';
-            unset($_SESSION["search_pers_id"]);
-            unset($_SESSION["search_pers_id2"]);
         }
     }
 
@@ -171,6 +166,7 @@ class RelationsModel extends BaseModel
         $this->search_results = $this->relation["person1"] == '' || $this->relation["person2"] == '' ? false : true;
     }
 
+    // *** Check if a "Search" button is pressed ***
     public function checkInput(): void
     {
         if (isset($_POST["button_search_name1"]) || isset($_POST["button_search_id1"])) {
@@ -180,11 +176,10 @@ class RelationsModel extends BaseModel
             $_SESSION["button_search_name2"] = 1;
         }
 
-        // *** Link from person pop-up menu ***
+        // *** Link from person pop-up menu (using person id) ***
         if (isset($_GET['pers_id']) && is_numeric($_GET['pers_id'])) {
             $_SESSION["button_search_name1"] = 1;
-            $_SESSION["search_pers_id"] = $_GET['pers_id'];
-            unset($_SESSION["search_pers_id2"]);
+
             $_SESSION['rel_search_name'] = '';
         }
     }
@@ -204,6 +199,14 @@ class RelationsModel extends BaseModel
             $this->relation["person2"] = $_POST['person2'];
         }
 
+        // *** Link from person pop-up menu (using numeric person id) ***
+        if (isset($_GET['pers_id']) && is_numeric($_GET['pers_id'])) {
+            $searchDb = $this->db_functions->get_person_with_id($_GET['pers_id']);
+            $this->search_gednr1 = strtoupper($searchDb->pers_gedcomnumber);
+            $_SESSION['rel_search_gednr'] = $this->search_gednr1;
+            $this->relation["person1"] = $searchDb->pers_gedcomnumber;
+        }
+
         // calculate or switch button is pressed
         if ((isset($_POST["calculator"]) || isset($_POST["switch"])) && $this->relation["person1"] && $this->relation["person2"]) {
             $searchDb = $this->db_functions->get_person($this->relation["person1"]);
@@ -212,7 +215,6 @@ class RelationsModel extends BaseModel
                 $privacy = $personPrivacy->get_privacy($searchDb);
                 $name = $personName->get_person_name($searchDb, $privacy);
                 $this->relation['name1'] = $name["name"];
-                //$this->relation['sexe1'] = $searchDb->pers_sexe == 'M' ? 'm' : 'f';
                 $this->relation['sexe1'] = $searchDb->pers_sexe;
             }
             if ($searchDb->pers_fams) {
@@ -222,8 +224,6 @@ class RelationsModel extends BaseModel
             } else {
                 $this->relation['family_id1'] = $searchDb->pers_famc;
             }
-            //$vars['pers_family'] = $this->relation['family_id1'];
-            //$relation['link1'] = $processLinks->get_link($this->uri_path, 'family', $tree_id, true, $vars);
 
             $searchDb2 = $this->db_functions->get_person($this->relation["person2"]);
             if (isset($searchDb2)) {
@@ -231,7 +231,6 @@ class RelationsModel extends BaseModel
                 $privacy = $personPrivacy->get_privacy($searchDb2);
                 $name = $personName->get_person_name($searchDb2, $privacy);
                 $this->relation['name2'] = $name["name"];
-                //$this->relation['sexe2'] = $searchDb2->pers_sexe == 'M' ? 'm' : 'f';
                 $this->relation['sexe2'] = $searchDb2->pers_sexe;
             }
             if ($searchDb2->pers_fams) {
@@ -241,8 +240,6 @@ class RelationsModel extends BaseModel
             } else {
                 $this->relation['family_id2'] = $searchDb2->pers_famc;
             }
-            //$vars['pers_family'] = $this->relation['family_id2'];
-            //$relation['link2'] = $processLinks->get_link($this->uri_path, 'family', $tree_id, true, $vars);
         }
     }
 
@@ -321,13 +318,6 @@ class RelationsModel extends BaseModel
             $temp = $this->relation["person1"];
             $this->relation["person1"] = $this->relation["person2"];
             $this->relation["person2"] = $temp;
-
-            // *** Link from person pop-up menu ***
-            if (isset($_SESSION["search_pers_id"]) && isset($_SESSION["search_pers_id2"])) {
-                $temp = $_SESSION["search_pers_id2"];
-                $_SESSION["search_pers_id2"] = $_SESSION["search_pers_id"];
-                $_SESSION["search_pers_id"] = $temp;
-            }
         }
     }
 
@@ -3109,7 +3099,7 @@ class RelationsModel extends BaseModel
                 }
 
                 $arrnum = 0;
-                if (isset($ancsarr)){
+                if (isset($ancsarr)) {
                     reset($ancsarr);
                 }
                 $count = $this->relation['foundY_nr'];

@@ -76,8 +76,6 @@ $datePlace = new \Genealogy\Include\DatePlace();
 $safeTextShow = new \Genealogy\Include\SafeTextShow();
 
 $limit = 500; // *** Limit results ***
-
-//global $relation;
 ?>
 
 <form method="POST" action="<?= $relation['rel_path']; ?>" style="display : inline;">
@@ -103,8 +101,6 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?php
                 if (isset($_SESSION["button_search_name1"]) && $_SESSION["button_search_name1"] == 1) {
-                    //$search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
-
                     if ($relation["search_name1"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
                         $relation["search_name1"] = str_replace(' ', '%', $relation["search_name1"]);
@@ -150,16 +146,6 @@ $limit = 500; // *** Limit results ***
                         $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
                         $stmt = $dbh->prepare($search_qry);
                         $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt->execute();
-                        $search_result = $stmt;
-                    }
-
-                    // *** Link from person pop-up menu ***
-                    if (isset($_SESSION["search_pers_id"])) {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND pers_id = :pers_id";
-                        $stmt = $dbh->prepare($search_qry);
-                        $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt->bindValue(':pers_id', $_SESSION["search_pers_id"], PDO::PARAM_STR);
                         $stmt->execute();
                         $search_result = $stmt;
                     }
@@ -240,8 +226,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?php
                 if (isset($_SESSION["button_search_name2"]) && $_SESSION["button_search_name2"] == 1) {
- 
-                    if ($relation["search_name2"] != '') {
+                     if ($relation["search_name2"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
                         $relation["search_name2"] = str_replace(' ', '%', $relation["search_name2"]);
                         // *** In case someone entered "Mons, Huub" using a comma ***
@@ -287,16 +272,6 @@ $limit = 500; // *** Limit results ***
                         $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
                         $stmt2 = $dbh->prepare($search_qry);
                         $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt2->execute();
-                        $search_result2 = $stmt2;
-                    }
-
-                    // *** Link from person pop-up menu ***
-                    if (isset($_SESSION["search_pers_id2"])) {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND pers_id = :pers_id";
-                        $stmt2 = $dbh->prepare($search_qry);
-                        $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt2->bindValue(':pers_id', $_SESSION["search_pers_id2"], PDO::PARAM_STR);
                         $stmt2->execute();
                         $search_result2 = $stmt2;
                     }
