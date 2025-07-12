@@ -6,7 +6,7 @@ use Genealogy\App\Model\BaseModel;
 use Genealogy\Include\SafeTextDb;
 use PDO;
 
-class listNamesModel extends BaseModel
+class ListNamesModel extends BaseModel
 {
     public function getAlphabetArray(): array
     {

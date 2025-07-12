@@ -56,8 +56,6 @@ class RelationsModel extends BaseModel
         'spousenameX' => '',
         'spousenameY' => '',
         'double_spouse' => '0',
-        'sexe1' => '',
-        'sexe2' => '',
         'rel_text' => '',
         'rel_text_nor_dan' => '',
         'rel_text_nor_dan2' => '',

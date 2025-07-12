@@ -3,6 +3,7 @@
 namespace Genealogy\App\Model;
 
 use Genealogy\App\Model\BaseModel;
+use Genealogy\Include\BuildCondition;
 use Genealogy\Include\SafeTextDb;
 use PDO;
 
@@ -746,25 +747,10 @@ class ListModel extends BaseModel
         return $data;
     }
 
-
-    // *** Search for (part of) first or lastname ***
-    private function name_qry($search_name, $search_part): string
-    {
-        $safeTextDb = new SafeTextDb();
-
-        $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
-        if ($search_part == 'equals') {
-            $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
-        }
-        if ($search_part == 'starts_with') {
-            $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
-        }
-        return $text;
-    }
-
     public function build_query(): array
     {
         $safeTextDb = new SafeTextDb();
+        $buildCondition = new BuildCondition();
 
         $query = '';
         $count_qry = '';
@@ -802,10 +788,10 @@ class ListModel extends BaseModel
                     $and = " AND ";
                 } elseif ($this->user['group_kindindex'] == "j") {
                     $query .= $and . " CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " .
-                        $this->name_qry($selection['pers_lastname'], $selection['part_lastname']);
+                        $buildCondition->build($selection['pers_lastname'], $selection['part_lastname']);
                     $and = " AND ";
                 } else {
-                    $query .= $and . " pers_lastname " . $this->name_qry($selection['pers_lastname'], $selection['part_lastname']);
+                    $query .= $and . " pers_lastname " . $buildCondition->build($selection['pers_lastname'], $selection['part_lastname']);
                     $and = " AND ";
                 }
             }
@@ -821,8 +807,8 @@ class ListModel extends BaseModel
             }
 
             if ($selection['pers_firstname']) {
-                $query .= $and . "(pers_firstname " . $this->name_qry($selection['pers_firstname'], $selection['part_firstname']);
-                $query .= " OR (event_kind='name' AND event_event " . $this->name_qry($selection['pers_firstname'], $selection['part_firstname']) . ') )';
+                $query .= $and . "(pers_firstname " . $buildCondition->build($selection['pers_firstname'], $selection['part_firstname']);
+                $query .= " OR (event_kind='name' AND event_event " . $buildCondition->build($selection['pers_firstname'], $selection['part_firstname']) . ') )';
 
                 $and = " AND ";
                 $add_event_qry = true;
@@ -830,17 +816,17 @@ class ListModel extends BaseModel
 
             // *** Search for born AND baptised place ***
             if ($selection['birth_place']) {
-                $query .= $and . "(pers_birth_place " . $this->name_qry($selection['birth_place'], $selection['part_birth_place']);
+                $query .= $and . "(pers_birth_place " . $buildCondition->build($selection['birth_place'], $selection['part_birth_place']);
                 $and = " AND ";
-                $query .= " OR pers_bapt_place " . $this->name_qry($selection['birth_place'], $selection['part_birth_place']) . ')';
+                $query .= " OR pers_bapt_place " . $buildCondition->build($selection['birth_place'], $selection['part_birth_place']) . ')';
                 $and = " AND ";
             }
 
             // *** Search for death AND buried place ***
             if ($selection['death_place']) {
-                $query .= $and . "(pers_death_place " . $this->name_qry($selection['death_place'], $selection['part_death_place']);
+                $query .= $and . "(pers_death_place " . $buildCondition->build($selection['death_place'], $selection['part_death_place']);
                 $and = " AND ";
-                $query .= " OR pers_buried_place " . $this->name_qry($selection['death_place'], $selection['part_death_place']) . ')';
+                $query .= " OR pers_buried_place " . $buildCondition->build($selection['death_place'], $selection['part_death_place']) . ')';
                 $and = " AND ";
             }
 
@@ -886,7 +872,7 @@ class ListModel extends BaseModel
             }
 
             if ($selection['own_code']) {
-                $query .= $and . "pers_own_code " . $this->name_qry($selection['own_code'], $selection['part_own_code']);
+                $query .= $and . "pers_own_code " . $buildCondition->build($selection['own_code'], $selection['part_own_code']);
                 $and = " AND ";
             }
 
@@ -896,39 +882,39 @@ class ListModel extends BaseModel
                 } else {
                     $selection['gednr'] = strtoupper($_POST['gednr']); // in case lowercase "i" was entered before number, make it "I"
                 }
-                $query .= $and . "pers_gedcomnumber " . $this->name_qry($selection['gednr'], $selection['part_gednr']);
+                $query .= $and . "pers_gedcomnumber " . $buildCondition->build($selection['gednr'], $selection['part_gednr']);
                 $and = " AND ";
             }
 
             if ($selection['pers_profession']) {
-                $query .= $and . " (event_kind='profession' AND event_event " . $this->name_qry($selection['pers_profession'], $selection['part_profession']) . ')';
+                $query .= $and . " (event_kind='profession' AND event_event " . $buildCondition->build($selection['pers_profession'], $selection['part_profession']) . ')';
                 $and = " AND ";
                 $add_event_qry = true;
             }
 
             if ($selection['text']) {
                 // *** Search in person and family text ***
-                $query .= $and . " (pers_text " . $this->name_qry($selection['text'], $selection['part_text']) . "
-                    OR fam_text " . $this->name_qry($selection['text'], $selection['part_text']) . ")";
+                $query .= $and . " (pers_text " . $buildCondition->build($selection['text'], $selection['part_text']) . "
+                    OR fam_text " . $buildCondition->build($selection['text'], $selection['part_text']) . ")";
                 $and = " AND ";
 
                 $add_text_qry = true;
             }
 
             if ($selection['pers_place']) {
-                $query .= $and . " address_place " . $this->name_qry($selection['pers_place'], $selection['part_place']);
+                $query .= $and . " address_place " . $buildCondition->build($selection['pers_place'], $selection['part_place']);
                 $and = " AND ";
                 $add_address_qry = true;
             }
 
             if ($selection['zip_code']) {
-                $query .= $and . " address_zip " . $this->name_qry($selection['zip_code'], $selection['part_zip_code']);
+                $query .= $and . " address_zip " . $buildCondition->build($selection['zip_code'], $selection['part_zip_code']);
                 $and = " AND ";
                 $add_address_qry = true;
             }
 
             if ($selection['witness']) {
-                $query .= $and . " ( RIGHT(event_kind,7)='witness' AND event_event " . $this->name_qry($selection['witness'], $selection['part_witness']) . ')';
+                $query .= $and . " ( RIGHT(event_kind,7)='witness' AND event_event " . $buildCondition->build($selection['witness'], $selection['part_witness']) . ')';
                 $and = " AND ";
                 $add_event_qry = true;
             }
@@ -1142,7 +1128,7 @@ class ListModel extends BaseModel
                 }
 
                 if ($data["place_name"]) {
-                    $query .= " AND pers_birth_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                    $query .= " AND pers_birth_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
                 } else {
                     $query .= " AND pers_birth_place LIKE '_%'";
                 }
@@ -1165,7 +1151,7 @@ class ListModel extends BaseModel
                     $query .= "(SELECT " . $calc . "*, pers_bapt_place as place_order FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 }
                 if ($data["place_name"]) {
-                    $query .= " AND pers_bapt_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                    $query .= " AND pers_bapt_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
                 } else {
                     $query .= " AND pers_bapt_place LIKE '_%'";
                 }
@@ -1183,9 +1169,6 @@ class ListModel extends BaseModel
                 }
 
                 if ($this->user['group_kindindex'] == "j") {
-                    //$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_place_index as place_order
-                    //FROM humo_persons WHERE pers_tree_id='".$this->tree_id."'";
-
                     $query .= "(SELECT " . $calc . "humo_persons.*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_addresses.address_place as place_order
                         FROM humo_persons, humo_connections, humo_addresses
                         WHERE connect_connect_id=pers_gedcomnumber
@@ -1193,9 +1176,6 @@ class ListModel extends BaseModel
                         AND address_gedcomnr=connect_item_id AND address_tree_id=pers_tree_id
                         AND pers_tree_id='" . $this->tree_id . "'";
                 } else {
-                    //$query.= "(SELECT ".$calc."*, pers_place_index as place_order 
-                    //	FROM humo_persons WHERE pers_tree_id='".$this->tree_id."'";
-
                     $query .= "(SELECT " . $calc . "humo_persons.*, humo_addresses.address_place as place_order
                         FROM humo_persons, humo_connections, humo_addresses
                         WHERE connect_connect_id=pers_gedcomnumber
@@ -1205,10 +1185,8 @@ class ListModel extends BaseModel
                 }
 
                 if ($data["place_name"]) {
-                    //$query.= " AND pers_place_index ".$this->name_qry($data["place_name"],$data["part_place_name"]);
-                    $query .= " AND address_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                    $query .= " AND address_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
                 } else {
-                    //$query .= " AND pers_place_index LIKE '_%'";
                     $query .= " AND address_place LIKE '_%'";
                 }
                 $query .= ')';
@@ -1231,7 +1209,7 @@ class ListModel extends BaseModel
                         FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 }
                 if ($data["place_name"]) {
-                    $query .= " AND pers_death_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                    $query .= " AND pers_death_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
                 } else {
                     $query .= " AND pers_death_place LIKE '_%'";
                 }
@@ -1255,7 +1233,7 @@ class ListModel extends BaseModel
                         FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'";
                 }
                 if ($data["place_name"]) {
-                    $query .= " AND pers_buried_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                    $query .= " AND pers_buried_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
                 } else {
                     $query .= " AND pers_buried_place LIKE '_%'";
                 }
@@ -1286,7 +1264,7 @@ class ListModel extends BaseModel
                 }
 
                 if ($data["place_name"]) {
-                    $query .= " AND event_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                    $query .= " AND event_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
                 } else {
                     $query .= " AND event_place LIKE '_%'";
                 }

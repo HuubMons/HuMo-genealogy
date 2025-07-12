@@ -18,6 +18,7 @@ $list_var2 = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 $personPrivacy = new Genealogy\Include\PersonPrivacy();
 $datePlace = new  Genealogy\Include\DatePlace();
 $safeTextShow = new Genealogy\Include\SafeTextShow();
+$buildCondition = new Genealogy\Include\BuildCondition();
 
 if ($list["index_list"] == 'places') {
 ?>
@@ -610,21 +611,6 @@ $listnr = "2";      // default 20% margin
 $privcount = 0; // *** Count privacy persons ***
 
 $selected_place = '';
-
-// TODO Allready added in model. But needed for spouse in this script for now...
-// *** Search for (part of) first or lastname ***
-function name_qry($search_name, $search_part)
-{
-    $safeTextDb = new Genealogy\Include\SafeTextDb;
-    $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
-    if ($search_part == 'equals') {
-        $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
-    }
-    if ($search_part == 'starts_with') {
-        $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
-    }
-    return $text;
-}
 ?>
 
 <table class="table table-sm">
@@ -786,13 +772,13 @@ function name_qry($search_name, $search_part)
                     if ($selection['spouse_lastname'] == __('...')) {
                         $spouse_qry .= " AND pers_lastname=''";
                     } elseif ($user['group_kindindex'] == "j") {
-                        $spouse_qry .= " AND CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " . name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
+                        $spouse_qry .= " AND CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " . $buildCondition->build($selection['spouse_lastname'], $selection['part_spouse_lastname']);
                     } else {
-                        $spouse_qry .= " AND pers_lastname " . name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
+                        $spouse_qry .= " AND pers_lastname " . $buildCondition->build($selection['spouse_lastname'], $selection['part_spouse_lastname']);
                     }
                 }
                 if ($selection['spouse_firstname']) {
-                    $spouse_qry .= " AND pers_firstname " . name_qry($selection['spouse_firstname'], $selection['part_spouse_firstname']);
+                    $spouse_qry .= " AND pers_firstname " . $buildCondition->build($selection['spouse_firstname'], $selection['part_spouse_firstname']);
                 }
                 $spouse_result = $dbh->query($spouse_qry);
 

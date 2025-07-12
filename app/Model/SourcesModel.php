@@ -3,7 +3,6 @@
 namespace Genealogy\App\Model;
 
 use Genealogy\App\Model\BaseModel;
-use Genealogy\Include\SafeTextDb;
 use Genealogy\Include\ProcessLinks;
 use PDO;
 
@@ -14,15 +13,13 @@ class SourcesModel extends BaseModel
     // *** Added feb 2025 ***
     public function process_variables(): void
     {
-        $safeTextDb = new SafeTextDb();
-
         // *** Search ***
         $this->source_search = '';
         if (isset($_POST['source_search'])) {
-            $this->source_search = $safeTextDb->safe_text_db($_POST['source_search']);
+            $this->source_search = $_POST['source_search'];
         }
         if (isset($_GET['source_search'])) {
-            $this->source_search = $safeTextDb->safe_text_db($_GET['source_search']);
+            $this->source_search = $_GET['source_search'];
         }
 
         $this->order_sources = 'title';
@@ -62,8 +59,6 @@ class SourcesModel extends BaseModel
 
     public function listSources()
     {
-        $safeTextDb = new SafeTextDb();
-        
         $desc_asc = " ASC ";
         $this->sort_desc = 0;
         if (isset($_GET['sort_desc'])) {
@@ -75,62 +70,70 @@ class SourcesModel extends BaseModel
             }
         }
 
+        $params = [];
+        $where = " WHERE source_tree_id = :tree_id";
+        $params[':tree_id'] = $this->tree_id;
+
+        // Restrict sources if needed
+        if ($this->user['group_show_restricted_source'] == 'n') {
+            $where .= " AND (source_status != 'restricted' OR source_status IS NULL)";
+        }
+
+        // Search filter
+        if ($this->source_search != '') {
+            $where .= " AND (source_title LIKE :search OR (source_title = '' AND source_text LIKE :search))";
+            $params[':search'] = '%' . $this->source_search . '%';
+        }
+
+        // Order by
         if ($this->order_sources === "title") {
-            // *** Default querie: order by title ***
-            $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
-            // *** Check user group is restricted sources can be shown ***
-            if ($this->user['group_show_restricted_source'] == 'n') {
-                $querie .= " AND (source_status!='restricted' OR source_status IS NULL)";
-            }
-
-            //	if ($this->source_search!=''){ $querie.=" AND (source_title LIKE '%".$safeTextDb->safe_text_db($this->source_search)."%')"; }
-            // *** Only search in source_text if source_title isn't used ***
-            if ($this->source_search != '') {
-                $querie .= " AND (source_title LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%') )";
-            }
-
-            $querie .= " ORDER BY IF (source_title!='',source_title,source_text)" . $desc_asc; // *** Order by title if exists, else use text ***
-        }
-        if ($this->order_sources === "date") {
-            // *** Check user group is restricted sources can be shown ***
-            $querie = "SELECT source_status, source_id, source_gedcomnr, source_title, source_text, source_date, source_place,
-                CONCAT(right(source_date,4),
-                    date_format( str_to_date( substring(source_date,-8,3),'%b' ) ,'%m'),
-                    date_format( str_to_date( substring(source_date,-11,2),'%d' ) ,'%d'))
-                    as year
-                FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
-            if ($this->user['group_show_restricted_source'] == 'n') {
-                $querie .= " AND (source_status!='restricted' OR source_status IS NULL)";
-            }
-
-            if ($this->source_search != '') {
-                $querie .= " AND (source_title LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%') )";
-            }
-
-            $querie .= " ORDER BY year" . $desc_asc;
-        }
-        if ($this->order_sources === "place") {
-            $querie = "SELECT * FROM humo_sources WHERE source_tree_id='" . $this->tree_id . "'";
-            // *** Check user group is restricted sources can be shown ***
-            if ($this->user['group_show_restricted_source'] == 'n') {
-                $querie .= " AND (source_status!='restricted' OR source_status IS NULL)";
-            }
-
-            if ($this->source_search != '') {
-                $querie .= " AND (source_title LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($this->source_search) . "%') )";
-            }
-
-            $querie .= " ORDER BY source_place" . $desc_asc;
+            $order = " ORDER BY IF(source_title != '', source_title, source_text)" . $desc_asc;
+            $select = "SELECT * FROM humo_sources";
+        } elseif ($this->order_sources === "date") {
+            $order = " ORDER BY year" . $desc_asc;
+            $select = "SELECT source_status, source_id, source_gedcomnr, source_title, source_text, source_date, source_place,
+            CONCAT(
+                RIGHT(source_date, 4),
+                DATE_FORMAT(STR_TO_DATE(SUBSTRING(source_date, -8, 3), '%b'), '%m'),
+                DATE_FORMAT(STR_TO_DATE(SUBSTRING(source_date, -11, 2), '%d'), '%d')
+            ) AS year
+            FROM humo_sources";
+        } elseif ($this->order_sources === "place") {
+            $order = " ORDER BY source_place" . $desc_asc;
+            $select = "SELECT * FROM humo_sources";
+        } else {
+            $order = " ORDER BY IF(source_title != '', source_title, source_text)" . $desc_asc;
+            $select = "SELECT * FROM humo_sources";
         }
 
-        // *** Pages ***
-        $this->count_sources = $this->humo_option['show_persons'];    // *** Number of lines to show ***
+        // Pagination
+        $this->count_sources = $this->humo_option['show_persons'];
+        $limit = " LIMIT :item, :count";
+        $params[':item'] = (int)$this->item;
+        $params[':count'] = (int)$this->count_sources;
 
-        // *** All sources query ***
-        $this->all_sources = $this->dbh->query($querie);
+        // All sources query (for rowCount)
+        $all_query = $select . $where . $order;
+        $all_stmt = $this->dbh->prepare($all_query);
+        foreach ($params as $key => $val) {
+            if ($key === ':item' || $key === ':count') continue;
+            $all_stmt->bindValue($key, $val);
+        }
+        $all_stmt->execute();
+        $this->all_sources = $all_stmt;
 
-        $source = $this->dbh->query($querie . " LIMIT " . $safeTextDb->safe_text_db($this->item) . "," . $this->count_sources);
-        return $source->fetchAll(PDO::FETCH_OBJ);
+        // Paged query
+        $paged_query = $select . $where . $order . $limit;
+        $paged_stmt = $this->dbh->prepare($paged_query);
+        foreach ($params as $key => $val) {
+            if ($key === ':item' || $key === ':count') {
+                $paged_stmt->bindValue($key, $val, PDO::PARAM_INT);
+            } else {
+                $paged_stmt->bindValue($key, $val);
+            }
+        }
+        $paged_stmt->execute();
+        return $paged_stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     // TODO also used in addressesModel.php

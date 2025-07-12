@@ -1402,10 +1402,8 @@ elseif ($trees['step'] == '4') {
     $i = 0;
 
     // *** Quick check for seperate saved texts in database (used in Aldfaer program and Reunion) and store them as standard texts ***
-    //$search_text_qry = $dbh->query("SELECT * FROM humo_texts WHERE text_tree_id='" . $trees['tree_id'] . "' LIMIT 0,1");
     $search_text_qry = $dbh->query("SELECT text_id FROM humo_texts WHERE text_tree_id='" . $trees['tree_id'] . "' LIMIT 0,1");
     $count_text = $search_text_qry->rowCount();
-    //$count_text=0;		// *** UITSCHAKELEN VAN VERWERKEN HUMO_TEXTS TABEL ***
     if ($count_text > 0) {
         // *** Number of records in text table, used to show a status counter ***
         //$total_text_qry = $dbh->query("SELECT COUNT(*) FROM humo_texts WHERE text_tree_id='" . $trees['tree_id'] . "'");
@@ -1492,7 +1490,6 @@ elseif ($trees['step'] == '4') {
         */
 
         while ($person2Db = $person2_qry->fetch(PDO::FETCH_OBJ)) {
-            //$person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_id='" . $person2Db->pers_id . "'");
             $person_qry = $dbh->query("SELECT pers_id, pers_gedcomnumber, pers_text, pers_name_text,
                 pers_birth_text, pers_bapt_text, pers_death_text, pers_buried_text
                 FROM humo_persons WHERE pers_id='" . $person2Db->pers_id . "'");
@@ -1590,48 +1587,40 @@ elseif ($trees['step'] == '4') {
             if ($pers_text || $pers_name_text || $pers_birth_text || $pers_bapt_text || $pers_death_text || $pers_buried_text) {
                 $first_item = true;
                 // *** Remark: no need to check for fam_tree_id because fam_id is used ***
-                $sql = "UPDATE humo_persons SET ";
+                // Build the fields to update and their values
+                $fields = [];
+                $params = [':pers_id' => $personDb->pers_id];
+
                 if ($pers_text) {
-                    $first_item = false;
-                    $sql .= "pers_text='" . $safeTextDb->safe_text_db($pers_text) . "'";
+                    $fields[] = "pers_text = :pers_text";
+                    $params[':pers_text'] = $pers_text;
                 }
                 if ($pers_name_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "pers_name_text='" . $safeTextDb->safe_text_db($pers_name_text) . "'";
+                    $fields[] = "pers_name_text = :pers_name_text";
+                    $params[':pers_name_text'] = $pers_name_text;
                 }
                 if ($pers_birth_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "pers_birth_text='" . $safeTextDb->safe_text_db($pers_birth_text) . "'";
+                    $fields[] = "pers_birth_text = :pers_birth_text";
+                    $params[':pers_birth_text'] = $pers_birth_text;
                 }
                 if ($pers_bapt_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "pers_bapt_text='" . $safeTextDb->safe_text_db($pers_bapt_text) . "'";
+                    $fields[] = "pers_bapt_text = :pers_bapt_text";
+                    $params[':pers_bapt_text'] = $pers_bapt_text;
                 }
                 if ($pers_death_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "pers_death_text='" . $safeTextDb->safe_text_db($pers_death_text) . "'";
+                    $fields[] = "pers_death_text = :pers_death_text";
+                    $params[':pers_death_text'] = $pers_death_text;
                 }
                 if ($pers_buried_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "pers_buried_text='" . $safeTextDb->safe_text_db($pers_buried_text) . "'";
+                    $fields[] = "pers_buried_text = :pers_buried_text";
+                    $params[':pers_buried_text'] = $pers_buried_text;
                 }
-                $sql .= " WHERE pers_id='" . $personDb->pers_id . "'";
-                $dbh->query($sql);
+
+                if (!empty($fields)) {
+                    $sql = "UPDATE humo_persons SET " . implode(', ', $fields) . " WHERE pers_id = :pers_id";
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->execute($params);
+                }
 
                 // *** progress bar ***
                 $i++;
@@ -1801,62 +1790,44 @@ elseif ($trees['step'] == '4') {
             ) {
                 $first_item = true;
                 // *** Remark: no need to check for fam_tree_id because fam_id is used ***
-                $sql = "UPDATE humo_families SET ";
+                // Build the fields to update and their values
+                $fields = [];
+                $params = [':fam_id' => $famDb->fam_id];
+
                 if ($fam_text) {
-                    $first_item = false;
-                    $sql .= "fam_text='" . $safeTextDb->safe_text_db($fam_text) . "'";
+                    $fields[] = "fam_text = :fam_text";
+                    $params[':fam_text'] = $fam_text;
                 }
-
                 if ($fam_relation_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "fam_relation_text='" . $safeTextDb->safe_text_db($fam_relation_text) . "'";
+                    $fields[] = "fam_relation_text = :fam_relation_text";
+                    $params[':fam_relation_text'] = $fam_relation_text;
                 }
-
                 if ($fam_marr_notice_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "fam_marr_notice_text='" . $safeTextDb->safe_text_db($fam_marr_notice_text) . "'";
+                    $fields[] = "fam_marr_notice_text = :fam_marr_notice_text";
+                    $params[':fam_marr_notice_text'] = $fam_marr_notice_text;
                 }
-
                 if ($fam_marr_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "fam_marr_text='" . $safeTextDb->safe_text_db($fam_marr_text) . "'";
+                    $fields[] = "fam_marr_text = :fam_marr_text";
+                    $params[':fam_marr_text'] = $fam_marr_text;
                 }
-
                 if ($fam_marr_church_notice_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "fam_marr_church_notice_text='" . $safeTextDb->safe_text_db($fam_marr_church_notice_text) . "'";
+                    $fields[] = "fam_marr_church_notice_text = :fam_marr_church_notice_text";
+                    $params[':fam_marr_church_notice_text'] = $fam_marr_church_notice_text;
                 }
-
                 if ($fam_marr_church_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "fam_marr_church_text='" . $safeTextDb->safe_text_db($fam_marr_church_text) . "'";
+                    $fields[] = "fam_marr_church_text = :fam_marr_church_text";
+                    $params[':fam_marr_church_text'] = $fam_marr_church_text;
                 }
-
                 if ($fam_div_text) {
-                    if (!$first_item) {
-                        $sql .= ", ";
-                    }
-                    $first_item = false;
-                    $sql .= "fam_div_text='" . $safeTextDb->safe_text_db($fam_div_text) . "'";
+                    $fields[] = "fam_div_text = :fam_div_text";
+                    $params[':fam_div_text'] = $fam_div_text;
                 }
 
-                $sql .= " WHERE fam_id='" . $famDb->fam_id . "'";
-                $dbh->query($sql);
+                if (!empty($fields)) {
+                    $sql = "UPDATE humo_families SET " . implode(', ', $fields) . " WHERE fam_id = :fam_id";
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->execute($params);
+                }
 
                 /*
                 // *** Update progress ***

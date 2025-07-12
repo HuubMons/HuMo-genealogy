@@ -1368,13 +1368,13 @@ function add_person($person_kind, $pers_sexe)
             </div>
         </div>
 
-        <?= edit_firstname('pers_firstname', ''); ?>
-        <?= edit_prefix('pers_prefix', $pers_prefix); ?>
-        <?= edit_lastname('pers_lastname', $pers_lastname); ?>
-        <?= edit_patronymic('pers_patronym', ''); ?>
-        <?= edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
-        <?= edit_privacyfilter('pers_alive', 'alive'); ?>
-        <?= edit_sexe('pers_sexe', $pers_sexe); ?>
+        <?php edit_firstname('pers_firstname', ''); ?>
+        <?php edit_prefix('pers_prefix', $pers_prefix); ?>
+        <?php edit_lastname('pers_lastname', $pers_lastname); ?>
+        <?php edit_patronymic('pers_patronym', ''); ?>
+        <?php edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
+        <?php edit_privacyfilter('pers_alive', 'alive'); ?>
+        <?php edit_sexe('pers_sexe', $pers_sexe); ?>
 
         <!-- Birth -->
         <div class="row mb-1 p-2 bg-primary-subtle">

@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$showMedia = new Genealogy\Include\showMedia();
+$showMedia = new Genealogy\Include\ShowMedia();
 ?>
 
 <h1 class="center"><?= __('Select media'); ?></h1>

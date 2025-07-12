@@ -1,5 +1,6 @@
 <?php
 // *** Check user authority ***
+
 if ($user['group_sources'] != 'j') {
     exit(__('You are not authorised to see this page.'));
 }
@@ -13,6 +14,7 @@ if ($data["source_search"] != '') {
 $path_form = $processLinks->get_link($uri_path, 'sources', $tree_id);
 
 $datePlace = new \Genealogy\Include\DatePlace();
+$safeTextShow = new \Genealogy\Include\SafeTextShow();
 ?>
 
 <h1><?= __('Sources'); ?></h1>
@@ -24,7 +26,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
 
             <div class="col-sm-4">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control form-control-sm" name="source_search" value="<?= $data["source_search"]; ?>" size="20">
+                    <input type="text" class="form-control form-control-sm" name="source_search" value="<?= $safeTextShow->safe_text_show($data["source_search"]); ?>" size="20">
                     <button type="submit" class="btn btn-success btn-sm"><?= __('Search'); ?></button>
                 </div>
             </div>

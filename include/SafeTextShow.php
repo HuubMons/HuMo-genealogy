@@ -7,7 +7,7 @@
 
 namespace Genealogy\Include;
 
-class safeTextShow
+class SafeTextShow
 {
     function safe_text_show($text_safe): string
     {

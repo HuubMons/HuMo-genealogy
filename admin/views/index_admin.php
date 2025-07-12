@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;

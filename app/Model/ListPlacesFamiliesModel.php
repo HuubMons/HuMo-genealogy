@@ -3,7 +3,7 @@
 namespace Genealogy\App\Model;
 
 use Genealogy\App\Model\BaseModel;
-use Genealogy\Include\SafeTextDb;
+use Genealogy\Include\BuildCondition;
 
 class ListPlacesFamiliesModel extends BaseModel
 {
@@ -87,24 +87,10 @@ class ListPlacesFamiliesModel extends BaseModel
         return $data;
     }
 
-    // *** Search for (part of) first or lastname ***
-    // TODO this function is also used in script list.
-    private function name_qry($search_name, $search_part): string
-    {
-        $safeTextDb = new SafeTextDb();
-
-        $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
-        if ($search_part == 'equals') {
-            $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
-        }
-        if ($search_part == 'starts_with') {
-            $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
-        }
-        return $text;
-    }
-
     public function build_query(): string
     {
+        $buildCondition = new BuildCondition();
+
         $query = '';
 
         $data = $this->getSelection();
@@ -122,7 +108,7 @@ class ListPlacesFamiliesModel extends BaseModel
         if ($data["select_marriage"] == '1') {
             $query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
                 $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_place LIKE '_%'";
             }
@@ -140,7 +126,7 @@ class ListPlacesFamiliesModel extends BaseModel
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_church_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
                 $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_place LIKE '_%'";
             }
@@ -158,7 +144,7 @@ class ListPlacesFamiliesModel extends BaseModel
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_notice_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_notice_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
                 $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_notice_place LIKE '_%'";
             }
@@ -176,7 +162,7 @@ class ListPlacesFamiliesModel extends BaseModel
             }
             $query .= "(SELECT " . $calc . "*, fam_marr_church_notice_place as place_order FROM humo_families";
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_notice_place " . $this->name_qry($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_notice_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
                 $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_notice_place LIKE '_%'";
             }

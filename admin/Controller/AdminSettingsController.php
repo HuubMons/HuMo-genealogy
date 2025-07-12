@@ -5,7 +5,7 @@ namespace Genealogy\Admin\Controller;
 use Genealogy\Admin\Models\AdminSettingsModel;
 use Genealogy\Admin\Models\SettingsHomepageModel;
 
-class adminSettingsController
+class AdminSettingsController
 {
     protected $admin_config;
 
