@@ -1297,7 +1297,7 @@ class EditorModel extends AdminBaseModel
                 $this->fams_remove($new_nr->fam_man, $fam_remove);
             }
 
-            unset($fams2);
+            //unset($fams2);
             if (isset($new_nr->fam_woman)) {
                 $this->fams_remove($new_nr->fam_woman, $fam_remove);
             }

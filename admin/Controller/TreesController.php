@@ -34,7 +34,7 @@ class TreesController
             include_once(__DIR__ . "/../../views/partial/select_language.php");
             include(__DIR__ . '/../../languages/' . $trees['language2'] . '/language_data.php');
 
-            $tree_adminModel = new TreeAdminModel($this->admin_config['dbh']);
+            $tree_adminModel = new TreeAdminModel();
             $trees['count_trees'] = $tree_adminModel->count_trees($this->admin_config['dbh']);
             $trees['collation'] = $tree_adminModel->get_collation($this->admin_config['dbh']);
 
@@ -54,7 +54,7 @@ class TreesController
 
             $_SESSION['debug_person'] = 1;
 
-            $gedcomModel = new GedcomModel($this->admin_config['dbh']);
+            $gedcomModel = new GedcomModel();
             $trees['step'] = $gedcomModel->get_step();
             //$trees['check_processed'] = get_check_processed();
 
@@ -84,7 +84,7 @@ class TreesController
             //$tree_dataModel = new TreeDataModel($this->admin_config['dbh']);
             //$trees['count_trees'] = $tree_dataModel->count_trees($this->admin_config['dbh']);
         } elseif ($trees['menu_tab'] == 'tree_text') {
-            $tree_textModel = new TreeTextModel($this->admin_config['dbh']);
+            $tree_textModel = new TreeTextModel();
 
             // *** Select language for texts at page ***
             include(__DIR__ . '/../../languages/' . $trees['language2'] . '/language_data.php');
@@ -92,7 +92,7 @@ class TreesController
             $tree_texts = $tree_textModel->get_tree_texts($this->admin_config['dbh'], $trees['tree_id'], $trees['language']);
             $trees = array_merge($trees, $tree_texts);
         } elseif ($trees['menu_tab'] == 'tree_merge') {
-            $treeMergeModel = new TreeMergeModel($this->admin_config['dbh']);
+            $treeMergeModel = new TreeMergeModel();
             $trees['relatives_merge'] = $treeMergeModel->get_relatives_merge($this->admin_config['dbh'], $trees['tree_id']);
             $treeMergeModel->update_settings($this->admin_config['db_functions']); // *** Store and reset tree merge settings ***
         }

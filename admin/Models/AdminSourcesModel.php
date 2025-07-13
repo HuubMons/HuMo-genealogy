@@ -11,6 +11,7 @@ class AdminSourcesModel extends AdminBaseModel
         if (isset($_SESSION['admin_pers_gedcomnumber'])) {
             return $_SESSION['admin_pers_gedcomnumber'];
         }
+        return '';
     }
 
     public function get_fam_gedcomnumber(): string
@@ -18,6 +19,7 @@ class AdminSourcesModel extends AdminBaseModel
         if (isset($_SESSION['admin_fam_gedcomnumber'])) {
             return $_SESSION['admin_fam_gedcomnumber'];
         }
+        return '';
     }
 
     // *** Use the null coalescing operator "??" to check for isset($_GET['connect_kind']) ***

@@ -1473,7 +1473,7 @@ function add_person($person_kind, $pers_sexe)
         <!-- Profession -->
         <input type="hidden" name="event_date_profession_prefix" value=''>
         <input type="hidden" name="event_date_profession" value=''>
-        <?= edit_profession('event_profession', ''); ?>
+        <?php edit_profession('event_profession', ''); ?>
 
         <div class="row mb-2">
             <div class="col-md-3"></div>
