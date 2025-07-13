@@ -16,7 +16,10 @@ $field_text_large = 'style="height: 100px;"';
 //    $db_functions->set_tree_id($tree_id);
 //}
 
-$repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" . $tree_id . "' ORDER BY repo_name, repo_place");
+$stmt = $dbh->prepare("SELECT * FROM humo_repositories WHERE repo_tree_id = :tree_id ORDER BY repo_name, repo_place");
+$stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_INT);
+$stmt->execute();
+$repo_qry = $stmt;
 ?>
 
 <h1 class="center"><?= __('Repositories'); ?></h1>
@@ -42,7 +45,7 @@ $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_tree_id='" .
 <div class="p-3 my-md-2 genealogy_search container-md">
     <div class="row">
         <div class="col-md-3">
-            <?= select_tree($dbh, $page, $tree_id); ?>
+            <?= $selectTree->select_tree($dbh, $page, $tree_id); ?>
         </div>
 
         <div class="col-md-auto">
@@ -91,7 +94,10 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
         $repo_changed_user_id = '';
         $repo_changed_datetime = '';
     } else {
-        $repo_qry = $dbh->query("SELECT * FROM humo_repositories WHERE repo_id='" . $editRepository['repo_id'] . "'");
+        $stmt = $dbh->prepare("SELECT * FROM humo_repositories WHERE repo_id = :repo_id");
+        $stmt->bindValue(':repo_id', $editRepository['repo_id'], PDO::PARAM_INT);
+        $stmt->execute();
+        $repo_qry = $stmt;
         $die_message = __('No valid repository number.');
         try {
             $repoDb = $repo_qry->fetch(PDO::FETCH_OBJ);

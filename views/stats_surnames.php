@@ -14,7 +14,8 @@ function tablerow($nr, $lastcol = false)
     // if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
     global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id, $uri_path;
 
-    $processLinks = new ProcessLinks($uri_path);
+    $processLinks = new \Genealogy\Include\ProcessLinks($uri_path);
+
 
     $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
     echo '<td class="namelst">';

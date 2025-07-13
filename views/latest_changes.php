@@ -10,7 +10,7 @@ if ($humo_option["url_rewrite"] == "j") {
     $path = 'latest_changes/' . $tree_id;
 }
 
-$safeTextShow = new SafeTextShow();
+$safeTextShow = new \Genealogy\Include\SafeTextShow();
 ?>
 
 <h1><?= __('Recently changed persons and new persons'); ?></h1>

@@ -13,15 +13,16 @@ $screen_mode = '';
 $last_visited = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $_SESSION['save_last_visitid'] = $last_visited;
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personName_extended = new PersonNameExtended;
-$personData = new PersonData;
-$datePlace = new DatePlace();
-$languageDate = new LanguageDate;
-$showTreeText = new ShowTreeText();
-$processLinks = new ProcessLinks($uri_path);
-$processText = new ProcessText();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personName_extended = new \Genealogy\Include\PersonNameExtended();
+$personData = new \Genealogy\Include\PersonData();
+$datePlace = new \Genealogy\Include\DatePlace();
+$languageDate = new \Genealogy\Include\LanguageDate();
+$showTreeText = new \Genealogy\Include\ShowTreeText();
+$processLinks = new \Genealogy\Include\ProcessLinks($uri_path);
+$processText = new \Genealogy\Include\ProcessText();
+$showSources = new \Genealogy\Include\ShowSources();
 
 $family_nr = 1;  // *** process multiple families ***
 
@@ -292,7 +293,7 @@ else {
                 $parent2Db = $db_functions->get_person($parent2);
                 $parent2_privacy = $personPrivacy->get_privacy($parent2Db);
 
-                $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
+                $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                 $family_privacy = $marriage_cls->get_privacy();
 
 
@@ -428,7 +429,7 @@ else {
                     } elseif ($user["group_texts_fam"] == 'j' && $processText->process_text($familyDb->fam_text)) {
                         echo '<br>' . $processText->process_text($familyDb->fam_text, 'family');
                         // *** BK: source by family text ***
-                        $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
+                        $source_array = $showSources->show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
                         if ($source_array) {
                             echo $source_array['text'];
                         }
@@ -436,14 +437,15 @@ else {
 
                     // *** Show addresses by family ***
                     if ($user['group_living_place'] == 'j') {
-                        $fam_address = show_addresses('family', 'family_address', $familyDb->fam_gedcomnumber);
+                        $showAddresses = new \Genealogy\Include\ShowAddresses();
+                        $fam_address = $showAddresses->show_addresses('family', 'family_address', $familyDb->fam_gedcomnumber);
                         if ($fam_address) {
                             echo '<br>' . $fam_address;
                         }
                     }
 
                     // *** Family source ***
-                    $source_array = show_sources2("family", "family_source", $familyDb->fam_gedcomnumber);
+                    $source_array = $showSources->show_sources2("family", "family_source", $familyDb->fam_gedcomnumber);
                     if ($source_array) {
                         echo $source_array['text'];
                     }
@@ -972,7 +974,8 @@ else {
 
 // *** If source footnotes are selected, show them here ***
 if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
-    echo show_sources_footnotes();
+    $showSourcesFootnotes = new \Genealogy\Include\ShowSourcesFootnotes();
+    echo $showSourcesFootnotes->show_sources_footnotes();
 }
 
 /* Generate citations, that can be used as a source for this person/ page
@@ -1082,7 +1085,7 @@ if ($data["descendant_report"] == false) {
         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
         $start_url = '';
         if (isset($parent1Db->pers_tree_id)) {
-            $personLink = new PersonLink();
+            $personLink = new \Genealogy\Include\PersonLink();
             $start_url = $personLink->get_person_link($parent1Db);
         }
 

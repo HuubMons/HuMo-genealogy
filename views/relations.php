@@ -70,14 +70,12 @@
 // TODO create function to show person.
 // TODO use a popup selection screen to select persons?
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$datePlace = new DatePlace();
-$safeTextShow = new SafeTextShow();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$datePlace = new \Genealogy\Include\DatePlace();
+$safeTextShow = new \Genealogy\Include\SafeTextShow();
 
 $limit = 500; // *** Limit results ***
-
-//global $relation;
 ?>
 
 <form method="POST" action="<?= $relation['rel_path']; ?>" style="display : inline;">
@@ -103,8 +101,6 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?php
                 if (isset($_SESSION["button_search_name1"]) && $_SESSION["button_search_name1"] == 1) {
-                    //$search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id=" . $tree_id . " ORDER BY pers_lastname, pers_firstname LIMIT 0," . $limit;
-
                     if ($relation["search_name1"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
                         $relation["search_name1"] = str_replace(' ', '%', $relation["search_name1"]);
@@ -150,16 +146,6 @@ $limit = 500; // *** Limit results ***
                         $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
                         $stmt = $dbh->prepare($search_qry);
                         $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt->execute();
-                        $search_result = $stmt;
-                    }
-
-                    // *** Link from person pop-up menu ***
-                    if (isset($_SESSION["search_pers_id"])) {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND pers_id = :pers_id";
-                        $stmt = $dbh->prepare($search_qry);
-                        $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt->bindValue(':pers_id', $_SESSION["search_pers_id"], PDO::PARAM_STR);
                         $stmt->execute();
                         $search_result = $stmt;
                     }
@@ -240,8 +226,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?php
                 if (isset($_SESSION["button_search_name2"]) && $_SESSION["button_search_name2"] == 1) {
- 
-                    if ($relation["search_name2"] != '') {
+                     if ($relation["search_name2"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
                         $relation["search_name2"] = str_replace(' ', '%', $relation["search_name2"]);
                         // *** In case someone entered "Mons, Huub" using a comma ***
@@ -287,16 +272,6 @@ $limit = 500; // *** Limit results ***
                         $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
                         $stmt2 = $dbh->prepare($search_qry);
                         $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt2->execute();
-                        $search_result2 = $stmt2;
-                    }
-
-                    // *** Link from person pop-up menu ***
-                    if (isset($_SESSION["search_pers_id2"])) {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND pers_id = :pers_id";
-                        $stmt2 = $dbh->prepare($search_qry);
-                        $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-                        $stmt2->bindValue(':pers_id', $_SESSION["search_pers_id2"], PDO::PARAM_STR);
                         $stmt2->execute();
                         $search_result2 = $stmt2;
                     }
@@ -784,8 +759,8 @@ function ext_calc_display_result($result, $db_functions, $relation)
     // example: parI232;parI65;chdI2304;spoI212;parI304
     // the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
 
     $map = array();    // array that will hold all data needed for the graphical display
     $tracks = explode(";", $result); // $tracks is array with each person in the trail
@@ -882,7 +857,7 @@ function ext_calc_display_result($result, $db_functions, $relation)
                             $name = $personName->get_person_name($ancDb, $privacy);
 
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                            $personLink = new PersonLink();
+                            $personLink = new \Genealogy\Include\PersonLink();
                             $url = $personLink->get_person_link($ancDb);
 
                             $colsp = true;
@@ -945,9 +920,9 @@ function display_table($relation)
 {
     global $db_functions, $tree_id, $uri_path;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $processLinks = new ProcessLinks();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
+    $processLinks = new \Genealogy\Include\ProcessLinks();
 
     $vars['pers_family'] = $relation['famspouseX'];
     $linkSpouseX = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);

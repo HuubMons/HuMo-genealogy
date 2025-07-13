@@ -4,11 +4,11 @@ if (isset($_POST['enable_update_check_change'])) {
     if (isset($_POST['enable_update_check'])) {
         $update_last_check = '2012-01-01';
         $update_text = '';
-        $update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
+        $update_text .= ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
     } else {
         $update_last_check = 'DISABLED';
         $update_text = '  ' . __('update check is disabled.');
-        $update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
+        $update_text .= ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
     }
 
     $db_functions->update_settings('update_text', $update_text);
@@ -271,12 +271,12 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
             // *** 1) Standard status ***
             $update['up_to_date'] = 'yes';
             $update_text = ' ' . __('Update check failed.');
-            $update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
+            $update_text .= ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
 
             if ($humo_option["version"] == $update['version']) {
                 $update['up_to_date'] = 'yes';
                 $update_text = ' ' . __('is up-to-date!');
-                $update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
+                $update_text .= ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
             }
 
             // *** 2) HuMo-genealogy up-to-date (checking version numbers) ***
@@ -285,18 +285,18 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
             if (strtotime($update['version_date']) - strtotime($humo_option["version_date"]) < 0) {
                 $update['up_to_date'] = 'yes';
                 $update_text = ' ' . __('is up-to-date!');
-                $update_text .= ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
+                $update_text .= ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Update options') . '</a>';
             }
 
             // *** 3) First priority: check for normal HuMo-genealogy update ***
             if (strtotime($update['version_date']) - strtotime($humo_option["version_date"]) > 0) {
                 $update['up_to_date'] = 'no';
-                $update_text = ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Update available') . ' (' . $update['version'] . ')!</a>';
+                $update_text = ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Update available') . ' (' . $update['version'] . ')!</a>';
             }
             // *** 4) Second priority: check for Beta version update ***
             elseif (strtotime($update['beta_version_date']) - strtotime($humo_option["version_date"]) > 0) {
                 $update['up_to_date'] = 'yes';
-                $update_text = ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Beta version available') . ' (' . $update['beta_version'] . ')!</a>';
+                $update_text = ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Beta version available') . ' (' . $update['beta_version'] . ')!</a>';
             }
 
             // *** Update settings ***
@@ -307,8 +307,8 @@ if ($check_update && $page != 'login' && $page != 'update' && $popup == false) {
             //if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
         } else {
             //$update_text= '  '.__('Online version check unavailable.');
-            //$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
-            $update_text = ' <a href="' . $path_tmp . 'page=install_update&amp;update_check=1">' . __('Online version check unavailable.') . '</a>';
+            //$update_text.= ' <a href="index.php?page=install_update&update_check=1">'.__('Update options').'</a>';
+            $update_text = ' <a href="index.php?page=install_update&amp;update_check=1">' . __('Online version check unavailable.') . '</a>';
 
             if (!function_exists('curl_exec')) {
                 $update_text .= ' Extension php_curl.dll is disabled.';

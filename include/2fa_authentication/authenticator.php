@@ -1,5 +1,7 @@
 <?php
 
+namespace Genealogy\Include;
+
 class Authenticator
 {
     protected $length = 6;
@@ -16,7 +18,7 @@ class Authenticator
 
         // Valid secret lengths are 80 to 640 bits
         if ($secretLength < 16 || $secretLength > 128) {
-            throw new Exception('Bad secret length');
+            throw new \Exception('Bad secret length');
         }
         $random = false;
         if (function_exists('random_bytes')) {
@@ -34,7 +36,7 @@ class Authenticator
                 $secret .= $validChars[ord($random[$i]) & 31];
             }
         } else {
-            throw new Exception('Cannot create secure random secret due to source unavailbility');
+            throw new \Exception('Cannot create secure random secret due to source unavailbility');
         }
 
         return $secret;

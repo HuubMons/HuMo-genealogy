@@ -15,9 +15,10 @@ $start = $list["start"];
 $list_var = $processLinks->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
-$personPrivacy = new PersonPrivacy();
-$datePlace = new DatePlace();
-$safeTextShow = new SafeTextShow();
+$personPrivacy = new Genealogy\Include\PersonPrivacy();
+$datePlace = new  Genealogy\Include\DatePlace();
+$safeTextShow = new Genealogy\Include\SafeTextShow();
+$buildCondition = new Genealogy\Include\BuildCondition();
 
 if ($list["index_list"] == 'places') {
 ?>
@@ -610,21 +611,6 @@ $listnr = "2";      // default 20% margin
 $privcount = 0; // *** Count privacy persons ***
 
 $selected_place = '';
-
-// TODO Allready added in model. But needed for spouse in this script for now...
-// *** Search for (part of) first or lastname ***
-function name_qry($search_name, $search_part)
-{
-    $safeTextDb = new SafeTextDb;
-    $text = "LIKE '%" . $safeTextDb->safe_text_db($search_name) . "%'"; // *** Default value: "contains" ***
-    if ($search_part == 'equals') {
-        $text = "='" . $safeTextDb->safe_text_db($search_name) . "'";
-    }
-    if ($search_part == 'starts_with') {
-        $text = "LIKE '" . $safeTextDb->safe_text_db($search_name) . "%'";
-    }
-    return $text;
-}
 ?>
 
 <table class="table table-sm">
@@ -778,21 +764,21 @@ function name_qry($search_name, $search_part)
                 }
 
                 if ($personDb->pers_gedcomnumber == $famDb->fam_man) {
-                    $spouse_qry .= ' pers_gedcomnumber="' . $safeTextDb->safe_text_db($famDb->fam_woman) . '"';
+                    $spouse_qry .= ' pers_gedcomnumber="' . $famDb->fam_woman . '"';
                 } else {
-                    $spouse_qry .= ' pers_gedcomnumber="' . $safeTextDb->safe_text_db($famDb->fam_man) . '"';
+                    $spouse_qry .= ' pers_gedcomnumber="' . $famDb->fam_man . '"';
                 }
                 if ($selection['spouse_lastname']) {
                     if ($selection['spouse_lastname'] == __('...')) {
                         $spouse_qry .= " AND pers_lastname=''";
                     } elseif ($user['group_kindindex'] == "j") {
-                        $spouse_qry .= " AND CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " . name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
+                        $spouse_qry .= " AND CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " . $buildCondition->build($selection['spouse_lastname'], $selection['part_spouse_lastname']);
                     } else {
-                        $spouse_qry .= " AND pers_lastname " . name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
+                        $spouse_qry .= " AND pers_lastname " . $buildCondition->build($selection['spouse_lastname'], $selection['part_spouse_lastname']);
                     }
                 }
                 if ($selection['spouse_firstname']) {
-                    $spouse_qry .= " AND pers_firstname " . name_qry($selection['spouse_firstname'], $selection['part_spouse_firstname']);
+                    $spouse_qry .= " AND pers_firstname " . $buildCondition->build($selection['spouse_firstname'], $selection['part_spouse_firstname']);
                 }
                 $spouse_result = $dbh->query($spouse_qry);
 
@@ -884,11 +870,11 @@ function show_person($personDb)
     global $dbh, $db_functions, $selected_place, $user, $humo_option, $select_trees, $list_expanded;
     global $selected_language, $privacy, $dirmark1, $dirmark2, $list;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $personPopup = new PersonPopup();
-    $datePlace = new DatePlace();
-    $showTreeText = new ShowTreeText();
+    $personPrivacy = new Genealogy\Include\PersonPrivacy();
+    $personName = new Genealogy\Include\PersonName();
+    $personPopup = new Genealogy\Include\PersonPopup();
+    $datePlace = new Genealogy\Include\DatePlace();
+    $showTreeText = new Genealogy\Include\ShowTreeText();
 
     $db_functions->set_tree_id($personDb->pers_tree_id);
 
@@ -1056,7 +1042,7 @@ function show_person($personDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $personLink = new PersonLink();
+            $personLink = new Genealogy\Include\PersonLink();
             $start_url = $personLink->get_person_link($personDb);
 
             //echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';

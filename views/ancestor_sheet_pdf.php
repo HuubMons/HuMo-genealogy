@@ -10,12 +10,12 @@
  */
 
 $screen_mode = 'ASPDF';
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
+$pdf_source = array();  // is set in show_sources with sourcenr as key to be used in source appendix
 $dirmark1 = '';
 $dirmark2 = '';
 
 // TODO create seperate controller script.
-$get_ancestor = new AncestorModel($config);
+$get_ancestor = new \Genealogy\App\Model\AncestorModel($config);
 //$data["main_person"] = $get_ancestor->getMainPerson2('');
 $data["main_person"] = $get_ancestor->getMainPerson('');
 $rom_nr = $get_ancestor->getNumberRoman();
@@ -82,9 +82,9 @@ if (__('&#134;') == '&#134;' or __('&#134;') == "†") {
 function data_array($id, $width, $height): void
 {
     global $db_functions, $data_array, $data, $dsign;
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $languageDate = new LanguageDate;
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
+    $languageDate = new \Genealogy\Include\LanguageDate();
 
     if (isset($data["gedcomnumber"][$id]) && $data["gedcomnumber"][$id] != "") {
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
@@ -213,7 +213,7 @@ function data_array($id, $width, $height): void
 function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellwidth): void
 {
     global $dbh, $db_functions, $pdf, $data_array, $posy, $posx, $data;
-    $personPrivacy = new PersonPrivacy();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 
     $pdf->SetLeftMargin(16);
     $marg = 16;
@@ -288,13 +288,16 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
 //initialize pdf generation
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
 
+// *** Loading without autoload ***
+require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
 $pdf = new tFPDFextend();
+
 $title = $pdf->pdf_convert(__('Ancestor sheet') . __(' of ') . $name["standard_name"]);
 $pdf->SetTitle($title, true);
 $pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');

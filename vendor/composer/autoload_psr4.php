@@ -7,4 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'Genealogy\\Languages\\' => array($baseDir . '/languages'),
+    'Genealogy\\Include\\' => array($baseDir . '/include'),
+    'Genealogy\\App\\' => array($baseDir . '/app'),
+    'Genealogy\\Admin\\' => array($baseDir . '/admin'),
 );

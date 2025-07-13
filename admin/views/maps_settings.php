@@ -5,7 +5,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$showTreeText = new ShowTreeText();
+$showTreeText = new \Genealogy\Include\ShowTreeText();
 
 // *** Select family tree ***
 $tree_id_string = " AND ( ";

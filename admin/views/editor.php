@@ -44,8 +44,8 @@ if (!defined('ADMIN_PAGE')) {
 <?php
 $path_prefix = '../';
 
-$editor_cls = new Editor_cls; // TODO editor_cls is also added in controller.
-$EditorEvent = new EditorEvent($dbh);
+$editor_cls = new \Genealogy\Include\Editor_cls; // TODO editor_cls is also added in controller.
+$EditorEvent = new \Genealogy\Include\EditorEvent($dbh);
 
 // *** Temp variables ***
 $pers_gedcomnumber = $editor['pers_gedcomnumber']; // *** Temp variable ***
@@ -84,9 +84,10 @@ $person_found = true;
                         if (isset($pers_id)) {
                             $counter = count($pers_id);
                             for ($i = 0; $i < $counter; $i++) {
-                                $person2_qry = "SELECT * FROM humo_persons WHERE pers_id='" . $pers_id[$i] . "'";
-                                $person2_result = $dbh->query($person2_qry);
-                                $person2 = $person2_result->fetch(PDO::FETCH_OBJ);
+                                $person2_qry = "SELECT * FROM humo_persons WHERE pers_id = :pers_id";
+                                $person2_stmt = $dbh->prepare($person2_qry);
+                                $person2_stmt->execute([':pers_id' => $pers_id[$i]]);
+                                $person2 = $person2_stmt->fetch(PDO::FETCH_OBJ);
                                 if ($person2) {
                                     $pers_user = '';
                                     if ($person2->pers_new_user_id) {
@@ -112,7 +113,7 @@ $person_found = true;
         <div class="row">
 
             <div class="col-md-3">
-                <?= select_tree($dbh, $page, $tree_id); ?>
+                <?= $selectTree->select_tree($dbh, $page, $tree_id); ?>
             </div>
 
             <div class="col-md-auto">
@@ -405,6 +406,7 @@ if ($check_person) {
                     if (!$previousDb) {
                         $check_pers_gedcomnumber = (substr($person->pers_gedcomnumber, 1) - 2);
                         $check_pers_gedcomnumber = 'I' . $check_pers_gedcomnumber;
+                        // TODO use db function.
                         $previous_qry = "SELECT pers_gedcomnumber FROM humo_persons
                             WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $check_pers_gedcomnumber . "'";
                         $previous_result = $dbh->query($previous_qry);
@@ -444,16 +446,16 @@ if ($check_person) {
                         $firstDb = $first_result->fetch(PDO::FETCH_OBJ);
                     }
             ?>
-                    <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="person" value="<?= $firstDb->pers_gedcomnumber; ?>">
                         <input type="submit" value="<<">
                     </form>
 
+
+
                     <?php if ($previousDb) { ?>
-                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
-                            <input type="hidden" name="person" value="<?= $previousDb->pers_gedcomnumber; ?>">
                             <input type="submit" value="<">
                         </form>
                     <?php
@@ -500,9 +502,8 @@ if ($check_person) {
                 }
                 if ($nextDb) {
                 ?>
-                    <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $nextDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
-                        <input type="hidden" name="person" value="<?= $nextDb->pers_gedcomnumber; ?>">
                         <input type="submit" value=">">
                     </form>
                 <?php } else { ?>
@@ -521,9 +522,8 @@ if ($check_person) {
                     $lastDb = $last_result->fetch(PDO::FETCH_OBJ);
                     if (substr($lastDb->pers_gedcomnumber, 2) > substr($person->pers_gedcomnumber, 2)) {
                     ?>
-                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
+                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $lastDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
-                            <input type="hidden" name="person" value="<?= $lastDb->pers_gedcomnumber; ?>">
                             <input type="submit" value=">>">
                         </form>
                     <?php } else { ?>
@@ -922,7 +922,7 @@ if ($check_person) {
 // *** Show event options ***
 function event_option($event_gedcom, $event)
 {
-    $languageEventName = new LanguageEventName();
+    $languageEventName = new \Genealogy\Include\LanguageEventName();
 
     $selected = '';
     if ($event_gedcom == $event) {
@@ -938,9 +938,15 @@ function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
     global $tree_id, $dbh, $db_functions;
 
     $connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
-        WHERE connect_tree_id='" . $tree_id . "'
-        AND connect_sub_kind='" . $connect_sub_kind . "' AND connect_connect_id='" . $connect_connect_id . "'";
-    $connect_sql = $dbh->query($connect_qry);
+        WHERE connect_tree_id = :tree_id
+        AND connect_sub_kind = :connect_sub_kind AND connect_connect_id = :connect_connect_id";
+    $connect_stmt = $dbh->prepare($connect_qry);
+    $connect_stmt->execute([
+        ':tree_id' => $tree_id,
+        ':connect_sub_kind' => $connect_sub_kind,
+        ':connect_connect_id' => $connect_connect_id
+    ]);
+    $connect_sql = $connect_stmt;
     $source_count = $connect_sql->rowCount();
     $source_error = 0;
     while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
@@ -963,7 +969,7 @@ function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
     if ($source_error == '2') {
         // *** Source is empty, colour = yellow ***
         $style = ' style="background-color:#FFFF00"';
-    } 
+    }
 
     if ($source_count) {
         //return '<span ' . $style . '>[' . $source_count . ']</span>';
@@ -1067,12 +1073,13 @@ function edit_patronymic($name, $value): void
 
 function edit_event_name($name_select, $name_text, $value): void
 {
+    $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
     <div class="row mb-2">
         <div class="col-md-3">
             <select size="1" name="<?= $name_select; ?>" class="form-select form-select-sm">
                 <!-- Nickname, alias, adopted name, hebrew name, etc. -->
-                <?php event_selection(''); ?>
+                <?php $editorEventSelection->event_selection(''); ?>
             </select>
         </div>
         <div class="col-md-7">
@@ -1133,7 +1140,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 {
     global $db_functions, $page;
 
-    $datePlace = new DatePlace();
+    $datePlace = new \Genealogy\Include\DatePlace();
 
     if ($gedcomnumber) {
         $personDb = $db_functions->get_person($gedcomnumber);
@@ -1175,7 +1182,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 
 function hideshow_date_place($hideshow_date, $hideshow_place)
 {
-    $datePlace = new DatePlace();
+    $datePlace = new \Genealogy\Include\DatePlace();
 
     // *** If date ends with ! then date isn't valid. Show red line ***
     $check_date = false;

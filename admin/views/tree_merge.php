@@ -9,8 +9,8 @@
 // *** tree_merge is the function that navigates all merge screens and options ***
 $db_functions->set_tree_id($trees['tree_id']);
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
 
 // the following creates the pages that cycle through all duplicates that are stored in the dupl_arr array
 // the pages themselves are presented with the "show_pair function"
@@ -852,10 +852,7 @@ elseif (isset($_POST['auto_merge'])) {
 // The settings screen with "Save" and "Reset" buttons and explanations
 elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
     // *** Re-read variables after changing them ***
-    // *** Don't use include_once! Otherwise the old value will be shown ***
-    include_once(__DIR__ . "/../../include/generalSettings.php");
-    $generalSettings = new GeneralSettings();
-    //$user = $generalSettings->get_user_settings($dbh);
+    $generalSettings = new \Genealogy\Include\GeneralSettings();
     $humo_option = $generalSettings->get_humo_option($dbh);
 ?>
 
@@ -1058,8 +1055,8 @@ function show_pair($left_id, $right_id, $mode)
     // get data for left person
     $leftDb = $db_functions->get_person_with_id($left_id);
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
 
     $spouses1 = '';
     $children1 = '';
@@ -1184,7 +1181,7 @@ function show_pair($left_id, $right_id, $mode)
             <th style="width:375px;border-bottom:2px solid #a4a4a4"> <?= __('Person 2: '); ?></th>
         </tr>
         <tr style="background-color:#e6e6e6">
-            <td style="font-weight:bold"><?= __('Gedcom number:'); ?></td>
+            <td style="font-weight:bold"><?= __('GEDCOM number (ID)'); ?></td>
             <td><?= $leftDb->pers_gedcomnumber; ?></td>
             <td><?= $rightDb->pers_gedcomnumber; ?></td>
         </tr>
@@ -1218,16 +1215,16 @@ function show_pair($left_id, $right_id, $mode)
         show_regular_text($leftDb->pers_buried_text, $rightDb->pers_buried_text, __('burial text'), 'br_text');
 
         // *** functions to show events, sources and addresses ***
-        show_events($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
-        show_sources($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
-        show_addresses($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
+        show_events_merge($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
+        show_sources_merge($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
+        show_addresses_merge($leftDb->pers_gedcomnumber, $rightDb->pers_gedcomnumber);
 
         //TEST *** Address by relation ***
-        // A person can be married multiple times (left and right side). Probably needed to rebuild show_addresses scripts to show them seperately?
+        // A person can be married multiple times (left and right side). Probably needed to rebuild show_addresses_merge scripts to show them seperately?
         //$r_fams = explode(';',$rightDb->pers_fams);
         //for($i=0;$i<count($r_fams);$i++) {
         //	echo $r_fams[$i].'! ';
-        //	show_addresses('',$r_fams[$i]);
+        //	show_addresses_merge('',$r_fams[$i]);
         //}
         ?>
 
@@ -1353,9 +1350,9 @@ function show_regular_text($left_item, $right_item, $title, $name)
 }
 
 /**
- * show_events is a function that places the events in the comparison table
+ * show_events_merge is a function that places the events in the comparison table
  */
-function show_events($left_ged, $right_ged)
+function show_events_merge($left_ged, $right_ged)
 {
     global $dbh, $trees, $language, $data2Db, $color;
     $l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_decl_witness = $l_baptism_witness = $l_death_decl_witness = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = array();
@@ -1565,9 +1562,9 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
 }
 
 /**
- * "show_sources" is the function that places the sources in the comparison table (if right has a value)
+ * "show_sources_merge" is the function that places the sources in the comparison table (if right has a value)
  */
-function show_sources($left_ged, $right_ged)
+function show_sources_merge($left_ged, $right_ged)
 {
     global $dbh, $trees, $language, $data2Db, $color;
 
@@ -1646,9 +1643,9 @@ function show_sources($left_ged, $right_ged)
 }
 
 /**
- * "show_addresses" is the function that places the addresses in the comparison table (if right has a value)
+ * "show_addresses_merge" is the function that places the addresses in the comparison table (if right has a value)
  */
-function show_addresses($left_ged, $right_ged)
+function show_addresses_merge($left_ged, $right_ged)
 {
     global $dbh, $trees, $language, $data2Db, $color;
 

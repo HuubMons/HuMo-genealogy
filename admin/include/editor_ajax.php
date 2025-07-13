@@ -8,8 +8,10 @@ session_start();
 
 if (isset($_SESSION['admin_tree_id'])) {
     $ADMIN = TRUE; // *** Override "no database" message for admin ***
+    // *** Autoload classes ***
+    //require __DIR__ . '/../../vendor/autoload.php';
+
     include_once(__DIR__ . "/../../include/db_login.php"); // *** Database login ***
-    include_once(__DIR__ . "/../../include/safeTextDb.php");
 
     echo "Data Submitted succesfully";
 
@@ -45,7 +47,6 @@ if (isset($_SESSION['admin_tree_id'])) {
     $tree_id = $_POST['tree_id1'];
     $gedcomnumber = $_POST['pers_gedcomnumber1'];
 
-    include_once(__DIR__."/../../include/dbFunctions.php");
     $db_functions = new DbFunctions();
     $db_functions->set_tree_id($tree_id);
 

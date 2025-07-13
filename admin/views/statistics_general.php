@@ -241,10 +241,10 @@ function statistics_line($familyDb)
 {
     global $selected_language, $db_functions;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $showTreeText = new showTreeText();
-    $processLinks = new ProcessLinks();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
+    $showTreeText = new \Genealogy\Include\ShowTreeText();
+    $processLinks = new \Genealogy\Include\ProcessLinks();
 
     $tree_id = $familyDb->tree_id;
     if (isset($tree_id) && $tree_id) {

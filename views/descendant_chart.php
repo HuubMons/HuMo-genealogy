@@ -6,10 +6,10 @@
 
 $screen_mode = 'STAR';
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personPopup = new PersonPopup();
-$datePlace = new DatePlace();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personPopup = new \Genealogy\Include\PersonPopup();
+$datePlace = new \Genealogy\Include\DatePlace();
 
 if (!isset($hourglass)) {
     $hourglass = false;
@@ -300,7 +300,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                             // *** Only show 1st picture ***
                             if (isset($picture_qry[0])) {
                                 $pictureDb = $picture_qry[0];
-                                $showMedia = new ShowMedia();
+                                $showMedia = new \Genealogy\Include\ShowMedia();
                                 $replacement_text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 60, 65, 'float:left; margin:5px;');
                             }
                         }
@@ -402,7 +402,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                     $name = $personName->get_person_name($woman, $woman_privacy);
                     if (isset($genarray[$w]["spfams"]) && isset($genarray[$w]["spgednr"]) && isset($genarray[$w]["sps"])) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $personLink = new PersonLink();
+                        $personLink = new \Genealogy\Include\PersonLink();
                         $url = $personLink->get_person_link($woman);
 
                         $extra_popup_text .= '<a href="' . $url . '">' . '<strong>' . $name["standard_name"] . '</strong></a>';

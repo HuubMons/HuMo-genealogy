@@ -18,11 +18,12 @@ if ($event_family) {
 }
 
 // *** Process queries ***
-$editor_cls = new Editor_cls;
-$editorModel = new EditorModel($admin_config, $tree_prefix, $editor_cls);
+$editor_cls = new \Genealogy\Include\Editor_cls;
+$editorModel = new \Genealogy\Admin\Models\EditorModel($admin_config, $tree_prefix, $editor_cls);
 $editor['confirm'] = $editorModel->update_editor2();
 
-$languageDate = new LanguageDate();
+$languageDate = new \Genealogy\Include\LanguageDate();
+$validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 
 $db_functions->set_tree_id($tree_id);
 
@@ -251,8 +252,8 @@ $nr_sources = count($connect_sql);
                 } else {
                     // *** Add new source or select existing source ***
                     $source_search_gedcomnr = '';
-                    if (isset($_POST['source_search_gedcomnr'])) {
-                        $source_search_gedcomnr = $safeTextDb->safe_text_db($_POST['source_search_gedcomnr']);
+                    if (isset($_POST['source_search_gedcomnr']) && $validateGedcomnumber->validate($_POST['source_search_gedcomnr'])) {
+                        $source_search_gedcomnr = $_POST['source_search_gedcomnr'];
                     }
                     $source_search = '';
                     if (isset($_POST['source_search'])) {
@@ -260,17 +261,20 @@ $nr_sources = count($connect_sql);
                     }
 
                     // *** Source: pull-down menu ***
-                    // TODO only get necesary items
-                    $qry = "SELECT * FROM humo_sources WHERE source_tree_id='" . $safeTextDb->safe_text_db($tree_id) . "'";
-                    if (isset($_POST['source_search_gedcomnr'])) {
-                        $qry .= " AND source_gedcomnr LIKE '%" . $safeTextDb->safe_text_db($_POST['source_search_gedcomnr']) . "%'";
+                    $qry = "SELECT * FROM humo_sources WHERE source_tree_id = :tree_id";
+                    $params = [':tree_id' => $tree_id];
+                    if (!empty($_POST['source_search_gedcomnr'])) {
+                        $qry .= " AND source_gedcomnr LIKE :gedcomnr";
+                        $params[':gedcomnr'] = '%' . $_POST['source_search_gedcomnr'] . '%';
                     }
-                    if (isset($_POST['source_search'])) {
-                        $qry .= " AND ( source_title LIKE '%" . $safeTextDb->safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . $safeTextDb->safe_text_db($source_search) . "%') )";
+                    if (!empty($_POST['source_search'])) {
+                        $qry .= " AND (source_title LIKE :search OR (source_title = '' AND source_text LIKE :search))";
+                        $params[':search'] = '%' . $_POST['source_search'] . '%';
                     }
-                    $qry .= " ORDER BY IF (source_title!='',source_title,source_text)";
-                    //$qry.=" ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,500";
-                    $source_qry = $dbh->query($qry);
+                    $qry .= " ORDER BY IF(source_title != '', source_title, source_text)";
+
+                    $source_qry = $dbh->prepare($qry);
+                    $source_qry->execute($params);
                 ?>
 
                     <h3><?= __('Search existing source'); ?></h3>

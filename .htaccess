@@ -3,8 +3,25 @@ BrowserMatchNoCase "claudebot" bad_bot
 BrowserMatchNoCase "facebookexternalhit/1.1" bad_bot
 BrowserMatchNoCase "meta-externalagent/1.1" bad_bot
 BrowserMatchNoCase "Python/3.10 aiohttp/3.9.3" bad_bot
-Order Deny,Allow
-Deny from env=bad_bot
+# Order Deny,Allow
+# Deny from env=bad_bot
+
+# Apache <= 2.2
+<IfModule !mod_authz_core.c>
+    <IfModule mod_authz_host.c>
+        Order Allow,Deny
+        Allow from all
+        Deny from env=bad_bot
+        </IfModule>
+</IfModule>
+
+# Apache > 2.2
+<IfModule mod_authz_core.c>
+    <RequireAll>
+        Require all granted
+        Require not env bad_bot
+    </RequireAll>
+</IfModule>
 
 # # Blocking Bot traffic except search bots. Explanation of RewriteCond lines:
 # Line 1 stops unidentified bots.
@@ -23,7 +40,7 @@ Deny from env=bad_bot
 # Enable url_rewrite option.
 RewriteEngine On
 
-# MVC model: All requests will be send to index.php except gendex.php, sitemap.php and gezin.php. A router will be used to handle the request.
+# MVC model: All requests will be send to index.php except gendex.php, sitemap.php and gezin.php. A router is used to handle the request.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l

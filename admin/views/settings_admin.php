@@ -9,10 +9,7 @@ if (!defined('ADMIN_PAGE')) {
 
 <?php
 // *** Re-read variables after changing them ***
-// *** Don't use include_once! Otherwise the old value will be shown ***
-include_once(__DIR__ . "/../../include/generalSettings.php");
-$generalSettings = new GeneralSettings();
-//$user = $generalSettings->get_user_settings($dbh);
+$generalSettings = new \Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 
 

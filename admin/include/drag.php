@@ -10,11 +10,12 @@ session_start();
 //  exit;
 //}
 
+use Genealogy\Include\SafeTextDb;
+
 if (isset($_SESSION['admin_tree_id'])) {
     $ADMIN = TRUE; // *** Override "no database" message for admin ***
     include_once(__DIR__ . "/../../include/db_login.php"); // *** Database login ***
 
-    include_once(__DIR__ . "/../../include/safeTextDb.php");
     $safeTextDb = new SafeTextDb();
 
     $drag_kind = $_GET["drag_kind"];

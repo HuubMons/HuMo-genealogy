@@ -3,8 +3,6 @@
  * Family statistics
  */
 
-include_once(__DIR__ . "/../../include/show_tree_date.php");
-
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
 $num_rows = $datasql->rowCount();
 
@@ -13,8 +11,9 @@ if (isset($tree_id) && $tree_id) {
     $db_functions->set_tree_id($tree_id);
 }
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$showTreeDate = new \Genealogy\Include\ShowTreeDate();
 ?>
 
 <h2><?= __('Family statistics (numbers since last GEDCOM update)'); ?></h2>
@@ -23,7 +22,7 @@ $personName = new PersonName();
     <b><?= __('Select family tree'); ?></b><br>
     <?php
     while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-        $tree_date = show_tree_date($dataDb->tree_date);
+        $tree_date = $showTreeDate->show_tree_date($dataDb->tree_date);
         $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $selected_language);
 
         if ($dataDb->tree_id == $tree_id) {

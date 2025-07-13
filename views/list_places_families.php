@@ -15,8 +15,9 @@ if (isset($_GET["start"])) {
 $nr_persons = $humo_option['show_persons'];
 $person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_persons);
 
-$personPrivacy = new PersonPrivacy();
-$safeTextShow = new SafeTextShow();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$safeTextShow = new \Genealogy\Include\SafeTextShow();
+
 
 //TODO use COUNT
 //if ($count_qry) {
@@ -222,7 +223,8 @@ $selected_place = '';
         $personDb = $db_functions->get_person($familyDb->fam_woman);
         $woman_privacy = $personPrivacy->get_privacy($personDb);
 
-        $marriage_cls = new MarriageCls($familyDb, $man_privacy, $woman_privacy);
+        $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $man_privacy, $woman_privacy);
+
         $family_privacy = $marriage_cls->get_privacy();
 
         // *** $family_privacy=true => filter ***
@@ -248,10 +250,10 @@ function show_person($familyDb)
     global $db_functions, $selected_place, $list_expanded;
     global $privacy, $dirmark1, $dirmark2, $data;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName = new PersonName();
-    $personPopup = new PersonPopup();
-    $datePlace = new DatePlace();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName = new \Genealogy\Include\PersonName();
+    $personPopup = new \Genealogy\Include\PersonPopup();
+    $datePlace = new \Genealogy\Include\DatePlace();
 
     $selected_person1 = $familyDb->fam_man ? $familyDb->fam_man : $familyDb->fam_woman;
     $personDb = $db_functions->get_person($selected_person1);
@@ -335,7 +337,7 @@ function show_person($familyDb)
             <?php
             // *** Show name of person ***
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $personLink = new PersonLink();
+            $personLink = new \Genealogy\Include\PersonLink();
             $start_url = $personLink->get_person_link($personDb);
             echo ' <a href="' . $start_url . '">' . rtrim($index_name) . '</a>';
 

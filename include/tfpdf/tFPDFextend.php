@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/tFPDF.php';
+
 class tFPDFextend extends tFPDF
 {
     /**
@@ -15,7 +17,7 @@ class tFPDFextend extends tFPDF
     public function __construct()
     {
         parent::__construct();
-        $this->languageDate = new LanguageDate();
+        $this->languageDate = new \Genealogy\Include\LanguageDate();
     }
 
     /*

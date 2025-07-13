@@ -1,3 +1,7 @@
+<?php
+$showTreeDate = new \Genealogy\Include\ShowTreeDate();
+?>
+
 <br>
 <?= __('Administration of the family tree(s), i.e. the name can be changed here, and trees can be added or removed.'); ?><br>
 
@@ -37,7 +41,7 @@
     if ($datasql) {
         $count_lines = $datasql->rowCount();
         while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $trees['language']);
+            $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $trees['language']);
     ?>
             <li class="list-group-item <?= $dataDb->tree_id == $trees['tree_id'] ? 'list-group-item-secondary' : ''; ?>">
                 <div class="row">
@@ -82,7 +86,7 @@
                         ?>
                             <font color="#00FF00"><b><?= __('OK'); ?></b></font>
 
-                            <font size=-1><?= show_tree_date($dataDb->tree_date); ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?></font>
+                            <font size=-1><?= $showTreeDate->show_tree_date($dataDb->tree_date); ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?></font>
                         <?php } else { ?>
                             <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b>
                         <?php } ?>

@@ -12,8 +12,9 @@
 // Import PHPMailer classes into the global namespace
 // These must be at the top of your script, not inside a function
 require_once __DIR__.'/../vendor/autoload.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+
 require __DIR__.'/../vendor/phpmailer/phpmailer/src/Exception.php';
 require __DIR__.'/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 if ($humo_option["mail_auto"] == 'auto') {

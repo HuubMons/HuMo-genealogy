@@ -2,7 +2,7 @@
 // *** Show media file using secured folder ***
 // this checks if this is special url query for giving the file - it gives the file if user is authorized to get it
 if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['media_dir']) && isset($_GET['media_filename'])) {
-    $person_privay = new PersonPrivacy();
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 
     if (isset($_GET['media_filename']) && $_GET['media_filename']) {
         $media_filename = $_GET['media_filename'];

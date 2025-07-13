@@ -1,6 +1,7 @@
 <!-- Start of editor table -->
 <?php
-$languageDate = new LanguageDate;
+$languageDate = new \Genealogy\Include\LanguageDate;
+$editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
 
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
@@ -270,14 +271,14 @@ $languageDate = new LanguageDate;
                             <h2><?= __('Father'); ?></h2>
                         </div>
                     </div>
-                    <?= edit_firstname('pers_firstname1', ''); ?>
-                    <?= edit_prefix('pers_prefix1', ''); ?>
-                    <?= edit_lastname('pers_lastname1', ''); ?>
-                    <?= edit_patronymic('pers_patronym1', ''); ?>
-                    <?= edit_event_name('event_gedcom_add1', 'event_event_name1', ''); ?>
-                    <?= edit_privacyfilter('pers_alive1', ''); ?>
-                    <?= edit_sexe('pers_sexe1', 'M'); ?>
-                    <?= edit_profession('event_profession1', ''); ?>
+                    <?php edit_firstname('pers_firstname1', ''); ?>
+                    <?php edit_prefix('pers_prefix1', ''); ?>
+                    <?php edit_lastname('pers_lastname1', ''); ?>
+                    <?php edit_patronymic('pers_patronym1', ''); ?>
+                    <?php edit_event_name('event_gedcom_add1', 'event_event_name1', ''); ?>
+                    <?php edit_privacyfilter('pers_alive1', ''); ?>
+                    <?php edit_sexe('pers_sexe1', 'M'); ?>
+                    <?php edit_profession('event_profession1', ''); ?>
 
                     <!-- Add mother -->
                     <div class="row mb-2">
@@ -286,14 +287,14 @@ $languageDate = new LanguageDate;
                             <h2><?= __('Mother'); ?></h2>
                         </div>
                     </div>
-                    <?= edit_firstname('pers_firstname2', ''); ?>
-                    <?= edit_prefix('pers_prefix2', ''); ?>
-                    <?= edit_lastname('pers_lastname2', ''); ?>
-                    <?= edit_patronymic('pers_patronym2', ''); ?>
-                    <?= edit_event_name('event_gedcom_add2', 'event_event_name2', ''); ?>
-                    <?= edit_privacyfilter('pers_alive2', ''); ?>
-                    <?= edit_sexe('pers_sexe2', 'F'); ?>
-                    <?= edit_profession('event_profession2', ''); ?>
+                    <?php edit_firstname('pers_firstname2', ''); ?>
+                    <?php edit_prefix('pers_prefix2', ''); ?>
+                    <?php edit_lastname('pers_lastname2', ''); ?>
+                    <?php edit_patronymic('pers_patronym2', ''); ?>
+                    <?php edit_event_name('event_gedcom_add2', 'event_event_name2', ''); ?>
+                    <?php edit_privacyfilter('pers_alive2', ''); ?>
+                    <?php edit_sexe('pers_sexe2', 'F'); ?>
+                    <?php edit_profession('event_profession2', ''); ?>
 
                     <div class="row mb-2">
                         <div class="col-md-3"></div>
@@ -326,7 +327,7 @@ $languageDate = new LanguageDate;
             // *** Show message if age < 0 or > 120 ***
             $show_age_message = '';
             if (($person->pers_bapt_date || $person->pers_birth_date) && $person->pers_death_date) {
-                $process_age = new CalculateDates;
+                $process_age = new \Genealogy\Include\CalculateDates;
                 $age = $process_age->calculate_age($person->pers_bapt_date, $person->pers_birth_date, $person->pers_death_date, true);
                 if ($age && ($age < 0 || $age > 120)) {
                     $show_age_message = $age;
@@ -411,10 +412,10 @@ $languageDate = new LanguageDate;
                 <?php } ?>
 
                 <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
-                    <?= edit_firstname('pers_firstname', $pers_firstname); ?>
-                    <?= edit_prefix('pers_prefix', $pers_prefix); ?>
-                    <?= edit_lastname('pers_lastname', $pers_lastname); ?>
-                    <?= edit_patronymic('pers_patronym', $pers_patronym); ?>
+                    <?php edit_firstname('pers_firstname', $pers_firstname); ?>
+                    <?php edit_prefix('pers_prefix', $pers_prefix); ?>
+                    <?php edit_lastname('pers_lastname', $pers_lastname); ?>
+                    <?php edit_patronymic('pers_patronym', $pers_patronym); ?>
 
                     <?php
                     if ($humo_option['admin_hebname'] == "y") {  // user requested hebrew name field to be displayed here, not under "events"
@@ -538,7 +539,7 @@ $languageDate = new LanguageDate;
                     <div class="row">
                         <div class="col-md-4">
                             <select size="1" name="event_gedcom_add" id="event_gedcom_add" class="form-select form-select-sm">
-                                <?php event_selection(''); ?>
+                                <?php $editorEventSelection->event_selection(''); ?>
                             </select>
                         </div>
                         <div class="col-md-4">

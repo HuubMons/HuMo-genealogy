@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /**
  * php.mo 0.1 by Joss Crowcroft (http://www.josscrowcroft.com)	https://github.com/phpmo/php.mo/blob/master/php-mo.php

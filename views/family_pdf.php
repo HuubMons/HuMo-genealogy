@@ -5,20 +5,22 @@
  * Seperated from family script in july 2023 by Huub.
  */
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personName_extended = new PersonNameExtended;
-$personData = new PersonData;
-$datePlace = new DatePlace();
-$processText = new ProcessText();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personName_extended = new \Genealogy\Include\PersonNameExtended();
+$personData = new \Genealogy\Include\PersonData();
+$datePlace = new \Genealogy\Include\DatePlace();
+$processText = new \Genealogy\Include\ProcessText();
+$showSources = new \Genealogy\Include\ShowSources();
+$showSourcePDF = new \Genealogy\Include\ShowSourcePDF();
 
 $screen_mode = 'PDF';
-$pdf_source = array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
+$pdf_source = array();  // is set in show_sources with sourcenr as key to be used in source appendix
 $dirmark1 = '';
 $dirmark2 = '';
 
 // TODO create seperate controller script.
-$get_family = new FamilyModel($config);
+$get_family = new \Genealogy\App\Model\FamilyModel($config);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
 $data["family_expanded"] =  $get_family->getFamilyExpanded();
@@ -51,6 +53,8 @@ if (isset($_POST['descendant_report'])) {
 
 $pdfdetails = array();
 $pdf_marriage = array();
+// *** Loading without autoload ***
+require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
 $pdf = new tFPDFextend();
 
 // *** Generate title of PDF file ***
@@ -229,7 +233,7 @@ else {
                 $parent2Db = $db_functions->get_person($parent2);
                 $parent2_privacy = $personPrivacy->get_privacy($parent2Db);
 
-                $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
+                $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                 $family_privacy = $marriage_cls->get_privacy();
 
 
@@ -397,11 +401,11 @@ else {
                     // PDF rendering of marriage notes
                     //$pdf->SetFont($pdf->pdf_font,'I',11);
                     //$pdf->Write(6,process_text($familyDb->fam_text)."\n");
-                    //$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
+                    //$pdf->Write(6,$showSources->show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
                     //$pdf->SetFont($pdf->pdf_font,'',12);
                     $templ_relation["fam_text"] = $familyDb->fam_text;
                     $temp = "fam_text";
-                    $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
+                    $source_array = $showSources->show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
                     if ($source_array) {
                         $templ_relation["fam_text_source"] = $source_array['text'];
                         $temp = "fam_text_source";
@@ -410,11 +414,12 @@ else {
 
                 // *** Show addresses by family ***
                 if ($user['group_living_place'] == 'j') {
-                    $fam_address = show_addresses('family', 'family_address', $familyDb->fam_gedcomnumber);
+                    $showAddresses = new \Genealogy\Include\ShowAddresses();
+                    $fam_address = $showAddresses->show_addresses('family', 'family_address', $familyDb->fam_gedcomnumber);
                 }
 
                 // *** Family source ***
-                $source_array = show_sources2("family", "family_source", $familyDb->fam_gedcomnumber);
+                $source_array = $showSources->show_sources2("family", "family_source", $familyDb->fam_gedcomnumber);
                 if ($source_array) {
                     if ($temp) $templ_relation[$temp] .= '. ';
 
@@ -541,12 +546,11 @@ else {
 
 // *** List appendix of sources ***
 if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user['group_sources'] == 'j')) {
-    include_once(__DIR__ . '/../include/show_source_pdf.php');
     $pdf->AddPage(); // appendix on new page
     $pdf->SetFont($pdf->pdf_font, "B", 14);
     $pdf->Write(8, __('Sources') . "\n\n");
     $pdf->SetFont($pdf->pdf_font, '', 10);
-    // *** The $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given ***
+    // *** The $pdf_source array is set in show_sources with sourcenr as key and value if a linked source is given ***
     $count = 0;
 
     foreach ($pdf_source as $key => $value) {
@@ -556,7 +560,7 @@ if (!empty($pdf_source) and ($data["source_presentation"] == 'footnote' or $user
             $pdf->SetFont($pdf->pdf_font, 'B', 10);
             $pdf->Write(6, $count . ". ");
             if ($user['group_sources'] == 'j') {
-                source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
+                $showSourcePDF->source_display_pdf($pdf_source[$key]);  // function source_display from source.php, called with source nr.
             } elseif ($user['group_sources'] == 't') {
                 $sourceDb = $db_functions->get_source($pdf_source[$key]);
                 if ($sourceDb->source_title || $sourceDb->source_text) {

@@ -8,8 +8,9 @@
  * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
  */
 
- $datePlace = new DatePlace();
- $languageDate = new LanguageDate;
+$datePlace = new \Genealogy\Include\DatePlace();
+$languageDate = new \Genealogy\Include\LanguageDate;
+$validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 ?>
 
 <div class="p-1 m-2 genealogy_search">
@@ -235,11 +236,11 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
         <?php
         if (isset($_GET['fam_remove']) || isset($_POST['fam_remove'])) {
-            if (isset($_GET['fam_remove'])) {
-                $fam_remove = $safeTextDb->safe_text_db($_GET['fam_remove']);
+            if (isset($_GET['fam_remove']) && $validateGedcomnumber->validate($_GET['fam_remove'])) {
+                $fam_remove = $_GET['fam_remove'];
             };
-            if (isset($_POST['marriage_nr'])) {
-                $fam_remove = $safeTextDb->safe_text_db($_POST['marriage_nr']);
+            if (isset($_POST['marriage_nr']) && $validateGedcomnumber->validate($_POST['marriage_nr'])) {
+                $fam_remove = $_POST['marriage_nr'];
             };
 
             $new_nr = $db_functions->get_family($fam_remove);
@@ -1367,13 +1368,13 @@ function add_person($person_kind, $pers_sexe)
             </div>
         </div>
 
-        <?= edit_firstname('pers_firstname', ''); ?>
-        <?= edit_prefix('pers_prefix', $pers_prefix); ?>
-        <?= edit_lastname('pers_lastname', $pers_lastname); ?>
-        <?= edit_patronymic('pers_patronym', ''); ?>
-        <?= edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
-        <?= edit_privacyfilter('pers_alive', 'alive'); ?>
-        <?= edit_sexe('pers_sexe', $pers_sexe); ?>
+        <?php edit_firstname('pers_firstname', ''); ?>
+        <?php edit_prefix('pers_prefix', $pers_prefix); ?>
+        <?php edit_lastname('pers_lastname', $pers_lastname); ?>
+        <?php edit_patronymic('pers_patronym', ''); ?>
+        <?php edit_event_name('event_gedcom_new', 'event_event_name_new', ''); ?>
+        <?php edit_privacyfilter('pers_alive', 'alive'); ?>
+        <?php edit_sexe('pers_sexe', $pers_sexe); ?>
 
         <!-- Birth -->
         <div class="row mb-1 p-2 bg-primary-subtle">
@@ -1472,7 +1473,7 @@ function add_person($person_kind, $pers_sexe)
         <!-- Profession -->
         <input type="hidden" name="event_date_profession_prefix" value=''>
         <input type="hidden" name="event_date_profession" value=''>
-        <?= edit_profession('event_profession', ''); ?>
+        <?php edit_profession('event_profession', ''); ?>
 
         <div class="row mb-2">
             <div class="col-md-3"></div>

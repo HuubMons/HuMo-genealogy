@@ -18,7 +18,7 @@ if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
 }
 
 // TODO create seperate controller script.
-$get_family = new FamilyModel($config);
+$get_family = new \Genealogy\App\Model\FamilyModel($config);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
 $data["text_presentation"] =  $get_family->getTextPresentation();
@@ -73,13 +73,16 @@ $pdfdetails = array();
 $pdf_marriage = array();
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
 
+// *** Loading without autoload ***
+require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
 $pdf = new tFPDFextend();
+
 $title = $pdf->pdf_convert(__('Outline report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]));
 $pdf->SetTitle($title, true);
 $pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
@@ -111,9 +114,9 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
     global $db_functions, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations;
     global $language, $dirmark1, $dirmark1, $user;
 
-    $personPrivacy = new PersonPrivacy();
-    $personName_extended = new PersonNameExtended;
-    $languageDate = new LanguageDate;
+    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
+    $personName_extended = new \Genealogy\Include\PersonNameExtended();
+    $languageDate = new \Genealogy\Include\LanguageDate();
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -163,7 +166,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         $person_womanDb = $db_functions->get_person($familyDb->fam_woman);
         $privacy_woman = $personPrivacy->get_privacy($person_womanDb);
 
-        $marriage_cls = new MarriageCls($familyDb, $privacy_man, $privacy_woman);
+        $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $privacy_man, $privacy_woman);
         // TODO check $family_privacy;
         $family_privacy = $marriage_cls->get_privacy();
 

@@ -1,5 +1,17 @@
 {
     "require": {
         "phpmailer/phpmailer": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Genealogy\\App\\": "app/",
+            "Genealogy\\Include\\": "include/",
+            "Genealogy\\Languages\\": "languages/",
+            "Genealogy\\Admin\\": "admin/"
+        },
+        "classmap": [
+            "include/",
+            "include/tfpdf/"
+        ]
     }
 }

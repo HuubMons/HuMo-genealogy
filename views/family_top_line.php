@@ -7,7 +7,7 @@
 
     <td class="table_header" width="220" style="text-align:right;">
         <!-- Hide selections for bots, and second family screen (descendant report etc.) -->
-        <?php if (!$bot_visit && $descendant_loop == 0 && $parent1_marr == 0) { ?>
+        <?php if (!$bot_visit && (isset($descendant_loop) && $descendant_loop == 0) && $parent1_marr == 0) { ?>
             <?php
             $vars['pers_family'] = $data["family_id"];
             $settings_url = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);

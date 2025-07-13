@@ -31,6 +31,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Genealogy\Admin\Controller\AdminAddressController;
+use Genealogy\Admin\Controller\AdminCmsPagesController;
+use Genealogy\Admin\Controller\AdminIndexController;
+use Genealogy\Admin\Controller\AdminMapsController;
+use Genealogy\Admin\Controller\AdminRepositoryController;
+use Genealogy\Admin\Controller\AdminSettingsController;
+use Genealogy\Admin\Controller\AdminSourceController;
+use Genealogy\Admin\Controller\AdminSourcesController;
+use Genealogy\Admin\Controller\AdminStatisticsController;
+use Genealogy\Admin\Controller\BackupController;
+use Genealogy\Admin\Controller\EditorController;
+use Genealogy\Admin\Controller\ExtensionsController;
+use Genealogy\Admin\Controller\GedcomExportController;
+use Genealogy\Admin\Controller\GroupsController;
+use Genealogy\Admin\Controller\InstallController;
+use Genealogy\Admin\Controller\LanguageEditorController;
+use Genealogy\Admin\Controller\LogController;
+use Genealogy\Admin\Controller\NotesController;
+use Genealogy\Admin\Controller\RenamePlaceController;
+use Genealogy\Admin\Controller\ThumbsController;
+use Genealogy\Admin\Controller\TreeCheckController;
+use Genealogy\Admin\Controller\TreesController;
+use Genealogy\Admin\Controller\UsersController;
+use Genealogy\Include\Authenticator;
+use Genealogy\Include\DbFunctions;
+use Genealogy\Include\GeneralSettings;
+use Genealogy\Include\GetVisitorIP;
+use Genealogy\Include\MediaPath;
+use Genealogy\Include\ProcessLinks;
+use Genealogy\Include\SafeTextDb;
+use Genealogy\Include\SelectTree;
+use Genealogy\Include\SetTimezone;
+use Genealogy\Include\ShowTreeText;
+use Genealogy\Include\UserSettings;
+use Genealogy\Languages\LanguageCls;
+
 session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
 //session_regenerate_id();
@@ -47,48 +83,8 @@ session_start();
 
 $page = 'index';
 
-/**
- * Dec. 2024: Added autoload.
- * Name of class = AdminSomethingClass
- * Name of script: adminSomethingClass.php ***
- *  
- * Examples of autoload files:
- * include/editor_cls.php
- * include/gedcomImport.php
- * include/updateCls.php
- *
- * models/groupsmodel.php
- * 
- * ../include/dbFunctions.php
- * ../include/processLinks.php
- * ../include/personData.php
- * ../include/calculateDates.php
- * 
- * ../languages/languageCls.php
- */
-function admin_custom_autoload($class_name)
-{
-    $admin_include = array(
-        'Editor_cls',
-        'EditorEvent',
-        'GedcomImport',
-        'GedcomExport',
-        'UpdateCls'
-    );
-
-    if ($class_name == 'LanguageCls') {
-        require __DIR__ . '/../languages/languageCls.php';
-    } elseif (substr($class_name, -10) == 'Controller') {
-        require __DIR__ . '/controller/' . lcfirst($class_name) . '.php';
-    } elseif (substr($class_name, -5) == 'Model') {
-        require __DIR__ . '/models/' . lcfirst($class_name) . '.php';
-    } elseif (in_array($class_name, $admin_include)) {
-        require __DIR__ . '/include/' . lcfirst($class_name) . '.php';
-    } elseif (is_file(__DIR__ . '/../include/' . lcfirst($class_name) . '.php')) {
-        require __DIR__ . '/../include/' . lcfirst($class_name) . '.php';
-    }
-}
-spl_autoload_register('admin_custom_autoload');
+// *** Autoload composer classes ***
+require __DIR__ . '/../vendor/autoload.php';
 
 // TODO refactor/ move to model
 // *** Only logoff admin ***
@@ -103,6 +99,7 @@ include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
 
 $safeTextDb = new SafeTextDb();
 $showTreeText = new ShowTreeText();
+$selectTree = new SelectTree();
 
 if (isset($dbh)) {
     $db_functions = new DbFunctions($dbh);
@@ -143,8 +140,10 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
 
     if ($check_tables) {
         $generalSettings = new GeneralSettings();
-        $user = $generalSettings->get_user_settings($dbh);
         $humo_option = $generalSettings->get_humo_option($dbh);
+
+        $userSettings = new UserSettings();
+        $user = $userSettings->get_user_settings($dbh);
 
         // **** Temporary update scripts ***
         //
@@ -198,7 +197,7 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
 }
 
 // *** Set timezone ***
-$setTimezone = new setTimezone;
+$setTimezone = new SetTimezone;
 $setTimezone->timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
@@ -522,17 +521,9 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
 }
 
 // *** Show top menu ***
-// TODO check if variable is still needed.
-$path_tmp = 'index.php?';
-
-$top_dir = '';
-if ($language["dir"] == "rtl") {
-    $top_dir = 'style = "text-align:right" ';
-}
-
 if ($popup == false) {
     ?>
-        <div id="humo_top" <?= $top_dir; ?>>
+        <div id="humo_top" <?= $language["dir"] == "rtl" ? 'style = "text-align:right"' : ''; ?>>
 
             <span id="top_website_name">
                 &nbsp;<a href="index.php">HuMo-genealogy</a>
@@ -762,16 +753,10 @@ if ($popup == false) {
         } elseif ($page === 'login') {
             include_once(__DIR__ . "/views/login.php");
         } elseif ($group_administrator == 'j' && $page === 'tree') {
-            //TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new TreesController($admin_config);
             $trees = $controllerObj->detail($selected_language);
             include_once(__DIR__ . "/views/trees.php");
         } elseif ($page === 'editor') {
-            // TODO refactor.
-            include_once(__DIR__ . "/include/select_tree.php");
-
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
             if (isset($tree_id) && $tree_id) {
@@ -786,48 +771,30 @@ if ($popup == false) {
             $editSources = $controllerObj->detail();
             include_once(__DIR__ . "/views/editor_sources.php");
         } elseif ($page === 'edit_sources') {
-            // TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new AdminSourceController($admin_config);
             $editSource = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_source.php");
         } elseif ($page === 'edit_repositories') {
-            // TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new AdminRepositoryController($admin_config);
             $editRepository = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_repository.php");
         } elseif ($page === 'edit_addresses') {
-            // TODO refactor.
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new AdminAddressController($admin_config);
             $editAddress = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_address.php");
         } elseif ($page === 'edit_places') {
-            // TODO refactor
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new RenamePlaceController($admin_config);
             $place = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_rename_place.php");
         } elseif ($page === 'editor_place_select') {
-            // TODO: split into model & view files.
-            include_once(__DIR__ . "/include/editor_place_select.php");
+            include_once(__DIR__ . "/views/editor_place_select.php");
         } elseif ($page === 'editor_person_select') {
-            // TODO: split into model & view files.
-            include_once(__DIR__ . "/include/editor_person_select.php");
+            include_once(__DIR__ . "/views/editor_person_select.php");
         } elseif ($page === 'editor_relation_select') {
-            // TODO: split into model & view files.
-            include_once(__DIR__ . "/include/editor_relation_select.php");
+            include_once(__DIR__ . "/views/editor_relation_select.php");
         } elseif ($page === 'editor_media_select') {
-            // TODO: split into model & view files.
-            include_once(__DIR__ . "/include/editor_media_select.php");
+            include_once(__DIR__ . "/views/editor_media_select.php");
         } elseif ($page === 'check') {
-            include_once(__DIR__ . "/include/select_tree.php");
-
             $controllerObj = new TreeCheckController($admin_config);
             $tree_check = $controllerObj->detail();
             include_once(__DIR__ . "/views/tree_check.php");
@@ -848,8 +815,7 @@ if ($popup == false) {
             $edit_users = $controllerObj->detail();
             include_once(__DIR__ . "/views/users.php");
         } elseif ($page === 'editor_user_settings') {
-            // TODO: split into model & view files.
-            include_once(__DIR__ . "/include/editor_user_settings.php");
+            include_once(__DIR__ . "/views/editor_user_settings.php");
         } elseif ($page === 'groups') {
             $controllerObj = new GroupsController($admin_config);
             $groups = $controllerObj->detail();
@@ -912,9 +878,6 @@ if ($popup == false) {
 
         // *** Default page for editor ***
         elseif ($group_administrator != 'j' && $group_edit_trees) {
-            // TODO refactor.
-            include_once(__DIR__ . "/include/select_tree.php");
-
             // TODO check processing of tree_id in db_functions.
             // *** Editor icon for admin and editor: select family tree ***
             if (isset($tree_id) && $tree_id) {

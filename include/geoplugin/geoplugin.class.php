@@ -77,7 +77,7 @@ class geoPlugin
     function locate($ip = null)
     {
         global $_SERVER;
-        $getVisitorIP = new GetVisitorIP();
+        $getVisitorIP = new \Genealogy\Include\GetVisitorIP();
 
         if (is_null($ip)) {
             //$ip = $_SERVER['REMOTE_ADDR'];

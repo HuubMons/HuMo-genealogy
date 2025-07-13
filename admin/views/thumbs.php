@@ -4,19 +4,19 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-include_once(__DIR__ . "/../include/select_tree.php");
+$showMedia = new \Genealogy\Include\ShowMedia();
+$resizePicture = new \Genealogy\Include\ResizePicture();
 
-$showMedia = new ShowMedia;
-$resizePicture = new ResizePicture();
-
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personLink = new PersonLink;
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personLink = new \Genealogy\Include\PersonLink();
 
 $prefx = '../'; // to get out of the admin map
 
-$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=" . $tree_id);
-$data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
+$stmt = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_id = :tree_id");
+$stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_INT);
+$stmt->execute();
+$data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 ?>
 
 <ul class="nav nav-tabs mt-1">
@@ -45,7 +45,7 @@ $data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
                 </div>
 
                 <div class="col-md-7">
-                    <?= select_tree($dbh, $page, $tree_id, $thumbs['menu_tab']); ?>
+                    <?= $selectTree->select_tree($dbh, $page, $tree_id, $thumbs['menu_tab']); ?>
                 </div>
             </div>
 
@@ -625,7 +625,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
             $stmt3 = $dbh->prepare("UPDATE humo_photocat SET photocat_order = :final_order WHERE photocat_order = :temp_order");
             $stmt3->execute([
-                ':final_order' => GET['cat_up'] - 1,
+                ':final_order' => $_GET['cat_up'] - 1,
                 ':temp_order' => 999
             ]);
         }

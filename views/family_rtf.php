@@ -12,7 +12,7 @@ $screen_mode = 'RTF';
 
 
 // TODO create seperate controller script.
-$get_family = new FamilyModel($config);
+$get_family = new \Genealogy\App\Model\FamilyModel($config);
 $data["family_id"] = $get_family->getFamilyId();
 $data["main_person"] = $get_family->getMainPerson();
 $data["family_expanded"] = 'compact';
@@ -86,11 +86,12 @@ $par_child_text->setIndentRight(0.5);
 // *** Generate title of RTF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$personPrivacy = new PersonPrivacy();
-$personName = new PersonName();
-$personName_extended = new PersonNameExtended;
-$personData = new PersonData;
-$processText = new ProcessText();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personName = new \Genealogy\Include\PersonName();
+$personName_extended = new \Genealogy\Include\PersonNameExtended();
+$personData = new \Genealogy\Include\PersonData();
+$processText = new \Genealogy\Include\ProcessText();
+$showSources = new \Genealogy\Include\ShowSources();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
@@ -229,7 +230,7 @@ else {
                 $parent2Db = $db_functions->get_person($parent2);
                 $parent2_privacy = $personPrivacy->get_privacy($parent2Db);
 
-                $marriage_cls = new MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
+                $marriage_cls = new \Genealogy\Include\MarriageCls($familyDb, $parent1_privacy, $parent2_privacy);
                 $family_privacy = $marriage_cls->get_privacy();
 
 
@@ -355,7 +356,7 @@ else {
                     $sect->addEmptyParagraph($fontSmall, $parBlack);
                     $rtf_text = strip_tags($processText->process_text($familyDb->fam_text), "<b><i>");
                     $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-                    $source_array = show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
+                    $source_array = $showSources->show_sources2("family", "fam_text_source", $familyDb->fam_gedcomnumber);
                     if ($source_array) {
                         $rtf_text = strip_tags($source_array['text'], "<b><i>");
                         //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -365,7 +366,8 @@ else {
 
                 // *** Show addresses by family ***
                 if ($user['group_living_place'] == 'j') {
-                    $fam_address = show_addresses('family', 'family_address', $familyDb->fam_gedcomnumber);
+                    $showAddresses = new \Genealogy\Include\ShowAddresses();
+                    $fam_address = $showAddresses->show_addresses('family', 'family_address', $familyDb->fam_gedcomnumber);
                     if ($fam_address) {
                         $rtf_text = strip_tags($fam_address, "<b><i>");
                         $sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -373,7 +375,7 @@ else {
                 }
 
                 // *** Family source ***
-                $source_array = show_sources2("family", "family_source", $familyDb->fam_gedcomnumber);
+                $source_array = $showSources->show_sources2("family", "family_source", $familyDb->fam_gedcomnumber);
                 if ($source_array) {
                     $rtf_text = strip_tags($source_array['text'], "<b><i>");
                     //$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -459,9 +461,8 @@ else {
 
 // *** If source footnotes are selected, show them here ***
 if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
-    //$rtf_text=strip_tags(show_sources_footnotes(),'<b>');
-    //$sect->writeText($rtf_text, $arial12);
-    $rtf_text = strip_tags(show_sources_footnotes());
+    $showSourcesFootnotes = new \Genealogy\Include\ShowSourcesFootnotes();
+    $rtf_text = strip_tags($showSourcesFootnotes->show_sources_footnotes());
     // *** BUG: add Endnote doesn't show text in rtf file! ***
     //$sect->addEndnote($rtf_text);
     $sect->writeText('<br>');
@@ -493,7 +494,7 @@ function show_rtf_media($media_kind, $gedcomnumber)
     // *** Show RTF media ***
     global $sect;
 
-    $showMedia = new ShowMedia;
+    $showMedia = new \Genealogy\Include\ShowMedia();
     $result = $showMedia->show_media($media_kind, $gedcomnumber);
     if (isset($result[1]) && count($result[1]) > 0) {
         $break = 0;

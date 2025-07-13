@@ -11,7 +11,7 @@ if (!defined('ADMIN_PAGE')) {
 
 $field_text_large = 'style="height: 100px; width:550px"';
 
-$EditorEvent = new EditorEvent($dbh);
+$EditorEvent = new Genealogy\Include\EditorEvent($dbh);
 
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) && $tree_id) {
@@ -44,7 +44,7 @@ if (isset($tree_id) && $tree_id) {
     <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row mb-2">
             <div class="col-md-3">
-                <?= select_tree($dbh, $page, $tree_id); ?>
+                <?= $selectTree->select_tree($dbh, $page, $tree_id); ?>
             </div>
 
             <div class="col-md-3">
