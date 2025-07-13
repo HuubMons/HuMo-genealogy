@@ -12,6 +12,9 @@ session_start();
 
 use Genealogy\Include\SafeTextDb;
 
+// *** Autoload composer classes ***
+require __DIR__ . '/../../vendor/autoload.php';
+
 if (isset($_SESSION['admin_tree_id'])) {
     $ADMIN = TRUE; // *** Override "no database" message for admin ***
     include_once(__DIR__ . "/../../include/db_login.php"); // *** Database login ***
