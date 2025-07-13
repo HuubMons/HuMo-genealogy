@@ -2,6 +2,7 @@
 
 /**
  * Jan. 2024: changed the language editor. Removed Javascript, improved layout.
+ * Jul. 2025: use Bootstrap popup.
  */
 
 // *** Safety line ***
@@ -157,8 +158,6 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
 }
 ?>
 
-<script src="include/popup_merge.js"></script>
-
 <form method="POST" action="" name="saveform" style="display : inline;">
     <input type="hidden" name="editor_language" value="<?= $language_editor['language']; ?>">
     <h1 class="center"><?= __('Language editor'); ?></h1>
@@ -284,10 +283,18 @@ if ($_SESSION['present_page'] > 0) { // only show prev page button if not first 
     ?>
         <tr>
             <td style="width:2%">
-                <a onmouseover="popup('<?= popclean($mytext); ?> ',300);" href="#"><img style="border:0px;background:none" src="../images/reports.gif" alt="references"></a>
+                <div class="dropdown dropend d-inline">
+                    <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;"><img src="../images/reports.gif" border="0" alt="reports"></button>
+                    <ul class="dropdown-menu p-2" style="width:400px;">
+                        <?= popclean($mytext); ?>
+                    </ul>
+                </div>
             </td>
+
             <td><?= msgid_display($value["msgid"]); ?></td>
+
             <td><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" <?= $fuzz ? 'checked' : ''; ?>></td>
+
             <td style="vertical-align:top">
                 <!-- <label for="txt_id<?= $key; ?>" class="form-label">Label</label> -->
                 <textarea name="txt_name<?= $key; ?>" rows="<?= $rows; ?>" class="form-control <?= $color ? 'bg-warning' : ''; ?>" id="txt_id<?= $key; ?>"><?= msgstr_display($value["msgstr"]) ?></textarea>
@@ -412,7 +419,8 @@ function notes($input)
 function popclean($input)
 {
     // formats the text for the reference/notes popup
-    $output = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br>", htmlentities(addslashes($input), ENT_QUOTES));
+    //$output = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br>", htmlentities(addslashes($input), ENT_QUOTES));
+    $output = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br>", $input);
     return $output;
 }
 

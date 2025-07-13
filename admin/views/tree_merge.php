@@ -854,7 +854,7 @@ elseif (isset($_POST['settings']) || isset($_POST['reset'])) {
     // *** Re-read variables after changing them ***
     $generalSettings = new \Genealogy\Include\GeneralSettings();
     $humo_option = $generalSettings->get_humo_option($dbh);
-?>
+    ?>
 
     <form method="post" action="index.php" class="my-2">
         <input type="hidden" name="page" value="tree">
@@ -1300,7 +1300,7 @@ function show_regular($left_item, $right_item, $title, $name)
 }
 
 /**
- * show_regular_text is a function that places the regular text items from humoX_person in the comparison table
+ * show_regular_text is a function that places the regular text items from humo_person in the comparison table
  */
 function show_regular_text($left_item, $right_item, $title, $name)
 {
@@ -1310,12 +1310,15 @@ function show_regular_text($left_item, $right_item, $title, $name)
     ?>
         <tr style="background-color:<?= $color; ?>">
             <td style="font-weight:bold"><?= $title; ?>:</td>
+
+            <!-- Person 1 -->
             <td>
                 <?php
                 $showtext = '';
                 if ($left_item) {
                     $showtext = "[" . __('Read text') . "]";
-                    if (substr($left_item, 0, 2) === "@N") {  // not plain text but @N23@ -> look it up in humo_texts
+                    if (substr($left_item, 0, 2) === "@N") {
+                        // not plain text but @N23@ -> look it up in humo_texts
                         $notes = $dbh->query("SELECT text_text FROM humo_texts WHERE text_tree_id='" . $trees['tree_id'] . "' AND text_gedcomnr ='" . substr($left_item, 1, -1) . "'");
                         $notesDb = $notes->fetch(PDO::FETCH_OBJ);
                         $notetext = $notesDb->text_text;
@@ -1324,7 +1327,14 @@ function show_regular_text($left_item, $right_item, $title, $name)
                     }
                 ?>
                     <input type="checkbox" name="<?= $name; ?>_l" <?= $left_item ? 'checked' : ''; ?>>
-                    <a onmouseover="popup('<?= popclean($notetext); ?>');" href="#"><?= $showtext; ?></a>
+
+                    <div class="dropdown dropend d-inline">
+                        <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;"><?= $showtext; ?></button>
+                        <ul class="dropdown-menu p-2" style="width:400px;">
+                            <?= popclean($notetext); ?>
+                        </ul>
+                    </div>
+
                 <?php
                 } else {
                     echo __('(no data)');
@@ -1340,10 +1350,19 @@ function show_regular_text($left_item, $right_item, $title, $name)
                 }
                 ?>
             </td>
+
+            <!-- Person 2 -->
             <td>
                 <input type="checkbox" name="<?= $name; ?>_r" <?= !$left_item ? 'checked' : ''; ?>>
-                <a onmouseover="popup('<?= popclean($notetext); ?>');" href="#"><?= $showtext; ?></a>
+
+                <div class="dropdown dropend d-inline">
+                    <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;"><?= $showtext; ?></button>
+                    <ul class="dropdown-menu p-2" style="width:400px;">
+                        <?= popclean($notetext); ?>
+                    </ul>
+                </div>
             </td>
+
         </tr>
     <?php
     }
@@ -1503,7 +1522,9 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
     ?>
         <tr style="background-color:<?= $color; ?>">
             <td style="font-weight:bold"><?= $name_event; ?>:</td>
-            <td>
+
+            <!-- Person 1 -->
+            <td style="vertical-align:top;">
                 <?php
                 if (is_array($l_ev) && $l_ev != '') {
                     foreach ($l_ev as $key => $value) {
@@ -1519,7 +1540,8 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                             // TODO check if this works using a default picture path.
                             $tree_pict_path = $dataDb->tree_pict_path;
                             $dir = '../' . $tree_pict_path;
-                            $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';
+
+                            $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
                         }
                         echo '<input type="checkbox" name="l_' . $this_event . '_' . $key . '" checked> ' . $value . '<br>';
                     }
@@ -1528,7 +1550,9 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                 }
                 ?>
             </td>
-            <td>
+
+            <!-- Person 2 -->
+            <td style="vertical-align:top;">
                 <?php
                 if (is_array($r_ev) && $r_ev != '') {
                     $checked = '';
@@ -1547,7 +1571,8 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                             $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
                             $tree_pict_path = $dataDb->tree_pict_path;
                             $dir = '../' . $tree_pict_path;
-                            $value = $value . ' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;' . $dir . $value . '&quot;>\',\'150px\');" href="#">[' . __('Show') . ']</a>';
+
+                            $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
                         }
                         echo '<input type="checkbox" name="r_' . $this_event . '_' . $key . '" ' . $checked . '> ' . $value . '<br>';
                     }
@@ -1591,6 +1616,8 @@ function show_sources_merge($left_ged, $right_ged)
     ?>
         <tr style="background-color:<?= $color; ?>">
             <td style="font-weight:bold"><?= __('Sources'); ?>:</td>
+
+            <!-- Person 1 -->
             <td>
                 <?php
                 if ($left_sources->rowCount() > 0) {
@@ -1598,22 +1625,19 @@ function show_sources_merge($left_ged, $right_ged)
                         $l_source = $dbh->query("SELECT source_title FROM humo_sources WHERE source_tree_id='" . $trees['tree_id'] . "' AND source_gedcomnr='" . $left_sourcesDb->connect_source_id . "'");
                         $result = $l_source->fetch(PDO::FETCH_OBJ);
                         if (isset($result->source_title)) {
-                            if (strlen($result->source_title) > 30) {
-                                $title = '<a onmouseover="popup(\'' . popclean($result->source_title) . '\');" href="#"> [' . __('Show') . ']</a>';
-                            } else {
-                                $title = $result->source_title;
-                            }
+                            $title = $result->source_title;
                         } else {
                             $title = '';
                         }
-                        //echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>('.str_replace('_source',' ',$left_sourcesDb->connect_sub_kind).') '.$title.'<br>';
-                        echo '<input type="checkbox" name="l_source_' . $left_sourcesDb->connect_id . '" ' . 'checked' . '>' . $title . '<br>';
+                        echo '<input type="checkbox" name="l_source_' . $left_sourcesDb->connect_id . '" ' . 'checked' . '> ' . $title . '<br>';
                     }
                 } else {
                     echo __('(no data)');
                 }
                 ?>
             </td>
+
+            <!-- Person 2 -->
             <td>
                 <?php
                 while ($right_sourcesDb = $right_sources->fetch(PDO::FETCH_OBJ)) {
@@ -1624,16 +1648,11 @@ function show_sources_merge($left_ged, $right_ged)
                     $r_source = $dbh->query("SELECT source_title FROM humo_sources WHERE source_tree_id='" . $trees['tree_id'] . "' AND source_gedcomnr='" . $right_sourcesDb->connect_source_id . "'");
                     $result = $r_source->fetch(PDO::FETCH_OBJ);
                     if (isset($result->source_title)) {
-                        if (strlen($result->source_title) > 30) {
-                            $title = '<a onmouseover="popup(\'' . popclean($result->source_title) . '\');" href="#"> [' . __('Show') . ']</a>';
-                        } else {
-                            $title = $result->source_title;
-                        }
+                        $title = $result->source_title;
                     } else {
                         $title = '';
                     }
-                    //echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
-                    echo '<input type="checkbox" name="r_source_' . $right_sourcesDb->connect_id . '" ' . $checked . '>' . $title . '<br>';
+                    echo '<input type="checkbox" name="r_source_' . $right_sourcesDb->connect_id . '" ' . $checked . '> ' . $title . '<br>';
                 }
                 ?>
             </td>
@@ -1674,25 +1693,24 @@ function show_addresses_merge($left_ged, $right_ged)
     ?>
         <tr style="background-color:<?= $color; ?>">
             <td style="font-weight:bold"><?= __('Addresses'); ?>:</td>
+
+            <!-- Person 1 -->
             <td>
                 <?php
                 if ($left_addresses->rowCount() > 0) {
                     while ($left_addressesDb = $left_addresses->fetch(PDO::FETCH_OBJ)) {
                         $l_address = $dbh->query("SELECT address_address, address_place FROM humo_addresses WHERE address_tree_id='" . $trees['tree_id'] . "' AND address_gedcomnr='" . $left_addressesDb->connect_item_id . "'");
                         $result = $l_address->fetch(PDO::FETCH_OBJ);
-                        if (strlen($result->address_address . ' ' . $result->address_place) > 30) {
-                            $title = '<a onmouseover="popup(\'' . popclean($result->address_address . ' ' . $result->address_place) . '\');" href="#"> [' . __('Show') . ']</a>';
-                        } else {
-                            $title = $result->address_address . ' ' . $result->address_place;
-                        }
-                        //echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" checked>('.str_replace('_address',' ',$left_addressesDb->connect_sub_kind).') '.$title.'<br>';
-                        echo '<input type="checkbox" name="l_address_' . $left_addressesDb->connect_id . '" checked>' . $title . '<br>';
+                        $title = $result->address_address . ' ' . $result->address_place;
+                        echo '<input type="checkbox" name="l_address_' . $left_addressesDb->connect_id . '" checked> ' . $title . '<br>';
                     }
                 } else {
                     echo __('(no data)');
                 }
                 ?>
             </td>
+
+            <!-- Person 2 -->
             <td>
                 <?php
                 while ($right_addressesDb = $right_addresses->fetch(PDO::FETCH_OBJ)) {
@@ -1703,14 +1721,9 @@ function show_addresses_merge($left_ged, $right_ged)
                     $r_address = $dbh->query("SELECT address_address, address_place FROM humo_addresses WHERE address_tree_id='" . $trees['tree_id'] . "' AND address_gedcomnr='" . $right_addressesDb->connect_item_id . "'");
 
                     $result = $r_address->fetch(PDO::FETCH_OBJ);
-                    if (strlen($result->address_address . ' ' . $result->address_place) > 30) {
-                        $title = '<a onmouseover="popup(\'' . popclean($result->address_address . ' ' . $result->address_place) . '\');" href="#"> [' . __('Show') . ']</a>';
-                    } else {
-                        $title = $result->address_address . ' ' . $result->address_place;
-                    }
-                    //echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>('.str_replace('_address',' ',$right_addressesDb->connect_sub_kind).') '.$title.'<br>';
+                    $title = $result->address_address . ' ' . $result->address_place;
                 ?>
-                    <input type="checkbox" name="r_address_<?= $right_addressesDb->connect_id; ?>" <?= $checked; ?>><?= $title; ?><br>
+                    <input type="checkbox" name="r_address_<?= $right_addressesDb->connect_id; ?>" <?= $checked; ?>> <?= $title; ?><br>
                 <?php } ?>
             </td>
         </tr>
@@ -2659,7 +2672,7 @@ function check_regular_text($post_var, $auto_var, $mysql_var)
 }
 
 /**
- * function popclean prepares a mysql output string for presentation with popup_merge.js
+ * function popclean prepares a mysql output string for presentation in popup
  */
 function popclean($input)
 {

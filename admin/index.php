@@ -460,7 +460,6 @@ if (file_exists('../media/favicon.ico')) {
     <!-- Don't load all scripts for source editor (improves speed of page) -->
     <?php if ($popup == false) { ?>
         <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
-        <script src="include/popup_merge.js"></script>
     <?php } ?>
 
     <!-- Pop-up menu -->
