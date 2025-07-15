@@ -33,16 +33,16 @@ class UpdateCls
         } else {
             echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
             $dbh->query("CREATE TABLE humo_tree_texts (
-            treetext_id smallint(5) unsigned NOT NULL auto_increment,
-            treetext_tree_id smallint(5),
-            treetext_language varchar(100) CHARACTER SET utf8,
-            treetext_name varchar(100) CHARACTER SET utf8,
-            treetext_mainmenu_text text CHARACTER SET utf8,
-            treetext_mainmenu_source text CHARACTER SET utf8,
-            treetext_family_top text CHARACTER SET utf8,
-            treetext_family_footer text CHARACTER SET utf8,
-            PRIMARY KEY  (`treetext_id`)
-            ) DEFAULT CHARSET=utf8");
+                treetext_id smallint(5) unsigned NOT NULL auto_increment,
+                treetext_tree_id smallint(5),
+                treetext_language varchar(100) CHARACTER SET utf8,
+                treetext_name varchar(100) CHARACTER SET utf8,
+                treetext_mainmenu_text text CHARACTER SET utf8,
+                treetext_mainmenu_source text CHARACTER SET utf8,
+                treetext_family_top text CHARACTER SET utf8,
+                treetext_family_footer text CHARACTER SET utf8,
+                PRIMARY KEY  (`treetext_id`)
+                ) DEFAULT CHARSET=utf8");
             // *** Re-check ***
             $update_check2 = $dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
             if ($update_check2) {
@@ -51,17 +51,16 @@ class UpdateCls
                 echo __('UPDATE FAILED!');
             }
 
-            $datasql = $dbh->query("SELECT * FROM humo_stambomen ORDER BY volgorde");
-            if ($datasql) {
-                while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+            $familyTrees = $dbh->query("SELECT * FROM humo_stambomen ORDER BY volgorde");
+            if ($familyTrees) {
+                while ($familyTree = $familyTrees->fetch(PDO::FETCH_OBJ)) {
                     $sql = "INSERT INTO humo_tree_texts SET
-                treetext_tree_id='" . $dataDb->id . "',
-                treetext_language='nl',
-                treetext_name='" . $dataDb->naam . "',
-                treetext_mainmenu_text='" . $dataDb->tekst . "',
-                treetext_mainmenu_source='" . $dataDb->bron . "',
-                treetext_family_top='Familypage'
-                ";
+                        treetext_tree_id='" . $familyTree->id . "',
+                        treetext_language='nl',
+                        treetext_name='" . $familyTree->naam . "',
+                        treetext_mainmenu_text='" . $familyTree->tekst . "',
+                        treetext_mainmenu_source='" . $familyTree->bron . "',
+                        treetext_family_top='Familypage'";
                     $dbh->query($sql);
                 }
             }
@@ -88,15 +87,14 @@ class UpdateCls
             $dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_tree_texts
-            CHANGE tekst_id treetext_id smallint(5) unsigned NOT NULL auto_increment,
-            CHANGE stamboom_id treetext_tree_id smallint(5),
-            CHANGE taal treetext_language varchar(100) CHARACTER SET utf8,
-            CHANGE stamboom_naam treetext_name varchar(100) CHARACTER SET utf8,
-            CHANGE hoofdmenu_tekst treetext_mainmenu_text text CHARACTER SET utf8,
-            CHANGE hoofdmenu_bron treetext_mainmenu_source text CHARACTER SET utf8,
-            CHANGE gezin_kop treetext_family_top text CHARACTER SET utf8,
-            CHANGE gezin_voet treetext_family_footer text CHARACTER SET utf8
-            ';
+                CHANGE tekst_id treetext_id smallint(5) unsigned NOT NULL auto_increment,
+                CHANGE stamboom_id treetext_tree_id smallint(5),
+                CHANGE taal treetext_language varchar(100) CHARACTER SET utf8,
+                CHANGE stamboom_naam treetext_name varchar(100) CHARACTER SET utf8,
+                CHANGE hoofdmenu_tekst treetext_mainmenu_text text CHARACTER SET utf8,
+                CHANGE hoofdmenu_bron treetext_mainmenu_source text CHARACTER SET utf8,
+                CHANGE gezin_kop treetext_family_top text CHARACTER SET utf8,
+                CHANGE gezin_voet treetext_family_footer text CHARACTER SET utf8';
             $dbh->query($sql);
 
             // *** New check ***
@@ -149,7 +147,7 @@ class UpdateCls
             echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">OK</td></tr>';
         } else {
             echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
-            $db_update = $dbh->query("CREATE TABLE humo_stat_date (
+            $dbh->query("CREATE TABLE humo_stat_date (
             stat_id int(10) NOT NULL auto_increment,
             stat_easy_id varchar(100) CHARACTER SET utf8,
             stat_ip_address varchar(20) CHARACTER SET utf8,

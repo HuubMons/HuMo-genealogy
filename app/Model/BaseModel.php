@@ -8,7 +8,7 @@ namespace Genealogy\App\Model;
 
 class BaseModel
 {
-    protected $dbh, $db_functions, $tree_id, $user, $humo_option, $uri_path;
+    protected $dbh, $db_functions, $tree_id, $user, $humo_option, $uri_path, $selectedFamilyTree;
 
     public function __construct($config)
     {
@@ -18,5 +18,6 @@ class BaseModel
         $this->user = $config['user'];
         $this->humo_option = $config['humo_option'];
         $this->uri_path = $config['uri_path'];
+        $this->selectedFamilyTree = $config['selectedFamilyTree'];
     }
 }

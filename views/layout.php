@@ -384,11 +384,6 @@ $menu_top = getActiveTopMenu($page);
                     ?>
 
                     <?php
-                    // *** This code is used to restore $dataDb reading. Used for picture etc. ***
-                    if ($tree_id) {
-                        $dataDb = $db_functions->get_tree($tree_id);
-                    }
-
                     // *** Show quicksearch field ***
                     if (!$bot_visit) {
                         $menu_path = $processLinks->get_link($uri_path, 'list', $tree_id);
@@ -632,7 +627,7 @@ $menu_top = getActiveTopMenu($page);
                         //	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
                         //		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
                         if (
-                            $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' || $user["group_contact"] == 'j' && $dataDb->tree_owner && $dataDb->tree_email || $user["group_latestchanges"] == 'j'
+                            $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' || $user["group_contact"] == 'j' && $selectedFamilyTree->tree_owner && $selectedFamilyTree->tree_email || $user["group_latestchanges"] == 'j'
                         ) {
                     ?>
 
@@ -660,7 +655,7 @@ $menu_top = getActiveTopMenu($page);
 
                                     <!-- Show link to contact form -->
                                     <?php if ($user["group_contact"] == 'j') {; ?>
-                                        <?php if (isset($dataDb->tree_email) && $dataDb->tree_owner && $dataDb->tree_email) { ?>
+                                        <?php if (isset($selectedFamilyTree->tree_email) && $selectedFamilyTree->tree_owner && $selectedFamilyTree->tree_email) { ?>
                                             <li><a class="dropdown-item <?php if ($page == 'mailform') echo 'active'; ?>" href="<?= $menu_path_contact; ?>"><?= __('Contact'); ?></a></li>
                                         <?php } ?>
                                     <?php } ?>

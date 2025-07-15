@@ -16,9 +16,13 @@ $list_var = $processLinks->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
 $personPrivacy = new Genealogy\Include\PersonPrivacy();
+$personName = new Genealogy\Include\PersonName();
+$personPopup = new Genealogy\Include\PersonPopup();
 $datePlace = new  Genealogy\Include\DatePlace();
 $safeTextShow = new Genealogy\Include\SafeTextShow();
 $buildCondition = new Genealogy\Include\BuildCondition();
+$showTreeText = new Genealogy\Include\ShowTreeText();
+
 
 if ($list["index_list"] == 'places') {
 ?>
@@ -108,8 +112,8 @@ if ($list["index_list"] == 'places') {
 
 // *** Search fields ***
 if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $list["index_list"] == 'quicksearch') {
-    $datasql2 = $dbh->query("SELECT * FROM humo_trees");
-    $num_rows2 = $datasql2->rowCount();
+    $familytrees = $dbh->query("SELECT * FROM humo_trees");
+    $num_rows2 = $familytrees->rowCount();
 ?>
     <!-- Standard and advanced search box -->
     <br>
@@ -729,7 +733,7 @@ $selected_place = '';
                 ?>
             </tr>
         </thead>
-    <?php
+        <?php
     }
     $pers_counter = 0;
 
@@ -824,7 +828,306 @@ $selected_place = '';
                 if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
                     $privcount++;
                 } else {
-                    show_person($personDb);
+                    $db_functions->set_tree_id($personDb->pers_tree_id);
+
+                    $name = $personName->get_person_name($personDb, $privacy);
+
+                    // *** Show name ***
+                    $index_name = '';
+                    if ($name["show_name"] == false) {
+                        $index_name = __('Name filtered');
+                    } else {
+                        // *** If there is no lastname, show a - character. ***
+                        // Don't show a "-" by pers_patronymes
+                        if ($personDb->pers_lastname == "" && !isset($_GET['pers_patronym'])) {
+                            $index_name = "-&nbsp;&nbsp;";
+                        }
+                        $index_name .= $name["index_name_extended"] . $name["colour_mark"];
+                    }
+        ?>
+                    <tr>
+                        <?php
+                        // *** Show extra columns before a person in index places ***
+                        if ($list["index_list"] == 'places') {
+                            if ($selected_place != $personDb->place_order) {
+                                echo '<td colspan="7"><b>' . $dirmark2 . $personDb->place_order . '</b></td></tr><tr>';
+                                //$list["show_place"] = $personDb->place_order;
+                            } else {
+                                //$list["show_place"] = '';
+                            }
+                            $selected_place = $personDb->place_order;
+                        ?>
+
+                            <td valign="top" style="white-space:nowrap;width:105px">
+                                <?php
+                                if ($list["select_birth"] == '1') {
+                                    if ($selected_place == $personDb->pers_birth_place) {
+                                        echo '<span class="place_index place_index_selected">' . __('*') . '</span>';
+                                    } else {
+                                        echo '<span class="place_index">&nbsp;</span>';
+                                    }
+                                }
+
+                                if ($list["select_bapt"] == '1') {
+                                    if ($selected_place == $personDb->pers_bapt_place) {
+                                        echo '<span class="place_index place_index_selected">' . __('~') . '</span>';
+                                    } else {
+                                        echo '<span class="place_index">&nbsp;</span>';
+                                    }
+                                }
+
+                                if ($list["select_place"] == '1') {
+                                    // *** Check if this is the living place of a person. Can't be checked using query variables... ***
+                                    $query = "SELECT address_place FROM humo_addresses, humo_connections
+                                        WHERE address_tree_id = :tree_id
+                                        AND connect_tree_id = :tree_id
+                                        AND connect_connect_id = :gedcomnumber
+                                        AND connect_item_id = address_gedcomnr
+                                        AND address_place = :place_order";
+                                    $stmt = $dbh->prepare($query);
+                                    $stmt->execute([
+                                        ':tree_id' => $personDb->pers_tree_id,
+                                        ':gedcomnumber' => $personDb->pers_gedcomnumber,
+                                        ':place_order' => $personDb->place_order
+                                    ]);
+                                    $result = $stmt;
+                                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
+
+                                    //if ($selected_place==$personDb->pers_place_index)
+                                    if ($resultDb && $resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                                        echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
+                                    } else {
+                                        echo '<span class="place_index">&nbsp;</span>';
+                                    }
+                                }
+
+                                if ($list["select_death"] == '1') {
+                                    if ($selected_place == $personDb->pers_death_place) {
+                                        echo '<span class="place_index place_index_selected">' . __('&#134;') . '</span>';
+                                    } else {
+                                        echo '<span class="place_index">&nbsp;</span>';
+                                    }
+                                }
+
+                                if ($list["select_buried"] == '1') {
+                                    if ($selected_place == $personDb->pers_buried_place) {
+                                        echo '<span class="place_index place_index_selected">' . __('[]') . '</span>';
+                                    } else {
+                                        echo '<span class="place_index">&nbsp;</span>';
+                                    }
+                                }
+
+                                // *** Places by events like occupations etc. ***
+                                if ($list["select_event"] == '1') {
+                                    // *** Check if this is the living place of a person. Can't be checked using query variables... ***
+                                    $query = "SELECT event_place FROM humo_events
+                                        WHERE event_tree_id = :tree_id
+                                        AND event_connect_id = :gedcomnumber
+                                        AND event_place = :place_order";
+                                    $stmt = $dbh->prepare($query);
+                                    $stmt->execute([
+                                        ':tree_id' => $personDb->pers_tree_id,
+                                        ':gedcomnumber' => $personDb->pers_gedcomnumber,
+                                        ':place_order' => $personDb->place_order
+                                    ]);
+                                    $result = $stmt;
+                                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
+
+                                    if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                                        echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
+                                    } else {
+                                        echo '<span class="place_index">&nbsp;</span>';
+                                    }
+                                }
+                                ?>
+                            </td>
+                        <?php } ?>
+
+                        <td valign="top" style="border-right:0px; white-space:nowrap;">
+                            <!-- Show person popup menu -->
+                            <?= $personPopup->person_popup_menu($personDb, $privacy); ?>
+                            <?= $dirmark1; ?>
+
+                            <?php
+                            // *** Show picture man or wife ***
+                            if ($personDb->pers_sexe == "M") {
+                                echo ' <img src="images/man.gif" alt="man">';
+                            } elseif ($personDb->pers_sexe == "F") {
+                                echo ' <img src="images/woman.gif" alt="woman">';
+                            } else {
+                                echo ' <img src="images/unknown.gif" alt="unknown">';
+                            }
+
+                            if ($humo_option['david_stars'] == "y") {
+                                $camps = "Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
+
+                                if (
+                                    preg_match("/($camps)/i", $personDb->pers_death_place) !== 0 || preg_match("/($camps)/i", $personDb->pers_buried_place) !== 0 || stripos($personDb->pers_death_place, "oorlogsslachtoffer") !== FALSE
+                                ) {
+                                    echo '<img src="images/star.gif" alt="star">&nbsp;';
+                                }
+                            }
+
+                            // *** Add own icon by person, using a file name in own code ***
+                            if ($personDb->pers_own_code != '' and is_file("images/" . $personDb->pers_own_code . ".gif")) {
+                                if ($personDb->pers_own_code != 'foto') { // *** Remove photo.gif icon, new method is used to show photo icon ***
+                                    echo  $dirmark1 . '<img src="images/' . $personDb->pers_own_code . '.gif" alt="' . $personDb->pers_own_code . '">&nbsp;';
+                                }
+                            }
+
+                            // *** Show camera icon if there is a photo ***
+                            if ($user['group_pictures'] == 'j' && !$privacy) {
+                                $tree_pict_path = $selectedFamilyTree->tree_pict_path;
+                                if (substr($tree_pict_path, 0, 1) === '|') {
+                                    $tree_pict_path = 'media/';
+                                }
+                                $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
+                                // *** Only check 1st picture ***
+                                if (isset($picture_qry[0])) {
+                                    echo  $dirmark1 . '<img src="images/photo.gif" alt="photo">&nbsp;';
+                                }
+                            }
+                            ?>
+                        </td>
+                        <td style="border-left:0px;">
+                            <?php
+                            // *** Show name of person ***
+                            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                            $personLink = new Genealogy\Include\PersonLink();
+                            $start_url = $personLink->get_person_link($personDb);
+
+                            //echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';
+                            // *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
+                            $direct_link = '';
+                            if ($personDb->pers_fams == '') {
+                                $direct_link = '#person_' . $personDb->pers_gedcomnumber;
+                            }
+                            echo ' <a href="' . $start_url . $direct_link . '">' . trim($index_name) . '</a>';
+
+                            //*** Show spouse/ partner ***
+                            if ($list_expanded == true && $personDb->pers_fams) {
+                                $marriage_array = explode(";", $personDb->pers_fams);
+                                $nr_marriages = count($marriage_array);
+                                for ($x = 0; $x <= $nr_marriages - 1; $x++) {
+                                    $fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
+
+                                    // *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
+                                    if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man) {
+                                        $partner_id = $fam_partnerDb->fam_woman;
+                                    } else {
+                                        $partner_id = $fam_partnerDb->fam_man;
+                                    }
+
+                                    $relation_short = __('&amp;');
+                                    if ($fam_partnerDb->fam_marr_date || $fam_partnerDb->fam_marr_place || $fam_partnerDb->fam_marr_church_date || $fam_partnerDb->fam_marr_church_place || $fam_partnerDb->fam_kind == 'civil') {
+                                        $relation_short = __('X');
+                                    }
+                                    if ($fam_partnerDb->fam_div_date || $fam_partnerDb->fam_div_place) {
+                                        $relation_short = __(') (');
+                                    }
+
+                                    if ($partner_id != '0' && $partner_id != '') {
+                                        $partnerDb = $db_functions->get_person($partner_id);
+                                        $privacy_partner = $personPrivacy->get_privacy($partnerDb);
+                                        $name = $personName->get_person_name($partnerDb, $privacy_partner);
+                                    } else {
+                                        $name["standard_name"] = __('N.N.');
+                                    }
+
+                                    if ($nr_marriages > 1 && $x > 0) {
+                                        echo ',';
+                                    }
+                                    echo ' <span class="index_partner">';
+                                    if ($nr_marriages > 1) {
+                                        if ($x == 0) {
+                                            echo __('1st');
+                                        } elseif ($x == 1) {
+                                            echo __('2nd');
+                                        } elseif ($x == 2) {
+                                            echo __('3rd');
+                                        } elseif ($x > 2) {
+                                            echo ($x + 1) . __('th');
+                                        }
+                                    }
+                                    echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]) . '</span>';
+                                }
+                            }
+                            ?>
+                        </td>
+                        <td style="white-space:nowrap;">
+                            <?php
+                            $info = '';
+                            if ($personDb->pers_bapt_date) {
+                                $info = __('~') . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
+                            }
+                            if ($personDb->pers_birth_date) {
+                                $info = __('*') . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
+                            }
+                            if ($privacy && $info) {
+                                $info =  __('PRIVACY FILTER');
+                            }
+                            ?>
+                            <?= $info; ?>
+                        </td>
+                        <td>
+                            <?php
+                            $info = '';
+                            if ($personDb->pers_bapt_place) {
+                                $info = __('~') . ' ' . $personDb->pers_bapt_place;
+                            }
+                            if ($personDb->pers_birth_place) {
+                                $info = __('*') . ' ' . $personDb->pers_birth_place;
+                            }
+                            if ($privacy && $info) {
+                                $info =  __('PRIVACY FILTER');
+                            }
+                            ?>
+                            <?= $info; ?>
+                        </td>
+                        <td style="white-space:nowrap;">
+                            <?php
+                            $info = '';
+                            if ($personDb->pers_buried_date) {
+                                $info = __('[]') . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
+                            }
+                            if ($personDb->pers_death_date) {
+                                $info = __('&#134;') . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
+                            }
+                            if ($privacy && $info) {
+                                $info =  __('PRIVACY FILTER');
+                            }
+                            ?>
+                            <?= $info; ?>
+                        </td>
+                        <td>
+                            <?php
+                            $info = '';
+                            if ($personDb->pers_buried_place) {
+                                $info = __('[]') . ' ' . $personDb->pers_buried_place;
+                            }
+                            if ($personDb->pers_death_place) {
+                                $info = __('&#134;') . ' ' . $personDb->pers_death_place;
+                            }
+                            if ($privacy && $info) {
+                                $info =  __('PRIVACY FILTER');
+                            }
+                            ?>
+                            <?= $info; ?>
+                        </td>
+
+                        <?php
+                        // *** Show name of family tree, if search in multiple family trees is used ***
+                        if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
+                            $treetext = $showTreeText->show_tree_text($personDb->pers_tree_id, $selected_language);
+                        ?>
+                            <td>
+                                <i>
+                                    <font size="-1"><?= $treetext['name']; ?></font>
+                                </i>
+                            </td>
+                        <?php } ?>
+                    </tr>
+    <?php
                 }
             }
         }
@@ -862,340 +1165,3 @@ echo '<br>';
 //echo 'Count qry: '.$count_qry.'<br>';
 //echo '<p>index_list: '.$list["index_list"];
 //echo '<br>nr. of persons: '.$list["count_persons"];
-
-
-// *** show person ***
-function show_person($personDb)
-{
-    global $dbh, $db_functions, $selected_place, $user, $humo_option, $select_trees, $list_expanded;
-    global $selected_language, $privacy, $dirmark1, $dirmark2, $list;
-
-    $personPrivacy = new Genealogy\Include\PersonPrivacy();
-    $personName = new Genealogy\Include\PersonName();
-    $personPopup = new Genealogy\Include\PersonPopup();
-    $datePlace = new Genealogy\Include\DatePlace();
-    $showTreeText = new Genealogy\Include\ShowTreeText();
-
-    $db_functions->set_tree_id($personDb->pers_tree_id);
-
-    $name = $personName->get_person_name($personDb, $privacy);
-
-    // *** Show name ***
-    $index_name = '';
-    if ($name["show_name"] == false) {
-        $index_name = __('Name filtered');
-    } else {
-        // *** If there is no lastname, show a - character. ***
-        // Don't show a "-" by pers_patronymes
-        if ($personDb->pers_lastname == "" && !isset($_GET['pers_patronym'])) {
-            $index_name = "-&nbsp;&nbsp;";
-        }
-        $index_name .= $name["index_name_extended"] . $name["colour_mark"];
-    }
-?>
-    <tr>
-        <?php
-        // *** Show extra columns before a person in index places ***
-        if ($list["index_list"] == 'places') {
-            if ($selected_place != $personDb->place_order) {
-                echo '<td colspan="7"><b>' . $dirmark2 . $personDb->place_order . '</b></td></tr><tr>';
-                //$list["show_place"] = $personDb->place_order;
-            } else {
-                //$list["show_place"] = '';
-            }
-            $selected_place = $personDb->place_order;
-        ?>
-
-            <td valign="top" style="white-space:nowrap;width:105px">
-                <?php
-                if ($list["select_birth"] == '1') {
-                    if ($selected_place == $personDb->pers_birth_place) {
-                        echo '<span class="place_index place_index_selected">' . __('*') . '</span>';
-                    } else {
-                        echo '<span class="place_index">&nbsp;</span>';
-                    }
-                }
-
-                if ($list["select_bapt"] == '1') {
-                    if ($selected_place == $personDb->pers_bapt_place) {
-                        echo '<span class="place_index place_index_selected">' . __('~') . '</span>';
-                    } else {
-                        echo '<span class="place_index">&nbsp;</span>';
-                    }
-                }
-
-                if ($list["select_place"] == '1') {
-                    // *** Check if this is the living place of a person. Can't be checked using query variables... ***
-                    $query = "SELECT address_place FROM humo_addresses, humo_connections
-                        WHERE address_tree_id = :tree_id
-                        AND connect_tree_id = :tree_id
-                        AND connect_connect_id = :gedcomnumber
-                        AND connect_item_id = address_gedcomnr
-                        AND address_place = :place_order";
-                    $stmt = $dbh->prepare($query);
-                    $stmt->execute([
-                        ':tree_id' => $personDb->pers_tree_id,
-                        ':gedcomnumber' => $personDb->pers_gedcomnumber,
-                        ':place_order' => $personDb->place_order
-                    ]);
-                    $result = $stmt;
-                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
-
-                    //if ($selected_place==$personDb->pers_place_index)
-                    if ($resultDb && $resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
-                        echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
-                    } else {
-                        echo '<span class="place_index">&nbsp;</span>';
-                    }
-                }
-
-                if ($list["select_death"] == '1') {
-                    if ($selected_place == $personDb->pers_death_place) {
-                        echo '<span class="place_index place_index_selected">' . __('&#134;') . '</span>';
-                    } else {
-                        echo '<span class="place_index">&nbsp;</span>';
-                    }
-                }
-
-                if ($list["select_buried"] == '1') {
-                    if ($selected_place == $personDb->pers_buried_place) {
-                        echo '<span class="place_index place_index_selected">' . __('[]') . '</span>';
-                    } else {
-                        echo '<span class="place_index">&nbsp;</span>';
-                    }
-                }
-
-                // *** Places by events like occupations etc. ***
-                if ($list["select_event"] == '1') {
-                    // *** Check if this is the living place of a person. Can't be checked using query variables... ***
-                    $query = "SELECT event_place FROM humo_events
-                        WHERE event_tree_id = :tree_id
-                        AND event_connect_id = :gedcomnumber
-                        AND event_place = :place_order";
-                    $stmt = $dbh->prepare($query);
-                    $stmt->execute([
-                        ':tree_id' => $personDb->pers_tree_id,
-                        ':gedcomnumber' => $personDb->pers_gedcomnumber,
-                        ':place_order' => $personDb->place_order
-                    ]);
-                    $result = $stmt;
-                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
-
-                    if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
-                        echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
-                    } else {
-                        echo '<span class="place_index">&nbsp;</span>';
-                    }
-                }
-                ?>
-            </td>
-        <?php } ?>
-
-        <td valign="top" style="border-right:0px; white-space:nowrap;">
-            <!-- Show person popup menu -->
-            <?= $personPopup->person_popup_menu($personDb, $privacy); ?>
-            <?= $dirmark1; ?>
-
-            <?php
-            // *** Show picture man or wife ***
-            if ($personDb->pers_sexe == "M") {
-                echo ' <img src="images/man.gif" alt="man">';
-            } elseif ($personDb->pers_sexe == "F") {
-                echo ' <img src="images/woman.gif" alt="woman">';
-            } else {
-                echo ' <img src="images/unknown.gif" alt="unknown">';
-            }
-
-            if ($humo_option['david_stars'] == "y") {
-                $camps = "Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
-
-                if (
-                    preg_match("/($camps)/i", $personDb->pers_death_place) !== 0 || preg_match("/($camps)/i", $personDb->pers_buried_place) !== 0 || stripos($personDb->pers_death_place, "oorlogsslachtoffer") !== FALSE
-                ) {
-                    echo '<img src="images/star.gif" alt="star">&nbsp;';
-                }
-            }
-
-            // *** Add own icon by person, using a file name in own code ***
-            if ($personDb->pers_own_code != '' and is_file("images/" . $personDb->pers_own_code . ".gif")) {
-                if ($personDb->pers_own_code != 'foto') { // *** Remove photo.gif icon, new method is used to show photo icon ***
-                    echo  $dirmark1 . '<img src="images/' . $personDb->pers_own_code . '.gif" alt="' . $personDb->pers_own_code . '">&nbsp;';
-                }
-            }
-
-            // *** Show camera icon if there is a photo ***
-            if ($user['group_pictures'] == 'j' && !$privacy) {
-                global $dataDb;
-                $tree_pict_path = $dataDb->tree_pict_path;
-                if (substr($tree_pict_path, 0, 1) === '|') {
-                    $tree_pict_path = 'media/';
-                }
-                $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
-                // *** Only check 1st picture ***
-                if (isset($picture_qry[0])) {
-                    echo  $dirmark1 . '<img src="images/photo.gif" alt="photo">&nbsp;';
-                }
-            }
-            ?>
-        </td>
-        <td style="border-left:0px;">
-            <?php
-            // *** Show name of person ***
-            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $personLink = new Genealogy\Include\PersonLink();
-            $start_url = $personLink->get_person_link($personDb);
-
-            //echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';
-            // *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
-            $direct_link = '';
-            if ($personDb->pers_fams == '') {
-                $direct_link = '#person_' . $personDb->pers_gedcomnumber;
-            }
-            echo ' <a href="' . $start_url . $direct_link . '">' . trim($index_name) . '</a>';
-
-            //*** Show spouse/ partner ***
-            if ($list_expanded == true && $personDb->pers_fams) {
-                $marriage_array = explode(";", $personDb->pers_fams);
-                $nr_marriages = count($marriage_array);
-                for ($x = 0; $x <= $nr_marriages - 1; $x++) {
-                    $fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
-
-                    // *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
-                    if ($personDb->pers_gedcomnumber == $fam_partnerDb->fam_man) {
-                        $partner_id = $fam_partnerDb->fam_woman;
-                    } else {
-                        $partner_id = $fam_partnerDb->fam_man;
-                    }
-
-                    $relation_short = __('&amp;');
-                    if ($fam_partnerDb->fam_marr_date || $fam_partnerDb->fam_marr_place || $fam_partnerDb->fam_marr_church_date || $fam_partnerDb->fam_marr_church_place || $fam_partnerDb->fam_kind == 'civil') {
-                        $relation_short = __('X');
-                    }
-                    if ($fam_partnerDb->fam_div_date || $fam_partnerDb->fam_div_place) {
-                        $relation_short = __(') (');
-                    }
-
-                    if ($partner_id != '0' && $partner_id != '') {
-                        $partnerDb = $db_functions->get_person($partner_id);
-                        $privacy_partner = $personPrivacy->get_privacy($partnerDb);
-                        $name = $personName->get_person_name($partnerDb, $privacy_partner);
-                    } else {
-                        $name["standard_name"] = __('N.N.');
-                    }
-
-                    if ($nr_marriages > 1 && $x > 0) {
-                        echo ',';
-                    }
-                    echo ' <span class="index_partner">';
-                    if ($nr_marriages > 1) {
-                        if ($x == 0) {
-                            echo __('1st');
-                        } elseif ($x == 1) {
-                            echo __('2nd');
-                        } elseif ($x == 2) {
-                            echo __('3rd');
-                        } elseif ($x > 2) {
-                            echo ($x + 1) . __('th');
-                        }
-                    }
-                    echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]) . '</span>';
-                }
-            }
-            ?>
-        </td>
-        <td style="white-space:nowrap;">
-            <?php
-            $info = '';
-            if ($personDb->pers_bapt_date) {
-                $info = __('~') . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
-            }
-            if ($personDb->pers_birth_date) {
-                $info = __('*') . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
-            }
-            if ($privacy && $info) {
-                $info =  __('PRIVACY FILTER');
-            }
-            ?>
-            <?= $info; ?>
-        </td>
-        <td>
-            <?php
-            $info = '';
-            if ($personDb->pers_bapt_place) {
-                $info = __('~') . ' ' . $personDb->pers_bapt_place;
-            }
-            if ($personDb->pers_birth_place) {
-                $info = __('*') . ' ' . $personDb->pers_birth_place;
-            }
-            if ($privacy && $info) {
-                $info =  __('PRIVACY FILTER');
-            }
-            ?>
-            <?= $info; ?>
-        </td>
-        <td style="white-space:nowrap;">
-            <?php
-            $info = '';
-            if ($personDb->pers_buried_date) {
-                $info = __('[]') . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
-            }
-            if ($personDb->pers_death_date) {
-                $info = __('&#134;') . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
-            }
-            if ($privacy && $info) {
-                $info =  __('PRIVACY FILTER');
-            }
-            ?>
-            <?= $info; ?>
-        </td>
-        <td>
-            <?php
-            $info = '';
-            if ($personDb->pers_buried_place) {
-                $info = __('[]') . ' ' . $personDb->pers_buried_place;
-            }
-            if ($personDb->pers_death_place) {
-                $info = __('&#134;') . ' ' . $personDb->pers_death_place;
-            }
-            if ($privacy && $info) {
-                $info =  __('PRIVACY FILTER');
-            }
-            ?>
-            <?= $info; ?>
-        </td>
-
-        <?php
-        // *** Show name of family tree, if search in multiple family trees is used ***
-        if ($select_trees == 'all_trees' || $select_trees == 'all_but_this') {
-            $treetext = $showTreeText ->show_tree_text($personDb->pers_tree_id, $selected_language);
-        ?>
-            <td>
-                <i>
-                    <font size="-1"><?= $treetext['name']; ?></font>
-                </i>
-            </td>
-        <?php } ?>
-    </tr>
-
-    <!-- TEST -->
-    <?php
-    /*
-    <?php if ($list["show_place"]) { ?>
-        <tr>
-            <td colspan="7"><b><?= $dirmark2 . $list["show_place"]; ?></b></td>
-        </tr>
-    <?php } ?>
-
-    <tr>
-    <?php if ($list[places]){ ?>
-        <td valign="top" style="white-space:nowrap;width:105px">
-
-        echo '<span class="place_index place_index_selected">' . __('*') . '</span>';
-
-    <?php } ?>
-    </tr>
-    */
-    ?>
-
-<?php
-}

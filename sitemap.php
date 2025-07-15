@@ -1,11 +1,33 @@
 <?php
-header('Content-type: application/xml; charset=UTF-8');
 
 /**
  * Show sitemap
  * 
  * If number of records > 50.000: multiple sitemap files are created, and sitemap index is used.
+ *
+ * Example, see: http://www.sitemaps.org/protocol.html
+ * 
+ * <?xml version="1.0" encoding="UTF-8"?>
+ * <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+ *     <url>
+ *         <loc>http://www.example.com/</loc>
+ *         <lastmod>2005-01-01</lastmod>
+ *         <changefreq>monthly</changefreq>
+ *         <priority>0.8</priority>
+ *     </url>
+ *     <url>
+ *         <loc>http://www.example.com/catalog?item=12&amp;desc=vacation_hawaii</loc>
+ *         <changefreq>weekly</changefreq>
+ *     </url>
+ *     <url>
+ *         <loc>http://www.example.com/catalog?item=73&amp;desc=vacation_new_zealand</loc>
+ *         <lastmod>2004-12-23</lastmod>
+ *         <changefreq>weekly</changefreq>
+ *     </url>
+ * </urlset>
  */
+
+header('Content-type: application/xml; charset=UTF-8');
 
 // *** Autoload composer classes ***
 require __DIR__ . '/vendor/autoload.php';
@@ -21,40 +43,19 @@ $user = $userSettings->get_user_settings($dbh);
 
 $db_functions = new \Genealogy\Include\DbFunctions($dbh);
 
-// *** Example, see: http://www.sitemaps.org/protocol.html ***
-/*
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>http://www.example.com/</loc>
-        <lastmod>2005-01-01</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>http://www.example.com/catalog?item=12&amp;desc=vacation_hawaii</loc>
-        <changefreq>weekly</changefreq>
-    </url>
-    <url>
-        <loc>http://www.example.com/catalog?item=73&amp;desc=vacation_new_zealand</loc>
-        <lastmod>2004-12-23</lastmod>
-        <changefreq>weekly</changefreq>
-    </url>
-</urlset>
-*/
 
 $max_loc = 49999;
 //$max_loc = 600; // Test line
 $loc = array();
 $filenumber = 0;
 // *** Family trees ***
-$datasql = $db_functions->get_trees();
-foreach ($datasql as $dataDb) {
+$familytrees = $db_functions->get_trees();
+foreach ($familytrees as $familytree) {
     // *** Check if family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
-    if (!in_array($dataDb->tree_id, $hide_tree_array)) {
+    if (!in_array($familytree->tree_id, $hide_tree_array)) {
         // *** Get all family pages ***
-        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id='" . $dataDb->tree_id . "' ORDER BY fam_gedcomnumber");
+        $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id='" . $familytree->tree_id . "' ORDER BY fam_gedcomnumber");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             //$personPrivacy = new PersonPrivacy();
             //$privacy=$personPrivacy->get_privacy($personDb);
@@ -81,10 +82,10 @@ foreach ($datasql as $dataDb) {
             }
 
             if ($humo_option["url_rewrite"] == "j") {
-                //$person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
-                $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $personDb->fam_gedcomnumber;
+                //$person_url = $uri_path . '/family/' . $familytree->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
+                $person_url = $uri_path . '/family/' . $familytree->tree_id . '/' . $personDb->fam_gedcomnumber;
             } else {
-                $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
+                $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $familytree->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
             }
 
             $loc[] = $person_url;
@@ -101,7 +102,7 @@ foreach ($datasql as $dataDb) {
 
         // *** Get all single persons ***
         $person_qry = $dbh->query("SELECT pers_tree_id, pers_famc, pers_fams, pers_gedcomnumber, pers_own_code FROM humo_persons
-            WHERE pers_tree_id='" . $dataDb->tree_id . "' AND pers_famc='' AND pers_fams=''");
+            WHERE pers_tree_id='" . $familytree->tree_id . "' AND pers_famc='' AND pers_fams=''");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             //$personPrivacy = new PersonPrivacy();
             //$privacy=$personPrivacy->get_privacy($personDb);
@@ -139,9 +140,9 @@ foreach ($datasql as $dataDb) {
                 //}
 
                 if ($humo_option["url_rewrite"] == "j") {
-                    $person_url = $uri_path . '/family/' . $dataDb->tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber;
+                    $person_url = $uri_path . '/family/' . $familytree->tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber;
                 } else {
-                    $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $dataDb->tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
+                    $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $familytree->tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
                 }
 
                 $loc[] = $person_url;
@@ -155,8 +156,8 @@ foreach ($datasql as $dataDb) {
             }
         }
     } // *** End of hidden family tree ***
-} // *** End of multiple family trees ***
-unset($datasql);
+}
+unset($familytrees);
 
 // *** Save last records to file ***
 if ($filenumber > 0 && isset($loc) && count($loc) > 1) {
@@ -194,8 +195,8 @@ if ($filenumber > 0) {
     }
     echo '</sitemapindex>';
 } else {
-    echo '<?xml version="1.0" encoding="UTF-8"?>'. "\r\n";
-    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'. "\r\n";
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\r\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\r\n";
     foreach ($loc as $loc_value) {
         echo "  <url>\r\n";
         echo '      <loc>' . $loc_value . "</loc>\r\n";

@@ -32,7 +32,7 @@ class TreeIndexModel extends BaseModel
 
     public function show_tree_index()
     {
-        global $tree_prefix_quoted, $dataDb, $selected_language, $dirmark2, $bot_visit;
+        global $tree_prefix_quoted, $selected_language, $dirmark2, $bot_visit;
 
         $showTreeText = new ShowTreeText();
 
@@ -123,8 +123,6 @@ class TreeIndexModel extends BaseModel
                     $temp .= $this->extra_links();
                 }
 
-                // *** Just for sure, probably not necessary here: re-get selected family tree data ***
-                $dataDb = $this->db_functions->get_tree($tree_prefix_quoted);
                 //*** Today in history ***
                 if ($module_item[$i] == 'history') {
                     $header = __('Today in history');
@@ -159,7 +157,7 @@ class TreeIndexModel extends BaseModel
                     $temp .= $this->owner();
 
                     // *** Prepare mainmenu text and source ***
-                    $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
+                    $treetext = $showTreeText->show_tree_text($this->selectedFamilyTree->tree_id, $selected_language);
 
                     // *** Show mainmenu text ***
                     $mainmenu_text = $treetext['mainmenu_text'];
@@ -271,21 +269,21 @@ class TreeIndexModel extends BaseModel
         $showTreeText = new ShowTreeText();
 
         $text = '';
-        while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+        while ($familytree = $datasql->fetch(PDO::FETCH_OBJ)) {
             // *** Check is family tree is shown or hidden for user group ***
             $hide_tree_array = explode(";", $this->user['group_hide_trees']);
-            if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-                $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
+            if (!in_array($familytree->tree_id, $hide_tree_array)) {
+                $treetext = $showTreeText->show_tree_text($familytree->tree_id, $selected_language);
                 $treetext_name = $treetext['name'];
 
                 // *** Name family tree ***
-                if ($dataDb->tree_prefix == 'EMPTY') {
+                if ($familytree->tree_prefix == 'EMPTY') {
                     // *** Show empty line ***
                     $tree_name = '';
-                } elseif (isset($_SESSION['tree_id']) && $_SESSION['tree_id'] == $dataDb->tree_id) {
+                } elseif (isset($_SESSION['tree_id']) && $_SESSION['tree_id'] == $familytree->tree_id) {
                     $tree_name = '<span class="tree_link">' . $treetext_name . '</span>';
                 } else {
-                    $path_tmp = $this->processLinks->get_link($this->uri_path, 'tree_index', $dataDb->tree_id);
+                    $path_tmp = $this->processLinks->get_link($this->uri_path, 'tree_index', $familytree->tree_id);
                     $tree_name = '<span class="tree_link"><a href="' . $path_tmp . '">' . $treetext_name . '</a></span>';
                 }
                 if ($text !== '') {
@@ -304,26 +302,24 @@ class TreeIndexModel extends BaseModel
     // *** Family tree data ***
     public function tree_data(): string
     {
-        global $dataDb;
         $showTreeDate = new ShowTreeDate();
 
-        return __('Latest update:') . ' ' . $showTreeDate->show_tree_date($dataDb->tree_date, true) . ', ' . $dataDb->tree_persons . ' ' . __('persons') . ', ' . $dataDb->tree_families . ' ' . __('families');
+        return __('Latest update:') . ' ' . $showTreeDate->show_tree_date($this->selectedFamilyTree->tree_date, true) . ', ' . $this->selectedFamilyTree->tree_persons . ' ' . __('persons') . ', ' . $this->selectedFamilyTree->tree_families . ' ' . __('families');
     }
 
     // *** Owner family tree ***
     public function owner(): string
     {
-        global $dataDb;
         $tree_owner = '';
 
-        if (isset($dataDb->tree_owner) && $dataDb->tree_owner) {
+        if (isset($this->selectedFamilyTree->tree_owner) && $this->selectedFamilyTree->tree_owner) {
             $tree_owner = __('Owner family tree:') . ' ';
             // *** Show owner e-mail address ***
-            if ($dataDb->tree_email) {
+            if ($this->selectedFamilyTree->tree_email) {
                 $path_tmp = $this->humo_option["url_rewrite"] == "j" ? 'mailform.php' : 'index.php?page=mailform';
-                $tree_owner .= '<a href="' . $path_tmp . '">' . $dataDb->tree_owner . "</a>\n";
+                $tree_owner .= '<a href="' . $path_tmp . '">' . $this->selectedFamilyTree->tree_owner . "</a>\n";
             } else {
-                $tree_owner .= $dataDb->tree_owner . "\n";
+                $tree_owner .= $this->selectedFamilyTree->tree_owner . "\n";
             }
         }
         return $tree_owner;
@@ -390,7 +386,7 @@ class TreeIndexModel extends BaseModel
 
     function last_names_array($max)
     {
-        global $dataDb, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
+        global $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
 
         // *** Read cache (only used in large family trees) ***
         $cache = '';
@@ -432,7 +428,7 @@ class TreeIndexModel extends BaseModel
 
             while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                 // *** Cache: only use cache if there are > 5.000 persons in database ***
-                if (isset($dataDb->tree_persons) && $dataDb->tree_persons > 5000) {
+                if (isset($this->selectedFamilyTree->tree_persons) && $this->selectedFamilyTree->tree_persons > 5000) {
                     $personDb->time = time(); // *** Add linux time to array ***
                     if ($cache !== '' && $cache !== '0') {
                         $cache .= '|';
@@ -669,8 +665,6 @@ class TreeIndexModel extends BaseModel
     // *** Random photo ***
     public function random_photo(): string
     {
-        global $dataDb;
-
         $personName = new PersonName();
         $personPrivacy = new PersonPrivacy();
         $datePlace = new DatePlace();
@@ -686,7 +680,7 @@ class TreeIndexModel extends BaseModel
         //this for lightbox
         $char_limit2 = 400;
 
-        $tree_pict_path = $dataDb->tree_pict_path;
+        $tree_pict_path = $this->selectedFamilyTree->tree_pict_path;
         if (substr($tree_pict_path, 0, 1) === '|') {
             $tree_pict_path = 'media/';
         }
@@ -851,8 +845,6 @@ class TreeIndexModel extends BaseModel
     // *** Alphabet line ***
     public function alphabet(): string
     {
-        global $dataDb;
-
         $text = '';
 
         // *** Read cache (only used in large family trees) ***
@@ -896,7 +888,7 @@ class TreeIndexModel extends BaseModel
             $count_first_character = $person->rowCount();
             while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
                 // *** Cache: only use cache if there are > 5.000 persons in database ***
-                if (isset($dataDb->tree_persons) && $dataDb->tree_persons > 5000) {
+                if (isset($this->selectedFamilyTree->tree_persons) && $this->selectedFamilyTree->tree_persons > 5000) {
                     $personDb->time = time(); // *** Add linux time to array ***
                     if ($cache !== '' && $cache !== '0') {
                         $cache .= '|';
@@ -964,8 +956,6 @@ class TreeIndexModel extends BaseModel
 
     public function today_in_history($view = 'with_table'): string
     {
-        global $dataDb;
-
         $personPrivacy = new PersonPrivacy();
         $personName = new PersonName();
         $datePlace = new DatePlace();
@@ -993,7 +983,7 @@ class TreeIndexModel extends BaseModel
         ";
         try {
             $birth_qry = $this->dbh->prepare($sql);
-            $birth_qry->bindValue(':tree_id', $dataDb->tree_id, PDO::PARAM_STR);
+            $birth_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
             $birth_qry->bindValue(':today', $today, PDO::PARAM_STR);
             $birth_qry->bindValue(':today2', $today2, PDO::PARAM_STR);
             $birth_qry->execute();

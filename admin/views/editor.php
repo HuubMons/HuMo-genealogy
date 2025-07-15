@@ -42,8 +42,6 @@ if (!defined('ADMIN_PAGE')) {
 </script>
 
 <?php
-$path_prefix = '../';
-
 $editor_cls = new \Genealogy\Include\Editor_cls; // TODO editor_cls is also added in controller.
 $EditorEvent = new \Genealogy\Include\EditorEvent($dbh);
 

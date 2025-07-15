@@ -12,8 +12,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
     }
     // we must check if file has category directory prefix from existing prefixes so we must preserve directory and concatenate with original filename (removing thumb only)
     // does photocat_prefix has any dependance to tree_id??
-    $photocat_qry = "SELECT * FROM humo_photocat WHERE photocat_prefix!='none'";
-    $datasql = $dbh->query($photocat_qry);
+    $datasql = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix!='none'");
     $rowCount = $datasql->rowCount();
     $prefixes = [];
     for ($i = 0; $i < $rowCount; $i++) {
@@ -89,20 +88,10 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
         }
     }
 
-    //in this if we make exception for favicon.ico, logo.png and logo.jpg which must be served always
+    // In this if we make exception for favicon.ico, logo.png and logo.jpg which must be served always
     if ($file_allowed || ($media_filename == 'logo.png' || $media_filename == 'logo.jpg' || $media_filename == 'favicon.ico')) {
-        // echo 'file allowed';
-        // not used as we get this in query string 'media_dir'
-        // $tree_pict_path = $dataDb->tree_pict_path;
-        // if (substr($tree_pict_path, 0, 1) === '|') {
-        //     $tree_pict_path = 'media/';
-        // }
-
-        // $picture = $media_dir . '/' . basename($_GET['picture']);
-        // $media_dir = realpath($media_dir);
-        // echo $media_dir . $media_filename;
         if (file_exists($media_dir . $media_filename)) {
-            //we check what content type is file to put header
+            // We check what content type is file to put header
             $content_type_header = mime_content_type($media_dir . $media_filename);
             header('Content-Type: ' . $content_type_header);
             header('Content-Disposition: inline; filename="' . $media_filename . '"');

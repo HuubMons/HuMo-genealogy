@@ -13,7 +13,7 @@ class RegisterController
         $this->config = $config;
     }
 
-    public function get_register_data($dataDb): array
+    public function get_register_data(): array
     {
         $registerModel = new RegisterModel($this->config);
 
@@ -21,7 +21,7 @@ class RegisterController
         $register_allowed["register_allowed"] = $registerModel->register_allowed();
         $register_array = array_merge($register_form, $register_allowed);
 
-        $register_user = $registerModel->register_user($dataDb, $register_array);
+        $register_user = $registerModel->register_user($register_array);
 
         $register_array = array_merge($register_array, $register_user);
         return $register_array;

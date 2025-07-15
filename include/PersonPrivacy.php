@@ -10,7 +10,7 @@ class PersonPrivacy
 {
     public function get_privacy($personDb): bool
     {
-        global $user, $dataDb;
+        global $user, $selectedFamilyTree;
 
         $privacy = false;  // *** Standard: show all persons ***
 
@@ -152,11 +152,11 @@ class PersonPrivacy
         }
 
         // *** Privacy filter for whole family tree ***
-        if (isset($dataDb->tree_privacy)) {
-            if ($dataDb->tree_privacy == 'filter_persons') {
+        if (isset($selectedFamilyTree->tree_privacy)) {
+            if ($selectedFamilyTree->tree_privacy == 'filter_persons') {
                 $privacy = true;
             }
-            if ($dataDb->tree_privacy == 'show_persons') {
+            if ($selectedFamilyTree->tree_privacy == 'show_persons') {
                 $privacy = false;
             }
         }

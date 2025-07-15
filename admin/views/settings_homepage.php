@@ -263,44 +263,44 @@
         </thead>
 
         <?php
-        $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' ORDER BY setting_order");
+        $LinkQry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' ORDER BY setting_order");
         // *** Number for new link ***
         $count_links = 0;
-        if ($datasql->rowCount()) {
-            $count_links = $datasql->rowCount();
+        if ($LinkQry->rowCount()) {
+            $count_links = $LinkQry->rowCount();
         }
         $new_number = 1;
         if ($count_links) {
             $new_number = $count_links + 1;
         }
-        if ($datasql) {
+        if ($LinkQry) {
             $teller = 1;
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                $lijst = explode("|", $dataDb->setting_value);
+            while ($link = $LinkQry->fetch(PDO::FETCH_OBJ)) {
+                $lijst = explode("|", $link->setting_value);
         ?>
                 <tr>
                     <td>
-                        <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_link=<?= $dataDb->setting_id; ?>">
+                        <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_link=<?= $link->setting_id; ?>">
                             <img src="images/button_drop.png" border="0" alt="remove">
                         </a>
 
-                        <input type="hidden" name="<?= $dataDb->setting_id; ?>id" value="<?= $dataDb->setting_id; ?>"><?= __('Link') . ' ' . $teller; ?>
-                        <?php if ($dataDb->setting_order != '1') { ?>
-                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;up=1&amp;link_order=<?= $dataDb->setting_order; ?>&amp;id=<?= $dataDb->setting_id; ?>">
+                        <input type="hidden" name="<?= $link->setting_id; ?>id" value="<?= $link->setting_id; ?>"><?= __('Link') . ' ' . $teller; ?>
+                        <?php if ($link->setting_order != '1') { ?>
+                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;up=1&amp;link_order=<?= $link->setting_order; ?>&amp;id=<?= $link->setting_id; ?>">
                                 <img src="images/arrow_up.gif" border="0" alt="up">
                             </a>
                         <?php
                         }
 
-                        if ($dataDb->setting_order != $count_links) {
+                        if ($link->setting_order != $count_links) {
                         ?>
-                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;down=1&amp;link_order=<?= $dataDb->setting_order; ?>&amp;id=<?= $dataDb->setting_id; ?>">
+                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;down=1&amp;link_order=<?= $link->setting_order; ?>&amp;id=<?= $link->setting_id; ?>">
                                 <img src="images/arrow_down.gif" border="0" alt="down">
                             </a>
                         <?php } ?>
                     </td>
-                    <td><input type="text" name="<?= $dataDb->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5" class="form-control form-control-sm"></td>
-                    <td><input type="text" name="<?= $dataDb->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20" class="form-control form-control-sm"></td>
+                    <td><input type="text" name="<?= $link->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5" class="form-control form-control-sm"></td>
+                    <td><input type="text" name="<?= $link->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20" class="form-control form-control-sm"></td>
                     <td><br></td>
                 </tr>
             <?php

@@ -291,8 +291,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                         // *** Show picture ***
                         if (!$man_privacy && $user['group_pictures'] == 'j') {
                             //  *** Path can be changed per family tree ***
-                            global $dataDb;
-                            $tree_pict_path = $dataDb->tree_pict_path;
+                            $tree_pict_path = $selectedFamilyTree->tree_pict_path;
                             if (substr($tree_pict_path, 0, 1) === '|') {
                                 $tree_pict_path = 'media/';
                             }

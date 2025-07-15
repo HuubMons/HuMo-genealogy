@@ -125,8 +125,7 @@ class EditorEvent
     function show_event($event_connect_kind, $event_connect_id, $event_kind)
     {
         global $tree_id, $page, $field_place, $field_text, $field_text_medium;
-        global $editor_cls, $path_prefix, $tree_pict_path, $humo_option, $field_popup;
-        global $db_functions;
+        global $editor_cls, $tree_pict_path, $humo_option, $field_popup, $db_functions;
 
         $showMedia = new ShowMedia();
         $mediaPath = new MediaPath();
@@ -138,13 +137,13 @@ class EditorEvent
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
             $picture_array = array();
             // *** Picture list for selecting pictures ***
-            $datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
-            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-            $tree_pict_path = $dataDb->tree_pict_path;
+            $familyTreeQry = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
+            $familyTree = $familyTreeQry->fetch(PDO::FETCH_OBJ);
+            $tree_pict_path = $familyTree->tree_pict_path;
             if (substr($tree_pict_path, 0, 1) === '|') {
                 $tree_pict_path = 'media/';
             }
-            $dir = $path_prefix . $tree_pict_path;
+            $dir = '../' . $tree_pict_path;
             if (file_exists($dir)) {
                 $dh  = opendir($dir);
                 while (false !== ($filename = readdir($dh))) {
@@ -626,7 +625,7 @@ class EditorEvent
                                                         $catgr = $this->dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
                                                         if ($catgr->rowCount()) {
                                                             while ($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {
-                                                                if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix && is_dir($path_prefix . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {   // there is a subfolder of this prefix
+                                                                if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix && is_dir('../' . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {   // there is a subfolder of this prefix
                                                                     $tree_pict_path3 = $tree_pict_path3 . substr($data_listDb->event_event, 0, 2) . '/';  // look in that subfolder
                                                                 }
                                                             }
@@ -634,7 +633,7 @@ class EditorEvent
                                                     }
 
                                                     echo '<a href="../' . $mediaPath->give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
-                                                        $showMedia->print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
+                                                        $showMedia->print_thumbnail('../' . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                                     ?>
                                                 </div>
 
@@ -1159,7 +1158,7 @@ class EditorEvent
 
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
             // get subfolders of media dir 
-            $subfolders = glob($path_prefix . $tree_pict_path . '[^.]*', GLOB_ONLYDIR);
+            $subfolders = glob('../' . $tree_pict_path . '[^.]*', GLOB_ONLYDIR);
             $ignore = array('cms', 'slideshow', 'thumbs');
             // *** Upload image ***
             ?>

@@ -108,8 +108,8 @@ $language_file = $index['language_file']; // Array including all languages files
 $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
 
-// Needed for mail script.
-$dataDb = $db_functions->get_tree($index['tree_id']);
+// Needed for mail script. Jul. 2025 new variable $selectedFamilyTree.
+$selectedFamilyTree = $db_functions->get_tree($index['tree_id']);
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = $index['dirmark1'];  //ltr marker
@@ -274,7 +274,7 @@ if ($index['page'] == 'address') {
     //
 } elseif ($index['page'] == 'mailform') {
     $controllerObj = new MailformController($config);
-    $mail_data = $controllerObj->get_mail_data($dataDb, $selected_language);
+    $mail_data = $controllerObj->get_mail_data($selected_language);
 } elseif ($index['page'] == 'maps') {
     $controllerObj = new MapsController($config);
     $maps = $controllerObj->detail($tree_prefix_quoted);
@@ -283,7 +283,7 @@ if ($index['page'] == 'address') {
     $photoalbum = $controllerObj->detail($selected_language);
 } elseif ($index['page'] == 'register') {
     $controllerObj = new RegisterController($config);
-    $register = $controllerObj->get_register_data($dataDb);
+    $register = $controllerObj->get_register_data();
 } elseif ($index['page'] == 'relations') {
     $controllerObj = new RelationsController($config);
     $relation = $controllerObj->getRelations($selected_language);
@@ -303,7 +303,7 @@ if ($index['page'] == 'address') {
     include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
 
     $controllerObj = new UserSettingsController($config);
-    $data = $controllerObj->user_settings($dataDb);
+    $data = $controllerObj->user_settings();
 } elseif ($index['page'] == 'show_media_file') {
     // *** Show media file using secured folder ***
     include_once(__DIR__ . "/views/show_media_file.php");

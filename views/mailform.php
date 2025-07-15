@@ -17,7 +17,7 @@ if (isset($_POST['send_mail']) && $mail_data["send_mail"] == true) {
     <?php
     }
 } else {
-    if (!$dataDb->tree_email) {
+    if (!$selectedFamilyTree->tree_email) {
     ?>
         <div class="alert alert-info" role="alert">
             <?= __('The e-mail function has been switched off!'); ?>

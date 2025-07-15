@@ -246,7 +246,7 @@ else {
 
                 $sect->addEmptyParagraph($fontSmall, $parBlack);
 
-                $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $selected_language);
+                $treetext = $showTreeText ->show_tree_text($selectedFamilyTree->tree_id, $selected_language);
                 $rtf_text = $treetext['family_top'];
                 if ($rtf_text != '') {
                     $sect->writeText($rtf_text, $arial14, $parHead);

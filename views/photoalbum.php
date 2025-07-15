@@ -39,7 +39,7 @@ if ($photoalbum['show_categories']) {
 <?php
 }
 
-$tree_pict_path = $dataDb->tree_pict_path;
+$tree_pict_path = $selectedFamilyTree->tree_pict_path;
 if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }

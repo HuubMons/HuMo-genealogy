@@ -22,11 +22,11 @@ class AdminStatisticsModel extends AdminBaseModel
     public function get_data(): array
     {
         // *** Search oldest record in database***
-        $datasql = $this->dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
-        $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+        $firstYearQry = $this->dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
+        $firstYear = $firstYearQry->fetch(PDO::FETCH_OBJ);
         $statistics['first_year'] = '';
-        if (isset($dataDb->stat_date_linux)) {
-            $statistics['first_year'] = date("Y", $dataDb->stat_date_linux);
+        if (isset($firstYear->stat_date_linux)) {
+            $statistics['first_year'] = date("Y", $firstYear->stat_date_linux);
         }
 
         // *** Selection of month ***

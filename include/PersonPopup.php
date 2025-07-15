@@ -20,7 +20,7 @@ class PersonPopup
     public function person_popup_menu($personDb, $privacy, $extended = false, $replacement_text = '', $extra_popup_text = '')
     {
         global $db_functions, $bot_visit, $humo_option, $uri_path, $user;
-        global $screen_mode, $dirmark1, $dirmark2, $rtlmarker, $hourglass, $page;
+        global $screen_mode, $dirmark1, $dirmark2, $rtlmarker, $hourglass, $page, $selectedFamilyTree;
 
         $personLink = new PersonLink();
         $personName = new PersonName();
@@ -190,8 +190,7 @@ class PersonPopup
                 // *** Show picture in pop-up box ***
                 if (!$privacy && $user['group_pictures'] == 'j') {
                     //  *** Path can be changed per family tree ***
-                    global $dataDb;
-                    $tree_pict_path = $dataDb->tree_pict_path;
+                    $tree_pict_path = $selectedFamilyTree->tree_pict_path;
                     if (substr($tree_pict_path, 0, 1) === '|') {
                         $tree_pict_path = 'media/';
                     }

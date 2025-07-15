@@ -75,17 +75,17 @@ class TreesModel extends AdminBaseModel
             $i = 1;
             while ($found == '1') {
                 $new_tree_prefix = 'humo' . $i . '_';
-                $datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $new_tree_prefix . "'");
-                $found = $datasql->rowCount();
+                $familyTree = $this->dbh->query("SELECT tree_id FROM humo_trees WHERE tree_prefix='" . $new_tree_prefix . "'");
+                $found = $familyTree->rowCount();
                 $i++;
             }
 
             // *** Get highest order number ***
             $tree_order = 1;
-            $datasql = $this->dbh->query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1");
-            if ($datasql) {
-                $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-                $tree_order = $dataDb->tree_order + 1;
+            $familyTreeQry = $this->dbh->query("SELECT tree_order FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1");
+            if ($familyTree) {
+                $familyTree = $familyTreeQry->fetch(PDO::FETCH_OBJ);
+                $tree_order = $familyTree->tree_order + 1;
             }
 
             $sql = "INSERT INTO humo_trees SET
@@ -297,10 +297,10 @@ class TreesModel extends AdminBaseModel
         if (isset($_POST['add_tree_data_empty'])) {
             // *** Get highest order number ***
             $tree_order = 1;
-            $datasql = $this->dbh->query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1");
-            if ($datasql) {
-                $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-                $tree_order = $dataDb->tree_order + 1;
+            $familyTreesQry = $this->dbh->query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1");
+            if ($familyTreesQry) {
+                $familyTree = $familyTreesQry->fetch(PDO::FETCH_OBJ);
+                $tree_order = $familyTree->tree_order + 1;
             }
 
             $sql = "INSERT INTO humo_trees SET

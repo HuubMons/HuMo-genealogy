@@ -22,7 +22,7 @@ $db_functions->check_person($data["main_person"]);
 // box_appearance (large, medium, small, and some other boxes...)
 function ancestor_chart_person($id, $box_appearance)
 {
-    global $db_functions, $user, $data, $dirmark1, $dirmark2;
+    global $db_functions, $user, $data, $dirmark1, $dirmark2, $selectedFamilyTree;
 
     $personName = new \Genealogy\Include\PersonName();
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
@@ -145,8 +145,7 @@ function ancestor_chart_person($id, $box_appearance)
             // *** Show picture ***
             if (!$pers_privacy and $user['group_pictures'] == 'j') {
                 //  *** Path can be changed per family tree ***
-                global $dataDb;
-                $tree_pict_path = $dataDb->tree_pict_path;
+                $tree_pict_path = $selectedFamilyTree->tree_pict_path;
                 if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
                 $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
                 // *** Only show 1st picture ***

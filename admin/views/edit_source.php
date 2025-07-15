@@ -9,10 +9,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$path_prefix = '../';
-
 // *** These items are needed for adding and changing picture ***
-$phpself = 'index.php';
 $editor_cls = $editSource['editor_cls'];
 
 // *** Process queries (needed to order and delete pictures) ***
@@ -33,8 +30,8 @@ $field_text_large = 'style="height: 100px; width:550px"';
 $stmt = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_prefix = :tree_prefix");
 $stmt->bindValue(':tree_prefix', $tree_prefix, PDO::PARAM_STR);
 $stmt->execute();
-$dataDb = $stmt->fetch(PDO::FETCH_OBJ);
-$tree_pict_path = $dataDb->tree_pict_path;
+$familyTree = $stmt->fetch(PDO::FETCH_OBJ);
+$tree_pict_path = $familyTree->tree_pict_path;
 if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }

@@ -16,7 +16,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
             <!-- Latest family tree update -->
             <tr>
                 <td><?= __('Latest update'); ?></td>
-                <td align="center"><i><?= $showTreeDate->show_tree_date($dataDb->tree_date); ?></i></td>
+                <td align="center"><i><?= $showTreeDate->show_tree_date($selectedFamilyTree->tree_date); ?></i></td>
                 <td><br></td>
             </tr>
 
@@ -27,7 +27,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
             <!-- Nr. of families in family tree -->
             <tr>
                 <td><?= __('No. of families'); ?></td>
-                <td align="center"><i><?= $dataDb->tree_families; ?></i></td>
+                <td align="center"><i><?= $selectedFamilyTree->tree_families; ?></i></td>
                 <td><br></td>
             </tr>
 
@@ -44,7 +44,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
             <!-- Nr. of persons in family tree -->
             <tr>
                 <td><?= __('No. of persons'); ?></td>
-                <td align='center'><i><?= $dataDb->tree_persons; ?></i></td>
+                <td align='center'><i><?= $selectedFamilyTree->tree_persons; ?></i></td>
                 <td><br></td>
             </tr>
         </table>

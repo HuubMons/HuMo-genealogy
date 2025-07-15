@@ -25,18 +25,6 @@ $data["family_expanded"] =  $get_ancestor->getFamilyExpanded();
 $data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
 // source_presentation is saved in session.
 
-
-// 2024: at this moment this can't be removed yet...
-//       Variable $dataDb->tree_pict_path is used to show pictures in PDF in showMedia!!!
-// *** Set variable for queries ***
-$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-    ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-    AND humo_tree_texts.treetext_language='" . $selected_language . "'
-    WHERE tree_id='" . $tree_id . "'";
-$datasql = $dbh->query($dataqry);
-$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-
-
 $db_functions->set_tree_id($tree_id);
 
 // *** Check if person gedcomnumber is valid ***

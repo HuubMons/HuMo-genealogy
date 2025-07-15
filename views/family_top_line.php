@@ -1,4 +1,4 @@
-<?php $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language); ?>
+<?php $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selected_language); ?>
 
 <tr class="table_headline">
     <td class="table_header">

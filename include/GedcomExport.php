@@ -236,37 +236,6 @@ class GedcomExport
             $perc = 0;
             $record_nr = 0;
 
-            function update_bootstrap_bar($record_nr, $step, $devider, $perc)
-            {
-                // Calculate the percentage
-                if ($record_nr % $step == 0) {
-                    if ($devider == 50) {
-                        $perc += 2;
-                    } elseif ($devider == 100) {
-                        $perc += 1;
-                    } elseif ($devider == 200) {
-                        $perc += 0.5;
-                    }
-
-                    // *** Bootstrap bar ***
-?>
-                    <script>
-                        var bar = document.querySelector(".progress-bar");
-                        bar.style.width = <?= $perc; ?> + "%";
-                        bar.innerText = <?= $perc; ?> + "%";
-                    </script>
-            <?php
-
-                    // TODO These items don't work properly. Probably because of the for loops.
-                    // This is for the buffer achieve the minimum size in order to flush data
-                    //echo str_repeat(' ', 1024 * 64);
-                    //ob_flush();
-
-                    flush();
-                }
-                return $perc;
-            }
-
             //echo $nr_records . '!' . $step . '!' . $devider . '!' . $perc;
             //$record_nr++;
             //$perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
@@ -934,7 +903,7 @@ class GedcomExport
 
                 // *** Update processed lines ***
                 $record_nr++;
-                $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
+                $perc = $this->update_bootstrap_bar($record_nr, $step, $devider, $perc);
                 //flush();
 
                 // *** Show person data on screen ***
@@ -1326,7 +1295,7 @@ class GedcomExport
 
                 // *** Update processed lines ***
                 $record_nr++;
-                $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
+                $perc = $this->update_bootstrap_bar($record_nr, $step, $devider, $perc);
                 //flush();
 
                 // *** Show family data on screen ***
@@ -1544,7 +1513,7 @@ class GedcomExport
 
                         // *** Update processed lines ***
                         $record_nr++;
-                        $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
+                        $perc = $this->update_bootstrap_bar($record_nr, $step, $devider, $perc);
                         //flush();
 
                         // *** Show source data on screen ***
@@ -1606,7 +1575,7 @@ class GedcomExport
 
                         // *** Update processed lines ***
                         $record_nr++;
-                        $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
+                        $perc = $this->update_bootstrap_bar($record_nr, $step, $devider, $perc);
                         //flush();
                     }
                 }
@@ -1701,26 +1670,57 @@ class GedcomExport
 
                     // *** Update processed lines ***
                     $record_nr++;
-                    $perc = update_bootstrap_bar($record_nr, $step, $devider, $perc);
+                    $perc = $this->update_bootstrap_bar($record_nr, $step, $devider, $perc);
                     //flush();
                 }
             }
 
             // *** Bootstrap bar ***
-            ?>
+?>
             <script>
                 var bar = document.querySelector(".progress-bar");
                 bar.style.width = 100 + "%";
                 bar.innerText = 100 + "%";
             </script>
 
-<?php
+        <?php
             fwrite($fh, '0 TRLR');
             fclose($fh);
         }
     }
 
-    private function decode()
+    private function update_bootstrap_bar($record_nr, $step, $devider, $perc): int
+    {
+        // Calculate the percentage
+        if ($record_nr % $step == 0) {
+            if ($devider == 50) {
+                $perc += 2;
+            } elseif ($devider == 100) {
+                $perc += 1;
+            } elseif ($devider == 200) {
+                $perc += 0.5;
+            }
+
+            // *** Bootstrap bar ***
+        ?>
+            <script>
+                var bar = document.querySelector(".progress-bar");
+                bar.style.width = <?= $perc; ?> + "%";
+                bar.innerText = <?= $perc; ?> + "%";
+            </script>
+<?php
+
+            // TODO These items don't work properly. Probably because of the for loops.
+            // This is for the buffer achieve the minimum size in order to flush data
+            //echo str_repeat(' ', 1024 * 64);
+            //ob_flush();
+
+            flush();
+        }
+        return $perc;
+    }
+
+    private function decode(): void
     {
         //$buffer = html_entity_decode($buffer, ENT_NOQUOTES, 'ISO-8859-15');
         //$buffer = html_entity_decode($buffer, ENT_QUOTES, 'ISO-8859-15');
@@ -1729,7 +1729,7 @@ class GedcomExport
         }
     }
 
-    private function process_date($text)
+    private function process_date($text): string
     {
         if ($this->gedcom_version == '551') {
             //
@@ -1758,7 +1758,7 @@ class GedcomExport
     // 1 CONT Another text.
     // 1 CONC Bla bla text etc.
     // Don't process first part, add if processed (can be: 2 NOTE or 3 NOTE)
-    private function process_text($level, $text, $extractnoteids = true)
+    private function process_text($level, $text, $extractnoteids = true): string
     {
         $text = str_replace("<br>", "", $text);
         $text = str_replace("\r", "", $text);
@@ -1816,7 +1816,7 @@ class GedcomExport
         return $text_processed;
     }
 
-    private function process_place($place, $number)
+    private function process_place($place, $number): string
     {
         // 2 PLAC Cleveland, Ohio, USA
         // 3 MAP
@@ -1852,7 +1852,7 @@ class GedcomExport
 
 
     // *** jan. 2021 new function ***
-    private function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id)
+    private function addresses_export($connect_kind, $connect_sub_kind, $connect_connect_id): void
     {
         // *** Addresses (shared addresses are no valid GEDCOM 5.5.1) ***
         // *** Living place ***
@@ -1967,7 +1967,7 @@ class GedcomExport
     }
 
     // *** Function to export all kind of sources including role, pages etc. ***
-    private function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $start_number)
+    private function sources_export($connect_kind, $connect_sub_kind, $connect_connect_id, $start_number): void
     {
         // *** Search for all connected sources ***
         $connect_qry = "SELECT * FROM humo_connections LEFT JOIN humo_sources ON source_gedcomnr=connect_source_id
@@ -2020,7 +2020,7 @@ class GedcomExport
         }
     }
 
-    private function descendants($family_id, $main_person, $generation_number, $max_generations)
+    private function descendants($family_id, $main_person, $generation_number, $max_generations): void
     {
         $family_nr = 1; //*** Process multiple families ***
         if ($max_generations < $generation_number) {
@@ -2153,7 +2153,7 @@ class GedcomExport
         } // Show  multiple marriages
     }
 
-    private function ancestors($person_id, $max_generations)
+    private function ancestors($person_id, $max_generations):void
     {
         $ancestor_array2[] = $person_id;
         $ancestor_number2[] = 1;
@@ -2266,7 +2266,7 @@ class GedcomExport
         }    // loop ancestors function
     }
 
-    private function export_witnesses($event_connect_kind, $event_connect_id, $event_kind)
+    private function export_witnesses($event_connect_kind, $event_connect_id, $event_kind): string
     {
         $witnesses = '';
         $witness_qry = $this->db_functions->get_events_connect($event_connect_kind, $event_connect_id, $event_kind);
@@ -2309,7 +2309,7 @@ class GedcomExport
     }
 
     // *** GEDCOM 5.5.1: 1 _NEW. GEDCOM 7.x: 1 CREA ***
-    private function process_datetime($new_changed, $datetime, $user_id)
+    private function process_datetime($new_changed, $datetime, $user_id): string
     {
         $buffer = '';
         if ($datetime && $datetime != '1970-01-01 00:00:01') {

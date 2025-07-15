@@ -63,10 +63,10 @@ class MailformModel extends BaseModel
         return $mail_data;
     }
 
-    public function send_mail($mail_data, $dataDb, $selected_language)
+    public function send_mail($mail_data, $selected_language)
     {
         if (isset($_POST['send_mail']) && $mail_data["send_mail"] == true) {
-            $mail_address = $dataDb->tree_email;
+            $mail_address = $this->selectedFamilyTree->tree_email;
             $showTreeText = new ShowTreeText();
 
             $treetext = $showTreeText ->show_tree_text($_SESSION['tree_id'], $selected_language);

@@ -1028,7 +1028,7 @@ if ($user['group_citation_generation'] == 'y') {
 // *** Extra footer text / User notes in family screen ***
 if ($data["descendant_report"] == false) {
     // *** Show extra footer text in family screen ***
-    $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
+    $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selected_language);
     echo $treetext['family_footer'];
 
     if ($user['group_user_notes_show'] == 'y') {
@@ -1104,7 +1104,7 @@ if ($data["descendant_report"] == false) {
             ]);
 
             // *** Mail new user note to the administrator ***
-            $register_address = $dataDb->tree_email;
+            $register_address = $selectedFamilyTree->tree_email;
             $register_subject = "HuMo-genealogy. " . __('New user note') . ": " . $userDb->user_name . "\n";
 
             // *** It's better to use plain text in the subject ***

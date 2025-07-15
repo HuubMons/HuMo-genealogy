@@ -69,7 +69,7 @@ Please disconnect the pages from this menu first.'); ?>
                     <b><?= $edit_cms_pages['menu_name'][$menu_id]; ?></b><br>
 
                     <!-- Show pages -->
-                    <ul id="sortable_pages<?= $menu_id; ?>" class="sortable_pages<?= $menu_id; ?> list-group">
+                    <ul id="sortable_pages<?= $menu_id; ?>" class="sortable-pages list-group" data-menu-id="<?= $menu_id; ?>">
                         <?php foreach ($edit_cms_pages['menu_page_id'][$menu_id] as $page_id) { ?>
                             <li class="list-group-item">
                                 <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $page_id; ?>&amp;page_remove=<?= $page_id; ?>" class="me-2">
@@ -90,32 +90,6 @@ Please disconnect the pages from this menu first.'); ?>
                             </li>
                         <?php } ?>
                     </ul>
-
-                    <!-- Order items using drag and drop using jquery and jqueryui -->
-                    <?php if ($edit_cms_pages['menu_nr_pages'][$menu_id] > 1) { ?>
-                        <script>
-                            $('#sortable_pages<?= $menu_id; ?>').sortable({
-                                handle: '.handle'
-                            }).bind('sortupdate', function() {
-                                var orderstring = "";
-                                var order_arr = document.getElementsByClassName("handle");
-                                for (var z = 0; z < order_arr.length; z++) {
-                                    orderstring = orderstring + order_arr[z].id + ";";
-                                    //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
-                                }
-
-                                orderstring = orderstring.substring(0, orderstring.length - 1);
-                                $.ajax({
-                                    url: "include/drag.php?drag_kind=cms_pages&order=" + orderstring,
-                                    success: function(data) {},
-                                    error: function(xhr, ajaxOptions, thrownError) {
-                                        alert(xhr.status);
-                                        alert(thrownError);
-                                    }
-                                });
-                            });
-                        </script>
-                    <?php } ?>
                 <?php } ?>
 
                 <div class="mt-2">
@@ -229,29 +203,6 @@ Please disconnect the pages from this menu first.'); ?>
                 </li>
             <?php } ?>
         </ul>
-
-        <script>
-            $('#sortable_categories').sortable({
-                handle: '.handle'
-            }).bind('sortupdate', function() {
-                var orderstring = "";
-                var order_arr = document.getElementsByClassName("handle");
-                for (var z = 0; z < order_arr.length; z++) {
-                    orderstring = orderstring + order_arr[z].id + ";";
-                    //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
-                }
-
-                orderstring = orderstring.substring(0, orderstring.length - 1);
-                $.ajax({
-                    url: "include/drag.php?drag_kind=cms_categories&order=" + orderstring,
-                    success: function(data) {},
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    }
-                });
-            });
-        </script>
 
         <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
             <input type="hidden" name="cms_tab" value="menu">
@@ -453,3 +404,6 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
         </form>
     <?php } ?>
 </div>
+
+<!-- Include the JavaScript file for sortable functionality -->
+<script src="../assets/js/edit_cms_pages.js"></script>

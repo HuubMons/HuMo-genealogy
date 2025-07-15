@@ -2450,14 +2450,12 @@ class EditorModel extends AdminBaseModel
             $showMedia = new showMedia();
 
             // *** get path of pictures folder 
-            //$datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
-            $datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $this->tree_prefix . "'");
-            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-            $tree_pict_path = $dataDb->tree_pict_path;
+            $familytrees = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $this->tree_prefix . "'");
+            $familytree = $familytrees->fetch(PDO::FETCH_OBJ);
+            $tree_pict_path = $familytree->tree_pict_path;
             if (substr($tree_pict_path, 0, 1) === '|') {
                 $tree_pict_path = 'media/';
             }
-            //$dir = $path_prefix . $tree_pict_path;
             $dir = '../' . $tree_pict_path;
 
             $safepath = '';
@@ -3236,7 +3234,6 @@ class EditorModel extends AdminBaseModel
             if (isset($_GET['connect_connect_id']) && $_GET['connect_connect_id']) {
                 $connect_connect_id = $_GET['connect_connect_id'];
             }
-            //if (isset($_POST['connect_connect_id']) AND $_POST['connect_connect_id']) $connect_connect_id=$_POST['connect_connect_id'];
 
             $event_link = '';
             if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
@@ -3245,12 +3242,10 @@ class EditorModel extends AdminBaseModel
             if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
                 $event_link = '&event_family=1';
             }
-            $phpself2 = 'index.php?page=' . $page . '&connect_kind=' . $connect_kind . '&connect_sub_kind=' . $connect_sub_kind . '&connect_connect_id=' . $connect_connect_id;
-            $phpself2 .= $event_link;
-
 ?>
             <div class="alert alert-danger">
-                <form method="post" action="<?= $phpself2; ?>" style="display : inline;">
+                <!-- TODO: check code, $_GET and $_POST are used -->
+                <form method="post" action="index.php?page=<?= $page; ?>&connect_kind=<?= $connect_kind; ?>&connect_sub_kind=<?= $connect_sub_kind; ?>&connect_connect_id=<?= $connect_connect_id . $event_link; ?>" style="display : inline;">
                     <input type="hidden" name="connect_drop" value="<?= $_GET['connect_drop']; ?>">
                     <input type="hidden" name="connect_kind" value="<?= $connect_kind; ?>">
                     <input type="hidden" name="connect_sub_kind" value="<?= $connect_sub_kind; ?>">
@@ -3872,8 +3867,6 @@ class EditorModel extends AdminBaseModel
             $person_result = $this->dbh->query($person_qry);
             $count_latest_changes = $person_result->rowCount();
             while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                // *** Cache: only use cache if there are > 5.000 persons in database ***
-                //if (isset($dataDb->tree_persons) AND $dataDb->tree_persons>5000){
                 $person->time = time(); // *** Add linux time to array ***
                 if ($cache) $cache .= '|';
                 $cache .= serialize(json_encode($person));

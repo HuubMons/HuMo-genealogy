@@ -1535,10 +1535,10 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                             $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
                         }
                         if ($this_event == 'picture') { // show link to pic
-                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
-                            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+                            $familyTreeQry = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
+                            $familyTree = $familyTreeQry->fetch(PDO::FETCH_OBJ);
                             // TODO check if this works using a default picture path.
-                            $tree_pict_path = $dataDb->tree_pict_path;
+                            $tree_pict_path = $familyTree->tree_pict_path;
                             $dir = '../' . $tree_pict_path;
 
                             $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
@@ -1567,9 +1567,9 @@ function put_event($this_event, $name_event, $l_ev, $r_ev)
                             $value = $resultDb->pers_firstname . ' ' . $resultDb->pers_lastname;
                         }
                         if ($this_event == 'picture') {
-                            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
-                            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-                            $tree_pict_path = $dataDb->tree_pict_path;
+                            $familyTreeQry = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $trees['tree_id'] . "'");
+                            $familyTree = $familyTreeQry->fetch(PDO::FETCH_OBJ);
+                            $tree_pict_path = $familyTree->tree_pict_path;
                             $dir = '../' . $tree_pict_path;
 
                             $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
@@ -1736,8 +1736,8 @@ function show_addresses_merge($left_ged, $right_ged)
  */
 function merge_them($left, $right, $mode)
 {
-    global $dbh, $db_functions, $trees, $data2Db, $phpself, $language;
-    global $trees, $humo_option, $result1Db, $result2Db;
+    global $dbh, $db_functions, $trees, $trees, $humo_option, $result1Db, $result2Db;
+
     // merge algorithm - merge right into left
     // 1. if right has pers_fams with different wife - this Fxx is added to left's pers_fams (in humo_person)
     //    and in humo_family the Ixx of right is replaced with the Ixx of left
@@ -2588,7 +2588,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
             echo '<br><br>';
         ?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="tree">
                 <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
@@ -2596,7 +2596,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
             </form>
 
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="tree">
                 <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
@@ -2610,7 +2610,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
             </form>
         <?php } else { ?>
             <br>
-            <form method="post" action="<?= $phpself; ?>" style="display : inline;">
+            <form method="post" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="tree">
                 <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                 <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
