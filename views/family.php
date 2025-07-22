@@ -56,7 +56,7 @@ if (!$data["family_id"]) {
     $id = '';
     ?>
 
-    <table class="humo standard">
+    <table class="table">
         <!-- Show person topline (top text, settings, favourite) -->
         <?php include __DIR__ . '/family_top_line.php'; ?>
         <tr>
@@ -316,8 +316,7 @@ else {
                     </div>
                 <?php } ?>
 
-                <table class="humo standard">
-                    <!-- <table class="table"> -->
+                <table class="table">
                     <?php
                     // *** Show family top line (family top text, settings, favourite) ***
                     include __DIR__ . '/family_top_line.php';
@@ -1038,8 +1037,8 @@ if ($data["descendant_report"] == false) {
         $note_result = $dbh->query($note_qry);
         $num_rows = $note_result->rowCount();
     ?>
-        <table align="center" class="humo">
-            <tr class="humo_user_notes">
+        <table align="center" class="table w-50">
+            <tr class="table-primary humo_user_notes">
                 <th>
                     <?php if ($num_rows) echo '<a href="#humo_user_notes"></a> '; ?>
                     <?= __('User notes'); ?>
@@ -1139,12 +1138,14 @@ if ($data["descendant_report"] == false) {
                 //} else {
                 //	echo '<br><b>'.__('E-mail sent!').'</b><br>';
             }
-
-            echo '<table align="center" class="humo">';
-            echo '<tr><th><a name="add_info"></a>' . __('Your information is saved and will be reviewed by the webmaster.') . '</th></tr>';
-            echo '</table>';
-        } else {
         ?>
+
+            <table align="center" class="table w-50">
+                <tr>
+                    <th><a name="add_info"></a><?= __('Your information is saved and will be reviewed by the webmaster.'); ?></th>
+                </tr>
+            </table>
+        <?php } else { ?>
             <!-- Script voor expand and collapse of items -->
             <script>
                 function hideShow(el_id) {
@@ -1168,8 +1169,8 @@ if ($data["descendant_report"] == false) {
             <form method="POST" action="<?= $start_url; ?>#add_info" style="display : inline;">
                 <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                 <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                <table align="center" class="humo" width="40%">
-                    <tr id="add_info">
+                <table align="center" class="table w-50">
+                    <tr id="add_info" class="table-primary">
                         <th colspan="2">
                             <a href="<?= $start_url; ?>#add_info" onclick="hideShow(1);"><span id="hideshowlink1">[+]</span></a>
                             <?= ' ' . __('Add information or remarks'); ?>

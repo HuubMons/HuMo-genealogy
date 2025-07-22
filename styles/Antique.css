@@ -70,45 +70,15 @@ p {
     background-color: #778bc63a;
 }
 
-/* Tables */
-table.humo {
-    background: url(images_antique/tree_background_450lcbr.jpg) repeat left top;
-    margin-top: 10px;
-}
-
 table.standard {
     margin-left: auto;
     margin-right: auto;
-}
-
-/* 1st table A-Z */
-table.humo td {
-    border-color: #3355cc;
-    /* background: url(images_antique/tree_background_450lcbr.jpg) repeat left top; */
-}
-
-table.humo tr:first-of-type td {
-    border-color: #3355cc;
 }
 
 /* 2nd table A-Z */
 .family_page_toptext {
     color: #000066;
     background-color: #ccccff;
-    background: url("images_antique/header2.jpg") repeat left top;
-}
-
-table.humo td.style_tree_text {
-    background-color: #eeeeff;
-}
-
-/* Headline in table */
-tr.table_headline {
-    background-image: url('images_antique/header2.jpg');
-}
-
-/* table header  */
-table.humo td.table_header {
     background: url("images_antique/header2.jpg") repeat left top;
 }
 

@@ -1,9 +1,14 @@
-<!-- Start of editor table -->
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $languageDate = new \Genealogy\Include\LanguageDate;
 $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
 
+<!-- Start of editor table -->
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="person" value="<?= $pers_gedcomnumber; ?>">
@@ -533,7 +538,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             // *** Nickname, alias, adopted name, hebrew name, etc. ***
             // *** Remark: in editorModel.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
         ?>
-            <tr class="table_header_large">
+            <tr>
                 <td></td>
                 <td colspan="2">
                     <div class="row">
@@ -1529,7 +1534,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         // TODO SEE ALSO: function edit_event_profession in editor.php. 
         ?>
         <!-- Profession(s) -->
-        <tr class="table_header_large" id="profession">
+        <tr id="profession">
             <td style="border-right:0px;">
                 <b><?= __('Profession'); ?></b>
             </td>
@@ -1590,7 +1595,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         <?= $EditorEvent->show_event('person', $pers_gedcomnumber, 'profession'); ?>
 
         <!-- Religion -->
-        <tr class="table_header_large" id="religion">
+        <tr id="religion">
             <td style="border-right:0px;"><?= __('Religion'); ?></td>
             <td colspan="2">
                 <?php
@@ -1660,7 +1665,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         if (!isset($_GET['add_person'])) {
         ?>
             <!-- Person events -->
-            <tr class="table_header_large" id="event_person_link">
+            <tr id="event_person_link">
                 <td><?= __('Events'); ?></td>
                 <td colspan="2">
                     <div class="row">
@@ -1758,7 +1763,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             $num_rows = $note_result->rowCount();
             ?>
 
-            <tr class="table_header_large">
+            <tr>
                 <td>
                     <?php if ($num_rows) { ?>
                         <a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a>
@@ -1794,7 +1799,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             // *** Person added by user ***
             if ($person->pers_new_user_id || $person->pers_new_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Added by'); ?></td>
                     <td colspan="2">
                         <?= $languageDate->show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
@@ -1806,7 +1811,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             // *** Person changed by user ***
             if ($person->pers_changed_user_id || $person->pers_changed_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2">
                         <?= $languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
@@ -1818,7 +1823,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         ?>
 
         <!-- Extra "Save" line -->
-        <tr class="table_header_large">
+        <tr>
             <td></td>
             <td colspan="2">
                 <?php if ($editor['add_person'] == false) { ?>

@@ -20,7 +20,7 @@ if (isset($_GET['note_add'])) {
     $anchor = '';
 }
 ?>
-<tr class="table_header_large">
+<tr>
     <td><a name="editor_notes"></a><?= __('Editor notes'); ?></td>
     <td colspan="2">
         <a href="index.php?page=editor&amp;note_add=<?= $note_connect_kind . $anchor; ?>">[<?= __('Add'); ?>]</a>

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * General config variables. 
+ * General config variables.
+ * 
+ * $tree_id has the same value as $selectedFamilyTree->tree_id. But it's a nice short variable name.
  */
 
 $config = array(

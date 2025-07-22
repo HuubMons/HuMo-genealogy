@@ -6,9 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AncestorLabel' => $baseDir . '/include/AncestorLabel.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Genealogy\\Include\\Ancestors' => $baseDir . '/include/Ancestors.php',
     'Genealogy\\Include\\Authenticator' => $baseDir . '/include/2fa_authentication/authenticator.php',
+    'Genealogy\\Include\\BuildCondition' => $baseDir . '/include/BuildCondition.php',
     'Genealogy\\Include\\CalculateDates' => $baseDir . '/include/CalculateDates.php',
     'Genealogy\\Include\\DatePlace' => $baseDir . '/include/DatePlace.php',
     'Genealogy\\Include\\DbFunctions' => $baseDir . '/include/DbFunctions.php',
@@ -35,6 +37,7 @@ return array(
     'Genealogy\\Include\\ProcessText' => $baseDir . '/include/ProcessText.php',
     'Genealogy\\Include\\ResizePicture' => $baseDir . '/include/ResizePicture.php',
     'Genealogy\\Include\\SafeTextDb' => $baseDir . '/include/SafeTextDb.php',
+    'Genealogy\\Include\\SafeTextShow' => $baseDir . '/include/SafeTextShow.php',
     'Genealogy\\Include\\SelectTree' => $baseDir . '/include/SelectTree.php',
     'Genealogy\\Include\\SetTimezone' => $baseDir . '/include/SetTimezone.php',
     'Genealogy\\Include\\ShowAddresses' => $baseDir . '/include/ShowAddresses.php',
@@ -50,7 +53,6 @@ return array(
     'Genealogy\\Include\\ValidateDate' => $baseDir . '/include/ValidateDate.php',
     'Genealogy\\Include\\ValidateGedcomnumber' => $baseDir . '/include/ValidateGedcomnumber.php',
     'Genealogy\\Include\\Witness' => $baseDir . '/include/Witness.php',
-    'Genealogy\\Include\\safeTextShow' => $baseDir . '/include/SafeTextShow.php',
     'PHPRtfLite' => $baseDir . '/include/phprtflite/lib/PHPRtfLite.php',
     'PHPRtfLite_Autoloader' => $baseDir . '/include/phprtflite/lib/PHPRtfLite/Autoloader.php',
     'PHPRtfLite_Border' => $baseDir . '/include/phprtflite/lib/PHPRtfLite/Border.php',

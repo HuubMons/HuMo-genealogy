@@ -14,17 +14,6 @@ $pdf_source = array();  // is set in show_sources with sourcenr as key to be use
 $dirmark1 = '';
 $dirmark2 = '';
 
-// TODO create seperate controller script.
-$get_ancestor = new \Genealogy\App\Model\AncestorModel($config);
-$data["main_person"] = $get_ancestor->getMainPerson2('', __FILE__);
-$rom_nr = $get_ancestor->getNumberRoman();
-
-// TODO for now using extended class.
-$data["text_presentation"] =  $get_ancestor->getTextPresentation();
-$data["family_expanded"] =  $get_ancestor->getFamilyExpanded();
-$data["picture_presentation"] =  $get_ancestor->getPicturePresentation();
-// source_presentation is saved in session.
-
 $db_functions->set_tree_id($tree_id);
 
 // *** Check if person gedcomnumber is valid ***
@@ -34,7 +23,7 @@ $db_functions->check_person($data["main_person"]);
 $pdfdetails = array();
 $pdf_marriage = array();
 
-// *** Loading without autoload ***
+// *** Loading without autoload (tFPDF isn't using nameclass yet) ***
 require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
 $pdf = new tFPDFextend();
 
@@ -45,6 +34,7 @@ $personName = new \Genealogy\Include\PersonName();
 $personName_extended = new \Genealogy\Include\PersonNameExtended();
 $personData = new \Genealogy\Include\PersonData();
 $showSourcePDF = new \Genealogy\Include\ShowSourcePDF();
+$ancestorLabel = new \Genealogy\Include\AncestorLabel();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
@@ -73,60 +63,6 @@ $ancestor_number2[] = 1;
 $marriage_gedcomnumber2[] = 0;
 $generation = 1;
 
-$language["gen1"] = '';
-if (__('PROBANT') != 'PROBANT') {
-    $language["gen1"] .= __('PROBANT');
-}
-$language["gen2"] = __('Parents');
-$language["gen3"] = __('Grandparents');
-$language["gen4"] = __('Great-Grandparents');
-$language["gen5"] = __('Great Great-Grandparents');
-$language["gen6"] = __('3rd Great-Grandparents');
-$language["gen7"] = __('4th Great-Grandparents');
-$language["gen8"] = __('5th Great-Grandparents');
-$language["gen9"] = __('6th Great-Grandparents');
-$language["gen10"] = __('7th Great-Grandparents');
-$language["gen11"] = __('8th Great-Grandparents');
-$language["gen12"] = __('9th Great-Grandparents');
-$language["gen13"] = __('10th Great-Grandparents');
-$language["gen14"] = __('11th Great-Grandparents');
-$language["gen15"] = __('12th Great-Grandparents');
-$language["gen16"] = __('13th Great-Grandparents');
-$language["gen17"] = __('14th Great-Grandparents');
-$language["gen18"] = __('15th Great-Grandparents');
-$language["gen19"] = __('16th Great-Grandparents');
-$language["gen20"] = __('17th Great-Grandparents');
-$language["gen21"] = __('18th Great-Grandparents');
-$language["gen22"] = __('19th Great-Grandparents');
-$language["gen23"] = __('20th Great-Grandparents');
-$language["gen24"] = __('21th Great-Grandparents');
-$language["gen25"] = __('22th Great-Grandparents');
-$language["gen26"] = __('23th Great-Grandparents');
-$language["gen27"] = __('24th Great-Grandparents');
-$language["gen28"] = __('25th Great-Grandparents');
-$language["gen29"] = __('26th Great-Grandparents');
-$language["gen30"] = __('27th Great-Grandparents');
-$language["gen31"] = __('28th Great-Grandparents');
-$language["gen32"] = __('29th Great-Grandparents');
-$language["gen33"] = __('30th Great-Grandparents');
-$language["gen34"] = __('31th Great-Grandparents');
-$language["gen35"] = __('32th Great-Grandparents');
-$language["gen36"] = __('33th Great-Grandparents');
-$language["gen37"] = __('34th Great-Grandparents');
-$language["gen38"] = __('35th Great-Grandparents');
-$language["gen39"] = __('36th Great-Grandparents');
-$language["gen40"] = __('37th Great-Grandparents');
-$language["gen41"] = __('38th Great-Grandparents');
-$language["gen42"] = __('39th Great-Grandparents');
-$language["gen43"] = __('40th Great-Grandparents');
-$language["gen44"] = __('41th Great-Grandparents');
-$language["gen45"] = __('42th Great-Grandparents');
-$language["gen46"] = __('43th Great-Grandparents');
-$language["gen47"] = __('44th Great-Grandparents');
-$language["gen48"] = __('45th Great-Grandparents');
-$language["gen49"] = __('46th Great-Grandparents');
-$language["gen50"] = __('47th Great-Grandparents');
-
 $listed_array = array();
 
 // *** Loop for ancestor report ***
@@ -143,7 +79,6 @@ while (isset($ancestor_array2[0])) {
     $marriage_gedcomnumber = $marriage_gedcomnumber2;
     unset($marriage_gedcomnumber2);
 
-    //echo 'pdf generation<br>';
     $pdf->Cell(0, 2, "", 0, 1);
     $pdf->SetFont($pdf->pdf_font, 'BI', 14);
     $pdf->SetFillColor(200, 220, 255);
@@ -151,11 +86,14 @@ while (isset($ancestor_array2[0])) {
         $pdf->AddPage();
         $pdf->SetY(20);
     }
-    if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
-        $pdf->Cell(0, 8, $pdf->pdf_convert(__('generation ') . $rom_nr[$generation] . ' (' . $language["gen" . $generation] . ')'), 0, 1, 'C', true);
-    } elseif (isset($rom_nr[$generation])) {
-        $pdf->Cell(0, 8, $pdf->pdf_convert(__('generation ') . $rom_nr[$generation]), 0, 1, 'C', true);
+
+    $generationLabel = $ancestorLabel->getLabel($generation);
+    if ($generationLabel) {
+        $pdf->Cell(0, 8, $pdf->pdf_convert(__('Generation') . ' ' . $data["rom_nr"][$generation] . ' (' . $generationLabel . ')'), 0, 1, 'C', true);
+    } elseif (isset($data["rom_nr"][$generation])) {
+        $pdf->Cell(0, 8, $pdf->pdf_convert(__('Generation') . ' ' . $data["rom_nr"][$generation]), 0, 1, 'C', true);
     }
+
     $pdf->SetFont($pdf->pdf_font, '', 12);
     // *** Loop per generation ***
     $counter = count($ancestor_array);
@@ -221,7 +159,8 @@ while (isset($ancestor_array2[0])) {
                     $pdf->Ln(8); // (number) was placed under previous number
                     //  and there's no data so we have to move 1 line down for next person 
                 }
-            } else { // person was already listed
+            } else {
+                // person was already listed
                 $thisx = $pdf->GetX();
                 $pdf->SetX($thisx + 28);
                 $pdf->Write(8, __('Already listed above as number ') . $listednr . "\n");

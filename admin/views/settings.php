@@ -1,4 +1,9 @@
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $folder = opendir('../styles/');
 while (false !== ($file = readdir($folder))) {
     if (substr($file, -4, 4) === '.css') {

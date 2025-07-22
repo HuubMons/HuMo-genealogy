@@ -117,8 +117,9 @@ class tFPDFextend extends tFPDF
                     if (is_file($value)) {
                         //TODO check all picture items in this script.
                         if ($numpics > 14) {
+                            // no more than 15 pics
                             continue;
-                        }  // no more than 15 pics
+                        }
                         $presentpic = intval(substr($key, 8));   //get the pic nr to compare later with txt nr
                         $picarray[$numpics][0] = $value;
                         $size = getimagesize($value);

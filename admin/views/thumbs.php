@@ -768,8 +768,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     </div>
                 </div>
 
-                <table class="humo" cellspacing="0" style="margin-left:0px; text-align:center; width:80%">
-                    <tr>
+                <table class="table">
+                    <tr class="table-primary">
                         <td style="border-bottom:0px;"></td>
                         <td style="font-size:120%;border-bottom:0px;width:25%" white-space:nowrap;"><b><?= __('Category prefix'); ?></b></td>
                         <td style="font-size:120%;border-bottom:0px;width:60%"><b><?= __('Category name'); ?></b></td>

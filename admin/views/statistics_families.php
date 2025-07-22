@@ -1,7 +1,13 @@
 <?php
+
 /**
  * Family statistics
  */
+
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
 
 $familytrees = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
 $num_rows = $familytrees->rowCount();
@@ -23,7 +29,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
     <?php
     while ($familytree = $familytrees->fetch(PDO::FETCH_OBJ)) {
         $tree_date = $showTreeDate->show_tree_date($familytree->tree_date);
-        $treetext = $showTreeText ->show_tree_text($familytree->tree_id, $selected_language);
+        $treetext = $showTreeText->show_tree_text($familytree->tree_id, $selected_language);
 
         if ($familytree->tree_id == $tree_id) {
     ?>

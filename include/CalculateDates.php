@@ -94,7 +94,6 @@ class CalculateDates
 
     public function process_special_text($date1, $date2, $baptism)
     {
-        global $language;
         $date1_remark = null; // pers_birth_date
         $date2_remark = null; // pers_death_date
         $text = null;
@@ -193,7 +192,7 @@ class CalculateDates
     // *** $age_check=false/true. true=show short age text. ***
     public function calculate_age($baptism_date, $birth_date, $death_date, $age_check = false, $age_event = '')
     {
-        global $language, $user;
+        global $user;
 
         // *** handle person born and died BC ***
         if (substr($birth_date, -2, 2) === "BC" && substr($death_date, -2, 2) === "BC") {
@@ -448,8 +447,6 @@ class CalculateDates
     // *** Function calculate_marriage added by Huub Mons ***
     public function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check = false)
     {
-        global $language, $selected_language;
-
         $marr_date = strtoupper($marr_date);
 
         // *** Also calculate marriage if only marriage date is known ***
@@ -460,8 +457,8 @@ class CalculateDates
         }
 
         // *** Remove gregorian date from date ***
-        //		convert "1 Jan 1634/5" to "1 Jan 1634".
-        //		and convert "25 Dec 1600/4 Jan 1601" to "25 Dec 1600".
+        //      convert "1 Jan 1634/5" to "1 Jan 1634".
+        //      and convert "25 Dec 1600/4 Jan 1601" to "25 Dec 1600".
         if (strpos($marr_date, '/') > 0) {
             $temp = explode('/', $marr_date);
             $marr_date = $temp[0];
@@ -497,7 +494,8 @@ class CalculateDates
                         //$age=$special_text.__('1 years');
                     }
                 }
-            } else { // Months are not the same: we need month for exact calculation
+            } else {
+                // Months are not the same: we need month for exact calculation
                 if (($start_month = $this->search_month($marr_date))  and ($end_month = $this->search_month($end_date))) { // 2 month
                     if ($start_month == $end_month) { // same month, we need day for exact calculation
                         if (($start_day = $this->search_day($marr_date)) and ($end_day = $this->search_day($end_date))) { // 2 days

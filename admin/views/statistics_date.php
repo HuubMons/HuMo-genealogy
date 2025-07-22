@@ -1,3 +1,10 @@
+<?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+?>
+
 <div class="center">
     <br>
     <form method="POST" action="index.php?page=statistics&amp;tab=date_statistics" style="display : inline;">

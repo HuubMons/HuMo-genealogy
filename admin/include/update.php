@@ -34,12 +34,14 @@
 
 ?>
     <p>
-    <table class="humo">
-        <?php
-        echo '<tr class="table_header"><th colspan="2">';
-        printf(__('%s status'), 'HuMo-genealogy');
-        echo '</th></tr>';
+    <table class="table">
+        <tr>
+            <th colspan="2">
+                <?php printf(__('%s status'), 'HuMo-genealogy'); ?>
+            </th>
+        </tr>
 
+        <?php
         // *** Very old databases: no database update status available ***
         if (!isset($humo_option["update_status"])) {
             // *** Generate table humo_tree_texts and copy texts from humo_stambomen to humo_tree_texts ***

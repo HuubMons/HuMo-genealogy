@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Rename places.
  */

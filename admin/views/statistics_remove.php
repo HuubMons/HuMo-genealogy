@@ -1,4 +1,9 @@
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $month = date("m");
 $year = date("Y");
 $month--;

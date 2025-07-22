@@ -55,12 +55,13 @@ p {
 }
 
 /* Default background color */
-.genealogy_search{
+.genealogy_search {
     background-color: transparent;
     border: solid 1px #9d8a8a;
 }
+
 /* Used for old mainmenu_centerbox */
-.genealogy_row{
+.genealogy_row {
     background: #FFFFFF url("images_silverline/background.gif") no-repeat;
     border: solid 1px #999999;
     border-radius: 3px;
@@ -70,11 +71,10 @@ p {
 /* Bootstrap menu */
 .genealogy_menu {
     /* background: url("images_silverline/silvermenu1.png") repeat left top; */
-    background-image: linear-gradient(to top, rgb(192, 192, 192) 0%, 	rgb(255, 255, 255) 80%);
+    background-image: linear-gradient(to top, rgb(192, 192, 192) 0%, rgb(255, 255, 255) 80%);
 }
 
 /* Tables */
-table.humo,
 table.ext {
     background-color: #FFFFFF;
     margin-top: 10px;
@@ -83,15 +83,6 @@ table.ext {
 table.standard {
     margin-left: auto;
     margin-right: auto;
-}
-
-/* 1st table A-Z */
-table.humo td {
-    border-color: #3355cc;
-}
-
-table.humo tr:first-of-type td {
-    border-color: #3355cc;
 }
 
 td.style_tree_text {
@@ -149,9 +140,4 @@ div.hour_ancestor_split {
 .chart_line {
     background-color: #000066;
     border: 0px;
-}
-
-/* table header  */
-.table_headline {
-    background: url("images_silverline/menuhover.jpg") repeat left top;
 }

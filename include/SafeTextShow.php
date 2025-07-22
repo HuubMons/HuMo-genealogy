@@ -2,7 +2,6 @@
 
 /**
  * Function to safely show text on screen (in forms etc.)
- * 
  */
 
 namespace Genealogy\Include;

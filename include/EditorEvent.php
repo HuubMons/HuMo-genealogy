@@ -281,8 +281,8 @@ class EditorEvent
         // *** Show pictures by person, family and (shared) source ***
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
             //$link = 'picture';
-        ?>
-            <tr class="table_header_large" id="picture">
+            ?>
+            <tr id="picture">
                 <td style="border-right:0px;">
                     <b><?= __('Picture/ Media'); ?></b>
                 </td>
@@ -517,9 +517,13 @@ class EditorEvent
 
                                                 $event_text = $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom);
                                                 $person_item = 'person_witness';
-                                                if ($event_connect_kind == 'family') {
+                                                //if ($event_connect_kind == 'family') {
+                                                //    $person_item = 'marriage_witness';
+                                                //}
+                                                if ($event_connect_kind == 'MARR' || $event_connect_kind == 'MARR_REL') {
                                                     $person_item = 'marriage_witness';
                                                 }
+
                                                 // *** Orange items if no witness name is selected or added in text ***
                                                 $style = '';
                                                 if (!$data_listDb->event_event && !$data_listDb->event_connect_id2) {
@@ -1152,7 +1156,7 @@ class EditorEvent
                 </tr>
             <?php } ?>
 
-            <?php
+        <?php
         } // *** Don't use this block for newly added person ***
 
 
@@ -1161,8 +1165,8 @@ class EditorEvent
             $subfolders = glob('../' . $tree_pict_path . '[^.]*', GLOB_ONLYDIR);
             $ignore = array('cms', 'slideshow', 'thumbs');
             // *** Upload image ***
-            ?>
-            <tr class="table_header_large">
+        ?>
+            <tr>
                 <td></td>
                 <td colspan="2">
 
@@ -1210,7 +1214,7 @@ class EditorEvent
                     </div>
                 </td>
             </tr>
-    <?php
+<?php
         }
 
         // TODO check return (no longer needed?).

@@ -1,4 +1,8 @@
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
 
 /**
  * 16-08-2024 Huub: changed layout to Bootstrap.

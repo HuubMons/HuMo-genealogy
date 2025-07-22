@@ -20,6 +20,7 @@ $editor['confirm'] = $editorModel->update_editor2();
 // TODO this picture remove confirm box is shown above the header.
 echo $editor['confirm']; // Confirm message to remove picture from source.
 
+$languageDate = new Genealogy\Include\LanguageDate($admin_config, $tree_prefix);
 
 
 $field_text_large = 'style="height: 100px; width:550px"';
@@ -144,60 +145,13 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
 <?php
 // *** Show selected source ***
 if ($editSource['source_id'] || isset($_POST['add_source'])) {
-    if (isset($_POST['add_source'])) {
-        $source_gedcomnr = '';
-        $source_status = '';
-        $source_title = '';
-        $source_date = '';
-        $source_place = '';
-        $source_publ = '';
-        $source_refn = '';
-        $source_auth = '';
-        $source_subj = '';
-        $source_item = '';
-        $source_kind = '';
-        $source_text = '';
-        $source_repo_caln = '';
-        $source_repo_page = '';
-        $source_repo_gedcomnr = '';
-    } else {
-        $source_qry = $dbh->prepare("SELECT * FROM humo_sources WHERE source_tree_id = :tree_id AND source_id = :source_id");
-        $source_qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-        $source_qry->bindValue(':source_id', $editSource['source_id'], PDO::PARAM_STR);
-        $source_qry->execute();
-        //$sourceDb=$db_functions->get_source ($sourcenum);
-
-        $die_message = __('No valid source number.');
-        try {
-            $sourceDb = $source_qry->fetch(PDO::FETCH_OBJ);
-        } catch (PDOException $e) {
-            echo $die_message;
-        }
-        $source_gedcomnr = $sourceDb->source_gedcomnr;
-        $source_status = $sourceDb->source_status;
-        $source_title = $sourceDb->source_title;
-        $source_date = $sourceDb->source_date;
-        $source_place = $sourceDb->source_place;
-        $source_publ = $sourceDb->source_publ;
-        $source_refn = $sourceDb->source_refn;
-        $source_auth = $sourceDb->source_auth;
-        $source_auth = $sourceDb->source_auth;
-        $source_subj = $sourceDb->source_subj;
-        $source_item = $sourceDb->source_item;
-        $source_kind = $sourceDb->source_kind;
-        $source_text = $sourceDb->source_text;
-        $source_repo_caln = $sourceDb->source_repo_caln;
-        $source_repo_page = $sourceDb->source_repo_page;
-        $source_repo_gedcomnr = $sourceDb->source_repo_gedcomnr;
-    }
-
     $repo_qry = $dbh->prepare("SELECT * FROM humo_repositories WHERE repo_tree_id = :tree_id ORDER BY repo_name, repo_place");
     $repo_qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
     $repo_qry->execute();
 ?>
     <form method="POST" action="index.php?page=edit_sources" style="display : inline;" enctype="multipart/form-data" name="form3" id="form3">
         <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
-        <input type="hidden" name="source_gedcomnr" value="<?= $source_gedcomnr; ?>">
+        <input type="hidden" name="source_gedcomnr" value="<?= $editSource['data']['gedcomnr']; ?>">
 
         <div class="p-2 my-sm-2 genealogy_search container-md">
 
@@ -206,8 +160,8 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-2"><?= __('Status'); ?></div>
                 <div class="col-md-4">
                     <select size="1" name="source_status" class="form-select form-select-sm">
-                        <option value="publish" <?= $source_status == 'publish' ? ' selected' : ''; ?>><?= __('publish'); ?></option>
-                        <option value="restricted" <?= $source_status == 'restricted' ? ' selected' : ''; ?>><?= __('restricted'); ?></option>
+                        <option value="publish" <?= $editSource['data']['status'] == 'publish' ? ' selected' : ''; ?>><?= __('publish'); ?></option>
+                        <option value="restricted" <?= $editSource['data']['status'] == 'restricted' ? ' selected' : ''; ?>><?= __('restricted'); ?></option>
                     </select>
                     <span style="font-size: 13px;"><?= __('restricted = only visible for selected user groups'); ?></span>
                 </div>
@@ -217,7 +171,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Title'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_title" value="<?= htmlspecialchars($source_title); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_title" value="<?= htmlspecialchars($editSource['data']['title']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -225,7 +179,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Subject'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_subj" value="<?= htmlspecialchars($source_subj); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_subj" value="<?= htmlspecialchars($editSource['data']['subj']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -233,7 +187,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Date'); ?></div>
                 <div class="col-md-4">
-                    <?php $editSource['editor_cls']->date_show($source_date, "source_date"); ?>
+                    <?php $editSource['editor_cls']->date_show($editSource['data']['date'], "source_date"); ?>
                 </div>
             </div>
 
@@ -241,7 +195,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Place'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_place" value="<?= htmlspecialchars($source_place); ?>" size="50" class="form-control form-control-sm">
+                    <input type="text" name="source_place" value="<?= htmlspecialchars($editSource['data']['place']); ?>" size="50" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -252,7 +206,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                     <select size="1" name="source_repo_gedcomnr" class="form-select form-select-sm">
                         <option value=""></option>
                         <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
-                            <option value="<?= $repoDb->repo_gedcomnr; ?>" <?= $repoDb->repo_gedcomnr == $source_repo_gedcomnr ? ' selected' : ''; ?>>
+                            <option value="<?= $repoDb->repo_gedcomnr; ?>" <?= $repoDb->repo_gedcomnr == $editSource['data']['repo_gedcomnr'] ? ' selected' : ''; ?>>
                                 <?= $repoDb->repo_gedcomnr; ?>, <?= $repoDb->repo_name; ?> <?= $repoDb->repo_place; ?></option>
                         <?php } ?>
                     </select>
@@ -265,7 +219,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Publication'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_publ" value="<?= htmlspecialchars($source_publ); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_publ" value="<?= htmlspecialchars($editSource['data']['publ']); ?>" size="60" class="form-control form-control-sm">
                     <span style="font-size: 13px;">https://... <?= __('will be shown as a link.'); ?></span>
                 </div>
             </div>
@@ -274,7 +228,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Own code'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_refn" value="<?= $source_refn; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_refn" value="<?= $editSource['data']['refn']; ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -282,7 +236,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Author'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_auth" value="<?= $source_auth; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_auth" value="<?= $editSource['data']['auth']; ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -290,7 +244,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Nr.'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_item" value="<?= $source_item; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_item" value="<?= $editSource['data']['item']; ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -298,7 +252,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Kind'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_kind" value="<?= $source_kind; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_kind" value="<?= $editSource['data']['kind']; ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -306,7 +260,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Archive'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_repo_caln" value="<?= $source_repo_caln; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_repo_caln" value="<?= $editSource['data']['repo_caln']; ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -314,7 +268,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Page'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_repo_page" value="<?= $source_repo_page; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_repo_page" value="<?= $editSource['data']['repo_page']; ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -322,16 +276,16 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Text'); ?></div>
                 <div class="col-md-4">
-                    <textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editSource['editor_cls']->text_show($source_text); ?></textarea>
+                    <textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editSource['editor_cls']->text_show($editSource['data']['text']); ?></textarea>
                 </div>
             </div>
 
             <!-- TODO replace table with div. Function must be rebuild -->
-            <table class="humo standard" border="1">
+            <table class="table table-light" border="1">
                 <!-- Picture by source -->
                 <?php
                 if (!isset($_POST['add_source'])) {
-                    echo $EditorEvent->show_event('source', $sourceDb->source_gedcomnr, 'source_picture');
+                    echo $EditorEvent->show_event('source', $editSource['data']['gedcomnr'], 'source_picture');
                 ?>
                     <!-- Expand and collapse source items -->
                     <script>
@@ -350,6 +304,32 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <?php } ?>
             </table>
 
+            <?php
+            // *** Source added by user ***
+            if ($editSource['data']['new_user_id'] || $editSource['data']['new_datetime']) {
+            ?>
+                <div class="row mb-2">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2"><?= __('Added by'); ?></div>
+                    <div class="col-md-4">
+                        <?= $languageDate->show_datetime($editSource['data']['new_datetime']) . ' ' . $db_functions->get_user_name($editSource['data']['new_user_id']); ?>
+                    </div>
+                </div>
+            <?php
+            }
+
+            // *** Source changed by user ***
+            if ($editSource['data']['changed_user_id'] || $editSource['data']['changed_datetime']) {
+            ?>
+                <div class="row mb-2">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2"><?= __('Changed by'); ?></div>
+                    <div class="col-md-4">
+                        <?= $languageDate->show_datetime($editSource['data']['changed_datetime']) . ' ' . $db_functions->get_user_name($editSource['data']['changed_user_id']); ?>
+                    </div>
+                </div>
+            <?php } ?>
+
             <div class="row my-2">
                 <div class="col-md-1"></div>
                 <?php if (isset($_POST['add_source'])) { ?>
@@ -367,13 +347,12 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
             </div>
 
         </div>
-
     </form>
 
     <?php
     // *** Source example in IFRAME ***
     if (!isset($_POST['add_source'])) {
-        $vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
+        $vars['source_gedcomnr'] = $editSource['data']['gedcomnr'];
         $sourcestring = $processLinks->get_link('../', 'source', $tree_id, false, $vars);
     ?>
         <br><br><?= __('Preview'); ?><br>

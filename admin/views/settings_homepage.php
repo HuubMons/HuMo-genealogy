@@ -1,3 +1,10 @@
+<?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+?>
+
 <form method="post" action="index.php?page=settings&menu_admin=settings_homepage" class="p-2">
     <ul class="list-group">
         <li class="list-group-item">

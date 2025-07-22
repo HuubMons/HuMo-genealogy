@@ -61,6 +61,7 @@ $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $personName_extended = new \Genealogy\Include\PersonNameExtended();
 $personData = new \Genealogy\Include\PersonData();
+$ancestorLabel = new \Genealogy\Include\AncestorLabel();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
@@ -90,60 +91,6 @@ $ancestor_number2[] = 1;
 $marriage_gedcomnumber2[] = 0;
 $generation = 1;
 
-$language["gen1"] = '';
-if (__('PROBANT') != 'PROBANT') {
-    $language["gen1"] .= __('PROBANT');
-}
-$language["gen2"] = __('Parents');
-$language["gen3"] = __('Grandparents');
-$language["gen4"] = __('Great-Grandparents');
-$language["gen5"] = __('Great Great-Grandparents');
-$language["gen6"] = __('3rd Great-Grandparents');
-$language["gen7"] = __('4th Great-Grandparents');
-$language["gen8"] = __('5th Great-Grandparents');
-$language["gen9"] = __('6th Great-Grandparents');
-$language["gen10"] = __('7th Great-Grandparents');
-$language["gen11"] = __('8th Great-Grandparents');
-$language["gen12"] = __('9th Great-Grandparents');
-$language["gen13"] = __('10th Great-Grandparents');
-$language["gen14"] = __('11th Great-Grandparents');
-$language["gen15"] = __('12th Great-Grandparents');
-$language["gen16"] = __('13th Great-Grandparents');
-$language["gen17"] = __('14th Great-Grandparents');
-$language["gen18"] = __('15th Great-Grandparents');
-$language["gen19"] = __('16th Great-Grandparents');
-$language["gen20"] = __('17th Great-Grandparents');
-$language["gen21"] = __('18th Great-Grandparents');
-$language["gen22"] = __('19th Great-Grandparents');
-$language["gen23"] = __('20th Great-Grandparents');
-$language["gen24"] = __('21th Great-Grandparents');
-$language["gen25"] = __('22th Great-Grandparents');
-$language["gen26"] = __('23th Great-Grandparents');
-$language["gen27"] = __('24th Great-Grandparents');
-$language["gen28"] = __('25th Great-Grandparents');
-$language["gen29"] = __('26th Great-Grandparents');
-$language["gen30"] = __('27th Great-Grandparents');
-$language["gen31"] = __('28th Great-Grandparents');
-$language["gen32"] = __('29th Great-Grandparents');
-$language["gen33"] = __('30th Great-Grandparents');
-$language["gen34"] = __('31th Great-Grandparents');
-$language["gen35"] = __('32th Great-Grandparents');
-$language["gen36"] = __('33th Great-Grandparents');
-$language["gen37"] = __('34th Great-Grandparents');
-$language["gen38"] = __('35th Great-Grandparents');
-$language["gen39"] = __('36th Great-Grandparents');
-$language["gen40"] = __('37th Great-Grandparents');
-$language["gen41"] = __('38th Great-Grandparents');
-$language["gen42"] = __('39th Great-Grandparents');
-$language["gen43"] = __('40th Great-Grandparents');
-$language["gen44"] = __('41th Great-Grandparents');
-$language["gen45"] = __('42th Great-Grandparents');
-$language["gen46"] = __('43th Great-Grandparents');
-$language["gen47"] = __('44th Great-Grandparents');
-$language["gen48"] = __('45th Great-Grandparents');
-$language["gen49"] = __('46th Great-Grandparents');
-$language["gen50"] = __('47th Great-Grandparents');
-
 $listed_array = array();
 
 // *** Loop for ancestor report ***
@@ -160,7 +107,11 @@ while (isset($ancestor_array2[0])) {
     $marriage_gedcomnumber = $marriage_gedcomnumber2;
     unset($marriage_gedcomnumber2);
 
-    $rtf_text = __('generation ') . $data["rom_nr"][$generation];
+    $rtf_text = __('Generation') . ' ' . $data["rom_nr"][$generation];
+    $generationLabel = $ancestorLabel->getLabel($generation);
+    if ($generationLabel) {
+        $rtf_text .= ' (' . $generationLabel. ')';
+    }
     $sect->writeText($rtf_text, $arial14, $parGen);
 
     // *** Loop per generation ***
@@ -337,7 +288,7 @@ while (isset($ancestor_array2[0])) {
                 $cell->addImage('images/unknown.jpg', null);
             }
 
-            $rtf_text = strip_tags($personName_extended->name_extended($person_manDb , $privacy_man, "child"), "<b><i>");
+            $rtf_text = strip_tags($personName_extended->name_extended($person_manDb, $privacy_man, "child"), "<b><i>");
             $cell = $table->getCell(1, 3);
             $cell->writeText($rtf_text, $arial12, $parNames);
             if ($personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i])) {

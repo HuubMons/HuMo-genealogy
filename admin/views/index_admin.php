@@ -84,7 +84,7 @@ if (!defined('ADMIN_PAGE')) {
 
                 <!-- Get database settings -->
                 <form method="post" action="index.php" style="display : inline;">
-                    <table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B">
+                    <table class="table" border="1" cellspacing="0" bgcolor="#DDFD9B">
                         <tr>
                             <th><?= __('Database setting'); ?></th>
                             <th><?= __('Database value'); ?></th>

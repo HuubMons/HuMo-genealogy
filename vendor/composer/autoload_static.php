@@ -44,9 +44,11 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
     );
 
     public static $classMap = array (
+        'AncestorLabel' => __DIR__ . '/../..' . '/include/AncestorLabel.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Genealogy\\Include\\Ancestors' => __DIR__ . '/../..' . '/include/Ancestors.php',
         'Genealogy\\Include\\Authenticator' => __DIR__ . '/../..' . '/include/2fa_authentication/authenticator.php',
+        'Genealogy\\Include\\BuildCondition' => __DIR__ . '/../..' . '/include/BuildCondition.php',
         'Genealogy\\Include\\CalculateDates' => __DIR__ . '/../..' . '/include/CalculateDates.php',
         'Genealogy\\Include\\DatePlace' => __DIR__ . '/../..' . '/include/DatePlace.php',
         'Genealogy\\Include\\DbFunctions' => __DIR__ . '/../..' . '/include/DbFunctions.php',
@@ -73,6 +75,7 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
         'Genealogy\\Include\\ProcessText' => __DIR__ . '/../..' . '/include/ProcessText.php',
         'Genealogy\\Include\\ResizePicture' => __DIR__ . '/../..' . '/include/ResizePicture.php',
         'Genealogy\\Include\\SafeTextDb' => __DIR__ . '/../..' . '/include/SafeTextDb.php',
+        'Genealogy\\Include\\SafeTextShow' => __DIR__ . '/../..' . '/include/SafeTextShow.php',
         'Genealogy\\Include\\SelectTree' => __DIR__ . '/../..' . '/include/SelectTree.php',
         'Genealogy\\Include\\SetTimezone' => __DIR__ . '/../..' . '/include/SetTimezone.php',
         'Genealogy\\Include\\ShowAddresses' => __DIR__ . '/../..' . '/include/ShowAddresses.php',
@@ -88,7 +91,6 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
         'Genealogy\\Include\\ValidateDate' => __DIR__ . '/../..' . '/include/ValidateDate.php',
         'Genealogy\\Include\\ValidateGedcomnumber' => __DIR__ . '/../..' . '/include/ValidateGedcomnumber.php',
         'Genealogy\\Include\\Witness' => __DIR__ . '/../..' . '/include/Witness.php',
-        'Genealogy\\Include\\safeTextShow' => __DIR__ . '/../..' . '/include/SafeTextShow.php',
         'PHPRtfLite' => __DIR__ . '/../..' . '/include/phprtflite/lib/PHPRtfLite.php',
         'PHPRtfLite_Autoloader' => __DIR__ . '/../..' . '/include/phprtflite/lib/PHPRtfLite/Autoloader.php',
         'PHPRtfLite_Border' => __DIR__ . '/../..' . '/include/phprtflite/lib/PHPRtfLite/Border.php',

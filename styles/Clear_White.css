@@ -12,31 +12,8 @@ body {
     background: white;
 }
 
-/* Tables */
-table.humo {
-    background-color: #ffffff;
-}
-
 /* 1st table A-Z */
 .border {
-    border: none;
-}
-
-table.humo {
-    box-shadow: 0px 0px 0px;
-}
-
-table.humo td {
-    border: none;
-    border-bottom: 2px solid #dadada;
-}
-
-table.humo tr:first-of-type td {
-    border: none;
-    border-bottom: 2px solid #dadada;
-}
-
-table.humo tr:first-of-type th {
     border: none;
 }
 
@@ -49,14 +26,6 @@ table.humo tr:first-of-type th {
 
 td.style_tree_text {
     background-color: #eeeeff;
-}
-
-.table_headline {
-    background: linear-gradient(to bottom, rgb(244, 244, 255) 0%, rgb(219, 219, 219) 100%);
-}
-
-table.standard td.table_header {
-    background-image: none;
 }
 
 table.container {

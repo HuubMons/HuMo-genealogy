@@ -32,14 +32,6 @@ a:hover {
     background-image: linear-gradient(to top, rgb(255, 255, 255) 0%, rgb(167, 208, 241) 80%);
 }
 
-table.humo td {
-    border-color: #3355cc;
-}
-
-table.humo tr:first-of-type td {
-    border-color: #3355cc;
-}
-
 /* 2nd table A-Z */
 .family_page_toptext {
     color: #000066;
@@ -49,11 +41,7 @@ td.style_tree_text {
     background-color: #BDD7EF;
 }
 
-.table_headline {
-    background: url('images_sky_blue/blue.png') repeat left top;
-}
-
-/* familypage */
+    /* familypage */
 .pers_name {
     color: #464646;
 }

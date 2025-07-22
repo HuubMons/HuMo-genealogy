@@ -1,4 +1,9 @@
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $found = false; // if this stays false, displays message that no problems where found
 ?>
 

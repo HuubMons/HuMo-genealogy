@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Edit or add an (shared) address.
  */

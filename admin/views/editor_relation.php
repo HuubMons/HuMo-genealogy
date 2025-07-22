@@ -8,6 +8,11 @@
  * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
  */
 
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $datePlace = new \Genealogy\Include\DatePlace();
 $languageDate = new \Genealogy\Include\LanguageDate;
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
@@ -982,7 +987,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             // *** Family event editor ***
             ?>
-            <tr class="table_header_large" id="event_family_link">
+            <tr id="event_family_link">
                 <td><?= __('Events'); ?></td>
                 <td colspan="2">
                     <div class="row">
@@ -1055,7 +1060,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             // TODO check for 1970-01-01 00:00:01
             if ($familyDb->fam_new_user_id || $familyDb->fam_new_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Added by'); ?></td>
                     <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
                 </tr>
@@ -1065,7 +1070,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             // *** Relation changed by user ***
             if ($familyDb->fam_changed_user_id || $familyDb->fam_changed_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
                 </tr>
@@ -1074,7 +1079,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             // *** Extra "Save" line ***
             ?>
-            <tr class="table_header_large">
+            <tr>
                 <td></td>
                 <td colspan="2">
                     <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">

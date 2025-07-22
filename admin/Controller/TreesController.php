@@ -95,6 +95,10 @@ class TreesController
             $treeMergeModel = new TreeMergeModel();
             $trees['relatives_merge'] = $treeMergeModel->get_relatives_merge($this->admin_config['dbh'], $trees['tree_id']);
             $treeMergeModel->update_settings($this->admin_config['db_functions']); // *** Store and reset tree merge settings ***
+
+            $trees['show_settings'] = $treeMergeModel->show_settings_page();
+
+            $trees['show_manual'] = $treeMergeModel->show_manual_page();
         }
 
         return $trees;

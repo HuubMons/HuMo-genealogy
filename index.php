@@ -38,6 +38,7 @@ use Genealogy\App\Controller\AddressController;
 use Genealogy\App\Controller\AddressesController;
 use Genealogy\App\Controller\AncestorChartController;
 use Genealogy\App\Controller\AncestorReportController;
+use Genealogy\App\Controller\AncestorReportPdfController;
 use Genealogy\App\Controller\AncestorSheetController;
 use Genealogy\App\Controller\AnniversaryController;
 use Genealogy\App\Controller\CmsPagesController;
@@ -204,8 +205,8 @@ if ($index['page'] == 'address') {
     $controllerObj = new AncestorReportController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_report_pdf') {
-    //$controllerObj = new AncestorReportController($config);
-    //$data = $controllerObj->list($id);
+    $controllerObj = new AncestorReportPdfController($config);
+    $data = $controllerObj->list($id);
     include_once(__DIR__ . "/views/ancestor_report_pdf.php");
     exit; // Skip layout.php
 } elseif ($index['page'] == 'ancestor_report_rtf') {

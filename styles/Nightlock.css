@@ -74,44 +74,8 @@ a:hover {
     background: linear-gradient(to top, rgb(127, 209, 63) 0%, rgb(127, 175, 63) 100%);
 }
 
-/* Tables */
-table.humo {
-    background-color: #CFB09D;
-}
-
-/* 1st table A-Z */
-table.humo td {
-    border-color: #CFB09D;
-}
-
-table.humo tr:first-of-type td {
-    border-color: #CFB09D;
-}
-
 td.style_tree_text {
     background-color: #BDD7EF;
-}
-
-.table_headline {
-    background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
-    color: #FFFFFF;
-}
-
-.table_headline a:visited {
-    color: #FFFFFF;
-}
-
-.table_headline a:active {
-    color: #FFFFFF;
-}
-
-.table_headline a:hover {
-    color: #FFFFFF;
-}
-
-/* table header  */
-td.table_header {
-    background: linear-gradient(to top, rgb(204, 102, 102) 0%, rgb(173, 57, 64) 64%, rgb(155, 31, 42) 100%);
 }
 
 /* familypage */

@@ -1,4 +1,10 @@
 <?php
+
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $limit = 2500;
 
 // ob_start(); // Doesn't work. The statusbar is not updated in the browser.

@@ -3,11 +3,12 @@
 // *** feb. 2023: Rebuild this script by Huub. Multiple backups will be stored on server. ***
 // *** Jan. 2025: added tab's ***
 
-//@ini_set('memory_limit', '-1');
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+
+//@ini_set('memory_limit', '-1');
 
 // *** Get list of backup files ***
 $dh  = opendir('./backup_files');

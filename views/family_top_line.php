@@ -1,11 +1,11 @@
 <?php $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selected_language); ?>
 
-<tr class="table_headline">
-    <td class="table_header">
-        <div class="family_page_toptext"><?= $treetext['family_top']; ?><br></div>
+<tr class="table-secondary">
+    <td>
+        <div class="fs-4 family_page_toptext"><?= $treetext['family_top']; ?><br></div>
     </td>
 
-    <td class="table_header" width="220" style="text-align:right;">
+    <td width="250" style="text-align:right;">
         <!-- Hide selections for bots, and second family screen (descendant report etc.) -->
         <?php if (!$bot_visit && (isset($descendant_loop) && $descendant_loop == 0) && $parent1_marr == 0) { ?>
             <?php

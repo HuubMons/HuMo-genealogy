@@ -146,7 +146,9 @@ function ancestor_chart_person($id, $box_appearance)
             if (!$pers_privacy and $user['group_pictures'] == 'j') {
                 //  *** Path can be changed per family tree ***
                 $tree_pict_path = $selectedFamilyTree->tree_pict_path;
-                if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+                if (substr($tree_pict_path, 0, 1) == '|') {
+                    $tree_pict_path = 'media/';
+                }
                 $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
                 // *** Only show 1st picture ***
                 if (isset($picture_qry[0])) {

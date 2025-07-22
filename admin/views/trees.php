@@ -85,9 +85,23 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
     elseif ($trees['menu_tab'] == 'tree_text') {
         include(__DIR__ . '/tree_text.php');
     }
-    // *** Show merge screen ***
+    // *** Show merge pages ***
     elseif ($trees['menu_tab'] == 'tree_merge') {
-        include(__DIR__ . '/tree_merge.php');
+        if ($trees["show_settings"]) {
+            // *** Show settings page ***
+            include(__DIR__ . '/tree_merge_settings.php');
+        } elseif (isset($_POST['automatic'])) {
+            // *** Show automatic merge page ***
+            include(__DIR__ . '/tree_merge_automatic.php');
+        } elseif (isset($_POST['duplicate_merge'])) {
+            // *** Show duplicate merge page ***
+            include(__DIR__ . '/tree_merge_duplicate.php');
+        } elseif ($trees['show_manual']) {
+            // *** Show manual merge page ***
+            include(__DIR__ . '/tree_merge_manual.php');
+        } else {
+            include(__DIR__ . '/tree_merge.php');
+        }
     }
     ?>
 </div>

@@ -43,7 +43,6 @@ class DescendantChartController
         $direction = $descendantModel->getDirection();
 
         //TODO remove temp. global.
-        //global $db_functions, $data, $user;
         global $data;
         $genarray = $descendantModel->Prepare_genarray($data);
         $genarray = $descendantModel->generate($genarray);

@@ -1,9 +1,10 @@
 <?php
-/*
-Original Google Maps script: Yossi.
-April 2022 Huub: added OpenStreetMap.
-July 2024 Huub: added Controller and Model scripts.
-*/
+
+/**
+ * Original Google Maps script: Yossi.
+ * April 2022 Huub: added OpenStreetMap.
+ * July 2024 Huub: added Controller and Model scripts.
+ */
 
 // TODO: is it still needed to store tree/birth/death items in location table? Maybe other places will be added later.
 
@@ -53,5 +54,5 @@ if (isset($_GET['menu'])) {
     if ($menu == 'settings') {
         include(__DIR__ . '/maps_settings.php');
     }
-?>
+    ?>
 </div>
