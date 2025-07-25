@@ -6,8 +6,8 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'AncestorLabel' => $baseDir . '/include/AncestorLabel.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Genealogy\\Include\\AncestorLabel' => $baseDir . '/include/AncestorLabel.php',
     'Genealogy\\Include\\Ancestors' => $baseDir . '/include/Ancestors.php',
     'Genealogy\\Include\\Authenticator' => $baseDir . '/include/2fa_authentication/authenticator.php',
     'Genealogy\\Include\\BuildCondition' => $baseDir . '/include/BuildCondition.php',
@@ -48,6 +48,8 @@ return array(
     'Genealogy\\Include\\ShowSourcesFootnotes' => $baseDir . '/include/ShowSourcesFootnotes.php',
     'Genealogy\\Include\\ShowTreeDate' => $baseDir . '/include/ShowTreeDate.php',
     'Genealogy\\Include\\ShowTreeText' => $baseDir . '/include/ShowTreeText.php',
+    'Genealogy\\Include\\TotallyFilterPerson' => $baseDir . '/include/TotallyFilterPerson.php',
+    'Genealogy\\Include\\TreeMerge' => $baseDir . '/include/TreeMerge.php',
     'Genealogy\\Include\\UpdateCls' => $baseDir . '/include/UpdateCls.php',
     'Genealogy\\Include\\UserSettings' => $baseDir . '/include/UserSettings.php',
     'Genealogy\\Include\\ValidateDate' => $baseDir . '/include/ValidateDate.php',

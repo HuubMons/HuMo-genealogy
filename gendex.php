@@ -21,8 +21,8 @@ $userSettings = new \Genealogy\Include\UserSettings();
 $user = $userSettings->get_user_settings($dbh);
 
 $db_functions = new \Genealogy\Include\DbFunctions($dbh);
-
-$personPrivacy = new \Genealogy\Include\PersonPrivacy();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy;
+$totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson;
 
 // *** Family trees ***
 $familytrees = $db_functions->get_trees();
@@ -35,7 +35,7 @@ foreach ($familytrees as $familytree) {
             $privacy = $personPrivacy->get_privacy($personDb);
             // *** Completely filter person ***
             if (
-                $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                $totallyFilterPerson->isTotallyFiltered($user, $personDb)
             ) {
                 // *** Don't show person ***
             } else {

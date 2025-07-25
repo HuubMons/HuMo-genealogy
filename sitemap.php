@@ -43,6 +43,8 @@ $user = $userSettings->get_user_settings($dbh);
 
 $db_functions = new \Genealogy\Include\DbFunctions($dbh);
 
+//$personPrivacy = new PersonPrivacy();
+$totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson();
 
 $max_loc = 49999;
 //$max_loc = 600; // Test line
@@ -57,12 +59,10 @@ foreach ($familytrees as $familytree) {
         // *** Get all family pages ***
         $person_qry = $dbh->query("SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id='" . $familytree->tree_id . "' ORDER BY fam_gedcomnumber");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
-            //$personPrivacy = new PersonPrivacy();
             //$privacy=$personPrivacy->get_privacy($personDb);
 
             // *** Completely filter person ***
-            //if ($user["group_pers_hide_totally_act"]=='j'
-            //	AND strpos(' '.$personDb->pers_own_code,$user["group_pers_hide_totally"])>0){
+            //if ($totallyFilterPerson->isTotallyFiltered($user, $personDb)){
             //	// *** Don't show person ***
             //}
             //else{
@@ -104,12 +104,11 @@ foreach ($familytrees as $familytree) {
         $person_qry = $dbh->query("SELECT pers_tree_id, pers_famc, pers_fams, pers_gedcomnumber, pers_own_code FROM humo_persons
             WHERE pers_tree_id='" . $familytree->tree_id . "' AND pers_famc='' AND pers_fams=''");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
-            //$personPrivacy = new PersonPrivacy();
             //$privacy=$personPrivacy->get_privacy($personDb);
 
             // *** Completely filter person ***
             if (
-                $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                $totallyFilterPerson->isTotallyFiltered($user, $personDb)
             ) {
                 // *** Don't show person ***
             } else {

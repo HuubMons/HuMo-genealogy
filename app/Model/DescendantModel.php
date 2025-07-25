@@ -202,9 +202,10 @@ class DescendantModel extends FamilyModel
         // At this moment these globals are needed to process personData and marriage_cls.
         global $data, $parent1Db;
 
-        $personName = new PersonName();
-        $personPrivacy = new PersonPrivacy();
-        $showSourcesFootnotes = new ShowSourcesFootnotes();
+        $personName = new PersonName;
+        $personPrivacy = new PersonPrivacy;
+        $showSourcesFootnotes = new ShowSourcesFootnotes;
+        $totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson;
 
         $family_nr = 1;  // *** process multiple families ***
         $dna = $this->getDNA();
@@ -430,12 +431,12 @@ class DescendantModel extends FamilyModel
                         if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
                             // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                             if (
-                                $this->user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $this->user["group_pers_hide_totally"]) > 0
+                                $totallyFilterPerson->isTotallyFiltered($this->user, $parent1Db)
                             ) {
                                 $family_privacy = true;
                             }
                             if (
-                                $this->user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $this->user["group_pers_hide_totally"]) > 0
+                                $totallyFilterPerson->isTotallyFiltered($this->user, $parent2Db)
                             ) {
                                 $family_privacy = true;
                             }

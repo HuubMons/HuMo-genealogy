@@ -174,8 +174,9 @@ class TimelineModel extends BaseModel
 
     public function getTimelinePersons($personDb, $dirmark1)
     {
-        $personName = new PersonName();
-        $personPrivacy = new PersonPrivacy();
+        $personName = new PersonName;
+        $personPrivacy = new PersonPrivacy;
+        $totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson;
 
         // *** MARRIAGES & CHILDREN ***
         if (isset($personDb->pers_fams) && $personDb->pers_fams) {
@@ -264,7 +265,7 @@ class TimelineModel extends BaseModel
 
                         // *** Check if child must be hidden ***
                         if (
-                            $this->user["group_pers_hide_totally_act"] == 'j' && isset($chldDb->pers_own_code) && strpos(' ' . $chldDb->pers_own_code, $this->user["group_pers_hide_totally"]) > 0
+                            $totallyFilterPerson->isTotallyFiltered($this->user, $chldDb)
                         ) {
                             continue;
                         }

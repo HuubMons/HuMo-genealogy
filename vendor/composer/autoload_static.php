@@ -44,8 +44,8 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
     );
 
     public static $classMap = array (
-        'AncestorLabel' => __DIR__ . '/../..' . '/include/AncestorLabel.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Genealogy\\Include\\AncestorLabel' => __DIR__ . '/../..' . '/include/AncestorLabel.php',
         'Genealogy\\Include\\Ancestors' => __DIR__ . '/../..' . '/include/Ancestors.php',
         'Genealogy\\Include\\Authenticator' => __DIR__ . '/../..' . '/include/2fa_authentication/authenticator.php',
         'Genealogy\\Include\\BuildCondition' => __DIR__ . '/../..' . '/include/BuildCondition.php',
@@ -86,6 +86,8 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
         'Genealogy\\Include\\ShowSourcesFootnotes' => __DIR__ . '/../..' . '/include/ShowSourcesFootnotes.php',
         'Genealogy\\Include\\ShowTreeDate' => __DIR__ . '/../..' . '/include/ShowTreeDate.php',
         'Genealogy\\Include\\ShowTreeText' => __DIR__ . '/../..' . '/include/ShowTreeText.php',
+        'Genealogy\\Include\\TotallyFilterPerson' => __DIR__ . '/../..' . '/include/TotallyFilterPerson.php',
+        'Genealogy\\Include\\TreeMerge' => __DIR__ . '/../..' . '/include/TreeMerge.php',
         'Genealogy\\Include\\UpdateCls' => __DIR__ . '/../..' . '/include/UpdateCls.php',
         'Genealogy\\Include\\UserSettings' => __DIR__ . '/../..' . '/include/UserSettings.php',
         'Genealogy\\Include\\ValidateDate' => __DIR__ . '/../..' . '/include/ValidateDate.php',

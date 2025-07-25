@@ -23,6 +23,7 @@ $showTreeText = new \Genealogy\Include\ShowTreeText();
 $processLinks = new \Genealogy\Include\ProcessLinks($uri_path);
 $processText = new \Genealogy\Include\ProcessText();
 $showSources = new \Genealogy\Include\ShowSources();
+$totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson();
 
 $family_nr = 1;  // *** process multiple families ***
 
@@ -374,12 +375,12 @@ else {
                     if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
                         // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                         if (
-                            $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                            $totallyFilterPerson->isTotallyFiltered($user, $parent1Db)
                         ) {
                             $family_privacy = true;
                         }
                         if (
-                            $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                            $totallyFilterPerson->isTotallyFiltered($user, $parent2Db)
                         ) {
                             $family_privacy = true;
                         }
@@ -407,7 +408,7 @@ else {
                     <div class="parent2">
                         <?php
                         // *** Person must be totally hidden ***
-                        if ($user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                        if ($totallyFilterPerson->isTotallyFiltered($user, $parent2Db)) {
                             echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         } else {
                             $show_name_texts = true;
@@ -471,9 +472,8 @@ else {
                             $childDb = $db_functions->get_person($child_array[$i]);
                             $child_privacy = $personPrivacy->get_privacy($childDb);
 
-                            // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                             // *** Person must be totally hidden ***
-                            if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                            if ($totallyFilterPerson->isTotallyFiltered($user, $childDb)) {
                                 if (!$show_privacy_text) {
                                     echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                                 }

@@ -15,13 +15,14 @@ $start = $list["start"];
 $list_var = $processLinks->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
-$personPrivacy = new Genealogy\Include\PersonPrivacy();
-$personName = new Genealogy\Include\PersonName();
-$personPopup = new Genealogy\Include\PersonPopup();
-$datePlace = new  Genealogy\Include\DatePlace();
-$safeTextShow = new Genealogy\Include\SafeTextShow();
-$buildCondition = new Genealogy\Include\BuildCondition();
-$showTreeText = new Genealogy\Include\ShowTreeText();
+$personPrivacy = new Genealogy\Include\PersonPrivacy;
+$personName = new Genealogy\Include\PersonName;
+$personPopup = new Genealogy\Include\PersonPopup;
+$datePlace = new  Genealogy\Include\DatePlace;
+$safeTextShow = new Genealogy\Include\SafeTextShow;
+$buildCondition = new Genealogy\Include\BuildCondition;
+$showTreeText = new Genealogy\Include\ShowTreeText;
+$totallyFilterPerson = new Genealogy\Include\TotallyFilterPerson;
 
 
 if ($list["index_list"] == 'places') {
@@ -825,7 +826,7 @@ $selected_place = '';
                 $privcount++;
             } else {
                 // *** Extra privacy filter check for total_filter ***
-                if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                if ($totallyFilterPerson->isTotallyFiltered($user, $personDb)) {
                     $privcount++;
                 } else {
                     $db_functions->set_tree_id($personDb->pers_tree_id);

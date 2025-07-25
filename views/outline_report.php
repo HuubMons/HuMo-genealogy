@@ -149,6 +149,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
     $personName_extended = new \Genealogy\Include\PersonNameExtended();
     $personData = new \Genealogy\Include\PersonData();
     $languageDate = new \Genealogy\Include\LanguageDate();
+    $totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson();
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -234,7 +235,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     } else {
                         echo $personName_extended->name_extended($person_manDb, $privacy_man, "outline");
                         if ($show_details && !$privacy_man) {
-                            echo $personData->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
+                            echo $personData->person_data($person_manDb, $privacy_man, "outline", $familyDb->fam_gedcomnumber);
                         }
 
                         if ($show_date == "1" && !$privacy_man && !$show_details) {
@@ -261,13 +262,13 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         // *** Totally hide parent2 if setting is active ***
         $show_parent2 = true;
         if ($swap_parent1_parent2) {
-            if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $person_manDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+            if ($totallyFilterPerson->isTotallyFiltered($user, $person_manDb)) {
                 $show_privacy_text = true;
                 $family_privacy = true;
                 $show_parent2 = false;
             }
         } else {
-            if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $person_womanDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+            if ($totallyFilterPerson->isTotallyFiltered($user, $person_womanDb)) {
                 $show_privacy_text = true;
                 $family_privacy = true;
                 $show_parent2 = false;
@@ -308,7 +309,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 echo "&nbsp;&nbsp;&nbsp;&nbsp;";
                 echo $personName_extended->name_extended($person_manDb, $privacy_man, "outline");
                 if ($show_details && !$privacy_man) {
-                    echo $personData->person_data($person_manDb, $privacy_man,"outline", $familyDb->fam_gedcomnumber);
+                    echo $personData->person_data($person_manDb, $privacy_man, "outline", $familyDb->fam_gedcomnumber);
                 }
 
                 if ($show_date == "1" && !$privacy_man && !$show_details) {
@@ -352,7 +353,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 $childDb = $db_functions->get_person($child_array[$i]);
 
                 // *** Totally hide children if setting is active ***
-                if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                if ($totallyFilterPerson->isTotallyFiltered($user, $childDb)) {
                     if (!$show_privacy_text) {
                         echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         $show_privacy_text = true;

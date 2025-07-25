@@ -25,6 +25,8 @@ class PersonName
     {
         global $db_functions, $user, $screen_mode, $selection, $humo_option;
 
+        $totallyFilterPerson = new TotallyFilterPerson();
+
         $this->db_functions = $db_functions;
         if (isset($personDb->pers_gedcomnumber)) {
             $this->pers_gedcomnumber = $personDb->pers_gedcomnumber;
@@ -120,7 +122,7 @@ class PersonName
 
             // *** Completely filter person ***
             if (
-                $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                $totallyFilterPerson->isTotallyFiltered($user, $personDb)
             ) {
                 $privacy_name = __('Name filtered');
             }

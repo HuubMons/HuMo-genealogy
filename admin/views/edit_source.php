@@ -20,7 +20,7 @@ $editor['confirm'] = $editorModel->update_editor2();
 // TODO this picture remove confirm box is shown above the header.
 echo $editor['confirm']; // Confirm message to remove picture from source.
 
-$languageDate = new Genealogy\Include\LanguageDate($admin_config, $tree_prefix);
+$languageDate = new Genealogy\Include\LanguageDate;
 
 
 $field_text_large = 'style="height: 100px; width:550px"';

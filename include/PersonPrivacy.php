@@ -12,6 +12,8 @@ class PersonPrivacy
     {
         global $user, $selectedFamilyTree;
 
+        $totallyFilterPerson = new TotallyFilterPerson();
+
         $privacy = false;  // *** Standard: show all persons ***
 
         if ($user['group_privacy'] == 'n') {
@@ -147,7 +149,7 @@ class PersonPrivacy
         }
 
         // *** Completely filter a person, if option "completely filter a person" is activated ***
-        if ($personDb && ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0)) {
+        if ($personDb && $totallyFilterPerson->isTotallyFiltered($user, $personDb)) {
             $privacy = true;
         }
 
