@@ -88,7 +88,8 @@ class Ansel2Unicode
 
         $convertit = 0; // default - don't use the ANSEL conversion
 
-        for ($a = 224; $a <= 255; $a++) {  // look for special ANSEL diacritics in range chr(224) till chr (255)
+        for ($a = 224; $a <= 255; $a++) {
+            // look for special ANSEL diacritics in range chr(224) till chr (255)
             if (strpos($string, chr($a)) != false) {
                 $convertit = 1; // there is at least one special diacritic - we need to do ANSEL conversion
                 break;  // no need to look for further diacritics - we have to do ANSEL conversion anyway
@@ -99,7 +100,8 @@ class Ansel2Unicode
             $output = $string;
         }  // no diacritic in the string no need for ANSEL conversion
 
-        while ($i <= (strlen($string) - 1) and $convertit == 1) { // do special ANSEL conversion for diacritics
+        while ($i <= (strlen($string) - 1) and $convertit == 1) {
+            // do special ANSEL conversion for diacritics
             $remains = strlen($string) - $i;            // Characters that remains in string
             $key = array();                             // Initialize array
 
@@ -138,7 +140,7 @@ class Ansel2Unicode
         }
 
         //return utf8_encode($output); // Return the string with replacements
-        return mb_convert_encoding($output, 'UTF-8', 'ISO-8859-2'); 
+        return mb_convert_encoding($output, 'UTF-8', 'ISO-8859-2');
     }
 
 

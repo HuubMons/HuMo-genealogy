@@ -90,7 +90,8 @@ class ProcessText
             $text_process = preg_replace("#(^|[ \n\r\t])(((http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $text_process);
 
             if ($text_process) {
-                if (strpos($text_process, "</table>") !== false) {  // if the text contains an html table make sure it doesn't get <br>
+                if (strpos($text_process, "</table>") !== false) {
+                    // if the text contains an html table make sure it doesn't get <br>
                     $text_process = preg_replace('~\R~u', "\n", $text_process); // first make sure all type newline combinations (\r, \r\n etc) will be \n
                     $txt_arr = explode("\n", $text_process);
                     $flag_table = 0;
@@ -125,13 +126,17 @@ class ProcessText
 
             // *** Show tekst in popup screen ***
             if ($data["text_presentation"] == 'popup' && $screen_mode != 'PDF' && $screen_mode != 'RTF' && $text_process) {
-                global $data, $rtlmarker, $alignmarker, $text_nr;
+                // TODO check globals.
+                global $data, $text_nr, $language;
+
+                $directionMarkers = new DirectionMarkers($language["dir"], $screen_mode);
+
                 if (isset($text_nr)) {
                     $text_nr++;
                 } else {
                     $text_nr = 1;
                 }
-                $text = '<div class="' . $rtlmarker . 'sddm" style="left:10px;top:10px;display:inline;">';
+                $text = '<div class="' . $directionMarkers->rtlmarker . 'sddm" style="left:10px;top:10px;display:inline;">';
 
                 $vars['pers_family'] = $data["family_id"];
                 $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
@@ -150,9 +155,9 @@ class ProcessText
 
                 if (substr_count($text_process, '<br>') > 10 || substr_count($text_process, '<br>') > 10) {
                     // *** Don't use too large pop-up, because the pop-up will be off the screen ***
-                    $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $alignmarker . '; direction:' . $rtlmarker . '; height:300px; width:50%; overflow-y: scroll;" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+                    $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $directionMarkers->alignmarker . '; direction:' . $directionMarkers->rtlmarker . '; height:300px; width:50%; overflow-y: scroll;" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
                 } else {
-                    $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $alignmarker . '; direction:' . $rtlmarker . ';" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+                    $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $directionMarkers->alignmarker . '; direction:' . $directionMarkers->rtlmarker . ';" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
                 }
 
                 // *** Show a correct website link in text ***

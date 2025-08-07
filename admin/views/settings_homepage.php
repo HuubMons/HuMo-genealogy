@@ -35,7 +35,7 @@ if (!defined('ADMIN_PAGE')) {
         </li>
     </ul>
 
-    <ul id="sortable_trees" class="sortable_trees list-group">
+    <ul id="sortable_items" class="sortable_items list-group">
         <?php $position = 'left'; ?>
         <?php for ($i = 0; $i <= $settings['nr_modules']; $i++) { ?>
             <?php
@@ -229,28 +229,9 @@ if (!defined('ADMIN_PAGE')) {
 
 <!-- Order items using drag and drop using jquery and jqueryui -->
 <script>
-    $('#sortable_trees').sortable({
-        handle: '.handle'
-    }).bind('sortupdate', function() {
-        var orderstring = "";
-        var order_arr = document.getElementsByClassName("handle");
-        for (var z = 0; z < order_arr.length; z++) {
-            orderstring = orderstring + order_arr[z].id + ";";
-            //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
-        }
-
-        orderstring = orderstring.substring(0, orderstring.length - 1);
-        $.ajax({
-            url: "include/drag.php?drag_kind=homepage_modules&order=" + orderstring,
-            success: function(data) {},
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    });
+    var url_start = "include/drag.php?drag_kind=homepage_modules";
 </script>
-
+<script src="../assets/js/order_items.js"></script>
 
 <!-- Edit homepage favorites -->
 <form method="post" action="index.php?page=settings&menu_admin=settings_homepage">

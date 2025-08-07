@@ -17,7 +17,7 @@ $db_functions->set_tree_id($trees['tree_id']);
 
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
-$treeMerge = new \Genealogy\Include\TreeMerge($dbh);
+$treeMerge = new \Genealogy\Include\TreeMerge($dbh, $trees);
 
 // the following creates the pages that cycle through all duplicates that are stored in the dupl_arr array
 // the pages themselves are presented with the "show_pair function"
@@ -144,9 +144,7 @@ if (isset($_POST['duplicate_compare'])) {
             <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
             <input type="submit" name="manual" value="<?= __('Choose another pair'); ?>" class="btn btn-sm btn-success">
         </form>
-    <?php
-    } elseif ($per1Db->pers_gedcomnumber == $per2Db->pers_gedcomnumber) { // trying to merge same person!!
-    ?>
+    <?php } elseif ($per1Db->pers_gedcomnumber == $per2Db->pers_gedcomnumber) { ?>
         <br><?= __('This is one person already - you can\'t merge! Please try again'); ?><br><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <form method="post" action="index.php" style="display : inline;">
@@ -215,7 +213,8 @@ if (isset($_POST['duplicate_compare'])) {
     }
 
     // merge
-    if (isset($_POST['rela'])) {  // the merge button was used
+    if (isset($_POST['rela'])) {
+        // the merge button was used
         $left = $_POST['left'];
         $right = $_POST['right'];
         $treeMerge->merge_them($left, $right, "relatives");
@@ -236,7 +235,8 @@ if (isset($_POST['duplicate_compare'])) {
 
             $rightDb = $db_functions->get_person($rght);
             $right = $rightDb->pers_id;
-        } else {  // "switch left-right" button used"
+        } else {
+            // "switch left-right" button used"
             $left = $_POST['left'];
             $right = $_POST['right'];
         }
@@ -303,7 +303,8 @@ if (isset($_POST['duplicate_compare'])) {
         $left = $_POST['left'];
         $right = $_POST['right'];
         $treeMerge->merge_them($left, $right, "man_dupl"); // merge_them is called in manual/duplicate mode
-    } elseif (isset($_POST['dupl'])) { // duplicate merging
+    } elseif (isset($_POST['dupl'])) {
+        // duplicate merging
         $nr = $_SESSION['present_compare_' . $trees['tree_id']];
         $comp_set = explode(';', $_SESSION['dupl_arr_' . $trees['tree_id']][$nr]);
         $left = $comp_set[0];

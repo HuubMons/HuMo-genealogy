@@ -1,55 +1,39 @@
 <?php
 session_start();
 
-use Genealogy\Include\GeneralSettings;
-use Genealogy\Include\UserSettings;
-use Genealogy\Include\ProcessLinks;
-use Genealogy\Include\DbFunctions;
-use Genealogy\Include\PersonName;
-use Genealogy\Include\PersonPrivacy;
-use Genealogy\Include\DatePlace;
-
 // *** Autoload composer classes ***
 require __DIR__ . '/../vendor/autoload.php';
 
 include_once(__DIR__ . "/../include/db_login.php"); //Inloggen database.
 
-$generalSettings = new GeneralSettings();
+$generalSettings = new Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 
-$userSettings = new UserSettings();
+$userSettings = new Genealogy\Include\UserSettings();
 $user = $userSettings->get_user_settings($dbh);
 
-$processLinks = new ProcessLinks();
+$processLinks = new Genealogy\Include\ProcessLinks();
 
 $tree_id = $_SESSION['tree_id'];
 
-$db_functions = new DbFunctions($dbh);
+$db_functions = new Genealogy\Include\DbFunctions($dbh);
 $db_functions->set_tree_id($tree_id);
 
 // *** Language processing after header("..") lines. ***
-include_once(__DIR__ . "/../languages/language.php");
+$language_cls = new Genealogy\Languages\LanguageCls;
+$language_file = $language_cls->get_languages();
+$selected_language = $language_cls->get_selected_language($humo_option);
+$language = $language_cls->get_language_data($selected_language);
+// *** .mo language text files ***
+include_once(__DIR__ . "/../languages/gettext.php");
+// *** Load ***
+Load_default_textdomain();
 
-// *** Process LTR and RTL variables ***
-$dirmark1 = "&#x200E;";  //ltr marker
-$dirmark2 = "&#x200F;";  //rtl marker
-$rtlmarker = "ltr";
-$alignmarker = "left";
-// *** Switch direction markers if language is RTL ***
-if ($language["dir"] == "rtl") {
-    $dirmark1 = "&#x200F;";  //rtl marker
-    $dirmark2 = "&#x200E;";  //ltr marker
-    $rtlmarker = "rtl";
-    $alignmarker = "right";
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-// start of the namesearch part
-
+// Start of the namesearch part
 if (isset($_GET['max'])) {
     $map_max = $_GET['max'];
-} else { // Logically we can never get here because this file is always called with this parameter
+} else {
+    // Logically we can never get here because this file is always called with this parameter
     $map_max = date('Y'); //this year
 }
 
@@ -57,7 +41,8 @@ if (isset($_GET['thisplace'])) {
     $thisplace = urldecode($_GET['thisplace']);     // should be done automatically but it doesn't hurt
     $thisplace = str_replace("\'", "'", $thisplace);  // in some settings the \ is passed on with the ' while in others not
     $thisplace = str_replace("'", "''", $thisplace);     // for MySQL single quote has to be written as 2 single quotes: '' in the mysql query
-} else { // Logically we can never get here because this file is always called with this parameter
+} else {
+    // Logically we can never get here because this file is always called with this parameter
     $thisplace = "NONFOUND";
 }
 
@@ -65,14 +50,15 @@ function mapbirthplace($place)
 {
     global $dbh, $tree_id, $language, $map_max, $processLinks;
 
-    $personName = new PersonName();
-    $personPrivacy = new PersonPrivacy();
-    $datePlace = new DatePlace();
+    $personName = new Genealogy\Include\PersonName();
+    $personPrivacy = new Genealogy\Include\PersonPrivacy();
+    $datePlace = new Genealogy\Include\DatePlace();
 
     if (isset($_GET['namestring'])) {
         $temparray = explode("@", $_GET['namestring']);
         $namestring = " (";
-        foreach ($temparray as $value) { //echo $value.'<br>';
+        foreach ($temparray as $value) {
+            //echo $value.'<br>';
             //$namestring .=  "pers_lastname = '".$value."' OR ";
             $namestring .= "CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) = '" . $value . "' OR ";
         }
@@ -110,7 +96,8 @@ function mapbirthplace($place)
     $min = 1;
     if ($place != "NONFOUND") {
         if ($_SESSION['type_birth'] == 1) {
-            if (isset($_GET['all'])) { // the 'All birth locations' button
+            if (isset($_GET['all'])) {
+                // the 'All birth locations' button
 ?>
                 <b><u><?= __('All persons born here: '); ?></u></b><br>
             <?php
@@ -118,7 +105,8 @@ function mapbirthplace($place)
                     FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                     AND " . $idstring . $namestring . " (pers_birth_place = '" . $place . "' OR (pers_birth_place = '' AND pers_bapt_place = '" . $place . "')) ORDER BY wholename";
                 $maplist = $dbh->query($sql);
-            } else { // *** Slider is used ***
+            } else {
+                // *** Slider is used ***
             ?>
                 <b><u><?= __('Persons born here until ') . $map_max; ?>:</u></b><br>
         <?php
@@ -133,7 +121,8 @@ function mapbirthplace($place)
                 $maplist = $dbh->query($sql);
             }
         } elseif ($_SESSION['type_death'] == 1) {
-            if (isset($_GET['all'])) { // the 'All birth locations' button
+            if (isset($_GET['all'])) {
+                // the 'All birth locations' button
                 echo '<b><u>' . __('All persons that died here: ') . '</u></b><br>';
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
                     FROM humo_persons
@@ -142,7 +131,8 @@ function mapbirthplace($place)
                     (pers_death_place = '" . $place . "' OR (pers_death_place = '' AND pers_buried_place = '" . $place . "'))
                     ORDER BY wholename";
                 $maplist = $dbh->query($sql);
-            } else { // *** Slider is used ***
+            } else {
+                // *** Slider is used ***
                 echo '<b><u>' . __('Persons that died here until ') . $map_max . ':</u></b><br>';
                 $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
                     WHERE pers_tree_id='" . $tree_id . "' AND " . $idstring . $namestring . "
@@ -204,7 +194,8 @@ function mapbirthplace($place)
             <?php } ?>
         </div>
 <?php
-    } else { // Logically we can never get here
+    } else {
+        // Logically we can never get here
         echo 'No persons found';
     }
 }

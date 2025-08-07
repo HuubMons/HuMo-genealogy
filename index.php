@@ -29,47 +29,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Genealogy\Include\GeneralSettings;
-use Genealogy\Include\ProcessLinks;
-use Genealogy\Include\SafeTextDb;
-use Genealogy\Include\ShowTreeText;
-use Genealogy\Include\UserSettings;
-use Genealogy\App\Controller\AddressController;
-use Genealogy\App\Controller\AddressesController;
-use Genealogy\App\Controller\AncestorChartController;
-use Genealogy\App\Controller\AncestorReportController;
-use Genealogy\App\Controller\AncestorReportPdfController;
-use Genealogy\App\Controller\AncestorSheetController;
-use Genealogy\App\Controller\AnniversaryController;
-use Genealogy\App\Controller\CmsPagesController;
-use Genealogy\App\Controller\DescendantChartController;
-use Genealogy\App\Controller\FamilyController;
-use Genealogy\App\Controller\FanchartController;
-use Genealogy\App\Controller\HourglassController;
-use Genealogy\App\Controller\IndexController;
-use Genealogy\App\Controller\LatestChangesController;
-use Genealogy\App\Controller\ListController;
-use Genealogy\App\Controller\ListNamesController;
-use Genealogy\App\Controller\ListPlacesFamiliesController;
-use Genealogy\App\Controller\MailformController;
-use Genealogy\App\Controller\MapsController;
-use Genealogy\App\Controller\OutlineReportController;
-use Genealogy\App\Controller\PhotoalbumController;
-use Genealogy\App\Controller\RegisterController;
-use Genealogy\App\Controller\RelationsController;
-use Genealogy\App\Controller\ResetPasswordController;
-use Genealogy\App\Controller\SourceController;
-use Genealogy\App\Controller\SourcesController;
-use Genealogy\App\Controller\StatisticsController;
-use Genealogy\App\Controller\TimelineController;
-use Genealogy\App\Controller\UserSettingsController;
-
-// *** Disabled 18-01-2023 ***
-//ini_set('url_rewriter.tags','');
-
 //session_cache_limiter('private, must-revalidate'); //tb edit
 session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
+// TODO: if needed, only use this after user login.
 //session_regenerate_id();
 
 // *** Autoload composer classes ***
@@ -87,36 +50,50 @@ if (isset($_GET['log_off'])) {
 // TODO refactor/ check scripts for autoload.
 include_once(__DIR__ . "/include/db_login.php"); // Connect to database
 
-$safeTextDb = new SafeTextDb();
+$safeTextDb = new Genealogy\Include\SafeTextDb();
 
-$generalSettings = new GeneralSettings();
+$generalSettings = new Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 
-$userSettings = new UserSettings();
+$userSettings = new Genealogy\Include\UserSettings();
 $user = $userSettings->get_user_settings($dbh);
 
-$showTreeText = new ShowTreeText();
+$showTreeText = new Genealogy\Include\ShowTreeText();
+
+
+// *** TEST use Symfony Translation component (to replace very old gettext.php script) ***
+// TODO Check code. Slows down website.s
+/*
+$language_cls = new Genealogy\Languages\LanguageCls();
+$language_file = $language_cls->get_languages();
+$selected_language = $language_cls->get_selected_language($humo_option);
+$language = $language_cls->get_language_data($selected_language);
+
+$translator = new Symfony\Component\Translation\Translator($selected_language);
+$translator->addLoader('mo', new Symfony\Component\Translation\Loader\MoFileLoader());
+$mofile = __DIR__ . '/languages/' . $selected_language . '/' . $selected_language . '.mo';
+$translator->addResource('mo', $mofile, $selected_language);
+function __($text)
+{
+    global $translator;
+    return $translator->trans($text);
+}
+*/
 
 
 // *** Added dec. 2024 ***
-$controllerObj = new IndexController();
+$controllerObj = new Genealogy\App\Controller\IndexController();
 $index = $controllerObj->detail($dbh, $humo_option, $user);
 
 // TODO dec. 2024 for now: use old variable names.
 $db_functions = $index['db_functions'];
-$bot_visit = $index['bot_visit'];
 $language_file = $index['language_file']; // Array including all languages files.
 $language = $index['language']; // $language = array.
 $selected_language = $index['selected_language'];
 
+
 // Needed for mail script. Jul. 2025 new variable $selectedFamilyTree.
 $selectedFamilyTree = $db_functions->get_tree($index['tree_id']);
-
-// *** Process LTR and RTL variables ***
-$dirmark1 = $index['dirmark1'];  //ltr marker
-$dirmark2 = $index['dirmark2'];  //rtl marker
-$rtlmarker = $index['rtlmarker'];
-$alignmarker = $index['alignmarker'];
 
 // *** New routing script sept. 2023. Search route, return match or not found ***
 $page = $index['page'];
@@ -178,7 +155,7 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 }
 
 // *** To be used to show links in several pages ***
-$processLinks = new ProcessLinks($uri_path);
+$processLinks = new Genealogy\Include\ProcessLinks($uri_path);
 
 /**
  * General config array. May 2025: added baseModel.php.
@@ -196,43 +173,43 @@ $processLinks = new ProcessLinks($uri_path);
 include_once(__DIR__ . "/include/config.php");
 
 if ($index['page'] == 'address') {
-    $controllerObj = new AddressController($config);
+    $controllerObj = new Genealogy\App\Controller\AddressController($config);
     $data = $controllerObj->detail();
 } elseif ($index['page'] == 'addresses') {
-    $controllerObj = new AddressesController($config);
+    $controllerObj = new Genealogy\App\Controller\AddressesController($config);
     $data = $controllerObj->list();
 } elseif ($index['page'] == 'ancestor_report') {
-    $controllerObj = new AncestorReportController($config);
+    $controllerObj = new Genealogy\App\Controller\AncestorReportController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_report_pdf') {
-    $controllerObj = new AncestorReportPdfController($config);
+    $controllerObj = new Genealogy\App\Controller\AncestorReportPdfController($config);
     $data = $controllerObj->list($id);
     include_once(__DIR__ . "/views/ancestor_report_pdf.php");
     exit; // Skip layout.php
 } elseif ($index['page'] == 'ancestor_report_rtf') {
-    $controllerObj = new AncestorReportController($config);
+    $controllerObj = new Genealogy\App\Controller\AncestorReportController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_chart') {
-    $controllerObj = new AncestorChartController($config);
+    $controllerObj = new Genealogy\App\Controller\AncestorChartController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_sheet_pdf') {
-    //$controllerObj = new AncestorSheetController($config);
+    //$controllerObj = new Genealogy\App\Controller\AncestorSheetController($config);
     //$data = $controllerObj->list($id);
     include_once(__DIR__ . "/views/ancestor_sheet_pdf.php");
     exit; // Skip layout.php
 } elseif ($index['page'] == 'ancestor_sheet') {
-    $controllerObj = new AncestorSheetController($config);
+    $controllerObj = new Genealogy\App\Controller\AncestorSheetController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'anniversary') {
-    $controllerObj = new AnniversaryController();
+    $controllerObj = new Genealogy\App\Controller\AnniversaryController();
     $data = $controllerObj->anniversary();
 } elseif ($index['page'] == 'cms_pages') {
-    $controllerObj = new CmsPagesController($config);
+    $controllerObj = new Genealogy\App\Controller\CmsPagesController($config);
     $data = $controllerObj->list();
 } elseif ($index['page'] == 'cookies') {
     //
 } elseif ($index['page'] == 'descendant_chart') {
-    $controllerObj = new DescendantChartController($config);
+    $controllerObj = new Genealogy\App\Controller\DescendantChartController($config);
     $data = $controllerObj->getFamily();
 } elseif ($index['page'] == 'family_pdf') {
     //$controllerObj = new AncestorReportController($config);
@@ -242,30 +219,30 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'family_rtf') {
     //
 } elseif ($index['page'] == 'family') {
-    $controllerObj = new FamilyController($config);
+    $controllerObj = new Genealogy\App\Controller\FamilyController($config);
     $data = $controllerObj->getFamily();
 } elseif ($index['page'] == 'fanchart') {
     // TODO refactor
     require_once(__DIR__ . "/include/fanchart/persian_log2vis.php");
 
-    $controllerObj = new FanchartController($config);
+    $controllerObj = new Genealogy\App\Controller\FanchartController($config);
     $data = $controllerObj->detail($id);
 } elseif ($index['page'] == 'help') {
     //
 } elseif ($index['page'] == 'hourglass') {
-    $controllerObj = new HourglassController($config);
+    $controllerObj = new Genealogy\App\Controller\HourglassController($config);
     $data = $controllerObj->getHourglass();
 } elseif ($index['page'] == 'latest_changes') {
-    $controllerObj = new LatestChangesController($config);
+    $controllerObj = new Genealogy\App\Controller\LatestChangesController($config);
     $data = $controllerObj->list();
 } elseif ($index['page'] == 'list') {
-    $controllerObj = new ListController($config);
+    $controllerObj = new Genealogy\App\Controller\ListController($config);
     $list = $controllerObj->list_names();
 } elseif ($index['page'] == 'list_places_families') {
-    $controllerObj = new ListPlacesFamiliesController($config);
+    $controllerObj = new Genealogy\App\Controller\ListPlacesFamiliesController($config);
     $data = $controllerObj->list_places_names();
 } elseif ($index['page'] == 'list_names') {
-    $controllerObj = new ListNamesController($config);
+    $controllerObj = new Genealogy\App\Controller\ListNamesController($config);
     $last_name = '';
     if (isset($index['last_name'])) {
         $last_name = $index['last_name'];
@@ -274,49 +251,49 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'login') {
     //
 } elseif ($index['page'] == 'mailform') {
-    $controllerObj = new MailformController($config);
+    $controllerObj = new Genealogy\App\Controller\MailformController($config);
     $mail_data = $controllerObj->get_mail_data($selected_language);
 } elseif ($index['page'] == 'maps') {
-    $controllerObj = new MapsController($config);
+    $controllerObj = new Genealogy\App\Controller\MapsController($config);
     $maps = $controllerObj->detail($tree_prefix_quoted);
 } elseif ($index['page'] == 'photoalbum') {
-    $controllerObj = new PhotoalbumController($config);
+    $controllerObj = new Genealogy\App\Controller\PhotoalbumController($config);
     $photoalbum = $controllerObj->detail($selected_language);
 } elseif ($index['page'] == 'register') {
-    $controllerObj = new RegisterController($config);
+    $controllerObj = new Genealogy\App\Controller\RegisterController($config);
     $register = $controllerObj->get_register_data();
 } elseif ($index['page'] == 'relations') {
-    $controllerObj = new RelationsController($config);
+    $controllerObj = new Genealogy\App\Controller\RelationsController($config);
     $relation = $controllerObj->getRelations($selected_language);
 } elseif ($index['page'] == 'reset_password') {
-    $controllerObj = new ResetPasswordController($config);
+    $controllerObj = new Genealogy\App\Controller\ResetPasswordController($config);
     $resetpassword = $controllerObj->detail();
 } elseif ($index['page'] == 'outline_report_pdf') {
-    //$controllerObj = new OutlineReportController($config);
+    //$controllerObj = new Genealogy\App\Controller\OutlineReportController($config);
     //$data = $controllerObj->getOutlineReport();
     include_once(__DIR__ . "/views/outline_report_pdf.php");
     exit; // Skip layout.php
 } elseif ($index['page'] == 'outline_report') {
-    $controllerObj = new OutlineReportController($config);
+    $controllerObj = new Genealogy\App\Controller\OutlineReportController($config);
     $data = $controllerObj->getOutlineReport();
 } elseif ($index['page'] == 'user_settings') {
     // TODO refactor
     include_once(__DIR__ . "/include/2fa_authentication/authenticator.php");
 
-    $controllerObj = new UserSettingsController($config);
+    $controllerObj = new Genealogy\App\Controller\UserSettingsController($config);
     $data = $controllerObj->user_settings();
 } elseif ($index['page'] == 'show_media_file') {
     // *** Show media file using secured folder ***
     include_once(__DIR__ . "/views/show_media_file.php");
     exit; // *** Skip layout.php ***
 } elseif ($index['page'] == 'statistics') {
-    $controllerObj = new StatisticsController($config);
+    $controllerObj = new Genealogy\App\Controller\StatisticsController($config);
     $statistics = $controllerObj->detail();
 } elseif ($index['page'] == 'sources') {
-    $controllerObj = new SourcesController($config);
+    $controllerObj = new Genealogy\App\Controller\SourcesController($config);
     $data = $controllerObj->list();
 } elseif ($index['page'] == 'source') {
-    $controllerObj = new SourceController($config);
+    $controllerObj = new Genealogy\App\Controller\SourceController($config);
 
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
@@ -324,15 +301,15 @@ if ($index['page'] == 'address') {
     }
     $data = $controllerObj->source($id);
 } elseif ($index['page'] == 'timeline') {
-    $controllerObj = new TimelineController($config);
+    $controllerObj = new Genealogy\App\Controller\TimelineController($config);
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
         $id = $_GET["id"];
     }
-    $data = $controllerObj->getTimeline($id, $dirmark1);
+    $data = $controllerObj->getTimeline($id);
 } elseif ($index['page'] == 'tree_index') {
     //  *** TODO: first improve difference between tree_index and mainindex ***
-    //$controllerObj = new TreeIndexController($config);
+    //$controllerObj = new Genealogy\App\Controller\TreeIndexController($config);
     //$tree_index["items"] = $controllerObj->get_items();
 }
 

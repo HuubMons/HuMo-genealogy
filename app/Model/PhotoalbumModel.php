@@ -210,7 +210,8 @@ class PhotoalbumModel extends BaseModel
             }
 
             if ($process_picture) {
-                if (!isset($photoalbum['media_files']) || !in_array($picname, $photoalbum['media_files'])) { // this pic does not appear in the array yet
+                if (!isset($photoalbum['media_files']) || !in_array($picname, $photoalbum['media_files'])) {
+                    // this pic does not appear in the array yet
                     //$connected_persons[$picname]=$picqryDb->event_connect_id; // example: $connected_persons['an_example.jpg']="I354"
 
                     // *** Skip PDF and RTF files ***
@@ -220,7 +221,8 @@ class PhotoalbumModel extends BaseModel
                     }
                 }
 
-                //else { // pic already exists in array with other person_id. Append this one.
+                //else {
+                // pic already exists in array with other person_id. Append this one.
                 //	$connected_persons[$picname] .= '@@'.$picqryDb->event_connect_id; // example: $connected_persons['an_example.jpg']="I354@@I653"
                 //	//$photoalbum['media_files'][]=$picname;
                 //}

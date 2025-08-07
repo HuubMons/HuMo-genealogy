@@ -3,6 +3,7 @@
 namespace Genealogy\App\Model;
 
 use Genealogy\App\Model\BaseModel;
+use Genealogy\Include\BotDetector;
 use Genealogy\Include\DatePlace;
 use Genealogy\Include\MediaPath;
 use Genealogy\Include\PersonLink;
@@ -17,7 +18,6 @@ use PDOException;
 
 class TreeIndexModel extends BaseModel
 {
-    //private PersonLink $personLink;
     private $personLink;
     private $processLinks;
 
@@ -32,12 +32,14 @@ class TreeIndexModel extends BaseModel
 
     public function show_tree_index()
     {
-        global $tree_prefix_quoted, $selected_language, $dirmark2, $bot_visit;
+        global $tree_prefix_quoted, $selected_language, $language;
 
+        $botDetector = new BotDetector();
+        $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
         $showTreeText = new ShowTreeText();
 
         // *** Option to only index CMS page for bots ***
-        if ($bot_visit && $this->humo_option["searchengine_cms_only"] == 'y') {
+        if ($botDetector->isBot() && $this->humo_option["searchengine_cms_only"] == 'y') {
             $item_array[0]['position'] = 'center';
             $item_array[0]['header'] = '';
             $item_array[0]['item'] = $this->selected_family_tree();
@@ -133,7 +135,7 @@ class TreeIndexModel extends BaseModel
                 if ($module_item[$i] == 'alphabet') {
                     //*** Find first first_character of last name ***
                     $header = __('Surnames Index');
-                    $temp .= $this->alphabet() . $dirmark2;
+                    $temp .= $this->alphabet() . $directionMarkers->dirmark2;
                 }
 
                 //*** Most frequent names ***
@@ -150,7 +152,7 @@ class TreeIndexModel extends BaseModel
                     // *** Date and number of persons/ families ***
                     $temp .= ' <i>' . $this->tree_data() . '</i><br>';
                     if ($this->tree_data() != "") {
-                        $temp .= $dirmark2;
+                        $temp .= $directionMarkers->dirmark2;
                     }
 
                     // *** Owner genealogy ***
@@ -162,20 +164,20 @@ class TreeIndexModel extends BaseModel
                     // *** Show mainmenu text ***
                     $mainmenu_text = $treetext['mainmenu_text'];
                     if ($mainmenu_text != '') {
-                        $temp .= '<br><br>' . nl2br($mainmenu_text) . $dirmark2;
+                        $temp .= '<br><br>' . nl2br($mainmenu_text) . $directionMarkers->dirmark2;
                     }
 
                     // *** Show mainmenu source ***
                     $mainmenu_source = $treetext['mainmenu_source'];
                     if ($mainmenu_source != '') {
-                        $temp .= '<br><br>' . nl2br($mainmenu_source) . $dirmark2;
+                        $temp .= '<br><br>' . nl2br($mainmenu_source) . $directionMarkers->dirmark2;
                     }
                 }
 
                 // *** Search ***
                 if ($module_item[$i] == 'search') {
                     $header = __('Search');
-                    if (!$bot_visit) {
+                    if (!$botDetector->isBot()) {
                         $temp .= $this->search_box();
                     }
                 }
@@ -183,7 +185,7 @@ class TreeIndexModel extends BaseModel
                 // *** Random photo ***
                 if ($module_item[$i] == 'random_photo') {
                     $header = __('Random photo');
-                    if (!$bot_visit) {
+                    if (!$botDetector->isBot()) {
                         $temp .= $this->random_photo();
                     }
                 }
@@ -360,26 +362,10 @@ class TreeIndexModel extends BaseModel
         $text .= '<tr><td colspan="' . ($maxcols * 2) . '" class="table-active"><a href="' . $path . '">' . __('More statistics') . '</a></td></tr>';
         $text .= '</table>';
 
-        // *** Show light gray background bar, that graphical shows number of persons ***
+        // Show gray bar in name box. Graphical indication of number of names.
         $text .= '
-        <script>
-        var tbl = document.getElementsByClassName("nametbl")[0];
-        var rws = tbl.rows; var baseperc = ' . $baseperc . ';
-        for(var i = 0; i < rws.length; i ++) {
-            var tbs =  rws[i].getElementsByClassName("namenr");
-            var nms = rws[i].getElementsByClassName("namelst");
-            for(var x = 0; x < tbs.length; x ++) {
-                var percentage = parseInt(tbs[x].innerHTML, 10);
-                percentage = (percentage * 100)/baseperc;
-                if(percentage > 0.1) {
-                    nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
-                    nms[x].style.backgroundSize = percentage + "%" + " 100%";
-                    nms[x].style.backgroundRepeat = "no-repeat";
-                    nms[x].style.color = "rgb(0, 140, 200)";
-                }
-            }
-        }
-        </script>';
+        <script>var baseperc = ' . $baseperc . ';</script>
+        <script src="assets/js/stats_graphical_bar.js"></script>';
 
         return $text;
     }
@@ -615,29 +601,8 @@ class TreeIndexModel extends BaseModel
         $datasql2 = $this->dbh->query("SELECT * FROM humo_trees");
         $num_rows2 = $datasql2->rowCount();
         if ($num_rows2 > 1 && $this->humo_option['one_name_study'] == 'n') {
-            /*
-            $checked = '';
-            if ($search_database == "tree_selected") {
-                $checked = 'checked';
-            }
-            $text .= '<input type="radio" class="form-check-input" name="search_database" value="tree_selected" ' . $checked . '> ' . __('Selected family tree') . '<br>';
-            //$checked=''; if ($search_database=="all_databases"){ $checked='checked'; }
-            $checked = '';
-            if ($search_database == "all_trees") {
-                $checked = 'checked';
-            }
-            $text .= '<input type="radio" class="form-check-input" name="search_database" value="all_trees" ' . $checked . '> ' . __('All family trees') . '<br>';
-            $checked = '';
-            if ($search_database == "all_but_this") {
-                $checked = 'checked';
-            }
-            $text .= '<input type="radio" class="form-check-input" name="search_database" value="all_but_this" ' . $checked . '> ' . __('All but selected tree') . '<br>';
-            */
-
-            $text .= '<select name="select_trees" class="form-select form-select-sm">';
-            $text .= '<option value="tree_selected"';
-            $text .= ' selected';
-            $text .= '>' . __('Selected family tree') . '</option>';
+            $text .= '<select name="select_trees" aria-label="' . __('Select family tree') . '" class="form-select form-select-sm">';
+            $text .= '<option value="tree_selected">' . __('Selected family tree') . '</option>';
 
             $text .= '<option value="all_trees"';
             if ($search_database === "all_trees") {
@@ -658,7 +623,7 @@ class TreeIndexModel extends BaseModel
         $text .= '<p><button type="submit" class="btn btn-success btn-sm my-2">' . __('Search') . '</button></p>';
         $path_tmp = $this->processLinks->get_link($this->uri_path, 'list', $this->tree_id, true);
         $path_tmp .= 'adv_search=1&index_list=search';
-        $text .= '<a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25"> ' . __('Advanced search') . '</a>';
+        $text .= '<a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25" alt="' . __('Advanced search') . '" title="' . __('Advanced search') . '"> ' . __('Advanced search') . '</a>';
         return $text . "</form>";
     }
 
@@ -769,7 +734,7 @@ class TreeIndexModel extends BaseModel
                     }
                     $picture_path = $mediaPath->give_media_path($tree_pict_path, $picname);
 
-                    // u can delete this variables if there are some global variables for protocol and omain combined
+                    // u can delete this variables if there are some general variables for protocol and domain combined
                     // Get the protocol (HTTP or HTTPS)
                     $text .= '<div style="text-align: center;">';
 

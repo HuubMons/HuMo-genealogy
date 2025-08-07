@@ -102,7 +102,8 @@ if (file_exists($array_picture_folder[0])) {
                 !in_array($filename, $ignore) &&
                 substr($filename, 0, 6) !== 'thumb_' &&
                 substr($filename, 0, 1) !== '.'
-            ) {   // skip hidden files (unix style)
+            ) {
+                // skip hidden files (unix style)
                 // *** stripos = case-insensitive search ***
                 if ($search_quicksearch == '' || $search_quicksearch != '' && stripos($filename, $search_quicksearch) !== false) {
                     $sub_dir = substr($selected_picture_folder, $dirname_start);

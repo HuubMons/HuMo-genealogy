@@ -159,11 +159,13 @@ class EditorEvent
             $picture_array2 = array(); // declare, otherwise if not used gives error
             // if subfolders exist for category files, list those too
             $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-            if ($temp->rowCount()) { // there is a category table
+            if ($temp->rowCount()) {
+                // there is a category table
                 $catg = $this->dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
                 if ($catg->rowCount()) {
                     while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
-                        if (is_dir($dir . substr($catDb->photocat_prefix, 0, 2))) {  // there is a subfolder for this prefix
+                        if (is_dir($dir . substr($catDb->photocat_prefix, 0, 2))) {
+                            // there is a subfolder for this prefix
                             $dh  = opendir($dir . substr($catDb->photocat_prefix, 0, 2));
                             while (false !== ($filename = readdir($dh))) {
                                 if (substr($filename, 0, 6) !== 'thumb_' && $filename !== '.' && $filename !== '..') {
@@ -625,11 +627,13 @@ class EditorEvent
                                                     <?php
                                                     $tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
                                                     $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-                                                    if ($temp->rowCount()) {  // there is a category table 
+                                                    if ($temp->rowCount()) {
+                                                        // there is a category table 
                                                         $catgr = $this->dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
                                                         if ($catgr->rowCount()) {
                                                             while ($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {
-                                                                if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix && is_dir('../' . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {   // there is a subfolder of this prefix
+                                                                if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix && is_dir('../' . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {
+                                                                    // there is a subfolder of this prefix
                                                                     $tree_pict_path3 = $tree_pict_path3 . substr($data_listDb->event_event, 0, 2) . '/';  // look in that subfolder
                                                                 }
                                                             }

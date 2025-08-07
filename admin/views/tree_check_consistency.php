@@ -386,11 +386,14 @@ if (isset($_POST['mark_all'])) {
                 //NEW - find parents wedding date
                 if (isset($parentsDb->fam_marr_date)) {
                     $par_marr_date = $parentsDb->fam_marr_date;
-                } elseif (isset($parentsDb->fam_marr_church_date)) { // if no civil date try religious marriage
+                } elseif (isset($parentsDb->fam_marr_church_date)) {
+                    // if no civil date try religious marriage
                     $par_marr_date = $parentsDb->fam_marr_church_date;
-                } elseif (isset($parentsDb->fam_marr_notice_date)) { // if no civil or religious date, try notice date
+                } elseif (isset($parentsDb->fam_marr_notice_date)) {
+                    // if no civil or religious date, try notice date
                     $par_marr_date = $parentsDb->fam_marr_notice_date;
-                } elseif (isset($parentsDb->fam_marr_relation_date)) { // if non of above try relation date
+                } elseif (isset($parentsDb->fam_marr_relation_date)) {
+                    // if non of above try relation date
                     $par_marr_date = $parentsDb->fam_relation_date;
                 }
 
@@ -419,12 +422,14 @@ if (isset($_POST['mark_all'])) {
                     $ch_array = explode(";", $parentsDb->fam_children);
                     $num_ch = count($ch_array); // number of children
                     $first_ch = 0;
-                    if ($num_ch > 1) {  // more than 1 children
+                    if ($num_ch > 1) {
+                        // more than 1 children
                         $count = 0;
                         while ($ch_array[$count] != $personDb['pers_gedcomnumber']) {
                             $count++;
                         }
-                        if ($count > 0) {  // person is not first child
+                        if ($count > 0) {
+                            // person is not first child
                             $prev_sib_gednr = $ch_array[$count - 1]; // gedcomnumber of previous sibling
                             $sib = $dbh->query("SELECT pers_birth_date FROM humo_persons
                                 WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber ='" . $prev_sib_gednr . "' AND pers_birth_date NOT LIKE ''");
@@ -898,13 +903,15 @@ function compare_month_gap($first_date, $second_date, $monthgap)
     $day2 = $process_date->search_day($second_date);
 
     if ($year1 && $year2 && $month1 && $month2) {
-        if ($year1 == $year2) {  // dates in same year - we can deduct month1 from month2
+        if ($year1 == $year2) {
+            // dates in same year - we can deduct month1 from month2
             if (($month2 - $month1) < $monthgap) {
                 return $month2 - $month1;
             } else {
                 return false;
             }
-        } elseif ($year1 + 1 == $year2) { // consecutive years
+        } elseif ($year1 + 1 == $year2) {
+            // consecutive years
             if (((12 - $month1) + $month2) < $monthgap) {
                 return (12 - $month1) + $month2;
             } else {

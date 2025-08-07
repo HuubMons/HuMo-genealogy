@@ -88,16 +88,10 @@ if (isset($_POST['show_desc'])) {
 }
 */
 
-use Genealogy\Include\MediaPath;
-use Genealogy\Include\ShowTreeText;
-use Genealogy\Include\SafeTextShow;
-use Genealogy\Include\PersonName;
-use Genealogy\Include\PersonPrivacy;
-
-
 // ----------- RTL by Dr Maleki ------------------
 $html_text = '';
-if ($language["dir"] == "rtl") {   // right to left language
+if ($language["dir"] == "rtl") {
+    // right to left language
     $html_text = ' dir="rtl"';
 }
 // TODO check this code
@@ -105,9 +99,10 @@ if (isset($screen_mode) && ($screen_mode == "STAR" || $screen_mode == "STARSIZE"
     $html_text = '';
 }
 
-$mediaPath = new MediaPath;
-$showTreeText = new ShowTreeText();
-$safeTextShow = new SafeTextShow();
+$botDetector = new Genealogy\Include\BotDetector();
+$mediaPath = new Genealogy\Include\MediaPath();
+$showTreeText = new Genealogy\Include\ShowTreeText();
+$safeTextShow = new Genealogy\Include\SafeTextShow();
 
 function getActiveTopMenu(string $page = 'home')
 {
@@ -149,7 +144,9 @@ function getActiveTopMenu(string $page = 'home')
     return $menu_top;
 }
 $menu_top = getActiveTopMenu($page);
-//if ($menu_top === 'tool_menu') echo 'active';
+//if ($menu_top === 'tool_menu'){
+//  echo 'active';
+//}
 ?>
 
 <!DOCTYPE html>
@@ -181,9 +178,6 @@ $menu_top = getActiveTopMenu($page);
 
     <!-- Default CSS settings -->
     <link href="css/gedcom.css" rel="stylesheet" type="text/css">
-
-    <!-- TODO this is only needed for outline report -->
-    <link href="css/outline_report.css" rel="stylesheet" type="text/css">
 
     <!-- TODO check print version -->
     <link href="css/print.css" rel="stylesheet" type="text/css" media="print">
@@ -340,7 +334,7 @@ $menu_top = getActiveTopMenu($page);
 
                     <?php
                     // *** Select family tree ***
-                    if (!$bot_visit) {
+                    if (!$botDetector->isBot()) {
                         $sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
                         $tree_search_result2 = $dbh->query($sql);
                         $num_rows = $tree_search_result2->rowCount();
@@ -352,7 +346,6 @@ $menu_top = getActiveTopMenu($page);
                     ?>
                             <div class="col-md-3">
                                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
-                                    <!-- <?= __('Family tree') . ': '; ?> -->
                                     <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
                                         <option value=""><?= __('Select a family tree:'); ?></option>
                                         <?php
@@ -369,7 +362,7 @@ $menu_top = getActiveTopMenu($page);
                                                     $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                                                     $selected = ' selected';
                                                 }
-                                                $treetext = $showTreeText ->show_tree_text($tree_searchDb->tree_id, $selected_language);
+                                                $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
                                                 echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . $treetext['name'] . '</option>';
                                                 $count++;
                                             }
@@ -385,7 +378,7 @@ $menu_top = getActiveTopMenu($page);
 
                     <?php
                     // *** Show quicksearch field ***
-                    if (!$bot_visit) {
+                    if (!$botDetector->isBot()) {
                         $menu_path = $processLinks->get_link($uri_path, 'list', $tree_id);
 
                         $quicksearch = '';
@@ -436,12 +429,12 @@ $menu_top = getActiveTopMenu($page);
                     }
 
                     // *** Favourite list for family pages ***
-                    if (!$bot_visit) {
+                    if (!$botDetector->isBot()) {
                         // *** Show favorites in selection list ***
                         $link = $processLinks->get_link($uri_path, 'family', $tree_id);
 
-                        $personPrivacy = new PersonPrivacy();
-                        $personName = new PersonName();
+                        $personPrivacy = new Genealogy\Include\PersonPrivacy();
+                        $personName = new Genealogy\Include\PersonName();
                     ?>
                         <div class="col-md-2">
 
@@ -559,7 +552,7 @@ $menu_top = getActiveTopMenu($page);
                     }
                     ?>
 
-                    <?php if (!$bot_visit) { ?>
+                    <?php if (!$botDetector->isBot()) { ?>
                         <li class="nav-item dropdown active <?php if ($menu_top == 'tree_menu') echo 'genealogy_active'; ?>">
                             <?php // TODO add active if dropdown item is selected ;
                             ?>
@@ -620,7 +613,7 @@ $menu_top = getActiveTopMenu($page);
 
                     <!-- Menu: Tools menu -->
                     <?php
-                    if ($bot_visit && $humo_option["searchengine_cms_only"] == 'y') {
+                    if ($botDetector->isBot() && $humo_option["searchengine_cms_only"] == 'y') {
                         //
                     } else {
                         // make sure at least one of the submenus is activated, otherwise don't show TOOLS menu
@@ -648,7 +641,7 @@ $menu_top = getActiveTopMenu($page);
                                     <?php } ?>
 
                                     <?php if ($user["group_googlemaps"] == 'j') {; ?>
-                                        <?php if (!$bot_visit) { ?>
+                                        <?php if (!$botDetector->isBot()) { ?>
                                             <li><a class="dropdown-item <?php if ($page == 'maps') echo 'active'; ?>" href="<?= $menu_path_map; ?>"><?= __('World map'); ?></a></li>
                                         <?php } ?>
                                     <?php } ?>
@@ -684,7 +677,7 @@ $menu_top = getActiveTopMenu($page);
                     <?php } ?>
 
                     <!-- Menu: Control menu -->
-                    <?php if (!$bot_visit) { ?>
+                    <?php if (!$botDetector->isBot()) { ?>
                         <li class="nav-item dropdown <?php if ($menu_top == 'setting_menu') echo 'genealogy_active'; ?>">
                             <a class="nav-link dropdown-toggle <?php if ($menu_top == 'setting_menu') echo 'active'; ?>" href="<?= $menu_path_tree_index; ?>" data-bs-toggle="dropdown"><?= __('Control'); ?></a>
                             <ul class="dropdown-menu genealogy_menu">
@@ -709,7 +702,7 @@ $menu_top = getActiveTopMenu($page);
                     <?php } ?>
 
                     <!-- Select language using country flags -->
-                    <?php if (!$bot_visit) { ?>
+                    <?php if (!$botDetector->isBot()) { ?>
                         <li class="nav-item dropdown">
                             <?php include_once(__DIR__ . "/partial/select_language.php"); ?>
                             <?php $language_path = $processLinks->get_link($uri_path, 'language', '', true); ?>
@@ -867,7 +860,7 @@ $menu_top = getActiveTopMenu($page);
                     <!-- Show European cookie information -->
                     <?php
                     $url = $humo_option["url_rewrite"] == "j" ? $uri_path . 'cookies' : 'index.php?page=cookies';
-                    if (!$bot_visit) {
+                    if (!$botDetector->isBot()) {
                         printf(__('European law: %s cookie information'), '<a href="' . $url . '">HuMo-genealogy');
                         echo '</a>';
                     }
@@ -879,7 +872,7 @@ $menu_top = getActiveTopMenu($page);
             <div id="footer"><br>
                 <a href="<?= $menu_path_help; ?>"><?= __('Help'); ?></a>
 
-                <?php if (!$bot_visit) { ?>
+                <?php if (!$botDetector->isBot()) { ?>
                     | <a href="<?= $menu_path_cookies; ?>"><?= ucfirst(str_replace('%s ', '', __('%s cookie information'))); ?></a>
                 <?php } ?>
             </div>

@@ -712,7 +712,8 @@ elseif ($trees['step'] == '3') {
     if (isset($reassign_array)) {
         unset($reassign_array);
     }
-    if ($reassign == true) {  // reassign gedcomnumbers when importing tree
+    if ($reassign == true) {
+        // reassign gedcomnumbers when importing tree
         $new_gednum["I"] = 1;
         $new_gednum["F"] = 1;
         $new_gednum["M"] = 1;
@@ -722,7 +723,8 @@ elseif ($trees['step'] == '3') {
         $new_gednum["RP"] = 1;
         $new_gednum["N"] = 1;
     }
-    if ($add_tree == true) { // reassign gedcomnumbers when importing added tree in merging
+    if ($add_tree == true) {
+        // reassign gedcomnumbers when importing added tree in merging
         $new_gednum["I"] = $largest_pers_ged;
         $new_gednum["F"] = $largest_fam_ged;
         $new_gednum["M"] = $largest_fam_ged;
@@ -733,7 +735,7 @@ elseif ($trees['step'] == '3') {
         $new_gednum["N"] = $largest_text_ged;
     }
 
-    $gedcomImport = new \Genealogy\Include\GedcomImport($dbh, $tree_id, $tree_prefix, $humo_option);
+    $gedcomImport = new \Genealogy\Include\GedcomImport($dbh, $tree_id, $tree_prefix, $humo_option, $add_tree, $reassign);
 
     require(__DIR__ . "/../include/prefixes.php");
     $loop2 = count($pers_prefix);
@@ -794,8 +796,8 @@ elseif ($trees['step'] == '3') {
         $perc = $_SESSION['save_perc'];   // save percentage processed
 
         $total = 0;
-        if ($_SESSION['save_total'] == '0') { // only first time in session: count number of lines in gedcom
-
+        // only first time in session: count number of lines in gedcom
+        if ($_SESSION['save_total'] == '0') {
             $address_high = 1;
             $_SESSION['new_address_gedcomnr'] = 1;
             $source_high = 1;
@@ -964,9 +966,11 @@ elseif ($trees['step'] == '3') {
 
     if (isset($_SESSION['save_gen_program'])) {
         $gen_program = $_SESSION['save_gen_program'];
+        $gedcomImport->set_gen_program($gen_program);
     }
     if (isset($_SESSION['save_gen_program_version'])) {
         $gen_program_version = $_SESSION['save_gen_program_version'];
+        $gedcomImport->set_gen_program_version($gen_program_version);
     }
 
     $level0 = '';
@@ -1133,6 +1137,8 @@ elseif ($trees['step'] == '3') {
             if (substr($buffer, 0, 6) === '1 SOUR') {
                 $gen_program = substr($buffer, 7);
                 $_SESSION['save_gen_program'] = $gen_program;
+                $gedcomImport->set_gen_program($gen_program);
+
                 echo '<br><br>' . __('GEDCOM file') . ': <b>' . $gen_program . '</b>, ';
 
                 printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
@@ -1145,6 +1151,8 @@ elseif ($trees['step'] == '3') {
             // *** First "VERS" normally is program version ***
             if ($gen_program_version == '' && substr($buffer, 2, 4) === 'VERS') {
                 $gen_program_version = substr($buffer, 7);
+                $gedcomImport->set_gen_program_version($gen_program_version);
+
                 $_SESSION['save_gen_program_version'] = $gen_program_version;
             }
 
@@ -1375,7 +1383,10 @@ elseif ($trees['step'] == '3') {
 elseif ($trees['step'] == '4') {
     $start_time = time();
     $gen_program = $_POST['gen_program'];
+    //$gedcomImport->set_gen_program($gen_program);
+
     $gen_program_version = $_POST['gen_program_version'];
+    //$gedcomImport->set_gen_program_version($gen_program_version);
 ?>
 
     <b><?= __('STEP 4) Final database processing:'); ?></b><br>

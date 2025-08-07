@@ -170,30 +170,6 @@ class IndexModel
         return $index;
     }
 
-    public function process_ltr_rtl($language): array
-    {
-        // *** Process LTR and RTL variables ***
-        $index['dirmark1'] = "&#x200E;";  //ltr marker
-        $index['dirmark2'] = "&#x200F;";  //rtl marker
-        $index['rtlmarker'] = "ltr";
-        $index['alignmarker'] = "left";
-
-        // *** Switch direction markers if language is RTL ***
-        if ($language["dir"] == "rtl") {
-            $index['dirmark1'] = "&#x200F;";  //rtl marker
-            $index['dirmark2'] = "&#x200E;";  //ltr marker
-            $index['rtlmarker'] = "rtl";
-            $index['alignmarker'] = "right";
-        }
-
-        //if (isset($screen_mode) && $screen_mode == "PDF") {
-        //    $dirmark1 = '';
-        //    $dirmark2 = '';
-        //}
-
-        return $index;
-    }
-
     public function get_family_tree($dbh, $db_functions, $user): array
     {
         $check_tree_id = 0; // *** Check new selected tree_id ***

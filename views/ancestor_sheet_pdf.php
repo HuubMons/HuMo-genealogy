@@ -11,8 +11,6 @@
 
 $screen_mode = 'ASPDF';
 $pdf_source = array();  // is set in show_sources with sourcenr as key to be used in source appendix
-$dirmark1 = '';
-$dirmark2 = '';
 
 // TODO create seperate controller script.
 $get_ancestor = new \Genealogy\App\Model\AncestorModel($config);
@@ -155,13 +153,15 @@ function data_array($id, $width, $height): void
             if ($name_len <= $height - $rest) {
                 $data_array[$id][0] = $name;
                 $data_array[$id][3] = $name_len;
-            } else { // too long: try with initials
+            } else {
+                // too long: try with initials
                 $result = parse_line($names['short_firstname'], $width, 0);
                 $name_len = $result[0];
                 if ($name_len <= $height - $rest) {
                     $data_array[$id][0] = $result[1];
                     $data_array[$id][3] = $name_len;
-                } else { // still too long: truncate
+                } else {
+                    // still too long: truncate
                     $result = parse_line($names['short_firstname'], $width, $height - $rest);
                     $name_len = $result[0];
                     $data_array[$id][0] = $result[1];
@@ -178,7 +178,8 @@ function data_array($id, $width, $height): void
             if ($birth_len <= $height - $rest) {
                 $data_array[$id][1] = $birth;
                 $data_array[$id][4] = $birth_len;
-            } else { // too long: truncate
+            } else {
+                // too long: truncate
                 $result = parse_line(str_replace("\n", " ", $birth), $width, $height - $rest);
                 $birth_len = $result[0];
                 $data_array[$id][1] = $result[1];
@@ -194,7 +195,8 @@ function data_array($id, $width, $height): void
             if ($death_len <= $height - $rest) {
                 $data_array[$id][2] = $death;
                 $data_array[$id][5] = $death_len;
-            } else { // too long: truncate
+            } else {
+                // too long: truncate
                 $result = parse_line(str_replace("\n", " ", $death), $width, $height - $rest);
                 $data_array[$id][2] = $result[1];
                 $data_array[$id][5] = $result[0];
@@ -218,12 +220,15 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
     $pdf->SetLeftMargin(16);
     $marg = 16;
     for ($m = $begin; $m <= $end; $m += $increment) {
-        if ($type == "pers") { // person's name & details
+        if ($type == "pers") {
+            // person's name & details
             data_array($m, $maxchar, $numrows);
             $pdf->SetFont($pdf->pdf_font, 'B', 8);
-            if ($m % 2 == 0 or ($m == 1 and $data["sexe"][$m] == "M")) { // male
+            if ($m % 2 == 0 or ($m == 1 and $data["sexe"][$m] == "M")) {
+                // male
                 $pdf->SetFillColor(191, 239, 255);
-            } else { // female
+            } else {
+                // female
                 $pdf->SetFillColor(255, 228, 225);
             }
             $pdf->MultiCell($cellwidth, 4, $data_array[$m][0], "LTR", "C", true);
@@ -231,7 +236,8 @@ function place_cells($type, $begin, $end, $increment, $maxchar, $numrows, $cellw
             $pdf->SetFont($pdf->pdf_font, '', 8);
             $nstring = '';
             $used = $data_array[$m][3] + $data_array[$m][4] + $data_array[$m][5];
-        } else {  // marr date & place
+        } else {
+            // marr date & place
             $space = '';
             if ($data["marr_date"][$m] != '') {
                 $space = ' ';

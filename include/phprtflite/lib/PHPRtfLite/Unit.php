@@ -42,7 +42,7 @@ class PHPRtfLite_Unit
 
 
     /**
-     * sets global unit
+     * sets globalunit
      *
      * @param string $unit
      */
@@ -53,7 +53,7 @@ class PHPRtfLite_Unit
 
 
     /**
-     * gets global unit
+     * gets globalunit
      *
      * @return string
      */

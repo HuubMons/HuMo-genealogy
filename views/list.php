@@ -15,6 +15,7 @@ $start = $list["start"];
 $list_var = $processLinks->get_link($uri_path, 'list', $tree_id, false);
 $list_var2 = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
+$directionMarkers = new Genealogy\Include\DirectionMarkers($language["dir"]);
 $personPrivacy = new Genealogy\Include\PersonPrivacy;
 $personName = new Genealogy\Include\PersonName;
 $personPopup = new Genealogy\Include\PersonPopup;
@@ -88,12 +89,12 @@ if ($list["index_list"] == 'places') {
 
             <div class="row mb-2">
                 <div class="col-1">
-                    <label for="find_place" class="col-form-label">
+                    <label for="part_place_name" class="col-form-label">
                         <?= __('Find place'); ?>:
                     </label>
                 </div>
                 <div class="col-2">
-                    <select name="part_place_name" class="form-select form-select-sm">
+                    <select id="part_place_name" name="part_place_name" class="form-select form-select-sm">
                         <option value="contains"><?= __('Contains'); ?></option>
                         <option value="equals" <?php if ($list["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                         <option value="starts_with" <?php if ($list["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
@@ -155,7 +156,6 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 
                     <?php if ($num_rows2 > 1 && $humo_option['one_name_study'] == 'n') { ?>
                         <div class="col-sm-2">
-                            <!-- <?= __('Family tree'); ?> -->
                             <select name="select_trees" class="form-select form-select-sm">
                                 <option value="tree_selected" <?php if ($select_trees == "tree_selected") echo 'selected'; ?>><?= __('Selected family tree'); ?></option>
                                 <option value="all_trees" <?php if ($select_trees == "all_trees") echo 'selected'; ?>><?= __('All family trees'); ?></option>
@@ -214,10 +214,6 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                         <div class="col-sm-auto <?= $selection['pers_lastname'] ? ' bg-primary-subtle' : ''; ?>">
                             <?= __('Last name'); ?>:
                             <div class="input-group mb-3">
-                                <?php /*
-                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= $safeTextShow->safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
-                                */ ?>
-
                                 <!--  Lastname -->
                                 <select size="1" name="part_lastname" class="form-select form-select-sm">
                                     <option value="contains"><?= __('Contains'); ?></option>
@@ -600,6 +596,7 @@ if ($list["person_result"]->rowCount() > 0) {
 </div>
 
 <?php
+// TODO check code (not needed anymore?).
 $dir = '';
 if ($language["dir"] == "rtl") {
     $dir = "rtl"; // loads the proper CSS for rtl display (rtlindex_list2):
@@ -654,7 +651,7 @@ $selected_place = '';
                 ?>
                 <th colspan="2">
                     <?= __('Sort by:'); ?> <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_firstname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
-                        <?= ucfirst(__('firstname')); ?> <img src="images/button3<?= $img; ?>.png">
+                        <?= ucfirst(__('firstname')); ?> <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                     </a>
 
                     <?php
@@ -671,7 +668,7 @@ $selected_place = '';
                     }
                     ?>
                     <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_lastname&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
-                        <?= ucfirst(__('lastname')); ?> <img src="images/button3<?= $img; ?>.png">
+                        <?= ucfirst(__('lastname')); ?> <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                     </a>
                 </th>
 
@@ -687,8 +684,14 @@ $selected_place = '';
                         $img = 'up';
                     }
                 }
-                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                ?>
+                <th>
+                    <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_birthdate&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                        <?= __('Date'); ?> <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
+                    </a>
+                </th>
 
+                <?php
                 $style = '';
                 $sort_reverse = $order;
                 $img = '';
@@ -700,8 +703,14 @@ $selected_place = '';
                         $img = 'up';
                     }
                 }
-                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_birthplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                ?>
+                <th>
+                    <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_birthplace&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                        <?= __('Place'); ?> <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
+                    </a>
+                </th>
 
+                <?php
                 $style = '';
                 $sort_reverse = $order;
                 $img = '';
@@ -713,8 +722,14 @@ $selected_place = '';
                         $img = 'up';
                     }
                 }
-                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathdate&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                ?>
+                <th>
+                    <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_deathdate&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                        <?= __('Date'); ?> <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
+                    </a>
+                </th>
 
+                <?php
                 $style = '';
                 $sort_reverse = $order;
                 $img = '';
@@ -726,8 +741,14 @@ $selected_place = '';
                         $img = 'up';
                     }
                 }
-                echo '<th><a href="' . $link . 'index_list=' . $list["index_list"] . '&start=1&item=0&sort=sort_deathplace&sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+                ?>
+                <th>
+                    <a href="<?= $link; ?>index_list=<?= $list["index_list"]; ?>&start=1&item=0&sort=sort_deathplace&sort_desc=<?= $sort_reverse; ?>" <?= $style; ?>>
+                        <?= __('Place'); ?> <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
+                    </a>
+                </th>
 
+                <?php
                 if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
                     echo '<th><br></th>';
                 }
@@ -851,7 +872,7 @@ $selected_place = '';
                         // *** Show extra columns before a person in index places ***
                         if ($list["index_list"] == 'places') {
                             if ($selected_place != $personDb->place_order) {
-                                echo '<td colspan="7"><b>' . $dirmark2 . $personDb->place_order . '</b></td></tr><tr>';
+                                echo '<td colspan="7"><b>' . $directionMarkers->dirmark2 . $personDb->place_order . '</b></td></tr><tr>';
                                 //$list["show_place"] = $personDb->place_order;
                             } else {
                                 //$list["show_place"] = '';
@@ -894,7 +915,6 @@ $selected_place = '';
                                     $result = $stmt;
                                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
-                                    //if ($selected_place==$personDb->pers_place_index)
                                     if ($resultDb && $resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
                                         echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
                                     } else {
@@ -947,7 +967,7 @@ $selected_place = '';
                         <td valign="top" style="border-right:0px; white-space:nowrap;">
                             <!-- Show person popup menu -->
                             <?= $personPopup->person_popup_menu($personDb, $privacy); ?>
-                            <?= $dirmark1; ?>
+                            <?= $directionMarkers->dirmark1; ?>
 
                             <?php
                             // *** Show picture man or wife ***
@@ -971,8 +991,9 @@ $selected_place = '';
 
                             // *** Add own icon by person, using a file name in own code ***
                             if ($personDb->pers_own_code != '' and is_file("images/" . $personDb->pers_own_code . ".gif")) {
-                                if ($personDb->pers_own_code != 'foto') { // *** Remove photo.gif icon, new method is used to show photo icon ***
-                                    echo  $dirmark1 . '<img src="images/' . $personDb->pers_own_code . '.gif" alt="' . $personDb->pers_own_code . '">&nbsp;';
+                                if ($personDb->pers_own_code != 'foto') {
+                                    // *** Remove photo.gif icon, new method is used to show photo icon ***
+                                    echo  $directionMarkers->dirmark1 . '<img src="images/' . $personDb->pers_own_code . '.gif" alt="' . $personDb->pers_own_code . '">&nbsp;';
                                 }
                             }
 
@@ -985,7 +1006,7 @@ $selected_place = '';
                                 $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
                                 // *** Only check 1st picture ***
                                 if (isset($picture_qry[0])) {
-                                    echo  $dirmark1 . '<img src="images/photo.gif" alt="photo">&nbsp;';
+                                    echo  $directionMarkers->dirmark1 . '<img src="images/photo.gif" alt="photo">&nbsp;';
                                 }
                             }
                             ?>

@@ -14,8 +14,7 @@ class ShowSourcesFootnotes
 {
     function show_sources_footnotes(): string
     {
-        global $dbh, $db_functions, $tree_id, $user;
-        global $uri_path, $source_footnote_connect_id, $humo_option;
+        global $dbh, $db_functions, $tree_id, $user, $uri_path, $source_footnote_connect_id, $humo_option;
 
         $datePlace = new DatePlace();
         $processText = new ProcessText();

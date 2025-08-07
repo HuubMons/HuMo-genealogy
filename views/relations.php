@@ -45,7 +45,7 @@
  * genarray[][1] = number of generations (counted from base person)
  * genarray[][2] = array number of child
  *
- * Values other global variables:
+ * Values other variables:
  * $relation['double_spouse'] - flags situation where searched persons X and Y are both spouses of a third person
  * $relation['special_spouseX'] (and Y) - flags situation where the regular text "spouse of" has to be changed:
  * ----- for example: "X is spouse of brother of Y" should become "X is sister-in-law of Y"
@@ -157,7 +157,7 @@ $limit = 500; // *** Limit results ***
 
                             <?= __('Pick a name from search results'); ?>
 
-                            <select size="1" name="person1" class="form-select form-select-sm">
+                            <select size="1" name="person1" aria-label="<?= __('Select person 1'); ?>" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
                                     $privacy = $personPrivacy->get_privacy($searchDb);
@@ -194,7 +194,7 @@ $limit = 500; // *** Limit results ***
                                 <?php } ?>
                             </select>
                         <?php } else { ?>
-                            <select size="1" name="notfound" value="1" class="form-select form-select-sm">
+                            <select size="1" name="notfound" value="1" aria-label="<?= __('Person not found'); ?>" class="form-select form-select-sm">
                                 <option><?= __('Person not found'); ?></option>
                             </select>
                 <?php
@@ -226,7 +226,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-3">
                 <?php
                 if (isset($_SESSION["button_search_name2"]) && $_SESSION["button_search_name2"] == 1) {
-                     if ($relation["search_name2"] != '') {
+                    if ($relation["search_name2"] != '') {
                         // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
                         $relation["search_name2"] = str_replace(' ', '%', $relation["search_name2"]);
                         // *** In case someone entered "Mons, Huub" using a comma ***
@@ -267,8 +267,7 @@ $limit = 500; // *** Limit results ***
                         $stmt2->bindValue(':gednr2_prefixed', 'I' . $relation["search_gednr2"], PDO::PARAM_STR);
                         $stmt2->execute();
                         $search_result2 = $stmt2;
-                    }
-                    else{
+                    } else {
                         $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
                         $stmt2 = $dbh->prepare($search_qry);
                         $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
@@ -283,7 +282,7 @@ $limit = 500; // *** Limit results ***
 
                             <?= __('Pick a name from search results'); ?>
 
-                            <select size="1" name="person2" class="form-select form-select-sm">
+                            <select size="1" name="person2" aria-label="<?= __('Select person 2'); ?>" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
                                     $privacy = $personPrivacy->get_privacy($searchDb2);
@@ -318,7 +317,7 @@ $limit = 500; // *** Limit results ***
                                 <?php } ?>
                             </select>
                         <?php } else { ?>
-                            <select size="1" name="notfound" value="1" class="form-select form-select-sm">
+                            <select size="1" name="notfound" aria-label="<?= __('Person not found'); ?>" value="1" class="form-select form-select-sm">
                                 <option><?= __('Person not found'); ?></option>
                             </select>
                 <?php
@@ -451,16 +450,16 @@ Directions for use:<br>
                     display_table($relation);
                 }
 
-                /*
-                * Marital relationship
-                *
-                * This part shows for example this relationship: Uncle <-> Wife of nephew.
-                * Relation types
-                * 3 = uncle - nephew
-                * 4 = nephew - uncle
-                * 5 = cousin
-                * 6 = siblings
-                */
+                /**
+                 * Marital relationship
+                 *
+                 * This part shows for example this relationship: Uncle <-> Wife of nephew.
+                 * Relation types
+                 * 3 = uncle - nephew
+                 * 4 = nephew - uncle
+                 * 5 = cousin
+                 * 6 = siblings
+                 */
 
                 // TODO refactor. BUT: this part uses the same variables as the blood relationship.
                 if ($relation['relation_type'] != 1 && $relation['relation_type'] != 2 && $relation['relation_type'] != 7) {
@@ -677,7 +676,8 @@ Directions for use:<br>
                                     $relation['rel_text_nor_dan'] = '';
                                 }
                                 if ($selected_language == "cn") {
-                                    if ($relation['rel_text'] == " ") { // A's husband/wife is B
+                                    if ($relation['rel_text'] == " ") {
+                                        // A's husband/wife is B
                                         $relation['rel_text'] = "是";
                                     } else {
                                         mb_internal_encoding("UTF-8");

@@ -258,7 +258,8 @@ else {
                 /**
                  * Show parent1 (normally the father)
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    //onecht kind, woman without man
                     if ($family_nr == 1) {
                         //*** Show data of parent1 ***
                         $rtf_text = ' <b>' . $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1] . '</b> ';
@@ -299,7 +300,8 @@ else {
                 /**
                  * Show marriage
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    // onecht kind, wife without man
 
                     // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                     if (
@@ -504,7 +506,8 @@ function show_rtf_media($media_kind, $gedcomnumber)
             if (strpos($key, "path") !== FALSE) {
                 $type = substr($result[1][$key], -3);
                 if ($type === "jpg" || $type === "png") {
-                    if ($goodpics == FALSE) { //found 1st pic - make table
+                    if ($goodpics == FALSE) {
+                        //found 1st pic - make table
                         $table = $sect->addTable();
                         $table->addRow(0.1);
                         $table->addColumnsList(array(5, 5, 5));

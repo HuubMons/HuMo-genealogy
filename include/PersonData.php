@@ -13,7 +13,9 @@
 
 namespace Genealogy\Include;
 
+use Genealogy\Include\BotDetector;
 use Genealogy\Include\DatePlace;
+use Genealogy\Include\DirectionMarkers;
 use Genealogy\Include\PersonPrivacy;
 use Genealogy\Include\PersonName;
 use Genealogy\Include\PersonLink;
@@ -25,19 +27,25 @@ use Genealogy\Include\ShowSources;
 
 class PersonData
 {
-    private $datePlace;
+    private $datePlace, $family_expanded;
 
-    public function __construct()
+    public function __construct($family_expanded = '')
     {
-        $this->datePlace = new DatePlace();
+        $this->family_expanded = $family_expanded;
+        $this->datePlace = new DatePlace;
     }
 
     public function person_data($personDb, $privacy, $person_kind, $id)
     {
         // TODO check globals
-        global $db_functions, $user, $humo_option, $swap_parent1_parent2;
-        global $screen_mode, $dirmark1, $temp, $templ_person, $data;
+        global $db_functions, $user, $humo_option, $swap_parent1_parent2, $screen_mode, $temp, $templ_person, $data, $language;
 
+        // *** Check if family_expanded is set, otherwise use general value ***
+        if (isset($data["family_expanded"])) {
+            $this->family_expanded = $data["family_expanded"];
+        }
+
+        $directionMarkers = new DirectionMarkers($language["dir"], $screen_mode);
         $personPrivacy = new PersonPrivacy();
         $personName = new PersonName();
         $personLink = new PersonLink();
@@ -163,7 +171,7 @@ class PersonData
                 if ($user['group_own_code'] == 'j' and $personDb->pers_own_code) {
                     $text = '';
                     if ($temp) {
-                        if ($data["family_expanded"] != 'compact') {
+                        if ($this->family_expanded != 'compact') {
                             $templ_person[$temp] .= '.';
                             // *** Because of <span> the <br> is added in text ***
                             $text = '.<br>';
@@ -173,7 +181,7 @@ class PersonData
                         }
                     }
 
-                    if (!$temp || $data["family_expanded"] != 'compact') {
+                    if (!$temp || $this->family_expanded != 'compact') {
                         $templ_person["own_code_start"] = __('Own code') . ': ';
                         $text .= '<b>' . __('Own code') . ':</b> ';
                     } else {
@@ -244,7 +252,7 @@ class PersonData
                     //	$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
                     //}
                     //else{
-                    $text .= $dirmark1 . $source_array['text'];
+                    $text .= $directionMarkers->dirmark1 . $source_array['text'];
                     //}
 
                     // *** Extra item, so it's possible to add a comma or space ***
@@ -254,7 +262,7 @@ class PersonData
 
                 // *** Check for birth items, if needed use a new line ***
                 if ($text) {
-                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                    if (!$temp_previous || $this->family_expanded != 'compact') {
                         $templ_person["born_start"] = ucfirst(__('born')) . ' ';
                         $text = '<b>' . ucfirst(__('born')) . '</b> ' . $text;
                     } else {
@@ -263,7 +271,7 @@ class PersonData
                     }
 
                     if ($temp_previous) {
-                        if ($data["family_expanded"] != 'compact') {
+                        if ($this->family_expanded != 'compact') {
                             $templ_person[$temp_previous] .= '.';
                             $text = '.<br>' . $text;
                         } else {
@@ -320,7 +328,7 @@ class PersonData
 
                     // *** Check for birth declaration items, if needed use a new line ***
                     if ($text) {
-                        if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                        if (!$temp_previous || $this->family_expanded != 'compact') {
                             $templ_person["birth_declaration_start"] = ucfirst(__('birth declaration')) . ' ';
                             $text = '<b>' . ucfirst(__('birth declaration')) . '</b> ' . $text;
                         } else {
@@ -329,7 +337,7 @@ class PersonData
                         }
 
                         if ($temp_previous) {
-                            if ($data["family_expanded"] != 'compact') {
+                            if ($this->family_expanded != 'compact') {
                                 $templ_person[$temp_previous] .= '.';
                                 $text = '.<br>' . $text;
                             } else {
@@ -419,7 +427,7 @@ class PersonData
 
                 // *** check for baptise items, if needed use a new line ***
                 if ($text) {
-                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                    if (!$temp_previous || $this->family_expanded != 'compact') {
                         $templ_person["bapt_start"] = ucfirst(__('baptised')) . ' ';
                         $text = '<b>' . ucfirst(__('baptised')) . '</b> ' . $text;
                     } else {
@@ -428,7 +436,7 @@ class PersonData
                     }
 
                     if ($temp_previous) {
-                        if ($data["family_expanded"] != 'compact') {
+                        if ($this->family_expanded != 'compact') {
                             $templ_person[$temp_previous] .= '.';
                             $text = '.<br>' . $text;
                         } else {
@@ -448,7 +456,7 @@ class PersonData
                     if ($templ_person["age_liv"] != '') {
                         $temp = "age_liv";
                     }
-                    $process_text .= $dirmark1 . $age;  // *** comma and space already in $age
+                    $process_text .= $directionMarkers->dirmark1 . $age;  // *** comma and space already in $age
                 }
 
 
@@ -493,7 +501,7 @@ class PersonData
                     if ($templ_person["dead_age"] != '') {
                         $temp = "dead_age";
                     }
-                    $text .= $dirmark1 . $age;  // *** comma and space already in $age
+                    $text .= $directionMarkers->dirmark1 . $age;  // *** comma and space already in $age
                 }
 
                 $pers_death_cause = '';
@@ -572,7 +580,7 @@ class PersonData
 
                 // *** Check for death items, if needed use a new line ***
                 if ($text) {
-                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                    if (!$temp_previous || $this->family_expanded != 'compact') {
                         $templ_person["dead_start"] = ucfirst(__('died')) . ' ';
                         $text = '<b>' . ucfirst(__('died')) . '</b> ' . $text;
                     } else {
@@ -581,7 +589,7 @@ class PersonData
                     }
 
                     if ($temp_previous) {
-                        if ($data["family_expanded"] != 'compact') {
+                        if ($this->family_expanded != 'compact') {
                             $templ_person[$temp_previous] .= '.';
                             $text = '.<br>' . $text;
                         } else {
@@ -640,7 +648,7 @@ class PersonData
 
                     // *** Check for death declaration items, if needed use a new line ***
                     if ($text) {
-                        if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                        if (!$temp_previous || $this->family_expanded != 'compact') {
                             $templ_person["death_declaration_start"] = ucfirst(__('death declaration')) . ' ';
                             $text = '<b>' . ucfirst(__('death declaration')) . '</b> ' . $text;
                         } else {
@@ -649,7 +657,7 @@ class PersonData
                         }
 
                         if ($temp_previous) {
-                            if ($data["family_expanded"] != 'compact') {
+                            if ($this->family_expanded != 'compact') {
                                 $templ_person[$temp_previous] .= '.';
                                 $text = '.<br>' . $text;
                             } else {
@@ -747,7 +755,7 @@ class PersonData
                         $method_of_burial = __('buried');
                     }
 
-                    if (!$temp_previous || $data["family_expanded"] != 'compact') {
+                    if (!$temp_previous || $this->family_expanded != 'compact') {
                         $templ_person["buri_start"] = ucfirst($method_of_burial) . ' ';
                         $text = '<b>' . ucfirst($method_of_burial) . '</b> ' . $text;
                     } else {
@@ -756,7 +764,7 @@ class PersonData
                     }
 
                     if ($temp_previous) {
-                        if ($data["family_expanded"] != 'compact') {
+                        if ($this->family_expanded != 'compact') {
                             $templ_person[$temp_previous] .= '.';
                             $text = '.<br>' . $text;
                         } else {
@@ -804,7 +812,7 @@ class PersonData
                                 $templ_person[$temp] .= ". ";
                             }
 
-                            if ($data["family_expanded"] != 'compact') {
+                            if ($this->family_expanded != 'compact') {
                                 $process_text .= '<br>';
                             }
                             $process_text .= '<span class="profession"><b>' . ucfirst($occupation) . ':</b> ';
@@ -814,7 +822,7 @@ class PersonData
                         if ($eventnr > 1) {
                             $process_text .= ', ';
 
-                            if ($data["family_expanded"] == 'expanded2') {
+                            if ($this->family_expanded == 'expanded2') {
                                 $process_text .= '<br>';
                             }
                             if ($temp) {
@@ -884,7 +892,7 @@ class PersonData
                                 $templ_person[$temp] .= ". ";
                             }
 
-                            if ($data["family_expanded"] != 'compact') {
+                            if ($this->family_expanded != 'compact') {
                                 $process_text .= '<br>';
                             }
                             $process_text .= '<span class="religion"><b>' . ucfirst($religion) . ':</b> ';
@@ -953,7 +961,7 @@ class PersonData
                     $text = $showAddresses->show_addresses('person', 'person_address', $personDb->pers_gedcomnumber);
 
                     if ($process_text and $text) {
-                        if ($data["family_expanded"] != 'compact') {
+                        if ($this->family_expanded != 'compact') {
                             $text = '.<br>' . $text;
                         } else {
                             $text = '. ' . $text;
@@ -1021,7 +1029,7 @@ class PersonData
                                 $process_text .= ',';
                             }
                             if (isset($parent2_marr_data)) {
-                                $process_text .= ' ' . $dirmark1 . $parent2_marr_data . ' ';
+                                $process_text .= ' ' . $directionMarkers->dirmark1 . $parent2_marr_data . ' ';
                             }
 
                             // *** $parent2Db is empty if it is a N.N. person ***
@@ -1042,7 +1050,7 @@ class PersonData
                             $process_text .= '<a href="' . $url . '">';
 
                             if (isset($parent2_marr_data)) {
-                                $process_text .= $dirmark1 . $parent2_marr_data . ' ';
+                                $process_text .= $directionMarkers->dirmark1 . $parent2_marr_data . ' ';
                             }
                             // *** $parent2Db is empty by N.N. person ***
                             if ($parent2Db) {
@@ -1220,7 +1228,8 @@ class PersonData
                 } else {
                     return $privacy_filter;
                 }
-            } else {   // return array with pdf values
+            } else {
+                // return array with pdf values
                 if (isset($templ_person)) {
                     foreach ($templ_person as $key => $val) {
                         $templ_person[$key] = strip_tags($val);
@@ -1234,13 +1243,16 @@ class PersonData
     //*** Show spouse/ partner by child ***
     private function get_child_partner($db_functions, $personDb, $person_kind)
     {
-        global $bot_visit, $dirmark1;
+        global $language, $screen_mode;
+
+        $botDetector = new BotDetector;
+        $directionMarkers = new DirectionMarkers($language["dir"], $screen_mode);
         $personLink = new PersonLink;
         $personPrivacy = new PersonPrivacy();
         $personName = new PersonName();
 
         $child_marriage = '';
-        if (!$bot_visit && $person_kind == 'child' && $personDb->pers_fams) {
+        if (!$botDetector->isBot() && $person_kind == 'child' && $personDb->pers_fams) {
             $marriage_array = explode(";", $personDb->pers_fams);
             $nr_marriages = count($marriage_array);
             for ($x = 0; $x <= $nr_marriages - 1; $x++) {
@@ -1295,7 +1307,8 @@ class PersonData
                     $relation_short = __('Unknown relation');
                 }
 
-                if ($fam_partnerDb->fam_div_date || $fam_partnerDb->fam_div_place) {
+                // *** This is a divorce without further data: fam_div_text == 'DIVORCE' ***
+                if ($fam_partnerDb->fam_div_date || $fam_partnerDb->fam_div_place || $fam_partnerDb->fam_div_text == 'DIVORCE') {
                     //$relation_short=__(') (');
                     $relation_short = __('divorced from');
                     if ($nr_marriages > 1) {
@@ -1334,7 +1347,7 @@ class PersonData
                     $child_marriage .= ' ';
                 }
 
-                $child_marriage .= ' ' . ucfirst($relation_short) . '</b> ' . $dirmark1 . $name["standard_name"] . $dirmark1;
+                $child_marriage .= ' ' . ucfirst($relation_short) . '</b> ' . $directionMarkers->dirmark1 . $name["standard_name"] . $directionMarkers->dirmark1;
             }
         }
         return $child_marriage;

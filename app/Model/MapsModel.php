@@ -376,7 +376,8 @@ class MapsModel extends BaseModel
                         }
                     }
 
-                    if (isset($locarray[$place])) { // birthplace exists in location database
+                    if (isset($locarray[$place])) {
+                        // birthplace exists in location database
                         if ($date) {
                             $year = substr($date, -4);
 
@@ -460,7 +461,8 @@ class MapsModel extends BaseModel
                     }
                 }
 
-                if (isset($locarray[$place])) { // birthplace exists in location database
+                if (isset($locarray[$place])) {
+                    // birthplace exists in location database
                     if ($date) {
                         $year = substr($date, -4);
 

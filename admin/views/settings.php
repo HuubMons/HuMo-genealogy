@@ -593,7 +593,8 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 $folder = @opendir('../languages/' . $settings['time_lang'] . '/timelines/');
                 // *** Default language = english ***
                 if ($settings['time_lang'] == 'default_timelines') $folder = @opendir('../languages/' . $settings['time_lang']);
-                if ($folder !== false) {  // no use showing the option if we can't access the timeline folder
+                if ($folder !== false) {
+                    // no use showing the option if we can't access the timeline folder
                     while (false !== ($file = readdir($folder))) {
                         if (substr($file, -4, 4) == '.txt') {
                             $timeline_files[] = $file;

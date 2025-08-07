@@ -1,4 +1,8 @@
-<?php $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selected_language); ?>
+<?php
+$botDetector = new Genealogy\Include\BotDetector();
+
+$treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selected_language);
+?>
 
 <tr class="table-secondary">
     <td>
@@ -7,7 +11,7 @@
 
     <td width="250" style="text-align:right;">
         <!-- Hide selections for bots, and second family screen (descendant report etc.) -->
-        <?php if (!$bot_visit && (isset($descendant_loop) && $descendant_loop == 0) && $parent1_marr == 0) { ?>
+        <?php if (!$botDetector->isBot() && (isset($descendant_loop) && $descendant_loop == 0) && $parent1_marr == 0) { ?>
             <?php
             $vars['pers_family'] = $data["family_id"];
             $settings_url = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
@@ -171,7 +175,7 @@
                         echo ' <input type="image" src="images/favorite.png" name="favorite_button" alt="' . __('Add to favourite list') . '">';
                     } else {
                         echo '<input type="hidden" name="favorite_remove" value="' . $favorite_value . '">';
-                        echo ' <input type="image" src="images/favorite_blue.png" name="favorite_button" alt="' . __('Add to favourite list') . '">';
+                        echo ' <input type="image" src="images/favorite_blue.png" name="favorite_button" alt="' . __('Remove from favourite list') . '">';
                     }
                     ?>
                 </form>

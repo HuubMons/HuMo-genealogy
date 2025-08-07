@@ -24,14 +24,14 @@ if (!defined('ADMIN_PAGE')) {
         </div>
 
         <div class="col-auto">
-            <label for="location" class="col-form-label">
+            <label for="place_select" class="col-form-label">
                 <?= __('Select location'); ?>
             </label>
         </div>
         <div class="col-3">
             <form method="POST" action="index.php" style="display : inline;">
                 <input type="hidden" name="page" value="<?= $page; ?>">
-                <select size="1" name="place_select" class="form-select form-select-sm" onChange="this.form.submit();">
+                <select size="1" id="place_select" name="place_select" class="form-select form-select-sm" onChange="this.form.submit();">
                     <?php
                     while ($person = $place['result']->fetch(PDO::FETCH_OBJ)) {
                         if ($person->place_edit != '') {

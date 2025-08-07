@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * fanchart.php
  * Original fan plotting code from PhpGedView (GNU/GPL licence)
  *
@@ -44,6 +44,7 @@ for ($i = 0; $i < $maxperson; $i++) {
 function fillarray($nr, $pers_gedcomnumber): void
 {
     global $db_functions, $maxperson, $data, $indexnr;
+
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName = new \Genealogy\Include\PersonName();
 
@@ -120,7 +121,8 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr): string
     $text = '';
     $line = '';
 
-    if ($rtlflag == 1 && $nameflag == 1) {    // rtl name has to be re-positioned
+    if ($rtlflag == 1 && $nameflag == 1) {
+        // rtl name has to be re-positioned
         if ($data["fan_style"] == 2 && ($gennr == 1 || $gennr == 2)) {
             // half-circle has different position for 2nd 3rd generation
             $maxlen *= 1.5;
@@ -143,8 +145,9 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr): string
             } else {
                 $p = max(0, floor(($maxlen - $len) / 2));
                 if (!empty($line)) {
-                    if ($rtlflag == 1 and $nameflag == 1) {   // trl name
-                        $line = "$line" . str_repeat(" ", $p); //
+                    if ($rtlflag == 1 and $nameflag == 1) {
+                        // rtl name
+                        $line = "$line" . str_repeat(" ", $p);
                     } elseif ($rtlflag == 1 && $nameflag == 0) {
                         $line = str_repeat(" ", $p * 1.5) . "$line"; // center alignment using spaces
                     } else {
@@ -337,7 +340,8 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                 $fontfile = "include/fanchart/dejavusans.ttf"; // this default font serves: Latin,Hebrew,Arabic,Persian,Russian
 
                 /*
-                if (preg_match('/(*UTF8)\p{Han}/', $name) === 1) {    // String is Chinese so use a Chinese ttf font if present in the folder
+                if (preg_match('/(*UTF8)\p{Han}/', $name) === 1) {
+                    // String is Chinese so use a Chinese ttf font if present in the folder
                     if (is_dir("include/fanchart/chinese")) {
                         $dh = opendir("include/fanchart/chinese");
                         while (false !== ($filename = readdir($dh))) {
@@ -346,7 +350,8 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                             }
                         }
                     }
-                    if ($fontfile === "include/fanchart/dejavusans.ttf") { //no Chinese ttf file found
+                    if ($fontfile === "include/fanchart/dejavusans.ttf") {
+                        //no Chinese ttf file found
                         $china_message = 1;
                     }
                 }
@@ -354,16 +359,20 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 
                 $text = $name; // names
                 $text2 = ''; // dates
-                if ($data["date_display"] == 1) {  // don't show dates
-                } else if ($data["date_display"] == 2) { //show years only
+                if ($data["date_display"] == 1) {
+                    // don't show dates
+                } else if ($data["date_display"] == 2) {
+                    //show years only
                     // years only chosen but we also do this if no place in outer circles
                     $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
-                } else if ($data["date_display"] == 3) {  //show full dates (but not in narrow outer circles!)
+                } else if ($data["date_display"] == 3) {
+                    //show full dates (but not in narrow outer circles!)
                     if ($gen > 5) {
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
                     } else if ($gen > 4 and $data["fan_style"] != 4) {
                         $text2 .= substr($birthyr, -4) . " - " . substr($deathyr, -4);
-                    } else {  // full dates
+                    } else {
+                        // full dates
                         if ($birthyr) {
                             $text2 .= __('b.') . $languageDate->language_date($birthyr) . "\n";
                         }
@@ -552,7 +561,8 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 //    and the boxes for generations in outer circle(s) become too small
 //    Same for 6 generations in half circle chart
 
-if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone cleared the field alltogether we'll handle it as "auto"
+if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {
+    // if someone cleared the field alltogether we'll handle it as "auto"
     $menu_fan = "auto"; // $menu_fan is what will be displayed in menu. If size is changed automatically still "auto" will be displayed
     if ($data["chosengen"] == 7) {
         if ($data["fan_style"] == 2) {
@@ -561,7 +571,8 @@ if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone c
             $data["fan_width"] = 160;
         } elseif ($data["fan_style"] == 4) {
             $data["fan_width"] = 130;
-        } else { //YB: you can never get here, but just for paranoia's sake...
+        } else {
+            //YB: you can never get here, but just for paranoia's sake...
             $data["fan_width"] = 100;
         }
     }
@@ -571,9 +582,11 @@ if ($data["fan_width"] == "auto" or $data["fan_width"] == "") {  // if someone c
     } else {
         $data["fan_width"] = 100;
     }
-} else if ($data["fan_width"] > 49 and $data["fan_width"] < 301) {  // valid entry by user
+} else if ($data["fan_width"] > 49 and $data["fan_width"] < 301) {
+    // valid entry by user
     $menu_fan = $data["fan_width"];
-} else { // invalid entry! reset it.
+} else {
+    // invalid entry! reset it.
     $data["fan_width"] = 100;
     $menu_fan = "auto";
 }

@@ -31,8 +31,9 @@ body {
     font-weight: bold;
     font-size: 22px;
 }
+
 #top_website_name a {
-    color:#A52A2A;
+    color: #A52A2A;
 }
 
 /* Border pop-up menu */
@@ -741,6 +742,23 @@ td.extended_woman {
     min-height: 500px;
     padding: 10px;
 }
+
+/* Items for outline report */
+.outline-tree {
+    list-style: none;
+    padding-left: 2em;
+}
+
+.generation {
+    margin-bottom: 0.5em;
+}
+
+.generation-number {
+    font-weight: bold;
+    font-size: 120%;
+}
+
+/* End of items outline report */
 
 footer {
     width: 100%;

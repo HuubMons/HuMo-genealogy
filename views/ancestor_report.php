@@ -49,11 +49,11 @@ while (isset($ancestor_array2[0])) {
     <h2 class="standard_header">
         <?php if (isset($data["rom_nr"][$generation])) { ?>
             <?= __('Generation') . ' ' . $data["rom_nr"][$generation]; ?>
-        <?php }
+            <?php }
 
         $generationLabel = $ancestorLabel->getLabel($generation);
         if ($generationLabel) {
-            echo '('.$generationLabel.')';
+            echo '(' . $generationLabel . ')';
         }
 
         if ($generation == 1) {
@@ -72,7 +72,7 @@ while (isset($ancestor_array2[0])) {
                     //$link = $uri_path . 'index.php?page=ancestor_report_pdf&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;main_person=' . $data["main_person"];
                     $link = $uri_path . 'index.php?page=ancestor_report_pdf';
                 }
-        ?>
+            ?>
 
                 <form method="POST" action="<?= $link; ?>" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
@@ -126,7 +126,8 @@ while (isset($ancestor_array2[0])) {
                 // instead of person's details it will say: "already listed above under number 4234"
                 // and no additional ancestors will be looked for, to prevent duplicated branches
             }
-            if ($listednr == '') {  //if not listed yet, add person to array
+            if ($listednr == '') {
+                //if not listed yet, add person to array
                 $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
             }
 

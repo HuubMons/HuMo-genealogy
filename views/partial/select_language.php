@@ -12,6 +12,7 @@ function show_country_flags($selected_language, $path, $variable, $language_path
 
     <ul class="dropdown-menu genealogy_menu">
         <?php
+        // *** Needed to prevent new installation error ***
         if (isset($humo_option["hide_languages"])){
             $humo_option["hide_languages"] = $humo_option["hide_languages"];
         } else {

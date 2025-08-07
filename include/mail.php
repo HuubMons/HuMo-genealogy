@@ -1,5 +1,7 @@
 <?php
-/* This file contains multiple parts:
+
+/**
+ * This file contains multiple parts:
  *
  * 1) First part: send standard mail or use HuMo-genealogy mail settings.
  *
@@ -7,18 +9,17 @@
  * 		Remove or disable first part if using second part!
  */
 
-
 // *** PART 1: Settings to send standard PHP mail ***
-// Import PHPMailer classes into the global namespace
+// Import PHPMailer classes into the namespace
 // These must be at the top of your script, not inside a function
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-require __DIR__.'/../vendor/phpmailer/phpmailer/src/Exception.php';
-require __DIR__.'/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require __DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php';
+require __DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 if ($humo_option["mail_auto"] == 'auto') {
-    require __DIR__.'/../vendor/phpmailer/phpmailer/src/SMTP.php';
+    require __DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php';
 }
 
 // *** Create a new PHPMailer instance ***
@@ -69,7 +70,7 @@ if ($humo_option["mail_auto"] == 'auto') {
 
     // *** 2020_05_03: Newly added code for PHPMailer 6.x. NOT TESTED YET ***
 
-    // Import PHPMailer classes into the global namespace
+    // Import PHPMailer classes into the namespace
     // These must be at the top of your script, not inside a function
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\Exception;

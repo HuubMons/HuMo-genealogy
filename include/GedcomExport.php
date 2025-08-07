@@ -115,19 +115,20 @@ class GedcomExport
                     $this->buffer .= "1 CHAR ASCII\r\n";
                 }
             } else {
-                // *** GEDCOM 7.0 ***
-                /*
-                0 HEAD
-                1 GEDC
-                2 VERS 7.0
-                1 SCHMA
-                2 TAG _SKYPEID http://xmlns.com/foaf/0.1/skypeID
-                2 TAG _JABBERID http://xmlns.com/foaf/0.1/jabberID
-                1 SOUR https://gedcom.io/
-                2 VERS 0.3
-                2 NAME GEDCOM Steering Committee
-                2 CORP FamilySearch
-                */
+                /**
+                 * GEDCOM 7.0
+                 * 
+                 * 0 HEAD
+                 * 1 GEDC
+                 * 2 VERS 7.0
+                 * 1 SCHMA
+                 * 2 TAG _SKYPEID http://xmlns.com/foaf/0.1/skypeID
+                 * 2 TAG _JABBERID http://xmlns.com/foaf/0.1/jabberID
+                 * 1 SOUR https://gedcom.io/
+                 * 2 VERS 0.3
+                 * 2 NAME GEDCOM Steering Committee
+                 * 2 CORP FamilySearch
+                 */
                 $this->buffer .= "0 HEAD\r\n";
                 $this->buffer .= "1 GEDC\r\n";
                 $this->buffer .= "2 VERS 7.0\r\n";
@@ -162,34 +163,35 @@ class GedcomExport
             //$this->buffer = str_replace("\n", "<br>", $this->buffer);
             //echo '<p>'.$this->buffer;
 
-            /* EXAMPLE:
-            0 @I1181@ INDI
-            1 RIN 1181
-            1 REFN Eigencode
-            1 NAME Voornaam/Achternaam/
-            1 SEX M
-            1 BIRT
-            2 DATE 21 FEB 1960
-            2 PLAC 1e woonplaats
-            1 RESI
-            2 ADDR 2e woonplaats
-            1 RESI
-            2 ADDR 3e woonplaats
-            1 RESI
-            2 ADDR 4e woonplaats
-            1 OCCU 1e beroep
-            1 OCCU 2e beroep
-            1 EVEN
-            2 TYPE living
-            1 _COLOR 0
-            1 NOTE @N51@
-            1 FAMS @F10@
-            1 FAMC @F8@
-            1 _NEW
-            2 TYPE 2
-            2 DATE 8 JAN 2005
-            3 TIME 20:31:24
-            */
+            /**
+             * EXAMPLE:
+             * 0 @I1181@ INDI
+             * 1 RIN 1181
+             * 1 REFN Eigencode
+             * 1 NAME Voornaam/Achternaam/
+             * 1 SEX M
+             * 1 BIRT
+             * 2 DATE 21 FEB 1960
+             * 2 PLAC 1e woonplaats
+             * 1 RESI
+             * 2 ADDR 2e woonplaats
+             * 1 RESI
+             * 2 ADDR 3e woonplaats
+             * 1 RESI
+             * 2 ADDR 4e woonplaats
+             * 1 OCCU 1e beroep
+             * 1 OCCU 2e beroep
+             * 1 EVEN
+             * 2 TYPE living
+             * 1 _COLOR 0
+             * 1 NOTE @N51@
+             * 1 FAMS @F10@
+             * 1 FAMC @F8@
+             * 1 _NEW
+             * 2 TYPE 2
+             * 2 DATE 8 JAN 2005
+             * 3 TIME 20:31:24
+             */
 
             // *** Count records in all tables for Bootstrap progress bar ***
             $total = $this->dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'");
@@ -911,22 +913,23 @@ class GedcomExport
                 //echo $this->buffer;
             }
 
-            /* EXAMPLE
-            0 @F1@ FAM
-            1 HUSB @I2@
-            1 WIFE @I3@
-            1 MARL
-            2 DATE 25 AUG 1683
-            2 PLAC Arnhem
-            1 MARR
-            2 TYPE civil
-            2 DATE 30 NOV 1683
-            2 PLAC Arnhem
-            2 NOTE @N311@
-            1 CHIL @I4@
-            1 CHIL @I5@
-            1 CHIL @I6@
-            */
+            /**
+             * EXAMPLE
+             * 0 @F1@ FAM
+             * 1 HUSB @I2@
+             * 1 WIFE @I3@
+             * 1 MARL
+             * 2 DATE 25 AUG 1683
+             * 2 PLAC Arnhem
+             * 1 MARR
+             * 2 TYPE civil
+             * 2 DATE 30 NOV 1683
+             * 2 PLAC Arnhem
+             * 2 NOTE @N311@
+             * 1 CHIL @I4@
+             * 1 CHIL @I5@
+             * 1 CHIL @I6@
+             */
 
             // *** FAMILY DATA ***
             // *** To reduce use of memory, first read fam_id only ***
@@ -1319,7 +1322,8 @@ class GedcomExport
                 //2 DSCR Beschrijving
                 //1 NOTE Persoonskaarten (van overleden personen) besteld bij CBVG te Den Haag.
 
-                if ($export["part_tree"] == 'part') {  // only include sources that are used by the people in this partial tree
+                if ($export["part_tree"] == 'part') {
+                    // only include sources that are used by the people in this partial tree
                     $source_array = array();
                     // find all sources referred to by persons (I233) or families (F233)
                     $qry = $this->dbh->query("SELECT connect_connect_id, connect_source_id FROM humo_connections
@@ -2029,7 +2033,8 @@ class GedcomExport
         $generation_number++;
         // *** Count marriages of man ***
         // *** If needed show woman as main_person ***
-        if ($family_id == '') { // single person
+        if ($family_id == '') {
+            // single person
             $this->persids[] = $main_person;
             return;
         }
@@ -2075,7 +2080,8 @@ class GedcomExport
             /**
              * Parent1 (normally the father)
              */
-            if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
+            if ($familyDb->fam_kind != 'PRO-GEN') {
+                //onecht kind, vrouw zonder man
                 if ($family_nr == 1) {
                     // *** Show data of man ***
 
@@ -2110,7 +2116,8 @@ class GedcomExport
                     $desc_sp = $familyDb->fam_woman;
                 }
             }
-            if (isset($_POST['desc_sp_parents'])) { // if set, add parents of spouse
+            if (isset($_POST['desc_sp_parents'])) {
+                // if set, add parents of spouse
                 $spqry = $this->dbh->query("SELECT pers_famc FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber = '" . $desc_sp . "'");
                 $spqryDb = $spqry->fetch(PDO::FETCH_OBJ);
                 if (isset($spqryDb->pers_famc) && $spqryDb->pers_famc) {
@@ -2141,7 +2148,8 @@ class GedcomExport
                             $child_family = explode(";", $childDb->pers_fams);
                             $child1stfam = $child_family[0];
                             $this->descendants($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $max_generations);  // recursive
-                        } else {  // Child without own family
+                        } else {
+                            // Child without own family
                             if ($max_generations >= $generation_number) {
                                 $childgn = $generation_number + 1;
                                 $this->persids[] = $childDb->pers_gedcomnumber;
@@ -2153,7 +2161,7 @@ class GedcomExport
         } // Show  multiple marriages
     }
 
-    private function ancestors($person_id, $max_generations):void
+    private function ancestors($person_id, $max_generations): void
     {
         $ancestor_array2[] = $person_id;
         $ancestor_number2[] = 1;
@@ -2188,7 +2196,8 @@ class GedcomExport
                         $listednr = $key;
                     }
                 }
-                if ($listednr == '') {  //if not listed yet, add person to array
+                if ($listednr == '') {
+                    //if not listed yet, add person to array
                     $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
                 }
                 if ($ancestor_array[$i] != '0') {
@@ -2199,7 +2208,8 @@ class GedcomExport
                     }
                     if ($listednr == '') {
                         //take I and F
-                        if ($person_manDb->pers_gedcomnumber == $person_id) { // for the base person we add spouse manually
+                        if ($person_manDb->pers_gedcomnumber == $person_id) {
+                            // for the base person we add spouse manually
                             $this->persids[] = $person_manDb->pers_gedcomnumber;
                             if ($person_manDb->pers_fams) {
                                 $families = explode(';', $person_manDb->pers_fams);
@@ -2212,18 +2222,22 @@ class GedcomExport
                                     $sp_main = $this->dbh->query("SELECT " . $spouse . " FROM humo_families
                                     WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber = '" . $value . "'");
                                     $sp_mainDb = $sp_main->fetch(PDO::FETCH_OBJ);
-                                    if (isset($_POST['ances_spouses'])) { // we also include spouses of base person
+                                    if (isset($_POST['ances_spouses'])) {
+                                        // we also include spouses of base person
                                         $this->persids[] = $sp_mainDb->$spouse;
                                     }
                                     $this->famsids[] = $value;
                                 }
                             }
-                        } else { // any other person
+                        } else {
+                            // any other person
                             $this->persids[] = $person_manDb->pers_gedcomnumber;
                         }
-                        if ($person_manDb->pers_famc && $generation + 1 < $max_generations) {  // if this is the last generation (max gen) we don't want the famc!
+                        if ($person_manDb->pers_famc && $generation + 1 < $max_generations) {
+                            // if this is the last generation (max gen) we don't want the famc!
                             $this->famsids[] = $person_manDb->pers_famc;
-                            if (isset($_POST['ances_sibbl'])) { // also get I numbers of sibblings
+                            if (isset($_POST['ances_sibbl'])) {
+                                // also get I numbers of sibblings
                                 $sibbqryDb = $this->db_functions->get_family($person_manDb->pers_famc);
                                 $sibs = explode(';', $sibbqryDb->fam_children);
                                 foreach ($sibs as $value) {
@@ -2233,7 +2247,8 @@ class GedcomExport
                                 }
                             }
                         }
-                    } else { // person was already listed
+                    } else {
+                        // person was already listed
                         // do nothing
                     }
 

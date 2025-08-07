@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * Statistics
  * First version: René Janssen.
  * Updated by: Huub.

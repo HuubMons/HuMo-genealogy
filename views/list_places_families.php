@@ -1,6 +1,7 @@
 <?php
-/*
- * sep. 2014 Huub: added this script to HuMo-genealogy.
+
+/**
+ * Sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
 // *** Show number of persons and pages ***
@@ -74,13 +75,13 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
 
         <div class="row mb-2">
             <div class="col-1">
-                <label for="find_location" class="col-form-label">
+                <label for="part_place_name" class="col-form-label">
                     <?= __('Find place'); ?>:
                 </label>
             </div>
 
             <div class="col-2">
-                <select name="part_place_name" class="form-select form-select-sm">
+                <select id="part_place_name" name="part_place_name" aria-label="<?= __('Find place'); ?>" class="form-select form-select-sm">
                     <option value="contains"><?= __('Contains'); ?></option>
                     <option value="equals" <?php if ($data["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                     <option value="starts_with" <?php if ($data["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
@@ -247,9 +248,9 @@ $selected_place = '';
 <?php
 function show_person($familyDb)
 {
-    global $db_functions, $selected_place, $list_expanded;
-    global $privacy, $dirmark1, $dirmark2, $data;
+    global $db_functions, $selected_place, $list_expanded, $privacy, $data, $language;
 
+    $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName = new \Genealogy\Include\PersonName();
     $personPopup = new \Genealogy\Include\PersonPopup();
@@ -276,7 +277,7 @@ function show_person($familyDb)
     // *** Show extra colums before a person in index places ***
     if ($selected_place != $familyDb->place_order) { ?>
         <tr>
-            <td colspan="7"><b><?= $dirmark2 . $familyDb->place_order; ?></b></td>
+            <td colspan="7"><b><?= $directionMarkers->dirmark2 . $familyDb->place_order; ?></b></td>
         </tr>
     <?php } ?>
     <?php $selected_place = $familyDb->place_order; ?>
@@ -324,11 +325,11 @@ function show_person($familyDb)
 
             // *** Show picture man or wife ***
             if ($personDb->pers_sexe == "M") {
-                echo $dirmark1 . ' <img src="images/man.gif" alt="man">';
+                echo $directionMarkers->dirmark1 . ' <img src="images/man.gif" alt="man">';
             } elseif ($personDb->pers_sexe == "F") {
-                echo $dirmark1 . ' <img src="images/woman.gif" alt="woman">';
+                echo $directionMarkers->dirmark1 . ' <img src="images/woman.gif" alt="woman">';
             } else {
-                echo $dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
+                echo $directionMarkers->dirmark1 . ' <img src="images/unknown.gif" alt="unknown">';
             }
             ?>
         </td>
@@ -411,7 +412,7 @@ function show_person($familyDb)
             if ($familyDb->fam_marr_notice_date) {
                 $info = __('&infin;') . ' ' . $datePlace->date_place($familyDb->fam_marr_notice_date, '');
             }
-            //echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
+            //echo "<span style='font-size:90%'>" . $info . $directionMarkers->dirmark1 . "</span>";
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');
             } else {

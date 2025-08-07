@@ -336,8 +336,8 @@ if (isset($_GET['re_install'])) {
 
             function listFolderFiles($dir, $exclude, $file_array)
             {
-                global $existing_dir_files, $existing_dir, $existing_files;
-                global $update_dir_files, $update_dir, $update_files;
+                global $existing_dir_files, $existing_dir, $existing_files, $update_dir_files, $update_dir, $update_files;
+
                 $ffs = scandir($dir);
                 foreach ($ffs as $ff) {
                     if (is_array($exclude) and !in_array($ff, $exclude)) {

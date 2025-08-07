@@ -20,10 +20,6 @@ class OutlineReportController
         $family_id = $OutlineReportModel->getFamilyId();
         $main_person = $OutlineReportModel->getMainPerson();
 
-        //$family_expanded =  $OutlineReportModel->getFamilyExpanded();
-        // *** Use compact view in outline report ***
-        $family_expanded = 'compact';
-
         $source_presentation =  $OutlineReportModel->getSourcePresentation();
         $picture_presentation =  $OutlineReportModel->getPicturePresentation();
         $text_presentation =  $OutlineReportModel->getTextPresentation();
@@ -38,10 +34,13 @@ class OutlineReportController
         $dates_behind_names = $OutlineReportModel->getDatesBehindNames();
         $nr_generations = $OutlineReportModel->getNrGenerations();
 
+        // *** Generate outline report HTML. First line starts recursive function. ***
+        $OutlineReportModel->outline_report_html($family_id, $main_person, 0);
+        $outline_report_html = $OutlineReportModel->getHtmlOutput();
+
         return array(
             "family_id" => $family_id,
             "main_person" => $main_person,
-            "family_expanded" => $family_expanded,
             "source_presentation" => $source_presentation,
             "picture_presentation" => $picture_presentation,
             "text_presentation" => $text_presentation,
@@ -55,6 +54,7 @@ class OutlineReportController
             "show_date" => $show_date,
             "dates_behind_names" => $dates_behind_names,
             "nr_generations" => $nr_generations,
+            "outline_report_html" => $outline_report_html,
 
             "title" => __('Family')
         );

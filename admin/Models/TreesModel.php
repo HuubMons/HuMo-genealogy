@@ -124,7 +124,7 @@ class TreesModel extends AdminBaseModel
             $stmt->execute([
                 ':tree_email'    => $_POST['tree_email'],
                 ':tree_owner'    => $_POST['tree_owner'],
-                ':tree_pict_path'=> $tree_pict_path,
+                ':tree_pict_path' => $tree_pict_path,
                 ':tree_privacy'  => $_POST['tree_privacy'],
                 ':tree_id'       => $this->selected_tree_id
             ]);
@@ -207,7 +207,8 @@ class TreesModel extends AdminBaseModel
             $loc_qry = "SELECT * FROM humo_location";
             $loc_result = $this->dbh->query($loc_qry);
             while ($loc_resultDb = $loc_result->fetch(PDO::FETCH_OBJ)) {
-                if ($loc_resultDb->location_status && strpos($loc_resultDb->location_status, $remove) !== false) {   // only do this if the prefix appears
+                if ($loc_resultDb->location_status && strpos($loc_resultDb->location_status, $remove) !== false) {
+                    // only do this if the prefix appears
                     $stat_qry = "UPDATE humo_location SET location_status = REPLACE(REPLACE(REPLACE(REPLACE(location_status, CONCAT('" . $remove . "','birth'),''),CONCAT('" . $remove . "','death'),''),CONCAT('" . $remove . "','bapt'),''),CONCAT('" . $remove . "','buried'),'')  WHERE location_id = '" . $loc_resultDb->location_id . "'";
                     $this->dbh->query($stat_qry);
                 }

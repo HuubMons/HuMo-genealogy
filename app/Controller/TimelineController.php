@@ -13,13 +13,13 @@ class TimelineController
         $this->config = $config;
     }
 
-    public function getTimeline($id, $dirmark1): array
+    public function getTimeline($id): array
     {
         $TimelineModel = new TimelineModel($this->config);
 
         $personDb = $this->config['db_functions']->get_person($id);
         $person_data = $TimelineModel->getPersonData($personDb);
-        $get_timeline_persons = $TimelineModel->getTimelinePersons($personDb, $dirmark1);
+        $get_timeline_persons = $TimelineModel->getTimelinePersons($personDb);
 
         //$data = array(
         //    "title" => __('Timeline')

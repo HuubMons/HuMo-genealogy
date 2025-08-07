@@ -4,7 +4,8 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-/* *** Automatic installation or update ***
+/**
+ * Automatic installation or update
  * Januari 2016: Older updates are moved to update and installation script (was already a long list...)!
  */
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
@@ -739,7 +740,8 @@ If possible, try to filter with that'); ?></i>
 
         <?php
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-        if ($temp->rowCount()) {   // a humo_photocat table exists
+        if ($temp->rowCount()) {
+            // a humo_photocat table exists
             /*
             $data3sql = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
             // MySQL 5.7: doesn't work yet:

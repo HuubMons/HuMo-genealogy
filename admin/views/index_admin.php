@@ -3,6 +3,8 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+
+$directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
 ?>
 
 <h1 align=center><?= __('Administration'); ?></h1>
@@ -526,11 +528,11 @@ if (!defined('ADMIN_PAGE')) {
                     <div class="col-md-8">
 
                         <?php if ($familytree->tree_persons > 0) { ?>
-                            <?= $dirmark1; ?><a href="index.php?page=tree&amp;tree_id=<?= $familytree->tree_id; ?>"><?= $treetext['name']; ?></a>
-                            <?= $dirmark1; ?> <font size=-1>(<?= $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= $familytree->tree_families; ?> <?= __('families'); ?>)</font>
+                            <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree&amp;tree_id=<?= $familytree->tree_id; ?>"><?= $treetext['name']; ?></a>
+                            <?= $directionMarkers->dirmark1; ?> <font size=-1>(<?= $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= $familytree->tree_families; ?> <?= __('families'); ?>)</font>
                         <?php } else { ?>
                             <div class="alert alert-danger" role="alert">
-                                <?= $dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
+                                <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
                                 <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b><br>
 
                                 <!-- Read GEDCOM file -->

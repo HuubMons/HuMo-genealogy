@@ -35,7 +35,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
     </li>
 </ul>
 
-<ul id="sortable_trees" class="sortable_trees list-group">
+<ul id="sortable_items" class="sortable_items list-group">
     <?php
     $familytrees = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
     if ($familytrees) {
@@ -100,27 +100,9 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
 
 <!-- Order items using drag and drop using jquery and jqueryui -->
 <script>
-    $('#sortable_trees').sortable({
-        handle: '.handle'
-    }).bind('sortupdate', function() {
-        var orderstring = "";
-        var order_arr = document.getElementsByClassName("handle");
-        for (var z = 0; z < order_arr.length; z++) {
-            orderstring = orderstring + order_arr[z].id + ";";
-            //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
-        }
-
-        orderstring = orderstring.substring(0, orderstring.length - 1);
-        $.ajax({
-            url: "include/drag.php?drag_kind=trees&order=" + orderstring,
-            success: function(data) {},
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    });
+    var url_start = "include/drag.php?drag_kind=trees";
 </script>
+<script src="../assets/js/order_items.js"></script>
 
 <form method="post" action="index.php" class="my-3">
     <input type="hidden" name="page" value="tree">
@@ -142,7 +124,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
         </div>
 
         <div class="col-md-auto">
-            <select size="1" name="tree_collation" class="form-select form-select-sm">
+            <select size="1" id="tree_collation" name="tree_collation" class="form-select form-select-sm">
                 <option value="utf8_general_ci">utf8_general_ci (default)</option>
                 <option value="utf8_swedish_ci" <?= $trees['collation'] == 'utf8_swedish_ci' || $trees['collation'] == 'utf8mb3_swedish_ci' ? 'selected' : ''; ?>>utf8_swedish_ci</option>
                 <option value="utf8_danish_ci" <?= $trees['collation'] == 'utf8_danish_ci' || $trees['collation'] == 'utf8mb3_danish_ci' ? 'selected' : ''; ?>>utf8_danish_ci</option>

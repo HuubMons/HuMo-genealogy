@@ -107,14 +107,14 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
 
     <div class="row">
         <div class="col-auto">
-            <label for="tree" class="col-form-label">
+            <label for="source_id" class="col-form-label">
                 <?= __('Select source'); ?>:
             </label>
         </div>
 
         <div class="col-md-4">
             <form method="POST" action="index.php?page=edit_sources" style="display : inline;">
-                <select size="1" name="source_id" class="form-select form-select-sm" onChange="this.form.submit();">
+                <select size="1" id="source_id" name="source_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select source'); ?></option>
 
                     <?php if (!isset($editSource['sources_id'])) { ?>
@@ -157,9 +157,13 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
 
             <div class="row mb-2">
                 <div class="col-md-1"></div>
-                <div class="col-md-2"><?= __('Status'); ?></div>
+                <div class="col-md-2">
+                    <label for="source_status" class="col-form-label">
+                        <?= __('Status'); ?>
+                    </label>
+                </div>
                 <div class="col-md-4">
-                    <select size="1" name="source_status" class="form-select form-select-sm">
+                    <select size="1" id="source_status" name="source_status" class="form-select form-select-sm">
                         <option value="publish" <?= $editSource['data']['status'] == 'publish' ? ' selected' : ''; ?>><?= __('publish'); ?></option>
                         <option value="restricted" <?= $editSource['data']['status'] == 'restricted' ? ' selected' : ''; ?>><?= __('restricted'); ?></option>
                     </select>
@@ -201,9 +205,13 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
 
             <div class="row mb-2">
                 <div class="col-md-1"></div>
-                <div class="col-md-2"><?= __('Repository'); ?></div>
+                <div class="col-md-2">
+                    <label for="source_repo_gedcomnr" class="col-form-label">
+                        <?= __('Repository'); ?>
+                    </label>
+                </div>
                 <div class="col-md-4">
-                    <select size="1" name="source_repo_gedcomnr" class="form-select form-select-sm">
+                    <select size="1" id="source_repo_gedcomnr" name="source_repo_gedcomnr" class="form-select form-select-sm">
                         <option value=""></option>
                         <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
                             <option value="<?= $repoDb->repo_gedcomnr; ?>" <?= $repoDb->repo_gedcomnr == $editSource['data']['repo_gedcomnr'] ? ' selected' : ''; ?>>

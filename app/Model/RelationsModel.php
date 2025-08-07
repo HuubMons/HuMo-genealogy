@@ -512,7 +512,7 @@ class RelationsModel extends BaseModel
                     if (isset($arrY[$keyy][1])) {
                         $this->relation['foundY_gen'] = $arrY[$keyy][1];
                     }
-                    $this->relation['spouse'] = $spouse_flag; // saves global variable flagging if we're comparing X - Y or spouse combination
+                    $this->relation['spouse'] = $spouse_flag; // saves general variable flagging if we're comparing X - Y or spouse combination
                     return;
                 }
             }
@@ -527,7 +527,8 @@ class RelationsModel extends BaseModel
         }
 
         $this->relation['double_spouse'] = 0;
-        if ($this->relation['foundX_match'] == 0 && $this->relation['foundY_match'] == 0) {  // self
+        if ($this->relation['foundX_match'] == 0 && $this->relation['foundY_match'] == 0) {
+            // self
             $this->relation['rel_text'] = __(' identical to ');
             if ($this->relation['spouse'] == 1 || $this->relation['spouse'] == 2) {
                 $this->relation['rel_text'] = " ";
@@ -1162,7 +1163,8 @@ class RelationsModel extends BaseModel
                 }
             } elseif ($this->selected_language == "cn") {
                 if (($this->relation['sexe2'] == 'M' && $this->relation['spouse'] != 2 && $this->relation['spouse'] != 3) || ($this->relation['sexe2'] == 'F' && ($this->relation['spouse'] == 2 || $this->relation['spouse'] == 3))) {
-                    //if($this->relation['sexe2']=="m") { // kwan gives: grandson, great-grandson etc 曾內孫仔  孫子 ???
+                    //if($this->relation['sexe2']=="m") {
+                    // kwan gives: grandson, great-grandson etc 曾內孫仔  孫子 ???
                     if ($pers == 2) {
                         $this->relation['rel_text'] = '孙子';
                     }
@@ -1378,7 +1380,8 @@ class RelationsModel extends BaseModel
                 // *** Ελληνικά τέλος***
                 // *** Greek end*** 
 
-                if ($this->selected_language == "cn") {  // A's father/mother-in-law is B (instead of A is son/daughter-in-law of B)
+                if ($this->selected_language == "cn") {
+                    // A's father/mother-in-law is B (instead of A is son/daughter-in-law of B)
                     if ($this->relation['sexe2'] == "M") {
                         if ($this->relation['sexe1'] == "F") {
                             // father-in-law called by daughter-in-law  
@@ -1569,7 +1572,8 @@ class RelationsModel extends BaseModel
         // Swedish needs to know if grandchild is related through son or daughter - different names there
         // also for great-grandchild and 2nd great-grandchild!!!
         elseif ($this->selected_language == "sv") {
-            if ($this->relation['spouse'] == "1" || $this->relation['spouse'] == "3") { // right person is spouse of Y, not Y
+            if ($this->relation['spouse'] == "1" || $this->relation['spouse'] == "3") {
+                // right person is spouse of Y, not Y
                 $relarr = $this->rel_arrayspouseX;
             } else {
                 $relarr = $this->rel_arrayX;
@@ -2039,7 +2043,8 @@ class RelationsModel extends BaseModel
             }
         } elseif ($this->selected_language == "cn") {
             // Used: http://www.kwanfamily.info/culture/familytitles_table.php
-            if ($this->relation['spouse'] == "1") { // left person is spouse of X, not X
+            if ($this->relation['spouse'] == "1") {
+                // left person is spouse of X, not X
                 $relarrX = $this->rel_arrayspouseX;
             } else {
                 $relarrX = $this->rel_arrayX;
@@ -2175,7 +2180,8 @@ class RelationsModel extends BaseModel
                 }
                 $persidDbY = $this->db_functions->get_person($relarrY[$parnumberY][0]);
                 $parsexeY = $persidDbY->pers_sexe;
-                if ($parsexeY == "M") { // is child of brother
+                if ($parsexeY == "M") {
+                    // is child of brother
                     if (($this->relation['sexe2'] == 'M' && $this->relation['spouse'] != 2 && $this->relation['spouse'] != 3) || ($this->relation['sexe2'] == 'F' && ($this->relation['spouse'] == 2 || $this->relation['spouse'] == 3))) {
                         $uncleaunt = '姪子是';
                     } else {
@@ -2222,7 +2228,8 @@ class RelationsModel extends BaseModel
             // Swedish needs to know if uncle is related through mother or father - different names there
             // also for granduncle and great-granduncle!!!
             if ($this->selected_language == "sv") {
-                if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") { // right person is spouse of Y, not Y
+                if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") {
+                    // right person is spouse of Y, not Y
                     $relarr = $this->rel_arrayspouseY;
                 } else {
                     $relarr = $this->rel_arrayY;
@@ -2316,7 +2323,8 @@ class RelationsModel extends BaseModel
             // Swedish needs to know if aunt is related through mother or father - different names there
             // also for grandaunt and great-grandaunt!!!
             if ($this->selected_language == "sv") {
-                if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") { // right person is spouse of Y, not Y
+                if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") {
+                    // right person is spouse of Y, not Y
                     $relarr = $this->rel_arrayspouseY;
                 } else {
                     $relarr = $this->rel_arrayY;
@@ -2910,9 +2918,11 @@ class RelationsModel extends BaseModel
             }
 
             $gendiff = abs($generX - $generY);
-            if ($gendiff == 0) { // A and B are cousins of same generation
+            if ($gendiff == 0) {
+                // A and B are cousins of same generation
                 $this->relation['rel_text'] = $nor_cousin . __(' of ');
-            } elseif ($generX > $generY) {  // A is the "younger" cousin  (A er barnebarnet av Bs tremenning)
+            } elseif ($generX > $generY) {
+                // A is the "younger" cousin  (A er barnebarnet av Bs tremenning)
                 if ($this->relation['sexe1'] == 'M') {
                     // only for 1st generation
                     $child = __('son');
@@ -2943,7 +2953,8 @@ class RelationsModel extends BaseModel
                 }
                 $this->relation['rel_text_nor_dan'] = "s " . substr($nor_cousin, 0, -2);
                 $this->relation['rel_text_nor_dan2'] = $nor_cousin . __(' of ');
-            } elseif ($generX < $generY) {  // A is the "older" cousin (A er timenning av Bs tipp-tippoldefar)
+            } elseif ($generX < $generY) {
+                // A is the "older" cousin (A er timenning av Bs tipp-tippoldefar)
                 if ($gendiff == 1) {
                     $temptext = 'forelderen';
                 }
@@ -3072,9 +3083,11 @@ class RelationsModel extends BaseModel
             }
 
             $gendiff = abs($generX - $generY); // generation gap between A and B
-            if ($gendiff == 0) { // A and B are cousins of same generation
+            if ($gendiff == 0) {
+                // A and B are cousins of same generation
                 $this->relation['rel_text'] = $se_cousin . __(' of ');
-            } elseif ($generX > $generY) {  // A is the "younger" cousin  (example A är tremannings barnbarn för B)
+            } elseif ($generX > $generY) {
+                // A is the "younger" cousin  (example A är tremannings barnbarn för B)
                 if ($gendiff == 1)
                     if ($se_cousin == "kusin") {
                         $this->relation['rel_text'] = 'kusinbarn' . __(' of ');
@@ -3088,9 +3101,11 @@ class RelationsModel extends BaseModel
                 if ($gendiff >  2) {
                     $this->relation['rel_text'] = $se_cousin . 's ' . $gennr . ':e generations barn' . __(' of ');
                 }
-            } elseif ($generX < $generY) {  // A is the "older" cousin (A är farfars tremanning för B)
+            } elseif ($generX < $generY) {
+                // A is the "older" cousin (A är farfars tremanning för B)
 
-                if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") { // right person is spouse of Y, not Y
+                if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") {
+                    // right person is spouse of Y, not Y
                     $relarr = $this->rel_arrayspouseY;
                 } else {
                     $relarr = $this->rel_arrayY;
@@ -3138,7 +3153,8 @@ class RelationsModel extends BaseModel
                     $this->relation['rel_text'] = $gennr . ':e generation anas ' . $se_cousin . __(' of ');
                 }
             }
-        } elseif ($this->selected_language == "cn") {    // cousin biao
+        } elseif ($this->selected_language == "cn") {
+            // cousin biao
             // Followed guidelines of: http://www.kwanfamily.info/culture/familytitles_table.php
             // paternal male cousin -	father's brother's son	堂兄弟
             // paternal female cousin-	father's brother's daughters	堂姊妹
@@ -3158,7 +3174,8 @@ class RelationsModel extends BaseModel
             if ($gendiff == 0 && $degreediff == 2) {
                 // deals with first cousins not removed only.
                 // Unfortunately we miss the Chinese terminology for 2nd, 3rd cousins and "removed" sequence...
-                if ($this->relation['spouse'] == "1") { // left person is spouse of X, not X
+                if ($this->relation['spouse'] == "1") {
+                    // left person is spouse of X, not X
                     $relarrX = $this->rel_arrayspouseX;
                 } else {
                     $relarrX = $this->rel_arrayX;
@@ -3185,7 +3202,8 @@ class RelationsModel extends BaseModel
                     }
                 } else {
                     // difficult part: it matters whether cousins thru father's brothers of father's sister!
-                    if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") { // right person is spouse of Y, not Y
+                    if ($this->relation['spouse'] == "2" || $this->relation['spouse'] == "3") {
+                        // right person is spouse of Y, not Y
                         $relarrY = $this->rel_arrayspouseY;
                     } else {
                         $relarrY = $this->rel_arrayY;
@@ -3203,13 +3221,15 @@ class RelationsModel extends BaseModel
                     }
                     $persidDbY = $this->db_functions->get_person($relarrY[$parnumberY][0]);
                     $parsexeY = $persidDbY->pers_sexe;
-                    if ($parsexeY == "M") { // child of father's brother
+                    if ($parsexeY == "M") {
+                        // child of father's brother
                         if (($this->relation['sexe2'] == "M" && $this->relation['spouse'] != 2 && $this->relation['spouse'] != 3) || ($this->relation['sexe2'] == "F" && ($this->relation['spouse'] == 2 || $this->relation['spouse'] == 3))) {
                             $this->relation['rel_text'] = '堂兄弟是';
                         } else {
                             $this->relation['rel_text'] = '堂姊妹是';
                         }
-                    } else { // child of father's sister
+                    } else {
+                        // child of father's sister
                         if (($this->relation['sexe2'] == "M" && $this->relation['spouse'] != 2 && $this->relation['spouse'] != 3) || ($this->relation['sexe2'] == "F" && ($this->relation['spouse'] == 2 || $this->relation['spouse'] == 3))) {
                             $this->relation['rel_text'] = '表兄弟是';
                         } else {
@@ -3236,13 +3256,15 @@ class RelationsModel extends BaseModel
             if ($degreediff == 2 && $gendiff == 0) {
                 // first cousins
                 $this->relation['rel_text'] = __('COUSIN_MALE') . __(' of ');
-            } elseif ($degreediff == 2 && $gendiff == 1 && $generX < $generY) {   // first cousins once removed - X older
+            } elseif ($degreediff == 2 && $gendiff == 1 && $generX < $generY) {
+                // first cousins once removed - X older
                 if ($this->relation['sexe1'] == "M") {
                     $this->relation['rel_text'] =  'halvonkel' . __(' of ');
                 } else {
                     $this->relation['rel_text'] =  'halvtante' . __(' of ');
                 }
-            } elseif ($degreediff == 2 && $gendiff == 1 && $generX > $generY) {   // first cousins once removed - Y older
+            } elseif ($degreediff == 2 && $gendiff == 1 && $generX > $generY) {
+                // first cousins once removed - Y older
                 if ($this->relation['sexe1'] == "M") {
                     $this->relation['rel_text'] =  'halvnevø' . __(' of ');
                 } else {
@@ -3313,7 +3335,8 @@ class RelationsModel extends BaseModel
                 $this->relation['rel_text_nor_dan'] = "s " . $temptext;
                 $this->relation['rel_text_nor_dan2'] = $temptext . ' til ';
             }
-        } elseif ($this->selected_language == "fr") {  // french
+        } elseif ($this->selected_language == "fr") {
+            // french
             if ($this->relation['sexe1'] == 'M') {
                 $cousin = __('cousin.male');
                 $gend = '';
@@ -3439,7 +3462,8 @@ class RelationsModel extends BaseModel
             }
         }
 
-        if ($this->relation['foundX_match'] === '' && $this->relation['fams2'] != '') {  // no match found between "spouse of X" && "Y", let's try "X" with "spouse of "Y"
+        if ($this->relation['foundX_match'] === '' && $this->relation['fams2'] != '') {
+            // no match found between "spouse of X" && "Y", let's try "X" with "spouse of "Y"
             $ymarrcount = count($this->fams2_array);
             for ($x = 0; $x < $ymarrcount; $x++) {
                 $familyDb = $this->db_functions->get_family($this->fams2_array[$x], 'man-woman');
@@ -3462,7 +3486,8 @@ class RelationsModel extends BaseModel
             }
         }
 
-        if ($this->relation['foundX_match'] === '' && $this->relation['fams1'] != '' && $this->relation['fams2'] != '') { // still no matches, let's try comparison of "spouse of X" with "spouse of Y"
+        if ($this->relation['foundX_match'] === '' && $this->relation['fams1'] != '' && $this->relation['fams2'] != '') {
+            // still no matches, let's try comparison of "spouse of X" with "spouse of Y"
             $xmarrcount = count($this->fams1_array);
             $ymarrcount = count($this->fams2_array);
             for ($x = 0; $x < $xmarrcount; $x++) {
@@ -3525,7 +3550,8 @@ class RelationsModel extends BaseModel
         $work_array2 = array();
 
         // build closest circle around person A (parents, children, spouse(s))
-        foreach ($pers_array as $value) {   // each array item has 4 parts, separated by "@": I124@par@I15@I54;I46;I326;I123;I15
+        foreach ($pers_array as $value) {
+            // each array item has 4 parts, separated by "@": I124@par@I15@I54;I46;I326;I123;I15
             $params = explode("@", $value);
             $persged = $params[0]; // the gedcomnumber of this person
             $refer = $params[1];   // the referrer type: par (parent), spo (spouse), chd (child) - this means who was the previous person that called this one

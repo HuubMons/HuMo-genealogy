@@ -73,7 +73,7 @@ class AdminSettingsModel extends AdminBaseModel
             $this->db_functions->update_settings('registration_use_spam_question', $_POST["registration_use_spam_question"]);
             $this->db_functions->update_settings('password_retrieval', $_POST["password_retrieval"]);
 
-            /*
+            /**
              * Kai Mahnke 2020-04: Save email configuration settings 
              */
             $this->db_functions->update_settings('email_sender', $_POST["email_sender"]);

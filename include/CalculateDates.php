@@ -49,20 +49,27 @@ class CalculateDates
     /*
     public function search_day($search_date) {
         $day="";
-        if (strlen($search_date)==11) {    // 12 sep 2002 or 08 sep 2002
+        if (strlen($search_date)==11) {
+            // 12 sep 2002 or 08 sep 2002
             $day=substr($search_date, -11, 2);
-            if(substr($day,0,1)=="0") {   // 08 aug 2002
+            if(substr($day,0,1)=="0") {
+                // 08 aug 2002
                 $day=substr($day,1,1);
             }
         }
-        if (strlen($search_date)==10) {    // 8 aug 2002
+        if (strlen($search_date)==10) { 
+            // 8 aug 2002
             $day=substr($search_date, -10, 1);
         }
         if ($day) {
             $day=(int)$day;
         }
-        if ($day>0 AND $day<32) {}
-        else { $day=null; }
+        if ($day>0 AND $day<32) {
+            //
+        }
+        else {
+            $day=null;
+        }
         return($day);
     }
     */
@@ -70,8 +77,10 @@ class CalculateDates
     public function search_day($search_date)
     {
         $day = null;
-        if ($this->search_month($search_date) != null) { // a day value only makes sense if there is a month
-            if (is_numeric(trim(substr($search_date, 0, 2)))) { // this will give true for "08 FEB", "8 FEB"
+        if ($this->search_month($search_date) != null) {
+            // a day value only makes sense if there is a month
+            if (is_numeric(trim(substr($search_date, 0, 2)))) {
+                // this will give true for "08 FEB", "8 FEB"
                 $day = trim(substr($search_date, 0, 2));
             }
         }
@@ -142,7 +151,8 @@ class CalculateDates
             $date2_remark = null;
         }
 
-        if ($date1_remark || $date2_remark) { // there is at least 1 remark
+        if ($date1_remark || $date2_remark) {
+            // there is at least 1 remark
             if ($date1_remark === "Bef") {
                 if ($date2_remark === "Bef" || $date2_remark === "Abt") {
                     // Can't calculate age. flag -1
@@ -219,8 +229,8 @@ class CalculateDates
         }
 
         // *** Remove gregorian date from date ***
-        //		convert "1 Jan 1634/5" to "1 Jan 1634".
-        //		and convert "25 Dec 1600/4 Jan 1601" to "25 Dec 1600".
+        //  convert "1 Jan 1634/5" to "1 Jan 1634".
+        //  and convert "25 Dec 1600/4 Jan 1601" to "25 Dec 1600".
         if (strpos($birth_date, '/') > 0) {
             $temp = explode('/', $birth_date);
             $birth_date = $temp[0];
@@ -246,16 +256,19 @@ class CalculateDates
         $calculated_age = '';
         $age = "";
 
-        //if (($birth_year=$this->search_year($birth_date)) AND ($death_year=$this->search_year($death_date))) { // There must be 2 years....
+        //if (($birth_year=$this->search_year($birth_date)) AND ($death_year=$this->search_year($death_date))) {
+        // There must be 2 years....
         $birth_year = $this->search_year($birth_date);
         $death_year = $this->search_year($death_date);
-        if ($birth_year && $death_year) { // There must be 2 years....
+        if ($birth_year && $death_year) {
+            // There must be 2 years....
 
             // Check for EST AFT ABT etc. If calculation is not possible: $special_text -1
             $special_text = $this->process_special_text($birth_date, $death_date, $baptism);
 
             // *** Calculate age in year/ month/ week/ days for children age of < 3 years ***
-            //if($birth_year==$death_year) { // born 1850 - death 1850
+            //if($birth_year==$death_year) {
+            // born 1850 - death 1850
             if ($death_year - $birth_year < 3) {
                 // born 1850 - death 1850 or born 1849 - death 1850.
                 if (!$special_text) {
@@ -263,7 +276,8 @@ class CalculateDates
                     // *** December 2022: now more exact calculation is used ***
                     $age = __('under 1 year old');
 
-                    if (($birth_month = $this->search_month($birth_date)) and ($death_month = $this->search_month($death_date))) { // There must be 2 months
+                    if (($birth_month = $this->search_month($birth_date)) and ($death_month = $this->search_month($death_date))) {
+                        // There must be 2 months
                         // *** Dead within one month, don't show age ***
                         if ($birth_month == $death_month) {
                             $age = '';
@@ -366,10 +380,14 @@ class CalculateDates
                         //$age=$special_text.__('1 years');
                     }
                 }
-            } else { // Month is needed for better calculation
-                if (($birth_month = $this->search_month($birth_date)) and ($death_month = $this->search_month($death_date))) { // 2 months
-                    if ($birth_month == $death_month) { // same month: we need day for exact age
-                        if (($birth_day = $this->search_day($birth_date)) and ($death_day = $this->search_day($death_date))) { // 2 days
+            } else {
+                // Month is needed for better calculation
+                if (($birth_month = $this->search_month($birth_date)) and ($death_month = $this->search_month($death_date))) {
+                    // 2 months
+                    if ($birth_month == $death_month) {
+                        // same month: we need day for exact age
+                        if (($birth_day = $this->search_day($birth_date)) and ($death_day = $this->search_day($death_date))) {
+                            // 2 days
                             // *** Show "about" is calculated with "baptism" ***
                             if ($special_text) {
                                 $age = $special_text;
@@ -381,7 +399,8 @@ class CalculateDates
                                 $calculated_age = ($death_year - $birth_year) - 1;
                                 $age .= $calculated_age . " " . __('years');
                             }
-                        } else { // Day is missing in 1 or 2 date's
+                        } else {
+                            // Day is missing in 1 or 2 date's
                             if (!$special_text) {
                                 $calculated_age = ($death_year - $birth_year) - 1;
                                 $age = $calculated_age . " " . __('or') . " " . ($death_year - $birth_year) . " " . __('years');
@@ -392,12 +411,14 @@ class CalculateDates
                                 }
                             }
                         }
-                    } else if ($birth_month < $death_month) { // No day needed
+                    } else if ($birth_month < $death_month) {
+                        // No day needed
                         if ($special_text != -1) {
                             $calculated_age = $death_year - $birth_year;
                             $age = $special_text . $calculated_age . " " . __('years');
                         }
-                    } else if ($birth_month > $death_month) { // No day needed
+                    } else if ($birth_month > $death_month) {
+                        // No day needed
                         if ($special_text != -1) {
                             $calculated_age = ($death_year - $birth_year) - 1;
                             $age = $special_text . $calculated_age . " " . __('years');
@@ -484,7 +505,8 @@ class CalculateDates
             // Check for EST AFT ABT
             $special_text = $this->process_special_text($marr_date, $end_date, $baptism);
 
-            if ($start_year == $end_year) { // start 1850 - end 1850
+            if ($start_year == $end_year) {
+                // start 1850 - end 1850
                 if (!$special_text) {
                     // Not in use in marriage calulation
                     //$age=__('under 1 year old');
@@ -496,9 +518,12 @@ class CalculateDates
                 }
             } else {
                 // Months are not the same: we need month for exact calculation
-                if (($start_month = $this->search_month($marr_date))  and ($end_month = $this->search_month($end_date))) { // 2 month
-                    if ($start_month == $end_month) { // same month, we need day for exact calculation
-                        if (($start_day = $this->search_day($marr_date)) and ($end_day = $this->search_day($end_date))) { // 2 days
+                if (($start_month = $this->search_month($marr_date))  and ($end_month = $this->search_month($end_date))) {
+                    // 2 month
+                    if ($start_month == $end_month) {
+                        // same month, we need day for exact calculation
+                        if (($start_day = $this->search_day($marr_date)) and ($end_day = $this->search_day($end_date))) {
+                            // 2 days
                             if ($special_text) {
                                 $age = $special_text;
                             }
@@ -509,7 +534,8 @@ class CalculateDates
                                 $calculated_age = ($end_year - $start_year) - 1;
                                 $age .= $calculated_age . " " . __('years');
                             }
-                        } else { // Day is missing in 1 or 2 dates
+                        } else {
+                            // Day is missing in 1 or 2 dates
                             if (!$special_text) {
                                 $calculated_age = ($end_year - $start_year) - 1;
                                 $age = $calculated_age . " " . __('or') . " " . ($end_year - $start_year) . " " . __('years');
@@ -520,12 +546,14 @@ class CalculateDates
                                 }
                             }
                         }
-                    } else if ($start_month < $end_month) { // no day needed
+                    } else if ($start_month < $end_month) {
+                        // no day needed
                         if ($special_text != -1) {
                             $calculated_age = $end_year - $start_year;
                             $age = $special_text . $calculated_age . " " . __('years');
                         }
-                    } else if ($start_month > $end_month) { // no day needed
+                    } else if ($start_month > $end_month) {
+                        // no day needed
                         if ($special_text != -1) {
                             $calculated_age = ($end_year - $start_year) - 1;
                             $age = $special_text . $calculated_age . " " . __('years');

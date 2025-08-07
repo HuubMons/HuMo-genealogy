@@ -22,17 +22,6 @@ class LanguageEditorModel extends AdminBaseModel
         return $language;
     }
 
-    /*
-    public function get_languages_array($humo_option)
-    {
-        if (!isset($humo_option["hide_languages"])) {
-            $humo_option["hide_languages"] = '';
-        }
-        $language_editor['hide_languages_array'] = explode(";", $humo_option["hide_languages"]);
-        return $language_editor['hide_languages_array'];
-    }
-    */
-
     public function saveFile($language_editor): string
     {
         $message = '';
@@ -69,7 +58,8 @@ class LanguageEditorModel extends AdminBaseModel
                             $_SESSION['line_array'][$i]["note"] = str_replace(array("#, fuzzy\n", "fuzzy, ", ", fuzzy"), array("", "", ""), $_SESSION['line_array'][$i]["note"]);
                         }
                         if (strpos($_SESSION['line_array'][$i]["note"], "fuzzy") === false && isset($_POST['txt_name' . $i]) && isset($_POST['fuz' . $i])) {
-                            if (strpos($_SESSION['line_array'][$i]["note"], "#,") != false) { // there already is another #. entry --> add fuzzy
+                            if (strpos($_SESSION['line_array'][$i]["note"], "#,") != false) {
+                                // there already is another #. entry --> add fuzzy
                                 $_SESSION['line_array'][$i]["note"] = str_replace("#,", "#, fuzzy,", $_SESSION['line_array'][$i]["note"]);
                             } else {
                                 $_SESSION['line_array'][$i]["note"] .= "#, fuzzy\n";
@@ -83,11 +73,14 @@ class LanguageEditorModel extends AdminBaseModel
                     }
                     // write all msgstr lines:
                     if (isset($_SESSION['line_array'][$i]["msgstr"])) {
-                        if ($i == 0) { // first msgstr is the description of the po file
+                        if ($i == 0) {
+                            // first msgstr is the description of the po file
                             fwrite($handle_write, "msgstr " . $_SESSION['line_array'][$i]["msgstr"] . "\n");
-                        } elseif (isset($_SESSION['line_array'][$i]["msgid"])) { // regular msgstr lines
+                        } elseif (isset($_SESSION['line_array'][$i]["msgid"])) {
+                            // regular msgstr lines
                             fwrite($handle_write, "msgstr " . $save_array[$i]);
-                        } else {  // no msgstr such as after #~ remarks
+                        } else {
+                            // no msgstr such as after #~ remarks
                             fwrite($handle_write, "\n");
                         }
                     }

@@ -39,7 +39,8 @@ if ($data["size"] == 50) {
 }
 $anc_top = (pow(2, $data["chosengenanc"] - 1) * $boxhight) / 2;
 
-if ($genarray[0]["posy"] < $anc_top) { // if desc base pers higher on screen than base person of ancestor chart - has to be lowered to there.
+if ($genarray[0]["posy"] < $anc_top) {
+    // if desc base pers higher on screen than base person of ancestor chart - has to be lowered to there.
     $offset = $anc_top - $genarray[0]["posy"];
     $counter = count($genarray);
     for ($a = 0; $a < $counter; $a++) {
@@ -52,7 +53,8 @@ if ($genarray[0]["posy"] < $anc_top) { // if desc base pers higher on screen tha
         }
     }
 }
-if ($genarray[0]["posy"] > $anc_top) { // if desc base person lower, we have to lower base person of anc chart.
+if ($genarray[0]["posy"] > $anc_top) {
+    // if desc base person lower, we have to lower base person of anc chart.
     $anc_top = $genarray[0]["posy"];
 }
 //Set height of chart, both for screen and img-to-print
@@ -246,7 +248,8 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
                     $sexe_colour = ' ancestor_man';
                     $backgr_col =  "#C0F9FC";
                 }
-            } else { // empty square - give it background so lines won't show through
+            } else {
+                // empty square - give it background so lines won't show through
                 $sexe_colour = ' ancestor_none';
             }
             echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . $this_top . 'px; left: ' . $left . 'px; height: ' . $height . 'px; width:' . $width . 'px;';
@@ -282,7 +285,8 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
         $gap *= 2;
         $incr *= 2;
         $blocks /= 2;
-        if ($x > $data["chosengenanc"] - 1 || $data["size"] < 45) { // maybe just: if($x==$data["chosengenanc"])     ;-)
+        if ($x > $data["chosengenanc"] - 1 || $data["size"] < 45) {
+            // maybe just: if($x==$data["chosengenanc"])     ;-)
             $left += $width + 20;
         } else {
             $left += $width / 2 + 20;

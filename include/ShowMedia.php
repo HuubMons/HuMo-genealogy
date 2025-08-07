@@ -310,7 +310,7 @@ class ShowMedia
                 $prefix = '';
             }
 
-            // i modified thumbnail_exist function to serve also only file in swcond mode with its logic becouse i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
+            // I modified thumbnail_exist function to serve also only file in swcond mode with its logic becouse i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
             $mode = 'onlyfile';
             $fileName = $this->thumbnail_exists($folder, $file, $mode);
 
@@ -502,7 +502,8 @@ class ShowMedia
         $tree_pict_path = __DIR__ . '/../../' . $tree_pict_path;
         $tmp_pcat_dirs = array();
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-        if ($temp->rowCount()) {   // there is a category table
+        if ($temp->rowCount()) {
+            // there is a category table
             $catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
             if ($catg->rowCount()) {
                 while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {

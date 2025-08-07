@@ -13,11 +13,17 @@ use Genealogy\Include\ShowSources;
 
 class ShowAddresses
 {
+    private $family_expanded;
+
+    function __construct($family_expanded = '')
+    {
+        $this->family_expanded = $family_expanded;
+    }
+
     function show_addresses($connect_kind, $connect_sub_kind, $connect_connect_id): string
     {
-        global $dbh, $db_functions, $user, $uri_path;
+        global $dbh, $db_functions, $user, $uri_path, $tree_id, $humo_option, $data;
         global $temp, $templ_person, $templ_relation; // *** PDF export ***
-        global $tree_id, $humo_option, $data;
 
         $datePlace = new DatePlace();
         $processText = new ProcessText();
@@ -26,6 +32,11 @@ class ShowAddresses
         $text = '';
         $address_nr = 0;
 
+        // *** Check if family_expanded is set, otherwise use general value ***
+        if (isset($data["family_expanded"])) {
+            $this->family_expanded = $data["family_expanded"];
+        }
+
         // *** Search for all connected addresses ***
         $connect_sql = $db_functions->get_addresses($connect_kind, $connect_sub_kind, $connect_connect_id);
         $nr_addresses = count($connect_sql);
@@ -33,7 +44,7 @@ class ShowAddresses
             $address_nr++;
             if ($address_nr == '1') {
                 //if ($process_text){
-                //	if ($data["family_expanded"]!='compact'){ $text.='<br>'; } else{ $text.='. '; }
+                //	if ($this->family_expanded!='compact'){ $text.='<br>'; } else{ $text.='. '; }
                 //}
                 if ($nr_addresses == '1') {
                     $residence = ucfirst(__('residence'));
@@ -75,7 +86,7 @@ class ShowAddresses
                     $templ_relation[$temp] .= ", ";
                 }
 
-                if ($data["family_expanded"] == 'expanded2') {
+                if ($this->family_expanded == 'expanded2') {
                     $text .= '<br>';
                 }
             }

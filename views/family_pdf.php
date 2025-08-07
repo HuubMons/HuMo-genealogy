@@ -17,8 +17,6 @@ $totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson();
 
 $screen_mode = 'PDF';
 $pdf_source = array();  // is set in show_sources with sourcenr as key to be used in source appendix
-$dirmark1 = '';
-$dirmark2 = '';
 
 // TODO create seperate controller script.
 $get_family = new \Genealogy\App\Model\FamilyModel($config);
@@ -281,7 +279,8 @@ else {
                 /**
                  * Parent1 (normally the father)
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    //onecht kind, woman without man
                     if ($family_nr == 1) {
                         //*** Show data of parent1 ***
                         if ($data["descendant_report"] == true) {
@@ -338,7 +337,8 @@ else {
                 /**
                  * Show marriage
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    // onecht kind, wife without man
 
                     // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                     if (

@@ -9,8 +9,6 @@ if ($user['group_sources'] != 'j') {
     exit(__('You are not authorised to see this page.'));
 }
 
-global $data; // Prevent VSCode error messages.
-
 $personLink = new \Genealogy\Include\PersonLink;
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();

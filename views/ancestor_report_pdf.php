@@ -11,8 +11,6 @@
 
 $screen_mode = 'PDF';
 $pdf_source = array();  // is set in show_sources with sourcenr as key to be used in source appendix
-$dirmark1 = '';
-$dirmark2 = '';
 
 $db_functions->set_tree_id($tree_id);
 
@@ -111,7 +109,8 @@ while (isset($ancestor_array2[0])) {
             // instead of person's details it will say: "already listed above under number 4234"
             // and no additional ancestors will be looked for, to prevent duplicated branches
         }
-        if ($listednr == '') {  //if not listed yet, add person to array
+        if ($listednr == '') {
+            //if not listed yet, add person to array
             $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
         }
 

@@ -110,7 +110,7 @@ while (isset($ancestor_array2[0])) {
     $rtf_text = __('Generation') . ' ' . $data["rom_nr"][$generation];
     $generationLabel = $ancestorLabel->getLabel($generation);
     if ($generationLabel) {
-        $rtf_text .= ' (' . $generationLabel. ')';
+        $rtf_text .= ' (' . $generationLabel . ')';
     }
     $sect->writeText($rtf_text, $arial14, $parGen);
 
@@ -130,7 +130,8 @@ while (isset($ancestor_array2[0])) {
             // instead of person's details it will say: "already listed above under number 4234"
             // and no additional ancestors will be looked for, to prevent duplicated branches
         }
-        if ($listednr == '') {  //if not listed yet, add person to array
+        if ($listednr == '') {
+            //if not listed yet, add person to array
             $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
         }
 
@@ -173,7 +174,8 @@ while (isset($ancestor_array2[0])) {
             if ($listednr == '') {
                 $rtf_text = strip_tags($personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]), "<b><i>");
                 //$rtf_text = substr($rtf_text, 0, -1); // take off newline
-            } else { // person was already listed
+            } else {
+                // person was already listed
                 $rtf_text = strip_tags('(' . __('Already listed above as number ') . $listednr . ') ', "<b><i>");
             }
             $cell->writeText($rtf_text, $arial12, $parNames);
@@ -188,7 +190,8 @@ while (isset($ancestor_array2[0])) {
                     if (strpos($key, "path") !== FALSE) {
                         $type = substr($result[1][$key], -3);
                         if ($type === "jpg" || $type === "png") {
-                            if ($goodpics == FALSE) { //found 1st pic - make table
+                            if ($goodpics == FALSE) {
+                                //found 1st pic - make table
                                 $table2 = $sect->addTable();
                                 $table2->addRow(0.1);
                                 $table2->addColumnsList(array(2.5, 5, 5));

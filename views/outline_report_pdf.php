@@ -8,8 +8,6 @@
  */
 
 $screen_mode = 'PDF';
-$dirmark1 = '';
-$dirmark2 = '';
 
 // *** Added in nov 2023. TODO check variable, could be added in route.  ***
 $tree_id = 0;
@@ -111,8 +109,7 @@ $generation_number = 0;
 
 function outline($outline_family_id, $outline_main_person, $generation_number, $nr_generations)
 {
-    global $db_functions, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations;
-    global $language, $dirmark1, $dirmark1, $user;
+    global $db_functions, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations, $language, $user;
 
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName_extended = new \Genealogy\Include\PersonNameExtended();
@@ -174,7 +171,8 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         /**
          * Show parent1 (normally the father)
          */
-        if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
+        if ($familyDb->fam_kind != 'PRO-GEN') {
+            //onecht kind, vrouw zonder man
             if ($family_nr == 1) {
                 // *** Show data of man ***
 
@@ -296,7 +294,8 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     $child_family = explode(";", $childDb->pers_fams);
                     $child1stfam = $child_family[0];
                     outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);  // recursive
-                } else {    // Child without own family
+                } else {
+                    // Child without own family
                     if ($nr_generations >= $generation_number) {
                         $childgn = $generation_number + 1;
                         $childindent = $dir . 'sub' . $childgn;

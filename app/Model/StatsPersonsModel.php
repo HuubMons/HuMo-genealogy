@@ -107,7 +107,8 @@ class StatsPersonsModel extends BaseModel
                 }
                 if ($persstatDb->pers_death_date != "" && ($persstatDb->pers_birth_date != "" || $persstatDb->pers_bapt_date != "")) {
                     $man_age = $livingcalc->calculate_age($persstatDb->pers_bapt_date, $persstatDb->pers_birth_date, $persstatDb->pers_death_date, true);
-                    if ($man_age && $man_age >= 0 && $man_age < 120) { // valid age
+                    if ($man_age && $man_age >= 0 && $man_age < 120) {
+                        // valid age
                         $total_age_man += $man_age;
                         $man_age_count++;
                         if ($man_age >= $longest_living_man) {
@@ -346,7 +347,8 @@ class StatsPersonsModel extends BaseModel
 
         $process_age = new CalculateDates;
 
-        if (strpos($date, '/') > 0) {  // if date is gregorian double date, take first part:  972/73 --> 972
+        if (strpos($date, '/') > 0) {
+            // if date is gregorian double date, take first part:  972/73 --> 972
             $temp = explode('/', $date);
             $date = $temp[0];
         }

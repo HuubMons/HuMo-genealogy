@@ -1,5 +1,3 @@
-<!-- <h1 class="standard_header"><?= __('Frequency of Surnames'); ?></h1> -->
-
 <!-- Show line of first character last names -->
 <div style="text-align:center" class="mt-2">
     <?php
@@ -102,23 +100,8 @@ $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
     <?php } ?>
 </table>
 
-<!-- Show number of names with gray background bar -->
+<!--Show gray bar in name box. Graphical indication of number of names -->
 <script>
-    var tbl = document.getElementsByClassName("nametbl")[0];
-    var rws = tbl.rows;
-    var baseperc = <?= $list_names['number_high']; ?>;
-    for (var i = 0; i < rws.length; i++) {
-        var tbs = rws[i].getElementsByClassName("namenr");
-        var nms = rws[i].getElementsByClassName("namelst");
-        for (var x = 0; x < tbs.length; x++) {
-            var percentage = parseInt(tbs[x].innerHTML, 10);
-            percentage = (percentage * 100) / baseperc;
-            if (percentage > 0.1) {
-                nms[x].style.backgroundImage = "url(images/lightgray.png)";
-                nms[x].style.backgroundSize = percentage + "%" + " 100%";
-                nms[x].style.backgroundRepeat = "no-repeat";
-                nms[x].style.color = "rgb(0, 140, 200)";
-            }
-        }
-    }
-</script><br><br>
+    var baseperc = <?= (int)$list_names['number_high']; ?>;
+</script>
+<script src="assets/js/stats_graphical_bar.js"></script>

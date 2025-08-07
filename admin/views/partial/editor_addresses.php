@@ -22,7 +22,7 @@
         &nbsp;
         <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
             <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_shared',0,0)" onmouseout="mclosetime()">
-                <img src="../images/help.png" height="16" width="16">
+                <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>">
             </a>
             <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                 <b><?= __('A shared address can be connected to multiple persons or relations.'); ?></b><br>
@@ -53,7 +53,7 @@ if ($count > 0) {
         <td colspan="2">
             <!-- create unique sortable id -->
             <?php $sortable_id = $connect_sub_kind . $connect_connect_id; ?>
-            <ul id="sortable_addresses<?= $sortable_id; ?>" class="sortable_addresses<?= $sortable_id; ?> list-group">
+            <ul id="sortable_addresses<?= $sortable_id; ?>" class="sortable_addresses list-group" data-sortable-id="<?= $sortable_id; ?>">
                 <?php
                 while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                     $address_nr++;
@@ -175,20 +175,6 @@ if ($count > 0) {
                                         } else {
                                             $form = 2;
                                             //$place_item='place_relation';
-                                        }
-
-                                        // *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
-                                        if ($connect_kind == 'person') {
-                                            global $pers_gedcomnumber;
-                                            if ($connectDb->connect_order == $count) {
-                                                $sql = "UPDATE humo_persons SET pers_place_index = :place WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :gedcomnumber";
-                                                $stmt = $dbh->prepare($sql);
-                                                $stmt->execute([
-                                                    ':place' => $address3Db->address_place,
-                                                    ':tree_id' => $tree_id,
-                                                    ':gedcomnumber' => $pers_gedcomnumber
-                                                ]);
-                                            }
                                         }
                                         ?>
 
@@ -353,30 +339,9 @@ if ($count > 0) {
                 <?php } ?>
             </ul>
 
-            <!-- Order items using drag and drop using jquery and jqueryui, only used if there are multiple events -->
+            <!-- Order items using drag and drop using jquery and jqueryui, only used if there are multiple addresses -->
             <?php if ($count > 1) { ?>
-                <script>
-                    $('#sortable_addresses<?= $sortable_id; ?>').sortable({
-                        handle: '.handle'
-                    }).bind('sortupdate', function() {
-                        var orderstring = "";
-                        var order_arr = document.getElementsByClassName("handle");
-                        for (var z = 0; z < order_arr.length; z++) {
-                            orderstring = orderstring + order_arr[z].id + ";";
-                            //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
-                        }
-
-                        orderstring = orderstring.substring(0, orderstring.length - 1);
-                        $.ajax({
-                            url: "include/drag.php?drag_kind=addresses&order=" + orderstring,
-                            success: function(data) {},
-                            error: function(xhr, ajaxOptions, thrownError) {
-                                alert(xhr.status);
-                                alert(thrownError);
-                            }
-                        });
-                    });
-                </script>
+                <script src="../assets/js/order_addresses.js"></script>
             <?php } ?>
 
         </td>
@@ -391,8 +356,7 @@ if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])
     if (isset($_GET['person_place_address']) || isset($_GET['family_place_address'])) {
         $link_id = '55';
     }
-    echo '
-        <script>
+    echo '<script>
         function Show(el_id){
             // *** Hide or show item ***
             var arr = document.getElementsByClassName(\'row\'+el_id);

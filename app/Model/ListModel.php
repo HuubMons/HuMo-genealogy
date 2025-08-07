@@ -831,7 +831,8 @@ class ListModel extends BaseModel
             }
 
             if ($selection['birth_year']) {
-                if (!$selection['birth_year_end']) {   // filled in one year: exact date
+                if (!$selection['birth_year_end']) {
+                    // filled in one year: exact date
                     // *** Also search for baptise ***
                     $query .= $and . "(pers_birth_date LIKE '%" . $safeTextDb->safe_text_db($selection['birth_year']) . "%'";
                     $and = " AND ";
@@ -847,7 +848,8 @@ class ListModel extends BaseModel
             }
 
             if ($selection['death_year']) {
-                if (!$selection['death_year_end']) {      // filled in one year: exact date
+                if (!$selection['death_year_end']) {
+                    // filled in one year: exact date
                     // ** Also search for buried date ***
                     $query .= $and . "(pers_death_date LIKE '%" . $safeTextDb->safe_text_db($selection['death_year']) . "%'";
                     $and = " AND ";

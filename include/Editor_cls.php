@@ -141,7 +141,8 @@ class Editor_cls
         $post_date = str_replace(__(' and '), ' AND ', $post_date); // *** Use selected language for text "and" ***
         $pos = strpos(strtoupper($post_date), "AND");
         if ($pos !== false) {
-            if ($pref == "BET ") { // we've got "BET" and "AND"
+            if ($pref == "BET ") {
+                // we've got "BET" and "AND"
                 $date1 = $this->valid_date(substr($post_date, 0, $pos - 1));
                 $date2 = $this->valid_date(substr($post_date, $pos + 4));
                 if ($date1 != null && $date2 != null) {
@@ -221,7 +222,8 @@ class Editor_cls
             // skips "2 mar 1741/42" and "mar 1741/42"
             $delimiter = strpos($date, "-") !== false ? "-" : "/";
             $date_dash = explode($delimiter, $date);
-            if (count($date_dash) == 2) { // date was entered as month and year: 4-2011 or 4/2011 or we have case of "1741/42" (just year no day/month)
+            if (count($date_dash) == 2) {
+                // date was entered as month and year: 4-2011 or 4/2011 or we have case of "1741/42" (just year no day/month)
                 if ($date_dash[0] > $date_dash[1]) {
                     $member = "none"; // "1741/42" so don't perform transformation
                     $this_date = $date;

@@ -1,17 +1,20 @@
 <?php
-    /**
-     * Show person pop-up menu
-     * 
-     * $extended=true; Show a full persons pop-up including picture and person data
-     * $replacement_text='text'; Replace the pop-up icon by the replacement_text
-     * $extra_pop-up_text=''; To add extra text in the pop-up screen
-     */
+
+/**
+ * Show person pop-up menu
+ * 
+ * $extended=true; Show a full persons pop-up including picture and person data
+ * $replacement_text='text'; Replace the pop-up icon by the replacement_text
+ * $extra_pop-up_text=''; To add extra text in the pop-up screen
+ */
 
 namespace Genealogy\Include;
 
+use Genealogy\Include\BotDetector;
+use Genealogy\Include\DatePlace;
+use Genealogy\Include\DirectionMarkers;
 use Genealogy\Include\PersonLink;
 use Genealogy\Include\PersonName;
-use Genealogy\Include\DatePlace;
 use Genealogy\Include\ProcessLinks;
 use Genealogy\Include\ShowMedia;
 
@@ -19,12 +22,13 @@ class PersonPopup
 {
     public function person_popup_menu($personDb, $privacy, $extended = false, $replacement_text = '', $extra_popup_text = '')
     {
-        global $db_functions, $bot_visit, $humo_option, $uri_path, $user;
-        global $screen_mode, $dirmark1, $dirmark2, $rtlmarker, $hourglass, $page, $selectedFamilyTree;
+        global $db_functions, $humo_option, $uri_path, $user, $language, $screen_mode, $hourglass, $page, $selectedFamilyTree;
 
+        $botDetector = new BotDetector();
+        $datePlace = new DatePlace();
+        $directionMarkers = new DirectionMarkers($language["dir"], $screen_mode);
         $personLink = new PersonLink();
         $personName = new PersonName();
-        $datePlace = new  DatePlace();
         $processLinks = new ProcessLinks($uri_path);
 
         $text_start = '';
@@ -32,7 +36,7 @@ class PersonPopup
         $popover_content = '';
 
         // *** Show pop-up menu ***
-        if (!$bot_visit && $screen_mode != "PDF" && $screen_mode != "RTF") {
+        if (!$botDetector->isBot() && $screen_mode != "PDF" && $screen_mode != "RTF") {
 
             // *** Family tree for search in multiple family trees ***
             $db_functions->set_tree_id($personDb->pers_tree_id);
@@ -58,7 +62,7 @@ class PersonPopup
                 $start_url .= 'screen_mode=ancestor_chart';
             }
 
-            $text_start .= '<div class="' . $rtlmarker . 'sddm" style="display:inline;">' . "\n";
+            $text_start .= '<div class="' . $directionMarkers->rtlmarker . 'sddm" style="display:inline;">' . "\n";
 
             $text_start .= '<a href="' . $start_url . '"';
             if ($extended) {
@@ -84,7 +88,7 @@ class PersonPopup
                 '" class="sddm_fixed" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
             $name = $personName->get_person_name($personDb, $privacy);
-            $text .= $dirmark2 . '<span style="font-size:13px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span><br>';
+            $text .= $directionMarkers->dirmark2 . '<span style="font-size:13px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span><br>';
             $popover_content .= '<li><span style="font-size:13px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span></li>';
             if ($extended) {
                 $text .= '<table><tr><td style="width:auto; border: solid 0px; border-right:solid 1px #999999;">';
@@ -95,7 +99,7 @@ class PersonPopup
             if ($personDb->pers_fams == '') {
                 $direct_link = '#person_' . $personDb->pers_gedcomnumber;
             }
-            $text .= $dirmark1 . '<a href="' . $family_url . $direct_link . '"><img src="images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a>';
+            $text .= $directionMarkers->dirmark1 . '<a href="' . $family_url . $direct_link . '"><img src="images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a>';
             $popover_content .=  '<li><a href="' . $family_url . $direct_link . '"><img src="images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a></li>';
 
             if ($user['group_gen_protection'] == 'n' && $personDb->pers_fams != '') {
@@ -210,15 +214,15 @@ class PersonPopup
                 // *** Pop-up tekst ***
                 if (!$privacy) {
                     if ($personDb->pers_birth_date || $personDb->pers_birth_place) {
-                        $text .= __('*') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
+                        $text .= __('*') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
                     } elseif ($personDb->pers_bapt_date || $personDb->pers_bapt_place) {
-                        $text .= __('~') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
+                        $text .= __('~') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
                     }
 
                     if ($personDb->pers_death_date || $personDb->pers_death_place) {
-                        $text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, $personDb->pers_death_place);
+                        $text .= '<br>' . __('&#134;') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, $personDb->pers_death_place);
                     } elseif ($personDb->pers_buried_date || $personDb->pers_buried_place) {
-                        $text .= '<br>' . __('[]') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
+                        $text .= '<br>' . __('[]') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
                     }
 
                     // *** If needed add extra text in the pop-up box ***
@@ -233,7 +237,7 @@ class PersonPopup
             }
 
             $text = $text_start . $text;
-            $text .= $dirmark1 . '</div>';
+            $text .= $directionMarkers->dirmark1 . '</div>';
             $text .= '</div>' . "\n";
 
             // *** Use dropdown button in standard family pages ***

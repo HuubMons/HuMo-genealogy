@@ -13,6 +13,7 @@ $screen_mode = '';
 $last_visited = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $_SESSION['save_last_visitid'] = $last_visited;
 
+$botDetector = new Genealogy\Include\BotDetector();
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $personName_extended = new \Genealogy\Include\PersonNameExtended();
@@ -45,10 +46,10 @@ if (!$data["family_id"]) {
     $parent1_privacy = $personPrivacy->get_privacy($parent1Db);
 
     // *** Add tip in person screen ***
-    if (!$bot_visit) {
+    if (!$botDetector->isBot()) {
 ?>
         <div class="d-print-none"><b>
-                <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
+                <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif" alt="' . __('Reports') . '" title="' . __('Reports') . '">'); ?>
             </b><br><br>
         </div>
     <?php
@@ -159,7 +160,7 @@ else {
                 $familyDb = $db_functions->get_family($id);
 
                 // *** Don't count search bots, crawlers etc. ***
-                if (!$bot_visit) {
+                if (!$botDetector->isBot()) {
                     // *** Update statistics counter ***
                     $fam_counter = $familyDb->fam_counter + 1;
                     $fam_counter_var = $fam_counter;
@@ -309,10 +310,10 @@ else {
                 }
 
                 // *** Add tip in family screen ***
-                if (!$bot_visit && $descendant_loop == 0 && $parent1_marr == 0) {
+                if (!$botDetector->isBot() && $descendant_loop == 0 && $parent1_marr == 0) {
     ?>
                     <div class="d-print-none"><b>
-                            <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
+                            <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif" alt="' . __('Reports') . '" title="' . __('Reports') . '">'); ?>
                         </b><br><br>
                     </div>
                 <?php } ?>
@@ -327,7 +328,8 @@ else {
                     /**
                      * Show parent1 (normally the father)
                      */
-                    if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
+                    if ($familyDb->fam_kind != 'PRO-GEN') {
+                        //onecht kind, woman without man
                         if ($family_nr == 1) {
                     ?>
                             <!-- Show data of parent1 -->
@@ -372,7 +374,8 @@ else {
                     /**
                      * Show marriage
                      */
-                    if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+                    if ($familyDb->fam_kind != 'PRO-GEN') {
+                        // onecht kind, wife without man
                         // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                         if (
                             $totallyFilterPerson->isTotallyFiltered($user, $parent1Db)
@@ -827,7 +830,8 @@ else {
                         $markers = 'markers' . $family_nr;
                         $group = 'group' . $family_nr;
 
-                        if ($family_nr == 2) { // *** Only include once ***
+                        if ($family_nr == 2) {
+                            // *** Only include once ***
                 ?>
                             <link rel="stylesheet" href="assets/leaflet/leaflet.css">
                             <script src="assets/leaflet/leaflet.js"></script>
@@ -977,8 +981,8 @@ if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_prese
     echo $showSourcesFootnotes->show_sources_footnotes();
 }
 
-/* Generate citations, that can be used as a source for this person/ page
- *
+/**
+ * Generate citations, that can be used as a source for this person/ page
  * EXAMPLE:
  * "Family Page: Bethel, Catherine Ann Charles." database, Dolly Mae Alpha Index - Wyannie Malone Historical Museum (http://subscriber.bahamasgenealogyrecor ... son=I52982 : accessed 17 April 2016, Catherine Anne Charles Bethel, born 19 feb 1809 at New Providence, Bahamas; citing Christ Church Cathedral - Baptismal Register. Book 2, Whites -Page 99, item 21. for period Feb. 7, 1802 to Dec. 22, 1840.
  */
@@ -1202,12 +1206,12 @@ if ($data["descendant_report"] == false) {
                     ?>
                     <tr style="display:none;" id="row1" name="row1">
                         <td><?= __('Text'); ?></td>
-                        <td><textarea name="user_note" rows="5" cols="40"><?= $register_text; ?></textarea></td>
+                        <td><textarea name="user_note" rows="5" cols="40" class="form-control form-control-sm"><?= $register_text; ?></textarea></td>
                     </tr>
 
                     <tr style="display:none;" id="row1" name="row1">
                         <td></td>
-                        <td><input type="submit" name="send_mail" value="<?= __('Send'); ?>"></td>
+                        <td><input type="submit" name="send_mail" value="<?= __('Send'); ?>" class="btn btn-sm btn-success"></td>
                     </tr>
                 </table>
             </form>

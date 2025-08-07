@@ -11,12 +11,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 // TODO move code to model script (including functions at end of this script)
-if (!isset($humo_option["hide_languages"])) {
-    $humo_option["hide_languages"] = '';
-}
 $hide_languages_array = explode(";", $humo_option["hide_languages"]);
-// Doesn't work:
-//$hide_languages_array = $language_editor['hide_languages_array'];
 
 // *** Get name of selected language, will return $language["name"] ***
 include(__DIR__ . '/../../languages/' . $language_editor['language'] . '/language_data.php');
@@ -148,12 +143,14 @@ if (isset($_SESSION['langsearchtext']) && $_SESSION['langsearchtext'] != "") {
     $count_lines = count($_SESSION['line_array']);
 }
 $next = '';
-if (($_SESSION['present_page'] + 1) * $_SESSION['maxlines'] < $count_lines) { // only show next page button if not last page
+if (($_SESSION['present_page'] + 1) * $_SESSION['maxlines'] < $count_lines) {
+    // only show next page button if not last page
     $next = '&amp;to_next_page=' . ($_SESSION['present_page'] + 1);
 }
 
 $previous = '';
-if ($_SESSION['present_page'] > 0) { // only show prev page button if not first page
+if ($_SESSION['present_page'] > 0) {
+    // only show prev page button if not first page
     $previous = '&amp;to_prev_page=' . ($_SESSION['present_page'] - 1);
 }
 ?>

@@ -123,7 +123,7 @@ Please disconnect the pages from this menu first.'); ?>
                     <input type="hidden" name="page_id" value="<?= $edit_cms_pages['page_id']; ?>">
                     <input type="hidden" name="page_menu_id_old" value="<?= $edit_cms_pages['page_menu_id']; ?>">
                     <input type="text" name="page_title" value="<?= $edit_cms_pages['page_title']; ?>" size=25>
-                    <select size="1" name="page_menu_id">
+                    <select size="1" name="page_menu_id" aria-label="<?= __('Select menu'); ?>">
                         <option value='0'>* <?= __('No menu selected'); ?> *</option>
                         <option value="9999" <?php if ($edit_cms_pages['page_menu_id'] == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
                         <?php
@@ -344,7 +344,7 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                         }
                         echo '<input type="radio" onChange="document.cms_setting_form.submit()" value="all" name="languages_choice" ' . $checked1 . '> ' . __('Use for all languages');
                         ?>
-                        <select size="1" name="main_page_cms_id">
+                        <select size="1" name="main_page_cms_id" aria-label="<?= __('Select main page'); ?>">
                             <option value=''>* <?= __('Standard main index'); ?> *</option>
                             <?php
                             $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
@@ -384,7 +384,7 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                                             <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"><?= $language["name"]; ?>
                                         </td>
                                         <td>
-                                            <select size="1" name="main_page_cms_id_<?= $language_file[$i]; ?>">
+                                            <select size="1" name="main_page_cms_id_<?= $language_file[$i]; ?>" aria-label="<?= __('Select main page'); ?>">
                                                 <option value=''>* <?= __('Standard main index'); ?> *</option>
                                                 <?php
                                                 $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");

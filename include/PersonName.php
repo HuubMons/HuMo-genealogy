@@ -618,17 +618,18 @@ class PersonName
         return $title_after;
     }
 
-    // *** Aldfaer: title by name ***
-    /*
-    DUTCH Titles FOR DUTCH Genealogical program ALDFAER!
-    Title BEFORE name:
-        Prof., Dr., Dr.h.c., Dr.h.c.mult., Ir., Mr., Drs., Lic., Kand., Bacc., Ing., Bc., em., Ds.
-    Title BETWEEN pers_firstname and pers_lastname:
-        prins, prinses, hertog, hertogin, markies, markiezin, markgraaf, markgravin, graaf,
-        gravin, burggraaf, burggravin, baron, barones, ridder
-    Title AFTER name:
-        All other titles.
-    */
+    /**
+     * Aldfaer: title by name
+     * 
+     * DUTCH Titles FOR DUTCH Genealogical program ALDFAER!
+     * Title BEFORE name:
+     *     Prof., Dr., Dr.h.c., Dr.h.c.mult., Ir., Mr., Drs., Lic., Kand., Bacc., Ing., Bc., em., Ds.
+     * Title BETWEEN pers_firstname and pers_lastname:
+     *     prins, prinses, hertog, hertogin, markies, markiezin, markgraaf, markgravin, graaf,
+     *     gravin, burggraaf, burggravin, baron, barones, ridder
+     * Title AFTER name:
+     *     All other titles.
+     */
     private function get_title_aldfaer(): array
     {
         $title['before'] = '';
