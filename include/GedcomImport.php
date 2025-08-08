@@ -1,15 +1,18 @@
 <?php
 
+/**
+ * Class for importing GEDCOM files
+ * 
+ * TODO: check "private" and "public" for every function.
+ */
+
 namespace Genealogy\Include;
 
 class GedcomImport
 {
-    private $dbh;
-    private $tree_id, $tree_prefix;
-    private $humo_option;
-    //private $gen_program;
-    private $level, $buffer;
-    private $processed, $not_processed;
+    private $dbh, $tree_id, $tree_prefix, $humo_option;
+    private $gen_program, $gen_program_version, $add_tree, $reassign;
+    private $level, $buffer, $processed, $not_processed;
 
     private $nrsource, $source;
     private $nraddress2, $address_order, $address_array;
@@ -18,19 +21,20 @@ class GedcomImport
     private $event_nr, $event, $event_status;
     private $event_nr1, $event_nr2; // $event_nr1 = for 1st event level, $event_nr2 = for 2nd event level.
 
-    private $calculated_event_id;
-    private $calculated_connect_id;
+    private $calculated_event_id, $calculated_connect_id;
     //private $calculated_address_id;
 
     // *** Google geolocation ***
     private $geocode_nr, $geocode_plac, $geocode_lati, $geocode_long, $geocode_type;
 
-    public function __construct($dbh, $tree_id, $tree_prefix, $humo_option)
+    public function __construct($dbh, $tree_id, $tree_prefix, $humo_option, $add_tree, $reassign)
     {
         $this->dbh = $dbh;
         $this->tree_id = $tree_id;
         $this->tree_prefix = $tree_prefix;
         $this->humo_option = $humo_option;
+        $this->add_tree = $add_tree;
+        $this->reassign = $reassign;
 
         $this->connect_nr = 0;
         $this->event_nr = 0;
@@ -39,12 +43,13 @@ class GedcomImport
         $this->event_nr1 = 0;
         $this->event_nr2 = 0;
 
-        /* Insert a temporary line into database to get latest id.
-        *  This is done because table can be empty when reloading GEDCOM file...
-        *  Even in an empty table, latest id can be a high number...
-        *  And: LastInsertId() can't be used for 1 selected table (without insert).
-        *  May 2025: even AI suggested to do this.
-        */
+        /**
+         * Insert a temporary line into database to get latest id.
+         * This is done because table can be empty when reloading GEDCOM file...
+         * Even in an empty table, latest id can be a high number...
+         * And: LastInsertId() can't be used for 1 selected table (without insert).
+         * May 2025: even AI suggested to do this.
+         */
         $dbh->query("INSERT INTO humo_events SET event_tree_id='" . $tree_id . "'");
         $this->calculated_event_id = $dbh->lastInsertId();
         $dbh->query("DELETE FROM humo_events WHERE event_id='" . $this->calculated_event_id . "'");
@@ -58,14 +63,22 @@ class GedcomImport
         //$dbh->query("DELETE FROM humo_addresses WHERE address_id='" . $this->calculated_address_id . "'");
     }
 
+    public function set_gen_program($gen_program)
+    {
+        $this->gen_program = $gen_program;
+    }
+
+    public function set_gen_program_version($gen_program_version)
+    {
+        $this->gen_program_version = $gen_program_version;
+    }
+
     /**
      * Process persons
      */
-    function process_person($person_array): void
+    public function process_person($person_array): void
     {
-        global $gen_program, $add_tree, $reassign;
-        // *** Prefix for lastname ***
-        global $prefix, $prefix_length;
+        global $prefix, $prefix_length; // Prefix for lastname
 
         $line2 = explode("\n", $person_array);
 
@@ -120,10 +133,10 @@ class GedcomImport
         $pers_buried_date_hebnight = '';
         $pers_heb_flag = '';
         $pers_alive = '';
-        if ($gen_program == 'Haza-Data') {
+        if ($this->gen_program == 'Haza-Data') {
             $pers_alive = 'deceased';
         }
-        //if ($gen_program=='HuMo-gen' OR $gen_program=='HuMo-genealogy'){
+        //if ($this->gen_program=='HuMo-gen' OR $this->gen_program=='HuMo-genealogy'){
         //  $pers_alive='deceased';
         //}
 
@@ -158,7 +171,7 @@ class GedcomImport
         // Old code: it is alowed to read tags like: I_1;
         //$this->buffer[0] = str_replace("_", "", $this->buffer[0]); //Aldfaer numbers
         $pers_gedcomnumber = substr($this->buffer[0], 3, -6);
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $pers_gedcomnumber = $this->reassign_ged($pers_gedcomnumber, 'I');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
@@ -190,7 +203,7 @@ class GedcomImport
             //$memory=memory_get_usage();
 
             // *** Strip starting spaces, for Pro-gen ***
-            if ($gen_program == 'PRO-GEN') {
+            if ($this->gen_program == 'PRO-GEN') {
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
@@ -221,7 +234,7 @@ class GedcomImport
                 $this->level[4] = '';
 
                 // *** Possible bug in Haza-21 program: 2 @S167@ SOUR. Rebuild to: 2 SOUR @S167@ ***
-                if ($gen_program == 'Haza-21' && substr($this->buffer[0], -4) === 'SOUR') {
+                if ($this->gen_program == 'Haza-21' && substr($this->buffer[0], -4) === 'SOUR') {
                     $this->buffer[0] = substr($this->buffer[0], 0, 2) . 'SOUR ' . substr($this->buffer[0], 2, -5);
                     $this->level[2] = substr($this->buffer[0], 2, 4);
                 }
@@ -278,9 +291,9 @@ class GedcomImport
                         // *** Second famc, used for adoptive parents ***
                         $this->processed = true;
                         $famc = substr($this->buffer[0], 8, -1); // Needed for Aldfaer adoptive parents
-                        if ($gen_program != 'ALDFAER') {
+                        if ($this->gen_program != 'ALDFAER') {
                             $pers_famc2 = substr($this->buffer[0], 8, -1);
-                            if ($add_tree == true || $reassign == true) {
+                            if ($this->add_tree == true || $this->reassign == true) {
                                 $pers_famc2 = $this->reassign_ged($pers_famc2, 'F');
                             }
                             $this->event_nr++;
@@ -307,7 +320,7 @@ class GedcomImport
                         $this->processed = true;
                         $famc = substr($this->buffer[0], 8, -1); // Needed for Aldfaer adoptive parents
                         $pers_famc = substr($this->buffer[0], 8, -1);
-                        if ($add_tree == true || $reassign == true) {
+                        if ($this->add_tree == true || $this->reassign == true) {
                             $pers_famc = $this->reassign_ged($pers_famc, 'F');
                         }
                     }
@@ -323,7 +336,7 @@ class GedcomImport
                     // *** Adoption by person ***
                     $this->processed = true;
                     $pers_famc2 = $famc;
-                    if ($add_tree == true || $reassign == true) {
+                    if ($this->add_tree == true || $this->reassign == true) {
                         $pers_famc2 = $this->reassign_ged($famc, 'F');
                     }
                     $this->event_nr++;
@@ -358,7 +371,7 @@ class GedcomImport
             if ($this->buffer[8] === '1 FAMS @') {
                 $this->processed = true;
                 $tempnr = substr($this->buffer[0], 8, -1);
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $tempnr = $this->reassign_ged($tempnr, 'F');
                 }
                 $fams = $this->merge_texts($fams, ';', $tempnr);
@@ -442,7 +455,7 @@ class GedcomImport
                     // *** Second line "1 NAME" is a callname ***
                     if ($pers_firstname !== '' && $pers_firstname !== '0') {
                         // *** Don't process second/ third etc. "NAME" for Rootsmagic ***
-                        if ($gen_program == "RootsMagic") {
+                        if ($this->gen_program == "RootsMagic") {
                             $this->processed = true;
                         } else {
                             //$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
@@ -489,7 +502,8 @@ class GedcomImport
                         }
                     } else {
                         $position = strpos($name, "/");
-                        if ($position !== false) { // there are slashes
+                        if ($position !== false) {
+                            // there are slashes
                             $pers_firstname = rtrim(substr($name, 7, $position - 7));
 
                             $pers_lastname = substr($name, $position + 1);
@@ -637,7 +651,7 @@ class GedcomImport
                     $pers_name_text = $this->process_texts($pers_name_text, '2');
                 }
 
-                if ($gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
+                if ($this->gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
                     $pers_name_text = $this->process_texts($pers_name_text, '3');
                 }
 
@@ -797,7 +811,7 @@ class GedcomImport
             // *** Quality ***
             // BELONGS TO A 1 xxxx ITEM????
             // Certain/ uncertain person (onzeker persoon) HZ
-            if ($gen_program == 'Haza-Data' && $this->buffer[8] === '2 QUAY 0') {
+            if ($this->gen_program == 'Haza-Data' && $this->buffer[8] === '2 QUAY 0') {
                 $this->processed = true;
                 $pers_firstname = '(?) ' . $pers_firstname;
             }
@@ -977,7 +991,7 @@ class GedcomImport
                 }
 
                 // *** Text for SukuJutut***
-                if ($gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
+                if ($this->gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
                     $pers_birth_text = $this->process_texts($pers_birth_text, '3');
                 }
 
@@ -1070,7 +1084,7 @@ class GedcomImport
             // 1 BAPM
             // 2 DATE 23 APR 1658
             // 2 PLAC Venlo
-            if ($gen_program == 'GeneWeb' && $this->buffer[0] == '1 BAPM') {
+            if ($this->gen_program == 'GeneWeb' && $this->buffer[0] == '1 BAPM') {
                 $this->level[1] = 'CHR';
                 $this->buffer[0] = '1 CHR';
                 $this->buffer[5] = '1 CHR';
@@ -1117,7 +1131,7 @@ class GedcomImport
                     $pers_bapt_text = $this->process_texts($pers_bapt_text, '2');
                 }
 
-                if ($gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
+                if ($this->gen_program == "SukuJutut" && $this->level[3] == 'NOTE') {
                     $pers_bapt_text = $this->process_texts($pers_bapt_text, '3');
                 }
 
@@ -1229,7 +1243,7 @@ class GedcomImport
                 }
 
                 // Aldfaer uses DEAT without further data!
-                // if ($gen_program=='ALDFAER') { $pers_alive='deceased'; }
+                // if ($this->gen_program=='ALDFAER') { $pers_alive='deceased'; }
                 // Legacy death without further date. "1 DEAT Y"
                 $pers_alive = 'deceased';
 
@@ -1277,7 +1291,7 @@ class GedcomImport
                     $pers_death_text = $this->process_texts($pers_death_text, '2');
                 }
 
-                if ($gen_program == "Sukujutut" && $this->level == 'NOTE') {
+                if ($this->gen_program == "Sukujutut" && $this->level == 'NOTE') {
                     // *** Texts ***
                     $pers_death_text = $this->process_texts($pers_death_text, '3');
                 }
@@ -1424,7 +1438,7 @@ class GedcomImport
                     $pers_buried_text = $this->process_texts($pers_buried_text, '2');
                 }
 
-                if ($gen_program == "Sukujutut" && $this->level[3] == 'NOTE') {
+                if ($this->gen_program == "Sukujutut" && $this->level[3] == 'NOTE') {
                     // *** Texts ***
                     $pers_buried_text = $this->process_texts($pers_buried_text, '3');
                 }
@@ -1621,7 +1635,7 @@ class GedcomImport
                 // GEDCOM 5.x
                 if ($this->buffer[0] == '2 TYPE INDI') {
                     $this->processed = true;
-                    if ($add_tree == true || $reassign == true) {
+                    if ($this->add_tree == true || $this->reassign == true) {
                         $this->event['connect_id'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id'][$this->event_nr1], 'I');
 
                         //TODO this line isn't tested yet.
@@ -1633,7 +1647,7 @@ class GedcomImport
                     $this->processed = true;
                     //$this->event['connect_kind'][$this->event_nr1] = 'family';
                     $this->event['connect_kind'][$this->event_nr1] = 'MARR';
-                    if ($add_tree == true || $reassign == true) {
+                    if ($this->add_tree == true || $this->reassign == true) {
                         $this->event['connect_id'][$this->event_nr1] = $this->reassign_ged($this->event['connect_id'][$this->event_nr1], 'F');
 
                         //TODO this line isn't tested yet.
@@ -1884,7 +1898,8 @@ class GedcomImport
             }
 
             // *** Sex: F or M ***
-            if (substr($this->level[1], 0, 3) === 'SEX') { // *** 1 SEX F/ 1 SEX M ***
+            if (substr($this->level[1], 0, 3) === 'SEX') {
+                // *** 1 SEX F/ 1 SEX M ***
                 if ($this->buffer[5] === '1 SEX') {
                     $this->processed = true;
                     $pers_sexe = substr($this->buffer[0], 6);
@@ -2378,7 +2393,7 @@ class GedcomImport
             }
         }  //end explode
 
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             if ($pers_name_text) {
                 $pers_name_text = $this->reassign_ged($pers_name_text, 'N');
             }
@@ -2405,7 +2420,8 @@ class GedcomImport
 
         // for Jewish dates after nightfall
         $heb_qry = '';
-        if ($pers_heb_flag == 1) {  // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
+        if ($pers_heb_flag == 1) {
+            // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
             $column_qry = $this->dbh->query('SHOW COLUMNS FROM humo_persons');
             while ($columnDb = $column_qry->fetch()) {
                 $field_value = $columnDb['Field'];
@@ -2661,7 +2677,8 @@ class GedcomImport
                 $stmt->execute([':location_location' => $this->geocode_plac[$i]]);
                 $loc_qry = $stmt;
 
-                if (!$loc_qry->rowCount() && $this->geocode_type[$this->geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
+                if (!$loc_qry->rowCount() && $this->geocode_type[$this->geocode_nr] != "") {
+                    // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
                     $geosql = "INSERT IGNORE INTO humo_location SET
                         location_location = :location_location,
                         location_lat = :location_lat,
@@ -2833,7 +2850,6 @@ class GedcomImport
         }
 
         // *** TEST ONLY: show processed time per person ***
-        //global $start_time;
         //echo ':'.(time()-$person_time).' '.(time()-$start_time).'<br>';
 
         //$process_time=time()-$person_time;
@@ -2847,8 +2863,6 @@ class GedcomImport
      */
     function process_family($family_array, $first_marr, $second_marr): void
     {
-        global $gen_program, $add_tree, $reassign;
-
         //$line = $family_array;
         $line2 = explode("\n", $family_array);
 
@@ -2928,7 +2942,7 @@ class GedcomImport
             $gedcomnumber .= "U1";
         }  // create unique nr. if 1st is F23, then 2nd will be F23U1
 
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $gedcomnumber = $this->reassign_ged($gedcomnumber, 'F');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
@@ -2964,7 +2978,7 @@ class GedcomImport
             $this->set_buffer();
 
             // *** Strip starting spaces, for Pro-gen ***
-            if ($gen_program == 'PRO-GEN') {
+            if ($this->gen_program == 'PRO-GEN') {
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
@@ -2983,7 +2997,7 @@ class GedcomImport
 
                 // *** Same couple: second marriage in BK program (in 1 @FAM part) ***
                 $search_marr = rtrim(substr($this->buffer[0], 2, 5));
-                if ($gen_program == 'BROSKEEP' && ($search_marr === "MARR" || $search_marr === "MARB" || $search_marr === "MARL")) {
+                if ($this->gen_program == 'BROSKEEP' && ($search_marr === "MARR" || $search_marr === "MARB" || $search_marr === "MARL")) {
                     if ($marr_flag == 1 && $family["fam_div"] == true) {
                         // this is a second MARR in this @FAM after a divorce so second marriage of these people
                         $skipfrom = $z; // Added dec. 2024 to prevent error.
@@ -2992,7 +3006,8 @@ class GedcomImport
                         break;
                     } elseif ($second_marr == 0) {
                         // this is regular first marriage of these people (usually the only one....:-)
-                        if ($marr_flag == 0) { // flag only position of first liason before DIV
+                        if ($marr_flag == 0) {
+                            // flag only position of first liason before DIV
                             $marr_flag = 1; // flag that a MARR/MARB/MARL has been encountered
                             $skipfrom = $z; // if 2nd MARR will be encountered after a DIV then from this line should be skipped on second run
                         }
@@ -3099,7 +3114,7 @@ class GedcomImport
             if ($this->buffer[8] === '1 HUSB @') {
                 $this->processed = true;
                 $fam_man = substr($this->buffer[0], 8, -1);
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $fam_man = $this->reassign_ged($fam_man, 'I');
                 }
                 if ($second_marr > 0) {
@@ -3112,7 +3127,7 @@ class GedcomImport
             if ($this->buffer[8] === '1 WIFE @') {
                 $this->processed = true;
                 $fam_woman = substr($this->buffer[0], 8, -1);
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $fam_woman = $this->reassign_ged($fam_woman, 'I');
                 }
                 if ($second_marr > 0) {
@@ -3123,11 +3138,12 @@ class GedcomImport
             // *** Gedcomnumbers children ***
             // 1 CHIL @I13@
             // 1 CHIL @I14@
-            if ($second_marr == 0) { // only show children in first marriage of same people
+            if ($second_marr == 0) {
+                // only show children in first marriage of same people
                 if ($this->buffer[8] === '1 CHIL @') {
                     $this->processed = true;
                     $tempnum = substr($this->buffer[0], 8, -1);
-                    if ($add_tree == true || $reassign == true) {
+                    if ($this->add_tree == true || $this->reassign == true) {
                         $tempnum = $this->reassign_ged($tempnum, 'I');
                     }
                     $fam_children = $this->merge_texts($fam_children, ';', $tempnum);
@@ -3181,7 +3197,7 @@ class GedcomImport
              */
 
             // *** Marriage license Aldfaer ***
-            if ($this->level[1] == 'MARL' && $gen_program == 'ALDFAER') {
+            if ($this->level[1] == 'MARL' && $this->gen_program == 'ALDFAER') {
                 $this->level[1] = "MARB";
                 if ($this->buffer[6] === '1 MARL') {
                     $this->processed = true;
@@ -3445,7 +3461,7 @@ class GedcomImport
 
             // Quick & dirty method to solve 2 TYPE problem in Ahnenblatt GEDCOM.
             // 2 TYPE isn't used directly after 1 MARR. So just assume 2nd MARR = religious.
-            if ($this->buffer[6] === '1 MARR' && $gen_program == 'AHN' && $count_civil_religion > 0) {
+            if ($this->buffer[6] === '1 MARR' && $this->gen_program == 'AHN' && $count_civil_religion > 0) {
                 $temp_kind = 'religious'; // Just assume second MARR is religious.
             }
 
@@ -3493,7 +3509,7 @@ class GedcomImport
             /**
              * Marriage
              */
-            if ($this->level[1] == 'MARR' && $temp_kind !== 'religious' && $gen_program != 'SukuJutut') {
+            if ($this->level[1] == 'MARR' && $temp_kind !== 'religious' && $this->gen_program != 'SukuJutut') {
 
                 if ($this->buffer[6] === '1 MARR') {
                     $this->processed = true;
@@ -3564,7 +3580,7 @@ class GedcomImport
             }
 
             // Finnish program SukuJutut uses its own code for type of relation
-            if ($this->level[1] == 'MARR' && $gen_program == 'SukuJutut') {
+            if ($this->level[1] == 'MARR' && $this->gen_program == 'SukuJutut') {
                 if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
                     $finrelation = 'marr';
@@ -3820,7 +3836,7 @@ class GedcomImport
                 $this->event_status = true;
             }
             // *** Aldfaer: MARL = marriage license! ***
-            if ($this->buffer[6] == '1 MARL' and $gen_program != 'ALDFAER') {
+            if ($this->buffer[6] == '1 MARL' and $this->gen_program != 'ALDFAER') {
                 if (substr($this->buffer[0], 7)) {
                     $event_temp = substr($this->buffer[0], 7);
                 }
@@ -4050,7 +4066,7 @@ class GedcomImport
 
         // SAVE
         // Pro-gen: special treatment for woman without a man... :-)
-        if ($gen_program == 'PRO-GEN' && !$fam_man) {
+        if ($this->gen_program == 'PRO-GEN' && !$fam_man) {
             $family["fam_kind"] = "PRO-GEN";
         }
 
@@ -4062,7 +4078,7 @@ class GedcomImport
         // 1 MARR
         // 2 TYPE partners
         // etc.
-        if ($gen_program == 'ALDFAER' && $family["fam_kind"] === 'partners') {
+        if ($this->gen_program == 'ALDFAER' && $family["fam_kind"] === 'partners') {
             $family["fam_div"] = false;
             $family["fam_relation_end_date"] = $family["fam_div_date"];
             $family["fam_div_date"] = '';
@@ -4073,7 +4089,7 @@ class GedcomImport
             // Sources and events...
         }
 
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             if ($family["fam_text"]) {
                 $family["fam_text"] = $this->reassign_ged($family["fam_text"], 'N');
             }
@@ -4111,7 +4127,8 @@ class GedcomImport
 
         // for Jewish dates after nightfall
         $heb_qry = '';
-        if ($heb_flag == 1) {  // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
+        if ($heb_flag == 1) {
+            // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
             $column_qry = $this->dbh->query('SHOW COLUMNS FROM humo_families');
             while ($columnDb = $column_qry->fetch()) {
                 $field_value = $columnDb['Field'];
@@ -4321,7 +4338,8 @@ class GedcomImport
                 $stmt->execute([':location_location' => $this->geocode_plac[$i]]);
                 $loc_qry = $stmt;
 
-                if (!$loc_qry->rowCount() && $this->geocode_type[$this->geocode_nr] != "") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
+                if (!$loc_qry->rowCount() && $this->geocode_type[$this->geocode_nr] != "") {
+                    // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
                     $geosql = "INSERT IGNORE INTO humo_location SET
                         location_location = :location_location,
                         location_lat = :location_lat,
@@ -4351,7 +4369,7 @@ class GedcomImport
                     $event_order = 1;
                     $check_event_kind = $this->event['kind'][$i];
                 }
-                if (($add_tree == true or $reassign == true) && $this->event['text'][$i]) {
+                if (($this->add_tree == true or $this->reassign == true) && $this->event['text'][$i]) {
                     $this->event['text'][$i] = $this->reassign_ged($this->event['text'][$i], 'N');
                 }
 
@@ -4434,7 +4452,7 @@ class GedcomImport
                     $connect_order = $this->connect['connect_order'][$i];
                 }
 
-                if (($add_tree == true or $reassign == true) && $this->connect['text'][$i]) {
+                if (($this->add_tree == true or $this->reassign == true) && $this->connect['text'][$i]) {
                     $this->connect['text'][$i] = $this->reassign_ged($this->connect['text'][$i], 'N');
                 }
 
@@ -4465,10 +4483,8 @@ class GedcomImport
     /**
      * Import GEDCOM texts
      */
-    function process_text($text_array): void
+    public function process_text($text_array): void
     {
-        global $gen_program, $add_tree, $reassign;
-
         //$line = $text_array;
         $line2 = explode("\n", $text_array);
         $this->buffer[0] = $line2[0];
@@ -4492,7 +4508,7 @@ class GedcomImport
         //$text['text_gedcomnr']=substr($this->buffer[0], 2, $second_char-1);
         $text['text_gedcomnr'] = substr($this->buffer[0], 3, $second_char - 3);
 
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $text['text_gedcomnr'] = $this->reassign_ged($text['text_gedcomnr'], 'N');
         }
 
@@ -4519,7 +4535,7 @@ class GedcomImport
             $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
 
             // *** Strip starting spaces, for Pro-gen ***
-            if ($gen_program == 'PRO-GEN') {
+            if ($this->gen_program == 'PRO-GEN') {
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
@@ -4669,7 +4685,7 @@ class GedcomImport
                     $check_connect = $this->connect['kind'][$i] . $this->connect['sub_kind'][$i] . $this->connect['connect_id'][$i];
                 }
 
-                //if($add_tree==true OR $reassign==true) { $this->connect['text'][$i] = $this->reassign_ged($this->connect['text'][$i],'N'); }
+                //if($this->add_tree==true OR $this->reassign==true) { $this->connect['text'][$i] = $this->reassign_ged($this->connect['text'][$i],'N'); }
                 $this->connect['text'][$i] = $text['text_gedcomnr'];    // *** Allready re-assigned ***
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_connections SET
@@ -4729,10 +4745,8 @@ class GedcomImport
     /**
      * Process sources
      */
-    function process_source($source_array): void
+    public function process_source($source_array): void
     {
-        global $gen_program, $add_tree, $reassign;
-
         $this->connect_nr = 0;
         $this->event_nr = 0;
 
@@ -4769,7 +4783,7 @@ class GedcomImport
 
         //0 @S1@ SOUR
         $source["id"] = substr($this->buffer[0], 3, -6);
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $source["id"] = $this->reassign_ged($source["id"], 'S');
         }
         if (isset($_POST['show_gedcomnumbers'])) {
@@ -4791,7 +4805,7 @@ class GedcomImport
             //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
-            if ($gen_program == 'PRO-GEN') {
+            if ($this->gen_program == 'PRO-GEN') {
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
@@ -5008,7 +5022,7 @@ class GedcomImport
                 $this->processed = true;
                 if (substr($this->buffer[0], 2, 6) === 'REPO @') {
                     $source["source_repo_gedcomnr"] = substr($this->buffer[0], 8, -1);
-                    if ($add_tree == true || $reassign == true) {
+                    if ($this->add_tree == true || $this->reassign == true) {
                         $source["source_repo_gedcomnr"] = $this->reassign_ged($source["source_repo_gedcomnr"], 'RP');
                     }
                 } else {
@@ -5121,7 +5135,7 @@ class GedcomImport
         // *** If there is still no title, then use ... ***
         //if ($source["source_title"]==''){ $source["source_title"]="..."; }
 
-        if (($add_tree == true or $reassign == true) && $source["source_text"]) {
+        if (($this->add_tree == true or $this->reassign == true) && $source["source_text"]) {
             $source["source_text"] = $this->reassign_ged($source["source_text"], 'N');
         }
 
@@ -5137,7 +5151,7 @@ class GedcomImport
                     $check_event_kind = $this->event['kind'][$i];
                 }
 
-                if (($add_tree == true or $reassign == true) && $this->event['text'][$i]) {
+                if (($this->add_tree == true or $this->reassign == true) && $this->event['text'][$i]) {
                     $this->event['text'][$i] = $this->reassign_ged($this->event['text'][$i], 'N');
                 }
 
@@ -5192,7 +5206,7 @@ class GedcomImport
                 //	if (isset($this->connect['connect_order'][$i])) $connect_order=$this->connect['connect_order'][$i];
                 //}
 
-                if (($add_tree == true or $reassign == true) && $this->connect['text'][$i]) {
+                if (($this->add_tree == true or $this->reassign == true) && $this->connect['text'][$i]) {
                     $this->connect['text'][$i] = $this->reassign_ged($this->connect['text'][$i], 'N');
                 }
 
@@ -5303,10 +5317,8 @@ class GedcomImport
     /**
      * Process repository
      */
-    function process_repository($repo_array): void
+    public function process_repository($repo_array): void
     {
-        global $gen_program, $add_tree, $reassign;
-
         //$line = $repo_array;
         $line2 = explode("\n", $repo_array);
         $this->buffer[0] = $line2[0];
@@ -5359,7 +5371,7 @@ class GedcomImport
 
         //0 @R1@ REPO
         $repo["repo_gedcomnr"] = substr($this->buffer[0], 3, -6);
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $repo["repo_gedcomnr"] = $this->reassign_ged($repo["repo_gedcomnr"], 'RP');
         }
         //if (isset($_POST['show_gedcomnumbers'])){
@@ -5384,7 +5396,7 @@ class GedcomImport
             //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
-            if ($gen_program == 'PRO-GEN') {
+            if ($this->gen_program == 'PRO-GEN') {
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
@@ -5581,7 +5593,7 @@ class GedcomImport
             }
         }
 
-        if (($add_tree == true or $reassign == true) && $repo["repo_text"]) {
+        if (($this->add_tree == true or $this->reassign == true) && $repo["repo_text"]) {
             $repo["repo_text"] = $this->reassign_ged($repo["repo_text"], 'N');
         }
 
@@ -5640,10 +5652,8 @@ class GedcomImport
     /**
      * Process (shared) addresses
      */
-    function process_address($line): void
+    public function process_address($line): void
     {
-        global $gen_program, $add_tree, $reassign;
-
         $this->connect_nr = 0;
 
         $line2 = explode("\n", $line);
@@ -5669,7 +5679,7 @@ class GedcomImport
         $address["address_phone"] = '';
         $address["address_text"] = '';
         $address["address_gedcomnr"] = substr($this->buffer[0], 3, -6);
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $address["address_gedcomnr"] = $this->reassign_ged($address["address_gedcomnr"], 'R');
         }
         $address["address_unprocessed_tags"] = '';
@@ -5701,7 +5711,7 @@ class GedcomImport
             //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
-            if ($gen_program == 'PRO-GEN') {
+            if ($this->gen_program == 'PRO-GEN') {
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
@@ -5849,7 +5859,7 @@ class GedcomImport
                 //	if (isset($this->connect['connect_order'][$i])) $connect_order=$this->connect['connect_order'][$i];
                 //}
 
-                if (($add_tree == true or $reassign == true) && $this->connect['text'][$i]) {
+                if (($this->add_tree == true or $this->reassign == true) && $this->connect['text'][$i]) {
                     $this->connect['text'][$i] = $this->reassign_ged($this->connect['text'][$i], 'N');
                 }
 
@@ -5941,10 +5951,8 @@ class GedcomImport
     /**
      * Process objects
      */
-    function process_object($object_array): void
+    public function process_object($object_array): void
     {
-        global $gen_program, $add_tree, $reassign;
-
         //$line = $object_array;
         $line2 = explode("\n", $object_array);
         $this->buffer[0] = $line2[0];
@@ -5958,7 +5966,7 @@ class GedcomImport
         // 3 TIME 09:19:50
 
         $this->event['gedcomnr'] = substr($this->buffer[0], 3, -6);
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $this->event['gedcomnr'] = $this->reassign_ged($this->event['gedcomnr'], 'O');
         }
         $this->event['event'] = '';
@@ -5992,7 +6000,7 @@ class GedcomImport
             //echo "BUFFER: ".$z."-".$this->buffer[0]."!".count($line2)."<br>";
 
             // *** Strip starting spaces, for Pro-gen ***
-            if ($gen_program == 'PRO-GEN') {
+            if ($this->gen_program == 'PRO-GEN') {
                 $this->buffer[0] = ltrim($this->buffer[0], " ");
             }
 
@@ -6103,7 +6111,7 @@ class GedcomImport
             }
         }
 
-        if ($add_tree == true || $reassign == true) {
+        if ($this->add_tree == true || $this->reassign == true) {
             $this->event['text'] = $this->reassign_ged($this->event['text'], 'O');
         }
         // *** Save object ***
@@ -6165,7 +6173,7 @@ class GedcomImport
      */
 
     /*
-    function non_processed_items($this->buffer[0]){
+    private function non_processed_items($this->buffer[0]){
         // *** Not processed items for list by reading of GEDCOM ***
         $this->not_processed_tmp='0 '.$this->level[0].'</td><td>1 '.$this->level[1].'<br></td><td>';
         if ($this->level[2]){ $this->not_processed_tmp.="2 $this->level[2]"; }
@@ -6184,7 +6192,7 @@ class GedcomImport
     }
     */
 
-    function process_date($date)
+    private function process_date($date)
     {
         // *** Convert 2 DATE Bef 1909 to uppercase: 2 DATE BEF 1909 ***
         $date = strtoupper($date);
@@ -6193,7 +6201,8 @@ class GedcomImport
         $date = str_replace(" 0", " ", $date); //gets rid of "bet 2 may 0954 AND jun 0951" and "5 may 0985"
         //if(substr($date,-4,1)=="0") {
         //	 // if there is still a "0" this means we had the year by itself "0985" with nothing before it
-        if (substr($date, -4, 1) === "0" && strlen($date) == 4) { // if there is still a "0" this means we had the year by itself "0985" with nothing before it
+        if (substr($date, -4, 1) === "0" && strlen($date) == 4) {
+            // if there is still a "0" this means we had the year by itself "0985" with nothing before it
             // the strlen code was added to prevent that double dates with a 0 in position 4th from the end, will be erroneously changed  (1960/61 --> /61)
             $date = substr($date, -3, 3);
         }
@@ -6201,13 +6210,13 @@ class GedcomImport
     }
 
     // *** Merge function: text1, merge character, text2 ***
-    function merge_texts($text1, $merge, $text2)
+    private function merge_texts($text1, $merge, $text2)
     {
         return $text1 ? $text1 . $merge . $text2 : $text2;
     }
 
     // CONT
-    function cont($text1)
+    private function cont($text1)
     {
         //$text="<br>\n".$text1;
         $text = "\n" . $text1;
@@ -6217,18 +6226,16 @@ class GedcomImport
     // CONC, Some programs need an extra space after CONC!
     // PRO-GEN 3.0b-p10: add extra space.
     // PRO-GEN 3.22: no extra space.
-    function conc($text1)
+    private function conc($text1)
     {
-        global $gen_program, $gen_program_version;
-
         $spacer = '';
-        if ($gen_program == 'HuMo-gen' || $gen_program == 'HuMo-genealogy') {
+        if ($this->gen_program == 'HuMo-gen' || $this->gen_program == 'HuMo-genealogy') {
             $spacer = ' ';
-        } elseif ($gen_program == 'Haza-Data') {
+        } elseif ($this->gen_program == 'Haza-Data') {
             $spacer = ' ';
-        } elseif ($gen_program == 'PRO-GEN' && substr($gen_program_version, 0, 3) === '3.0') {
+        } elseif ($this->gen_program == 'PRO-GEN' && substr($this->gen_program_version, 0, 3) === '3.0') {
             $spacer = ' ';
-        } elseif ($gen_program == 'Family Tree Legends') {
+        } elseif ($this->gen_program == 'Family Tree Legends') {
             $spacer = ' ';
         }
         return $spacer . $text1;
@@ -6239,7 +6246,7 @@ class GedcomImport
     // 2 CONT 2nd line.
     // 2 CONT 3rd line
     // 2 CONC remaining text of 3rd line.
-    function process_texts($text, $number)
+    private function process_texts($text, $number)
     {
         $this->buffer[6] = substr($this->buffer[0], 0, 6);
         if ($this->buffer[6] === ($number) . ' NOTE') {
@@ -6263,7 +6270,7 @@ class GedcomImport
         return $text;
     }
 
-    function humo_basename($photo)
+    public function humo_basename($photo)
     {
         // *** Default: only read file name for example: picture.jpg ***
         if ($this->humo_option["gedcom_process_pict_path"] == 'file_name') {
@@ -6297,19 +6304,17 @@ class GedcomImport
     // 3 = Direct and primary evidence used, or by dominance of the evidence
     // Example:
     // 2 QUAY 0
-    function process_quality()
+    public function process_quality()
     {
-        global $gen_program;
-
         $text = substr($this->buffer[0], -1);
         // Ancestry uses 1 - 4 in stead of 0 - 3, adjust numbers:
-        if ($gen_program == "Ancestry.com Family Trees") {
+        if ($this->gen_program == "Ancestry.com Family Trees") {
             $text--;
         }
         return $text;
     }
 
-    function reassign_ged($gednr, $letter)
+    private function reassign_ged($gednr, $letter)
     {
         global $new_gednum, $reassign_array;
 
@@ -6346,7 +6351,7 @@ class GedcomImport
     }
 
     // *** Process place ***
-    function process_place($place)
+    private function process_place($place)
     {
         // *** Solve bug in Haza-data GEDCOM export, replace: Adelaide ,Australië by: Adelaide, Australië *
         $place = str_replace(" ,", ", ", $place);
@@ -6354,7 +6359,7 @@ class GedcomImport
     }
 
     // *** Process places ***
-    function process_places($map_place): void
+    public function process_places($map_place): void
     {
         // 2 PLAC Cleveland, Ohio, USA
         // 3 MAP
@@ -6394,10 +6399,8 @@ class GedcomImport
 
 
     // *** Process addresses by person and relation ***
-    function process_addresses($connect_kind, $connect_sub_kind, $connect_id): void
+    public function process_addresses($connect_kind, $connect_sub_kind, $connect_id): void
     {
-        global $gen_program, $add_tree, $reassign;
-
         // *** Living place ***
         //Haza-Data 7.2
         //1 ADDR Ridderkerk
@@ -6406,7 +6409,7 @@ class GedcomImport
         //1 ADDR Heerhugowaard
         if ($this->buffer[6] === '1 ADDR') {
             $address_gedcomnr = 'R' . $_SESSION['new_address_gedcomnr'];
-            if ($add_tree == true || $reassign == true) {
+            if ($this->add_tree == true || $this->reassign == true) {
                 $address_gedcomnr = $this->reassign_ged('R' . $_SESSION['new_address_gedcomnr'], 'R');
             }
             $_SESSION['address_gedcomnr'] = $address_gedcomnr;
@@ -6480,7 +6483,7 @@ class GedcomImport
                     $this->connect['text'][$this->connect_nr] = '';
                     // *** Save place GEDCOM number in connect_item_id field ***
                     $this->connect['item_id'][$this->connect_nr] = substr($this->buffer[0], 8, -1);
-                    if ($add_tree == true || $reassign == true) {
+                    if ($this->add_tree == true || $this->reassign == true) {
                         $this->connect['item_id'][$this->connect_nr] = $this->reassign_ged($this->connect['item_id'][$this->connect_nr], 'R');
                     }
                     $_SESSION['address_gedcomnr'] = $this->connect['item_id'][$this->connect_nr];
@@ -6544,13 +6547,13 @@ class GedcomImport
             //2 DATE 10 JUL 1934
             //2 PLAC AMSTERDAM-AMSTELDIJK 93/1
             //2 NOTE Tijdens ondertrouw.
-            //if ($this->buffer[6]=='1 RESI' AND $gen_program!='Haza-Data' AND $gen_program!='HuMo-genealogy'){
+            //if ($this->buffer[6]=='1 RESI' AND $this->gen_program!='Haza-Data' AND $this->gen_program!='HuMo-genealogy'){
             if ($this->buffer[6] === '1 RESI' && substr($this->buffer[0], 7, 1) !== '@') {
                 $this->processed = true;
                 $this->nraddress2++;
 
                 $address_gedcomnr = 'R' . $_SESSION['new_address_gedcomnr'];
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $address_gedcomnr = $this->reassign_ged('R' . $_SESSION['new_address_gedcomnr'], 'R');
                 }
                 $_SESSION['address_gedcomnr'] = $address_gedcomnr;
@@ -6612,11 +6615,11 @@ class GedcomImport
             // *** Restore HuMo-genealogy address GEDCOM numbers ***
             // 1 RESI
             // 2 RIN 1 (GEDCOM number without R).
-            if (($gen_program == 'HuMo-gen' or $gen_program == 'HuMo-genealogy') && $this->level[2] == 'RIN ') {
+            if (($this->gen_program == 'HuMo-gen' or $this->gen_program == 'HuMo-genealogy') && $this->level[2] == 'RIN ') {
                 $this->processed = true;
                 //echo substr($this->buffer[0],6).'<br>';
                 $address_gedcomnr = 'R' . substr($this->buffer[0], 6);
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $address_gedcomnr = $this->reassign_ged($address_gedcomnr, 'R');
                 }
                 $this->address_array["gedcomnr"][$this->nraddress2] = $address_gedcomnr;
@@ -6703,7 +6706,7 @@ class GedcomImport
             }
 
             // *** Texts by living place for SukuJutut ***
-            if ($gen_program == "SukuJutut") {
+            if ($this->gen_program == "SukuJutut") {
                 //if ($this->address_array["text"][$this->nraddress2]) {
                 //    $this->address_array["text"][$this->nraddress2] .= '. ';
                 //}
@@ -6742,10 +6745,8 @@ class GedcomImport
 
 
     // *** Process all kind of STANDARD sources ***
-    function process_sources($connect_kind2, $connect_sub_kind2, $connect_connect_id2, $number): void
+    public function process_sources($connect_kind2, $connect_sub_kind2, $connect_connect_id2, $number): void
     {
-        global $largest_source_ged, $add_tree, $reassign;
-
         // 2 SOUR Source text
         // *** Store source - connections ***
         if ($this->buffer[6] === $number . ' SOUR') {
@@ -6772,14 +6773,14 @@ class GedcomImport
                 $this->buffer[0] = trim($this->buffer[0]);
 
                 $this->connect['source_id'][$this->connect_nr] = substr($this->buffer[0], 8, -1);
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $this->connect['source_id'][$this->connect_nr] = $this->reassign_ged(substr($this->buffer[0], 8, -1), 'S');
                 }
             } else {
                 // *** Jan. 2021: all sources are stored in the source table ***
 
                 $new_source_gedcomnr = 'S' . $_SESSION['new_source_gedcomnr'];
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $new_source_gedcomnr = $this->reassign_ged('S' . $_SESSION['new_source_gedcomnr'], 'S');
                 }
                 $this->connect['source_id'][$this->connect_nr] = $new_source_gedcomnr;
@@ -6981,17 +6982,26 @@ class GedcomImport
         }
     }
 
-    /* EXAMPLES
-    * if ($this->level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_birth');
-    * if ($this->level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$this->calculated_event_id);
-    * if ($this->level[2]=='OBJE') $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice');
-    * if ($this->level[3]=='OBJE' AND substr($this->buffer[0],7,1)!='@'){ $this->process_picture('connect',$this->calculated_connect_id,'picture'); }
-    * if ($this->level[1]=='OBJE') $this->process_picture('source',$source["id"],'picture');
-    */
-    function process_picture($connect_kind, $connect_id, $picture): void
+    /** 
+     * EXAMPLES
+     * if ($this->level[2]=='OBJE'){
+     *  $this->process_picture('person',$pers_gedcomnumber,'picture_birth');
+     * }
+     * if ($this->level[2]=='OBJE'){
+     *  $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$this->calculated_event_id);
+     * }
+     * if ($this->level[2]=='OBJE'){
+     *  $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice');
+     * }
+     * if ($this->level[3]=='OBJE' AND substr($this->buffer[0],7,1)!='@'){
+     *  $this->process_picture('connect',$this->calculated_connect_id,'picture');
+     * }
+     * if ($this->level[1]=='OBJE') {
+     *  $this->process_picture('source',$source["id"],'picture');
+     * }
+     */
+    public function process_picture($connect_kind, $connect_id, $picture): void
     {
-        global $add_tree, $reassign;
-
         $event_picture = false;
         // *** Just for sure: set default values ***
         $test_number1 = '1';
@@ -7073,7 +7083,7 @@ class GedcomImport
             if (substr($this->buffer[0], 7, 1) === '@') {
                 // *** Saved as source_id in database, but connect_item_id is probably better... ***
                 $this->connect['source_id'][$this->connect_nr] = substr($this->buffer[0], 8, -1);
-                if ($add_tree == true || $reassign == true) {
+                if ($this->add_tree == true || $this->reassign == true) {
                     $this->connect['source_id'][$this->connect_nr] = $this->reassign_ged(substr($this->buffer[0], 8, -1), 'O');
                 }
             } else {
@@ -7221,7 +7231,7 @@ class GedcomImport
         }
     }
 
-    function changed_datetime($item, $changed_date, $changed_time)
+    public function changed_datetime($item, $changed_date, $changed_time)
     {
         $changed_datetime = '';
         if ($changed_date) {

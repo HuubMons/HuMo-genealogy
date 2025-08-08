@@ -1,9 +1,14 @@
-<!-- Start of editor table -->
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $languageDate = new \Genealogy\Include\LanguageDate;
 $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
 
+<!-- Start of editor table -->
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
     <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="hidden" name="person" value="<?= $pers_gedcomnumber; ?>">
@@ -33,7 +38,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 
                 <div class="col-auto">
                     <!-- Ignore the Are You Sure script -->
-                    <select size="1" name="admin_online_search" onChange="this.form.submit();" class="ays-ignore form-select form-select-sm">
+                    <select size="1" id="admin_online_search" name="admin_online_search" onChange="this.form.submit();" class="ays-ignore form-select form-select-sm">
                         <option value="y"><?= __('Online search enabled'); ?></option>
                         <option value="n" <?php if ($humo_option["admin_online_search"] != 'y')  echo ' selected'; ?>><?= __('Online search disabled'); ?></option>
                     </select>
@@ -352,7 +357,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                     ?>
                         <input type="submit" name="person_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
 
-                    <?php
+                        <?php
                         echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
 
                         // *** Add person to admin favourite list ***
@@ -369,14 +374,16 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                         $fav_result = $fav_stmt;
                         $rows = $fav_result->rowCount();
                         if ($rows > 0) {
-                            echo '<a href="index.php?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=0"><img src="../images/favorite_blue.png" style="border: 0px"></a>';
-                        } else {
-                            echo '<a href="index.php?page=editor&amp;person=' . $pers_gedcomnumber . '&amp;pers_favorite=1"><img src="../images/favorite.png" style="border: 0px"></a>';
+                        ?>
+                            <a href="index.php?page=editor&amp;person=<?= $pers_gedcomnumber; ?>&amp;pers_favorite=0"><img src="../images/favorite_blue.png" style="border: 0px" alt="<?= __('Remove from favourite list'); ?>"></a>
+                        <?php } else { ?>
+                            <a href="index.php?page=editor&amp;person=<?= $pers_gedcomnumber; ?>&amp;pers_favorite=1"><img src="../images/favorite.png" style="border: 0px" alt="<?= __('Add to favourite list'); ?>"></a>
+                        <?php
                         }
                     } else {
-                        echo '<input type="submit" name="person_add" value="' . __('Add') . '" class="btn btn-sm btn-success">';
-                    }
-                    ?>
+                        ?>
+                        <input type=" submit" name="person_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                    <?php } ?>
                 </th>
             </tr>
         </thead>
@@ -403,7 +410,9 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                             <?php
                             echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
                             if ($pers_name_text) {
-                                echo ' <img src="images/text.png" height="16">';
+                            ?>
+                                <img src="images/text.png" height="16" alt="<?= __('Text'); ?>">
+                            <?php
                             }
                             echo ' ' . $check_sources_text;
                             ?>
@@ -418,7 +427,8 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                     <?php edit_patronymic('pers_patronym', $pers_patronym); ?>
 
                     <?php
-                    if ($humo_option['admin_hebname'] == "y") {  // user requested hebrew name field to be displayed here, not under "events"
+                    if ($humo_option['admin_hebname'] == "y") {
+                        // user requested hebrew name field to be displayed here, not under "events"
                         $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_kind='name' AND event_connect_kind='person'";
                         $result = $dbh->query($sql);
                         if ($result->rowCount() > 0) {
@@ -533,12 +543,12 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             // *** Nickname, alias, adopted name, hebrew name, etc. ***
             // *** Remark: in editorModel.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
         ?>
-            <tr class="table_header_large">
+            <tr>
                 <td></td>
                 <td colspan="2">
                     <div class="row">
                         <div class="col-md-4">
-                            <select size="1" name="event_gedcom_add" id="event_gedcom_add" class="form-select form-select-sm">
+                            <select size="1" name="event_gedcom_add" id="event_gedcom_add" aria-label="<?= __('Name'); ?>" class="form-select form-select-sm">
                                 <?php $editorEventSelection->event_selection(''); ?>
                             </select>
                         </div>
@@ -1170,7 +1180,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                                 <input type="text" name="pers_death_age" value="<?= $pers_death_age; ?>" size="3" class="form-control form-control-sm">
                                 &nbsp;&nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                                     <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu2',100,400)" onmouseout="mclosetime()">
-                                        <img src="../images/help.png" height="16" width="16">
+                                        <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>">
                                     </a>
                                     <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                                         <b><?= __('If death year and age are used, then birth year is calculated automatically (when empty).'); ?></b><br>
@@ -1201,7 +1211,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                         <label for="pers_death_cause" class="col-md-3 col-form-label"><?= ucfirst(__('cause')); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <select size="1" name="pers_death_cause" class="form-select form-select-sm">
+                                <select size="1" id="pers_death_cause" name="pers_death_cause" class="form-select form-select-sm">
                                     <option value=""></option>
                                     <option value="murdered" <?= $pers_death_cause == 'murdered' ? 'selected' : ''; ?>><?= __('murdered'); ?></option>
                                     <option value="drowned" <?= $pers_death_cause == 'drowned' ? 'selected' : ''; ?>><?= __('drowned'); ?></option>
@@ -1392,7 +1402,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                     <div class="row mb-2">
                         <label for="pers_cremation" class="col-md-3 col-form-label"><?= ucfirst(__('method of burial')); ?></label>
                         <div class="col-md-7">
-                            <select size="1" name="pers_cremation" class="form-select form-select-sm">
+                            <select size="1" id="pers_cremation" name="pers_cremation" class="form-select form-select-sm">
                                 <option value=""><?= __('buried'); ?></option>
                                 <option value="1" <?= $pers_cremation == '1' ? 'selected' : ''; ?>><?= __('cremation'); ?></option>
                                 <option value="R" <?= $pers_cremation == 'R' ? 'selected' : ''; ?>><?= __('resomated'); ?></option>
@@ -1529,7 +1539,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         // TODO SEE ALSO: function edit_event_profession in editor.php. 
         ?>
         <!-- Profession(s) -->
-        <tr class="table_header_large" id="profession">
+        <tr id="profession">
             <td style="border-right:0px;">
                 <b><?= __('Profession'); ?></b>
             </td>
@@ -1590,7 +1600,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         <?= $EditorEvent->show_event('person', $pers_gedcomnumber, 'profession'); ?>
 
         <!-- Religion -->
-        <tr class="table_header_large" id="religion">
+        <tr id="religion">
             <td style="border-right:0px;"><?= __('Religion'); ?></td>
             <td colspan="2">
                 <?php
@@ -1660,13 +1670,13 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         if (!isset($_GET['add_person'])) {
         ?>
             <!-- Person events -->
-            <tr class="table_header_large" id="event_person_link">
+            <tr id="event_person_link">
                 <td><?= __('Events'); ?></td>
                 <td colspan="2">
                     <div class="row">
                         <!-- Add person event -->
                         <div class="col-4">
-                            <select size="1" name="event_kind" class="form-select form-select-sm">
+                            <select size="1" name="event_kind" aria-label="<?= __('Events'); ?>" class="form-select form-select-sm">
                                 <option value="event"><?= __('Event'); ?></option>
                                 <option value="adoption"><?= __('Adoption'); ?></option>
                                 <option value="URL"><?= __('URL/ Internet link'); ?></option>
@@ -1699,7 +1709,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             <tr><td><?= __('Quality of data');?></td>
                 <td style="border-right:0px;"></td>
                 <td style="border-left:0px;">
-                    <select size="1" name="pers_quality" style="width: 400px">
+                    <select size="1" name="pers_quality" aria-label="<?= __('Quality of data'); ?>" style="width: 400px">
                         <option value=""><?= ucfirst(__('quality: default'));?></option>
                         $selected=''; if ($pers_quality=='0'){ $selected=' selected'; }
                         <option value="0"<?= $selected;?>><?= ucfirst(__('quality: unreliable evidence or estimated data'));?></option>
@@ -1758,7 +1768,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             $num_rows = $note_result->rowCount();
             ?>
 
-            <tr class="table_header_large">
+            <tr>
                 <td>
                     <?php if ($num_rows) { ?>
                         <a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">[+]</span></a>
@@ -1794,7 +1804,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             // *** Person added by user ***
             if ($person->pers_new_user_id || $person->pers_new_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Added by'); ?></td>
                     <td colspan="2">
                         <?= $languageDate->show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
@@ -1806,7 +1816,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             // *** Person changed by user ***
             if ($person->pers_changed_user_id || $person->pers_changed_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2">
                         <?= $languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
@@ -1818,7 +1828,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
         ?>
 
         <!-- Extra "Save" line -->
-        <tr class="table_header_large">
+        <tr>
             <td></td>
             <td colspan="2">
                 <?php if ($editor['add_person'] == false) { ?>

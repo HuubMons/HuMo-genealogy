@@ -4,6 +4,8 @@
  * Nov. 2022 Huub: Added 2FA.
  */
 
+use Genealogy\Include\BotDetector;
+
 // TODO use function to get link
 if ($humo_option["url_rewrite"] == "j") {
     $action = 'user_settings';
@@ -104,7 +106,8 @@ if (count($theme_folder) == 1) {
     }
 }
 
-if ($bot_visit) {
+$botDetector = new BotDetector();
+if ($botDetector->isBot()) {
     $show_theme_select = false;
 }
 
@@ -118,7 +121,7 @@ if ($show_theme_select == true) {
         <div class="row me-1">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
-                <select name="switchcontrol" class="form-select form-select-sm" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">
+                <select id="theme_select" name="switchcontrol" class="form-select form-select-sm" aria-label="<?= __('Select a theme'); ?>" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">
                     <?php
                     if (isset($humo_option['default_skin'])) {
                         echo '<option value="' . $humo_option['default_skin'] . '" selected="selected">' . __('Select a theme') . ':</option>';

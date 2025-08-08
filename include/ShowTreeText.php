@@ -12,8 +12,7 @@ class ShowTreeText
 {
     public function show_tree_text($tree_id, $selected_language): array
     {
-        // TODO check global $dataDb.
-        global $dbh, $dataDb;
+        global $dbh;
 
         // *** Standard tree text values ***
         $treetext_array['name'] = __('NO NAME');
@@ -32,14 +31,14 @@ class ShowTreeText
             ':selected_language' => $selected_language,
             ':tree_id' => $tree_id
         ]);
-        $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-        if (isset($dataDb->treetext_name)) {
-            $treetext_array['id'] = $dataDb->treetext_id;
-            $treetext_array['name'] = $dataDb->treetext_name;
-            $treetext_array['mainmenu_text'] = $dataDb->treetext_mainmenu_text;
-            $treetext_array['mainmenu_source'] = $dataDb->treetext_mainmenu_source;
-            $treetext_array['family_top'] = $dataDb->treetext_family_top;
-            $treetext_array['family_footer'] = $dataDb->treetext_family_footer;
+        $treeText = $datasql->fetch(PDO::FETCH_OBJ);
+        if (isset($treeText->treetext_name)) {
+            $treetext_array['id'] = $treeText->treetext_id;
+            $treetext_array['name'] = $treeText->treetext_name;
+            $treetext_array['mainmenu_text'] = $treeText->treetext_mainmenu_text;
+            $treetext_array['mainmenu_source'] = $treeText->treetext_mainmenu_source;
+            $treetext_array['family_top'] = $treeText->treetext_family_top;
+            $treetext_array['family_footer'] = $treeText->treetext_family_footer;
 
             return $treetext_array;
         }
@@ -54,14 +53,14 @@ class ShowTreeText
             ':default_language' => 'default',
             ':tree_id' => $tree_id
         ]);
-        $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-        if (isset($dataDb->treetext_name)) {
-            $treetext_array['id'] = $dataDb->treetext_id;
-            $treetext_array['name'] = $dataDb->treetext_name;
-            $treetext_array['mainmenu_text'] = $dataDb->treetext_mainmenu_text;
-            $treetext_array['mainmenu_source'] = $dataDb->treetext_mainmenu_source;
-            $treetext_array['family_top'] = $dataDb->treetext_family_top;
-            $treetext_array['family_footer'] = $dataDb->treetext_family_footer;
+        $treeText = $datasql->fetch(PDO::FETCH_OBJ);
+        if (isset($treeText->treetext_name)) {
+            $treetext_array['id'] = $treeText->treetext_id;
+            $treetext_array['name'] = $treeText->treetext_name;
+            $treetext_array['mainmenu_text'] = $treeText->treetext_mainmenu_text;
+            $treetext_array['mainmenu_source'] = $treeText->treetext_mainmenu_source;
+            $treetext_array['family_top'] = $treeText->treetext_family_top;
+            $treetext_array['family_footer'] = $treeText->treetext_family_footer;
 
             return $treetext_array;
         }
@@ -76,14 +75,14 @@ class ShowTreeText
             ':like_name' => '_%',
             ':tree_id' => $tree_id
         ]);
-        $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-        if (isset($dataDb->treetext_name)) {
-            $treetext_array['id'] = $dataDb->treetext_id;
-            $treetext_array['name'] = $dataDb->treetext_name;
-            $treetext_array['mainmenu_text'] = $dataDb->treetext_mainmenu_text;
-            $treetext_array['mainmenu_source'] = $dataDb->treetext_mainmenu_source;
-            $treetext_array['family_top'] = $dataDb->treetext_family_top;
-            $treetext_array['family_footer'] = $dataDb->treetext_family_footer;
+        $treeText = $datasql->fetch(PDO::FETCH_OBJ);
+        if (isset($treeText->treetext_name)) {
+            $treetext_array['id'] = $treeText->treetext_id;
+            $treetext_array['name'] = $treeText->treetext_name;
+            $treetext_array['mainmenu_text'] = $treeText->treetext_mainmenu_text;
+            $treetext_array['mainmenu_source'] = $treeText->treetext_mainmenu_source;
+            $treetext_array['family_top'] = $treeText->treetext_family_top;
+            $treetext_array['family_footer'] = $treeText->treetext_family_footer;
 
             return $treetext_array;
         }

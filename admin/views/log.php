@@ -53,10 +53,10 @@ if (!defined('ADMIN_PAGE')) {
     if ($log['menu_tab'] == 'log_blacklist') {
         printf(__('IP Blacklist: access to %s will be totally blocked for these IP addresses.'), 'HuMo-genealogy');
     ?>
-        <form method='post' action='index.php?page=log&amp;menu_admin=log_blacklist'>
+        <form method="post" action="index.php?page=log&amp;menu_admin=log_blacklist" class="mt-2">
             <input type="hidden" name="page" value="<?= $page; ?>">
-            <table class="humo" border="1">
-                <tr class="table_header">
+            <table class="table" border="1">
+                <tr class="table-primary">
                     <th>Nr.</th>
                     <th><?= __('IP address'); ?></th>
                     <th><?= __('Description'); ?></th>
@@ -64,39 +64,39 @@ if (!defined('ADMIN_PAGE')) {
                     <th><?= __('Remove'); ?></th>
                 </tr>
                 <?php
-                $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' ORDER BY setting_order");
+                $blacklistQry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' ORDER BY setting_order");
                 // *** Number for new link ***
                 $count_links = 0;
-                if ($datasql->rowCount()) {
-                    $count_links = $datasql->rowCount();
+                if ($blacklistQry->rowCount()) {
+                    $count_links = $blacklistQry->rowCount();
                 }
                 $new_number = 1;
                 if ($count_links) {
                     $new_number = $count_links + 1;
                 }
-                if ($datasql) {
+                if ($blacklistQry) {
                     $teller = 1;
-                    while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                        $lijst = explode("|", $dataDb->setting_value);
+                    while ($blacklist = $blacklistQry->fetch(PDO::FETCH_OBJ)) {
+                        $lijst = explode("|", $blacklist->setting_value);
                 ?>
                         <tr>
                             <td>
-                                <input type="hidden" name="<?= $dataDb->setting_id; ?>id" value="<?= $dataDb->setting_id; ?>"><?= $teller; ?>
+                                <input type="hidden" name="<?= $blacklist->setting_id; ?>id" value="<?= $blacklist->setting_id; ?>"><?= $teller; ?>
                                 <?php
-                                if ($dataDb->setting_order != '1') {
-                                    echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=' . $dataDb->setting_order .
-                                        '&amp;id=' . $dataDb->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
+                                if ($blacklist->setting_order != '1') {
+                                    echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=' . $blacklist->setting_order .
+                                        '&amp;id=' . $blacklist->setting_id . '"><img src="images/arrow_up.gif" border="0" alt="up"></a>';
                                 }
-                                if ($dataDb->setting_order != $count_links) {
-                                    echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;down=1&amp;link_order=' . $dataDb->setting_order . '&amp;id=' .
-                                        $dataDb->setting_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
+                                if ($blacklist->setting_order != $count_links) {
+                                    echo ' <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;down=1&amp;link_order=' . $blacklist->setting_order . '&amp;id=' .
+                                        $blacklist->setting_id . '"><img src="images/arrow_down.gif" border="0" alt="down"></a>';
                                 }
                                 ?>
                             </td>
-                            <td><input type="text" name="<?= $dataDb->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5"></td>
-                            <td><input type="text" name="<?= $dataDb->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20"></td>
+                            <td><input type="text" name="<?= $blacklist->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5"></td>
+                            <td><input type="text" name="<?= $blacklist->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20"></td>
                             <td><input type="submit" name="change_link" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></td>
-                            <td><input type="submit" name="<?= $dataDb->setting_id; ?>remove_link" value="<?= __('Remove'); ?>" class="btn btn-sm btn-warning"></td>
+                            <td><input type="submit" name="<?= $blacklist->setting_id; ?>remove_link" value="<?= __('Remove'); ?>" class="btn btn-sm btn-warning"></td>
                         </tr>
                     <?php
                         $teller++;

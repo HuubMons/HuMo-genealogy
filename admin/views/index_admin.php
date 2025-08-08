@@ -3,6 +3,8 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+
+$directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
 ?>
 
 <h1 align=center><?= __('Administration'); ?></h1>
@@ -84,7 +86,7 @@ if (!defined('ADMIN_PAGE')) {
 
                 <!-- Get database settings -->
                 <form method="post" action="index.php" style="display : inline;">
-                    <table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B">
+                    <table class="table" border="1" cellspacing="0" bgcolor="#DDFD9B">
                         <tr>
                             <th><?= __('Database setting'); ?></th>
                             <th><?= __('Database value'); ?></th>
@@ -511,11 +513,11 @@ if (!defined('ADMIN_PAGE')) {
             <?php
             // *** Family trees ***
             $tree_counter = 0;
-            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+            $familytrees = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while ($familytree = $familytrees->fetch(PDO::FETCH_OBJ)) {
                 // *** Skip empty lines (didn't work in query...) ***
                 $tree_counter++;
-                $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
+                $treetext = $showTreeText->show_tree_text($familytree->tree_id, $selected_language);
             ?>
 
                 <div class="row mb-2">
@@ -525,25 +527,25 @@ if (!defined('ADMIN_PAGE')) {
 
                     <div class="col-md-8">
 
-                        <?php if ($dataDb->tree_persons > 0) { ?>
-                            <?= $dirmark1; ?><a href="index.php?page=tree&amp;tree_id=<?= $dataDb->tree_id; ?>"><?= $treetext['name']; ?></a>
-                            <?= $dirmark1; ?> <font size=-1>(<?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?>)</font>
+                        <?php if ($familytree->tree_persons > 0) { ?>
+                            <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree&amp;tree_id=<?= $familytree->tree_id; ?>"><?= $treetext['name']; ?></a>
+                            <?= $directionMarkers->dirmark1; ?> <font size=-1>(<?= $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= $familytree->tree_families; ?> <?= __('families'); ?>)</font>
                         <?php } else { ?>
                             <div class="alert alert-danger" role="alert">
-                                <?= $dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
+                                <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
                                 <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b><br>
 
                                 <!-- Read GEDCOM file -->
                                 <form method="post" action="index.php" style="display : inline;">
                                     <input type="hidden" name="page" value="tree">
-                                    <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
+                                    <input type="hidden" name="tree_id" value="<?= $familytree->tree_id; ?>">
                                     <input type="submit" name="step1" class="btn btn-sm btn-success" value="<?= __('Import Gedcom file'); ?>">
                                 </form>
 
                                 <!-- Editor -->
                                 <?= __('or'); ?>
                                 <form method="post" action="index.php?page=editor" style="display : inline;">
-                                    <input type="hidden" name="tree_id" value="<?= $dataDb->tree_id; ?>">
+                                    <input type="hidden" name="tree_id" value="<?= $familytree->tree_id; ?>">
                                     <input type="submit" name="submit" class="btn btn-sm btn-success" value="<?= __('Editor'); ?>">
                                 </form>
                             </div>

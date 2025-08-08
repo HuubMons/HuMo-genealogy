@@ -24,7 +24,7 @@
     <div class="mt-2"><a href="index.php?page=update&proceed=1"><?= __('Start update procedure'); ?></a></div>
 <?php
 } else {
-    $update_cls = new \Genealogy\Include\UpdateCls;
+    $update_cls = new \Genealogy\Include\UpdateCls($dbh);
 
     // *** UPDATE PROCEDURES ***
     $humo_update = 0;
@@ -34,12 +34,14 @@
 
 ?>
     <p>
-    <table class="humo">
-        <?php
-        echo '<tr class="table_header"><th colspan="2">';
-        printf(__('%s status'), 'HuMo-genealogy');
-        echo '</th></tr>';
+    <table class="table">
+        <tr>
+            <th colspan="2">
+                <?php printf(__('%s status'), 'HuMo-genealogy'); ?>
+            </th>
+        </tr>
 
+        <?php
         // *** Very old databases: no database update status available ***
         if (!isset($humo_option["update_status"])) {
             // *** Generate table humo_tree_texts and copy texts from humo_stambomen to humo_tree_texts ***
@@ -174,13 +176,13 @@
         if ($humo_option["update_status"] > '17') {
             echo '<tr><td>HuMo-genealogy update V6.7.9</td><td style="background-color:#00FF00">OK</td></tr>';
         } else {
-            $update_cls->update_v6_7_9($dbh);
+            $update_cls->update_v6_7_9();
         }
 
         if ($humo_option["update_status"] > '18') {
             echo '<tr><td>HuMo-genealogy update V6.7.9a</td><td style="background-color:#00FF00">OK</td></tr>';
         } else {
-            $update_cls->update_v6_7_9a($dbh);
+            $update_cls->update_v6_7_9a();
         }
 
         /**
@@ -188,7 +190,7 @@
          * 1) Change update_status in install.php
          * 2) Change version check in admin/index.php
          * 3) Don't forget to add new database fields in the tables of install.php!
-         * Change database fields: check if database changes can be made in global parts of this update script.
+         * Change database fields: check if database changes can be made in general parts of this update script.
          * Use LIMIT 0,1 to prevent update problems (in large family trees) if possible: SELECT * FROM humo_stat_date LIMIT 0,1
          */
         ?>

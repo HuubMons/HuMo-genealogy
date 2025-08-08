@@ -73,11 +73,6 @@ class AdminCmsPagesModel extends AdminBaseModel
                     ':page_text' => $_POST['page_text']
                 ]);
             } else {
-                // TODO check code. Double?
-                if ($_POST['page_menu_id'] && is_numeric($_POST['page_menu_id'])) {
-                    $this->page_menu_id = $_POST['page_menu_id'];
-                }
-
                 $sql = "UPDATE humo_cms_pages SET ";
                 $params = [];
 

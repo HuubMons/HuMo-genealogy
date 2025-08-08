@@ -1,5 +1,11 @@
 <?php
 // *** Check tables for wrongly connected id's etc. ***
+
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 //echo '<h3>'.__('Checking database tables...').'<br>'.__('Please wait till finished').'.</h3>';
 echo '<h3>' . __('Checking database tables...') . '</h3>';
 

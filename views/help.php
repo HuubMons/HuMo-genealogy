@@ -121,12 +121,12 @@
                 </span><br>
             </p>
 
-            <p class="help_text"><img src="languages/en/flag.gif"> <?= __('Language Flags'); ?><br>
+            <p class="help_text"><img src="languages/en/flag.gif" alt="<?= __('Language Flags'); ?>" title="<?= __('Language Flags'); ?>"> <?= __('Language Flags'); ?><br>
                 <span class="help_explanation"><?= __('On the menu bar, to the right of the menu buttons, you will notice several national flags, that allow you to change the display language.'); ?>
                 </span><br>
             </p>
 
-            <p class="help_text"><img src="images/settings.png"> <?= __('User settings'); ?><br>
+            <p class="help_text"><img src="images/settings.png" alt="<?= __('User settings'); ?>" title="<?= __('User settings'); ?>"> <?= __('User settings'); ?><br>
                 <span class="help_explanation"><?= __('This page contains several user settings: selecting a theme and changing password (if allowed).'); ?>
                 </span><br>
             </p>

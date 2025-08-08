@@ -16,30 +16,28 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
     $photoalbum['category_enabled']['none'] = true; // *** Always show main category ***
+    $path = 'index.php?page=photoalbum&amp;tree_id=' . $tree_id . '&amp;';
+    if ($humo_option["url_rewrite"] == "j") {
+        $path = 'photoalbum/' . $tree_id . '?';
+    }
 ?>
     <ul class="nav nav-tabs mt-1">
         <?php
         foreach ($photoalbum['category'] as $category) {
             if (isset($photoalbum['category_enabled'][$category]) && $photoalbum['category_enabled'][$category]) {
-
-                $path = 'index.php?page=photoalbum?tree_id=' . $tree_id . '&amp;select_category=' . $category;
-                if ($humo_option["url_rewrite"] == "j") {
-                    $path = 'photoalbum/' . $tree_id . '?select_category=' . $category;
-                }
         ?>
                 <li class="nav-item me-1">
-                    <a class="nav-link genealogy_nav-link <?php if ($category == $photoalbum['chosen_tab']) echo 'active'; ?>" href="<?= $path; ?>"><?= $photoalbum['category_name'][$category]; ?></a>
+                    <a class="nav-link genealogy_nav-link <?php if ($category == $photoalbum['chosen_tab']) echo 'active'; ?>" href="<?= $path; ?>select_category=<?= $category; ?>"><?= $photoalbum['category_name'][$category]; ?></a>
                 </li>
         <?php
             }
         }
         ?>
     </ul>
-
 <?php
 }
 
-$tree_pict_path = $dataDb->tree_pict_path;
+$tree_pict_path = $selectedFamilyTree->tree_pict_path;
 if (substr($tree_pict_path, 0, 1) === '|') {
     $tree_pict_path = 'media/';
 }
@@ -85,7 +83,7 @@ if ($humo_option["url_rewrite"] == "j") {
                 <label for="show-pictures" class="col-form-label"><?= __('Photo\'s per page'); ?></label>
             </div>
             <div class="col-auto">
-                <select name="show_pictures" id="show_pictures" onChange="window.location=this.value" class="form-select form-select-sm">
+                <select name="show_pictures" id="show_pictures" aria-label="<?= __('Select number of photos per page'); ?>" onChange="window.location=this.value" class="form-select form-select-sm">
                     <?php for ($i = 4; $i <= 60; $i++) { ?>
                         <option value="<?= $albumpath; ?>show_pictures=<?= $i; ?>&amp;start=0&amp;item=0&amp;select_category=<?= $photoalbum['chosen_tab']; ?>" <?= $i == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>
                             <?= $i; ?>

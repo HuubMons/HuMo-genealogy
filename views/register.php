@@ -23,8 +23,8 @@ if (isset($_POST['send_mail']) && $register["register_allowed"] == true) {
 if ($register["show_form"]) {
     $email = '';
     // Used in older HuMo-genealogy versions. Backwards compatible...
-    if (isset($dataDb->tree_email)) {
-        $email = $dataDb->tree_email;
+    if (isset($selectedFamilyTree->tree_email)) {
+        $email = $selectedFamilyTree->tree_email;
     }
     if ($humo_option["general_email"]) {
         $email = $humo_option["general_email"];

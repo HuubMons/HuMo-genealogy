@@ -35,34 +35,34 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
     </li>
 </ul>
 
-<ul id="sortable_trees" class="sortable_trees list-group">
+<ul id="sortable_items" class="sortable_items list-group">
     <?php
-    $datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-    if ($datasql) {
-        $count_lines = $datasql->rowCount();
-        while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-            $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $trees['language']);
+    $familytrees = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+    if ($familytrees) {
+        $count_lines = $familytrees->rowCount();
+        while ($familytree = $familytrees->fetch(PDO::FETCH_OBJ)) {
+            $treetext = $showTreeText->show_tree_text($familytree->tree_id, $trees['language']);
     ?>
-            <li class="list-group-item <?= $dataDb->tree_id == $trees['tree_id'] ? 'list-group-item-secondary' : ''; ?>">
+            <li class="list-group-item <?= $familytree->tree_id == $trees['tree_id'] ? 'list-group-item-secondary' : ''; ?>">
                 <div class="row">
                     <div class="col-md-1">
-                        <span style="cursor:move;" id="<?= $dataDb->tree_id; ?>" class="handle me-4">
+                        <span style="cursor:move;" id="<?= $familytree->tree_id; ?>" class="handle me-4">
                             <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                         </span>
 
                         <!-- If there is only one family tree, prevent it from being removed -->
-                        <?php if ($trees['count_trees'] > 1 || $dataDb->tree_prefix == 'EMPTY') { ?>
-                            <a href="index.php?page=tree&amp;remove_tree=<?= $dataDb->tree_id; ?>&amp;treetext_name=<?= $treetext['name']; ?>">
+                        <?php if ($trees['count_trees'] > 1 || $familytree->tree_prefix == 'EMPTY') { ?>
+                            <a href="index.php?page=tree&amp;remove_tree=<?= $familytree->tree_id; ?>&amp;treetext_name=<?= $treetext['name']; ?>">
                                 <img src="images/button_drop.png" alt="<?= __('Remove tree'); ?>" border="0">
                             </a>
                         <?php } ?>
                     </div>
 
                     <div class="col-md-5">
-                        <?php if ($dataDb->tree_prefix == 'EMPTY') { ?>
+                        <?php if ($familytree->tree_prefix == 'EMPTY') { ?>
                             * <?= __('EMPTY LINE'); ?> *
                         <?php } else { ?>
-                            <a href="index.php?page=tree&amp;menu_admin=tree_text&amp;tree_id=<?= $dataDb->tree_id; ?>">
+                            <a href="index.php?page=tree&amp;menu_admin=tree_text&amp;tree_id=<?= $familytree->tree_id; ?>">
                                 <img src="images/edit.jpg" title="edit" alt="edit">
                             </a>
                             <?= $treetext['name']; ?>
@@ -70,23 +70,23 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
                     </div>
 
                     <div class="col-md-6">
-                        <?php if ($dataDb->tree_prefix != 'EMPTY') { ?>
+                        <?php if ($familytree->tree_prefix != 'EMPTY') { ?>
                             <?php /*
-                            <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $dataDb->tree_id; ?>&tree_prefix=<?= $dataDb->tree_prefix; ?>&step1=read_gedcom">
+                            <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $familytree->tree_id; ?>&tree_prefix=<?= $familytree->tree_prefix; ?>&step1=read_gedcom">
                             */ ?>
-                            <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $dataDb->tree_id; ?>&amp;step1=read_gedcom">
+                            <a href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $familytree->tree_id; ?>&amp;step1=read_gedcom">
                                 <img src="images/import.jpg" title="gedcom import" alt="gedcom import">
                             </a>
                         <?php
                         }
 
-                        if ($dataDb->tree_prefix == 'EMPTY') {
+                        if ($familytree->tree_prefix == 'EMPTY') {
                             // *** Empty line, don't show any text ***
-                        } elseif ($dataDb->tree_persons > 0) {
+                        } elseif ($familytree->tree_persons > 0) {
                         ?>
                             <font color="#00FF00"><b><?= __('OK'); ?></b></font>
 
-                            <font size=-1><?= $showTreeDate->show_tree_date($dataDb->tree_date); ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?></font>
+                            <font size=-1><?= $showTreeDate->show_tree_date($familytree->tree_date); ?>: <?= $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= $familytree->tree_families; ?> <?= __('families'); ?></font>
                         <?php } else { ?>
                             <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b>
                         <?php } ?>
@@ -100,27 +100,9 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
 
 <!-- Order items using drag and drop using jquery and jqueryui -->
 <script>
-    $('#sortable_trees').sortable({
-        handle: '.handle'
-    }).bind('sortupdate', function() {
-        var orderstring = "";
-        var order_arr = document.getElementsByClassName("handle");
-        for (var z = 0; z < order_arr.length; z++) {
-            orderstring = orderstring + order_arr[z].id + ";";
-            //document.getElementById('ordernum' + order_arr[z].id).innerHTML = (z + 1);
-        }
-
-        orderstring = orderstring.substring(0, orderstring.length - 1);
-        $.ajax({
-            url: "include/drag.php?drag_kind=trees&order=" + orderstring,
-            success: function(data) {},
-            error: function(xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    });
+    var url_start = "include/drag.php?drag_kind=trees";
 </script>
+<script src="../assets/js/order_items.js"></script>
 
 <form method="post" action="index.php" class="my-3">
     <input type="hidden" name="page" value="tree">
@@ -142,7 +124,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
         </div>
 
         <div class="col-md-auto">
-            <select size="1" name="tree_collation" class="form-select form-select-sm">
+            <select size="1" id="tree_collation" name="tree_collation" class="form-select form-select-sm">
                 <option value="utf8_general_ci">utf8_general_ci (default)</option>
                 <option value="utf8_swedish_ci" <?= $trees['collation'] == 'utf8_swedish_ci' || $trees['collation'] == 'utf8mb3_swedish_ci' ? 'selected' : ''; ?>>utf8_swedish_ci</option>
                 <option value="utf8_danish_ci" <?= $trees['collation'] == 'utf8_danish_ci' || $trees['collation'] == 'utf8mb3_danish_ci' ? 'selected' : ''; ?>>utf8_danish_ci</option>

@@ -100,7 +100,6 @@ p {
 }
 
 /* Tables */
-table.humo,
 table.ext {
     background-image: none;
     background-color: #101010;
@@ -110,21 +109,6 @@ table.ext {
 table.standard {
     margin-left: auto;
     margin-right: auto;
-}
-
-/* 1st table A-Z */
-table.humo td {
-    border-color: #404040;
-}
-
-table.humo tr:first-of-type td {
-    border-color: #404040;
-}
-
-.table_headline {
-    background-image: none;
-    background-color: #101010;
-    border-color: #404040;
 }
 
 /* familypage */

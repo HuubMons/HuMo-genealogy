@@ -49,14 +49,14 @@ $repo_qry = $stmt;
         </div>
 
         <div class="col-md-auto">
-            <label for="tree" class="col-form-label">
+            <label for="repo_id" class="col-form-label">
                 <?= __('Select repository'); ?>
             </label>
         </div>
 
         <div class="col-md-auto">
             <form method="POST" action="index.php?page=edit_repositories" style="display : inline;">
-                <select size="1" name="repo_id" class="form-select form-select-sm" onChange="this.form.submit();">
+                <select size="1" id="repo_id" name="repo_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select repository'); ?></option>
                     <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
                         <option value="<?= $repoDb->repo_id; ?>" <?= $editRepository['repo_id'] == $repoDb->repo_id ? 'selected' : ''; ?>>

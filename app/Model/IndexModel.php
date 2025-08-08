@@ -170,30 +170,6 @@ class IndexModel
         return $index;
     }
 
-    public function process_ltr_rtl($language): array
-    {
-        // *** Process LTR and RTL variables ***
-        $index['dirmark1'] = "&#x200E;";  //ltr marker
-        $index['dirmark2'] = "&#x200F;";  //rtl marker
-        $index['rtlmarker'] = "ltr";
-        $index['alignmarker'] = "left";
-
-        // *** Switch direction markers if language is RTL ***
-        if ($language["dir"] == "rtl") {
-            $index['dirmark1'] = "&#x200F;";  //rtl marker
-            $index['dirmark2'] = "&#x200E;";  //ltr marker
-            $index['rtlmarker'] = "rtl";
-            $index['alignmarker'] = "right";
-        }
-
-        //if (isset($screen_mode) && $screen_mode == "PDF") {
-        //    $dirmark1 = '';
-        //    $dirmark2 = '';
-        //}
-
-        return $index;
-    }
-
     public function get_family_tree($dbh, $db_functions, $user): array
     {
         $check_tree_id = 0; // *** Check new selected tree_id ***
@@ -216,10 +192,10 @@ class IndexModel
         if ($database && is_string($database)) {
             //if ($database && preg_match('/^humo+[0-9]+_$/', $database)) {
             // *** Check if family tree really exists ***
-            $dataDb = $db_functions->get_tree($database);
-            if ($dataDb && $database == $dataDb->tree_prefix) {
-                $check_tree_id = $dataDb->tree_id;
-                $index['tree_id'] = $dataDb->tree_id;
+            $familyTree = $db_functions->get_tree($database);
+            if ($familyTree && $database == $familyTree->tree_prefix) {
+                $check_tree_id = $familyTree->tree_id;
+                $index['tree_id'] = $familyTree->tree_id;
                 $index['tree_prefix'] = $database;
             }
         }
@@ -233,10 +209,10 @@ class IndexModel
         }
         if ($check_tree_id && is_numeric($check_tree_id)) {
             // *** Check if family tree really exists ***
-            $dataDb = $db_functions->get_tree($check_tree_id);
-            if ($dataDb && $check_tree_id == $dataDb->tree_id) {
-                $index['tree_id'] = $dataDb->tree_id;
-                $index['tree_prefix'] = $dataDb->tree_prefix;
+            $familyTree = $db_functions->get_tree($check_tree_id);
+            if ($familyTree && $check_tree_id == $familyTree->tree_id) {
+                $index['tree_id'] = $familyTree->tree_id;
+                $index['tree_prefix'] = $familyTree->tree_prefix;
             }
         }
 
@@ -246,41 +222,41 @@ class IndexModel
             $index['tree_prefix'] = '';
 
             // *** Find first family tree that's not blocked for this usergroup ***
-            $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+            $familyTrees = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+            while ($familyTree = $familyTrees->fetch(PDO::FETCH_OBJ)) {
                 // *** Check if family tree is allowed for selected user group ***
                 $hide_tree_array = explode(";", $user['group_hide_trees']);
-                if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-                    $index['tree_id'] = $dataDb->tree_id;
-                    $index['tree_prefix'] = $dataDb->tree_prefix;
+                if (!in_array($familyTree->tree_id, $hide_tree_array)) {
+                    $index['tree_id'] = $familyTree->tree_id;
+                    $index['tree_prefix'] = $familyTree->tree_prefix;
                     break;
                 }
             }
         }
 
         // *** Check if selected tree is allowed for visitor and Google etc. ***
-        $dataDb = $db_functions->get_tree($index['tree_id']);
-        if ($dataDb) {
+        $familyTree = $db_functions->get_tree($index['tree_id']);
+        if ($familyTree) {
             $hide_tree_array = explode(";", $user['group_hide_trees']);
-            if (in_array($dataDb->tree_id, $hide_tree_array)) {
+            if (in_array($familyTree->tree_id, $hide_tree_array)) {
                 // *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
                 $index['tree_id'] = 0;
                 $index['tree_prefix'] = '';
 
                 // *** Find first family tree that's not blocked for this usergroup ***
                 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-                while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+                while ($familyTree = $datasql->fetch(PDO::FETCH_OBJ)) {
                     // *** Check is family tree is showed or hidden for user group ***
                     $hide_tree_array = explode(";", $user['group_hide_trees']);
-                    if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-                        $index['tree_id'] = $dataDb->tree_id;
-                        $index['tree_prefix'] = $dataDb->tree_prefix;
+                    if (!in_array($familyTree->tree_id, $hide_tree_array)) {
+                        $index['tree_id'] = $familyTree->tree_id;
+                        $index['tree_prefix'] = $familyTree->tree_prefix;
                         break;
                     }
                 }
-            } elseif (isset($dataDb->tree_id)) {
-                $index['tree_id'] = $dataDb->tree_id;
-                $index['tree_prefix'] = $dataDb->tree_prefix;
+            } elseif (isset($familyTree->tree_id)) {
+                $index['tree_id'] = $familyTree->tree_id;
+                $index['tree_prefix'] = $familyTree->tree_prefix;
             }
         }
 

@@ -155,18 +155,16 @@ if ($search_quicksearch_man != '') {
     $stmt->execute();
     $person_result = $stmt;
 } elseif ($search_man_id != '') {
+    // TODO check this.
     if (substr($search_man_id, 0, 1) !== "i" && substr($search_man_id, 0, 1) !== "I") {
         //make entry "48" into "I48"
         $search_man_id = "I" . $search_man_id;
     }
     $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_man_id . "'";
     $person_result = $dbh->query($person_qry);
-    // TODO check this
-    //$person = $db_functions->get_person($man_gedcomnumber);
 } else {
     $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $man_gedcomnumber . "'";
     $person_result = $dbh->query($person_qry);
-    //$person = $db_functions->get_person($man_gedcomnumber);
 }
 
 $editor_cls = new \Genealogy\Include\Editor_cls;

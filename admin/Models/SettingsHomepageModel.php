@@ -22,32 +22,32 @@ class SettingsHomepageModel extends AdminBaseModel
     {
         // *** Change Module ***
         if (isset($_POST['change_module'])) {
-            $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage'");
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                $setting_value = $_POST[$dataDb->setting_id . 'module_status'] . '|' . $_POST[$dataDb->setting_id . 'module_column'] . '|' . $_POST[$dataDb->setting_id . 'module_item'];
-                if (isset($_POST[$dataDb->setting_id . 'module_option_1'])) {
-                    $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_1'];
+            $modulesQry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage'");
+            while ($module = $modulesQry->fetch(PDO::FETCH_OBJ)) {
+                $setting_value = $_POST[$module->setting_id . 'module_status'] . '|' . $_POST[$module->setting_id . 'module_column'] . '|' . $_POST[$module->setting_id . 'module_item'];
+                if (isset($_POST[$module->setting_id . 'module_option_1'])) {
+                    $setting_value .= '|' . $_POST[$module->setting_id . 'module_option_1'];
                 }
-                if (isset($_POST[$dataDb->setting_id . 'module_option_2'])) {
-                    $setting_value .= '|' . $_POST[$dataDb->setting_id . 'module_option_2'];
+                if (isset($_POST[$module->setting_id . 'module_option_2'])) {
+                    $setting_value .= '|' . $_POST[$module->setting_id . 'module_option_2'];
                 }
                 $sql = "UPDATE humo_settings SET setting_value = :setting_value WHERE setting_id = :setting_id";
                 $stmt = $this->dbh->prepare($sql);
                 $stmt->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
-                $stmt->bindValue(':setting_id', $_POST[$dataDb->setting_id . 'id'], PDO::PARAM_INT);
+                $stmt->bindValue(':setting_id', $_POST[$module->setting_id . 'id'], PDO::PARAM_INT);
                 $stmt->execute();
             }
         }
 
         // *** Remove module  ***
         if (isset($_GET['remove_module']) && is_numeric($_GET['remove_module'])) {
-            $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_id='" . $_GET['remove_module'] . "'");
-            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-            $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
+            $modulesQry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_id='" . $_GET['remove_module'] . "'");
+            $module = $modulesQry->fetch(PDO::FETCH_OBJ);
+            $sql = "DELETE FROM humo_settings WHERE setting_id='" . $module->setting_id . "'";
             $this->dbh->query($sql);
 
             // *** Re-order links ***
-            $repair_order = $dataDb->setting_order;
+            $repair_order = $module->setting_order;
             $item = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' AND setting_order>" . $repair_order);
             while ($itemDb = $item->fetch(PDO::FETCH_OBJ)) {
                 $sql = "UPDATE humo_settings SET setting_order='" . ($itemDb->setting_order - 1) . "' WHERE setting_id=" . $itemDb->setting_id;
@@ -70,16 +70,16 @@ class SettingsHomepageModel extends AdminBaseModel
     public function order_modules(): void
     {
         // *** Automatic group all items: left, center and right items. So it's easier to move items ***
-        $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
+        $moduleQry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='template_homepage' ORDER BY setting_order");
         $left = 0;
         $center = 0;
         $right = 0;
-        if ($datasql) {
+        if ($moduleQry) {
             $teller = 0;
             // *** Read all items ***
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                $dataDb->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
-                $lijst = explode("|", $dataDb->setting_value);
+            while ($module = $moduleQry->fetch(PDO::FETCH_OBJ)) {
+                $module->setting_value .= '|'; // In some cases the last | is missing. TODO: improve saving of settings.
+                $lijst = explode("|", $module->setting_value);
                 if ($lijst[1] === 'left') {
                     $left++;
                 }
@@ -89,9 +89,9 @@ class SettingsHomepageModel extends AdminBaseModel
                 if ($lijst[1] === 'right') {
                     $right++;
                 }
-                $item_array[$teller]['id'] = $dataDb->setting_id;
+                $item_array[$teller]['id'] = $module->setting_id;
                 $item_array[$teller]['column'] = $lijst[1];
-                $item_array[$teller]['order'] = $dataDb->setting_order;
+                $item_array[$teller]['order'] = $module->setting_order;
                 $teller++;
             }
         }
@@ -167,26 +167,26 @@ class SettingsHomepageModel extends AdminBaseModel
     {
         // *** Change link ***
         if (isset($_POST['change_link'])) {
-            $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                $setting_value = $_POST[$dataDb->setting_id . 'own_code'] . "|" . $_POST[$dataDb->setting_id . 'link_text'];
+            $linksQry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
+            while ($link = $linksQry->fetch(PDO::FETCH_OBJ)) {
+                $setting_value = $_POST[$link->setting_id . 'own_code'] . "|" . $_POST[$link->setting_id . 'link_text'];
                 $sql = "UPDATE humo_settings SET setting_value = :setting_value WHERE setting_id = :setting_id";
                 $stmt = $this->dbh->prepare($sql);
                 $stmt->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
-                $stmt->bindValue(':setting_id', $_POST[$dataDb->setting_id . 'id'], PDO::PARAM_INT);
+                $stmt->bindValue(':setting_id', $_POST[$link->setting_id . 'id'], PDO::PARAM_INT);
                 $stmt->execute();
             }
         }
 
         // *** Remove link  ***
         if (isset($_GET['remove_link']) && is_numeric($_GET['remove_link'])) {
-            $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_id='" . $_GET['remove_link'] . "'");
-            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-            $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
+            $linkQry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_id='" . $_GET['remove_link'] . "'");
+            $link = $linkQry->fetch(PDO::FETCH_OBJ);
+            $sql = "DELETE FROM humo_settings WHERE setting_id='" . $link->setting_id . "'";
             $this->dbh->query($sql);
 
             // *** Re-order links ***
-            $repair_order = $dataDb->setting_order;
+            $repair_order = $link->setting_order;
             $item = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_order>" . $repair_order);
             while ($itemDb = $item->fetch(PDO::FETCH_OBJ)) {
                 $sql = "UPDATE humo_settings SET setting_order='" . ($itemDb->setting_order - 1) . "' WHERE setting_id=" . $itemDb->setting_id;

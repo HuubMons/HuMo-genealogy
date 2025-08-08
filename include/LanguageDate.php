@@ -86,7 +86,8 @@ class LanguageDate
                 } elseif ($humo_option["date_display"] == "ch" && $selected_language != "hu") {
                     $date_text = $this->chinese_date($date_text);
                     $date_text = $prfx . " " . $date_text;
-                } else { // Hungarian display
+                } else {
+                    // Hungarian display
                     $date_text = $this->hungarian_date($date_text);
                     if ($prfx == __('before') || $prfx == __('after')) {
                         $date_text = $date_text . " " . $prfx;
@@ -111,7 +112,8 @@ class LanguageDate
                     $date_arr[0] = $this->chinese_date($date_arr[0]);
                     $date_arr[1] = $this->chinese_date($date_arr[1]);
                     $date_text = __('between') . " " . $date_arr[0] . " " . __('and') . " " . $date_arr[1];
-                } else { // Hungarian display: "between" at the end
+                } else {
+                    // Hungarian display: "between" at the end
                     $date_arr[0] = $this->hungarian_date($date_arr[0]);
                     $date_arr[1] = $this->hungarian_date($date_arr[1]);
                     $date_text = $date_arr[0] . " " . __('and') . " " . $date_arr[1] . " " . __('between');

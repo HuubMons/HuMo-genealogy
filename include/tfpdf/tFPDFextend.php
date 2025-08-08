@@ -65,8 +65,8 @@ class tFPDFextend extends tFPDF
      */
     public function pdfdisplay($templ_personing, $person_kind): void
     {
-        global $language, $data, $gen_lus, $romnr, $romannr, $parentchild, $parlink;
-        global $indent, $child_indent, $pdf_footnotes, $pdf_count_notes, $user;
+        global $data, $gen_lus, $romannr, $parentchild, $parlink, $indent, $child_indent;
+
         $largest_height = 0;
         $pic = array();
 
@@ -117,14 +117,16 @@ class tFPDFextend extends tFPDF
                     if (is_file($value)) {
                         //TODO check all picture items in this script.
                         if ($numpics > 14) {
+                            // no more than 15 pics
                             continue;
-                        }  // no more than 15 pics
+                        }
                         $presentpic = intval(substr($key, 8));   //get the pic nr to compare later with txt nr
                         $picarray[$numpics][0] = $value;
                         $size = getimagesize($value);
                         $height = $size[1];
                         $width = $size[0];
-                        if ($width > 180) {  //narrow and wide thumbs should not get height 120px - they will be far too long
+                        if ($width > 180) {
+                            //narrow and wide thumbs should not get height 120px - they will be far too long
                             $height *= 180 / $width;
                             $width = 180;
                         }
@@ -353,7 +355,8 @@ class tFPDFextend extends tFPDF
                             $keepY = 20;
                         }
                         $keepX = $this->GetX();
-                        if (isset($picarray[0][0])) {  // we got at least 1 pic
+                        if (isset($picarray[0][0])) {
+                            // we got at least 1 pic
                             $pic_indent = 34;
                             $pictext_indent = 34;
                             $maxw = 180 / 3.87;
@@ -383,7 +386,8 @@ class tFPDFextend extends tFPDF
                         }
                     }
                     // source link with child
-                    elseif (strpos($key, "source") !== false and $value != '') {   // make source link to end of document
+                    elseif (strpos($key, "source") !== false and $value != '') {
+                        // make source link to end of document
                         $this->SetLeftMargin($child_indent);
                         $this->SetFont($this->pdf_font, '', $font_size);  // was Times
                         $this->SetTextColor(28, 28, 255);
@@ -408,7 +412,8 @@ class tFPDFextend extends tFPDF
                             $keepY = 20;
                         }
                         $keepX = $this->GetX();
-                        if (isset($picarray[0][0])) {  // we got at least 1 pic
+                        if (isset($picarray[0][0])) {
+                            // we got at least 1 pic
                             $pic_indent = 35;
                             $pictext_indent = 35;
                             $maxw = 180 / 3.87;
@@ -438,7 +443,8 @@ class tFPDFextend extends tFPDF
                         }
                     }
                     // source link with ancestor
-                    elseif (strpos($key, "source") !== false and $value != '') {   // make source link to end of document
+                    elseif (strpos($key, "source") !== false and $value != '') {
+                        // make source link to end of document
                         /*
                         $this->SetLeftMargin(38);
                         $this->SetFont('Times','',$font_size);
@@ -460,7 +466,8 @@ class tFPDFextend extends tFPDF
                         $keepY = 20;
                     }
                     $keepX = $this->GetX();
-                    if (isset($picarray[0][0])) {  // we got at least 1 pic
+                    if (isset($picarray[0][0])) {
+                        // we got at least 1 pic
                         $pic_indent = 28;
                         $pictext_indent = 28;
                         $maxw = 180 / 3.87;
@@ -488,7 +495,8 @@ class tFPDFextend extends tFPDF
                         }
                         $this->SetXY($keepX, $keepY + $tallestpic - 3);
                     }
-                } elseif (strpos($key, "source") !== false and $value != '') {   // make source link to end of document
+                } elseif (strpos($key, "source") !== false and $value != '') {
+                    // make source link to end of document
                     //$this->SetFont('Times','',$font_size);
                     //$this->SetTextColor(28,28,255);
                     $this->PDFShowSources($value);
@@ -511,7 +519,6 @@ class tFPDFextend extends tFPDF
      */
     public function displayrel($templ_relation, $ancestor_report): void
     {
-        global $language, $user, $pdf_footnotes, $pdf_count_notes;
         $font_size = 12;
         $samw = 0;
         $prew = 0;
@@ -549,7 +556,8 @@ class tFPDFextend extends tFPDF
                 $this->SetLeftMargin(38);
             }
 
-            if (!$samw && strpos($key, "cohabit") !== false) {            // Living together
+            if (!$samw && strpos($key, "cohabit") !== false) {
+                // Living together
                 // Example: $this->show_text($text,'B',$font_size);
                 if (isset($templ_relation["cohabit_exist"])) {
                     $this->show_text($templ_relation["cohabit_exist"], 'B', '');
@@ -601,7 +609,8 @@ class tFPDFextend extends tFPDF
 
             // ** Source by family ***
             if (strpos($key, "source_start") !== false) {
-                //if(!$sour AND strpos($key,"source")!==false) {  // Don't use this line. 
+                //if(!$sour AND strpos($key,"source")!==false) {
+                // Don't use this line. 
                 // Example: $this->show_text($text,'B',$font_size);  // B=Bold, I=Italic
                 $this->show_text($templ_relation["source_start"], 'B', '');
                 $source = 1;
@@ -632,7 +641,8 @@ class tFPDFextend extends tFPDF
                         $size = getimagesize($value);
                         $height = $size[1];
                         $width = $size[0];
-                        if ($width > 180) {  //narrow and wide thumbs should not get height 120px - they will be far too long
+                        if ($width > 180) {
+                            //narrow and wide thumbs should not get height 120px - they will be far too long
                             $height *= 180 / $width;
                             $width = 180;
                         }
@@ -671,7 +681,8 @@ class tFPDFextend extends tFPDF
                     $keepY = 20;
                 }
                 $keepX = $this->GetX();
-                if (isset($picarray[0][0])) {  // we got at least 1 pic
+                if (isset($picarray[0][0])) {
+                    // we got at least 1 pic
                     $pic_indent = 28;
                     $pictext_indent = 28;
                     $maxw = 180 / 3.87;
@@ -715,7 +726,8 @@ class tFPDFextend extends tFPDF
      */
     public function write_name($templ_name, $indentation, $length): void
     {
-        global $data, $ident, $language, $user, $pdf_footnotes, $pdf_count_notes;
+        global $data;
+
         $sexe = 0;
         $name = 0;
         $name_text = 0;
@@ -828,7 +840,8 @@ class tFPDFextend extends tFPDF
             $font_size = 11;
             $type = '';
 
-            if (strpos($key, "source") !== false && $value !== '') {   // make source link to end of document
+            if (strpos($key, "source") !== false && $value !== '') {
+                // make source link to end of document
                 //$this->SetX($indentation);
                 //$this->SetFont('Times','',$font_size);
                 //$this->SetTextColor(28,28,255);
@@ -874,8 +887,6 @@ class tFPDFextend extends tFPDF
      */
     public function pdf_ancestor_name($ancestor_reportnr, $sexe, $name): void
     {
-        global $language;
-
         $this->SetFont($this->pdf_font, 'B', 12);
         // (num) will be placed under num
         if ($ancestor_reportnr > 9999 && $this->GetY() + 7 > 270) {
@@ -886,7 +897,8 @@ class tFPDFextend extends tFPDF
 
         $this->Write(8, $ancestor_reportnr);
         $this->SetFont($this->pdf_font, '', 12);
-        if ($ancestor_reportnr > 9999) { // num(num) becomes too long. (num) is placed 1 line down
+        if ($ancestor_reportnr > 9999) {
+            // num(num) becomes too long. (num) is placed 1 line down
             $this->Ln(7);
             $this->Write(8, '(' . floor($ancestor_reportnr / 2) . ')  ');
             $this->SetY($this->GetY() - 7); //get back to first line to place name
@@ -933,7 +945,8 @@ class tFPDFextend extends tFPDF
         $this->SetFont($this->pdf_font, '', $font_size);  // was Times
         $this->SetTextColor(28, 28, 255);
 
-        if ($data["source_presentation"] == 'footnote') {  // "1)" as link to list at end of doc
+        if ($data["source_presentation"] == 'footnote') {
+            // "1)" as link to list at end of doc
             $footnote_nr_array = explode('~', $value);
             //TEST
             //$this->Write(6,$value);
@@ -943,15 +956,18 @@ class tFPDFextend extends tFPDF
                 if (is_numeric($footnote_nr)) {
                     $ofs = $footnote_nr - 1;
                 } // offset starts with 0
-                if ($ofs >= 0 && isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
+                if ($ofs >= 0 && isset($pdf_footnotes[$ofs])) {
+                    // is footnote to source from general source list
                     $this->SetTextColor(28, 28, 255);
                     $this->subWrite(6, ' ' . $footnote_nr . ')', $pdf_footnotes[$ofs], 9, 4);
-                } else { // "manual" source list as regular non-clickable text
+                } else {
+                    // "manual" source list as regular non-clickable text
                     $this->SetTextColor(0);
                     $this->Write(6, $footnote_nr);
                 }
             }
-        } elseif ($user['group_sources'] != 'n') {  // source title as link to list at end of doc
+        } elseif ($user['group_sources'] != 'n') {
+            // source title as link to list at end of doc
             //TEST
             //$this->Write(6,$value);
             //$this->Write(6,'SOURCE TEST');
@@ -960,7 +976,8 @@ class tFPDFextend extends tFPDF
             foreach ($multitext as $i => $value) {
                 $pos = strpos($multitext[$i], '!!');
                 //if($user['group_sources']=='j' AND $pos) {
-                if ($pos) { //source title as link to list at bottom
+                if ($pos) {
+                    //source title as link to list at bottom
 
                     // *** Multiple sources, show a comma ***
                     if ($i > 0) {
@@ -979,7 +996,8 @@ class tFPDFextend extends tFPDF
                     $txt = substr($multitext[$i], 0, $pos); // take off the !!2 source number at end
                     $this->Write(6, $txt, $pdf_footnotes[$ofs]);
                     //$this->subWrite(6,' '.$multitext[$i].')',$pdf_footnotes[$ofs],9,4);
-                } else {  // source title as plain text
+                } else {
+                    // source title as plain text
                     $this->SetTextColor(0);
                     $this->Write(6, $multitext[$i]);
                 }
@@ -989,7 +1007,8 @@ class tFPDFextend extends tFPDF
             }
         }
         /*
-        else {  // manual source title as plain text
+        else {
+            // manual source title as plain text
             $this->SetTextColor(0);
             $this->Write(6,$value.'RED');
         }
@@ -1069,9 +1088,7 @@ class tFPDFextend extends tFPDF
     }
 
     /*   // original fpdf version - if ever needed
-    function Header(){
-        global $title;
-
+    function Header($title){
         //Arial bold 15
         $this->SetFont('Arial','B',15);
         //Calculate width of title and position

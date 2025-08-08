@@ -256,35 +256,36 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
 
     <?php
-    // *** GEDCOM submitter/ GEDCOM inzender ***
-    /* Full example, if all items were used:
-        0 @SUBMITTER@ SUBM
-        1 NAME Firstname Lastname
-        1 ADDR Submitter address line 1
-        2 CONT Submitter address line 2
-        2 ADR1 Submitter address line 1
-        2 ADR2 Submitter address line 2
-        2 CITY Submitter address city
-        2 STAE Submitter address state
-        2 POST Submitter address ZIP code
-        2 CTRY Submitter address country
-        1 PHON Submitter phone number 1
-        1 PHON Submitter phone number 2
-        1 PHON Submitter phone number 3 (last one!)
-        1 LANG English
-        1 OBJE
-        2 FORM jpeg
-        2 TITL Submitter Multimedia File
-        2 FILE ImgFile.JPG
-        2 NOTE @N1@
-        1 RFN Submitter Registered RFN
-        1 RIN 1
-        1 CHAN
-        2 DATE 7 Sep 2000
-        3 TIME 8:35:36
-        */
+    /**
+     * GEDCOM submitter
+     * 
+     * Full example, if all items were used:
+     * 0 @SUBMITTER@ SUBM
+     * 1 NAME Firstname Lastname
+     * 1 ADDR Submitter address line 1
+     * 2 CONT Submitter address line 2
+     * 2 ADR1 Submitter address line 1
+     * 2 ADR2 Submitter address line 2
+     * 2 CITY Submitter address city
+     * 2 STAE Submitter address state
+     * 2 POST Submitter address ZIP code
+     * 2 CTRY Submitter address country
+     * 1 PHON Submitter phone number 1
+     * 1 PHON Submitter phone number 2
+     * 1 PHON Submitter phone number 3 (last one!)
+     * 1 LANG English
+     * 1 OBJE
+     * 2 FORM jpeg
+     * 2 TITL Submitter Multimedia File
+     * 2 FILE ImgFile.JPG
+     * 2 NOTE @N1@
+     * 1 RFN Submitter Registered RFN
+     * 1 RIN 1
+     * 1 CHAN
+     * 2 DATE 7 Sep 2000
+     * 3 TIME 8:35:36
+     */
     ?>
-
 
     <div class="p-3 my-md-2 genealogy_search container-md">
         <div class="row mb-2 p-2 bg-primary-subtle">

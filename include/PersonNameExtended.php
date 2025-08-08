@@ -9,27 +9,41 @@
 
 namespace Genealogy\Include;
 
+use Genealogy\Include\CalculateDates;
+use Genealogy\Include\DirectionMarkers;
 use Genealogy\Include\PersonLink;
 use Genealogy\Include\PersonPrivacy;
 use Genealogy\Include\PersonName;
 use Genealogy\Include\PersonPopup;
 use Genealogy\Include\ProcessText;
 use Genealogy\Include\ShowSources;
-use Genealogy\Include\CalculateDates;
 
 class PersonNameExtended
 {
+    private $family_expanded = '';
+
+    public function __construct($family_expanded = '')
+    {
+        // Especially for outline report, so that the family_expanded can be set.
+        $this->family_expanded = $family_expanded;
+    }
+
     public function name_extended($personDb, $privacy, $person_kind, $show_name_texts = false)
     {
         // TODO check globals
-        global $db_functions, $humo_option, $user, $screen_mode, $dirmark1, $dirmark2;
+        global $db_functions, $humo_option, $user, $screen_mode, $templ_name, $familyDb, $data, $language;
         global $sect; // *** RTF Export ***
-        global $templ_name, $familyDb, $data;
 
-        $personLink = new PersonLink;
-        $personPrivacy = new PersonPrivacy();
+        // *** Check if family_expanded is set, otherwise use general value ***
+        if (isset($data["family_expanded"])) {
+            $this->family_expanded = $data["family_expanded"];
+        }
+
+        $directionMarkers = new DirectionMarkers($language["dir"], $screen_mode);
+        $personLink = new PersonLink();
         $personName = new PersonName();
         $personPopup = new PersonPopup();
+        $personPrivacy = new PersonPrivacy();
         $processText = new ProcessText();
         $showSources = new ShowSources();
 
@@ -67,7 +81,7 @@ class PersonNameExtended
                     }
                     // SOURCE IS MISSING
                 } else {
-                    $text_name .= $dirmark1;
+                    $text_name .= $directionMarkers->dirmark1;
                     if ($personDb->pers_sexe == "M") {
                         $templ_name["name_sexe"] = $personDb->pers_sexe;
                         $start_name .= '<img src="images/man.gif" alt="man">';
@@ -90,7 +104,8 @@ class PersonNameExtended
                     }
 
                     // *** PDF does this elsewhere ***
-                    if ($screen_mode != "PDF") {  //  pdf does this elsewhere
+                    if ($screen_mode != "PDF") {
+                        //  pdf does this elsewhere
                         if ($humo_option['david_stars'] == "y") {
                             $camps = "Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
                             if (
@@ -109,11 +124,11 @@ class PersonNameExtended
             }
 
             $name = $personName->get_person_name($personDb, $privacy, $show_name_texts);
-            $standard_name = $name["standard_name"] . $dirmark2;
+            $standard_name = $name["standard_name"] . $directionMarkers->dirmark2;
 
             // *** Show full gedcomnummer as [I5] (because of Heredis GEDCOM file, that shows: 5I) ***
             if ($user['group_gedcomnr'] == 'j') {
-                $standard_name .= $dirmark1 . ' [' . $personDb->pers_gedcomnumber . ']';
+                $standard_name .= $directionMarkers->dirmark1 . ' [' . $personDb->pers_gedcomnumber . ']';
             }
 
             // *** No links if gen_protection is enabled ***
@@ -194,7 +209,7 @@ class PersonNameExtended
                 if ($personDb->pers_sexe == '') {
                     $text_parents .= __('child of') . ' ';
                 }
-                if ($data["family_expanded"] != 'compact') {
+                if ($this->family_expanded != 'compact') {
                     $templ_name["name_parents"] = ucfirst($text_parents);
                     $text_parents = ucfirst($text_parents);
                 } else {
@@ -266,7 +281,7 @@ class PersonNameExtended
                 //if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
 
                 $templ_name["name_parents"] .= '.';
-                $text_parents .= '<span class="parents">' . $text . $dirmark2 . '.</span>';
+                $text_parents .= '<span class="parents">' . $text . $directionMarkers->dirmark2 . '.</span>';
             }
 
 
@@ -336,7 +351,7 @@ class PersonNameExtended
 
                     $templ_name["name_parents"] .= '.';
 
-                    //$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
+                    //$text_parents.='<span class="parents">' . $text . $directionMarkers->dirmark2 . ' </span>';
                     $text_parents .= '<span class="parents">' . $text . '.</span>';
                 }
             }
@@ -428,35 +443,38 @@ class PersonNameExtended
 
                     $templ_name["name_parents"] .= '.';
 
-                    //$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
+                    //$text_parents.='<span class="parents">'.$text.$directionMarkers->dirmark2.' </span>';
                     $text_parents .= '<span class="parents">' . $text . '.</span>';
                 }
             }
         }
 
-        if ($data["family_expanded"] != 'compact') {
+        if ($this->family_expanded != 'compact') {
             $text_parents = '<div class="margin_person">' . $text_parents . '</div>';
             $child_marriage = '<div class="margin_child">' . $child_marriage . '</div>';
         }
 
 
         if ($screen_mode == 'RTF') {
-            return '<b>' . $text_name . $dirmark1 . '</b>' . $text_name2 . $text_colour . $text_parents . $child_marriage;
+            return '<b>' . $text_name . $directionMarkers->dirmark1 . '</b>' . $text_name2 . $text_colour . $text_parents . $child_marriage;
         } elseif ($screen_mode == 'PDF') {
             return $text_name;
         } else {
-            return $start_name . '<span class="pers_name">' . $text_name . $dirmark1 . '</span>' . $text_name2 . $text_colour . $text_parents . $child_marriage;
+            return $start_name . '<span class="pers_name">' . $text_name . $directionMarkers->dirmark1 . '</span>' . $text_name2 . $text_colour . $text_parents . $child_marriage;
         }
 
         /*
         if ($screen_mode=='RTF')
-            return '<b>'.$text_name.$dirmark1.'</b>'.$text_name2.$text_colour.$text_parents.$child_marriage;
+            return '<b>'.$text_name.$directionMarkers->dirmark1.'</b>'.$text_name2.$text_colour.$text_parents.$child_marriage;
         elseif($screen_mode!="PDF") {
-            return '<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_name2.$text_colour.$text_parents.$child_marriage;
+            return '<span class="pers_name">'.$text_name.$directionMarkers->dirmark1.'</span>'.$text_name2.$text_colour.$text_parents.$child_marriage;
         }
         // RETURN OF ARRAY GENERATES FAULT MESSAGES.
-        else {   // return array with pdf values
-            if(isset($templ_name)) { return $templ_name; }
+        else {
+            // return array with pdf values
+            if(isset($templ_name)) {
+                return $templ_name;
+            }
         }
         */
     }

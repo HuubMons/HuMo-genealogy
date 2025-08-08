@@ -54,7 +54,7 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
             ?>
             <th>
                 <a href="<?= $url_order; ?>&amp;order_sources=title&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "title" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Title'); ?>
-                    <img src="images/button3<?= $img; ?>.png">
+                    <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                 </a>
             </th>
 
@@ -71,7 +71,7 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
             ?>
             <th>
                 <a href="<?= $url_order; ?>&amp;order_sources=date&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "date" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Date'); ?>
-                    <img src="images/button3<?= $img; ?>.png">
+                    <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                 </a>
             </th>
 
@@ -88,7 +88,7 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
             ?>
             <th>
                 <a href="<?= $url_order; ?>&amp;order_sources=place&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "place" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Place'); ?>
-                    <img src="images/button3<?= $img; ?>.png">
+                    <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                 </a>
             </th>
         </tr>

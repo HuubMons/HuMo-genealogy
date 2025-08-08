@@ -18,6 +18,13 @@ use Genealogy\Include\ValidateGedcomnumber;
 
 class ShowSources
 {
+    private $family_expanded;
+
+    function __construct($family_expanded = '')
+    {
+        $this->family_expanded = $family_expanded;
+    }
+
     function show_sources2(string $connect_kind, string $connect_sub_kind, string $connect_connect_id)
     {
         global $db_functions, $tree_id, $user, $humo_option, $uri_path, $data;
@@ -30,6 +37,11 @@ class ShowSources
         $validateGedcomber = new ValidateGedcomnumber();
 
         $source_array['text'] = '';
+
+        // *** Check if family_expanded is set, otherwise use general value ***
+        if (isset($data["family_expanded"])) {
+            $this->family_expanded = $data["family_expanded"];
+        }
 
         $data["source_presentation"] = 'title';
         if (isset($_SESSION['save_source_presentation'])) {
@@ -161,7 +173,7 @@ class ShowSources
                         if ($nr_sources > 1) {
                             if ($connectDb->connect_order == '1') {
 
-                                if ($data["family_expanded"] != 'compact') {
+                                if ($this->family_expanded != 'compact') {
                                     $source_array['text'] .= '<br>';
                                 } else {
                                     $source_array['text'] .= '. ';
@@ -171,7 +183,7 @@ class ShowSources
                             }
                         } else {
 
-                            if ($data["family_expanded"] != 'compact') {
+                            if ($this->family_expanded != 'compact') {
                                 $source_array['text'] .= '<br>';
                             } else {
                                 $source_array['text'] .= '. ';
@@ -184,7 +196,7 @@ class ShowSources
 
                             if ($connectDb->connect_order == '1') {
 
-                                //if ($data["family_expanded"] != 'compact') {
+                                //if ($this->family_expanded != 'compact') {
                                 $source_array['text'] .= '<br>';
                                 //} else {
                                 //    $source_array['text'] .= '. ';
@@ -194,7 +206,7 @@ class ShowSources
                             }
                         } else {
 
-                            //if ($data["family_expanded"] != 'compact') {
+                            //if ($this->family_expanded != 'compact') {
                             $source_array['text'] .= '<br>';
                             //} else {
                             //    $source_array['text'] .= '. ';
@@ -239,7 +251,7 @@ class ShowSources
                             $source_array['text'] .= $source_link;
                         } elseif ($connect_sub_kind == 'person_source') {
                             if ($connectDb->connect_order == '1') {
-                                if ($data["family_expanded"] != 'compact') {
+                                if ($this->family_expanded != 'compact') {
                                     $source_array['text'] .= '<br>';
                                 } else {
                                     $source_array['text'] .= '. ';
@@ -259,7 +271,7 @@ class ShowSources
                             $source_array['text'] .= $source_link;
                         } elseif ($connect_sub_kind == 'family_source') {
                             if ($connectDb->connect_order == '1') {
-                                if ($data["family_expanded"] != 'compact') {
+                                if ($this->family_expanded != 'compact') {
                                     $source_array['text'] .= '<br>';
                                 } else {
                                     $source_array['text'] .= '. ';

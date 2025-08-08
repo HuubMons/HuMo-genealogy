@@ -218,7 +218,8 @@ class gettext_reader
 
         $this->STREAM = $Reader;
         $magic = $this->readint();
-        //if ($magic == ($MAGIC1 & 0xFFFFFFFF) || $magic == ($MAGIC3 & 0xFFFFFFFF)) { // to make sure it works for 64-bit platforms
+        //if ($magic == ($MAGIC1 & 0xFFFFFFFF) || $magic == ($MAGIC3 & 0xFFFFFFFF)) {
+        // to make sure it works for 64-bit platforms
         // *** Huub: changed for PHP 8.1 ***
         if ($magic == ($MAGIC1) || $magic == ($MAGIC3)) {
             $this->BYTEORDER = 0;

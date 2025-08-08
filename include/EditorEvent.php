@@ -125,8 +125,7 @@ class EditorEvent
     function show_event($event_connect_kind, $event_connect_id, $event_kind)
     {
         global $tree_id, $page, $field_place, $field_text, $field_text_medium;
-        global $editor_cls, $path_prefix, $tree_pict_path, $humo_option, $field_popup;
-        global $db_functions;
+        global $editor_cls, $tree_pict_path, $humo_option, $field_popup, $db_functions;
 
         $showMedia = new ShowMedia();
         $mediaPath = new MediaPath();
@@ -138,13 +137,13 @@ class EditorEvent
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture') {
             $picture_array = array();
             // *** Picture list for selecting pictures ***
-            $datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
-            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-            $tree_pict_path = $dataDb->tree_pict_path;
+            $familyTreeQry = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_id='" . $tree_id . "'");
+            $familyTree = $familyTreeQry->fetch(PDO::FETCH_OBJ);
+            $tree_pict_path = $familyTree->tree_pict_path;
             if (substr($tree_pict_path, 0, 1) === '|') {
                 $tree_pict_path = 'media/';
             }
-            $dir = $path_prefix . $tree_pict_path;
+            $dir = '../' . $tree_pict_path;
             if (file_exists($dir)) {
                 $dh  = opendir($dir);
                 while (false !== ($filename = readdir($dh))) {
@@ -160,11 +159,13 @@ class EditorEvent
             $picture_array2 = array(); // declare, otherwise if not used gives error
             // if subfolders exist for category files, list those too
             $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-            if ($temp->rowCount()) { // there is a category table
+            if ($temp->rowCount()) {
+                // there is a category table
                 $catg = $this->dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
                 if ($catg->rowCount()) {
                     while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
-                        if (is_dir($dir . substr($catDb->photocat_prefix, 0, 2))) {  // there is a subfolder for this prefix
+                        if (is_dir($dir . substr($catDb->photocat_prefix, 0, 2))) {
+                            // there is a subfolder for this prefix
                             $dh  = opendir($dir . substr($catDb->photocat_prefix, 0, 2));
                             while (false !== ($filename = readdir($dh))) {
                                 if (substr($filename, 0, 6) !== 'thumb_' && $filename !== '.' && $filename !== '..') {
@@ -282,8 +283,8 @@ class EditorEvent
         // *** Show pictures by person, family and (shared) source ***
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
             //$link = 'picture';
-        ?>
-            <tr class="table_header_large" id="picture">
+            ?>
+            <tr id="picture">
                 <td style="border-right:0px;">
                     <b><?= __('Picture/ Media'); ?></b>
                 </td>
@@ -518,9 +519,13 @@ class EditorEvent
 
                                                 $event_text = $this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom);
                                                 $person_item = 'person_witness';
-                                                if ($event_connect_kind == 'family') {
+                                                //if ($event_connect_kind == 'family') {
+                                                //    $person_item = 'marriage_witness';
+                                                //}
+                                                if ($event_connect_kind == 'MARR' || $event_connect_kind == 'MARR_REL') {
                                                     $person_item = 'marriage_witness';
                                                 }
+
                                                 // *** Orange items if no witness name is selected or added in text ***
                                                 $style = '';
                                                 if (!$data_listDb->event_event && !$data_listDb->event_connect_id2) {
@@ -622,11 +627,13 @@ class EditorEvent
                                                     <?php
                                                     $tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
                                                     $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-                                                    if ($temp->rowCount()) {  // there is a category table 
+                                                    if ($temp->rowCount()) {
+                                                        // there is a category table 
                                                         $catgr = $this->dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
                                                         if ($catgr->rowCount()) {
                                                             while ($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {
-                                                                if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix && is_dir($path_prefix . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {   // there is a subfolder of this prefix
+                                                                if (substr($data_listDb->event_event, 0, 3) == $catDb->photocat_prefix && is_dir('../' . $tree_pict_path3 . substr($data_listDb->event_event, 0, 2))) {
+                                                                    // there is a subfolder of this prefix
                                                                     $tree_pict_path3 = $tree_pict_path3 . substr($data_listDb->event_event, 0, 2) . '/';  // look in that subfolder
                                                                 }
                                                             }
@@ -634,7 +641,7 @@ class EditorEvent
                                                     }
 
                                                     echo '<a href="../' . $mediaPath->give_media_path($tree_pict_path3, $data_listDb->event_event) . '" target="_blank">' .
-                                                        $showMedia->print_thumbnail($path_prefix . $tree_pict_path3, $data_listDb->event_event) . '</a>';
+                                                        $showMedia->print_thumbnail('../' . $tree_pict_path3, $data_listDb->event_event) . '</a>';
                                                     ?>
                                                 </div>
 
@@ -1153,17 +1160,17 @@ class EditorEvent
                 </tr>
             <?php } ?>
 
-            <?php
+        <?php
         } // *** Don't use this block for newly added person ***
 
 
         if ($event_kind == 'picture' || $event_kind == 'marriage_picture' || $event_kind == 'source_picture') {
             // get subfolders of media dir 
-            $subfolders = glob($path_prefix . $tree_pict_path . '[^.]*', GLOB_ONLYDIR);
+            $subfolders = glob('../' . $tree_pict_path . '[^.]*', GLOB_ONLYDIR);
             $ignore = array('cms', 'slideshow', 'thumbs');
             // *** Upload image ***
-            ?>
-            <tr class="table_header_large">
+        ?>
+            <tr>
                 <td></td>
                 <td colspan="2">
 
@@ -1211,7 +1218,7 @@ class EditorEvent
                     </div>
                 </td>
             </tr>
-    <?php
+<?php
         }
 
         // TODO check return (no longer needed?).

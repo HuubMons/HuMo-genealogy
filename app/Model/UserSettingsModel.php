@@ -34,7 +34,7 @@ class UserSettingsModel extends BaseModel
         return $this->userDb;
     }
 
-    public function updateSettings($dataDb): string
+    public function updateSettings(): string
     {
         $result_message = '';
         if (isset($_POST['update_settings'])) {
@@ -90,8 +90,8 @@ class UserSettingsModel extends BaseModel
                 }
             }
 
-            if ($dataDb->tree_email) {
-                $register_address = $dataDb->tree_email;
+            if ($this->selectedFamilyTree->tree_email) {
+                $register_address = $this->selectedFamilyTree->tree_email;
                 $register_subject = "HuMo-genealogy. " . __('Updated profile') . ": " . $this->userDb->user_name . "\n";
 
                 // *** It's better to use plain text in the subject ***

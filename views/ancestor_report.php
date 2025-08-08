@@ -18,6 +18,7 @@ $personPrivacy = new Genealogy\Include\PersonPrivacy();
 $personName_extended = new Genealogy\Include\PersonNameExtended();
 $personData = new Genealogy\Include\PersonData();
 $showSourcesFootnotes = new Genealogy\Include\ShowSourcesFootnotes();
+$ancestorLabel = new Genealogy\Include\AncestorLabel();
 
 //echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
 echo $data["ancestor_header"];
@@ -26,60 +27,6 @@ $ancestor_array2[] = $data["main_person"];
 $ancestor_number2[] = 1;
 $marriage_gedcomnumber2[] = 0;
 $generation = 0;
-
-$language["gen1"] = '';
-if (__('PROBANT') != 'PROBANT') {
-    $language["gen1"] .= __('PROBANT');
-}
-$language["gen2"] = __('Parents');
-$language["gen3"] = __('Grandparents');
-$language["gen4"] = __('Great-Grandparents');
-$language["gen5"] = __('Great Great-Grandparents');
-$language["gen6"] = __('3rd Great-Grandparents');
-$language["gen7"] = __('4th Great-Grandparents');
-$language["gen8"] = __('5th Great-Grandparents');
-$language["gen9"] = __('6th Great-Grandparents');
-$language["gen10"] = __('7th Great-Grandparents');
-$language["gen11"] = __('8th Great-Grandparents');
-$language["gen12"] = __('9th Great-Grandparents');
-$language["gen13"] = __('10th Great-Grandparents');
-$language["gen14"] = __('11th Great-Grandparents');
-$language["gen15"] = __('12th Great-Grandparents');
-$language["gen16"] = __('13th Great-Grandparents');
-$language["gen17"] = __('14th Great-Grandparents');
-$language["gen18"] = __('15th Great-Grandparents');
-$language["gen19"] = __('16th Great-Grandparents');
-$language["gen20"] = __('17th Great-Grandparents');
-$language["gen21"] = __('18th Great-Grandparents');
-$language["gen22"] = __('19th Great-Grandparents');
-$language["gen23"] = __('20th Great-Grandparents');
-$language["gen24"] = __('21th Great-Grandparents');
-$language["gen25"] = __('22th Great-Grandparents');
-$language["gen26"] = __('23th Great-Grandparents');
-$language["gen27"] = __('24th Great-Grandparents');
-$language["gen28"] = __('25th Great-Grandparents');
-$language["gen29"] = __('26th Great-Grandparents');
-$language["gen30"] = __('27th Great-Grandparents');
-$language["gen31"] = __('28th Great-Grandparents');
-$language["gen32"] = __('29th Great-Grandparents');
-$language["gen33"] = __('30th Great-Grandparents');
-$language["gen34"] = __('31th Great-Grandparents');
-$language["gen35"] = __('32th Great-Grandparents');
-$language["gen36"] = __('33th Great-Grandparents');
-$language["gen37"] = __('34th Great-Grandparents');
-$language["gen38"] = __('35th Great-Grandparents');
-$language["gen39"] = __('36th Great-Grandparents');
-$language["gen40"] = __('37th Great-Grandparents');
-$language["gen41"] = __('38th Great-Grandparents');
-$language["gen42"] = __('39th Great-Grandparents');
-$language["gen43"] = __('40th Great-Grandparents');
-$language["gen44"] = __('41th Great-Grandparents');
-$language["gen45"] = __('42th Great-Grandparents');
-$language["gen46"] = __('43th Great-Grandparents');
-$language["gen47"] = __('44th Great-Grandparents');
-$language["gen48"] = __('45th Great-Grandparents');
-$language["gen49"] = __('46th Great-Grandparents');
-$language["gen50"] = __('47th Great-Grandparents');
 
 $listed_array = array();
 
@@ -101,13 +48,12 @@ while (isset($ancestor_array2[0])) {
 ?>
     <h2 class="standard_header">
         <?php if (isset($data["rom_nr"][$generation])) { ?>
-            <?= __('generation ') . $data["rom_nr"][$generation]; ?>
-        <?php
-        }
-        if (isset($language["gen" . $generation]) && $language["gen" . $generation]) {
-        ?>
-            (<?= $language["gen" . $generation]; ?>)
-            <?php
+            <?= __('Generation') . ' ' . $data["rom_nr"][$generation]; ?>
+            <?php }
+
+        $generationLabel = $ancestorLabel->getLabel($generation);
+        if ($generationLabel) {
+            echo '(' . $generationLabel . ')';
         }
 
         if ($generation == 1) {
@@ -162,7 +108,7 @@ while (isset($ancestor_array2[0])) {
         ?>
     </h2><br>
 
-    <table class="humo standard" align="center">
+    <table class="table" align="center">
         <?php
         // *** Loop per generation ***
         $counter = count($ancestor_array);
@@ -180,7 +126,8 @@ while (isset($ancestor_array2[0])) {
                 // instead of person's details it will say: "already listed above under number 4234"
                 // and no additional ancestors will be looked for, to prevent duplicated branches
             }
-            if ($listednr == '') {  //if not listed yet, add person to array
+            if ($listednr == '') {
+                //if not listed yet, add person to array
                 $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
             }
 
@@ -268,7 +215,6 @@ while (isset($ancestor_array2[0])) {
                     }
                 }
             } else {
-
                 // *** Show N.N. person ***
                 $person_manDb = $db_functions->get_person($ancestor_array[$i]);
                 $privacy_man = $personPrivacy->get_privacy($person_manDb);

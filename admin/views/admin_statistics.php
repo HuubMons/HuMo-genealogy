@@ -3,9 +3,6 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-
-// *** Use a class to process person data ***
-global $statistics;
 ?>
 
 <h1 class="center"><?= __('Statistics'); ?></h1>
@@ -51,7 +48,7 @@ global $statistics;
 // *** calender($month, $year, true/false); ***
 function calender($month, $year, $thismonth)
 {
-    global $dbh, $language, $statistics;
+    global $dbh, $statistics;
 
     if ($month == '1') {
         $calender_head = __('January');
@@ -246,7 +243,7 @@ function calender($month, $year, $thismonth)
 // *** Function to show year statistics ***
 function year_graphics($month, $year)
 {
-    global $dbh, $language, $statistics;
+    global $dbh, $statistics;
     $start_month = $month + 1;
     $start_year = $year - 1;
     if ($month == 12) {

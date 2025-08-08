@@ -13,7 +13,7 @@ class MailformController
         $this->config = $config;
     }
 
-    public function get_mail_data($dataDb, $selected_language): array
+    public function get_mail_data($selected_language): array
     {
         $mailformModel = new MailformModel($this->config);
 
@@ -22,7 +22,7 @@ class MailformController
 
         $mail_array = array_merge($mail_form, $mail_check);
 
-        $mail_send = $mailformModel->send_mail($mail_array, $dataDb, $selected_language);
+        $mail_send = $mailformModel->send_mail($mail_array, $selected_language);
 
         if (isset($mail_send)) {
             $mail_array = array_merge($mail_form, $mail_send);

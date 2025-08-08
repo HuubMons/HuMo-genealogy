@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Edit or add an (shared) address.
  */
@@ -65,7 +64,7 @@ if (isset($tree_id) && $tree_id) {
                 </label>
             </div>
             <div class="col-md-3">
-                <select size="1" name="address_id" class="form-select form-select-sm" onChange="this.form.submit();">
+                <select size="1" name="address_id" aria-label="<?= __('Select address'); ?>" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select address'); ?></option>
 
                     <?php if (!isset($editAddress['addresses_id'])) { ?>

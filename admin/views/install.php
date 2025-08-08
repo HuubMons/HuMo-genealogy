@@ -102,7 +102,7 @@ if (!isset($_POST['install_tables2'])) {
         <div class="me-4">
             <table class="table ms-4">
                 <thead class="table-primary">
-                    <tr class="table_header">
+                    <tr>
                         <th><?= __('User'); ?></th>
                         <th><?= __('Username'); ?></th>
                         <th><?= __('Password'); ?></th>

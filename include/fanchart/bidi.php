@@ -72,17 +72,21 @@ class bidi
         for ($i = 0; $i < $length; $i++) {
             // get one string character at time
             $char = ord($str[$i]);
-            if (count($bytes) == 0) { // get starting octect
+            if (count($bytes) == 0) {
+                // get starting octect
                 if ($char <= 0x7F) {
                     $unicode[] = $char; // use the character "as is" because is ASCII
                     $numbytes = 1;
-                } elseif (($char >> 0x05) == 0x06) { // 2 bytes character (0x06 = 110 BIN)
+                } elseif (($char >> 0x05) == 0x06) {
+                    // 2 bytes character (0x06 = 110 BIN)
                     $bytes[] = ($char - 0xC0) << 0x06;
                     $numbytes = 2;
-                } elseif (($char >> 0x04) == 0x0E) { // 3 bytes character (0x0E = 1110 BIN)
+                } elseif (($char >> 0x04) == 0x0E) {
+                    // 3 bytes character (0x0E = 1110 BIN)
                     $bytes[] = ($char - 0xE0) << 0x0C;
                     $numbytes = 3;
-                } elseif (($char >> 0x03) == 0x1E) { // 4 bytes character (0x1E = 11110 BIN)
+                } elseif (($char >> 0x03) == 0x1E) {
+                    // 4 bytes character (0x1E = 11110 BIN)
                     $bytes[] = ($char - 0xF0) << 0x12;
                     $numbytes = 4;
                 } else {
@@ -91,7 +95,8 @@ class bidi
                     $bytes = array();
                     $numbytes = 1;
                 }
-            } elseif (($char >> 0x06) == 0x02) { // bytes 2, 3 and 4 must start with 0x02 = 10 BIN
+            } elseif (($char >> 0x06) == 0x02) {
+                // bytes 2, 3 and 4 must start with 0x02 = 10 BIN
                 $bytes[] = $char - 0x80;
                 if (count($bytes) == $numbytes) {
                     // compose UTF-8 bytes to a single unicode value

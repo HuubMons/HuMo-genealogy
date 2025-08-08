@@ -1,3 +1,10 @@
+<?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+?>
+
 <div class="center">
     <br>
     <form method="POST" action="index.php" style="display : inline;">
@@ -49,17 +56,16 @@ year_graphics($statistics['month'], $statistics['year']);
 <div class="container">
     <?php
     // *** Show user agent info (50 most used user agents) ***
-    $datasql = $dbh->query("SELECT stat_ip_address, stat_user_agent, count(humo_stat_date.stat_user_agent) as count_lines
+    $userAgentQry = $dbh->query("SELECT stat_ip_address, stat_user_agent, count(humo_stat_date.stat_user_agent) as count_lines
         FROM humo_stat_date WHERE stat_user_agent LIKE '_%' GROUP BY humo_stat_date.stat_user_agent ORDER BY count_lines desc LIMIT 0,50");
-
-    while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+    while ($userAgent = $userAgentQry->fetch(PDO::FETCH_OBJ)) {
     ?>
         <div class="row mt-2">
             <div class="col-1">
-                <b><?= $dataDb->count_lines; ?></b>
+                <b><?= $userAgent->count_lines; ?></b>
             </div>
             <div class="col-11">
-                <?= $dataDb->stat_user_agent; ?>
+                <?= $userAgent->stat_user_agent; ?>
             </div>
         </div>
     <?php } ?>
@@ -69,17 +75,17 @@ year_graphics($statistics['month'], $statistics['year']);
 <div class="container">
     <?php
     // *** Show user agent info (50 most used user agents) ***
-    $datasql = $dbh->query("SELECT stat_ip_address, count(humo_stat_date.stat_ip_address) as count_lines
+    $visitorIPQry = $dbh->query("SELECT stat_ip_address, count(humo_stat_date.stat_ip_address) as count_lines
         FROM humo_stat_date WHERE stat_ip_address LIKE '_%' GROUP BY humo_stat_date.stat_ip_address ORDER BY count_lines desc LIMIT 0,50");
 
-    while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+    while ($visitorIP = $visitorIPQry->fetch(PDO::FETCH_OBJ)) {
     ?>
         <div class="row mt-2">
             <div class="col-1">
-                <b><?= $dataDb->count_lines; ?></b>
+                <b><?= $visitorIP->count_lines; ?></b>
             </div>
             <div class="col-11">
-                <?= $dataDb->stat_ip_address; ?>
+                <?= $visitorIP->stat_ip_address; ?>
             </div>
         </div>
     <?php } ?>

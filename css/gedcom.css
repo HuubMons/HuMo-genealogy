@@ -31,8 +31,9 @@ body {
     font-weight: bold;
     font-size: 22px;
 }
+
 #top_website_name a {
-    color:#A52A2A;
+    color: #A52A2A;
 }
 
 /* Border pop-up menu */
@@ -43,25 +44,6 @@ div.ltrsddm div {
 div.rtlsddm div {
     border: 1px solid #EED4D4;
 }
-
-/* TODO Check these items */
-/*
-div.rtlsddm #m1x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m2x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m4x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #mft ul {
-    padding-right: 0px;
-}
-*/
 
 /* More space around person pop-up menu */
 /* TODO: remove old popup system */
@@ -182,12 +164,7 @@ hr {
 }
 
 /* tables - tabellen */
-table.humo td,
-table.humo th {
-    border: solid 1px #999999;
-}
 
-table.humo,
 table.ext {
     border-collapse: separate;
     /* needed for rounded corners */
@@ -221,79 +198,6 @@ table.standard {
     border-width: 1px;
 }
 
-/*~~~~~~~~~ prevent double lines (horizontal) ~~~~~~~~~~~~~~~~~~ */
-
-table.humo td {
-    border-top: none;
-    padding: 4px;
-}
-
-table.humo th {
-    padding-left: 5px;
-}
-
-table.humo tr:first-of-type td,
-table.humo tr:first-of-type th {
-    border-top: 1px solid #999999;
-}
-
-/*~~~~~~~~~ prevent double lines (vertical) and set padding ~~~~ */
-
-table.humo td:nth-of-type(1n+2),
-table.humo th:nth-of-type(1n+2) {
-    border-left: 0px;
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-/*~~~~~~~~~ set rounded corners at bottom ~~~~~~~~~~~~~~~~~~~~~~ */
-
-table.humo tr:last-of-type td:first-of-type {
-    border-radius: 0 0 0 3px;
-}
-
-table.humo tr:last-of-type td:last-of-type {
-    border-radius: 0 0 3px 0;
-}
-
-table.humo tr:last-of-type td:only-of-type,
-table.humo tr:only-of-type td:only-of-type {
-    border-radius: 0 0 3px 3px;
-}
-
-/*~~~~~~~~~ set rounded corners at top (whether td or th) ~~~~~~~ */
-
-table.humo tr:first-of-type td:first-of-type,
-table.humo tr:first-of-type th:first-of-type {
-    border-radius: 3px 0 0 0;
-}
-
-table.humo tr:first-of-type td:last-of-type,
-table.humo tr:first-of-type th:last-of-type {
-    border-radius: 0 3px 0 0;
-}
-
-table.humo tr:first-of-type td:only-of-type,
-table.humo tr:first-of-type th:only-of-type {
-    border-radius: 3px 3px 0 0;
-}
-
-/*~~~~ set rounded corners at top and bottom if one line table~~ */
-table.humo tr:only-of-type td:first-of-type {
-    border-radius: 3px 0px 0px 3px;
-}
-
-table.humo tr:only-of-type td:last-of-type {
-    border-radius: 0 3px 3px 0;
-}
-
-table.humo tr:only-of-type td:only-of-type {
-    /* border-radius: 6px 6px 6px 6px; */
-    border-radius: 3px;
-}
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
 .border {
     border: solid 1px #999999;
     border-collapse: collapse;
@@ -301,18 +205,6 @@ table.humo tr:only-of-type td:only-of-type {
 
 .no_border {
     border: 0px;
-}
-
-/* Headline in table */
-.table_headline {
-    background-color: transparent;
-    /* background: linear-gradient(to top, rgba(236, 204, 179, 1) 0%, rgba(250, 241, 235, 1) 91%, rgba(250, 241, 235, 1) 100%); */
-    background: linear-gradient(to top, rgb(209, 184, 143) 0%, rgb(250, 241, 235) 73%);
-}
-
-table.humo th {
-    font-size: 15px;
-    padding: 5px;
 }
 
 /* img { width:100px; } */
@@ -337,8 +229,6 @@ a:visited {
 
 /* family page top text - tekst bij gezinsblad */
 .family_page_toptext {
-    /* font-size: 14px; */
-    font-size: 15px;
     text-align: center;
     font-weight: bold;
 }
@@ -852,6 +742,23 @@ td.extended_woman {
     min-height: 500px;
     padding: 10px;
 }
+
+/* Items for outline report */
+.outline-tree {
+    list-style: none;
+    padding-left: 2em;
+}
+
+.generation {
+    margin-bottom: 0.5em;
+}
+
+.generation-number {
+    font-weight: bold;
+    font-size: 120%;
+}
+
+/* End of items outline report */
 
 footer {
     width: 100%;

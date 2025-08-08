@@ -651,7 +651,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             ]);
         }
 
-        if (isset($_POST['save_cat'])) {  // the user decided to add a new category and/or save changes to names
+        if (isset($_POST['save_cat'])) {
+            // the user decided to add a new category and/or save changes to names
             // save names of existing categories in case some were altered. There is at least always one name (for default category)
 
             //$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix";
@@ -668,7 +669,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             ':prefix' => $resultDb->photocat_prefix,
                             ':language' => $language_tree
                         ]);
-                        if ($check_lang->rowCount() != 0) { // this language already has a name for this category - update it
+                        if ($check_lang->rowCount() != 0) {
+                            // this language already has a name for this category - update it
                             $update_stmt = $dbh->prepare("UPDATE humo_photocat SET photocat_name = :cat_name WHERE photocat_prefix = :cat_prefix AND photocat_language = :cat_language");
                             $update_stmt->execute([
                                 ':cat_name' => $_POST[$resultDb->photocat_prefix],
@@ -688,7 +690,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     } else {
                         // update entered names for all languages 
                         $check_default = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '" . $resultDb->photocat_prefix . "' AND photocat_language='default'");
-                        if ($check_default->rowCount() != 0) {    // there is a default name for this language - update it
+                        if ($check_default->rowCount() != 0) {
+                            // there is a default name for this language - update it
                             $update_stmt = $dbh->prepare("UPDATE humo_photocat SET photocat_name = :cat_name WHERE photocat_prefix = :cat_prefix AND photocat_language = 'default'");
                             $update_stmt->execute([
                                 ':cat_name' => $_POST[$resultDb->photocat_prefix],
@@ -739,7 +742,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                     ':cat_name' => $new_cat_name
                                 ]);
                             }
-                        } else {   // this category prefix already exists!
+                        } else {
+                            // this category prefix already exists!
                             $warning_exist_prefix = __('A category with this prefix already exists!');
                             $warning_prefix = $_POST['new_cat_prefix'];
                         }
@@ -768,8 +772,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     </div>
                 </div>
 
-                <table class="humo" cellspacing="0" style="margin-left:0px; text-align:center; width:80%">
-                    <tr>
+                <table class="table">
+                    <tr class="table-primary">
                         <td style="border-bottom:0px;"></td>
                         <td style="font-size:120%;border-bottom:0px;width:25%" white-space:nowrap;"><b><?= __('Category prefix'); ?></b></td>
                         <td style="font-size:120%;border-bottom:0px;width:60%"><b><?= __('Category name'); ?></b></td>
@@ -826,15 +830,19 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             ':language' => $language_tree
                         ]);
                         $name = $stmt;
-                        if ($name->rowCount()) {  // there is a name for this language
+                        if ($name->rowCount()) {
+                            // there is a name for this language
                             $nameDb = $name->fetch(PDO::FETCH_OBJ);
                             $catname = $nameDb->photocat_name;
-                        } else {  // maybe a default is set
+                        } else {
+                            // maybe a default is set
                             $name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='" . $catDb->photocat_prefix . "' AND photocat_language = 'default'");
-                            if ($name->rowCount()) {  // there is a default name for this category
+                            if ($name->rowCount()) {
+                                // there is a default name for this category
                                 $nameDb = $name->fetch(PDO::FETCH_OBJ);
                                 $catname = $nameDb->photocat_name;
-                            } else {  // no name at all
+                            } else {
+                                // no name at all
                                 $catname = '';
                             }
                         }
@@ -853,27 +861,21 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         <tr>
                             <td>
                                 <div style="width:25px;" class="d-inline-block">
-                                    <?php
-                                    if ($catDb->photocat_prefix != 'none') {
-                                        echo '<a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=' . $catDb->photocat_order . '&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_drop=1"><img src="images/button_drop.png"></a>';
-                                    }
-                                    ?>
+                                    <?php if ($catDb->photocat_prefix != 'none') { ?>
+                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=<?= $catDb->photocat_order; ?>&amp;cat_prefix=<?= $catDb->photocat_prefix; ?>&amp;cat_drop=1"><img src="images/button_drop.png" alt="<?= __('Delete Category'); ?>" title="<?= __('Delete Category'); ?>"></a>
+                                    <?php } ?>
                                 </div>
 
                                 <div style="width:20px;" class="d-inline-block">
-                                    <?php
-                                    if ($catDb->photocat_order != $minorder) {
-                                        echo '<a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_up=' . $catDb->photocat_order . '"><img src="images/arrow_up.gif"></a>';
-                                    }
-                                    ?>
+                                    <?php if ($catDb->photocat_order != $minorder) { ?>
+                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=<?= $catDb->photocat_prefix; ?>&amp;cat_up=<?= $catDb->photocat_order; ?>"><img src="images/arrow_up.gif" alt="<?= __('Move Up'); ?>" title="<?= __('Move Up'); ?>"></a>
+                                    <?php } ?>
                                 </div>
 
                                 <div style="width:20px;" class="d-inline-block">
-                                    <?php
-                                    if ($catDb->photocat_order != $maxorder) {
-                                        echo '<a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_down=' . $catDb->photocat_order . '"><img src="images/arrow_down.gif"></a>';
-                                    }
-                                    ?>
+                                    <?php if ($catDb->photocat_order != $maxorder) { ?>
+                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=<?= $catDb->photocat_prefix; ?>&amp;cat_down=<?= $catDb->photocat_order; ?>"><img src="images/arrow_down.gif" alt="<?= __('Move Down'); ?>" title="<?= __('Move Down'); ?>"></a>
+                                    <?php } ?>
                                 </div>
                             </td>
 
@@ -931,10 +933,13 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         $picture_path_old = $_POST['picture_path'];
         $picture_path_new = $_POST['picture_path'];
         // *** If filename has a category AND a sub category directory exists, use it ***
-        if (substr($_POST['filename'], 0, 2) !== substr($_POST['filename_old'], 0, 2) && ($_POST['filename'][2] == '_' || $_POST['filename_old'][2] == '_')) { // we only have to do this if something changed in a prefix
+        if (substr($_POST['filename'], 0, 2) !== substr($_POST['filename_old'], 0, 2) && ($_POST['filename'][2] == '_' || $_POST['filename_old'][2] == '_')) {
+            // we only have to do this if something changed in a prefix
             if ($_POST['filename'][2] == '_') {
-                if (preg_match('!.+/[a-z][a-z]/$!', $picture_path_new) == 1) {   // original path had subfolder
-                    if (is_dir(substr($picture_path_new, 0, -3) . substr($_POST['filename'], 0, 2))) {   // subtract subfolder and add new subfolder
+                if (preg_match('!.+/[a-z][a-z]/$!', $picture_path_new) == 1) {
+                    // original path had subfolder
+                    if (is_dir(substr($picture_path_new, 0, -3) . substr($_POST['filename'], 0, 2))) {
+                        // subtract subfolder and add new subfolder
                         $picture_path_new = substr($picture_path_new, 0, -3) . substr($_POST['filename'], 0, 2) . "/"; // move from subfolder to other subfolder
                     } else {
                         $picture_path_new = substr($picture_path_new, 0, -3); // move file with prefix that has no folder to main folder
@@ -942,7 +947,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 } elseif (is_dir($_POST['picture_path'] . substr($_POST['filename'], 0, 2))) {
                     $picture_path_new .= substr($_POST['filename'], 0, 2) . '/';   // move from main folder to subfolder
                 }
-            } elseif (preg_match('!.+/[a-z][a-z]/$!', $picture_path_new) == 1) {    // regular file, just check if original path had subfolder
+            } elseif (preg_match('!.+/[a-z][a-z]/$!', $picture_path_new) == 1) {
+                // regular file, just check if original path had subfolder
                 $picture_path_new = substr($picture_path_new, 0, -3);  // move from subfolder to main folder
             }
         }
@@ -986,6 +992,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         // *** Extra safety check if folder exists ***
         //if (file_exists($selected_picture_folder)){
         if (file_exists($array_picture_folder[0])) {
+            // TODO refactor function.
             // *** Get all subdirectories ***
             function get_dirs($prefx, $path)
             {
@@ -1020,7 +1027,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         if (
                             !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
                             empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
-                        ) {    // don't create thumb if one exists
+                        ) {
+                            // don't create thumb if one exists
                             $resizePicture->create_thumbnail($selected_picture_folder, $filename);
                         }
                     }

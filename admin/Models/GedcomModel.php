@@ -93,11 +93,13 @@ class GedcomModel
                     if ($_POST['remove_gedcom_files2'] == 'gedcom_files_all') {
                         $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
                     } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_month') {
-                        if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 30) { // 30 days
+                        if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 30) {
+                            // 30 days
                             $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
                         }
                     } elseif ($_POST['remove_gedcom_files2'] == 'gedcom_files_1_year') {
-                        if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 365) { // 365 days
+                        if (time() - filemtime($trees['gedcom_directory'] . '/' . $filename) >= 60 * 60 * 24 * 365) {
+                            // 365 days
                             $filenames[] = $trees['gedcom_directory'] . '/' . $filename;
                         }
                     }

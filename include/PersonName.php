@@ -25,6 +25,8 @@ class PersonName
     {
         global $db_functions, $user, $screen_mode, $selection, $humo_option;
 
+        $totallyFilterPerson = new TotallyFilterPerson();
+
         $this->db_functions = $db_functions;
         if (isset($personDb->pers_gedcomnumber)) {
             $this->pers_gedcomnumber = $personDb->pers_gedcomnumber;
@@ -120,7 +122,7 @@ class PersonName
 
             // *** Completely filter person ***
             if (
-                $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                $totallyFilterPerson->isTotallyFiltered($user, $personDb)
             ) {
                 $privacy_name = __('Name filtered');
             }
@@ -616,17 +618,18 @@ class PersonName
         return $title_after;
     }
 
-    // *** Aldfaer: title by name ***
-    /*
-    DUTCH Titles FOR DUTCH Genealogical program ALDFAER!
-    Title BEFORE name:
-        Prof., Dr., Dr.h.c., Dr.h.c.mult., Ir., Mr., Drs., Lic., Kand., Bacc., Ing., Bc., em., Ds.
-    Title BETWEEN pers_firstname and pers_lastname:
-        prins, prinses, hertog, hertogin, markies, markiezin, markgraaf, markgravin, graaf,
-        gravin, burggraaf, burggravin, baron, barones, ridder
-    Title AFTER name:
-        All other titles.
-    */
+    /**
+     * Aldfaer: title by name
+     * 
+     * DUTCH Titles FOR DUTCH Genealogical program ALDFAER!
+     * Title BEFORE name:
+     *     Prof., Dr., Dr.h.c., Dr.h.c.mult., Ir., Mr., Drs., Lic., Kand., Bacc., Ing., Bc., em., Ds.
+     * Title BETWEEN pers_firstname and pers_lastname:
+     *     prins, prinses, hertog, hertogin, markies, markiezin, markgraaf, markgravin, graaf,
+     *     gravin, burggraaf, burggravin, baron, barones, ridder
+     * Title AFTER name:
+     *     All other titles.
+     */
     private function get_title_aldfaer(): array
     {
         $title['before'] = '';

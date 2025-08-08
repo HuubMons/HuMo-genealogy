@@ -8,6 +8,11 @@
  * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
  */
 
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $datePlace = new \Genealogy\Include\DatePlace();
 $languageDate = new \Genealogy\Include\LanguageDate;
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
@@ -99,7 +104,7 @@ if ($menu_tab != 'children') {
         <div class="row mb-2">
             <div class="col-md-3"><b><?= __('Add relation'); ?></b></div>
             <div class="col-md-9">
-                <a href="#" onclick="hideShow(<?= $hideshow; ?>);"><img src="images/family_connect.gif"> <?= __('Add new relation to this person'); ?></a>
+                <a href="#" onclick="hideShow(<?= $hideshow; ?>);"><img src="images/family_connect.gif" alt="<?= __('Add relation'); ?>" title="<?= __('Add relation'); ?>"> <?= __('Add new relation to this person'); ?></a>
                 (<?= trim(show_person($person->pers_gedcomnumber, false, false)); ?>)
             </div>
         </div>
@@ -282,7 +287,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     <?php if ($person1->pers_sexe == 'F' && $person2->pers_sexe == 'M') { ?>
                         <div class="alert alert-danger" role="alert">
                             <?= __('Person 1 should be the man. Switch person 1 and person 2.'); ?>
-                            <button type="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17"></button>
+                            <button type="submit" name="parents_switch" title="Switch Persons" class="button"><img src="images/turn_around.gif" width="17" alt="<?= __('Switch Persons'); ?>"></button>
                         </div>
                     <?php } ?>
 
@@ -562,7 +567,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                                     &nbsp;&nbsp;
                                     <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                                         <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu2',100,400)" onmouseout="mclosetime()">
-                                            <img src="../images/help.png" height="16" width="16">
+                                            <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>">
                                         </a>
                                         <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                                             <b><?= __('If birth year of man or woman is empty it will be calculated automatically using age by marriage.'); ?></b>
@@ -581,7 +586,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         </div>
 
                         <div class="row mb-2">
-                            <label for="fam_woman_age" class="col-md-3 col-form-label">
+                            <label for="fam_kind" class="col-md-3 col-form-label">
                                 <?php if (!$fam_kind) { ?>
                                     <span style="background-color:#FFAA80"><?= __('Marriage/ Related'); ?></span>
                                 <?php } else { ?>
@@ -589,7 +594,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                                 <?php } ?>
                             </label>
                             <div class="col-md-3">
-                                <select size="1" name="fam_kind" class="form-select form-select-sm">
+                                <select size="1" id="fam_kind" name="fam_kind" class="form-select form-select-sm">
                                     <option value=""><?= __('Marriage/ Related'); ?></option>
                                     <option value="civil" <?= $fam_kind == 'civil' ? ' selected' : ''; ?>><?= __('Married'); ?></option>
                                     <option value="living together" <?= $fam_kind == 'living together' ? ' selected' : ''; ?>><?= __('Living together'); ?></option>
@@ -879,8 +884,9 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
                         <?php
                         if ($fam_div_text == 'DIVORCE') {
+                            // *** Hide this text, it's a hidden value for a divorce without data ***
                             $fam_div_text = '';
-                        } // *** Hide this text, it's a hidden value for a divorce without data ***
+                        }
                         // *** Check if there are multiple lines in text ***
                         $field_text_selected = $field_text;
                         if ($fam_div_text && preg_match('/\R/', $fam_div_text)) {
@@ -982,13 +988,13 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             // *** Family event editor ***
             ?>
-            <tr class="table_header_large" id="event_family_link">
+            <tr id="event_family_link">
                 <td><?= __('Events'); ?></td>
                 <td colspan="2">
                     <div class="row">
                         <!-- Add relation event -->
                         <div class="col-4">
-                            <select size="1" name="event_kind" class="form-select form-select-sm">
+                            <select size="1" name="event_kind" aria-label="<?= __('Events'); ?>" class="form-select form-select-sm">
                                 <option value="event"><?= __('Event'); ?></option>
                                 <option value="URL"><?= __('URL/ Internet link'); ?></option>
                             </select>
@@ -1055,7 +1061,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             // TODO check for 1970-01-01 00:00:01
             if ($familyDb->fam_new_user_id || $familyDb->fam_new_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Added by'); ?></td>
                     <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
                 </tr>
@@ -1065,7 +1071,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             // *** Relation changed by user ***
             if ($familyDb->fam_changed_user_id || $familyDb->fam_changed_datetime) {
             ?>
-                <tr class="table_header_large">
+                <tr>
                     <td><?= __('Changed by'); ?></td>
                     <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
                 </tr>
@@ -1074,7 +1080,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
             // *** Extra "Save" line ***
             ?>
-            <tr class="table_header_large">
+            <tr>
                 <td></td>
                 <td colspan="2">
                     <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
@@ -1185,7 +1191,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
         if ($familyDb->fam_children) {
     ?>
             <a name="children"></a>
-            <?= __('Use this icon to order children (drag and drop)'); ?>: <img src="images/drag-icon.gif" border="0"><br>
+            <?= __('Use this icon to order children (drag and drop)'); ?>: <img src="images/drag-icon.gif" border="0" alt="<?= __('Drag to change order'); ?>" title="<?= __('Drag to change order'); ?>"><br>
             <?= __('Or automatically order children:'); ?> <a href="index.php?page=<?= $page; ?>&amp;menu_tab=marriage&amp;marriage_nr=<?= $marriage; ?>&amp;order_children=1#children">
                 <?= __('Automatic order children'); ?>
             </a>
@@ -1197,7 +1203,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             //echo __('Children').':<br>';
             $fam_children_array = explode(";", $familyDb->fam_children);
             ?>
-            <ul id="sortable<?= $i; ?>" class="sortable">
+            <ul id="sortable<?= $i; ?>" class="sortable-children sortable-pages list-group ui-sortable" data-family-id="<?= $familyDb->fam_id; ?>">
                 <?php
                 foreach ($fam_children_array as $j => $value) {
                     // *** Create new children variabele, for disconnect child ***
@@ -1210,10 +1216,10 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     $fam_children = substr($fam_children, 0, -1); // *** strip last ; character ***
                 ?>
 
-                    <li>
+                    <li class="list-group-item">
                         <div class="row">
                             <div class="col-md-1">
-                                <span style="cursor:move;" id="<?= $fam_children_array[$j]; ?>" class="handle<?= $i; ?>">
+                                <span style="cursor:move;" id="<?= $fam_children_array[$j]; ?>" class="child-handle" data-child-index="<?= $j; ?>">
                                     <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                                 </span>
                             </div>
@@ -1280,31 +1286,10 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                     </div>
                 </div>
             </form>
-
         </div><br><br>
 
-        <!-- Order children using drag and drop using jquery and jqueryui -->
-        <script>
-            $('#sortable' + '<?= $i; ?>').sortable({
-                handle: '.handle' + '<?= $i; ?>'
-            }).bind('sortupdate', function() {
-                var childstring = "";
-                var chld_arr = document.getElementsByClassName("handle" + "<?= $i; ?>");
-                for (var z = 0; z < chld_arr.length; z++) {
-                    childstring = childstring + chld_arr[z].id + ";";
-                    document.getElementById('chldnum' + chld_arr[z].id).innerHTML = (z + 1);
-                }
-                childstring = childstring.substring(0, childstring.length - 1);
-                $.ajax({
-                    url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?= $familyDb->fam_id; ?>",
-                    success: function(data) {},
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    }
-                });
-            });
-        </script>
+        <!-- Order children using drag and drop (using jquery and jqueryui) -->
+        <script src="../assets/js/order_children.js"></script>
     <?php
     }
 }
@@ -1312,8 +1297,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 // *** New function aug. 2021: Add partner or child ***
 function add_person($person_kind, $pers_sexe)
 {
-    global $page, $editor_cls, $field_place, $field_date;
-    global $familyDb, $marriage, $db_functions, $field_popup;
+    global $page, $editor_cls, $field_place, $field_date, $familyDb, $marriage, $db_functions, $field_popup;
 
     $pers_prefix = '';
     $pers_lastname = '';

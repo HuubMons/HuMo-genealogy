@@ -7,15 +7,15 @@
 namespace Genealogy\Admin\Models;
 
 use Genealogy\Admin\Models\AdminBaseModel;
-use Genealogy\Include\SafeTextDb;
-use Genealogy\Include\ValidateGedcomnumber;
-use PDO;
 use Genealogy\Include\Ancestors;
 use Genealogy\Include\Descendants;
-use Genealogy\Include\ResizePicture;
-use Genealogy\Include\ShowMedia;
 use Genealogy\Include\PersonName;
 use Genealogy\Include\PersonPrivacy;
+use Genealogy\Include\ResizePicture;
+use Genealogy\Include\SafeTextDb;
+use Genealogy\Include\ShowMedia;
+use Genealogy\Include\ValidateGedcomnumber;
+use PDO;
 
 class EditorModel extends AdminBaseModel
 {
@@ -322,7 +322,7 @@ class EditorModel extends AdminBaseModel
         if (isset($_GET['pers_favorite'])) {
             if ($_GET['pers_favorite'] == "1") {
                 $sql = "INSERT INTO humo_settings (setting_variable, setting_value, setting_tree_id)
-                        VALUES (:setting_variable, :setting_value, :setting_tree_id)";
+                    VALUES (:setting_variable, :setting_value, :setting_tree_id)";
                 $stmt = $this->dbh->prepare($sql);
                 $stmt->bindValue(':setting_variable', 'admin_favourite', PDO::PARAM_STR);
                 $stmt->bindValue(':setting_value', $this->pers_gedcomnumber, PDO::PARAM_STR);
@@ -836,7 +836,8 @@ class EditorModel extends AdminBaseModel
                         $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
                         $stmt->execute();
                     }
-                } elseif ($_POST["even_hebname"] != '') {  // new Hebrew name event: INSERT
+                } elseif ($_POST["even_hebname"] != '') {
+                    // new Hebrew name event: INSERT
                     // *** Add event. If event is new, use: $new_event=true. ***
                     // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
                     $this->add_event(false, 'person', $this->pers_gedcomnumber, 'name', $_POST["even_hebname"], '_HEBN', '', '', '');
@@ -847,7 +848,8 @@ class EditorModel extends AdminBaseModel
             if ($this->humo_option['admin_brit'] == "y") {
                 $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom = '_BRTM' AND event_connect_id = '" . $this->pers_gedcomnumber . "' AND event_connect_kind='person'";
                 $result = $this->dbh->query($sql);
-                if ($result->rowCount() != 0) {     // a brit mila already exists for this person: UPDATE 
+                if ($result->rowCount() != 0) {
+                    // a brit mila already exists for this person: UPDATE 
                     if ($_POST["even_brit_date"] == '' && $_POST["even_brit_place"] == '' && $_POST["even_brit_text"] == '') {
                         $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_gedcom = '_BRTM' AND event_connect_kind = 'person' AND event_connect_id = :event_connect_id AND event_kind = 'event'";
                         $stmt = $this->dbh->prepare($sql);
@@ -872,8 +874,8 @@ class EditorModel extends AdminBaseModel
                     }
                 } elseif (
                     isset($_POST["even_brit_date"]) && $_POST["even_brit_date"] != '' || isset($_POST["even_brit_place"]) && $_POST["even_brit_place"] != '' || isset($_POST["even_brit_text"]) && $_POST["even_brit_text"] != ''
-                ) {  // new brit mila event: INSERT
-
+                ) {
+                    // new brit mila event: INSERT
                     // *** Add event. If event is new, use: $new_event=true. ***
                     // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
                     $this->add_event(false, 'person', $this->pers_gedcomnumber, 'event', '', '_BRTM', 'even_brit_date', $_POST["even_brit_place"], $_POST["even_brit_text"]);
@@ -885,7 +887,8 @@ class EditorModel extends AdminBaseModel
                 $barmbasm = $_POST["pers_sexe"] == "F" ? "BASM" : "BARM";
                 $sql = "SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_gedcom = '" . $barmbasm . "' AND event_connect_id = '" . $this->pers_gedcomnumber . "' AND event_connect_kind='person'";
                 $result = $this->dbh->query($sql);
-                if ($result->rowCount() != 0) {     // a bar/bat mitsvah already exists for this person: UPDATE 
+                if ($result->rowCount() != 0) {
+                    // a bar/bat mitsvah already exists for this person: UPDATE 
 
                     if ($_POST["even_barm_date"] == '' && $_POST["even_barm_place"] == '' && $_POST["even_barm_text"] == '') {
                         $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_gedcom = :event_gedcom AND event_connect_kind = 'person' AND event_connect_id = :event_connect_id AND event_kind = 'event'";
@@ -911,8 +914,8 @@ class EditorModel extends AdminBaseModel
                         $stmt->bindValue(':event_connect_id', $this->pers_gedcomnumber, PDO::PARAM_STR);
                         $stmt->execute();
                     }
-                } elseif ($_POST["even_barm_date"] != '' || $_POST["even_barm_place"] != '' || $_POST["even_barm_text"] != '') {  // new BAR/BAT MITSVA event: INSERT
-
+                } elseif ($_POST["even_barm_date"] != '' || $_POST["even_barm_place"] != '' || $_POST["even_barm_text"] != '') {
+                    // new BAR/BAT MITSVA event: INSERT
                     // *** Add event. If event is new, use: $new_event=true. ***
                     // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
                     $this->add_event(false, 'person', $this->pers_gedcomnumber, 'event', '', $barmbasm, 'even_barm_date', $_POST["even_barm_place"], $_POST["even_barm_text"]);
@@ -2450,19 +2453,18 @@ class EditorModel extends AdminBaseModel
             $showMedia = new showMedia();
 
             // *** get path of pictures folder 
-            //$datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $tree_prefix . "'");
-            $datasql = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $this->tree_prefix . "'");
-            $dataDb = $datasql->fetch(PDO::FETCH_OBJ);
-            $tree_pict_path = $dataDb->tree_pict_path;
+            $familytrees = $this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='" . $this->tree_prefix . "'");
+            $familytree = $familytrees->fetch(PDO::FETCH_OBJ);
+            $tree_pict_path = $familytree->tree_pict_path;
             if (substr($tree_pict_path, 0, 1) === '|') {
                 $tree_pict_path = 'media/';
             }
-            //$dir = $path_prefix . $tree_pict_path;
             $dir = '../' . $tree_pict_path;
 
             $safepath = '';
             $selected_subdir = preg_replace("/[\/\\\\]/", '',  $_POST['select_media_folder']); // remove all / and \ 
-            if (array_key_exists(substr($_FILES['photo_upload']['name'], 0, 3), $showMedia->pcat_dirs)) { // old suffix style categories
+            if (array_key_exists(substr($_FILES['photo_upload']['name'], 0, 3), $showMedia->pcat_dirs)) {
+                // old suffix style categories
                 $dir .= substr($_FILES['photo_upload']['name'], 0, 2) . '/';
             } elseif (
                 // new user selected dirs/cats
@@ -3236,7 +3238,6 @@ class EditorModel extends AdminBaseModel
             if (isset($_GET['connect_connect_id']) && $_GET['connect_connect_id']) {
                 $connect_connect_id = $_GET['connect_connect_id'];
             }
-            //if (isset($_POST['connect_connect_id']) AND $_POST['connect_connect_id']) $connect_connect_id=$_POST['connect_connect_id'];
 
             $event_link = '';
             if (isset($_POST['event_person']) || isset($_GET['event_person'])) {
@@ -3245,12 +3246,10 @@ class EditorModel extends AdminBaseModel
             if (isset($_POST['event_family']) || isset($_GET['event_family'])) {
                 $event_link = '&event_family=1';
             }
-            $phpself2 = 'index.php?page=' . $page . '&connect_kind=' . $connect_kind . '&connect_sub_kind=' . $connect_sub_kind . '&connect_connect_id=' . $connect_connect_id;
-            $phpself2 .= $event_link;
-
 ?>
             <div class="alert alert-danger">
-                <form method="post" action="<?= $phpself2; ?>" style="display : inline;">
+                <!-- TODO: check code, $_GET and $_POST are used -->
+                <form method="post" action="index.php?page=<?= $page; ?>&connect_kind=<?= $connect_kind; ?>&connect_sub_kind=<?= $connect_sub_kind; ?>&connect_connect_id=<?= $connect_connect_id . $event_link; ?>" style="display : inline;">
                     <input type="hidden" name="connect_drop" value="<?= $_GET['connect_drop']; ?>">
                     <input type="hidden" name="connect_kind" value="<?= $connect_kind; ?>">
                     <input type="hidden" name="connect_sub_kind" value="<?= $connect_sub_kind; ?>">
@@ -3872,13 +3871,10 @@ class EditorModel extends AdminBaseModel
             $person_result = $this->dbh->query($person_qry);
             $count_latest_changes = $person_result->rowCount();
             while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
-                // *** Cache: only use cache if there are > 5.000 persons in database ***
-                //if (isset($dataDb->tree_persons) AND $dataDb->tree_persons>5000){
                 $person->time = time(); // *** Add linux time to array ***
                 if ($cache) $cache .= '|';
                 $cache .= serialize(json_encode($person));
                 $cache_count++;
-                //}
                 if (!$force_update) {
                     $pers_id[] = $person->pers_id;
                 }

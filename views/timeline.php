@@ -2,6 +2,7 @@
 
 /**
  * Nov. 2023 Huub: rebuild timeline to MVC model.
+ * Jul. 2025 Huub: improved timeline processing. Still under construction.
  */
 
 $personDb = $db_functions->get_person($id);
@@ -26,7 +27,7 @@ if ($data["isborn"] == 0 && $data["isdeath"] == 0 && $data["ismarr"] == 0 && $da
 }
 
 
-// *** OPEN TIMELINE DIRECTORY FOR READING AVAILABLE FILES ***
+// *** Open timeline directory for reading available files ***
 if (is_dir("languages/" . $selected_language . "/timelines")) {
     // *** Open languages/xx/timelines folder ***
     $dh  = opendir("languages/" . $selected_language . "/timelines");
@@ -38,15 +39,15 @@ if (is_dir("languages/" . $selected_language . "/timelines")) {
 $counter = 0;
 while (false !== ($filename = readdir($dh))) {
     if (strtolower(substr($filename, -3)) === "txt") {
-        $counter++;
         if (is_file("languages/" . $selected_language . "/timelines/" . $filename)) {
-            $filenames[$counter - 1][0] = "languages/" . $selected_language . "/timelines/" . $filename;
+            $filenames[$counter][0] = "languages/" . $selected_language . "/timelines/" . $filename;
         } elseif (is_file("languages/default_timelines/" . $filename)) {
-            $filenames[$counter - 1][0] = "languages/default_timelines/" . $filename;
+            $filenames[$counter][0] = "languages/default_timelines/" . $filename;
         } else {
-            $filenames[$counter - 1][0] = ''; // Should not be used normally...
+            $filenames[$counter][0] = ''; // Should not be used normally...
         }
-        $filenames[$counter - 1][1] = substr($filename, 0, -4);
+        $filenames[$counter][1] = substr($filename, 0, -4);
+        $counter++;
     }
 }
 sort($filenames);
@@ -90,17 +91,14 @@ $vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
 $path = $processLinks->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
 ?>
 
-<!-- SHOW MENU -->
+<!-- Timeline menu -->
 <form name="tmlstep" method="post" action="<?= $path; ?>">
     <div class="p-2 me-sm-2 genealogy_search">
         <div class="row">
 
-            <div class="col-md-auto">
-                <!-- Steps of years in display: 1, 5 or 10 -->
-                <?= __('Steps:'); ?>
-            </div>
+            <div class="col-md-auto"><?= __('Steps:'); ?></div>
             <div class="col-md-2">
-                <select size="1" name="step" class="form-select form-select-sm">
+                <select size="1" name="step" aria-label="<?= __('Select step'); ?>" class="form-select form-select-sm">
                     <option value="1" <?php if ($step == 1) echo 'selected'; ?>>1 <?= __('year'); ?></option>
                     <option value="5" <?php if ($step == 5) echo 'selected'; ?>>5 <?= __('year'); ?></option>
                     <option value="10" <?php if ($step == 10) echo 'selected'; ?>>10 <?= __('year'); ?></option>
@@ -109,11 +107,9 @@ $path = $processLinks->get_link($uri_path, 'timeline', $personDb->pers_tree_id, 
 
             <!-- Only show timelines menu if there are more than 1 timeline files -->
             <?php if (count($filenames) > 1) { ?>
-                <div class="col-md-auto">
-                    <?= __('Choose timeline'); ?>:
-                </div>
+                <div class="col-md-auto"><?= __('Choose timeline'); ?>:</div>
                 <div class="col-md-3">
-                    <select size="1" name="tml" class="form-select form-select-sm">
+                    <select size="1" name="tml" aria-label="<?= __('Select timeline'); ?>" class="form-select form-select-sm">
                         <?php
                         $selected_language2 = 'default_timelines';
                         for ($i = 0; $i < count($filenames); $i++) {
@@ -189,35 +185,157 @@ The timeline menu:<br>
 <?php
 if (file_exists($filenames[0][0])) {
     if (file_exists("languages/" . $selected_language . "/timelines/" . $tml . '.txt')) {
-        $handle = fopen("languages/" . $selected_language . "/timelines/" . $tml . '.txt', "r");
+        $filename = "languages/" . $selected_language . "/timelines/" . $tml . '.txt';
     } elseif (file_exists("languages/default_timelines/" . $tml . '.txt')) {
-        $handle = fopen("languages/default_timelines/" . $tml . '.txt', "r");
+        $filename = "languages/default_timelines/" . $tml . '.txt';
     }
+    // *** Read the file into an array of lines ***
+    // TODO: already process lines and use multi array including dates?
+    // TODO: also get first line, could be "rtl" line (see $eventdir).
+    // Example of timeline file content:
+    // 1020 Italian towns, including Rome, Florence and Venice, become city states
+    // 1000-1038 Rule of Stephen, first of Arpad dynasty of Hungary; he accepts Christianity for his people
+    // 1014 Brian Boru, High King of all Ireland, defeats Vikings at Battle of Clontarf, but is killed after victory
+    // 1016-1035 Reign of Canute, Viking king of England, Denmark, Norway and Sweden
+    $lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 }
 
 // if only bapt date available use that
 ($data["isborn"] == 1 && $data["bornyear"] == '') ? $byear = $data["baptyear"] : $byear = $data["bornyear"];
-// if beginyear=1923 and step is 5 this makes it 1915
+// if beginyear = 1923 and step is 5 this makes it 1915
 $beginyear = intval($byear) - ((intval($byear) % intval($step)) + intval($step));
 // if only burial date available use that
 ($data["isdeath"] == 1 && $data["deathyear"] == '') ? $dyear = $data["burryear"] : $dyear = $data["deathyear"];
-// if endyear=1923 and step is 5 this makes it 1929 
-$endyear = intval($dyear) + ((intval($step) - (intval($dyear) % intval($step)))) + intval($step);
 
+// if endyear = 1923 and step is 5 this makes it 1929 
+$endyear = intval($dyear) + ((intval($step) - (intval($dyear) % intval($step)))) + intval($step);
 if ($endyear > date("Y")) {
     $endyear = date("Y");
 }
+
 $flag = 0; // flags a first entry of timeline event in a specific year. is set to 1 when at least one entry has been made
 
 $name = $personName->get_person_name($personDb, $privacy);
 
-// ****** DISPLAY
+// *** Display ***
 if ($data["privacy_filtered"] == true) {
 ?>
     <div class="alert alert-warning">
         <?= __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>'; ?>
     </div>
 <?php } ?>
+
+<?php
+$step == 1 ? $yearwidth = 60 : $yearwidth = 120; // when step is 1 the column can be much shorter
+$eventdir = "ltr"; // default direction of timeline file is ltr (set to rtl later in the script if necessary
+
+// Process all event years into a lookup array.
+$eventLookup = [];
+// Main person events
+if ($data["bornyear"] != '') {
+    $eventLookup[$data["bornyear"]][] = $data["borntext"];
+}
+if ($data["baptyear"] != '') {
+    $eventLookup[$data["baptyear"]][] = $data["bapttext"];
+}
+if ($data["deathyear"] != '') {
+    $eventLookup[$data["deathyear"]][] = $data["deathtext"];
+}
+if ($data["burryear"] != '') {
+    $eventLookup[$data["burryear"]][] = $data["burrtext"];
+}
+if (isset($data["marryear"])) {
+    foreach ($data["marryear"] as $i => $year) {
+        if ($year != '') {
+            $eventLookup[$year][] = $data["marrtext"][$i];
+        }
+    }
+}
+if (isset($data["spousedeathyear"])) {
+    foreach ($data["spousedeathyear"] as $i => $year) {
+        if ($year != '') {
+            $eventLookup[$year][] = $data["spousedeathtext"][$i];
+        }
+    }
+}
+// Children events
+if (isset($data["chbornyear"])) {
+    foreach ($data["chbornyear"] as $i => $years) {
+        if (is_array($years)) {
+            foreach ($years as $m => $year) {
+                if ($year != '') {
+                    $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $data["chborntext"][$i][$m] . "</span>";
+                }
+            }
+        }
+    }
+}
+if (isset($data["chdeathyear"])) {
+    foreach ($data["chdeathyear"] as $i => $years) {
+        if (is_array($years)) {
+            foreach ($years as $m => $year) {
+                if ($year != '') {
+                    $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $data["chdeathtext"][$i][$m] . "</span>";
+                }
+            }
+        }
+    }
+}
+if (isset($data["chmarryear"])) {
+    foreach ($data["chmarryear"] as $i => $years1) {
+        if (is_array($years1)) {
+            foreach ($years1 as $m => $years2) {
+                if (is_array($years2)) {
+                    foreach ($years2 as $p => $year) {
+                        if ($year != '') {
+                            $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $data["chmarrtext"][$i][$m][$p] . "</span>";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+// Grandchildren events
+if (isset($data["grchbornyear"])) {
+    foreach ($data["grchbornyear"] as $i => $years1) {
+        if (is_array($years1)) {
+            foreach ($years1 as $m => $years2) {
+                if (is_array($years2)) {
+                    foreach ($years2 as $p => $years3) {
+                        if (is_array($years3)) {
+                            foreach ($years3 as $g => $year) {
+                                if ($year != '') {
+                                    $eventLookup[$year][] = "<span style='color:blue;font-weight:normal'>" . $data["grchborntext"][$i][$m][$p][$g] . "</span>";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+if (isset($data["grchdeathyear"])) {
+    foreach ($data["grchdeathyear"] as $i => $years1) {
+        if (is_array($years1)) {
+            foreach ($years1 as $m => $years2) {
+                if (is_array($years2)) {
+                    foreach ($years2 as $p => $years3) {
+                        if (is_array($years3)) {
+                            foreach ($years3 as $g => $year) {
+                                if ($year != '') {
+                                    $eventLookup[$year][] = "<span style='color:blue;font-weight:normal'>" . $data["grchdeathtext"][$i][$m][$p][$g] . "</span>";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+?>
 
 <table class="table">
     <thead class="table-primary">
@@ -240,167 +358,28 @@ if ($data["privacy_filtered"] == true) {
         </tr>
     </thead>
 
-    <?php
-    $step == 1 ? $yearwidth = 60 : $yearwidth = 120; // when step is 1 the column can be much shorter
-    $flag_isbuffer = 0;
-    $eventdir = "ltr"; // default direction of timeline file is ltr (set to rtl later in the script if necessary
-    for ($yr = $beginyear; $yr < $endyear; $yr += $step) {  // range of years for lifespan
-        // DISPLAY LIFE EVENTS FOR THIS YEAR/PERIOD (1st column)
-    ?>
+    <?php for ($yr = $beginyear; $yr < $endyear; $yr += $step) { ?>
         <tr>
+            <!-- Display life events for this year or period (1st column) -->
             <td style='width:250px;padding:4px;vertical-align:top;font-weight:bold;color:red'>
                 <?php
                 $br_flag = 0;
                 for ($tempyr = $yr; $tempyr < $yr + $step; $tempyr++) {
-                    if ($data["bornyear"] != '' && $data["bornyear"] == $tempyr) {
-                        if ($br_flag == 1) {
-                            echo "<br>";
-                        }
-                        echo $data["borntext"];
-                        $br_flag = 1;
-                    } elseif ($data["baptyear"] != '' && $data["baptyear"] == $tempyr) {
-                        if ($br_flag == 1) {
-                            echo "<br>";
-                        }
-                        echo $data["bapttext"];
-                        $br_flag = 1;
-                    }
-                    if (isset($data["marryear"])) {
-                        for ($i = 0; $i < count($data["marryear"]); $i++) {
-                            if ($data["marryear"][$i] != '' and $data["marryear"][$i] == $tempyr) {
-                                if ($br_flag == 1) {
-                                    echo "<br>";
-                                }
-                                echo $data["marrtext"][$i];
-                                $br_flag = 1;
+                    if (isset($eventLookup[$tempyr])) {
+                        foreach ($eventLookup[$tempyr] as $eventText) {
+                            if ($br_flag == 1) {
+                                echo "<br>";
                             }
+                            echo $eventText;
+                            $br_flag = 1;
                         }
-                    }
-                    if (isset($data["spousedeathyear"])) {
-                        for ($i = 0; $i < count($data["spousedeathyear"]); $i++) {
-                            if ($data["spousedeathyear"][$i] != '' and $data["spousedeathyear"][$i] == $tempyr) {
-                                if ($br_flag == 1) {
-                                    echo "<br>";
-                                }
-                                echo $data["spousedeathtext"][$i];
-                                $br_flag = 1;
-                            }
-                        }
-                    }
-                    if (isset($data["chbornyear"])) {
-                        for ($i = 0; $i < count($data["marriages"]); $i++) {
-                            if (is_array($data["children"][$i])) {
-                                for ($m = 0; $m < count($data["children"][$i]); $m++) {
-                                    if (isset($data["chbornyear"][$i][$m]) and $data["chbornyear"][$i][$m] == $tempyr) {
-                                        if ($br_flag == 1) {
-                                            echo "<br>";
-                                        }
-                                        echo "<span style='color:green;font-weight:normal'>" . $data["chborntext"][$i][$m] . "</span>";
-                                        $br_flag = 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (isset($data["chdeathyear"])) {
-                        for ($i = 0; $i < count($data["marriages"]); $i++) {
-                            if (is_array($data["children"][$i])) {
-                                for ($m = 0; $m < count($data["children"][$i]); $m++) {
-                                    if (isset($data["chdeathyear"][$i][$m]) and $data["chdeathyear"][$i][$m] == $tempyr) {
-                                        if ($br_flag == 1) {
-                                            echo "<br>";
-                                        }
-                                        echo "<span style='color:green;font-weight:normal'>" . $data["chdeathtext"][$i][$m] . "</span>";
-                                        $br_flag = 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (isset($data["chmarryear"])) {
-                        for ($i = 0; $i < count($data["marriages"]); $i++) {
-                            if (is_array($data["children"][$i])) {
-                                for ($m = 0; $m < count($data["children"][$i]); $m++) {
-                                    if (is_array($data["chmarriages"][$i][$m])) {
-                                        for ($p = 0; $p < count($data["chmarriages"][$i][$m]); $p++) {
-                                            if (isset($data["chmarryear"][$i][$m][$p]) and $data["chmarryear"][$i][$m][$p] != '' and $data["chmarryear"][$i][$m][$p] == $tempyr) {
-                                                if ($br_flag == 1) {
-                                                    echo "<br>";
-                                                }
-                                                echo "<span style='color:green;font-weight:normal'>" . $data["chmarrtext"][$i][$m][$p] . "</span>";
-                                                $br_flag = 1;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (isset($data["grchbornyear"])) {
-                        for ($i = 0; $i < count($data["marriages"]); $i++) {
-                            if (is_array($data["children"][$i])) {
-                                for ($m = 0; $m < count($data["children"][$i]); $m++) {
-                                    if (is_array($data["chmarriages"][$i][$m])) {
-                                        for ($p = 0; $p < count($data["chmarriages"][$i][$m]); $p++) {
-                                            if (is_array($data["grchildren"][$i][$m][$p])) {
-                                                for ($g = 0; $g < count($data["grchildren"][$i][$m][$p]); $g++) {
-                                                    if (isset($data["grchbornyear"][$i][$m][$p][$g]) and $data["grchbornyear"][$i][$m][$p][$g] != '' and $data["grchbornyear"][$i][$m][$p][$g] == $tempyr) {
-                                                        if ($br_flag == 1) {
-                                                            echo "<br>";
-                                                        }
-                                                        echo "<span style='color:blue;font-weight:normal'>" . $data["grchborntext"][$i][$m][$p][$g] . "</span>";
-                                                        $br_flag = 1;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (isset($data["grchdeathyear"])) {
-                        for ($i = 0; $i < count($data["marriages"]); $i++) {
-                            if (is_array($data["children"][$i])) {
-                                for ($m = 0; $m < count($data["children"][$i]); $m++) {
-                                    if (is_array($data["chmarriages"][$i][$m])) {
-                                        for ($p = 0; $p < count($data["chmarriages"][$i][$m]); $p++) {
-                                            if (is_array($data["grchildren"][$i][$m][$p])) {
-                                                for ($g = 0; $g < count($data["grchildren"][$i][$m][$p]); $g++) {
-                                                    if (isset($data["grchdeathyear"][$i][$m][$p][$g]) and $data["grchdeathyear"][$i][$m][$p][$g] != '' and $data["grchdeathyear"][$i][$m][$p][$g] == $tempyr) {
-                                                        if ($br_flag == 1) {
-                                                            echo "<br>";
-                                                        }
-                                                        echo "<span style='color:blue;font-weight:normal'>" . $data["grchdeathtext"][$i][$m][$p][$g] . "</span>";
-                                                        $br_flag = 1;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if ($data["deathyear"] != '' && $data["deathyear"] == $tempyr) {
-                        if ($br_flag == 1) {
-                            echo "<br>";
-                        }
-                        echo $data["deathtext"];
-                        $br_flag = 1;
-                    } elseif ($data["burryear"] != '' && $data["burryear"] == $tempyr) {
-                        if ($br_flag == 1) {
-                            echo "<br>";
-                        }
-                        echo $data["burrtext"];
-                        $br_flag = 1;
                     }
                 }
                 ?>
             </td>
 
             <?php
-            // DISPLAY YEAR/PERIOD (2nd column)
+            // Display year or period (2nd column)
             $period = '';
             if ($step != 1) {
                 $tmp = ($yr + $step) + 1;
@@ -411,39 +390,37 @@ if ($data["privacy_filtered"] == true) {
                 <?= $yr . $period; ?>
             </td>
 
-            <!-- DISPLAY HISTORIC EVENTS FOR THIS YEAR/PERIOD (3rd column) -->
+            <!-- Display historic events for this year or period (3rd column) -->
             <td style='vertical-align:top'>
                 <?php
                 if (file_exists($filenames[0][0])) {
                     $flag_br = 0;
-                    while (!feof($handle) or (feof($handle) and $flag_isbuffer == 1)) {
+                    foreach ($lines as $buffer) {
                         $eventyear = '';
                         $eventdata = '';
-                        if ($flag_isbuffer != 1) {
-                            $buffer = fgets($handle, 4096);
-                            $temp = substr($buffer, 0, 4);
-                        } else {
-                            $flag_isbuffer = 0;
-                        }
+                        $timeline_year = substr($buffer, 0, 4);
 
-                        if ($temp > 0 and $temp < 2200) { // valid year
-                            if ($temp < $yr) { // we didn't get to the lifespan yet - take next line
+                        // Valid year
+                        if ($timeline_year > 0 and $timeline_year < 2200) {
+                            if ($timeline_year < $yr) {
+                                // we didn't get to the lifespan yet - take next line
                                 continue;
-                            } else if ($temp >= $yr + $step) { // event year is beyond the year/period checked, flag existence of buffer and break out of while loop
-                                $flag_isbuffer = 1;
+                            } else if ($timeline_year >= $yr + $step) {
+                                // event year is beyond the year/period checked, flag existence of buffer and break out of while loop
                                 break;
-                            } else if ($temp >= $yr and $temp < $yr + $step) {
-                                if ($flag_br == 0) { // first entry in this year/period. if a "rtl" was read before the first text entry make direction rtl
+                            } else if ($timeline_year >= $yr and $timeline_year < $yr + $step) {
+                                if ($flag_br == 0) {
+                                    // first entry in this year/period. if a "rtl" was read before the first text entry make direction rtl
                                     echo '<div style="direction:' . $eventdir . '">';
                                 }
                                 $thisyear = '';
                                 if ($step != 1) {
-                                    $thisyear = $temp . " ";
+                                    $thisyear = $timeline_year . " ";
                                 }
                                 if (substr($buffer, 4, 1) == '-') {
-                                    $temp2 = substr($buffer, 5, 4);
-                                    if ($temp2 > 0 and $temp2 < 2200) {
-                                        $tillyear = $temp2;
+                                    $timeline_year2 = substr($buffer, 5, 4);
+                                    if ($timeline_year2 > 0 and $timeline_year2 < 2200) {
+                                        $tillyear = $timeline_year2;
                                         $eventdata = "(" . __('till') . " " . $tillyear . ") " . substr($buffer, 10);
                                         if ($flag_br == 1) {
                                             echo "<br>";
@@ -460,8 +437,10 @@ if ($data["privacy_filtered"] == true) {
                                     $flag_br = 1;
                                 }
                             }
-                        } else { // line doesn't start with valid year - take next line
-                            if (substr($temp, 0, 3) == "rtl") {  //the timeline file is a rtl file (the word rtl was on one of the first lines in the file)
+                        } else {
+                            // line doesn't start with valid year - take next line or:
+                            // the timeline file is a rtl file (the word rtl was on one of the first lines in the file)
+                            if (substr($timeline_year, 0, 3) == "rtl") {
                                 $eventdir = "rtl";
                             }
                             continue;
@@ -473,12 +452,7 @@ if ($data["privacy_filtered"] == true) {
                 }
                 ?>
             </td>
+
         </tr>
     <?php } ?>
 </table>
-<br><br>
-
-<?php
-if (file_exists($filenames[0][0])) {
-    fclose($handle);
-}

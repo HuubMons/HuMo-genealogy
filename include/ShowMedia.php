@@ -32,7 +32,7 @@ class ShowMedia
 
     public function show_media($event_connect_kind, $event_connect_id): array
     {
-        global $dbh, $db_functions, $tree_id, $user, $dataDb, $data, $page;
+        global $dbh, $db_functions, $tree_id, $user, $selectedFamilyTree, $data, $page;
         global $screen_mode; // *** RTF Export ***
 
         $datePlace = new DatePlace();
@@ -46,11 +46,12 @@ class ShowMedia
 
         // *** Pictures/ media ***
         if ($user['group_pictures'] == 'j' && isset($data["picture_presentation"]) && $data["picture_presentation"] != 'hide') {
-            if (isset($dataDb->tree_pict_path)) {
-                $tree_pict_path = $dataDb->tree_pict_path;
+            if (isset($selectedFamilyTree->tree_pict_path)) {
+                $tree_pict_path = $selectedFamilyTree->tree_pict_path;
             } else {
                 $tree_pict_path = 'media/';
             }
+            //$tree_pict_path = $selectedFamilyTree->tree_pict_path ?? 'media/';
 
             // *** Use default folder: media ***
             if (substr($tree_pict_path, 0, 1) === '|') {
@@ -309,7 +310,7 @@ class ShowMedia
                 $prefix = '';
             }
 
-            // i modified thumbnail_exist function to serve also only file in swcond mode with its logic becouse i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
+            // I modified thumbnail_exist function to serve also only file in swcond mode with its logic becouse i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
             $mode = 'onlyfile';
             $fileName = $this->thumbnail_exists($folder, $file, $mode);
 
@@ -492,8 +493,8 @@ class ShowMedia
 
         $data2sql = $dbh->prepare("SELECT * FROM humo_trees WHERE tree_id = :tree_id");
         $data2sql->execute([':tree_id' => $tree_id]);
-        $dataDb = $data2sql->fetch(PDO::FETCH_OBJ);
-        $tree_pict_path = $dataDb->tree_pict_path;
+        $FamilyTree = $data2sql->fetch(PDO::FETCH_OBJ);
+        $tree_pict_path = $FamilyTree->tree_pict_path;
         if (substr($tree_pict_path, 0, 1) === '|') {
             $tree_pict_path = 'media/';
         }
@@ -501,7 +502,8 @@ class ShowMedia
         $tree_pict_path = __DIR__ . '/../../' . $tree_pict_path;
         $tmp_pcat_dirs = array();
         $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-        if ($temp->rowCount()) {   // there is a category table
+        if ($temp->rowCount()) {
+            // there is a category table
             $catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
             if ($catg->rowCount()) {
                 while ($catDb = $catg->fetch(PDO::FETCH_OBJ)) {

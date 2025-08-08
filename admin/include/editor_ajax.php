@@ -73,7 +73,9 @@ if (isset($_SESSION['admin_tree_id'])) {
 -->
 
 <?php
-    //if ($pers_name_text) echo ' <img src="images/text.png" height="16">';
+    //if ($pers_name_text){
+    //  echo ' <img src="images/text.png" height="16" alt="' . __('Text') . '">';
+    //}
     /*
     // Establishing connection with server by passing "server_name", "user_id", "password".
     $connection = mysql_connect("localhost", "root", "");

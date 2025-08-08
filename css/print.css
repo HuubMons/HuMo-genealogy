@@ -21,10 +21,6 @@ body {
     display: none;
 }
 
-.table_header {
-    display: none;
-}
-
 A:link {
     text-decoration: none;
     color: black;
@@ -43,10 +39,6 @@ A:active {
 A:hover {
     text-decoration: none;
     color: black;
-}
-
-table.humo {
-    box-shadow: 0px 0px 0px;
 }
 
 table.ancestor_sheet {

@@ -23,7 +23,9 @@ class DatePlace
 
     function date_place($process_date, $process_place, $hebnight = "")
     {
-        global $user, $dirmark1, $humo_option;
+        global $user, $humo_option, $language, $screen_mode;
+
+        $directionMarkers = new DirectionMarkers($language['dir'], $screen_mode);
 
         $self = $_SERVER['QUERY_STRING'] ?? '';
         $hebdate = '';
@@ -45,13 +47,13 @@ class DatePlace
             $text .= $this->languageDate->language_date($process_date) . $hebdate;
             if ($text) {
                 // *** Only add $dirmark if there is data ***
-                $text = $dirmark1 . $text;
+                $text = $directionMarkers->dirmark1 . $text;
             }
         } else {
             $text = $this->languageDate->language_date($process_date) . $hebdate;
             if ($text) {
                 // *** Only add $dirmark if there is data ***
-                $text = $dirmark1 . $text;
+                $text = $directionMarkers->dirmark1 . $text;
             }
 
             if ($user['group_places'] == 'j' and $process_place) {
@@ -289,13 +291,16 @@ class DatePlace
     private function search_day($search_date): int|null
     {
         $day = '';
-        if (strlen($search_date) == 11) {    // 12 sep 2002 or 08 sep 2002
+        if (strlen($search_date) == 11) {
+            // 12 sep 2002 or 08 sep 2002
             $day = substr($search_date, -11, 2);
-            if (substr($day, 0, 1) === "0") {   // 08 aug 2002
+            if (substr($day, 0, 1) === "0") {
+                // 08 aug 2002
                 $day = substr($day, 1, 1);
             }
         }
-        if (strlen($search_date) == 10) {    // 8 aug 2002
+        if (strlen($search_date) == 10) {
+            // 8 aug 2002
             $day = substr($search_date, -10, 1);
         }
         if ($day) {

@@ -22,8 +22,9 @@ $db_functions->check_person($data["main_person"]);
 // box_appearance (large, medium, small, and some other boxes...)
 function ancestor_chart_person($id, $box_appearance)
 {
-    global $db_functions, $user, $data, $dirmark1, $dirmark2;
+    global $db_functions, $user, $data, $selectedFamilyTree, $language, $screen_mode;
 
+    $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"], $screen_mode);
     $personName = new \Genealogy\Include\PersonName();
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personPopup = new \Genealogy\Include\PersonPopup();
@@ -40,7 +41,7 @@ function ancestor_chart_person($id, $box_appearance)
         $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
         $pers_privacy = $personPrivacy->get_privacy($personDb);
         $name = $personName->get_person_name($personDb, $pers_privacy);
-        $name2 = $dirmark2 . $name["name"] . $name["colour_mark"] . $dirmark2;
+        $name2 = $directionMarkers->dirmark2 . $name["name"] . $name["colour_mark"] . $directionMarkers->dirmark2;
 
         // *** Replace pop-up icon by a text box ***
         $replacement_text = '<b>' . $name2 . '</b>';
@@ -55,24 +56,24 @@ function ancestor_chart_person($id, $box_appearance)
             if ($box_appearance != 'small') {
                 //if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
                 if ($personDb->pers_birth_date) {
-                    //$replacement_text.='<br>'.__('*').$dirmark1.' '.$datePlace->date_place($personDb->pers_birth_date,$personDb->pers_birth_place); }
-                    $replacement_text .= '<br>' . __('*') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
+                    //$replacement_text.='<br>'.__('*').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_birth_date,$personDb->pers_birth_place); }
+                    $replacement_text .= '<br>' . __('*') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
                 }
                 //elseif ($personDb->pers_bapt_date OR $personDb->pers_bapt_place){
                 elseif ($personDb->pers_bapt_date) {
-                    //$replacement_text.='<br>'.__('~').$dirmark1.' '.$datePlace->date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place); }
-                    $replacement_text .= '<br>' . __('~') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
+                    //$replacement_text.='<br>'.__('~').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place); }
+                    $replacement_text .= '<br>' . __('~') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
                 }
 
                 //if ($personDb->pers_death_date OR $personDb->pers_death_place){
                 if ($personDb->pers_death_date) {
-                    //$replacement_text.='<br>'.__('&#134;').$dirmark1.' '.$datePlace->date_place($personDb->pers_death_date,$personDb->pers_death_place); }
-                    $replacement_text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
+                    //$replacement_text.='<br>'.__('&#134;').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_death_date,$personDb->pers_death_place); }
+                    $replacement_text .= '<br>' . __('&#134;') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
                 }
                 //elseif ($personDb->pers_buried_date OR $personDb->pers_buried_place){
                 elseif ($personDb->pers_buried_date) {
-                    //$replacement_text.='<br>'.__('[]').$dirmark1.' '.$datePlace->date_place($personDb->pers_buried_date,$personDb->pers_buried_place); }
-                    $replacement_text .= '<br>' . __('[]') . $dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
+                    //$replacement_text.='<br>'.__('[]').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_buried_date,$personDb->pers_buried_place); }
+                    $replacement_text .= '<br>' . __('[]') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
                 }
 
                 if ($box_appearance != 'medium') {
@@ -86,8 +87,8 @@ function ancestor_chart_person($id, $box_appearance)
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
-                        //$replacement_text.='<br>'.__('X').$dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
-                        $replacement_text .= '<br>' . __('X') . $dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
+                        //$replacement_text.='<br>'.__('X').$directionMarkers->dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
+                        $replacement_text .= '<br>' . __('X') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
                     }
                 }
                 if ($box_appearance == 'ancestor_sheet_marr') {
@@ -102,19 +103,20 @@ function ancestor_chart_person($id, $box_appearance)
                     }
                     //if ($marr_date OR $marr_place){
                     if ($marr_date) {
-                        //$replacement_text=__('X').$dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
-                        $replacement_text = __('X') . $dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
+                        //$replacement_text=__('X').$directionMarkers->dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
+                        $replacement_text = __('X') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
                     } else $replacement_text = __('X'); // if no details in the row we don't want the row to collapse
                 }
                 if ($box_appearance == 'ancestor_header') {
                     $replacement_text = '';
                     $replacement_text .= strip_tags($name2);
-                    $replacement_text .= $dirmark2;
+                    $replacement_text .= $directionMarkers->dirmark2;
                 }
             }
         }
 
-        if ($hour_value !== '') { // called from hourglass
+        if ($hour_value !== '') {
+            // called from hourglass
             if ($hour_value === '45') {
                 $replacement_text = $name['name'];
             } elseif ($hour_value === '40') {
@@ -137,7 +139,7 @@ function ancestor_chart_person($id, $box_appearance)
             $marr_place = $data["marr_place"][$id];
         }
         if ($marr_date || $marr_place) {
-            $extra_popup_text .= '<br>' . __('X') . $dirmark1 . ' ' . $datePlace->date_place($marr_date, $marr_place);
+            $extra_popup_text .= '<br>' . __('X') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($marr_date, $marr_place);
         }
 
         // *** Show picture by person ***
@@ -145,9 +147,10 @@ function ancestor_chart_person($id, $box_appearance)
             // *** Show picture ***
             if (!$pers_privacy and $user['group_pictures'] == 'j') {
                 //  *** Path can be changed per family tree ***
-                global $dataDb;
-                $tree_pict_path = $dataDb->tree_pict_path;
-                if (substr($tree_pict_path, 0, 1) == '|') $tree_pict_path = 'media/';
+                $tree_pict_path = $selectedFamilyTree->tree_pict_path;
+                if (substr($tree_pict_path, 0, 1) == '|') {
+                    $tree_pict_path = 'media/';
+                }
                 $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
                 // *** Only show 1st picture ***
                 if (isset($picture_qry[0])) {
@@ -158,7 +161,8 @@ function ancestor_chart_person($id, $box_appearance)
             }
         }
 
-        if ($box_appearance == 'ancestor_sheet_marr' or $box_appearance == 'ancestor_header') { // cause in that case there is no link
+        if ($box_appearance == 'ancestor_sheet_marr' or $box_appearance == 'ancestor_header') {
+            // cause in that case there is no link
             $text .= $replacement_text;
         } else {
             $text .= $personPopup->person_popup_menu($personDb, $pers_privacy, true, $replacement_text, $extra_popup_text);
@@ -199,7 +203,8 @@ function kwname($start, $end, $increment, $fontclass, $colspan, $type)
                 $kwpers = ancestor_chart_person($x, $type);
                 if ($kwpers != '') {
                     echo $kwpers;
-                } else {   // if we don't do this IE7 wil not print borders of cells
+                } else {
+                    // if we don't do this IE7 wil not print borders of cells
                     echo '&nbsp;';
                 }
                 ?>

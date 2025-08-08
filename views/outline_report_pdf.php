@@ -8,8 +8,6 @@
  */
 
 $screen_mode = 'PDF';
-$dirmark1 = '';
-$dirmark2 = '';
 
 // *** Added in nov 2023. TODO check variable, could be added in route.  ***
 $tree_id = 0;
@@ -111,12 +109,12 @@ $generation_number = 0;
 
 function outline($outline_family_id, $outline_main_person, $generation_number, $nr_generations)
 {
-    global $db_functions, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations;
-    global $language, $dirmark1, $dirmark1, $user;
+    global $db_functions, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations, $language, $user;
 
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName_extended = new \Genealogy\Include\PersonNameExtended();
     $languageDate = new \Genealogy\Include\LanguageDate();
+    $totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson();
 
     $family_nr = 1; //*** Process multiple families ***
 
@@ -173,7 +171,8 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
         /**
          * Show parent1 (normally the father)
          */
-        if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, vrouw zonder man
+        if ($familyDb->fam_kind != 'PRO-GEN') {
+            //onecht kind, vrouw zonder man
             if ($family_nr == 1) {
                 // *** Show data of man ***
 
@@ -222,16 +221,16 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
          * Show parent2 (normally the mother)
          */
 
-         // *** Totally hide parent2 if setting is active ***
+        // *** Totally hide parent2 if setting is active ***
         $show_parent2 = true;
         if ($swap_parent1_parent2) {
-            if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $person_manDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+            if ($totallyFilterPerson->isTotallyFiltered($user, $person_manDb)) {
                 $show_privacy_text = true;
                 $family_privacy = true;
                 $show_parent2 = false;
             }
         } else {
-            if ($user["group_pers_hide_totally_act"] == 'j' and strpos(' ' . $person_womanDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+            if ($totallyFilterPerson->isTotallyFiltered($user, $person_womanDb)) {
                 $show_privacy_text = true;
                 $family_privacy = true;
                 $show_parent2 = false;
@@ -279,7 +278,7 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                 $childDb = $db_functions->get_person($child_array[$i]);
 
                 // *** Totally hide children if setting is active ***
-                if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                if ($totallyFilterPerson->isTotallyFiltered($user, $childDb)) {
                     if (!$show_privacy_text) {
                         //echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         //$show_privacy_text = true;
@@ -295,7 +294,8 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
                     $child_family = explode(";", $childDb->pers_fams);
                     $child1stfam = $child_family[0];
                     outline($child1stfam, $childDb->pers_gedcomnumber, $generation_number, $nr_generations);  // recursive
-                } else {    // Child without own family
+                } else {
+                    // Child without own family
                     if ($nr_generations >= $generation_number) {
                         $childgn = $generation_number + 1;
                         $childindent = $dir . 'sub' . $childgn;

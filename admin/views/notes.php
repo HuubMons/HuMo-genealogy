@@ -18,13 +18,13 @@ $tree_result = $dbh->query($tree_sql);
     <div class="p-3 m-2 genealogy_search">
         <div class="row align-items-center">
             <div class="col-auto">
-                <label for="tree" class="col-form-label">
+                <label for="tree_id" class="col-form-label">
                     <?= __('Family tree'); ?>:
                 </label>
             </div>
 
             <div class="col-auto">
-                <select size="1" name="tree_id" class="form-select form-select-sm" onChange="this.form.submit();">
+                <select size="1" id="tree_id" name="tree_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <?php
                     while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
                         $treetext = $showTreeText ->show_tree_text($treeDb->tree_id, $selected_language);
@@ -50,13 +50,13 @@ $tree_result = $dbh->query($tree_sql);
             </div>
 
             <div class="col-auto">
-                <label for="address" class="col-form-label">
+                <label for="limit" class="col-form-label">
                     <?= __('Results'); ?>:
                 </label>
             </div>
             <div class="col-auto">
                 <!-- Number of results in list -->
-                <select size="1" name="limit" class="form-select form-select-sm">
+                <select size="1" id="limit" name="limit" class="form-select form-select-sm">
                     <option value="50">50</option>
                     <option value="100" <?= $notes['limit'] == 100 ? 'selected' : ''; ?>>100</option>
                     <option value="200" <?= $notes['limit'] == 200 ? 'selected' : ''; ?>>200</option>

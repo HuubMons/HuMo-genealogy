@@ -24,7 +24,7 @@ if (isset($_POST['deletedatabase2'])) {
 }
 
 if (isset($_POST['check_new'])) {
-    if ($maps['geo_tree_id'] != '') {
+    if ($maps['geo_tree_id'] != 0) {
         // (only take bapt place if no birth place and only take burial place if no death place)
         $unionstring = "SELECT pers_birth_place FROM humo_persons WHERE pers_tree_id='" . $maps['geo_tree_id'] . "' 
             UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_tree_id='" . $maps['geo_tree_id'] . "' AND pers_birth_place = ''
@@ -68,14 +68,16 @@ if (isset($_POST['check_new'])) {
 
         // TODO check this code.
         foreach ($exist_locs as $value) {
-            if ($value == $personDb->pers_birth_place) {  // this location has already been mapped
+            if ($value == $personDb->pers_birth_place) {
+                // this location has already been mapped
                 continue 2;  //continue the outer while loop 
             }
         }
 
         // TODO check this code.
         foreach ($non_exist_locs as $value) {
-            if ($value == $personDb->pers_birth_place) {  // this location cannot be mapped (not found by google api)
+            if ($value == $personDb->pers_birth_place) {
+                // this location cannot be mapped (not found by google api)
                 $thistree_non_exist[] = $value;
                 continue 2;  //continue the outer while loop
             }
@@ -148,7 +150,7 @@ if (isset($_POST['check_new'])) {
                     <option value="0"><?= __('All family trees'); ?></option>
                     <?php
                     while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-                        $treetext = $showTreeText -> show_tree_text($tree_searchDb->tree_id, $selected_language);
+                        $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
                     ?>
                         <option value="<?= $tree_searchDb->tree_id; ?>" <?= $tree_searchDb->tree_id == $maps['geo_tree_id'] ? 'selected' : ''; ?>>
                             <?= $treetext['name']; ?>
@@ -180,11 +182,11 @@ if (isset($_POST['check_new'])) {
             $map_secs = floor($map_totalsecs) % 60; // *** Use floor to prevent error message in PHP 8.x ***
 
             $one_tree = "";
-            if ($maps['geo_tree_id'] != '') {
+            if ($maps['geo_tree_id'] != 0) {
                 $tree_search_sql2 = "SELECT * FROM humo_trees WHERE tree_id='" . $maps['geo_tree_id'] . "'";
                 $tree_search_result2 = $dbh->query($tree_search_sql2);
                 $tree_searchDb2 = $tree_search_result2->fetch(PDO::FETCH_OBJ);
-                $treetext2 = $showTreeText -> show_tree_text($tree_searchDb2->tree_id, $selected_language);
+                $treetext2 = $showTreeText->show_tree_text($tree_searchDb2->tree_id, $selected_language);
                 $one_tree = "<b>" . __('Family tree') . " " . $treetext2['name'] . ": </b>";
             }
         ?>
@@ -240,7 +242,8 @@ if (isset($_POST['check_new'])) {
         // If the locations are taken from one tree, add the id of this tree to humo_settings "geo_trees", if not already there
         // so we can update correctly with the "REFRESH BIRTH/DEATH STATUS" option further on.
         if ($maps['geo_tree_id'] != '') {
-            if (strpos($humo_option['geo_trees'], "@" . $maps['geo_tree_id'] . ";") === false) { // this tree_id does not appear already
+            if (strpos($humo_option['geo_trees'], "@" . $maps['geo_tree_id'] . ";") === false) {
+                // this tree_id does not appear already
                 $db_functions->update_settings('geo_trees', $humo_option['geo_trees'] . "@" . $maps['geo_tree_id']);
                 // add tree_prefix if not already present
                 $humo_option['geo_trees'] .= "@" . $maps['geo_tree_id'] . ';'; // humo_option is used further on before page is refreshed so we have to update it manually
@@ -375,7 +378,8 @@ if (isset($_POST['check_new'])) {
                     }
 
                     sleep(1);  // crucial, otherwise google kicks you out after a few queries
-                } elseif ($json_output['status'] == "ZERO_RESULTS") { // store locations that were not found by google geocoding
+                } elseif ($json_output['status'] == "ZERO_RESULTS") {
+                    // store locations that were not found by google geocoding
                     $map_notfound_array[] = $json_output['status'] . ' - ' . $value;
                     $map_count_notfound++;
 
@@ -411,7 +415,8 @@ if (isset($_POST['check_new'])) {
                 <?= $map_count_found . ' ' . __('locations were successfully mapped.'); ?>
             </div>
         <?php
-            if ($map_notfound_array) { // some locations were not found by geocoding
+            if ($map_notfound_array) {
+                // some locations were not found by geocoding
                 printf(__('The following %d new locations were passed for query, but were not found. Please check their validity.'), $map_count_notfound);
                 echo '<br>';
                 foreach ($map_notfound_array as $value) {
@@ -420,13 +425,15 @@ if (isset($_POST['check_new'])) {
             }
         } elseif ($flag_stop == 2) {
             // REQUEST DENIED - error message already displayed
-        } else {  // the process was interrupted because of OVER_QUERY_LIMIT. Explain to the admin!
+        } else {
+            // the process was interrupted because of OVER_QUERY_LIMIT. Explain to the admin!
             echo '<p style="color:red;font-size:120%"><b> ' . __('The process was interrupted because Google limits to maximum 2500 queries within one day (counting is reset at midnight PST, which is 08:00 AM GMT)') . '</b></p>';
             printf(__('In total %1$d out of %2$d new locations were passed for query to Google.'), $count_parsed, count($_SESSION['add_locations']));
             echo __('Tomorrow you can run this process again to add the locations that were not passed for geocoding today.');
             echo '<p>' . $map_count_found . ' ' . __('locations were recognized by geocoding and have been saved in the database.') . '</p><br>';
 
-            if ($map_notfound_array) { // some locations were not found by geocoding
+            if ($map_notfound_array) {
+                // some locations were not found by geocoding
                 echo '<b>';
                 printf(__('The following %d new locations were passed for query, but were not found. Please check their validity.'), $map_count_notfound);
                 echo '</b><br>';
@@ -503,7 +510,8 @@ if (isset($_POST['check_new'])) {
                     // page was newly entered -- so show map+marker for first on list
                     $result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
                 }
-                if ($result->rowCount() > 0) { // doesn't exist yet
+                if ($result->rowCount() > 0) {
+                    // doesn't exist yet
                     $row = $result->fetch();
                     $lat = $row['location_lat'];
                     $lng = $row['location_lng'];
@@ -629,7 +637,8 @@ if (isset($_POST['check_new'])) {
                         // "change" location or "yes" button pressed
                         $pos = strpos($_POST['add_name'], $_POST['location_location']);
 
-                        if (!isset($_POST['cancel_change']) && ($pos !== false || isset($_POST['yes_change']))) {  // the name in pulldown appears in the name in the search box
+                        if (!isset($_POST['cancel_change']) && ($pos !== false || isset($_POST['yes_change']))) {
+                            // the name in pulldown appears in the name in the search box
                             $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location_location, location_lat = :location_lat, location_lng = :location_lng WHERE location_id = :location_id");
                             $stmt->bindValue(':location_location', $_POST['location_location'], PDO::PARAM_STR);
                             $stmt->bindValue(':location_lat', floatval($_POST['location_lat']));

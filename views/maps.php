@@ -61,7 +61,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                                 $db_functions->set_tree_id($tree_id);
                                 $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
                             }
-                            $treetext = $showTreeText ->show_tree_text($tree_searchDb->tree_id, $selected_language);
+                            $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
                             $count++;
                     ?>
                             <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>><?= $treetext['name']; ?></option>
@@ -392,7 +392,8 @@ if (isset($_POST['descmap'])) {
     //adjust pulldown for mobiles/tablets
     $select_size = 'size="20"';
     $select_height = '400px';
-    if (isset($_SERVER["HTTP_USER_AGENT"]) or ($_SERVER["HTTP_USER_AGENT"] != "")) { //adjust pulldown for mobiles/tablets
+    if (isset($_SERVER["HTTP_USER_AGENT"]) or ($_SERVER["HTTP_USER_AGENT"] != "")) {
+        //adjust pulldown for mobiles/tablets
         $visitor_user_agent = $_SERVER["HTTP_USER_AGENT"];
         if (
             strstr($visitor_user_agent, "Android") !== false || strstr($visitor_user_agent, "iOS") !== false || strstr($visitor_user_agent, "iPad") !== false || strstr($visitor_user_agent, "iPhone") !== false
@@ -524,7 +525,8 @@ if (isset($_POST['ancmap'])) {
     //adjust pulldown for mobiles/tablets
     $select_size = 'size="20"';
     $select_height = '400px';
-    if (isset($_SERVER["HTTP_USER_AGENT"]) || $_SERVER["HTTP_USER_AGENT"] != "") { //adjust pulldown for mobiles/tablets
+    if (isset($_SERVER["HTTP_USER_AGENT"]) || $_SERVER["HTTP_USER_AGENT"] != "") {
+        //adjust pulldown for mobiles/tablets
         $visitor_user_agent = $_SERVER["HTTP_USER_AGENT"];
         if (
             strstr($visitor_user_agent, "Android") !== false || strstr($visitor_user_agent, "iOS") !== false || strstr($visitor_user_agent, "iPad") !== false || strstr($visitor_user_agent, "iPhone") !== false
@@ -669,7 +671,8 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
         function findPlace() {
             var e = document.getElementById("loc_search");
             var locSearch = e.options[e.selectedIndex].value;
-            if (locSearch != "toptext") { // if not default text "find location on map"
+            if (locSearch != "toptext") {
+                // if not default text "find location on map"
                 var opt_array = new Array();
                 opt_array = locSearch.split(",", 2);
 
@@ -715,7 +718,8 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
         // infoWindow.close();
         var e = document.getElementById("loc_search");
         var locSearch = e.options[e.selectedIndex].value;
-        if(locSearch != "toptext") {   // if not default text "find location on map"
+        if(locSearch != "toptext") { 
+            // if not default text "find location on map"
             var opt_array = new Array();
             opt_array = locSearch.split(",",3);
             map.setZoom(11);
@@ -822,7 +826,8 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
 
         echo 'var namesearch = "";';
         $javastring = '';
-        if ($maps['family_names'] != '') {   // querystring for multiple family names in popup names
+        if ($maps['family_names'] != '') {
+            // querystring for multiple family names in popup names
             foreach ($maps['family_names'] as $value) {
                 $javastring .= $value . "@";
             }
@@ -882,16 +887,19 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
             clearOverlays();
 
             var max = sel; // max is used for the "what" and "until" variables for the url_querystring to namesearch.php
-            if (sel > 2000) { // gslider.js returned present year = last step in slider
+            if (sel > 2000) {
+                // gslider.js returned present year = last step in slider
                 sel = 2000; // sel is used as member in the j array (j[4][sel]). this member is called "2000" for all born till present year
             }
 
             var what;
             var until;
-            if (sel == 3) { // 3 flags the "all locations" button (j[i][3])
+            if (sel == 3) {
+                // 3 flags the "all locations" button (j[i][3])
                 what = "all=1"; // for url query string
                 until = "<?= __('today '); ?>";
-            } else { // years 1550, 1600 .... till today for slider
+            } else {
+                // years 1550, 1600 .... till today for slider
                 what = "max=" + max; // for url querystring
                 until = max; // "until 1850"
             }

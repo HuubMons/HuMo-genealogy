@@ -40,7 +40,8 @@ class ValidateDate
             } else {
                 return null;
             }
-        } else { // we've got a 1741/42 case
+        } else {
+            // we've got a 1741/42 case
             $strlen = strlen($year);
         }
         if (strlen($date) === $strlen) {
@@ -112,14 +113,17 @@ class ValidateDate
 
         if (substr($month, 0, 5) === "month") {
             $day = "";
-            if (strlen($date) > $strlen) {    // 12 sep 2002 or 08 sep 2002 or ABT 8 sep 2002 or ABT sep 2002
+            if (strlen($date) > $strlen) {
+                // 12 sep 2002 or 08 sep 2002 or ABT 8 sep 2002 or ABT sep 2002
                 $day = substr($date, - ($strlen + 1), 2); // gets "12" or "08" or " 8" or "BT" in above examples
-                if (substr($day, 0, 1) === "0") {   // 08 aug 2002
+                if (substr($day, 0, 1) === "0") {
+                    // 08 aug 2002
                     $day = substr($day, 1, 1); // turns $day from "08" into "8"
                 } elseif (substr($day, 0, 1) === " ") {
                     $day_len = 0;
                 }
-            } elseif (strlen($date) == $strlen) {    // 8 aug 2002
+            } elseif (strlen($date) == $strlen) {
+                // 8 aug 2002
                 $day = substr($date, - ($strlen), 1); // gets "8"  maybe just: $day=substr($date, 0, 1);
                 $day_len = 0;
             }
@@ -162,7 +166,8 @@ class ValidateDate
                 }
             }
 
-            if (strlen($date) > $strlen) {  // now search for text in front of day or month: BEF 10 FEB 1935 or BEF FEB 1935
+            if (strlen($date) > $strlen) {
+                // now search for text in front of day or month: BEF 10 FEB 1935 or BEF FEB 1935
                 $text = substr($date, - ($strlen + 4), 3);
                 if ($text == "EST" or $text == "CAL") {
                     if (strlen($date) > ($strlen + 4)) return null; // EST and CAL should not have anything in front of them!

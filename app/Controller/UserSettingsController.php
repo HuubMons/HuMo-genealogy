@@ -13,11 +13,11 @@ class UserSettingsController
         $this->config = $config;
     }
 
-    public function user_settings($dataDb): array
+    public function user_settings(): array
     {
         $user_settingsModel = new UserSettingsModel($this->config);
 
-        $result_message = $user_settingsModel->updateSettings($dataDb);
+        $result_message = $user_settingsModel->updateSettings();
 
         // Reload user settings (needed for 2FA).
         $user_settingsModel->getUser();

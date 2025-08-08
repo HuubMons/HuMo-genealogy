@@ -87,7 +87,7 @@ if (is_numeric($user)) {
 
                     <!-- Show/ hide tree for user -->
                     <td>
-                        <select size="1" name="show_tree_<?= $data3Db->tree_id; ?>">
+                        <select size="1" name="show_tree_<?= $data3Db->tree_id; ?>" aria-label="<?= __('Extra settings'); ?>" class="form-select form-select-sm">
                             <option value="user-group"><?= __('Use user-group setting'); ?></option>
                             <option value="yes" <?= in_array('y' . $data3Db->tree_id, $hide_tree_array) ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
                             <option value="no" <?= in_array($data3Db->tree_id, $hide_tree_array) ? 'selected' : ''; ?>><?= __('No'); ?></option>

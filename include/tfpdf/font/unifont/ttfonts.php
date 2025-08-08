@@ -719,10 +719,15 @@ class TTFontFile
         $rangeShift = $segCount * 2 - $searchRange;
         $length = 16 + (8 * $segCount) + ($numGlyphs + 1);
         $cmap = array(
-            0, 1,        // Index : version, number of encoding subtables
-            3, 1,                // Encoding Subtable : platform (MS=3), encoding (Unicode)
-            0, 12,            // Encoding Subtable : offset (hi,lo)
-            4, $length, 0,         // Format 4 Mapping subtable: format, length, language
+            0,
+            1,        // Index : version, number of encoding subtables
+            3,
+            1,                // Encoding Subtable : platform (MS=3), encoding (Unicode)
+            0,
+            12,            // Encoding Subtable : offset (hi,lo)
+            4,
+            $length,
+            0,         // Format 4 Mapping subtable: format, length, language
             $segCount * 2,
             $searchRange,
             $entrySelector,
@@ -814,7 +819,8 @@ class TTFontFile
                 $up = unpack("n", substr($data, 0, 2));
             }
 
-            if ($glyphLen > 2 && ($up[1] & (1 << 15))) {    // If number of contours <= -1 i.e. composite glyph
+            if ($glyphLen > 2 && ($up[1] & (1 << 15))) {
+                // If number of contours <= -1 i.e. composite glyph
                 $pos_in_glyph = 10;
                 $flags = GF_MORE;
                 $nComponentElements = 0;
@@ -912,7 +918,8 @@ class TTFontFile
             foreach ($this->glyphdata[$originalGlyphIdx]['compGlyphs'] as $glyphIdx) {
                 $this->getGlyphData($glyphIdx, $maxdepth, $depth, $points, $contours);
             }
-        } else if (($this->glyphdata[$originalGlyphIdx]['nContours'] > 0) && $depth > 0) {    // simple
+        } else if (($this->glyphdata[$originalGlyphIdx]['nContours'] > 0) && $depth > 0) {
+            // simple
             $contours += $this->glyphdata[$originalGlyphIdx]['nContours'];
             $points += $this->glyphdata[$originalGlyphIdx]['nPoints'];
         }

@@ -202,9 +202,10 @@ class DescendantModel extends FamilyModel
         // At this moment these globals are needed to process personData and marriage_cls.
         global $data, $parent1Db;
 
-        $personName = new PersonName();
-        $personPrivacy = new PersonPrivacy();
-        $showSourcesFootnotes = new ShowSourcesFootnotes();
+        $personName = new PersonName;
+        $personPrivacy = new PersonPrivacy;
+        $showSourcesFootnotes = new ShowSourcesFootnotes;
+        $totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson;
 
         $family_nr = 1;  // *** process multiple families ***
         $dna = $this->getDNA();
@@ -383,7 +384,8 @@ class DescendantModel extends FamilyModel
                         /**
                          * Parent1 (normally the father)
                          */
-                        if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
+                        if ($familyDb->fam_kind != 'PRO-GEN') {
+                            //onecht kind, woman without man
                             if ($family_nr == 1) {
                                 //*** Show data of parent1 ***
                                 if ($descendant_loop == 0) {
@@ -427,15 +429,16 @@ class DescendantModel extends FamilyModel
                         /**
                          * Marriage
                          */
-                        if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+                        if ($familyDb->fam_kind != 'PRO-GEN') {
+                            // onecht kind, wife without man
                             // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                             if (
-                                $this->user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $this->user["group_pers_hide_totally"]) > 0
+                                $totallyFilterPerson->isTotallyFiltered($this->user, $parent1Db)
                             ) {
                                 $family_privacy = true;
                             }
                             if (
-                                $this->user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $this->user["group_pers_hide_totally"]) > 0
+                                $totallyFilterPerson->isTotallyFiltered($this->user, $parent2Db)
                             ) {
                                 $family_privacy = true;
                             }
@@ -639,16 +642,20 @@ class DescendantModel extends FamilyModel
 
         $chosengenanc = $this->getChosengenanc();
 
-        if ($direction == 0) { // if vertical
-            if ($size == 50) {   // full size box with name and details
+        if ($direction == 0) {
+            // if vertical
+            if ($size == 50) {
+                // full size box with name and details
                 $this->hsize = 150;
                 $this->vsize = 75;
                 $this->vdist = 80;
-            } elseif ($size == 45) { // smaller box with name + popup
+            } elseif ($size == 45) {
+                // smaller box with name + popup
                 $this->hsize = 100;
                 $this->vsize = 45;
                 $this->vdist = 60;
-            } else {             // re-sizable box with no name, only popup
+            } else {
+                // re-sizable box with no name, only popup
                 $this->hsize = $size;
                 $this->vsize = $size;
                 $this->vdist = $size * 2;
@@ -671,23 +678,27 @@ class DescendantModel extends FamilyModel
                 // *** last number seems to be height from previous div. ***
                 $genarray[$i]["posy"] = ($genarray[$i]["gen"] * ($vbasesize)) + 40;
                 $par = $genarray[$i]["par"];
-                if ($genarray[$i]["chd"] == 1) {   // the first child in this fam
-                    if ($genarray[$i]["gen"] == 0) {  // this is base person - put in left most position
+                if ($genarray[$i]["chd"] == 1) {
+                    // the first child in this fam
+                    if ($genarray[$i]["gen"] == 0) {
+                        // this is base person - put in left most position
                         $genarray[$i]["posx"] = 0;
-                    } else { // first child in fam in 2nd or following generation
+                    } else {
+                        // first child in fam in 2nd or following generation
                         $exponent = $genarray[$par]["nrc"] - 1; // exponent is number of additional children
                         //if (isset($genarray[$i]["posx"]))
                         $genarray[$i]["posx"] = $genarray[$par]["posx"] - (($exponent * ($this->hsize + $inbetween)) / 2); // place in proper spot under parent
                         //else
                         //$genarray[$i]["posx"] = (($exponent*($this->hsize+$inbetween))/2); // place in proper spot under parent
 
-                        if ($genarray[$i]["gen"] == $genarray[$i - 1]["gen"]) { // is first child in fam but not in generation
-
+                        if ($genarray[$i]["gen"] == $genarray[$i - 1]["gen"]) {
+                            // is first child in fam but not in generation
                             if ($genarray[$i]["posx"] < $genarray[$i - 1]["posx"] + ($this->hsize + $inbetween * 2)) {
                                 $genarray[$i]["posx"] = $genarray[$i - 1]["posx"] + ($this->hsize + $inbetween * 2);
                                 $movepar = 1;
                             }
-                        } else {  // is first child in generation. If it was set to minus 0, move it to 0 and call "move parents" function move()
+                        } else {
+                            // is first child in generation. If it was set to minus 0, move it to 0 and call "move parents" function move()
                             //if (isset($genarray[$i]["posx"])){
                             if ($genarray[$i]["posx"] < 0) {
                                 $genarray[$i]["posx"] = 0;
@@ -725,12 +736,11 @@ class DescendantModel extends FamilyModel
                         $genarray = $this->move($par, $genarray);
                     }
                 }
-            }    // end for loop
-
-        } // end if vertical
-
-        else {  // horizontal
-            if ($size == 50) {   // full size box with name and details
+            }
+        } else {
+            // horizontal
+            if ($size == 50) {
+                // full size box with name and details
                 $this->hsize = 150;
                 if ($this->hourglass === true) {
                     $this->hsize = 170;
@@ -740,17 +750,20 @@ class DescendantModel extends FamilyModel
                 if ($this->hourglass === true) {
                     $this->hdist = 30;
                 }
-            } elseif ($size == 45) { // smaller box with name + popup
+            } elseif ($size == 45) {
+                // smaller box with name + popup
                 $this->hsize = 100;
                 $this->vsize = 45;
                 $this->hdist = 50;
-            } else {             // re-sizable box with no name, first 4 with initials + popup, rest only popup
+            } else {
+                // re-sizable box with no name, first 4 with initials + popup, rest only popup
                 $this->hsize = $size;
                 $this->vsize = $size;
                 $this->hdist = $size;
                 if ($size < 15) {
+                    // shorter than this doesn't look good
                     $this->hdist = 15;
-                } // shorter than this doesn't look good
+                }
             }
 
             $hbasesize = $this->hsize + $this->hdist;
@@ -842,8 +855,7 @@ class DescendantModel extends FamilyModel
                     }
                 }
             }    // end for loop
-
-        }  // end if horizontal
+        }
 
         return $genarray;
     }
@@ -855,7 +867,8 @@ class DescendantModel extends FamilyModel
     {
         $direction = $this->getDirection();
 
-        if ($direction == 0) { // if vertical
+        if ($direction == 0) {
+            // if vertical
             $par = $genarray[$i]["par"];
             $tempx = $genarray[$i]["posx"];
             //if (isset($genarray[$i]["lst"]))
@@ -911,9 +924,8 @@ class DescendantModel extends FamilyModel
                 //move($par);
                 $genarray = $this->move($par, $genarray);
             }
-        } // end if vertical
-
-        else { // if horizontal
+        } else {
+            // if horizontal
             $par = $genarray[$i]["par"];
             $tempx = $genarray[$i]["posy"];
             $genarray[$i]["posy"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"]) / 2;
@@ -963,7 +975,7 @@ class DescendantModel extends FamilyModel
                 //move($par);
                 $genarray = $this->move($par, $genarray);
             }
-        }  // end if horizontal
+        }
         return $genarray;
     }
 }

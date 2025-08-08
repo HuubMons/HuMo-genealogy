@@ -1,4 +1,9 @@
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $found = false; // if this stays false, displays message that no problems where found
 ?>
 
@@ -203,10 +208,13 @@ $found = false; // if this stays false, displays message that no problems where 
 // checks validity with validate_cls.php and displays invalid dates and their details
 function invalid($date, $gednr, $table)
 {
-    global $dbh, $db_functions, $tree_id, $dirmark2;
+    global $dbh, $db_functions, $tree_id, $language;
+
+    $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
     $validateDate = new \Genealogy\Include\ValidateDate;
     $compare_date = $date;
-    if (strpos($date, '/') > 0) { // check for combined julian/gregorian date entries like 1654/5 and check the first part
+    if (strpos($date, '/') > 0) {
+        // check for combined julian/gregorian date entries like 1654/5 and check the first part
         $temp = explode('/', $date);
         $compare_date = $temp[0];
         // In case this was not a jul/greg case but an invalid date like: 30/Jun/1980 or 12/3/90 
@@ -216,7 +224,8 @@ function invalid($date, $gednr, $table)
         // in the first part and will be listed, while the list will display the original invalid full jul/greg date as we want.
     }
 
-    if ($validateDate->check_date(strtoupper($compare_date)) === null) { // invalid date
+    if ($validateDate->check_date(strtoupper($compare_date)) === null) {
+        // invalid date
         if (substr($table, 0, 3) === "per") {
             $personDb = $db_functions->get_person($gednr);
             $name = $personDb->pers_firstname . ' ' . str_replace("_", " ", $personDb->pers_prefix . ' ' . $personDb->pers_lastname);
@@ -225,7 +234,7 @@ function invalid($date, $gednr, $table)
                 <td><?= $gednr; ?></td>
                 <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $personDb->pers_gedcomnumber; ?>" target='_blank'><?= $name; ?></a></td>
                 <td><?= $table; ?></td>
-                <td><?= $dirmark2 . $date; ?></td>
+                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
             </tr>
         <?php
         }
@@ -252,7 +261,7 @@ function invalid($date, $gednr, $table)
                 <td><?= $gednr; ?></td>
                 <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $name1 . $and . $name2; ?></a></td>
                 <td><?= $table; ?></td>
-                <td><?= $dirmark2 . $date; ?></td>
+                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
             </tr>
             <?php
         }
@@ -274,7 +283,7 @@ function invalid($date, $gednr, $table)
                     <td><?= $persDb->pers_gedcomnumber; ?></td>
                     <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $persDb->pers_gedcomnumber; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by person'); ?>)</td>
                     <td><?= $evDb['event_kind'] . $evdetail; ?></td>
-                    <td><?= $dirmark2 . $date; ?></td>
+                    <td><?= $directionMarkers->dirmark2 . $date; ?></td>
                 </tr>
             <?php
             } elseif ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
@@ -305,7 +314,7 @@ function invalid($date, $gednr, $table)
                     <td><?= $famDb['fam_gedcomnumber']; ?></td>
                     <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by marriage'); ?>)</td>
                     <td><?= $evDb['event_kind'] . $evdetail; ?></td>
-                    <td><?= $dirmark2 . $date; ?></td>
+                    <td><?= $directionMarkers->dirmark2 . $date; ?></td>
                 </tr>
             <?php
             }
@@ -381,7 +390,7 @@ function invalid($date, $gednr, $table)
                 <td><?= $gedcomnr; ?></td>
                 <td><?= $name; ?></td>
                 <td><?= $connectDb['connect_sub_kind']; ?></td>
-                <td><?= $dirmark2 . $date; ?></td>
+                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
             </tr>
             <?php
         }
@@ -409,7 +418,7 @@ function invalid($date, $gednr, $table)
                         (<?= __('search for:'); ?> <?= $addressesDb['address_address']; ?>)
                     </td>
                     <td><?= $table; ?></td>
-                    <td><?= $dirmark2 . $date; ?></td>
+                    <td><?= $directionMarkers->dirmark2 . $date; ?></td>
                 </tr>
             <?php
             }
@@ -424,7 +433,7 @@ function invalid($date, $gednr, $table)
                     (<?= __('search for:'); ?> <?= $sourcesDb->source_title; ?>)
                 </td>
                 <td><?= $table; ?></td>
-                <td><?= $dirmark2 . $date; ?></td>
+                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
             </tr>
         <?php
         }
@@ -438,7 +447,7 @@ function invalid($date, $gednr, $table)
                     (<?= __('search for:'); ?> <?= $reposDb->repo_name; ?>)
                 </td>
                 <td><?= $table; ?></td>
-                <td><?= $dirmark2 . $date; ?></td>
+                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
             </tr>
 <?php
         }

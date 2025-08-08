@@ -29,6 +29,9 @@ class AdminSourceController
         $sources = $editSourceModel->get_sources();
         $editSource = array_merge($editSource, $sources);
 
+        $get_source = $editSourceModel->get_source();
+        $editSource = array_merge($editSource, $get_source);
+
         return $editSource;
     }
 }

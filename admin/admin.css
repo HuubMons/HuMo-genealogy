@@ -50,38 +50,8 @@ a:hover {
     background-color: #e4e4e4;
 }
 
-table.humo {
-    border: solid 1px #999999;
-    border-collapse: collapse;
-    background-color: #F8F8F8;
-
-    /* font-size: 13px; */
-    margin-left: auto;
-    margin-right: auto;
-}
-
 table.standard {
     width: 90%;
-}
-
-table.humo th {
-    /* font-size: 15px; */
-    padding: 4px;
-
-    text-align: left;
-}
-
-table.humo td {
-    border: solid 1px #999999;
-    padding: 4px;
-}
-
-.table_header {
-    background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%);
-}
-
-.table_header_large {
-    background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%);
 }
 
 .table_empty_line {
@@ -121,49 +91,6 @@ div.rtlsddm div {
     border: 1px solid #EED4D4;
 }
 
-/* TODO check these items */
-/*
-div.rtlsddm #m1x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m2x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m3x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m3xa ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m4x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m5x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m6x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #m40x ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #sub_1 ul {
-    padding-right: 0px;
-}
-
-div.rtlsddm #sub_2 ul {
-    padding-right: 0px;
-}
-*/
-
 /* Center buttons, etc. */
 .center {
     text-align: center;
@@ -198,86 +125,6 @@ div.rtlsddm #sub_2 ul {
     margin: 6px 0px 0px 0px;
     border: none;
     font-size: 13px;
-}
-
-/* Order boxes (children) */
-/* TODO it's possible to use bootstrap layout */
-.sortable {
-    width: 750px;
-    user-select: none;
-}
-
-.sortable.grid {
-    overflow: hidden;
-}
-
-.sortable li {
-    list-style: none;
-    border: 1px solid #CCC;
-    background: #F6F6F6;
-    /* color: #1C94C4; */
-    /* margin: 5px;
-	padding: 5px;
-	height: 22px; */
-    margin: 2px;
-    padding: 5px;
-    /* height: 15px; */
-}
-
-.sortable.grid li {
-    line-height: 80px;
-    float: left;
-    width: 80px;
-    height: 80px;
-    text-align: center;
-}
-
-/* Order boxes (media) */
-.sortable_pic {
-    width: auto;
-    user-select: none;
-}
-
-.sortable_pic.grid {
-    overflow: hidden;
-}
-
-.sortable_pic li {
-    /* float: left; */
-    list-style: none;
-    border: 1px solid #CCC;
-    background: #F6F6F6;
-    color: #1C94C4;
-    margin: 5px;
-    padding: 5px;
-    /* height: 80px; */
-    margin-left: 0px;
-    padding-left: 0px;
-}
-
-.sortable_pic.grid li {
-    line-height: 80px;
-    float: left;
-    width: 150px;
-    height: 80px;
-    text-align: center;
-}
-
-#sortable_pic {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: auto;
-}
-
-#sortable_pic li {
-    margin: 0px 0px 0px 0px;
-    padding: 1px;
-    /* float: left; */
-    /* width: 150px; */
-    /* height: 80px; */
-    font-size: 1em;
-    /* text-align: center; */
 }
 
 /* Photobook */

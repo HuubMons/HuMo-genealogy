@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * Gendex export:
+ * person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
+ * Birthdate|Birthplace|Deathdate|Deathplace|
+ */
+
 header('Content-type: text/plain; charset=iso-8859-1');
 
 // *** Autoload composer classes ***
@@ -14,24 +21,21 @@ $userSettings = new \Genealogy\Include\UserSettings();
 $user = $userSettings->get_user_settings($dbh);
 
 $db_functions = new \Genealogy\Include\DbFunctions($dbh);
+$personPrivacy = new \Genealogy\Include\PersonPrivacy;
+$totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson;
 
-$personPrivacy = new \Genealogy\Include\PersonPrivacy();
-
-// *** Database ***
-$datasql = $db_functions->get_trees();
-foreach ($datasql as $dataDb) {
+// *** Family trees ***
+$familytrees = $db_functions->get_trees();
+foreach ($familytrees as $familytree) {
     // *** Check if family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
-    if (!in_array($dataDb->tree_id, $hide_tree_array)) {
-        $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $dataDb->tree_id . "' ORDER BY pers_lastname");
-        //GENDEX:
-        //person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
-        //Birthdate|Birthplace|Deathdate|Deathplace|
+    if (!in_array($familytree->tree_id, $hide_tree_array)) {
+        $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $familytree->tree_id . "' ORDER BY pers_lastname");
         while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
             $privacy = $personPrivacy->get_privacy($personDb);
             // *** Completely filter person ***
             if (
-                $user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                $totallyFilterPerson->isTotallyFiltered($user, $personDb)
             ) {
                 // *** Don't show person ***
             } else {
@@ -47,7 +51,7 @@ foreach ($datasql as $dataDb) {
                     // *** Person without parents or own family ***	
                     $person_url = '&main_person=' . $personDb->pers_gedcomnumber;
                 }
-                $text = $person_url . '&database=' . $dataDb->tree_prefix . '|';
+                $text = $person_url . '&database=' . $familytree->tree_prefix . '|';
 
                 $pers_lastname = mb_strtoupper(str_replace("_", " ", $personDb->pers_prefix), 'iso-8859-1');
                 $pers_lastname .= mb_strtoupper($personDb->pers_lastname, 'iso-8859-1');
@@ -100,4 +104,4 @@ foreach ($datasql as $dataDb) {
             }
         }
     } // *** End of hidden family tree ***
-} // *** End of multiple family trees ***
+}

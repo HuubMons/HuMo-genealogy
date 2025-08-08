@@ -26,25 +26,25 @@ class LogModel extends AdminBaseModel
 
             // *** Change IP address ***
             if (isset($_POST['change_link'])) {
-                $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
-                while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                    if (is_numeric($_POST[$dataDb->setting_id . 'id'])) {
-                        $setting_value = $_POST[$dataDb->setting_id . 'own_code'] . "|" . $_POST[$dataDb->setting_id . 'link_text'];
+                $ipBlacklistQry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
+                while ($ipBlacklist = $ipBlacklistQry->fetch(PDO::FETCH_OBJ)) {
+                    if (is_numeric($_POST[$ipBlacklist->setting_id . 'id'])) {
+                        $setting_value = $_POST[$ipBlacklist->setting_id . 'own_code'] . "|" . $_POST[$ipBlacklist->setting_id . 'link_text'];
                         $sql = "UPDATE humo_settings SET setting_value = :setting_value WHERE setting_id = :setting_id";
                         $stmt = $this->dbh->prepare($sql);
                         $stmt->execute([
                             ':setting_value' => $setting_value,
-                            ':setting_id' => $_POST[$dataDb->setting_id . 'id']
+                            ':setting_id' => $_POST[$ipBlacklist->setting_id . 'id']
                         ]);
                     }
                 }
             }
 
             // *** Remove IP address  ***
-            $datasql = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
-            while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-                if (isset($_POST[$dataDb->setting_id . 'remove_link'])) {
-                    $sql = "DELETE FROM humo_settings WHERE setting_id='" . $dataDb->setting_id . "'";
+            $ipBlacklistQry = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
+            while ($ipBlacklist = $ipBlacklistQry->fetch(PDO::FETCH_OBJ)) {
+                if (isset($_POST[$ipBlacklist->setting_id . 'remove_link'])) {
+                    $sql = "DELETE FROM humo_settings WHERE setting_id='" . $ipBlacklist->setting_id . "'";
                     $this->dbh->query($sql);
                 }
             }

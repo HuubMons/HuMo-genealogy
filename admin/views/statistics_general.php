@@ -1,4 +1,9 @@
 <?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
 $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
 ( SELECT stat_tree_id, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date GROUP BY stat_tree_id )
  as humo_stat_date2 ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id ORDER BY tree_order desc");
@@ -23,7 +28,7 @@ $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
                     if ($familyDb->tree_prefix) {
                         $tree_id = $familyDb->tree_id;
                         // *** Show family tree name ***
-                        $treetext = $showTreeText ->show_tree_text($familyDb->tree_id, $selected_language);
+                        $treetext = $showTreeText->show_tree_text($familyDb->tree_id, $selected_language);
                     ?>
                         <td><?= $treetext['name']; ?></td>
                     <?php } else { ?>
@@ -140,7 +145,7 @@ if ($temp->rowCount()) {
                 ?>
                     <tr>
                         <td>
-                            <img src="<?= $flag; ?>" width="30" height="15">&nbsp;
+                            <img src="<?= $flag; ?>" width="30" height="15" alt="<?= $country_code; ?>" title="<?= $country_code; ?>">&nbsp;
                             <?php
                             if ($country_code != __('Unknown') && $country_code && isset($countries[$country_code][1])) {
                                 echo $countries[$country_code][1] . '&nbsp;(' . $country_code . ')';
@@ -257,7 +262,7 @@ function statistics_line($familyDb)
         <?php
         }
 
-        $treetext = $showTreeText ->show_tree_text($familyDb->tree_id, $selected_language);
+        $treetext = $showTreeText->show_tree_text($familyDb->tree_id, $selected_language);
         ?>
         <td><?= $treetext['name']; ?></td>
 

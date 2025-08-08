@@ -1,10 +1,16 @@
 <?php
+
 /**
  * Family statistics
  */
 
-$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
-$num_rows = $datasql->rowCount();
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+
+$familytrees = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix != 'EMPTY' ORDER BY tree_order");
+$num_rows = $familytrees->rowCount();
 
 // *** Statistics ***
 if (isset($tree_id) && $tree_id) {
@@ -21,18 +27,18 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
 <?php if ($num_rows > 1) { ?>
     <b><?= __('Select family tree'); ?></b><br>
     <?php
-    while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
-        $tree_date = $showTreeDate->show_tree_date($dataDb->tree_date);
-        $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $selected_language);
+    while ($familytree = $familytrees->fetch(PDO::FETCH_OBJ)) {
+        $tree_date = $showTreeDate->show_tree_date($familytree->tree_date);
+        $treetext = $showTreeText->show_tree_text($familytree->tree_id, $selected_language);
 
-        if ($dataDb->tree_id == $tree_id) {
+        if ($familytree->tree_id == $tree_id) {
     ?>
             <b><?= $treetext['name']; ?></b>
         <?php } else { ?>
-            <a href="index.php?page=statistics&amp;&amp;tab=statistics_families&amp;tree_id=<?= $dataDb->tree_id; ?>"><?= $treetext['name']; ?></a>
+            <a href="index.php?page=statistics&amp;&amp;tab=statistics_families&amp;tree_id=<?= $familytree->tree_id; ?>"><?= $treetext['name']; ?></a>
         <?php } ?>
         <font size=-1>
-            (<?= $tree_date; ?>: <?= $dataDb->tree_persons; ?> <?= __('persons'); ?>, <?= $dataDb->tree_families; ?> <?= __('families'); ?>)
+            (<?= $tree_date; ?>: <?= $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= $familytree->tree_families; ?> <?= __('families'); ?>)
         </font><br>
 <?php
     }

@@ -263,10 +263,44 @@ if (isset($_GET['re_install'])) {
                     // Change folder: update/humo-gen_update/HuMo-genealogy-master
                     // Into: update/humo-gen_update
                     if (is_dir('update/humo-gen_update/HuMo-genealogy-master')) {
+                        // Remove temp folder if it exists from a previous failed update
+                        if (is_dir('update/humo-gen_update_temp')) {
+                            // Remove all files and subfolders recursively
+                            $files = new RecursiveIteratorIterator(
+                                new RecursiveDirectoryIterator('update/humo-gen_update_temp', RecursiveDirectoryIterator::SKIP_DOTS),
+                                RecursiveIteratorIterator::CHILD_FIRST
+                            );
+                            foreach ($files as $file) {
+                                if ($file->isDir()) {
+                                    rmdir($file->getRealPath());
+                                } else {
+                                    unlink($file->getRealPath());
+                                }
+                            }
+                            rmdir('update/humo-gen_update_temp');
+                        }
+
                         rename('update/humo-gen_update', 'update/humo-gen_update_temp');
                         rename('update/humo-gen_update_temp/HuMo-genealogy-master', 'update/humo-gen_update');
                         rmdir('update/humo-gen_update_temp');
                     } elseif (is_dir('update/humo-gen_update/HuMo-genealogy-beta_version')) {
+                        // Remove temp folder if it exists from a previous failed update
+                        if (is_dir('update/humo-gen_update_temp')) {
+                            // Remove all files and subfolders recursively
+                            $files = new RecursiveIteratorIterator(
+                                new RecursiveDirectoryIterator('update/humo-gen_update_temp', RecursiveDirectoryIterator::SKIP_DOTS),
+                                RecursiveIteratorIterator::CHILD_FIRST
+                            );
+                            foreach ($files as $file) {
+                                if ($file->isDir()) {
+                                    rmdir($file->getRealPath());
+                                } else {
+                                    unlink($file->getRealPath());
+                                }
+                            }
+                            rmdir('update/humo-gen_update_temp');
+                        }
+
                         // *** Jan. 2025: Beta version from Github ***
                         rename('update/humo-gen_update', 'update/humo-gen_update_temp');
                         rename('update/humo-gen_update_temp/HuMo-genealogy-beta_version', 'update/humo-gen_update');
@@ -302,8 +336,8 @@ if (isset($_GET['re_install'])) {
 
             function listFolderFiles($dir, $exclude, $file_array)
             {
-                global $existing_dir_files, $existing_dir, $existing_files;
-                global $update_dir_files, $update_dir, $update_files;
+                global $existing_dir_files, $existing_dir, $existing_files, $update_dir_files, $update_dir, $update_files;
+
                 $ffs = scandir($dir);
                 foreach ($ffs as $ff) {
                     if (is_array($exclude) and !in_array($ff, $exclude)) {

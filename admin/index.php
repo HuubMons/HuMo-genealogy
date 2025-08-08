@@ -31,42 +31,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Genealogy\Admin\Controller\AdminAddressController;
-use Genealogy\Admin\Controller\AdminCmsPagesController;
-use Genealogy\Admin\Controller\AdminIndexController;
-use Genealogy\Admin\Controller\AdminMapsController;
-use Genealogy\Admin\Controller\AdminRepositoryController;
-use Genealogy\Admin\Controller\AdminSettingsController;
-use Genealogy\Admin\Controller\AdminSourceController;
-use Genealogy\Admin\Controller\AdminSourcesController;
-use Genealogy\Admin\Controller\AdminStatisticsController;
-use Genealogy\Admin\Controller\BackupController;
-use Genealogy\Admin\Controller\EditorController;
-use Genealogy\Admin\Controller\ExtensionsController;
-use Genealogy\Admin\Controller\GedcomExportController;
-use Genealogy\Admin\Controller\GroupsController;
-use Genealogy\Admin\Controller\InstallController;
-use Genealogy\Admin\Controller\LanguageEditorController;
-use Genealogy\Admin\Controller\LogController;
-use Genealogy\Admin\Controller\NotesController;
-use Genealogy\Admin\Controller\RenamePlaceController;
-use Genealogy\Admin\Controller\ThumbsController;
-use Genealogy\Admin\Controller\TreeCheckController;
-use Genealogy\Admin\Controller\TreesController;
-use Genealogy\Admin\Controller\UsersController;
-use Genealogy\Include\Authenticator;
-use Genealogy\Include\DbFunctions;
-use Genealogy\Include\GeneralSettings;
-use Genealogy\Include\GetVisitorIP;
-use Genealogy\Include\MediaPath;
-use Genealogy\Include\ProcessLinks;
-use Genealogy\Include\SafeTextDb;
-use Genealogy\Include\SelectTree;
-use Genealogy\Include\SetTimezone;
-use Genealogy\Include\ShowTreeText;
-use Genealogy\Include\UserSettings;
-use Genealogy\Languages\LanguageCls;
-
 session_start();
 // *** Regenerate session id regularly to prevent session hacking ***
 //session_regenerate_id();
@@ -74,11 +38,11 @@ session_start();
 // DISABLED because the SECURED PAGE message was shown regularly.
 // *** Prevent Session hijacking ***
 //if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $visitor_ip){
-//	// *** Remove login session if IP address is changed ***
-//	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
-//	session_unset();
-//	session_destroy();
-//	die();
+//  // *** Remove login session if IP address is changed ***
+//  echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
+//  session_unset();
+//  session_destroy();
+//  die();
 //}
 
 $page = 'index';
@@ -97,20 +61,20 @@ if (isset($_GET['log_off'])) {
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
 include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
 
-$safeTextDb = new SafeTextDb();
-$showTreeText = new ShowTreeText();
-$selectTree = new SelectTree();
+$safeTextDb = new Genealogy\Include\SafeTextDb();
+$showTreeText = new Genealogy\Include\ShowTreeText();
+$selectTree = new Genealogy\Include\SelectTree();
 
 if (isset($dbh)) {
-    $db_functions = new DbFunctions($dbh);
+    $db_functions = new Genealogy\Include\DbFunctions($dbh);
 }
 
 // *** Added october 2023: generate links to frontsite ***
-$processLinks = new ProcessLinks();
+$processLinks = new Genealogy\Include\ProcessLinks();
 
-$mediaPath = new MediaPath();
+$mediaPath = new Genealogy\Include\MediaPath();
 
-$getVisitorIP = new GetVisitorIP;
+$getVisitorIP = new Genealogy\Include\GetVisitorIP();
 $visitor_ip = $getVisitorIP->visitorIP();
 
 
@@ -130,7 +94,8 @@ $visitor_ip = $getVisitorIP->visitorIP();
 $main_admin['show_menu'] = false;
 $popup = false;
 
-if (isset($database_check) && $database_check) {  // otherwise we can't make $dbh statements
+if (isset($database_check) && $database_check) {
+    // otherwise we can't make $dbh statements
     $check_tables = false;
     try {
         $check_tables = $dbh->query("SELECT * FROM humo_settings");
@@ -139,10 +104,10 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
     }
 
     if ($check_tables) {
-        $generalSettings = new GeneralSettings();
+        $generalSettings = new Genealogy\Include\GeneralSettings();
         $humo_option = $generalSettings->get_humo_option($dbh);
 
-        $userSettings = new UserSettings();
+        $userSettings = new Genealogy\Include\UserSettings();
         $user = $userSettings->get_user_settings($dbh);
 
         // **** Temporary update scripts ***
@@ -170,7 +135,8 @@ if (isset($_POST['install_tables2'])) {
     $main_admin['show_menu'] = true;
 }
 
-if (isset($database_check) && $database_check) {  // otherwise we can't make $dbh statements
+if (isset($database_check) && $database_check) {
+    // otherwise we can't make $dbh statements
     // *** Update to version 4.6, in older version there is a dutch-named table: humo_instellingen ***
     try {
         $check_update = $dbh->query("SELECT * FROM humo_instellingen");
@@ -197,51 +163,24 @@ if (isset($database_check) && $database_check) {  // otherwise we can't make $db
 }
 
 // *** Set timezone ***
-$setTimezone = new SetTimezone;
+$setTimezone = new Genealogy\Include\SetTimezone;
 $setTimezone->timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
 
-// *** Get ordered list of languages ***
-$language_cls = new LanguageCls;
+// *** Language items ***
+$language_cls = new Genealogy\Languages\LanguageCls;
 $language_file = $language_cls->get_languages();
-
-// *** Select admin language ***
-$selected_language = "en";
-// *** Saved default language ***
-if (
-    isset($humo_option['default_language_admin']) && file_exists('../languages/' . $humo_option['default_language_admin'] . '/' . $humo_option['default_language_admin'] . '.mo')
-) {
-    $selected_language = $humo_option['default_language_admin'];
-}
-// *** Safety: extra check if language exists ***
-if (
-    isset($_SESSION["save_language_admin"]) && file_exists('../languages/' . $_SESSION["save_language_admin"] . '/' . $_SESSION["save_language_admin"] . '.mo')
-) {
-    $selected_language = $_SESSION["save_language_admin"];
-}
-
-$language = array();
-include(__DIR__ . '/../languages/' . $selected_language . '/language_data.php');
-
+$selected_language = $language_cls->get_selected_language_admin($humo_option);
+$language = $language_cls->get_language_data($selected_language);
 // *** .mo language text files ***
 include_once(__DIR__ . "/../languages/gettext.php");
 // *** Load ***
-$_SESSION["language_selected"] = $selected_language;
 Load_default_textdomain();
-//Load_textdomain('customer_domain', 'languages/'.$selected_language.'/'.$selected_language.'.mo');
 
-// *** Process LTR and RTL variables ***
-$dirmark1 = "&#x200E;";  //ltr marker
-$dirmark2 = "&#x200F;";  //rtl marker
-$rtlmarker = "ltr";
-
-// *** Switch direction markers if language is RTL ***
-if ($language["dir"] == "rtl") {
-    $dirmark1 = "&#x200F;";  //rtl marker
-    $dirmark2 = "&#x200E;";  //ltr marker
-    $rtlmarker = "rtl";
-}
+// *** TODO: Only in use to get $rtlmarker to show a sddm popup. Will be replaced with bootstrap popup ***
+$directonMarkers = new Genealogy\Include\DirectionMarkers($language["dir"]);
+$rtlmarker = $directonMarkers->rtlmarker;
 
 //TODO remove PHP-MySQL login from admin pages, only login in front main page?
 // *** Process login form ***
@@ -281,7 +220,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             include_once(__DIR__ . "/../include/2fa_authentication/authenticator.php");
 
             if ($_POST['2fa_code'] && is_numeric($_POST['2fa_code'])) {
-                $Authenticator = new Authenticator();
+                $Authenticator = new Genealogy\Include\Authenticator();
                 $checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);        // 2 = 2*30sec clock tolerance
                 if ($checkResult) {
                     $valid_user = true;
@@ -460,7 +399,6 @@ if (file_exists('../media/favicon.ico')) {
     <!-- Don't load all scripts for source editor (improves speed of page) -->
     <?php if ($popup == false) { ?>
         <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
-        <script src="include/popup_merge.js"></script>
     <?php } ?>
 
     <!-- Pop-up menu -->
@@ -532,13 +470,15 @@ if ($popup == false) {
     }
 
     // *** Check for HuMo-genealogy updates ***
-    if (isset($database_check) && $database_check && $group_administrator == 'j') { // Otherwise we can't make $dbh statements
+    if (isset($database_check) && $database_check && $group_administrator == 'j') {
+        // Otherwise we can't make $dbh statements
         include_once(__DIR__ . '/include/index_check_update.php');
     }
 
     // *** Feb. 2020: centralised processing of tree_id and tree_prefix ***
     // *** Selected family tree, using tree_id ***
-    if (isset($database_check) && $database_check) { // Otherwise we can't make $dbh statements
+    if (isset($database_check) && $database_check) {
+        // Otherwise we can't make $dbh statements
         $check_tree_id = '';
         // *** admin_tree_id must be numeric ***
         if (isset($_SESSION['admin_tree_id']) && is_numeric($_SESSION['admin_tree_id'])) {
@@ -743,17 +683,17 @@ if ($popup == false) {
 
         if ($page === 'install') {
             // *** Don't use $admin_config because of new installation ***
-            $controllerObj = new InstallController();
+            $controllerObj = new Genealogy\Admin\Controller\InstallController();
             $install = $controllerObj->detail($dbh);
             include_once(__DIR__ . "/views/install.php");
         } elseif ($page === 'extensions') {
-            $controllerObj = new ExtensionsController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\ExtensionsController($admin_config);
             $extensions = $controllerObj->detail($language_file);
             include_once(__DIR__ . "/views/extensions.php");
         } elseif ($page === 'login') {
             include_once(__DIR__ . "/views/login.php");
         } elseif ($group_administrator == 'j' && $page === 'tree') {
-            $controllerObj = new TreesController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\TreesController($admin_config);
             $trees = $controllerObj->detail($selected_language);
             include_once(__DIR__ . "/views/trees.php");
         } elseif ($page === 'editor') {
@@ -763,27 +703,27 @@ if ($popup == false) {
                 $db_functions->set_tree_id($tree_id);
             }
 
-            $controllerObj = new EditorController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\EditorController($admin_config);
             $editor = $controllerObj->detail($tree_prefix);
             include_once(__DIR__ . "/views/editor.php");
         } elseif ($page === 'editor_sources') {
-            $controllerObj = new AdminSourcesController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminSourcesController($admin_config);
             $editSources = $controllerObj->detail();
             include_once(__DIR__ . "/views/editor_sources.php");
         } elseif ($page === 'edit_sources') {
-            $controllerObj = new AdminSourceController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminSourceController($admin_config);
             $editSource = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_source.php");
         } elseif ($page === 'edit_repositories') {
-            $controllerObj = new AdminRepositoryController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminRepositoryController($admin_config);
             $editRepository = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_repository.php");
         } elseif ($page === 'edit_addresses') {
-            $controllerObj = new AdminAddressController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminAddressController($admin_config);
             $editAddress = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_address.php");
         } elseif ($page === 'edit_places') {
-            $controllerObj = new RenamePlaceController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\RenamePlaceController($admin_config);
             $place = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_rename_place.php");
         } elseif ($page === 'editor_place_select') {
@@ -795,67 +735,67 @@ if ($popup == false) {
         } elseif ($page === 'editor_media_select') {
             include_once(__DIR__ . "/views/editor_media_select.php");
         } elseif ($page === 'check') {
-            $controllerObj = new TreeCheckController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\TreeCheckController($admin_config);
             $tree_check = $controllerObj->detail();
             include_once(__DIR__ . "/views/tree_check.php");
         } elseif ($page === 'latest_changes') {
             include_once(__DIR__ . "/views/tree_check.php");
         } elseif ($page === 'settings') {
-            $controllerObj = new AdminSettingsController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminSettingsController($admin_config);
             $settings = $controllerObj->detail();
             include_once(__DIR__ . "/views/settings_admin.php");
         } elseif ($page === 'thumbs') {
-            $controllerObj = new ThumbsController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\ThumbsController($admin_config);
             $thumbs = $controllerObj->detail();
             include_once(__DIR__ . "/views/thumbs.php");
             //} elseif ($page == 'favorites') {
             //    include_once(__DIR__ . "/include/favorites.php");
         } elseif ($page === 'users') {
-            $controllerObj = new UsersController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\UsersController($admin_config);
             $edit_users = $controllerObj->detail();
             include_once(__DIR__ . "/views/users.php");
         } elseif ($page === 'editor_user_settings') {
             include_once(__DIR__ . "/views/editor_user_settings.php");
         } elseif ($page === 'groups') {
-            $controllerObj = new GroupsController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\GroupsController($admin_config);
             $groups = $controllerObj->detail();
             include_once(__DIR__ . "/views/groups.php");
         } elseif ($page === 'edit_cms_pages') {
-            $controllerObj = new AdminCmsPagesController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminCmsPagesController($admin_config);
             $edit_cms_pages = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_cms_pages.php");
         } elseif ($page === 'backup') {
-            $controllerObj = new BackupController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\BackupController($admin_config);
             $backup = $controllerObj->detail();
             include_once(__DIR__ . "/views/backup.php");
         } elseif ($page === 'notes') {
-            $controllerObj = new NotesController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\NotesController($admin_config);
             $notes = $controllerObj->detail();
             include_once(__DIR__ . "/views/notes.php");
         } elseif ($page === 'cal_date') {
-            //$controllerObj = new CalculateDateController($admin_config);
+            //$controllerObj = new Genealogy\Admin\Controller\CalculateDateController($admin_config);
             //$cal_date = $controllerObj->detail();
             include_once(__DIR__ . "/views/cal_date.php");
         } elseif ($page === 'export') {
-            $controllerObj = new GedcomExportController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\GedcomExportController($admin_config);
             $export = $controllerObj->detail();
             include_once(__DIR__ . "/views/gedcom_export.php");
         } elseif ($page === 'log') {
-            $controllerObj = new LogController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\LogController($admin_config);
             $log = $controllerObj->detail();
             include_once(__DIR__ . "/views/log.php");
         } elseif ($page === 'language_editor') {
-            $controllerObj = new LanguageEditorController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\LanguageEditorController($admin_config);
             $language_editor = $controllerObj->detail();
             include_once(__DIR__ . "/views/language_editor.php");
         } elseif ($page === 'prefix_editor') {
             include_once(__DIR__ . "/views/prefix_editor.php");
         } elseif ($page === 'maps') {
-            $controllerObj = new AdminMapsController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminMapsController($admin_config);
             $maps = $controllerObj->detail();
             include_once(__DIR__ . "/views/maps.php");
         } elseif ($page === 'statistics') {
-            $controllerObj = new AdminStatisticsController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\AdminStatisticsController($admin_config);
             $statistics = $controllerObj->detail();
             include_once(__DIR__ . "/views/admin_statistics.php");
         } elseif ($page === 'install_update') {
@@ -863,7 +803,7 @@ if ($popup == false) {
         } elseif ($page === 'update') {
             include_once(__DIR__ . "/include/update.php");
         } elseif ($page === 'gedcom_import2') {
-            $controllerObj = new TreesController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\TreesController($admin_config);
             $trees = $controllerObj->detail($selected_language);
             include_once(__DIR__ . "/views/gedcom_import2.php");
         }
@@ -884,7 +824,7 @@ if ($popup == false) {
                 $db_functions->set_tree_id($tree_id);
             }
 
-            $controllerObj = new EditorController($admin_config);
+            $controllerObj = new Genealogy\Admin\Controller\EditorController($admin_config);
             $editor = $controllerObj->detail($tree_prefix);
             include_once(__DIR__ . "/views/editor.php");
         }
@@ -898,7 +838,7 @@ if ($popup == false) {
             if (!isset($dbh)) {
                 $dbh = '';
             }
-            $controllerObj = new AdminIndexController();
+            $controllerObj = new Genealogy\Admin\Controller\AdminIndexController();
             $index = $controllerObj->detail($database_check, $dbh);
             include_once(__DIR__ . "/views/index_admin.php");
         }

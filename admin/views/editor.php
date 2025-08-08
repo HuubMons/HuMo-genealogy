@@ -42,8 +42,6 @@ if (!defined('ADMIN_PAGE')) {
 </script>
 
 <?php
-$path_prefix = '../';
-
 $editor_cls = new \Genealogy\Include\Editor_cls; // TODO editor_cls is also added in controller.
 $EditorEvent = new \Genealogy\Include\EditorEvent($dbh);
 
@@ -62,7 +60,7 @@ $person_found = true;
                     <input type="hidden" name="page" value="<?= $page; ?>">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group input-group-sm">
-                        <label for="favourites" class="input-group-text"><img src="../images/favorite_blue.png">&nbsp;</label>
+                        <label for="favourites" class="input-group-text"><img src="../images/favorite_blue.png" alt="<?= __('Favourites'); ?>" title="<?= __('Favourites'); ?>">&nbsp;</label>
 
                         <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                             <option value=""><?= __('Favourites list'); ?></option>
@@ -515,7 +513,8 @@ if ($check_person) {
                 // *** Link to last GEDCOM number in database ***
                 // *** VERY SLOW in large family trees (so it's disabled for large family trees) ***
                 $nr_persons = $db_functions->count_persons($tree_id);
-                if ($nr_persons < 100000) { // *** Disabled for large family trees ***
+                if ($nr_persons < 100000) {
+                    // *** Disabled for large family trees ***
                     $last_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                         ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
                     $last_result = $dbh->query($last_qry);
@@ -685,7 +684,7 @@ if ($check_person) {
             &nbsp;&nbsp;&nbsp;&nbsp;
             <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
                 <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',10,150)" onmouseout="mclosetime()">
-                    <img src="../images/help.png" height="16" width="16"> <?= __('Help'); ?>
+                    <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>"> <?= __('Help'); ?>
                 </a>
                 <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                     <?= __('Examples of date entries:'); ?><br>

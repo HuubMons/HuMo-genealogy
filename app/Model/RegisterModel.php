@@ -40,7 +40,7 @@ class RegisterModel extends BaseModel
         return $register["register_allowed"];
     }
 
-    public function register_user($dataDb, $register): array
+    public function register_user($register): array
     {
         $register["show_form"] = true;
         $register["error"] = '';
@@ -82,9 +82,10 @@ class RegisterModel extends BaseModel
 
                 // *** Mail new registered user to the administrator ***
                 $register_address = '';
-                if (isset($dataDb->tree_email)) {
-                    $register_address = $dataDb->tree_email;
-                } // Used in older HuMo-genealogy versions. Backwards compatible...
+                if (isset($this->selectedFamilyTree->tree_email)) {
+                    // Used in older HuMo-genealogy versions. Backwards compatible...
+                    $register_address = $this->selectedFamilyTree->tree_email;
+                }
                 if ($this->humo_option["general_email"]) {
                     $register_address = $this->humo_option["general_email"];
                 }

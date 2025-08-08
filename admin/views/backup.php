@@ -3,11 +3,12 @@
 // *** feb. 2023: Rebuild this script by Huub. Multiple backups will be stored on server. ***
 // *** Jan. 2025: added tab's ***
 
-//@ini_set('memory_limit', '-1');
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+
+//@ini_set('memory_limit', '-1');
 
 // *** Get list of backup files ***
 $dh  = opendir('./backup_files');
@@ -153,7 +154,7 @@ if (isset($backup_files)) {
                         <form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup&amp;menu_tab=restore_backup" method="post">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <select size="1" style="margin-top:4px;" name="select_file" class="form-select form-select-sm">
+                                    <select size="1" style="margin-top:4px;" name="select_file" aria-label="<?= __('Restore database from backup file'); ?>" class="form-select form-select-sm">
                                         <?php for ($i = 0; $i < $backup_count; $i++) { ?>
                                             <option value="<?= $backup_files[$i]; ?>"><?= $backup_files[$i]; ?>
                                                 <?= $i == 0 ? ' * ' . __('Most recent backup!') . ' *' : ''; ?>
@@ -180,8 +181,6 @@ if (isset($backup_files)) {
 // *** Backup function ***
 function backup_tables($dbh)
 {
-    global $backup_files;
-
     // ob_start(); // Doesn't work. Progress bar will not be shown.
 
     $tables = array();

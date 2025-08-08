@@ -86,12 +86,13 @@ $par_child_text->setIndentRight(0.5);
 // *** Generate title of RTF file ***
 $persDb = $db_functions->get_person($data["main_person"]);
 
-$personPrivacy = new \Genealogy\Include\PersonPrivacy();
-$personName = new \Genealogy\Include\PersonName();
-$personName_extended = new \Genealogy\Include\PersonNameExtended();
-$personData = new \Genealogy\Include\PersonData();
-$processText = new \Genealogy\Include\ProcessText();
-$showSources = new \Genealogy\Include\ShowSources();
+$personPrivacy = new \Genealogy\Include\PersonPrivacy;
+$personName = new \Genealogy\Include\PersonName;
+$personName_extended = new \Genealogy\Include\PersonNameExtended;
+$personData = new \Genealogy\Include\PersonData;
+$processText = new \Genealogy\Include\ProcessText;
+$showSources = new \Genealogy\Include\ShowSources;
+$totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson;
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
@@ -246,7 +247,7 @@ else {
 
                 $sect->addEmptyParagraph($fontSmall, $parBlack);
 
-                $treetext = $showTreeText ->show_tree_text($dataDb->tree_id, $selected_language);
+                $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selected_language);
                 $rtf_text = $treetext['family_top'];
                 if ($rtf_text != '') {
                     $sect->writeText($rtf_text, $arial14, $parHead);
@@ -257,7 +258,8 @@ else {
                 /**
                  * Show parent1 (normally the father)
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    //onecht kind, woman without man
                     if ($family_nr == 1) {
                         //*** Show data of parent1 ***
                         $rtf_text = ' <b>' . $data["number_roman"][$descendant_loop + 1] . '-' . $data["number_generation"][$descendant_loop2 + 1] . '</b> ';
@@ -298,16 +300,17 @@ else {
                 /**
                  * Show marriage
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    // onecht kind, wife without man
 
                     // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $totallyFilterPerson->isTotallyFiltered($user, $parent1Db)
                     ) {
                         $family_privacy = true;
                     }
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $totallyFilterPerson->isTotallyFiltered($user, $parent2Db)
                     ) {
                         $family_privacy = true;
                     }
@@ -404,9 +407,8 @@ else {
                         $childDb = $db_functions->get_person($child_array[$i]);
                         $child_privacy = $personPrivacy->get_privacy($childDb);
 
-                        // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
-                        if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                        if ($totallyFilterPerson->isTotallyFiltered($user, $childDb)) {
                             $show_privacy_text = true;
                             continue;
                         }
@@ -504,7 +506,8 @@ function show_rtf_media($media_kind, $gedcomnumber)
             if (strpos($key, "path") !== FALSE) {
                 $type = substr($result[1][$key], -3);
                 if ($type === "jpg" || $type === "png") {
-                    if ($goodpics == FALSE) { //found 1st pic - make table
+                    if ($goodpics == FALSE) {
+                        //found 1st pic - make table
                         $table = $sect->addTable();
                         $table->addRow(0.1);
                         $table->addColumnsList(array(5, 5, 5));

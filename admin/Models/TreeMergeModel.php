@@ -20,6 +20,22 @@ class TreeMergeModel
         return $relatives_merge;
     }
 
+    public function show_settings_page(){
+        $showSettings = false;
+        if (isset($_POST['settings']) || isset($_POST['reset'])) {
+            $showSettings = true;
+        }
+        return $showSettings;
+    }
+
+    public function show_manual_page(){
+        $showManual = false;
+        if (isset($_POST['manual']) || isset($_POST["search1"]) || isset($_POST["search2"]) || isset($_POST["switch"])){
+            $showManual = true;
+        }
+        return $showManual;
+    }
+
     public function update_settings($db_functions)
     {
         if (isset($_POST['settings']) || isset($_POST['reset'])) {

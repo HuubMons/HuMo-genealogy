@@ -14,7 +14,6 @@ class ShowSourcePDF
     function source_display_pdf($sourcenum)
     {
         global $db_functions, $user, $pdf;
-        global $bot_visit; // *** Don't remove. Is needed for source.php ***
 
         $languageDate = new LanguageDate();
 

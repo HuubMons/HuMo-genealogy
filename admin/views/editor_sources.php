@@ -45,7 +45,11 @@ $nr_sources = count($connect_sql);
         <input type="hidden" name="event_family" value="1">
     <?php } ?>
 
-    <ul id="sortable<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>" class="sortable" style="padding-left:0px;">
+    <ul
+        id="sortable<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>"
+        class="sortable"
+        data-handle="handle<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>"
+        style="padding-left:0px;">
 
         <?php foreach ($connect_sql as $connectDb) { ?>
             <li>
@@ -96,7 +100,9 @@ $nr_sources = count($connect_sql);
                         $text .= ' [' . __('Source') . ']';
                     }
                     echo ' <span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
-                    //if ($check_text) $return_text .= ' <img src="images/text.png" height="16" alt="' . __('text') . '">';
+                    //if ($check_text){
+                    //  $return_text .= ' <img src="images/text.png" height="16" alt="' . __('Text') . '">';
+                    //}
                     echo '</span>';
                 }
 
@@ -216,7 +222,7 @@ $nr_sources = count($connect_sql);
                         <div class="row mb-2">
                             <label for="source_quality" class="col-sm-3 col-form-label"><?= __('Quality'); ?></label>
                             <div class="col-md-7">
-                                <select size="1" name="connect_quality[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
+                                <select size="1" id="source_quality" name="connect_quality[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
                                     <option value=""><?= ucfirst(__('quality: default')); ?></option>
                                     <option value="0" <?php if ($connectDb->connect_quality == '0') echo ' selected'; ?>><?= ucfirst(__('quality: unreliable evidence or estimated data')); ?></option>
                                     <option value="1" <?php if ($connectDb->connect_quality == '1') echo ' selected'; ?>><?= ucfirst(__('quality: questionable reliability of evidence')); ?></option>
@@ -293,7 +299,7 @@ $nr_sources = count($connect_sql);
 
                     <div class="row mb-2">
                         <div class="col-md-10">
-                            <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
+                            <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" aria-label="<?= __('Select existing source'); ?>" class="form-select form-select-sm">
                                 <option value=""><?= __('Select existing source'); ?>:</option>
                                 <?php while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) { ?>
                                     <option value="<?= $sourceDb->source_gedcomnr; ?>">
@@ -321,8 +327,8 @@ $nr_sources = count($connect_sql);
                     <!-- Add new source -->
                     <br><?= __('Or:'); ?>
                     <a href="index.php?page=<?= $page; ?>&amp;source_add2=1&amp;connect_id=<?= $connectDb->connect_id; ?>
-                            &amp;connect_order=<?= $connectDb->connect_order; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>
-                            &amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>
+                        &amp;connect_order=<?= $connectDb->connect_order; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>
+                        &amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>
                     <?php
                     if ($event_person) {
                         echo '&amp;event_person=1';
@@ -387,26 +393,6 @@ $nr_sources = count($connect_sql);
 
 <!-- Script for ordering sources -->
 <?php if (count($connect_sql) > 0) { ?>
-    <script>
-        $('#sortable<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>').sortable({
-            handle: '.handle<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>'
-        }).bind('sortupdate', function() {
-            var childstring = "";
-            var chld_arr = document.getElementsByClassName(" handle<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>");
-            for (var z = 0; z < chld_arr.length; z++) {
-                childstring = childstring + chld_arr[z].id + ";";
-                //document.getElementById('chldnum' + chld_arr[z].id).innerHTML=(z + 1);
-            }
-            childstring = childstring.substring(0, childstring.length - 1);
-            $.ajax({
-                url: "include/drag.php?drag_kind=sources&sourcestring=" + childstring,
-                success: function(data) {},
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
-                }
-            });
-        });
-    </script>
+    <script src="../assets/js/order_sources.js"></script>
 <?php
 }

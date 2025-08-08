@@ -1,3 +1,10 @@
+<?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+?>
+
 <h3><?= __('Latest changes'); ?></h3>
 
 <form method="POST" action="index.php">

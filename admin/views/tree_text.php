@@ -1,3 +1,10 @@
+<?php
+// *** Safety line ***
+if (!defined('ADMIN_PAGE')) {
+    exit;
+}
+?>
+
 <form method="post" action="index.php" style="display : inline;">
     <input type="hidden" name="page" value="tree">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">

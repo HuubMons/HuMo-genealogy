@@ -10,7 +10,9 @@ class PersonPrivacy
 {
     public function get_privacy($personDb): bool
     {
-        global $user, $dataDb;
+        global $user, $selectedFamilyTree;
+
+        $totallyFilterPerson = new TotallyFilterPerson();
 
         $privacy = false;  // *** Standard: show all persons ***
 
@@ -147,16 +149,16 @@ class PersonPrivacy
         }
 
         // *** Completely filter a person, if option "completely filter a person" is activated ***
-        if ($personDb && ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $personDb->pers_own_code, $user["group_pers_hide_totally"]) > 0)) {
+        if ($personDb && $totallyFilterPerson->isTotallyFiltered($user, $personDb)) {
             $privacy = true;
         }
 
         // *** Privacy filter for whole family tree ***
-        if (isset($dataDb->tree_privacy)) {
-            if ($dataDb->tree_privacy == 'filter_persons') {
+        if (isset($selectedFamilyTree->tree_privacy)) {
+            if ($selectedFamilyTree->tree_privacy == 'filter_persons') {
                 $privacy = true;
             }
-            if ($dataDb->tree_privacy == 'show_persons') {
+            if ($selectedFamilyTree->tree_privacy == 'show_persons') {
                 $privacy = false;
             }
         }

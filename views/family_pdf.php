@@ -13,11 +13,10 @@ $datePlace = new \Genealogy\Include\DatePlace();
 $processText = new \Genealogy\Include\ProcessText();
 $showSources = new \Genealogy\Include\ShowSources();
 $showSourcePDF = new \Genealogy\Include\ShowSourcePDF();
+$totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson();
 
 $screen_mode = 'PDF';
 $pdf_source = array();  // is set in show_sources with sourcenr as key to be used in source appendix
-$dirmark1 = '';
-$dirmark2 = '';
 
 // TODO create seperate controller script.
 $get_family = new \Genealogy\App\Model\FamilyModel($config);
@@ -93,7 +92,7 @@ if (!$data["family_id"]) {
     $pdf->SetFont($pdf->pdf_font, 'BI', 12);
     $pdf->SetFillColor(196, 242, 107);
 
-    $treetext = $showTreeText ->show_tree_text($tree_id, $selected_language);
+    $treetext = $showTreeText->show_tree_text($tree_id, $selected_language);
     $family_top = $treetext['family_top'];
     if ($family_top != '') {
         $pdf->Cell(0, 6, $pdf->pdf_convert($family_top), 0, 1, 'L', true);
@@ -266,7 +265,7 @@ else {
                 $pdf->SetFont($pdf->pdf_font, 'BI', 12);
                 $pdf->SetFillColor(186, 244, 193);
 
-                $treetext = $showTreeText ->show_tree_text($tree_id, $selected_language);
+                $treetext = $showTreeText->show_tree_text($tree_id, $selected_language);
                 $family_top = $treetext['family_top'];
                 if ($family_top != '') {
                     $pdf->SetLeftMargin(10);
@@ -280,7 +279,8 @@ else {
                 /**
                  * Parent1 (normally the father)
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    //onecht kind, woman without man
                     if ($family_nr == 1) {
                         //*** Show data of parent1 ***
                         if ($data["descendant_report"] == true) {
@@ -304,7 +304,7 @@ else {
 
                         // *** Person data ***
                         $pdf->SetLeftMargin($indent);
-                        $pdfdetails = $personData->person_data($parent1Db, $parent1_privacy,"parent1", $id);
+                        $pdfdetails = $personData->person_data($parent1Db, $parent1_privacy, "parent1", $id);
                         if ($pdfdetails) {
                             $pdf->pdfdisplay($pdfdetails, "parent1");
                         }
@@ -337,16 +337,17 @@ else {
                 /**
                  * Show marriage
                  */
-                if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+                if ($familyDb->fam_kind != 'PRO-GEN') {
+                    // onecht kind, wife without man
 
                     // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $totallyFilterPerson->isTotallyFiltered($user, $parent1Db)
                     ) {
                         $family_privacy = true;
                     }
                     if (
-                        $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                        $totallyFilterPerson->isTotallyFiltered($user, $parent2Db)
                     ) {
                         $family_privacy = true;
                     }
@@ -383,7 +384,7 @@ else {
                 }
                 $indent = $pdf->GetX();
 
-                $pdfdetails = $personData->person_data($parent2Db, $parent2_privacy,"parent2", $id);
+                $pdfdetails = $personData->person_data($parent2Db, $parent2_privacy, "parent2", $id);
                 $pdf->SetLeftMargin($indent);
                 if ($pdfdetails) {
                     $pdf->pdfdisplay($pdfdetails, "parent2");
@@ -460,9 +461,8 @@ else {
                         $childDb = $db_functions->get_person($child_array[$i]);
                         $child_privacy = $personPrivacy->get_privacy($childDb);
 
-                        // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                         // *** Person must be totally hidden ***
-                        if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                        if ($totallyFilterPerson->isTotallyFiltered($user, $childDb)) {
                             $show_privacy_text = true;
                             continue;
                         }

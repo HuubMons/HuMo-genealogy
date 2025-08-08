@@ -6,6 +6,7 @@
 
 $screen_mode = 'STAR';
 
+$directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"], $screen_mode);
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $personPopup = new \Genealogy\Include\PersonPopup();
@@ -96,7 +97,8 @@ if ($hourglass === false) {
         <?= $data["descendant_header"]; ?>
 
         <?php
-        if ($data["direction"] == 0) {  //vertical
+        if ($data["direction"] == 0) {
+            //vertical
             $latter = count($genarray) - 1;
             $the_height = $genarray[$latter]["posy"] + 130;
         } else {
@@ -112,7 +114,7 @@ if ($hourglass === false) {
         //echo '<style type="text/css">';
         //echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
         //echo '</style>';
-        //echo '<div id="doublescroll" class="wrapper" style="direction:' . $rtlmarker . ';">';
+        //echo '<div id="doublescroll" class="wrapper" style="direction:' . $directionMarkers->rtlmarker . ';">';
         ?>
 
         <div class="p-2 me-sm-2 genealogy_search" id="menubox">
@@ -235,7 +237,7 @@ if ($hourglass === false) {
             }
         </style>
     <?php
-    echo '<div id="doublescroll" class="wrapper" style="direction:' . $rtlmarker . ';">';
+    echo '<div id="doublescroll" class="wrapper" style="direction:' . $directionMarkers->rtlmarker . ';">';
 
     // Test bootstrap container
     //echo '<div class="container-xxl overflow-auto">';
@@ -270,7 +272,8 @@ for ($w = 0; $w < count($genarray); $w++) {
     $bkgr = "";
     if (($data["dna"] == "ydnamark" || $data["dna"] == "mtdnamark" || $data["dna"] == "ydna" || $data["dna"] == "mtdna") && $genarray[$w]["dna"] == 1) {
         $bkgr = "border:3px solid #999999;background-color:" . $backgr_col . ";";
-        if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"] == $data["base_person_gednr"]) {  // base person
+        if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"] == $data["base_person_gednr"]) {
+            // base person
             $bkgr = "border:3px solid red;background-color:" . $backgr_col . ";";
         }
     } else {
@@ -291,8 +294,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                         // *** Show picture ***
                         if (!$man_privacy && $user['group_pictures'] == 'j') {
                             //  *** Path can be changed per family tree ***
-                            global $dataDb;
-                            $tree_pict_path = $dataDb->tree_pict_path;
+                            $tree_pict_path = $selectedFamilyTree->tree_pict_path;
                             if (substr($tree_pict_path, 0, 1) === '|') {
                                 $tree_pict_path = 'media/';
                             }
@@ -313,32 +315,33 @@ for ($w = 0; $w < count($genarray); $w++) {
                         } else {
                             //if ($man->pers_birth_date OR $man->pers_birth_place){
                             if ($man->pers_birth_date) {
-                                //$replacement_text.= '<br>'.__('*').$dirmark1.' '.$datePlace->date_place($man->pers_birth_date,$man->pers_birth_place);
-                                $replacement_text .= '<br>' . __('*') . $dirmark1 . ' ' . $datePlace->date_place($man->pers_birth_date, '');
+                                //$replacement_text.= '<br>'.__('*').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_birth_date,$man->pers_birth_place);
+                                $replacement_text .= '<br>' . __('*') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_birth_date, '');
                             }
                             //elseif ($man->pers_bapt_date OR $man->pers_bapt_place){
                             elseif ($man->pers_bapt_date) {
-                                //$replacement_text.= '<br>'.__('~').$dirmark1.' '.$datePlace->date_place($man->pers_bapt_date,$man->pers_bapt_place);
-                                $replacement_text .= '<br>' . __('~') . $dirmark1 . ' ' . $datePlace->date_place($man->pers_bapt_date, '');
+                                //$replacement_text.= '<br>'.__('~').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_bapt_date,$man->pers_bapt_place);
+                                $replacement_text .= '<br>' . __('~') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_bapt_date, '');
                             }
 
                             //if ($man->pers_death_date OR $man->pers_death_place){
                             if ($man->pers_death_date) {
-                                //$replacement_text.= '<br>'.__('&#134;').$dirmark1.' '.$datePlace->date_place($man->pers_death_date,$man->pers_death_place);
-                                $replacement_text .= '<br>' . __('&#134;') . $dirmark1 . ' ' . $datePlace->date_place($man->pers_death_date, '');
+                                //$replacement_text.= '<br>'.__('&#134;').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_death_date,$man->pers_death_place);
+                                $replacement_text .= '<br>' . __('&#134;') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_death_date, '');
                             }
                             //elseif ($man->pers_buried_date OR $man->pers_buried_place){
                             elseif ($man->pers_buried_date) {
-                                //$replacement_text.= '<br>'.__('[]').$dirmark1.' '.$datePlace->date_place($man->pers_buried_date,$man->pers_buried_place);
-                                $replacement_text .= '<br>' . __('[]') . $dirmark1 . ' ' . $datePlace->date_place($man->pers_buried_date, '');
+                                //$replacement_text.= '<br>'.__('[]').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_buried_date,$man->pers_buried_place);
+                                $replacement_text .= '<br>' . __('[]') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_buried_date, '');
                             }
 
-                            if ($genarray[$w]["non"] == 0) { // otherwise for an unmarried child it would give the parents' marriage!
+                            if ($genarray[$w]["non"] == 0) {
+                                // otherwise for an unmarried child it would give the parents' marriage!
                                 $ownfam = $db_functions->get_family($genarray[$w]["fams"]);
                                 //if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
                                 // *** Don't check for date. Otherwise living together persons are missing ***
                                 //if ($ownfam->fam_marr_date){
-                                //$replacement_text.= '<br>'.__('X').$dirmark1.' '.$datePlace->date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
+                                //$replacement_text.= '<br>'.__('X').$directionMarkers->dirmark1.' '.$datePlace->date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
 
                                 if ($ownfam->fam_marr_date || $ownfam->fam_marr_place) {
                                     $replacement_text .= '<br>' . __('X');
@@ -348,7 +351,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                                 }
 
                                 if ($ownfam->fam_marr_date) {
-                                    $replacement_text .= $dirmark1 . ' ' . $datePlace->date_place($ownfam->fam_marr_date, '') . ' ';
+                                    $replacement_text .= $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($ownfam->fam_marr_date, '') . ' ';
                                 }
 
                                 // *** Jan. 2022: Show spouse ***
@@ -414,11 +417,11 @@ for ($w = 0; $w < count($genarray); $w++) {
                         $extra_popup_text .= __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
                     } else {
                         if ($woman->pers_birth_date || $woman->pers_birth_place) {
-                            $extra_popup_text .= __('born') . $dirmark1 . ' ' . $datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
+                            $extra_popup_text .= __('born') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
                         }
 
                         if ($woman->pers_death_date || $woman->pers_death_place) {
-                            $extra_popup_text .= __('died ') . $dirmark1 . ' ' . $datePlace->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
+                            $extra_popup_text .= __('died ') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
                         }
                     }
                 } else {
@@ -438,8 +441,8 @@ for ($w = 0; $w < count($genarray); $w++) {
         </div>
 
     <?php
-    if ($data["direction"] == 0) { // if vertical
-        // draw dotted line from first marriage to following marriages
+    if ($data["direction"] == 0) {
+        // if vertical draw dotted line from first marriage to following marriages
         if (isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] == 1) {
             $startx = $genarray[$w - 1]["posx"] + $data["hsize"] + 2;
             $starty = $genarray[$w - 1]["posy"] + ($data["vsize"] / 2);
@@ -464,9 +467,11 @@ for ($w = 0; $w < count($genarray); $w++) {
         // draw horizontal line from 1st child in fam to last child in fam
         if ($genarray[$w]["gen"] != 0) {
             $parent = $genarray[$w]["par"];
-            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) { // last child in fam
+            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) {
+                // last child in fam
                 $z = $w;
-                while ($genarray[$z]["2nd"] == 1) { //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
+                while ($genarray[$z]["2nd"] == 1) {
+                    //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
                     $z--;
                 }
                 $startx = $genarray[$parent]["fst"] + ($data["hsize"] / 2);
@@ -477,8 +482,8 @@ for ($w = 0; $w < count($genarray); $w++) {
         }
     } // end if vertical
 
-    else { // if horizontal
-        // draw dotted line from first marriage to following marriages
+    else {
+        // if horizontal draw dotted line from first marriage to following marriages
         if (isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] == 1) {
             $starty = $genarray[$w - 1]["posy"] + $data["vsize"] + 2;
             $startx = $genarray[$w - 1]["posx"] + ($data["hsize"] / 2);
@@ -503,9 +508,11 @@ for ($w = 0; $w < count($genarray); $w++) {
         // draw vertical line from 1st child in fam to last child in fam
         if ($genarray[$w]["gen"] != 0) {
             $parent = $genarray[$w]["par"];
-            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) { // last child in fam
+            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) {
+                // last child in fam
                 $z = $w;
-                while ($genarray[$z]["2nd"] == 1) { //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
+                while ($genarray[$z]["2nd"] == 1) {
+                    //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
                     $z--;
                 }
                 $starty = $genarray[$parent]["fst"] + ($data["vsize"] / 2);

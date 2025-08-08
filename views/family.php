@@ -13,6 +13,7 @@ $screen_mode = '';
 $last_visited = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $_SESSION['save_last_visitid'] = $last_visited;
 
+$botDetector = new Genealogy\Include\BotDetector();
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $personName_extended = new \Genealogy\Include\PersonNameExtended();
@@ -23,6 +24,7 @@ $showTreeText = new \Genealogy\Include\ShowTreeText();
 $processLinks = new \Genealogy\Include\ProcessLinks($uri_path);
 $processText = new \Genealogy\Include\ProcessText();
 $showSources = new \Genealogy\Include\ShowSources();
+$totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson();
 
 $family_nr = 1;  // *** process multiple families ***
 
@@ -44,10 +46,10 @@ if (!$data["family_id"]) {
     $parent1_privacy = $personPrivacy->get_privacy($parent1Db);
 
     // *** Add tip in person screen ***
-    if (!$bot_visit) {
+    if (!$botDetector->isBot()) {
 ?>
         <div class="d-print-none"><b>
-                <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
+                <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif" alt="' . __('Reports') . '" title="' . __('Reports') . '">'); ?>
             </b><br><br>
         </div>
     <?php
@@ -56,7 +58,7 @@ if (!$data["family_id"]) {
     $id = '';
     ?>
 
-    <table class="humo standard">
+    <table class="table">
         <!-- Show person topline (top text, settings, favourite) -->
         <?php include __DIR__ . '/family_top_line.php'; ?>
         <tr>
@@ -158,7 +160,7 @@ else {
                 $familyDb = $db_functions->get_family($id);
 
                 // *** Don't count search bots, crawlers etc. ***
-                if (!$bot_visit) {
+                if (!$botDetector->isBot()) {
                     // *** Update statistics counter ***
                     $fam_counter = $familyDb->fam_counter + 1;
                     $fam_counter_var = $fam_counter;
@@ -308,16 +310,15 @@ else {
                 }
 
                 // *** Add tip in family screen ***
-                if (!$bot_visit && $descendant_loop == 0 && $parent1_marr == 0) {
+                if (!$botDetector->isBot() && $descendant_loop == 0 && $parent1_marr == 0) {
     ?>
                     <div class="d-print-none"><b>
-                            <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">'); ?>
+                            <?php printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif" alt="' . __('Reports') . '" title="' . __('Reports') . '">'); ?>
                         </b><br><br>
                     </div>
                 <?php } ?>
 
-                <table class="humo standard">
-                    <!-- <table class="table"> -->
+                <table class="table">
                     <?php
                     // *** Show family top line (family top text, settings, favourite) ***
                     include __DIR__ . '/family_top_line.php';
@@ -327,7 +328,8 @@ else {
                     /**
                      * Show parent1 (normally the father)
                      */
-                    if ($familyDb->fam_kind != 'PRO-GEN') {  //onecht kind, woman without man
+                    if ($familyDb->fam_kind != 'PRO-GEN') {
+                        //onecht kind, woman without man
                         if ($family_nr == 1) {
                     ?>
                             <!-- Show data of parent1 -->
@@ -372,15 +374,16 @@ else {
                     /**
                      * Show marriage
                      */
-                    if ($familyDb->fam_kind != 'PRO-GEN') {  // onecht kind, wife without man
+                    if ($familyDb->fam_kind != 'PRO-GEN') {
+                        // onecht kind, wife without man
                         // *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
                         if (
-                            $user["group_pers_hide_totally_act"] == 'j' && isset($parent1Db->pers_own_code) && strpos(' ' . $parent1Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                            $totallyFilterPerson->isTotallyFiltered($user, $parent1Db)
                         ) {
                             $family_privacy = true;
                         }
                         if (
-                            $user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0
+                            $totallyFilterPerson->isTotallyFiltered($user, $parent2Db)
                         ) {
                             $family_privacy = true;
                         }
@@ -408,7 +411,7 @@ else {
                     <div class="parent2">
                         <?php
                         // *** Person must be totally hidden ***
-                        if ($user["group_pers_hide_totally_act"] == 'j' && isset($parent2Db->pers_own_code) && strpos(' ' . $parent2Db->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                        if ($totallyFilterPerson->isTotallyFiltered($user, $parent2Db)) {
                             echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                         } else {
                             $show_name_texts = true;
@@ -472,9 +475,8 @@ else {
                             $childDb = $db_functions->get_person($child_array[$i]);
                             $child_privacy = $personPrivacy->get_privacy($childDb);
 
-                            // For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
                             // *** Person must be totally hidden ***
-                            if ($user["group_pers_hide_totally_act"] == 'j' && strpos(' ' . $childDb->pers_own_code, $user["group_pers_hide_totally"]) > 0) {
+                            if ($totallyFilterPerson->isTotallyFiltered($user, $childDb)) {
                                 if (!$show_privacy_text) {
                                     echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***') . '<br>';
                                 }
@@ -828,7 +830,8 @@ else {
                         $markers = 'markers' . $family_nr;
                         $group = 'group' . $family_nr;
 
-                        if ($family_nr == 2) { // *** Only include once ***
+                        if ($family_nr == 2) {
+                            // *** Only include once ***
                 ?>
                             <link rel="stylesheet" href="assets/leaflet/leaflet.css">
                             <script src="assets/leaflet/leaflet.js"></script>
@@ -978,8 +981,8 @@ if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_prese
     echo $showSourcesFootnotes->show_sources_footnotes();
 }
 
-/* Generate citations, that can be used as a source for this person/ page
- *
+/**
+ * Generate citations, that can be used as a source for this person/ page
  * EXAMPLE:
  * "Family Page: Bethel, Catherine Ann Charles." database, Dolly Mae Alpha Index - Wyannie Malone Historical Museum (http://subscriber.bahamasgenealogyrecor ... son=I52982 : accessed 17 April 2016, Catherine Anne Charles Bethel, born 19 feb 1809 at New Providence, Bahamas; citing Christ Church Cathedral - Baptismal Register. Book 2, Whites -Page 99, item 21. for period Feb. 7, 1802 to Dec. 22, 1840.
  */
@@ -1028,7 +1031,7 @@ if ($user['group_citation_generation'] == 'y') {
 // *** Extra footer text / User notes in family screen ***
 if ($data["descendant_report"] == false) {
     // *** Show extra footer text in family screen ***
-    $treetext = $showTreeText->show_tree_text($dataDb->tree_id, $selected_language);
+    $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selected_language);
     echo $treetext['family_footer'];
 
     if ($user['group_user_notes_show'] == 'y') {
@@ -1038,8 +1041,8 @@ if ($data["descendant_report"] == false) {
         $note_result = $dbh->query($note_qry);
         $num_rows = $note_result->rowCount();
     ?>
-        <table align="center" class="humo">
-            <tr class="humo_user_notes">
+        <table align="center" class="table w-50">
+            <tr class="table-primary humo_user_notes">
                 <th>
                     <?php if ($num_rows) echo '<a href="#humo_user_notes"></a> '; ?>
                     <?= __('User notes'); ?>
@@ -1104,7 +1107,7 @@ if ($data["descendant_report"] == false) {
             ]);
 
             // *** Mail new user note to the administrator ***
-            $register_address = $dataDb->tree_email;
+            $register_address = $selectedFamilyTree->tree_email;
             $register_subject = "HuMo-genealogy. " . __('New user note') . ": " . $userDb->user_name . "\n";
 
             // *** It's better to use plain text in the subject ***
@@ -1139,12 +1142,14 @@ if ($data["descendant_report"] == false) {
                 //} else {
                 //	echo '<br><b>'.__('E-mail sent!').'</b><br>';
             }
-
-            echo '<table align="center" class="humo">';
-            echo '<tr><th><a name="add_info"></a>' . __('Your information is saved and will be reviewed by the webmaster.') . '</th></tr>';
-            echo '</table>';
-        } else {
         ?>
+
+            <table align="center" class="table w-50">
+                <tr>
+                    <th><a name="add_info"></a><?= __('Your information is saved and will be reviewed by the webmaster.'); ?></th>
+                </tr>
+            </table>
+        <?php } else { ?>
             <!-- Script voor expand and collapse of items -->
             <script>
                 function hideShow(el_id) {
@@ -1168,8 +1173,8 @@ if ($data["descendant_report"] == false) {
             <form method="POST" action="<?= $start_url; ?>#add_info" style="display : inline;">
                 <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
                 <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                <table align="center" class="humo" width="40%">
-                    <tr id="add_info">
+                <table align="center" class="table w-50">
+                    <tr id="add_info" class="table-primary">
                         <th colspan="2">
                             <a href="<?= $start_url; ?>#add_info" onclick="hideShow(1);"><span id="hideshowlink1">[+]</span></a>
                             <?= ' ' . __('Add information or remarks'); ?>
@@ -1201,12 +1206,12 @@ if ($data["descendant_report"] == false) {
                     ?>
                     <tr style="display:none;" id="row1" name="row1">
                         <td><?= __('Text'); ?></td>
-                        <td><textarea name="user_note" rows="5" cols="40"><?= $register_text; ?></textarea></td>
+                        <td><textarea name="user_note" rows="5" cols="40" class="form-control form-control-sm"><?= $register_text; ?></textarea></td>
                     </tr>
 
                     <tr style="display:none;" id="row1" name="row1">
                         <td></td>
-                        <td><input type="submit" name="send_mail" value="<?= __('Send'); ?>"></td>
+                        <td><input type="submit" name="send_mail" value="<?= __('Send'); ?>" class="btn btn-sm btn-success"></td>
                     </tr>
                 </table>
             </form>

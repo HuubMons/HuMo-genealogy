@@ -75,6 +75,7 @@ class Router
     {
         //TODO remove global
         global $humo_option;
+
         $result_array = [];
         $result_array['page404'] = false;
         //$result_array['page301'] = false;

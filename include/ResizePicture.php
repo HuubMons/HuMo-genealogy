@@ -8,7 +8,7 @@
 
 namespace Genealogy\Include;
 
-use Imagick;
+use \Imagick;
 
 class ResizePicture
 {
