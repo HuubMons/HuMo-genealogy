@@ -61,9 +61,9 @@ $user = $userSettings->get_user_settings($dbh);
 $showTreeText = new Genealogy\Include\ShowTreeText();
 
 
-// *** TEST use Symfony Translation component (to replace very old gettext.php script) ***
-// TODO Check code. Slows down website.s
 /*
+// *** TEST use Symfony Translation component (to replace very old gettext.php script) ***
+// TODO Check code. Slows down website.
 $language_cls = new Genealogy\Languages\LanguageCls();
 $language_file = $language_cls->get_languages();
 $selected_language = $language_cls->get_selected_language($humo_option);
@@ -73,11 +73,30 @@ $translator = new Symfony\Component\Translation\Translator($selected_language);
 $translator->addLoader('mo', new Symfony\Component\Translation\Loader\MoFileLoader());
 $mofile = __DIR__ . '/languages/' . $selected_language . '/' . $selected_language . '.mo';
 $translator->addResource('mo', $mofile, $selected_language);
+$GLOBALS['translator'] = $translator;
 function __($text)
 {
-    global $translator;
-    return $translator->trans($text);
+    //global $translator;
+    //return $translator->trans($text);
+    return $GLOBALS['translator']->trans($text);
 }
+*/
+
+/*
+// TEST: using gettext/gettext.
+// TODO: check code. Code doesnt work.
+$language_cls = new Genealogy\Languages\LanguageCls();
+$language_file = $language_cls->get_languages();
+$selected_language = $language_cls->get_selected_language($humo_option);
+$language = $language_cls->get_language_data($selected_language);
+// Set your language code and path
+$mofile = __DIR__ . "/languages/$selected_language/$selected_language.mo";
+// Load translations from the .mo file
+$translations = Gettext\Translations::fromMoFile($mofile);
+// Create and register the translator globally
+$translator = new Gettext\Translator();
+$translator->loadTranslations($translations);
+$translator->register(); // This enables __(), _n(), etc.
 */
 
 
