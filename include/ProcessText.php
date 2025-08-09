@@ -10,16 +10,13 @@
 
 namespace Genealogy\Include;
 
-use Genealogy\Include\ProcessLinks;
 use PDO;
 
 class ProcessText
 {
     public function process_text($text_process, $text_sort = 'standard'): string
     {
-        global $dbh, $tree_id, $user, $screen_mode, $data, $uri_path;
-
-        $processLinks = new ProcessLinks($uri_path);
+        global $dbh, $tree_id, $user, $screen_mode, $data;
 
         if (!isset($data["text_presentation"])) {
             $data["text_presentation"] = '';
@@ -124,49 +121,31 @@ class ProcessText
                 }
             }
 
-            // *** Show tekst in popup screen ***
-            if ($data["text_presentation"] == 'popup' && $screen_mode != 'PDF' && $screen_mode != 'RTF' && $text_process) {
-                // TODO check globals.
-                global $data, $text_nr, $language;
-
-                $directionMarkers = new DirectionMarkers($language["dir"], $screen_mode);
-
-                if (isset($text_nr)) {
-                    $text_nr++;
-                } else {
-                    $text_nr = 1;
-                }
-                $text = '<div class="' . $directionMarkers->rtlmarker . 'sddm" style="left:10px;top:10px;display:inline;">';
-
-                $vars['pers_family'] = $data["family_id"];
-                $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
-                $link .= "main_person=" . $data["main_person"];
-                $text .= '<a href="' . $link . '"';
-
-                $text .= ' style="display:inline" ';
-                $text .= 'onmouseover="mopen(event,\'show_text' . $text_nr . '\',0,0)"';
-                $text .= 'onmouseout="mclosetime()">';
+            // *** Show tekst in popup screen (don't use popup text for media) ***
+            if ($data["text_presentation"] == 'popup' && $screen_mode != 'PDF' && $screen_mode != 'RTF' && $text_process && $text_sort != 'media') {
+                // *** Used for general person and general marriage text ***
                 if ($text_sort == 'standard') {
-                    $text .= '[' . lcfirst(__('Text')) . ']';
+                    $outline = 'outline-';
                 } else {
-                    $text .= '<b>[' . (__('Text')) . ']</b>';
-                }
-                $text .= '</a>';
-
-                if (substr_count($text_process, '<br>') > 10 || substr_count($text_process, '<br>') > 10) {
-                    // *** Don't use too large pop-up, because the pop-up will be off the screen ***
-                    $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $directionMarkers->alignmarker . '; direction:' . $directionMarkers->rtlmarker . '; height:300px; width:50%; overflow-y: scroll;" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-                } else {
-                    $text .= '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:' . $directionMarkers->alignmarker . '; direction:' . $directionMarkers->rtlmarker . ';" id="show_text' . $text_nr . '" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+                    $outline = '';
                 }
 
-                // *** Show a correct website link in text ***
-                $text_process = str_ireplace('<a href', '<a style="display:inline" href', $text_process);
+                // Use larger textbox if long text is shown.
+                $width = 400;
+                if (strlen($text_process) > 1000) {
+                    $width = 1000;
+                }
 
-                $text .= $text_process;
-                $text .= '</div>';
-                $text .= '</div>';
-                $text_process = $text;
+                // *** Show a correct website link in text, code from old popup script ***
+                //$text_process = str_ireplace('<a href', '<a style="display:inline" href', $text_process);
+
+                $text2 = '<div class="dropdown dropend d-inline ms-2 overflow-auto">';
+                $text2 .= '<button class="btn btn-sm btn-' . $outline . 'secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: 1;">' . __('Text') . '</button>';
+                $text2 .= '<ul class="dropdown-menu p-2" style="width:' . $width . 'px;">';
+                $text2 .= $text_process;
+                $text2 .= '</ul>';
+                $text2 .= '</div>';
+                $text_process = $text2;
             }
         } else {
             $text_process = '';

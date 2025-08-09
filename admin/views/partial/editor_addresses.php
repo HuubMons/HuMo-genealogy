@@ -10,25 +10,15 @@
 <tr id="addresses">
     <td style="border-right:0px;"><b><?= __('Addresses'); ?></b></td>
     <td colspan="2">
-        <?php
-        if ($connect_kind == 'person') {
-            echo ' <input type="submit" name="person_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
-        } else {
-            echo ' <input type="submit" name="relation_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
-        }
-        ?>
+        <input type="submit" name="<?= $connect_kind == 'person' ? 'person_add_address' : 'relation_add_address'; ?>" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
 
-        <!-- Help popup for address -->
-        &nbsp;
-        <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-            <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_shared',0,0)" onmouseout="mclosetime()">
-                <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>">
-            </a>
-            <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                <b><?= __('A shared address can be connected to multiple persons or relations.'); ?></b><br>
-                <b><?= __('A shared address is only supported by the Haza-data and HuMo-genealogy programs.'); ?></b><br>
-            </div>
-        </div>
+        <!-- Help popover for address -->
+        <button type="button" class="btn btn-sm btn-secondary"
+            data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide" data-bs-html="true"
+            data-bs-content="<?= __('A shared address can be connected to multiple persons or relations.'); ?><br>
+                <?= __('A shared address is only supported by the Haza-data and HuMo-genealogy programs.'); ?>">
+            ?
+        </button>
     </td>
 </tr>
 

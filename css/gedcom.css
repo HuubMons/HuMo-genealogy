@@ -36,38 +36,6 @@ body {
     color: #A52A2A;
 }
 
-/* Border pop-up menu */
-div.ltrsddm div {
-    border: 1px solid #EED4D4;
-}
-
-div.rtlsddm div {
-    border: 1px solid #EED4D4;
-}
-
-/* More space around person pop-up menu */
-/* TODO: remove old popup system */
-#content div.ltrsddm div {
-    padding: 5px;
-    box-shadow: 2px 2px 2px #c0c0c0;
-    border-radius: 3px;
-}
-
-#content div.rtlsddm div {
-    padding: 5px;
-    box-shadow: 2px 2px 2px #c0c0c0;
-    border-radius: 3px;
-}
-
-/* Smaller lines in person pop-up menu */
-#content div.ltrsddm div a {
-    padding: 1px 8px 1px 10px;
-}
-
-#content div.rtlsddm div a {
-    padding: 1px 8px 1px 10px;
-}
-
 * html #top_menu,
 * html #foot,
 * html #left {

@@ -82,15 +82,6 @@ table.standard {
     /* padding: 5px 0px 0; */
 }
 
-/* Border pop-up menu */
-div.ltrsddm div {
-    border: 1px solid #EED4D4;
-}
-
-div.rtlsddm div {
-    border: 1px solid #EED4D4;
-}
-
 /* Center buttons, etc. */
 .center {
     text-align: center;
@@ -157,4 +148,7 @@ div.photobooktext {
 /* Bootstrap popover, custom class */
 .popover-wide {
     --bs-popover-max-width: 800px;
+}
+.popover-extra-wide {
+    --bs-popover-max-width: 1000px;
 }

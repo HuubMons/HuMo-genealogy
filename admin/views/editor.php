@@ -450,7 +450,6 @@ if ($check_person) {
                     </form>
 
 
-
                     <?php if ($previousDb) { ?>
                         <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="hidden" name="page" value="<?= $page; ?>">
@@ -527,137 +526,124 @@ if ($check_person) {
                         </form>
                     <?php } else { ?>
                         <input type="submit" value=">>" disabled>
-                <?php
+            <?php
                     }
                 }
             }
+            ?>
 
-            // *** Browse ***
-            // *** Change CSS links ***
-            echo '
-                <style>
-                .ltrsddm div a {
-                    display:inline;
-                    padding: 0px;
-                }
-                </style>';
-
-            // *** Show navigation pop-up ***
-            echo '&nbsp;&nbsp;<div class="' . $rtlmarker . 'sddm" style="display:inline;">';
-            echo '<a href="#" style="display:inline" onmouseover="mopen(event,\'browse_menu\',0,0)" onmouseout="mclosetime()">';
-            echo '[' . __('Browse') . ']</a>';
-            echo '<div class="sddm_fixed"
-                style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
-                direction:' . $rtlmarker . '; box-shadow: 2px 2px 2px #999; border-radius: 3px;" id="browse_menu"
-                onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-            if ($editor['add_person'] == false) {
-                ?>
-                <table>
-                    <tr>
-                        <td style="vertical-align: top; width:auto; border: solid 0px; border-right:solid 1px #999999;">
-                            <?php
-                            // *** Show person ***
-                            echo '<span style="font-weight:bold; font-size:1.1em">' . show_person($person->pers_gedcomnumber, false, false) . '</span><br>';
-
-                            // *** Show marriages and children ***
-                            if ($person->pers_fams) {
-                                // *** Search for own family ***
-                                $fams1 = explode(";", $person->pers_fams);
-                                $fam_count = count($fams1);
-                                for ($i = 0; $i < $fam_count; $i++) {
-                                    $familyDb = $db_functions->get_family($fams1[$i]);
-
-                                    $show_marr_status = ucfirst(__('marriage/ relation'));
-                                    if ($familyDb->fam_marr_notice_date || $familyDb->fam_marr_notice_place || $familyDb->fam_marr_date || $familyDb->fam_marr_place || $familyDb->fam_marr_church_notice_date || $familyDb->fam_marr_church_notice_place || $familyDb->fam_marr_church_date || $familyDb->fam_marr_church_place) {
-                                        $show_marr_status = __('Married');
-                                    }
-
-                            ?>
-                                    <span style="display:block; margin-top:5px; padding:2px; border:solid 1px #0000FF; width:350px;">
-                                        <a href="index.php?page=editor&amp;menu_tab=marriage&amp;marriage_nr=<?= $familyDb->fam_gedcomnumber; ?>"><b><?= $show_marr_status; ?></b></a>
+            <!-- Browse through family members -->
+            <div class="dropdown dropend d-inline mx-4">
+                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: 1;"><?= __('Browse'); ?></button>
+                <ul class="dropdown-menu p-2" style="width:700px;">
+                    <?php if ($editor['add_person'] == false) { ?>
+                        <li>
+                            <table>
+                                <tr>
+                                    <td class="p-2" style="vertical-align: top; width:auto; border: solid 0px; border-right:solid 1px #999999;">
                                         <?php
-                                        echo __(' to: ');
+                                        // *** Show person ***
+                                        echo '<span style="font-weight:bold; font-size:1.1em">' . show_person($person->pers_gedcomnumber, false, false) . '</span><br>';
 
-                                        if ($person->pers_gedcomnumber == $familyDb->fam_man) {
-                                            echo show_person($familyDb->fam_woman) . '<br>';
-                                        } else {
-                                            echo show_person($familyDb->fam_man) . '<br>';
-                                        }
+                                        // *** Show marriages and children ***
+                                        if ($person->pers_fams) {
+                                            // *** Search for own family ***
+                                            $fams1 = explode(";", $person->pers_fams);
+                                            $fam_count = count($fams1);
+                                            for ($i = 0; $i < $fam_count; $i++) {
+                                                $familyDb = $db_functions->get_family($fams1[$i]);
 
-                                        if ($familyDb->fam_children) {
-                                            echo '<b>' . __('Children') . '</b><br>';
-                                            $child_array = explode(";", $familyDb->fam_children);
-                                            foreach ($child_array as $j => $value) {
-                                                echo ($j + 1) . '. ' . show_person($child_array[$j]) . '<br>';
+                                                $show_marr_status = ucfirst(__('marriage/ relation'));
+                                                if ($familyDb->fam_marr_notice_date || $familyDb->fam_marr_notice_place || $familyDb->fam_marr_date || $familyDb->fam_marr_place || $familyDb->fam_marr_church_notice_date || $familyDb->fam_marr_church_notice_place || $familyDb->fam_marr_church_date || $familyDb->fam_marr_church_place) {
+                                                    $show_marr_status = __('Married');
+                                                }
+                                        ?>
+
+                                                <div class="my-3" style="border-top:solid 1px #0000FF; width:350px;">
+                                                    <a href="index.php?page=editor&amp;menu_tab=marriage&amp;marriage_nr=<?= $familyDb->fam_gedcomnumber; ?>"><b><?= $show_marr_status; ?></b></a>
+                                                    <?php
+                                                    echo __(' to: ');
+
+                                                    if ($person->pers_gedcomnumber == $familyDb->fam_man) {
+                                                        echo show_person($familyDb->fam_woman) . '<br>';
+                                                    } else {
+                                                        echo show_person($familyDb->fam_man) . '<br>';
+                                                    }
+
+                                                    if ($familyDb->fam_children) {
+                                                        echo '<b>' . __('Children') . '</b><br>';
+                                                        $child_array = explode(";", $familyDb->fam_children);
+                                                        foreach ($child_array as $j => $value) {
+                                                            echo ($j + 1) . '. ' . show_person($child_array[$j]) . '<br>';
+                                                        }
+                                                    }
+                                                    ?>
+                                                </div>
+                                        <?php
                                             }
                                         }
                                         ?>
-                                    </span>
-                            <?php
-                                }
-                            }
-                            ?>
-                        </td>
+                                    </td>
 
-                        <td style="vertical-align: top;">
-                            <!-- Show parents and siblings (brothers and sisters) -->
-                            <b><?= __('Parents'); ?></b><br>
-                            <?php
-                            if ($person->pers_famc) {
-                                // *** Search for parents ***
-                                $family_parentsDb = $db_functions->get_family($person->pers_famc, 'man-woman');
+                                    <td class="p-2" style="vertical-align: top;">
+                                        <!-- Show parents and siblings (brothers and sisters) -->
+                                        <b><?= __('Parents'); ?></b><br>
+                                        <?php
+                                        if ($person->pers_famc) {
+                                            // *** Search for parents ***
+                                            $family_parentsDb = $db_functions->get_family($person->pers_famc, 'man-woman');
 
-                                //*** Father ***
-                                if ($family_parentsDb->fam_man) {
-                                    echo show_person($family_parentsDb->fam_man);
-                                } else {
-                                    echo __('N.N.');
-                                }
-
-                                echo ' ' . __('and') . '<br>';
-
-                                //*** Mother ***
-                                if ($family_parentsDb->fam_woman) {
-                                    echo show_person($family_parentsDb->fam_woman);
-                                } else {
-                                    echo __('N.N.');
-                                }
-
-                                echo '<br><br>';
-
-                                // *** Siblings (brothers and sisters) ***
-                                if ($family_parentsDb->fam_children) {
-                                    $fam_children_array = explode(";", $family_parentsDb->fam_children);
-                                    $child_count = count($fam_children_array);
-                                    if ($child_count > 1) {
-                                        echo '<b>' . __('Siblings') . '</b><br>';
-                                        foreach ($fam_children_array as $j => $value) {
-                                            echo ($j + 1) . '. ';
-                                            if ($fam_children_array[$j] == $person->pers_gedcomnumber) {
-                                                // *** Don't show link ***
-                                                echo show_person($fam_children_array[$j], false, false) . '<br>';
+                                            //*** Father ***
+                                            if ($family_parentsDb->fam_man) {
+                                                echo show_person($family_parentsDb->fam_man);
                                             } else {
-                                                echo show_person($fam_children_array[$j]) . '<br>';
+                                                echo __('N.N.');
                                             }
+
+                                            echo ' ' . __('and') . '<br>';
+
+                                            //*** Mother ***
+                                            if ($family_parentsDb->fam_woman) {
+                                                echo show_person($family_parentsDb->fam_woman);
+                                            } else {
+                                                echo __('N.N.');
+                                            }
+
+                                            echo '<br><br>';
+
+                                            // *** Siblings (brothers and sisters) ***
+                                            if ($family_parentsDb->fam_children) {
+                                                $fam_children_array = explode(";", $family_parentsDb->fam_children);
+                                                $child_count = count($fam_children_array);
+                                                if ($child_count > 1) {
+                                                    echo '<b>' . __('Siblings') . '</b><br>';
+                                                    foreach ($fam_children_array as $j => $value) {
+                                                        echo ($j + 1) . '. ';
+                                                        if ($fam_children_array[$j] == $person->pers_gedcomnumber) {
+                                                            // *** Don't show link ***
+                                                            echo show_person($fam_children_array[$j], false, false) . '<br>';
+                                                        } else {
+                                                            echo show_person($fam_children_array[$j]) . '<br>';
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            echo __('There are no parents.') . '<br>';
                                         }
-                                    }
-                                }
-                            } else {
-                                echo __('There are no parents.') . '<br>';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                </table>
+                                        ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </li>
+
+                        <br>
+                        <?php printf(__('Editing in %s? <b>Always backup your data!</b>'), 'HuMo-genealogy'); ?>
+                    <?php } ?>
+                </ul>
+            </div>
+
             <?php
-            }
-
-            echo '<br>';
-            printf(__('Editing in %s? <b>Always backup your data!</b>'), 'HuMo-genealogy');
-
-            echo '</div>';
-            echo '</div>';
-
             // *** Example of family screen in pop-up ***
             if ($person) {
                 $pers_family = '';
@@ -681,19 +667,16 @@ if ($check_person) {
                 <img src="images/person_connect.gif" border="0" title="<?= __('Add person'); ?>" alt="<?= __('Add person'); ?>"> <?= __('Add person'); ?></a>
 
             <!-- Help popup -->
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu',10,150)" onmouseout="mclosetime()">
-                    <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>"> <?= __('Help'); ?>
-                </a>
-                <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                    <?= __('Examples of date entries:'); ?><br>
+            <button type="button" class="btn btn-sm btn-secondary ms-4" style="--bs-btn-line-height: 1;"
+                data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-extra-wide" data-bs-html="true"
+                data-bs-content="<?= __('Examples of date entries:'); ?><br>
                     <b><?= __('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.'); ?></b><br>
                     <?= __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#'); ?><br>
-                    <img src="../images/search.png" alt="<?= __('Search'); ?>"> <?= __('= click to open selection popup screen.'); ?><br>
-                    <b>[+]</b> <?= __('= click to open extended editor items.'); ?>
-                </div>
-            </div>
+                    <img src='../images/search.png' alt='<?= __('Search'); ?>'> <?= __('= click to open selection popup screen.'); ?><br>
+                <b>[+]</b> <?= __('= click to open extended editor items.'); ?>
+                ">
+                <?= __('Help'); ?>
+            </button>
 
         </div>
     </ul>

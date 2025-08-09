@@ -211,7 +211,7 @@ class ShowMedia
                 if (isset($media_event_text[$i]) && $media_event_text[$i]) {
                     if ($screen_mode != 'RTF') {
                         //$picture_text.=' '.str_replace("&", "&amp;", $media_event_text[$i]);
-                        $picture_text .= ' ' . str_replace("&", "&amp;", $processText->process_text($media_event_text[$i]));
+                        $picture_text .= ' ' . str_replace("&", "&amp;", $processText->process_text($media_event_text[$i], 'media'));
                     }
                     if (isset($templ_person["pic_text" . $i])) {
                         $templ_person["pic_text" . $i] .= ' ' . $media_event_text[$i];

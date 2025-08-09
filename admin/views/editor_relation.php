@@ -564,15 +564,12 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                                 <div class="input-group">
                                     <input type="text" name="fam_man_age" value="<?= $fam_man_age; ?>" size="3" class="form-control form-control-sm">
 
-                                    &nbsp;&nbsp;
-                                    <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                        <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu2',100,400)" onmouseout="mclosetime()">
-                                            <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>">
-                                        </a>
-                                        <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                            <b><?= __('If birth year of man or woman is empty it will be calculated automatically using age by marriage.'); ?></b>
-                                        </div>
-                                    </div>
+                                    <!-- Help popover -->
+                                    <button type="button" class="btn btn-sm btn-secondary"
+                                        data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide"
+                                        data-bs-content="<?= __('If birth year of man or woman is empty it will be calculated automatically using age by marriage.'); ?>">
+                                        ?
+                                    </button>
                                 </div>
                             </div>
                         </div>
