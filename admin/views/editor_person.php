@@ -376,7 +376,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                         }
                     } else {
                         ?>
-                        <input type=" submit" name="person_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                        <input type="submit" name="person_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
                     <?php } ?>
                 </th>
             </tr>
