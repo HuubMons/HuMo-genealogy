@@ -75,11 +75,17 @@ table.standard {
     margin-right: auto;
 }
 
+.table>:not(caption)>*>* {
+    background: url("images_antique/tree_background_450lc.jpg") repeat left top;
+}
+
 /* 2nd table A-Z */
 .family_page_toptext {
+    /*
     color: #000066;
     background-color: #ccccff;
     background: url("images_antique/header2.jpg") repeat left top;
+    */
 }
 
 /* familypage */
