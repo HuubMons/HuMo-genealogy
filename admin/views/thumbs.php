@@ -62,13 +62,13 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="yes" name="default_path" id="default_path" <?= $thumbs['default_path'] ? 'checked' : ''; ?>>
+                            <input type="radio" class="form-check-input" value="yes" name="default_path" id="default_path" <?= $thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
                                 <?= __('Use default picture path:'); ?> <b>media/</b>
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="no" name="default_path" id="default_path" <?= !$thumbs['default_path'] ? 'checked' : ''; ?>>
+                            <input type="radio" class="form-check-input" value="no" name="default_path" id="default_path" <?= !$thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
                                 <input type="text" name="tree_pict_path" value="<?= $thumbs['own_pict_path']; ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
                             </label>
@@ -1074,8 +1074,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                                     <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
                                     <input type="hidden" name="filename_old" value="<?= $filename; ?>">
-                                    <input type="text" name="filename" value="<?= $filename; ?>" size="20">
-                                    <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>">
+                                    <input type="text" name="filename" value="<?= $filename; ?>" size="20" class="form-control form-control-sm">
+                                    <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>" class="btn btn-secondary btn-sm">
                                 </form>
                             <?php } else { ?>
                                 <div class="photobooktext"><?= $filename; ?></div>

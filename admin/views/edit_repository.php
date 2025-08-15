@@ -30,8 +30,8 @@ $repo_qry = $stmt;
         <strong><?= __('Really remove repository with all repository links?'); ?></strong>
         <form method="post" action="index.php?page=edit_repositories" style="display : inline;">
             <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
-            <input type="submit" name="repo_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="dummy6" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="repo_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="dummy6" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php } ?>

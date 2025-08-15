@@ -261,7 +261,7 @@ $person_found = true;
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group input-group-sm">
                         <label for="search_id" class="col-md-auto col-form-label col-form-label-sm"><?= __('or ID:'); ?>&nbsp;</label>
-                        <input type="text" id="search_id" name="search_id" class="form-select form-select-sm" value="<?= $editor['search_id']; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
+                        <input type="text" id="search_id" name="search_id" class="form-control form-control-sm" value="<?= $editor['search_id']; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
                     </div>
                 </form>
@@ -288,13 +288,15 @@ if (isset($_POST['person_remove'])) {
         <?= __('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?'); ?><br>
 
         <!-- GRAYED-OUT and DISABLED! UNDER CONSTRUCTION! -->
-        <input type="checkbox" name="XXXXX" value="XXXXX" <?= $selected . $disabled; ?>> <?= __('Also remove ALL RELATED PERSONS (including all items)'); ?><br>
-        </span>
+        <input type="checkbox" name="XXXXX" id="XXXXX" value="XXXXX" class="form-check-input mb-2" <?= $selected . $disabled; ?>>
+        <label class="form-check-label" for="XXXXX">
+            <?= __('Also remove ALL RELATED PERSONS (including all items)'); ?>
+        </label><br>
 
         <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="<?= $page; ?>">
-            <input type="submit" name="person_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="person_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php
@@ -310,8 +312,8 @@ if (isset($_GET['child_disconnect'])) {
             <input type="hidden" name="family_id" value="<?= $_GET['family_id']; ?>">
             <input type="hidden" name="child_disconnect2" value="<?= $_GET['child_disconnect']; ?>">
             <input type="hidden" name="child_disconnect_gedcom" value="<?= $_GET['child_disconnect_gedcom']; ?>">
-            <input type="submit" name="child_disconnecting" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="child_disconnecting" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php
@@ -444,6 +446,8 @@ if ($check_person) {
                         $firstDb = $first_result->fetch(PDO::FETCH_OBJ);
                     }
             ?>
+
+                    <!-- TODO use bootstrap pagination? -->
                     <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="hidden" name="page" value="<?= $page; ?>">
                         <input type="submit" value="<<">

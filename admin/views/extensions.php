@@ -30,7 +30,7 @@ if (!defined('ADMIN_PAGE')) {
                 }
             ?>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="<?= $language_file[$i]; ?>" <?= $checked . $disabled; ?>>
+                    <input type="checkbox" class="form-check-input" name="<?= $language_file[$i]; ?>" <?= $checked . $disabled; ?>>
                     <label class="form-check-label">
                         <img src="../languages/<?= $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"> <?= $language["name"]; ?>
                     </label>
@@ -48,7 +48,7 @@ if (!defined('ADMIN_PAGE')) {
                 $theme = str_replace(".css", "", $extensions['theme_folders'][$i]);
             ?>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="<?= $theme; ?>" <?= !in_array($theme, $extensions['hide_themes']) ? 'checked' : ''; ?>>
+                    <input type="checkbox" class="form-check-input" name="<?= $theme; ?>" <?= !in_array($theme, $extensions['hide_themes']) ? 'checked' : ''; ?>>
                     <label class="form-check-label">
                         <?= $theme; ?>
                     </label>

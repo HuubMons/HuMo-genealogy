@@ -95,7 +95,7 @@ if (is_numeric($user)) {
                     </td>
 
                     <td>
-                        <input type="checkbox" name="edit_tree_<?= $data3Db->tree_id; ?>" <?= in_array($data3Db->tree_id, $edit_tree_array) || $userDb->user_id == '1' ? 'checked' : ''; ?> <?= $userDb->user_id == '1' ? 'disabled' : ''; ?>>
+                        <input type="checkbox" name="edit_tree_<?= $data3Db->tree_id; ?>" class="form-check-input" <?= in_array($data3Db->tree_id, $edit_tree_array) || $userDb->user_id == '1' ? 'checked' : ''; ?> <?= $userDb->user_id == '1' ? 'disabled' : ''; ?>>
                     </td>
                 </tr>
             <?php } ?>

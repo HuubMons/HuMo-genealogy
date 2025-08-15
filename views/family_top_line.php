@@ -40,9 +40,9 @@ $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selecte
                     <li>
                         <!-- Compact / Expanded view buttons -->
                         <b><?= __('Family Page'); ?></b><br>
-                        <input type="radio" name="keuze0" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=compact<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'compact' ? 'checked' : ''; ?>> <?= __('Compact view'); ?><br>
-                        <input type="radio" name="keuze0" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=expanded1<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'expanded1' ? 'checked' : ''; ?>> <?= __('Expanded view'); ?> 1<br>
-                        <input type="radio" name="keuze0" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=expanded2<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'expanded2' ? 'checked' : ''; ?>> <?= __('Expanded view'); ?> 2<br>
+                        <input type="radio" name="keuze0" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=compact<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'compact' ? 'checked' : ''; ?>> <?= __('Compact view'); ?><br>
+                        <input type="radio" name="keuze0" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=expanded1<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'expanded1' ? 'checked' : ''; ?>> <?= __('Expanded view'); ?> 1<br>
+                        <input type="radio" name="keuze0" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>family_expanded=expanded2<?= $desc_rep; ?>&xx='+this.value" <?= $data["family_expanded"] == 'expanded2' ? 'checked' : ''; ?>> <?= __('Expanded view'); ?> 2<br>
                     </li>
 
                     <!-- Select source presentation (as title/ footnote or hide sources) -->
@@ -50,9 +50,9 @@ $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selecte
                         <li>&nbsp;</li>
                         <li>
                             <b><?= __('Sources'); ?></b><br>
-                            <input type="radio" name="keuze1" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=title<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'title' ? 'checked' : ''; ?>> <?= __('Show source'); ?><br>
-                            <input type="radio" name="keuze1" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=footnote<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'footnote' ? 'checked' : ''; ?>> <?= __('Show source as footnote'); ?><br>
-                            <input type="radio" name="keuze1" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide sources'); ?><br>
+                            <input type="radio" name="keuze1" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=title<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'title' ? 'checked' : ''; ?>> <?= __('Show source'); ?><br>
+                            <input type="radio" name="keuze1" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=footnote<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'footnote' ? 'checked' : ''; ?>> <?= __('Show source as footnote'); ?><br>
+                            <input type="radio" name="keuze1" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>source_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["source_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide sources'); ?><br>
                         </li>
                     <?php
                     }
@@ -69,8 +69,8 @@ $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selecte
                             //if ($temp->rowCount()) {
                             ?>
                             <b><?= __('Family map'); ?></b><br>
-                            <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=show&xx='+this.value" <?= $data["maps_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show family map'); ?><br>
-                            <input type="radio" name="keuze2" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=hide&xx='+this.value" <?= $data["maps_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide family map'); ?><br>
+                            <input type="radio" name="keuze2" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=show&xx='+this.value" <?= $data["maps_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show family map'); ?><br>
+                            <input type="radio" name="keuze2" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>maps_presentation=hide&xx='+this.value" <?= $data["maps_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide family map'); ?><br>
                             <?php
                             //}
                             ?>
@@ -81,17 +81,17 @@ $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selecte
                         <li>&nbsp;</li>
                         <li>
                             <b><?= __('Pictures'); ?></b><br>
-                            <input type="radio" name="keuze3" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>picture_presentation=show<?= $desc_rep; ?>&xx='+this.value" <?= $data["picture_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show pictures'); ?><br>
-                            <input type="radio" name="keuze3" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>picture_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["picture_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide pictures'); ?><br>
+                            <input type="radio" name="keuze3" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>picture_presentation=show<?= $desc_rep; ?>&xx='+this.value" <?= $data["picture_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show pictures'); ?><br>
+                            <input type="radio" name="keuze3" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>picture_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["picture_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide pictures'); ?><br>
                         </li>
                     <?php } ?>
 
                     <li>&nbsp;</li>
                     <li>
                         <b><?= __('Texts'); ?></b><br>
-                        <input type="radio" name="keuze4" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=show<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show texts'); ?><br>
-                        <input type="radio" name="keuze4" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=popup<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'popup' ? 'checked' : ''; ?>> <?= __('Show texts in popup screen'); ?><br>
-                        <input type="radio" name="keuze4" value="" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide texts'); ?><br>
+                        <input type="radio" name="keuze4" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=show<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'show' ? 'checked' : ''; ?>> <?= __('Show texts'); ?><br>
+                        <input type="radio" name="keuze4" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=popup<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'popup' ? 'checked' : ''; ?>> <?= __('Show texts in popup screen'); ?><br>
+                        <input type="radio" name="keuze4" value="" class="form-check-input" onclick="javascript: document.location.href='<?= $settings_url . $url_add; ?>text_presentation=hide<?= $desc_rep; ?>&xx='+this.value" <?= $data["text_presentation"] == 'hide' ? 'checked' : ''; ?>> <?= __('Hide texts'); ?><br>
                     </li>
                 </ul>
             </div>
@@ -109,7 +109,7 @@ $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selecte
                 }
                 ?>
                 &nbsp;&nbsp;&nbsp;<form method="POST" action="<?= $link; ?>" style="display:inline-block; vertical-align:middle;">
-                    <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('PDF'); ?>">
+                    <input type="Submit" class="btn btn-sm btn-info" name="submit" value="<?= __('PDF'); ?>">
                 </form>
             <?php
             }
@@ -131,7 +131,7 @@ $treetext = $showTreeText->show_tree_text($selectedFamilyTree->tree_id, $selecte
                     <?php if ($data["descendant_report"] == true) { ?>
                         <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
                     <?php } ?>
-                    <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('RTF'); ?>">
+                    <input type="Submit" class="btn btn-sm btn-info" name="submit" value="<?= __('RTF'); ?>">
                 </form>
             <?php
             }

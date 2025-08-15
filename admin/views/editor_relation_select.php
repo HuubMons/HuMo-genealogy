@@ -16,24 +16,12 @@ if (isset($_GET['adoption_id']) && is_numeric($_GET['adoption_id'])) {
 }
 
 if ($adoption_id) {
-    echo '<h1 class="center">' . __('Select adoption parents') . '</h1>';
     $place_item = 'text_event' . $adoption_id;
     $form = 'form1';
 } else {
-    echo '<h1 class="center">' . __('Select parents') . '</h1>';
     $place_item = 'add_parents';
     $form = 'form1';
 }
-
-echo '
-    <script>
-    function select_item(item){
-        window.opener.document.' . $form . '.' . $place_item . '.value=item;
-        top.close();
-        return false;
-    }
-    </script>
-';
 
 $search_quicksearch_parent = '';
 if (isset($_POST['search_quicksearch_parent'])) {
@@ -44,15 +32,7 @@ $search_person_id = '';
 if (isset($_POST['search_person_id']) && $validateGedcomnumber->validate($_POST['search_person_id'])) {
     $search_person_id = $_POST['search_person_id'];
 }
-?>
 
-<form method="POST" action="index.php?page=editor_relation_select<?= $adoption_id ? '&amp;adoption_id=' . $adoption_id : ''; ?>" style="display : inline;">
-    <input type="text" name="search_quicksearch_parent" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch_parent; ?>" size="15">
-    <?= __('or ID:'); ?> <input type="text" name="search_person_id" value="<?= $search_person_id; ?>" size="5">
-    <input type="submit" value="<?= __('Search'); ?>">
-</form><br>
-
-<?php
 if ($search_quicksearch_parent != '') {
     // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
     $search_quicksearch_parent = str_replace(' ', '%', $search_quicksearch_parent);
@@ -94,6 +74,31 @@ if ($search_quicksearch_parent != '') {
     $parents_result = $dbh->query($parents);
 }
 
+if ($adoption_id) {
+?>
+    <h1 class="center"><?= __('Select adoption parents'); ?></h1>
+<?php } else { ?>
+    <h1 class="center"><?= __('Select parents'); ?></h1>
+<?php } ?>
+
+<form method="POST" action="index.php?page=editor_relation_select<?= $adoption_id ? '&amp;adoption_id=' . $adoption_id : ''; ?>" style="display : inline;">
+    <div class="row mb-2">
+        <div class="col-md-4">
+            <input type="text" name="search_quicksearch_parent" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch_parent; ?>" size="15" class="form-control form-control-sm">
+        </div>
+        <div class="col-md-auto">
+            <?= __('or ID:'); ?>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="search_person_id" value="<?= $search_person_id; ?>" size="5" class="form-control form-control-sm">
+        </div>
+        <div class="col-md-2">
+            <input type="submit" value="<?= __('Search'); ?>" class="btn btn-primary btn-sm">
+        </div>
+    </div>
+</form><br>
+
+<?php
 while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $parent2_text = '';
 
@@ -121,3 +126,12 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
 if ($search_quicksearch_parent == '' && $search_person_id == '') {
     echo __('Results are limited, use search to find more parents.');
 }
+?>
+
+<script>
+    function select_item(item) {
+        window.opener.document.<?= $form; ?>.<?= $place_item; ?>.value = item;
+        top.close();
+        return false;
+    }
+</script>

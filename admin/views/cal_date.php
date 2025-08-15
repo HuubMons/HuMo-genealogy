@@ -66,7 +66,7 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
 
         <div class="col-auto">
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="recalculate" value="" id="flexCheckDefault">
+                <input type="checkbox" class="form-check-input" name="recalculate" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
                     <?= __('Recalculate all persons'); ?>
                 </label>

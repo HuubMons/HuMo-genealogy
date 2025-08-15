@@ -27,8 +27,8 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
         <form method="post" action="index.php" style="display : inline;">
             <input type="hidden" name="page" value="tree">
             <input type="hidden" name="tree_id" value="<?= $_GET['remove_tree']; ?>">
-            <input type="submit" name="remove_tree2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="remove_tree2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php } ?>

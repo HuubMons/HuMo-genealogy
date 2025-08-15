@@ -60,21 +60,31 @@ if (isset($_GET['note_add'])) {
 
             <textarea rows="1" name="note_note[<?= $noteDb->note_id; ?>]" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea><br>
 
-            <?= __('Priority'); ?>
-            <select size="1" name="note_priority[<?= $noteDb->note_id; ?>]">
-                <option value="Low"><?= __('Low'); ?></option>
-                <option value="Normal" <?= $noteDb->note_priority == 'Normal' ? ' selected' : ''; ?>><?= __('Normal'); ?></option>
-                <option value="High" <?= $noteDb->note_priority == 'High' ? ' selected' : ''; ?>><?= __('High'); ?></option>
-            </select>
+            <div class="row">
+                <div class="col-md-auto mt-1">
+                    <?= __('Priority'); ?>
+                </div>
+                <div class="col-md-auto">
+                    <select size="1" name="note_priority[<?= $noteDb->note_id; ?>]" class="form-select form-select-sm">
+                        <option value="Low"><?= __('Low'); ?></option>
+                        <option value="Normal" <?= $noteDb->note_priority == 'Normal' ? ' selected' : ''; ?>><?= __('Normal'); ?></option>
+                        <option value="High" <?= $noteDb->note_priority == 'High' ? ' selected' : ''; ?>><?= __('High'); ?></option>
+                    </select>
+                </div>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Status'); ?>
-            <select size="1" name="note_status[<?= $noteDb->note_id; ?>]">
-                <option value="Not started"><?= __('Not started'); ?></option>
-                <option value="In progress" <?php if ($noteDb->note_status == 'In progress') echo ' selected'; ?>><?= __('In progress'); ?></option>
-                <option value="Completed" <?php if ($noteDb->note_status == 'Completed') echo ' selected'; ?>><?= __('Completed'); ?></option>
-                <option value="Postponed" <?php if ($noteDb->note_status == 'Postponed') echo ' selected'; ?>><?= __('Postponed'); ?></option>
-                <option value="Cancelled" <?php if ($noteDb->note_status == 'Cancelled') echo ' selected'; ?>><?= __('Cancelled'); ?></option>
-            </select>
+                <div class="col-md-auto ms-4 mt-1">
+                    <?= __('Status'); ?>
+                </div>
+                <div class="col-md-auto">
+                    <select size="1" name="note_status[<?= $noteDb->note_id; ?>]" class="form-select form-select-sm">
+                        <option value="Not started"><?= __('Not started'); ?></option>
+                        <option value="In progress" <?= $noteDb->note_status == 'In progress' ? ' selected' : ''; ?>><?= __('In progress'); ?></option>
+                        <option value="Completed" <?= $noteDb->note_status == 'Completed' ? ' selected' : ''; ?>><?= __('Completed'); ?></option>
+                        <option value="Postponed" <?= $noteDb->note_status == 'Postponed' ? ' selected' : ''; ?>><?= __('Postponed'); ?></option>
+                        <option value="Cancelled" <?= $noteDb->note_status == 'Cancelled' ? ' selected' : ''; ?>><?= __('Cancelled'); ?></option>
+                    </select>
+                </div>
+            </div>
         </td>
     </tr>
 <?php

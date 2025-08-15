@@ -79,8 +79,8 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
         <form method="post" action="index.php?page=edit_sources" style="display : inline;">
             <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
             <input type="hidden" name="source_gedcomnr" value="<?= $_POST['source_gedcomnr']; ?>">
-            <input type="submit" name="source_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="dummy5" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="source_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="dummy5" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php } ?>

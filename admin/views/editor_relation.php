@@ -3,9 +3,8 @@
 /**
  * Marriages/ relations and children list
  * 
- * TODO: when marriage is added, man is first and woman is second (this is done automatically if sexe is known!).
+ * When marriage is added, man is first and woman is second (this is done automatically if sexe is known!).
  * This is needed to show proper colours in graphical reports.
- * Just for sure: check if man is first and woman is second. Maybe show warning, or just switch persons.
  */
 
 // *** Safety line ***
@@ -16,133 +15,9 @@ if (!defined('ADMIN_PAGE')) {
 $datePlace = new \Genealogy\Include\DatePlace();
 $languageDate = new \Genealogy\Include\LanguageDate;
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
-?>
 
-<div class="p-1 m-2 genealogy_search">
-    <?php
-    if ($person->pers_fams) {
-        // *** Search for own family ***
-        $fams1 = explode(";", $person->pers_fams);
-        $fam_count = count($fams1);
-        if ($fam_count > 0) {
-            for ($i = 0; $i < $fam_count; $i++) {
-                $family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $fams1[$i] . "'");
-                $familyDb = $family->fetch(PDO::FETCH_OBJ);
-
-                // *** Highlight selected relation if there are multiple relations ***
-                $line_selected = '';
-                $button_selected = 'btn-secondary';
-                if ($fam_count > 1 and $familyDb->fam_gedcomnumber == $marriage) {
-                    //$line_selected = 'bg-primary-subtle';
-                    $button_selected = 'btn-primary';
-                }
-    ?>
-
-                <div class="row mb-2 <?= $line_selected; ?>">
-                    <div class="col-2">
-                        <?php if ($fam_count > 1) { ?>
-                            <form method="POST" action="index.php">
-                                <input type="hidden" name="page" value="<?= $page; ?>">
-                                <input type="hidden" name="marriage_nr" value="<?= $familyDb->fam_gedcomnumber; ?>">
-                                <input type="submit" name="dummy3" value="<?= __('Family') . ' ' . ($i + 1); ?>" class="btn btn-sm <?= $button_selected; ?>">
-                            </form>
-                        <?php } else { ?>
-                            <?= __('Family'); ?>
-                        <?php } ?>
-                    </div>
-
-                    <div class="col-1">
-                        <?php if ($i < ($fam_count - 1)) { ?>
-                            <a href="index.php?page=<?= $page; ?>&amp;person_id=<?= $person->pers_id; ?>&amp;fam_down=<?= $i; ?>&amp;fam_array=<?= $person->pers_fams; ?>">
-                                <img src="images/arrow_down.gif" border="0" alt="fam_down">
-                            </a>
-                        <?php } else { ?>
-                            &nbsp;&nbsp;&nbsp;
-                        <?php
-                        }
-                        if ($i > 0) {
-                        ?>
-                            <a href="index.php?page=<?= $page; ?>&amp;person_id=<?= $person->pers_id; ?>&amp;fam_up=<?= $i; ?>&amp;fam_array=<?= $person->pers_fams; ?>">
-                                <img src="images/arrow_up.gif" border="0" alt="fam_up">
-                            </a>
-                        <?php
-                        } else {
-                            //echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                        }
-                        ?>
-                    </div>
-
-                    <div class="col-9">
-                        <b><?= show_person($familyDb->fam_man) . ' ' . __('and') . ' ' . show_person($familyDb->fam_woman); ?></b>
-                        <?php
-                        if ($familyDb->fam_marr_date) {
-                            echo ' X ' . $datePlace->date_place($familyDb->fam_marr_date, '');
-                        }
-                        ?>
-                    </div>
-
-                </div>
-    <?php
-            }
-        }
-    } ?>
-</div>
-
-<!-- Add new relation -->
-<?php
-if ($menu_tab != 'children') {
-    $hideshow = '700';
-
-    // *** Set pers_sexe for new partner ***
-    if ($person->pers_sexe == 'M') {
-        $new_partner_sexe = 'F';
-    } else {
-        $new_partner_sexe = 'M';
-    }
-?>
-    <div class="p-1 m-2 genealogy_search">
-        <div class="row mb-2">
-            <div class="col-md-3"><b><?= __('Add relation'); ?></b></div>
-            <div class="col-md-9">
-                <a href="#" onclick="hideShow(<?= $hideshow; ?>);"><img src="images/family_connect.gif" alt="<?= __('Add relation'); ?>" title="<?= __('Add relation'); ?>"> <?= __('Add new relation to this person'); ?></a>
-                (<?= trim(show_person($person->pers_gedcomnumber, false, false)); ?>)
-            </div>
-        </div>
-    </div>
-<?php } ?>
-
-<div style="display:none;" class="row<?= $hideshow; ?> p-3 m-2 genealogy_search">
-    <?= add_person('partner', $new_partner_sexe); ?><br><br>
-    <form method="POST" style="display: inline;" action="index.php#marriage" name="form4" id="form4">
-        <input type="hidden" name="page" value="<?= $page; ?>">
-        <div class="row mb-2">
-            <div class="col-md-3"></div>
-            <div class="col-md-7">
-                <?= __('Or add relation with existing person:'); ?>
-            </div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-md-3"></div>
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" name="relation_add2" value="" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" required class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
-                </div>
-            </div>
-            <div class="col-md-1">
-                <input type="submit" name="dummy4" value="<?= __('Add relation'); ?>" class="btn btn-sm btn-success">
-            </div>
-        </div>
-    </form>
-</div>
-
-<?php
-/**
- * Marriage editor
- */
-
-// *** Select marriage ***
-if ($menu_tab == 'marriage' && $person->pers_fams) {
+// TODO: move code to model script.
+if ($person->pers_fams) {
     $familyDb = $db_functions->get_family($marriage);
 
     $fam_kind = $familyDb->fam_kind;
@@ -224,8 +99,155 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
     $person1 = $db_functions->get_person($man_gedcomnumber); // TODO: there allready is $person for person data.
     $person2 = $db_functions->get_person($woman_gedcomnumber);
+}
+
+$hideshow = '700';
+// *** Set pers_sexe for new partner ***
+if ($person->pers_sexe == 'M') {
+    $new_partner_sexe = 'F';
+} else {
+    $new_partner_sexe = 'M';
+}
 ?>
 
+<div class="p-1 m-2 genealogy_search">
+    <?php
+    if ($person->pers_fams) {
+        // *** Search for own family ***
+        $fams1 = explode(";", $person->pers_fams);
+        $fam_count = count($fams1);
+        if ($fam_count > 0) {
+            for ($i = 0; $i < $fam_count; $i++) {
+                $family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $fams1[$i] . "'");
+                $familyDb = $family->fetch(PDO::FETCH_OBJ);
+
+                // *** Highlight selected relation if there are multiple relations ***
+                $line_selected = '';
+                $button_selected = 'btn-secondary';
+                if ($fam_count > 1 and $familyDb->fam_gedcomnumber == $marriage) {
+                    //$line_selected = 'bg-primary-subtle';
+                    $button_selected = 'btn-primary';
+                }
+    ?>
+
+                <div class="row mb-2 <?= $line_selected; ?>">
+                    <div class="col-2">
+                        <?php if ($fam_count > 1) { ?>
+                            <form method="POST" action="index.php">
+                                <input type="hidden" name="page" value="<?= $page; ?>">
+                                <input type="hidden" name="marriage_nr" value="<?= $familyDb->fam_gedcomnumber; ?>">
+                                <input type="submit" name="dummy3" value="<?= __('Family') . ' ' . ($i + 1); ?>" class="btn btn-sm <?= $button_selected; ?>">
+                            </form>
+                        <?php } else { ?>
+                            <?= __('Family'); ?>
+                        <?php } ?>
+                    </div>
+
+                    <div class="col-1">
+                        <?php if ($i < ($fam_count - 1)) { ?>
+                            <a href="index.php?page=<?= $page; ?>&amp;person_id=<?= $person->pers_id; ?>&amp;fam_down=<?= $i; ?>&amp;fam_array=<?= $person->pers_fams; ?>">
+                                <img src="images/arrow_down.gif" border="0" alt="fam_down">
+                            </a>
+                        <?php } else { ?>
+                            &nbsp;&nbsp;&nbsp;
+                        <?php
+                        }
+                        if ($i > 0) {
+                        ?>
+                            <a href="index.php?page=<?= $page; ?>&amp;person_id=<?= $person->pers_id; ?>&amp;fam_up=<?= $i; ?>&amp;fam_array=<?= $person->pers_fams; ?>">
+                                <img src="images/arrow_up.gif" border="0" alt="fam_up">
+                            </a>
+                        <?php
+                        } else {
+                            //echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        }
+                        ?>
+                    </div>
+
+                    <div class="col-9">
+                        <b><?= show_person($familyDb->fam_man) . ' ' . __('and') . ' ' . show_person($familyDb->fam_woman); ?></b>
+                        <?php
+                        if ($familyDb->fam_marr_date) {
+                            echo ' X ' . $datePlace->date_place($familyDb->fam_marr_date, '');
+                        }
+                        ?>
+                    </div>
+
+                </div>
+    <?php
+            }
+        }
+
+        // *** Automatically calculate birth date if marriage date and marriage age by man is used ***
+        if (
+            isset($_POST["fam_man_age"]) && $_POST["fam_man_age"] != '' && $fam_marr_date != '' && $person1->pers_birth_date == '' && $person1->pers_bapt_date == ''
+        ) {
+            $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
+            $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
+                WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :man_gedcomnumber";
+            $stmt = $dbh->prepare($sql);
+            $stmt->execute([
+                ':pers_birth_date' => $pers_birth_date,
+                ':tree_id' => $tree_id,
+                ':man_gedcomnumber' => $man_gedcomnumber
+            ]);
+        }
+
+        // *** Automatically calculate birth date if marriage date and marriage age by woman is used ***
+        if (
+            isset($_POST["fam_woman_age"]) && $_POST["fam_woman_age"] != '' && $fam_marr_date != '' && $person2->pers_birth_date == '' && $person2->pers_bapt_date == ''
+        ) {
+            $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
+            $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
+                WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :woman_gedcomnumber";
+            $stmt = $dbh->prepare($sql);
+            $stmt->execute([
+                ':pers_birth_date' => $pers_birth_date,
+                ':tree_id' => $tree_id,
+                ':woman_gedcomnumber' => $woman_gedcomnumber
+            ]);
+        }
+    } ?>
+</div>
+
+<!-- Add new relation -->
+<div class="p-1 m-2 genealogy_search">
+    <div class="row mb-2">
+        <div class="col-md-3"><b><?= __('Add relation'); ?></b></div>
+        <div class="col-md-9">
+            <a href="#" onclick="hideShow(<?= $hideshow; ?>);"><img src="images/family_connect.gif" alt="<?= __('Add relation'); ?>" title="<?= __('Add relation'); ?>"> <?= __('Add new relation to this person'); ?></a>
+            (<?= trim(show_person($person->pers_gedcomnumber, false, false)); ?>)
+        </div>
+    </div>
+</div>
+
+<div style="display:none;" class="row<?= $hideshow; ?> p-3 m-2 genealogy_search">
+    <?= add_person('partner', $new_partner_sexe); ?><br><br>
+    <form method="POST" style="display: inline;" action="index.php#marriage" name="form4" id="form4">
+        <input type="hidden" name="page" value="<?= $page; ?>">
+        <div class="row mb-2">
+            <div class="col-md-3"></div>
+            <div class="col-md-7">
+                <?= __('Or add relation with existing person:'); ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" name="relation_add2" value="" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" required class="form-control form-control-sm">
+                    <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <input type="submit" name="dummy4" value="<?= __('Add relation'); ?>" class="btn btn-sm btn-success">
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Marriage editor -->
+<?php if ($person->pers_fams) { ?>
     <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
         <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="connect_man_old" value="<?= $man_gedcomnumber; ?>">
@@ -256,8 +278,8 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                 <?php } ?>
                 <?= __('Are you sure to remove this mariage?'); ?>
                 <input type="hidden" name="fam_remove3" value="<?= $fam_remove; ?>">
-                <input type="submit" name="fam_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                <input type="submit" name="fam_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+                <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
             </div>
         <?php } ?>
 
@@ -283,7 +305,6 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             <tr>
                 <td><?= ucfirst(__('marriage/ relation')); ?></td>
                 <td colspan="2">
-
                     <?php if ($person1->pers_sexe == 'F' && $person2->pers_sexe == 'M') { ?>
                         <div class="alert alert-danger" role="alert">
                             <?= __('Person 1 should be the man. Switch person 1 and person 2.'); ?>
@@ -291,51 +312,41 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                         </div>
                     <?php } ?>
 
-                    <?= __('Select person 1'); ?> <input type="text" name="connect_man" value="<?= $man_gedcomnumber; ?>" size="5">
+                    <div class="row mb-2">
+                        <div class="col-md-auto">
+                            <?= __('Select person 1'); ?>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" name="connect_man" value="<?= $man_gedcomnumber; ?>" size="5" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-auto">
+                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person_item=man&person=<?= $man_gedcomnumber; ?>&tree_id=<?= $tree_id; ?>","","width=500,height=500,top=100,left=100,scrollbars=yes")'>
+                                <img src="../images/search.png" alt="<?= __('Search'); ?>">
+                            </a>
+                        </div>
+                        <div class="col-md-auto">
+                            <b><?= $editor_cls->show_selected_person($person1); ?></b>
+                        </div>
+                    </div>
 
-                    <?php
-                    echo '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person_item=man&person=' . $man_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
+                    <?= __('and'); ?>
 
-                    // *** Automatically calculate birth date if marriage date and marriage age by man is used ***
-                    if (
-                        isset($_POST["fam_man_age"]) && $_POST["fam_man_age"] != '' && $fam_marr_date != '' && $person1->pers_birth_date == '' && $person1->pers_bapt_date == ''
-                    ) {
-                        $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
-                        $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
-                            WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :man_gedcomnumber";
-                        $stmt = $dbh->prepare($sql);
-                        $stmt->execute([
-                            ':pers_birth_date' => $pers_birth_date,
-                            ':tree_id' => $tree_id,
-                            ':man_gedcomnumber' => $man_gedcomnumber
-                        ]);
-                    }
-                    ?>
-
-                    <b><?= $editor_cls->show_selected_person($person1); ?></b><br>
-                    <?= __('and'); ?><br>
-
-                    <?= __('Select person 2'); ?> <input type="text" name="connect_woman" value="<?= $woman_gedcomnumber; ?>" size="5">
-
-                    <?php
-                    echo '<a href="#" onClick=\'window.open("index.php?page=editor_person_select&person_item=woman&person=' . $woman_gedcomnumber . '&tree_id=' . $tree_id . '","","width=500,height=500,top=100,left=100,scrollbars=yes")\'><img src="../images/search.png" alt="' . __('Search') . '"></a>';
-
-                    // *** Automatically calculate birth date if marriage date and marriage age by woman is used ***
-                    if (
-                        isset($_POST["fam_woman_age"]) && $_POST["fam_woman_age"] != '' && $fam_marr_date != '' && $person2->pers_birth_date == '' && $person2->pers_bapt_date == ''
-                    ) {
-                        $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
-                        $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
-                            WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :woman_gedcomnumber";
-                        $stmt = $dbh->prepare($sql);
-                        $stmt->execute([
-                            ':pers_birth_date' => $pers_birth_date,
-                            ':tree_id' => $tree_id,
-                            ':woman_gedcomnumber' => $woman_gedcomnumber
-                        ]);
-                    }
-                    ?>
-                    <b><?= $editor_cls->show_selected_person($person2); ?></b>
+                    <div class="row mt-3">
+                        <div class="col-md-auto">
+                            <?= __('Select person 2'); ?>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" name="connect_woman" value="<?= $woman_gedcomnumber; ?>" size="5" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-auto">
+                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person_item=woman&person=<?= $woman_gedcomnumber; ?>&tree_id=<?= $tree_id; ?>","","width=500,height=500,top=100,left=100,scrollbars=yes")'>
+                                <img src="../images/search.png" alt="<?= __('Search'); ?>">
+                            </a>
+                        </div>
+                        <div class="col-md-auto">
+                            <b><?= $editor_cls->show_selected_person($person2); ?></b>
+                        </div>
+                    </div>
                 </td>
             </tr>
 
@@ -921,7 +932,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
             <tr>
                 <td></td>
                 <td colspan="2">
-                    <input type="checkbox" name="fam_div_no_data" value="no_data" <?= $fam_div_no_data ? ' checked' : ''; ?>>
+                    <input type="checkbox" name="fam_div_no_data" value="no_data" class="form-check-input" <?= $fam_div_no_data ? ' checked' : ''; ?>>
                     <?= __('Divorce (use this checkbox for a divorce without further data).'); ?>
                 </td>
             </tr>
@@ -1095,6 +1106,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
 
     <?php
     if ($marriage) {
+        // TODO: move to model script.
         // *** Automatic order of children ***
         if (isset($_GET['order_children'])) {
             function date_string($text)
@@ -1233,6 +1245,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
                                 </span>
                                 <?= show_person($fam_children_array[$j], true); ?>
                             </div>
+                        </div>
                     </li>
                 <?php } ?>
             </ul>
@@ -1291,6 +1304,7 @@ if ($menu_tab == 'marriage' && $person->pers_fams) {
     }
 }
 
+// TODO: use separate view script.
 // *** New function aug. 2021: Add partner or child ***
 function add_person($person_kind, $pers_sexe)
 {

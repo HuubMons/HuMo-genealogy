@@ -46,9 +46,6 @@ if (isset($_POST['duplicate_compare'])) {
             $nr = ++$_SESSION['present_compare_' . $trees['tree_id']];
             continue; // look for next pair in array
         } else {
-?>
-            <br><?= __('Carefully compare these two persons. Only if you are <b>absolutely sure</b> they are identical, press "Merge right into left".'); ?><br><br>
-            <?php
             $left = $comp_set[0];
             $right = $comp_set[1];
             if (isset($_POST['left'])) {
@@ -57,59 +54,72 @@ if (isset($_POST['duplicate_compare'])) {
             if (isset($_POST['right'])) {
                 $right = $_POST['right'];
             }
-            ?>
+?>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="tree">
-                <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
-                <input type="submit" value="<?= __('Back to main merge menu'); ?>" class="btn btn-sm btn-secondary">
-            </form>
+            <br><?= __('Carefully compare these two persons. Only if you are <b>absolutely sure</b> they are identical, press "Merge right into left".'); ?><br><br>
+            <div class="row mb-3">
+                <div class="col-md-auto">
+                    <form method="post" action="index.php">
+                        <input type="hidden" name="page" value="tree">
+                        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
+                        <input type="submit" value="<?= __('Back to main merge menu'); ?>" class="btn btn-sm btn-secondary">
+                    </form>
+                </div>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="tree">
-                <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
-                <input type="hidden" name="no_increase" value="1">
-                <input type="hidden" name="left" value="<?= $right; ?>">
-                <input type="hidden" name="right" value="<?= $left; ?>">
-                <input type="submit" name="duplicate_compare" value="<?= __('<- Switch left and right ->'); ?>" class="btn btn-sm btn-secondary">
-            </form>
+                <div class="col-md-auto ms-2">
+                    <form method="post" action="index.php">
+                        <input type="hidden" name="page" value="tree">
+                        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
+                        <input type="hidden" name="no_increase" value="1">
+                        <input type="hidden" name="left" value="<?= $right; ?>">
+                        <input type="hidden" name="right" value="<?= $left; ?>">
+                        <input type="submit" name="duplicate_compare" value="<?= __('<- Switch left and right ->'); ?>" class="btn btn-sm btn-secondary">
+                    </form>
+                </div>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="tree">
-                <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
-                <input type="submit" name="duplicate_compare" value="<?= __('Skip to next'); ?>" class="btn btn-sm btn-secondary">
-            </form>
+                <div class="col-md-auto ms-2">
+                    <form method="post" action="index.php" style="display: inline;">
+                        <input type="hidden" name="page" value="tree">
+                        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
+                        <input type="submit" name="duplicate_compare" value="<?= __('Skip to next'); ?>" class="btn btn-sm btn-secondary">
+                    </form>
+                </div>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;<?= __('Skip to nr: '); ?>
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="tree">
-                <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
-                <select style="max-width:60px" name="choice_nr">
-                    <?php for ($x = 0; $x < count($_SESSION['dupl_arr_' . $trees['tree_id']]); $x++) { ?>
-                        <option value="<?= $x; ?>" <?= $x == $_SESSION['present_compare_' . $trees['tree_id']] ? 'selected' : ''; ?>><?= ($x + 1); ?></option>
-                    <?php } ?>
-                </select>
-                <input type="submit" name="duplicate_compare" value="<?= __('Go!'); ?>" class="btn btn-sm btn-secondary">
-            </form>
+                <div class="col-md-auto ms-2">
+                    <?= __('Skip to nr: '); ?>
+                </div>
+                <div class="col-md-auto">
+                    <form method="post" action="index.php" style="display: inline;">
+                        <div class="input-group">
+                            <input type="hidden" name="page" value="tree">
+                            <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                            <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
+                            <select style="max-width:60px" name="choice_nr" class="form-select form-select-sm">
+                                <?php for ($x = 0; $x < count($_SESSION['dupl_arr_' . $trees['tree_id']]); $x++) { ?>
+                                    <option value="<?= $x; ?>" <?= $x == $_SESSION['present_compare_' . $trees['tree_id']] ? 'selected' : ''; ?>><?= ($x + 1); ?></option>
+                                <?php } ?>
+                            </select>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <form method="post" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="tree">
-                <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
-                <input type="hidden" name="dupl" value="1">
-                <input type="submit" name="merge" value="<?= __('Merge right into left'); ?>" class="btn btn-sm btn-success">
-                <br><br>
-                <?php $treeMerge->show_pair($left, $right, 'duplicate'); ?>
-                <br>
-            </form>
+                            <input type="submit" name="duplicate_compare" value="<?= __('Go!'); ?>" class="btn btn-sm btn-secondary">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-auto ms-2">
+                    <form method="post" action="index.php" style="display: inline;">
+                        <input type="hidden" name="page" value="tree">
+                        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                        <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
+                        <input type="hidden" name="dupl" value="1">
+                        <input type="submit" name="merge" value="<?= __('Merge right into left'); ?>" class="btn btn-sm btn-success">
+                    </form>
+                </div>
+            </div>
+
+            <?php $treeMerge->show_pair($left, $right, 'duplicate'); ?>
 
         <?php
             break; // get out of the while loop. next loop will be called by skip or merge buttons
@@ -124,7 +134,7 @@ if (isset($_POST['duplicate_compare'])) {
             <input type="hidden" name="page" value="tree">
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
             <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
-            <input type="submit" value="<?= __('Back to main merge menu'); ?>">
+            <input type="submit" value="<?= __('Back to main merge menu'); ?>" class="btn btn-sm btn-success">
         </form>
     <?php
     }

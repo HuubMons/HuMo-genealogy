@@ -88,8 +88,8 @@ $tree_result = $dbh->query($tree_sql);
             <input type="hidden" name="page" value="notes">
             <input type="hidden" name="tree" value="<?= $tree_id; ?>">
             <input type="hidden" name="note_id" value="<?= $_POST['note_id']; ?>">
-            <input type="submit" name="note_remove" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="note_remove" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php

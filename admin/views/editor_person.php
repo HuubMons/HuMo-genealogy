@@ -502,9 +502,9 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                     <div id="ajax_pers_lastname"><?= $pers_lastname; ?></div>
 
                     <label>Name:</label>
-                    <input id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" type="text">
+                    <input type="text" id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" class="form-control form-control-sm">
                     <label>Name:</label>
-                    <input id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" type="text">
+                    <input type="text" id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" class="form-control form-control-sm">
                     <input id="submit_ajax" type="button" value="Submit" class="btn btn-sm btn-success">
                     <?php
                     // END TEST SCRIPT
@@ -1702,7 +1702,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             <tr><td><?= __('Quality of data');?></td>
                 <td style="border-right:0px;"></td>
                 <td style="border-left:0px;">
-                    <select size="1" name="pers_quality" aria-label="<?= __('Quality of data'); ?>" style="width: 400px">
+                    <select size="1" name="pers_quality" aria-label="<?= __('Quality of data'); ?>" class="form-select form-select-sm" style="width: 400px">
                         <option value=""><?= ucfirst(__('quality: default'));?></option>
                         $selected=''; if ($pers_quality=='0'){ $selected=' selected'; }
                         <option value="0"<?= $selected;?>><?= ucfirst(__('quality: unreliable evidence or estimated data'));?></option>

@@ -128,7 +128,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
                             <td><?= __('At a local PC also install database'); ?></td>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="install_database" <?= isset($_POST["install_database"]) ? 'checked' : ''; ?>>
+                                    <input type="checkbox" class="form-check-input" name="install_database" <?= isset($_POST["install_database"]) ? 'checked' : ''; ?>>
                                     <label class="form-check-label"><?= __('YES, also install database'); ?></label>
                                 </div>
                             </td>

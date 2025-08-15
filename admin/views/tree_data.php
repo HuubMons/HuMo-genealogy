@@ -31,11 +31,11 @@ if (!defined('ADMIN_PAGE')) {
             <div class="col-md-3"><?= __('Path to the pictures'); ?></div>
             <div class="col-md-auto">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" value="yes" name="default_path" id="default_path" <?= $trees['default_path'] ? 'checked' : ''; ?>>
+                    <input type="radio" class="form-check-input" value="yes" name="default_path" id="default_path" <?= $trees['default_path'] ? 'checked' : ''; ?>>
                     <label class="form-check-label" for="default_path"><?= __('Use default picture path:'); ?> <b>media/</b></label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" value="no" name="default_path" id="default_path" <?= !$trees['default_path'] ? 'checked' : ''; ?>>
+                    <input type="radio" class="form-check-input" value="no" name="default_path" id="default_path" <?= !$trees['default_path'] ? 'checked' : ''; ?>>
                     <label class="form-check-label" for="default_path">
                         <input type="text" name="tree_pict_path" value="<?= $trees['tree_pict_path']; ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
                     </label>

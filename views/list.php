@@ -36,7 +36,7 @@ if ($list["index_list"] == 'places') {
             <div class="row mb-2">
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_birth" id="select_birth" value="1" <?php if ($list["select_birth"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_birth" id="select_birth" value="1" <?= $list["select_birth"] == '1' ? 'checked' : ''; ?> class="form-check-input">
 
                         <label class="form-check-label" for="select_birth">
                             <span class="place_index_selected" style="float:none;"><?= __('*'); ?></span>
@@ -48,7 +48,7 @@ if ($list["index_list"] == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_bapt" value="1" <?php if ($list["select_bapt"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_bapt" value="1" <?= $list["select_bapt"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('~'); ?></span>
                         <?= __('bapt pl.'); ?>
                     </div>
@@ -56,7 +56,7 @@ if ($list["index_list"] == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_place" value="1" <?php if ($list["select_place"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_place" value="1" <?= $list["select_place"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('^'); ?></span>
                         <?= __('residence'); ?>
                     </div>
@@ -64,7 +64,7 @@ if ($list["index_list"] == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_death" value="1" <?php if ($list["select_death"] == '1') echo 'checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_death" value="1" <?= $list["select_death"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('&#134;'); ?></span>
                         <?= __('death pl.'); ?>
                     </div>
@@ -72,7 +72,7 @@ if ($list["index_list"] == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_buried" value="1" <?php if ($list["select_buried"] == '1') echo 'checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_buried" value="1" <?= $list["select_buried"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= __('[]'); ?></span>
                         <?= __('bur pl.'); ?>
                     </div>
@@ -80,7 +80,7 @@ if ($list["index_list"] == 'places') {
 
                 <div class="col-2">
                     <div class="form-check">
-                        <input type="Checkbox" name="select_event" value="1" <?php if ($list["select_event"] == '1') echo ' checked'; ?> class="form-check-input">
+                        <input type="Checkbox" name="select_event" value="1" <?= $list["select_event"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                         <span class="place_index_selected" style="float:none;"><?= substr(__('Events'), 0, 1); ?></span>
                         <?= __('Events'); ?>
                     </div>
@@ -96,8 +96,8 @@ if ($list["index_list"] == 'places') {
                 <div class="col-2">
                     <select id="part_place_name" name="part_place_name" class="form-select form-select-sm">
                         <option value="contains"><?= __('Contains'); ?></option>
-                        <option value="equals" <?php if ($list["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
-                        <option value="starts_with" <?php if ($list["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                        <option value="equals" <?= $list["part_place_name"] == 'equals' ? ' selected' : ''; ?>><?= __('Equals'); ?></option>
+                        <option value="starts_with" <?= $list["part_place_name"] == 'starts_with' ? ' selected' : ''; ?>><?= __('Starts with'); ?></option>
                     </select>
                 </div>
 
@@ -205,7 +205,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                             <div class="input-group mb-3">
                                 <div class="input-group-text">
                                     <!-- Optional search for prefix -->
-                                    <input class="form-check-input mt-0" type="checkbox" name="use_pers_prefix" value="" <?= $selection['use_pers_prefix'] == 'USED' ? 'checked' : ''; ?>>
+                                    <input type="checkbox" class="form-check-input mt-0" name="use_pers_prefix" value="" <?= $selection['use_pers_prefix'] == 'USED' ? 'checked' : ''; ?>>
                                 </div>
                                 <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= $safeTextShow->safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
                             </div>

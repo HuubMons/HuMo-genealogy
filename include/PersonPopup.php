@@ -196,9 +196,15 @@ class PersonPopup
                 $dropdown_style = 'style="--bs-btn-padding-y: 0rem; --bs-btn-padding-x: 0rem; --bs-btn-font-size: .6rem;"';
             }
 
+            $dropdown_width = '350px';
+            if ($text_extended) {
+                $dropdown_width = '600px';
+            }
+
             $text = '<div class="dropdown dropend d-inline">';
             $text .= '<button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" ' . $dropdown_style . '>' . $popover_text . '</button>';
-            $text .= '<ul class="dropdown-menu p-2" style="width:600px;">';
+            //$text .= '<ul class="dropdown-menu p-2 bg-light" style="width:' . $dropdown_width . ';">';
+            $text .= '<ul class="dropdown-menu p-2 bg-light border-primary-subtle" style="width:' . $dropdown_width . ';">';
             if ($text_extended) {
                 $text .= $text_name;
                 $text .= '<table><tr><td style="width:auto; border: solid 0px; border-right:solid 1px #999999;">';

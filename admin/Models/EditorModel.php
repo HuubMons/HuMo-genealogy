@@ -553,9 +553,9 @@ class EditorModel extends AdminBaseModel
         //TODO sources, editor notes, wisselen van vrouw en man in relatie, toevoegen kind.
         // Bij bronnen een array meesturen met alle namen van de bron knoppen?
         /* Voorbeeld:
-        <input type="text" name="add_source_button[]" value="'.$page_source.'"/>
-        <input type="text" name="add_source_button[]" value="'.$page_source.'"/>
-        <input type="text" name="add_source_button[]" value="'.$page_source.'"/>
+        <input type="text" name="add_source_button[]" value="' . $page_source . '" class="form-control form-control-sm">
+        <input type="text" name="add_source_button[]" value="' . $page_source . '" class="form-control form-control-sm">
+        <input type="text" name="add_source_button[]" value="' . $page_source . '" class="form-control form-control-sm">
 
         http://localhost/humo-genealogy/admin/index.php?
         page=editor&
@@ -1725,8 +1725,8 @@ class EditorModel extends AdminBaseModel
                     $confirm .= '<input type="hidden" name="family_id" value="' . $_POST['family_id'] . '">';
                     $confirm .= '<input type="hidden" name="children" value="' . $_POST['children'] . '">';
                     $confirm .= '<input type="hidden" name="child_connect2" value="' . $_POST['child_connect2'] . '">';
-                    $confirm .= ' <input type="submit" name="child_connecting" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-                    $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+                    $confirm .= ' <input type="submit" name="child_connecting" value="' . __('Yes') . '" class="btn btn-sm btn-danger">';
+                    $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" class="btn btn-sm btn-success ms-3">';
                     $confirm .= '</form>';
                     $confirm .= '</div>';
                 } else {
@@ -2768,14 +2768,15 @@ class EditorModel extends AdminBaseModel
             $confirm .= '<input type="hidden" name="event_drop" value="' . $_GET['event_drop'] . '">';
 
             if (isset($_GET['event_kind']) && $_GET['event_kind'] == 'person_colour_mark') {
-                $selected = ''; //if ($selected_alive=='alive'){ $selected=' checked'; }
+                $selected = '';
+                //if ($selected_alive=='alive'){ $selected=' checked'; }
                 $confirm .= '<br>' . __('Also remove colour marks of');
-                $confirm .= ' <input type="checkbox" name="event_descendants" value="alive"' . $selected . '> ' . __('Descendants');
-                $confirm .= ' <input type="checkbox" name="event_ancestors" value="alive"' . $selected . '> ' . __('Ancestors') . '<br>';
+                $confirm .= ' <input type="checkbox" name="event_descendants" value="alive" class="form-check-input" ' . $selected . '> ' . __('Descendants');
+                $confirm .= ' <input type="checkbox" name="event_ancestors" value="alive" class="form-check-input" ' . $selected . '> ' . __('Ancestors') . '<br>';
             }
 
-            $confirm .= ' <input type="submit" name="event_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-            $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+            $confirm .= ' <input type="submit" name="event_drop2" value="' . __('Yes') . '" class="btn btn-sm btn-danger">';
+            $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" class="btn btn-sm btn-success ms-3">';
             $confirm .= '</form>';
             $confirm .= '</div>';
         }
@@ -2943,9 +2944,9 @@ class EditorModel extends AdminBaseModel
                 $event_qry = $this->dbh->query($event_sql);
                 while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                     $sql = "UPDATE humo_events SET
-                event_order='" . ($eventDb->event_order - 1) . "',
-                event_changed_user_id='" . $this->userid . "'
-                WHERE event_id='" . $eventDb->event_id . "'";
+                        event_order='" . ($eventDb->event_order - 1) . "',
+                        event_changed_user_id='" . $this->userid . "'
+                        WHERE event_id='" . $eventDb->event_id . "'";
                     $this->dbh->query($sql);
                 }
             }
@@ -3274,8 +3275,8 @@ class EditorModel extends AdminBaseModel
                     ?>
 
                     <strong><?= __('Are you sure you want to remove this event?'); ?></strong>
-                    <input type="submit" name="connect_drop2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                    <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                    <input type="submit" name="connect_drop2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+                    <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
                 </form>
             </div>
 <?php
@@ -3806,8 +3807,8 @@ class EditorModel extends AdminBaseModel
             $confirm .= ' <form method="post" action="index.php" style="display : inline;">';
             $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
             $confirm .= '<input type="hidden" name="note_drop" value="' . $_GET['note_drop'] . '">';
-            $confirm .= ' <input type="submit" name="note_drop2" value="' . __('Yes') . '" style="color : red; font-weight: bold;">';
-            $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" style="color : blue; font-weight: bold;">';
+            $confirm .= ' <input type="submit" name="note_drop2" value="' . __('Yes') . '" class="btn btn-sm btn-danger">';
+            $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" class="btn btn-sm btn-success ms-3">';
             $confirm .= '</form>';
             $confirm .= '</div>';
         }

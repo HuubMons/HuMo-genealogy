@@ -152,8 +152,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                         <?= __('Display deaths until: '); ?>
                     <?php } ?>
 
-                    &nbsp;<input type="text" id="amount" disabled="disabled" size="4" style="border:0;color:#0000CC;font-weight:normal;font-size:115%;">
-                    &nbsp;&nbsp;
+                    <input type="text" id="amount" disabled="disabled" size="4" style="border:0;color:#0000CC;font-weight:normal;font-size:115%;">
                 </div>
 
                 <!-- Slider -->
@@ -162,7 +161,6 @@ $datePlace = new \Genealogy\Include\DatePlace();
                 <?php } else { ?>
                     <div id="slider" style="float:right;direction:ltr;width:150px;margin-top:7px;margin-right:15px;"></div>
                 <?php } ?>
-
             </div>
         <?php } ?>
     </div>
@@ -213,7 +211,6 @@ $datePlace = new \Genealogy\Include\DatePlace();
         </div>
 
         <?php if ($maps['select_world_map'] == 'Google') { ?>
-
             <!-- TODO: use bootstrap. Don't show list of persons, but use search options -->
             <div class="col-auto">
                 <form method="POST" style="display:inline" name="descform" action="<?= $link; ?>">
@@ -221,7 +218,6 @@ $datePlace = new \Genealogy\Include\DatePlace();
                     <input type="submit" name="anything" value="<?= __('Filter by descendants'); ?>" class="btn btn-sm btn-secondary">
                 </form>
             </div>
-
 
             <?php /*
             // Maybe just add a search box in the main form? Use 1 search box with option: descendants/ anscestors.
@@ -283,8 +279,6 @@ $datePlace = new \Genealogy\Include\DatePlace();
             </div>
             */
             ?>
-
-
 
             <!-- TODO: use bootstrap. Don't show list of persons, but use search options -->
             <div class="col-auto">
@@ -380,13 +374,11 @@ $datePlace = new \Genealogy\Include\DatePlace();
             </div>
         </div>
     <?php } ?>
-
 </div>
 
 
-
 <?php
-// TODO: use bootstrap.
+// TODO: check this code. If Bootstrap is used, remove adjustments.
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH DESCENDANTS
 if (isset($_POST['descmap'])) {
     //adjust pulldown for mobiles/tablets
@@ -402,8 +394,8 @@ if (isset($_POST['descmap'])) {
             $select_height = '100px';
         }
     }
-
 ?>
+
     <div id="descmapping" style="display:block; z-index:100; position:absolute; top:150px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
         <?php
         $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
@@ -416,7 +408,6 @@ if (isset($_POST['descmap'])) {
             <select style="max-width:396px;background:#eee" <?= $select_size; ?> onChange="window.location=this.value;" id="desc_map" name="desc_map">
                 <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
                 <?php
-                //prepared statement out of loop
                 $chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber =? AND fam_children != ''");
                 $chld_prep->bindParam(1, $chld_var);
                 while ($desc_searchDb = $desc_search_result->fetch(PDO::FETCH_OBJ)) {
@@ -509,14 +500,21 @@ if (isset($_POST['descmap'])) {
             }
         </script>
         <br>
-        <div style="margin-top:5px;text-align:left">
-            <?php
-            echo '&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
-            ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?= $link; ?>"><?= __('Cancel'); ?></a>
+        <div class="row mb-2">
+            <div class="col-md-auto">
+                <?= __('Find by ID (I324):'); ?>
+            </div>
+            <div class="col-md-2">
+                <input id="id_field" type="text" value="" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-auto">
+                <input type="button" value="<?= __('Search'); ?>" onclick="findGednr(getElementById('id_field').value);" class="btn btn-sm btn-primary">
+            </div>
+            <div class="col-md-auto">
+                <a href="<?= $link; ?>"><?= __('Cancel'); ?></a>
+            </div>
         </div>
-    </div>
-<?php
+    <?php
 }
 
 // TODO: use bootstrap.
@@ -535,167 +533,173 @@ if (isset($_POST['ancmap'])) {
             $select_height = '100px';
         }
     }
-
-?>
-    <div id="ancmapping" style="display:block; z-index:100; position:absolute; top:150px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
-        <?php
-        $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
-        $anc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
-        $anc_search_result = $dbh->query($anc_search);
-        ?>
-        &nbsp;&nbsp;<strong><?= __('Filter by ancestors of a person'); ?></strong><br>
-        &nbsp;&nbsp;<?= __('Pick a name or enter ID:'); ?><br>
-        <form method="POST" action="" style="display : inline;">
-            <select style="max-width:396px;background:#eee" <?= $select_size; ?> onChange="window.location=this.value;" id="anc_map" name="anc_map">
-                <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
-                <?php
-                //prepared statement out of loop
-                $chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber =? AND fam_children != ''");
-                $chld_prep->bindParam(1, $chld_var);
-                while ($anc_searchDb = $anc_search_result->fetch(PDO::FETCH_OBJ)) {
-                    $countmarr = 0;
-                    $fam_arr = explode(";", $anc_searchDb->pers_fams);
-                    foreach ($fam_arr as $value) {
-                        if ($countmarr == 1) {
-                            //this person is already listed
-                            break;
-                        }
-                        $chld_var = $value;
-                        $chld_prep->execute();
-                        while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
-                            $countmarr = 1;
-                            $selected = '';
-                            //if($anc_searchDb->pers_gedcomnumber == $chosenperson) {
-                            //  $selected = ' selected ';
-                            //}
-                            $privacy_man = $personPrivacy->get_privacy($anc_searchDb);
-                            $date = '';
-                            if (!$privacy_man) {
-                                // don't show dates if privacy is set for this person
-                                // if a person has privacy set (even if only for data, not for name,
-                                // we won't put them on the list. Most likely it concerns recent people.
-                                $b_date = $anc_searchDb->pers_birth_date;
-                                $b_sign = __('born') . ' ';
-                                if (!$anc_searchDb->pers_birth_date && $anc_searchDb->pers_bapt_date) {
-                                    $b_date = $anc_searchDb->pers_bapt_date;
-                                    $b_sign = __('baptised') . ' ';
-                                }
-                                $d_date = $anc_searchDb->pers_death_date;
-                                $d_sign = __('died') . ' ';
-                                if (!$anc_searchDb->pers_death_date && $anc_searchDb->pers_buried_date) {
-                                    $d_date = $anc_searchDb->pers_buried_date;
-                                    $d_sign = __('buried') . ' ';
-                                }
-                                $date = '';
-                                if ($b_date && !$d_date) {
-                                    $date = ' (' . $b_sign . $datePlace->date_place($b_date, '') . ')';
-                                }
-                                if ($b_date && $d_date) {
-                                    $date .= ' (' . $b_sign . $datePlace->date_place($b_date, '') . ' - ' . $d_sign . $datePlace->date_place($d_date, '') . ')';
-                                }
-                                if (!$b_date && $d_date) {
-                                    $date = '(' . $d_sign . $datePlace->date_place($d_date, '') . ')';
-                                }
-                            }
-                            if (!$privacy_man || ($privacy_man && $user['group_filter_name'] == "j")) {
-                                // don't show the person at all on the list if names are hidden when privacy is set for person
-                                $name = '';
-                                $pref = '';
-                                $last = '- , ';
-                                $first = '-';
-                                if ($anc_searchDb->pers_lastname) {
-                                    $last = $anc_searchDb->pers_lastname . ', ';
-                                }
-                                if ($anc_searchDb->pers_firstname) {
-                                    $first = $anc_searchDb->pers_firstname;
-                                }
-                                if ($anc_searchDb->pers_prefix) {
-                                    $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
-                                }
-
-                                if ($user['group_kindindex'] == "j") {
-                                    if ($anc_searchDb->pers_prefix) {
-                                        $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix)) . ' ';
-                                    }
-                                    $name = $pref . $last . $first;
-                                } else {
-                                    if ($anc_searchDb->pers_prefix) {
-                                        $pref = ' ' . strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
-                                    }
-                                    $name = $last . $first . $pref;
-                                }
-                ?>
-                                <option value="<?= $link2; ?>anc_persged=<?= $anc_searchDb->pers_gedcomnumber; ?>&anc_persfams=<?= $anc_searchDb->pers_fams; ?>" <?= $selected; ?>>
-                                    <?= $name . $date; ?> [<?= $anc_searchDb->pers_gedcomnumber; ?>]
-                                </option>
-                <?php
-                            }
-                        }
-                    }
-                }
-                ?>
-            </select>
-        </form>
-        <script>
-            function findGednr(pers_id) {
-                for (var i = 1; i < anc_map.length - 1; i++) {
-                    if (anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1) {
-                        window.location = anc_map.options[i].value;
-                    }
-                }
-            }
-        </script>
-        <br>
-        <div style="margin-top:5px;text-align:left">
+    ?>
+        <div id="ancmapping" style="display:block; z-index:100; position:absolute; top:150px; margin-left:140px; height:<?= $select_height; ?>; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">
             <?php
-            echo '&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="' . __('Go!') . '" onclick="findGednr(getElementById(\'id_field\').value);">';
+            $orderlast = $user['group_kindindex'] == "j" ? "CONCAT(pers_prefix,pers_lastname)" : "pers_lastname";
+            $anc_search = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_fams !='' ORDER BY " . $orderlast . ", pers_firstname";
+            $anc_search_result = $dbh->query($anc_search);
             ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?= $link; ?>"><?= __('Cancel'); ?></a>
-        </div>
-    </div>
-<?php
-}
+            &nbsp;&nbsp;<strong><?= __('Filter by ancestors of a person'); ?></strong><br>
+            &nbsp;&nbsp;<?= __('Pick a name or enter ID:'); ?><br>
+            <form method="POST" action="" style="display : inline;">
+                <select style="max-width:396px;background:#eee" <?= $select_size; ?> onChange="window.location=this.value;" id="anc_map" name="anc_map">
+                    <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
+                    <?php
+                    //prepared statement out of loop
+                    $chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber =? AND fam_children != ''");
+                    $chld_prep->bindParam(1, $chld_var);
+                    while ($anc_searchDb = $anc_search_result->fetch(PDO::FETCH_OBJ)) {
+                        $countmarr = 0;
+                        $fam_arr = explode(";", $anc_searchDb->pers_fams);
+                        foreach ($fam_arr as $value) {
+                            if ($countmarr == 1) {
+                                //this person is already listed
+                                break;
+                            }
+                            $chld_var = $value;
+                            $chld_prep->execute();
+                            while ($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
+                                $countmarr = 1;
+                                $selected = '';
+                                //if($anc_searchDb->pers_gedcomnumber == $chosenperson) {
+                                //  $selected = ' selected ';
+                                //}
+                                $privacy_man = $personPrivacy->get_privacy($anc_searchDb);
+                                $date = '';
+                                if (!$privacy_man) {
+                                    // don't show dates if privacy is set for this person
+                                    // if a person has privacy set (even if only for data, not for name,
+                                    // we won't put them on the list. Most likely it concerns recent people.
+                                    $b_date = $anc_searchDb->pers_birth_date;
+                                    $b_sign = __('born') . ' ';
+                                    if (!$anc_searchDb->pers_birth_date && $anc_searchDb->pers_bapt_date) {
+                                        $b_date = $anc_searchDb->pers_bapt_date;
+                                        $b_sign = __('baptised') . ' ';
+                                    }
+                                    $d_date = $anc_searchDb->pers_death_date;
+                                    $d_sign = __('died') . ' ';
+                                    if (!$anc_searchDb->pers_death_date && $anc_searchDb->pers_buried_date) {
+                                        $d_date = $anc_searchDb->pers_buried_date;
+                                        $d_sign = __('buried') . ' ';
+                                    }
+                                    $date = '';
+                                    if ($b_date && !$d_date) {
+                                        $date = ' (' . $b_sign . $datePlace->date_place($b_date, '') . ')';
+                                    }
+                                    if ($b_date && $d_date) {
+                                        $date .= ' (' . $b_sign . $datePlace->date_place($b_date, '') . ' - ' . $d_sign . $datePlace->date_place($d_date, '') . ')';
+                                    }
+                                    if (!$b_date && $d_date) {
+                                        $date = '(' . $d_sign . $datePlace->date_place($d_date, '') . ')';
+                                    }
+                                }
+                                if (!$privacy_man || ($privacy_man && $user['group_filter_name'] == "j")) {
+                                    // don't show the person at all on the list if names are hidden when privacy is set for person
+                                    $name = '';
+                                    $pref = '';
+                                    $last = '- , ';
+                                    $first = '-';
+                                    if ($anc_searchDb->pers_lastname) {
+                                        $last = $anc_searchDb->pers_lastname . ', ';
+                                    }
+                                    if ($anc_searchDb->pers_firstname) {
+                                        $first = $anc_searchDb->pers_firstname;
+                                    }
+                                    if ($anc_searchDb->pers_prefix) {
+                                        $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
+                                    }
+
+                                    if ($user['group_kindindex'] == "j") {
+                                        if ($anc_searchDb->pers_prefix) {
+                                            $pref = strtolower(str_replace('_', '', $anc_searchDb->pers_prefix)) . ' ';
+                                        }
+                                        $name = $pref . $last . $first;
+                                    } else {
+                                        if ($anc_searchDb->pers_prefix) {
+                                            $pref = ' ' . strtolower(str_replace('_', '', $anc_searchDb->pers_prefix));
+                                        }
+                                        $name = $last . $first . $pref;
+                                    }
+                    ?>
+                                    <option value="<?= $link2; ?>anc_persged=<?= $anc_searchDb->pers_gedcomnumber; ?>&anc_persfams=<?= $anc_searchDb->pers_fams; ?>" <?= $selected; ?>>
+                                        <?= $name . $date; ?> [<?= $anc_searchDb->pers_gedcomnumber; ?>]
+                                    </option>
+                    <?php
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                </select>
+            </form>
+            <script>
+                function findGednr(pers_id) {
+                    for (var i = 1; i < anc_map.length - 1; i++) {
+                        if (anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1) {
+                            window.location = anc_map.options[i].value;
+                        }
+                    }
+                }
+            </script>
+            <br>
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <?= __('Find by ID (I324):'); ?>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" id="id_field" value="" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-auto">
+                    <input type="button" value="<?= __('Search'); ?>" onclick="findGednr(getElementById('id_field').value);" class="btn btn-sm btn-primary">
+                </div>
+                <div class="col-md-auto">
+                    <a href="<?= $link; ?>"><?= __('Cancel'); ?></a>
+                </div>
+            </div>
+        <?php
+    }
 
 
-// *** OpenStreetMap ***
-if ($maps['select_world_map'] == 'OpenStreetMap') {
-?>
-    <link rel="stylesheet" href="assets/leaflet/leaflet.css">
-    <script src="assets/leaflet/leaflet.js"></script>
+    // *** OpenStreetMap ***
+    if ($maps['select_world_map'] == 'OpenStreetMap') {
+        ?>
+            <link rel="stylesheet" href="assets/leaflet/leaflet.css">
+            <script src="assets/leaflet/leaflet.js"></script>
 
-    <!-- Show OpenStreetMap -->
-    <div id="map" style="height:520px"></div>
+            <!-- Show OpenStreetMap -->
+            <div id="map" style="height:520px"></div>
 
-    <!-- Zoom in to map location -->
-    <script>
-        function findPlace() {
-            var e = document.getElementById("loc_search");
-            var locSearch = e.options[e.selectedIndex].value;
-            if (locSearch != "toptext") {
-                // if not default text "find location on map"
-                var opt_array = new Array();
-                opt_array = locSearch.split(",", 2);
+            <!-- Zoom in to map location -->
+            <script>
+                function findPlace() {
+                    var e = document.getElementById("loc_search");
+                    var locSearch = e.options[e.selectedIndex].value;
+                    if (locSearch != "toptext") {
+                        // if not default text "find location on map"
+                        var opt_array = new Array();
+                        opt_array = locSearch.split(",", 2);
 
-                //map.setView([lat, lng], zoomLevel);
-                // WERKT: map.setView([48.85, 2.35], 10);
-                map.setView([opt_array[0], opt_array[1]], 10);
-            }
-        }
-    </script>
+                        //map.setView([lat, lng], zoomLevel);
+                        // WERKT: map.setView([48.85, 2.35], 10);
+                        map.setView([opt_array[0], opt_array[1]], 10);
+                    }
+                }
+            </script>
 
-    <?php
-    // *** Map using fitbound (all markers visible) ***
-    echo '<script>
+            <?php
+            // *** Map using fitbound (all markers visible) ***
+            echo '<script>
         var map = L.map("map").setView([48.85, 2.35], 10);
         var markers = [';
 
-    // *** Add all markers from array ***
-    for ($i = 1; $i < count($maps['location']); $i++) {
-        if ($i > 1) echo ',';
-        echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
-    }
+            // *** Add all markers from array ***
+            for ($i = 1; $i < count($maps['location']); $i++) {
+                if ($i > 1) echo ',';
+                echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
+            }
 
-    echo '];
+            echo '];
         var group = L.featureGroup(markers).addTo(map);
         setTimeout(function () {
           map.fitBounds(group.getBounds());
@@ -704,15 +708,15 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
           attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
         }).addTo(map);
     </script>';
-} else {
-    ?>
+        } else {
+            ?>
 
-    <!-- Google Maps -->
-    <div id="map_canvas" style="height:520px"></div>
+            <!-- Google Maps -->
+            <div id="map_canvas" style="height:520px"></div>
 
-    <!-- Zoom in to map location -->
-    <?php
-    echo '
+            <!-- Zoom in to map location -->
+            <?php
+            echo '
     <script>
     function findPlace () {
         // infoWindow.close();
@@ -729,495 +733,488 @@ if ($maps['select_world_map'] == 'OpenStreetMap') {
     }
     </script>';
 
-    $api_key = '';
-    if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
-        //$api_key = '?key=' . $humo_option['google_api_key'] . '&callback=Function.prototype';
-        //$api_key = '?key=' . $humo_option['google_api_key'] . '&loading=async&callback=initMap';
+            $api_key = '';
+            if (isset($humo_option['google_api_key']) && $humo_option['google_api_key'] != '') {
+                //$api_key = '?key=' . $humo_option['google_api_key'] . '&callback=Function.prototype';
+                //$api_key = '?key=' . $humo_option['google_api_key'] . '&loading=async&callback=initMap';
 
-        // July 2024: for advanced markers use:
-        $api_key = '?key=' . $humo_option['google_api_key'] . '&callback=initMap&v=weekly&libraries=marker';
-    }
-    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-        echo '<script src="https://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
-    } else {
-        echo '<script src="http://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
-    }
-    //$maptype = "ROADMAP";
-    //if (isset($humo_option['google_map_type'])) {
-    //    $maptype = $humo_option['google_map_type'];
-    //}
-    // Removed from initialize:
-    //mapTypeId: google.maps.MapTypeId.<?= $maptype;
-    ?>
+                // July 2024: for advanced markers use:
+                $api_key = '?key=' . $humo_option['google_api_key'] . '&callback=initMap&v=weekly&libraries=marker';
+            }
+            if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+                echo '<script src="https://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
+            } else {
+                echo '<script src="http://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
+            }
+            //$maptype = "ROADMAP";
+            //if (isset($humo_option['google_map_type'])) {
+            //    $maptype = $humo_option['google_map_type'];
+            //}
+            // Removed from initialize:
+            //mapTypeId: google.maps.MapTypeId.<?= $maptype;
+            ?>
 
-    <script>
-        var map;
+            <script>
+                var map;
 
-        function initialize() {
-            var latlng = new google.maps.LatLng(22, -350);
-            var myOptions = {
-                zoom: 2,
-                center: latlng,
-                mapId: "MAP_07_2024", // Map ID is required for advanced markers.
-            };
-            map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-        }
-    </script>
-
-    <script>
-        initialize();
-    </script>
-
-    <script src="googlemaps/StyledMarker.js"></script>
-
-    <script>
-        var markersArray = [];
-        var markerContent = "This is a test window";
-
-        // Show marker text in infowindow.
-        infoWindow = new google.maps.InfoWindow({
-            maxWidth: 500
-        });
-
-        google.maps.event.addListener(map, 'click', function() {
-            infoWindow.close();
-        });
-
-        function handleMarkerClick(marker, index) {
-            return function() {
-                infoWindow.setContent(index);
-                infoWindow.setZIndex(1000000);
-                infoWindow.open(map, marker);
-            };
-        }
-
-        function clearOverlays() {
-            if (markersArray) {
-                for (i in markersArray) {
-                    markersArray[i].setMap(null);
+                function initialize() {
+                    var latlng = new google.maps.LatLng(22, -350);
+                    var myOptions = {
+                        zoom: 2,
+                        center: latlng,
+                        mapId: "MAP_07_2024", // Map ID is required for advanced markers.
+                    };
+                    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                 }
-                markersArray = new Array();
-            }
-        }
+            </script>
 
-        <?php
-        $nr = 0;
-        // 1 letter array name to keep download as short as possible.
-        echo 'var j = new Array();';
-        foreach ($maps['locarray'] as $key => $value) {
-            echo 'j[' . $nr . '] = new Array();';
-            echo 'j[' . $nr . '][0] = "' . $maps['locarray'][$key][0] . '";';
-            echo 'j[' . $nr . '][1] = "' . $maps['locarray'][$key][1] . '";';
-            echo 'j[' . $nr . '][2] = "' . $maps['locarray'][$key][2] . '";';
-            echo 'j[' . $nr . '][' . $maps['slider_min'] . '] = "' . $maps['locarray'][$key][3] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + $maps['slider_step']) . '] = "' . $maps['locarray'][$key][4] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (2 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][5] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (3 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][6] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (4 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][7] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (5 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][8] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (6 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][9] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (7 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][10] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (8 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][11] . '";';
-            echo 'j[' . $nr . '][2000] = "' . $maps['locarray'][$key][12] . '";'; // called 2000 but contains up till today
-            echo 'j[' . $nr . '][3] = "' . $maps['locarray'][$key][13] . '";';
-            echo "\n";
-            $nr++;
-        }
+            <script>
+                initialize();
+            </script>
 
-        echo 'var namesearch = "";';
-        $javastring = '';
-        if ($maps['family_names'] != '') {
-            // querystring for multiple family names in popup names
-            foreach ($maps['family_names'] as $value) {
-                $javastring .= $value . "@";
-            }
-            $javastring = substr($javastring, 0, -1);  // Beck@Willems@Douglas@Smith
-            echo " namesearch = '" . $javastring . "'; ";
-        }
-        ?>
+            <script src="googlemaps/StyledMarker.js"></script>
 
-        function setcolor(total) {
-            var red = "fe2e2e";
-            var blue = "2e64fe";
-            var green = "2efe2e";
-            var yellow = "f7fe2e";
-            var cyan = "04b4ae";
-            if (total < 10) {
-                return yellow;
-            } else if (total < 50) {
-                return green;
-            } else if (total < 100) {
-                return blue;
-            } else if (total < 10000) {
-                return red;
-            } else {
-                return red;
-            }
-        }
+            <script>
+                var markersArray = [];
+                var markerContent = "This is a test window";
 
-        function setmarkersize(total) {
-            if (total < 10) {
-                return '0.4';
-            } else if (total < 50) {
-                return '0.5';
-            } else if (total < 100) {
-                return '0.75';
-            } else if (total < 10000) {
-                return '0.9';
-            } else {
-                return '1.05';
-            }
-        }
+                // Show marker text in infowindow.
+                infoWindow = new google.maps.InfoWindow({
+                    maxWidth: 500
+                });
 
-        function setfontsize(total) {
-            if (total < 10) {
-                return '12';
-            } else if (total < 50) {
-                return '12';
-            } else if (total < 100) {
-                return '12';
-            } else if (total < 10000) {
-                return '12';
-            } else {
-                return '12';
-            }
-        }
+                google.maps.event.addListener(map, 'click', function() {
+                    infoWindow.close();
+                });
 
-        function makeSelection(sel) {
-            clearOverlays();
+                function handleMarkerClick(marker, index) {
+                    return function() {
+                        infoWindow.setContent(index);
+                        infoWindow.setZIndex(1000000);
+                        infoWindow.open(map, marker);
+                    };
+                }
 
-            var max = sel; // max is used for the "what" and "until" variables for the url_querystring to namesearch.php
-            if (sel > 2000) {
-                // gslider.js returned present year = last step in slider
-                sel = 2000; // sel is used as member in the j array (j[4][sel]). this member is called "2000" for all born till present year
-            }
+                function clearOverlays() {
+                    if (markersArray) {
+                        for (i in markersArray) {
+                            markersArray[i].setMap(null);
+                        }
+                        markersArray = new Array();
+                    }
+                }
 
-            var what;
-            var until;
-            if (sel == 3) {
-                // 3 flags the "all locations" button (j[i][3])
-                what = "all=1"; // for url query string
-                until = "<?= __('today '); ?>";
-            } else {
-                // years 1550, 1600 .... till today for slider
-                what = "max=" + max; // for url querystring
-                until = max; // "until 1850"
-            }
+                <?php
+                $nr = 0;
+                // 1 letter array name to keep download as short as possible.
+                echo 'var j = new Array();';
+                foreach ($maps['locarray'] as $key => $value) {
+                    echo 'j[' . $nr . '] = new Array();';
+                    echo 'j[' . $nr . '][0] = "' . $maps['locarray'][$key][0] . '";';
+                    echo 'j[' . $nr . '][1] = "' . $maps['locarray'][$key][1] . '";';
+                    echo 'j[' . $nr . '][2] = "' . $maps['locarray'][$key][2] . '";';
+                    echo 'j[' . $nr . '][' . $maps['slider_min'] . '] = "' . $maps['locarray'][$key][3] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + $maps['slider_step']) . '] = "' . $maps['locarray'][$key][4] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + (2 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][5] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + (3 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][6] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + (4 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][7] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + (5 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][8] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + (6 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][9] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + (7 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][10] . '";';
+                    echo 'j[' . $nr . '][' . ($maps['slider_min'] + (8 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][11] . '";';
+                    echo 'j[' . $nr . '][2000] = "' . $maps['locarray'][$key][12] . '";'; // called 2000 but contains up till today
+                    echo 'j[' . $nr . '][3] = "' . $maps['locarray'][$key][13] . '";';
+                    echo "\n";
+                    $nr++;
+                }
 
-            var namestring = '';
-            if (namesearch != '') {
-                namestring = 'namestring=' + namesearch;
-                //namestring = encodeURI(namestring);
-            }
+                echo 'var namesearch = "";';
+                $javastring = '';
+                if ($maps['family_names'] != '') {
+                    // querystring for multiple family names in popup names
+                    foreach ($maps['family_names'] as $value) {
+                        $javastring .= $value . "@";
+                    }
+                    $javastring = substr($javastring, 0, -1);  // Beck@Willems@Douglas@Smith
+                    echo " namesearch = '" . $javastring . "'; ";
+                }
+                ?>
 
-            // simulates the php html_entity_decode function otherwise "Delft" is displayed in tooltip as &quot;Delft&quot;
-            function convert_html(str) {
-                var temp = document.createElement("pre");
-                temp.innerHTML = str;
-                return temp.firstChild.nodeValue;
-            }
-
-            var i;
-
-            // Automatic map zoom.
-            var latlngbounds = new google.maps.LatLngBounds();
-
-            for (i = 0; i < j.length; i++) {
-                var thislat = parseFloat(j[i][1]);
-                var thislng = parseFloat(j[i][2]);
-                var thisplace = encodeURI(j[i][0]);
-                //a single quote in the name breaks the query string, so we escape it (+ double \\ to escape the \)
-                thisplace = thisplace.replace(/'/g, "\\'"); // l'Ile d'Orleans becomes l\'Ile d\'Orleans
-
-                // if 0: this location is not relevant for this period
-                if (j[i][sel] > 0) {
-                    /* Old script. Doesn't work anymore in 2024.
-                    var latlng = new google.maps.LatLng(thislat, thislng);
-                    // convert html entities in tooltip of marker:
-                    var html_loc = convert_html(j[i][0]);
-                    var styleMaker1 = new StyledMarker({
-                        styleIcon: new StyledIcon(StyledIconTypes.MARKER, {
-                            color: setcolor(j[i][sel]),
-                            text: j[i][sel],
-                            size: setmarkersize(j[i][sel]),
-                            font: setfontsize(j[i][sel])
-                        }),
-                        title: html_loc,
-                        position: latlng,
-                        map: map
-                    });
-                    markersArray.push(styleMaker1);
-                    */
-
-
-                    // July 2024: new script
-                    // convert html entities in tooltip of marker:
-                    //var html_loc = convert_html(j[i][0]);
-                    //var styleMaker1 = new google.maps.Marker({
-                    //var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
-                    var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
-                        position: {
-                            lat: thislat,
-                            lng: thislng
-                        },
-                        map,
-                        //shape: shape,
-                        //title: html_loc,
-                        //content: pinBackground.element,
-                    });
-
-
-                    // July 2024: Added automatic zoom
-                    latlng = new google.maps.LatLng(thislat, thislng);
-                    latlngbounds.extend(latlng);
-
-
-                    // wikipedia doesn't search well with "Newcastle, NSW, Australia", so we just take the place name Newcastle
-                    // Of course there are multiple places with this name but they will appear at the start of the wikipedia page, one click away...
-                    var place;
-                    var comma = j[i][0].search(/,/);
-                    if (comma != -1) {
-                        place = j[i][0].substr(0, comma);
+                function setcolor(total) {
+                    var red = "fe2e2e";
+                    var blue = "2e64fe";
+                    var green = "2efe2e";
+                    var yellow = "f7fe2e";
+                    var cyan = "04b4ae";
+                    if (total < 10) {
+                        return yellow;
+                    } else if (total < 50) {
+                        return green;
+                    } else if (total < 100) {
+                        return blue;
+                    } else if (total < 10000) {
+                        return red;
                     } else {
-                        place = j[i][0];
+                        return red;
                     }
+                }
 
-                    <?php
-                    // language variables
-                    echo 'var location ="' . __('Location: ') . '";';
-                    if ($_SESSION['type_birth'] == 1) {
-                        echo 'var list ="' . __('For a list of persons born here until ') . '";';
-                    } elseif ($_SESSION['type_death'] == 1) {
-                        echo 'var list ="' . __('For a list of all people that died here until ') . '";';
-                    }
-                    echo 'var click ="' . __(' click here') . '";';
-                    echo 'var readabout ="' . __('Read about this location in ') . '";';
-
-                    if ($selected_language == "hu") {
-                        echo 'var wikilang="hu";';
-                    } elseif ($selected_language == "nl") {
-                        echo 'var wikilang="nl";';
-                    } elseif ($selected_language == "fr") {
-                        echo 'var wikilang="fr";';
-                    } elseif ($selected_language == "de") {
-                        echo 'var wikilang="de";';
-                    } elseif ($selected_language == "fi") {
-                        echo 'var wikilang="fi";';
-                    } elseif ($selected_language == "es") {
-                        echo 'var wikilang="es";';
-                    } elseif ($selected_language == "pt") {
-                        echo 'var wikilang="pt";';
-                    } elseif ($selected_language == "it") {
-                        echo 'var wikilang="it";';
-                    } elseif ($selected_language == "no") {
-                        echo 'var wikilang="no";';
-                    } elseif ($selected_language == "sv") {
-                        echo 'var wikilang="sv";';
+                function setmarkersize(total) {
+                    if (total < 10) {
+                        return '0.4';
+                    } else if (total < 50) {
+                        return '0.5';
+                    } else if (total < 100) {
+                        return '0.75';
+                    } else if (total < 10000) {
+                        return '0.9';
                     } else {
-                        echo 'var wikilang="en";';
+                        return '1.05';
                     }
-                    ?>
+                }
 
-                    google.maps.event.addListener(
-                        styleMaker1, 'click', handleMarkerClick(
-                            styleMaker1,
-                            "<div>" + location + j[i][0] + "<br>" +
-                            readabout +
-                            "<a href=\"http://" + wikilang + ".wikipedia.org/wiki/" + place + "\" target=\"blank\"> Wikipedia </a><br> <div style = \"display:inline;\" id=\"ajaxlink\" onclick=\"loadurl('googlemaps/namesearch.php?thisplace=" +
-                            thisplace + "&amp;" +
-                            what +
-                            "&amp;" +
-                            namestring +
-                            "')\">" +
-                            list +
-                            until +
-                            ", <span style=\"color:blue;font-weight:bold\"><a href=\"javascript:void(0)\">" +
-                            click + "</a></span><br><br><br><br><div style=\"min-width:370px\"></div></div></div>"
-                        )
+                function setfontsize(total) {
+                    if (total < 10) {
+                        return '12';
+                    } else if (total < 50) {
+                        return '12';
+                    } else if (total < 100) {
+                        return '12';
+                    } else if (total < 10000) {
+                        return '12';
+                    } else {
+                        return '12';
+                    }
+                }
+
+                function makeSelection(sel) {
+                    clearOverlays();
+
+                    var max = sel; // max is used for the "what" and "until" variables for the url_querystring to namesearch.php
+                    if (sel > 2000) {
+                        // gslider.js returned present year = last step in slider
+                        sel = 2000; // sel is used as member in the j array (j[4][sel]). this member is called "2000" for all born till present year
+                    }
+
+                    var what;
+                    var until;
+                    if (sel == 3) {
+                        // 3 flags the "all locations" button (j[i][3])
+                        what = "all=1"; // for url query string
+                        until = "<?= __('today '); ?>";
+                    } else {
+                        // years 1550, 1600 .... till today for slider
+                        what = "max=" + max; // for url querystring
+                        until = max; // "until 1850"
+                    }
+
+                    var namestring = '';
+                    if (namesearch != '') {
+                        namestring = 'namestring=' + namesearch;
+                        //namestring = encodeURI(namestring);
+                    }
+
+                    // simulates the php html_entity_decode function otherwise "Delft" is displayed in tooltip as &quot;Delft&quot;
+                    function convert_html(str) {
+                        var temp = document.createElement("pre");
+                        temp.innerHTML = str;
+                        return temp.firstChild.nodeValue;
+                    }
+
+                    var i;
+
+                    // Automatic map zoom.
+                    var latlngbounds = new google.maps.LatLngBounds();
+
+                    for (i = 0; i < j.length; i++) {
+                        var thislat = parseFloat(j[i][1]);
+                        var thislng = parseFloat(j[i][2]);
+                        var thisplace = encodeURI(j[i][0]);
+                        //a single quote in the name breaks the query string, so we escape it (+ double \\ to escape the \)
+                        thisplace = thisplace.replace(/'/g, "\\'"); // l'Ile d'Orleans becomes l\'Ile d\'Orleans
+
+                        // if 0: this location is not relevant for this period
+                        if (j[i][sel] > 0) {
+                            /* Old script. Doesn't work anymore in 2024.
+                            var latlng = new google.maps.LatLng(thislat, thislng);
+                            // convert html entities in tooltip of marker:
+                            var html_loc = convert_html(j[i][0]);
+                            var styleMaker1 = new StyledMarker({
+                                styleIcon: new StyledIcon(StyledIconTypes.MARKER, {
+                                    color: setcolor(j[i][sel]),
+                                    text: j[i][sel],
+                                    size: setmarkersize(j[i][sel]),
+                                    font: setfontsize(j[i][sel])
+                                }),
+                                title: html_loc,
+                                position: latlng,
+                                map: map
+                            });
+                            markersArray.push(styleMaker1);
+                            */
+
+
+                            // July 2024: new script
+                            // convert html entities in tooltip of marker:
+                            //var html_loc = convert_html(j[i][0]);
+                            //var styleMaker1 = new google.maps.Marker({
+                            //var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
+                            var styleMaker1 = new google.maps.marker.AdvancedMarkerElement({
+                                position: {
+                                    lat: thislat,
+                                    lng: thislng
+                                },
+                                map,
+                                //shape: shape,
+                                //title: html_loc,
+                                //content: pinBackground.element,
+                            });
+
+
+                            // July 2024: Added automatic zoom
+                            latlng = new google.maps.LatLng(thislat, thislng);
+                            latlngbounds.extend(latlng);
+
+
+                            // wikipedia doesn't search well with "Newcastle, NSW, Australia", so we just take the place name Newcastle
+                            // Of course there are multiple places with this name but they will appear at the start of the wikipedia page, one click away...
+                            var place;
+                            var comma = j[i][0].search(/,/);
+                            if (comma != -1) {
+                                place = j[i][0].substr(0, comma);
+                            } else {
+                                place = j[i][0];
+                            }
+
+                            <?php
+                            // language variables
+                            echo 'var location ="' . __('Location: ') . '";';
+                            if ($_SESSION['type_birth'] == 1) {
+                                echo 'var list ="' . __('For a list of persons born here until ') . '";';
+                            } elseif ($_SESSION['type_death'] == 1) {
+                                echo 'var list ="' . __('For a list of all people that died here until ') . '";';
+                            }
+                            echo 'var click ="' . __(' click here') . '";';
+                            echo 'var readabout ="' . __('Read about this location in ') . '";';
+
+                            if ($selected_language == "hu") {
+                                echo 'var wikilang="hu";';
+                            } elseif ($selected_language == "nl") {
+                                echo 'var wikilang="nl";';
+                            } elseif ($selected_language == "fr") {
+                                echo 'var wikilang="fr";';
+                            } elseif ($selected_language == "de") {
+                                echo 'var wikilang="de";';
+                            } elseif ($selected_language == "fi") {
+                                echo 'var wikilang="fi";';
+                            } elseif ($selected_language == "es") {
+                                echo 'var wikilang="es";';
+                            } elseif ($selected_language == "pt") {
+                                echo 'var wikilang="pt";';
+                            } elseif ($selected_language == "it") {
+                                echo 'var wikilang="it";';
+                            } elseif ($selected_language == "no") {
+                                echo 'var wikilang="no";';
+                            } elseif ($selected_language == "sv") {
+                                echo 'var wikilang="sv";';
+                            } else {
+                                echo 'var wikilang="en";';
+                            }
+                            ?>
+
+                            google.maps.event.addListener(
+                                styleMaker1, 'click', handleMarkerClick(
+                                    styleMaker1,
+                                    "<div>" + location + j[i][0] + "<br>" +
+                                    readabout +
+                                    "<a href=\"http://" + wikilang + ".wikipedia.org/wiki/" + place + "\" target=\"blank\"> Wikipedia </a><br> <div style = \"display:inline;\" id=\"ajaxlink\" onclick=\"loadurl('googlemaps/namesearch.php?thisplace=" +
+                                    thisplace + "&amp;" +
+                                    what +
+                                    "&amp;" +
+                                    namestring +
+                                    "')\">" +
+                                    list +
+                                    until +
+                                    ", <span style=\"color:blue;font-weight:bold\"><a href=\"javascript:void(0)\">" +
+                                    click + "</a></span><br><br><br><br><div style=\"min-width:370px\"></div></div></div>"
+                                )
+                            );
+
+                        }
+
+                        // Automatic zoom.
+                        map.fitBounds(latlngbounds);
+                    }
+                }
+            </script>
+
+        <?php } ?>
+
+
+
+
+        <?php if (1 == 0) { ?>
+            <!-- TEST for colored and sized markers -->
+            <!-- https://developers.google.com/maps/documentation/javascript/examples/advanced-markers-basic-style -->
+            <!-- TODO check: https://developers.google.com/maps/documentation/javascript/advanced-markers/basic-customization -->
+
+            <div id="map" style="height:520px"></div>
+
+            <!-- prettier-ignore -->
+            <script>
+                (g => {
+                    var h, a, k, p = "The Google Maps JavaScript API",
+                        c = "google",
+                        l = "importLibrary",
+                        q = "__ib__",
+                        m = document,
+                        b = window;
+                    b = b[c] || (b[c] = {});
+                    var d = b.maps || (b.maps = {}),
+                        r = new Set,
+                        e = new URLSearchParams,
+                        u = () => h || (h = new Promise(async (f, n) => {
+                            await (a = m.createElement("script"));
+                            e.set("libraries", [...r] + "");
+                            for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                            e.set("callback", c + ".maps." + q);
+                            a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                            d[q] = f;
+                            a.onerror = () => h = n(Error(p + " could not load."));
+                            a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                            m.head.append(a)
+                        }));
+                    d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+                })
+                ({
+                    key: "<?= $humo_option['google_api_key']; ?>",
+                    v: "weekly"
+                });
+            </script>
+
+            <script>
+                const parser = new DOMParser();
+
+                async function initMap() {
+                    // Request needed libraries.
+                    const {
+                        Map
+                    } = await google.maps.importLibrary("maps");
+                    const {
+                        AdvancedMarkerElement,
+                        PinElement
+                    } = await google.maps.importLibrary(
+                        "marker",
                     );
+                    const map = new Map(document.getElementById("map"), {
+                        center: {
+                            lat: 37.419,
+                            lng: -122.02
+                        },
+                        zoom: 14,
+                        mapId: "4504f8b37365c3d0",
+                    });
 
+                    // Each PinElement is paired with a MarkerView to demonstrate setting each parameter.
+                    // Default marker with title text (no PinElement).
+                    const markerViewWithText = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.419,
+                            lng: -122.03
+                        },
+                        title: "Title text for the marker at lat: 37.419, lng: -122.03",
+                    });
+
+                    // Adjust the scale.
+                    const pinScaled = new PinElement({
+                        scale: 1.5,
+                    });
+                    const markerViewScaled = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.419,
+                            lng: -122.02
+                        },
+                        content: pinScaled.element,
+                    });
+
+                    // Change the background color.
+                    const pinBackground = new PinElement({
+                        background: "#FBBC04",
+                    });
+                    const markerViewBackground = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.419,
+                            lng: -122.01
+                        },
+                        content: pinBackground.element,
+                    });
+
+                    // Change the background color.
+                    const pinTest = new PinElement({
+                        background: "#FFFFFF",
+                    });
+                    var test = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.417,
+                            lng: -122.01
+                        },
+                        content: pinTest.element,
+                    });
+
+                    var test = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.417,
+                            lng: -122.03
+                        },
+                        //content: pinTest.element,
+                    });
+
+                    // Change the border color.
+                    const pinBorder = new PinElement({
+                        borderColor: "#137333",
+                    });
+                    const markerViewBorder = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.415,
+                            lng: -122.03
+                        },
+                        content: pinBorder.element,
+                    });
+
+                    // Change the glyph color.
+                    const pinGlyph = new PinElement({
+                        glyphColor: "white",
+                    });
+                    const markerViewGlyph = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.415,
+                            lng: -122.02
+                        },
+                        content: pinGlyph.element,
+                    });
+
+                    // Hide the glyph.
+                    const pinNoGlyph = new PinElement({
+                        glyph: "",
+                    });
+                    const markerViewNoGlyph = new AdvancedMarkerElement({
+                        map,
+                        position: {
+                            lat: 37.415,
+                            lng: -122.01
+                        },
+                        content: pinNoGlyph.element,
+                    });
                 }
 
-                // Automatic zoom.
-                map.fitBounds(latlngbounds);
-            }
-        }
-    </script>
+                initMap();
+            </script>
 
-<?php
-    /*
-    echo '<script>
-        window.onload = hide;
-    </script>';
-    */
-}
-?>
-
-
-
-
-<?php if (1 == 0) { ?>
-    <!-- TEST for colored and sized markers -->
-    <!-- https://developers.google.com/maps/documentation/javascript/examples/advanced-markers-basic-style -->
-    <!-- TODO check: https://developers.google.com/maps/documentation/javascript/advanced-markers/basic-customization -->
-
-    <div id="map" style="height:520px"></div>
-
-    <!-- prettier-ignore -->
-    <script>
-        (g => {
-            var h, a, k, p = "The Google Maps JavaScript API",
-                c = "google",
-                l = "importLibrary",
-                q = "__ib__",
-                m = document,
-                b = window;
-            b = b[c] || (b[c] = {});
-            var d = b.maps || (b.maps = {}),
-                r = new Set,
-                e = new URLSearchParams,
-                u = () => h || (h = new Promise(async (f, n) => {
-                    await (a = m.createElement("script"));
-                    e.set("libraries", [...r] + "");
-                    for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-                    e.set("callback", c + ".maps." + q);
-                    a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-                    d[q] = f;
-                    a.onerror = () => h = n(Error(p + " could not load."));
-                    a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-                    m.head.append(a)
-                }));
-            d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
-        })
-        ({
-            key: "<?= $humo_option['google_api_key']; ?>",
-            v: "weekly"
-        });
-    </script>
-
-    <script>
-        const parser = new DOMParser();
-
-        async function initMap() {
-            // Request needed libraries.
-            const {
-                Map
-            } = await google.maps.importLibrary("maps");
-            const {
-                AdvancedMarkerElement,
-                PinElement
-            } = await google.maps.importLibrary(
-                "marker",
-            );
-            const map = new Map(document.getElementById("map"), {
-                center: {
-                    lat: 37.419,
-                    lng: -122.02
-                },
-                zoom: 14,
-                mapId: "4504f8b37365c3d0",
-            });
-
-            // Each PinElement is paired with a MarkerView to demonstrate setting each parameter.
-            // Default marker with title text (no PinElement).
-            const markerViewWithText = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.419,
-                    lng: -122.03
-                },
-                title: "Title text for the marker at lat: 37.419, lng: -122.03",
-            });
-
-            // Adjust the scale.
-            const pinScaled = new PinElement({
-                scale: 1.5,
-            });
-            const markerViewScaled = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.419,
-                    lng: -122.02
-                },
-                content: pinScaled.element,
-            });
-
-            // Change the background color.
-            const pinBackground = new PinElement({
-                background: "#FBBC04",
-            });
-            const markerViewBackground = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.419,
-                    lng: -122.01
-                },
-                content: pinBackground.element,
-            });
-
-            // Change the background color.
-            const pinTest = new PinElement({
-                background: "#FFFFFF",
-            });
-            var test = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.417,
-                    lng: -122.01
-                },
-                content: pinTest.element,
-            });
-
-            var test = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.417,
-                    lng: -122.03
-                },
-                //content: pinTest.element,
-            });
-
-            // Change the border color.
-            const pinBorder = new PinElement({
-                borderColor: "#137333",
-            });
-            const markerViewBorder = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.415,
-                    lng: -122.03
-                },
-                content: pinBorder.element,
-            });
-
-            // Change the glyph color.
-            const pinGlyph = new PinElement({
-                glyphColor: "white",
-            });
-            const markerViewGlyph = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.415,
-                    lng: -122.02
-                },
-                content: pinGlyph.element,
-            });
-
-            // Hide the glyph.
-            const pinNoGlyph = new PinElement({
-                glyph: "",
-            });
-            const markerViewNoGlyph = new AdvancedMarkerElement({
-                map,
-                position: {
-                    lat: 37.415,
-                    lng: -122.01
-                },
-                content: pinNoGlyph.element,
-            });
-        }
-
-        initMap();
-    </script>
-
-<?php } ?>
+        <?php } ?>

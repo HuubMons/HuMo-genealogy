@@ -21,6 +21,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 <b>Please note that generating the duplicates may take some time, depending on the size of the tree.</b>');
 
 echo '<br><br>';
+
 if (isset($_SESSION['dupl_arr_' . $trees['tree_id']])) {
 ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -36,7 +37,8 @@ if (isset($_SESSION['dupl_arr_' . $trees['tree_id']])) {
     <input type="hidden" name="page" value="tree">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
     <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
-    &nbsp;&nbsp;<?= __('Find doubles only within this family name (optional)'); ?>: <input type="text" name="famname_search">&nbsp;&nbsp;&nbsp;&nbsp;
+    <?= __('Find doubles only within this family name (optional)'); ?>:
+    <input type="text" name="famname_search" class="form-control form-control-sm my-3 w-25">
     <input type="submit" style="min-width:150px" name="duplicate" value="<?= __('Generate new duplicate merge'); ?>" class="btn btn-sm btn-success ms-2">
 </form>
 

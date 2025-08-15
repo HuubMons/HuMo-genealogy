@@ -142,16 +142,16 @@ if (isset($_SESSION['search_indi2'])) {
         <tr>
             <td style="white-space:nowrap"><?= __('Person'); ?> 1</td>
             <td>
-                <input type="text" name="search_firstname" value="<?= $search_firstname; ?>" size="15">
+                <input type="text" name="search_firstname" value="<?= $search_firstname; ?>" size="15" class="form-control form-control-sm">
             </td>
             <td>
-                &nbsp;<input type="text" name="search_lastname" value="<?= $search_lastname; ?>" size="15">
+                <input type="text" name="search_lastname" value="<?= $search_lastname; ?>" size="15" class="form-control form-control-sm">
             </td>
             <td>
-                <input type="text" name="search_indi" value="<?= $search_indi; ?>" size="10">
+                <input type="text" name="search_indi" value="<?= $search_indi; ?>" size="10" class="form-control form-control-sm">
             </td>
             <td>
-                &nbsp; <input type="submit" name="search1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                <input type="submit" name="search1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
             </td>
             <td>
                 <?php
@@ -172,7 +172,7 @@ if (isset($_SESSION['search_indi2'])) {
                     if ($search_result) {
                         if ($search_result->rowCount() > 0) {
                 ?>
-                            <select size="1" name="left" style="width:<?= $len; ?>px">
+                            <select size="1" name="left" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
                                     $privacy = $personPrivacy->get_privacy($searchDb);
@@ -188,7 +188,7 @@ if (isset($_SESSION['search_indi2'])) {
                                 ?>
                             </select>
                         <?php } else { ?>
-                            <select size="1" name="notfound" value="1" style="width:<?= $len; ?>px">
+                            <select size="1" name="notfound" value="1" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                                 <option><?= __('Person not found'); ?></option>
                             </select>
                     <?php
@@ -196,7 +196,7 @@ if (isset($_SESSION['search_indi2'])) {
                     }
                 } else {
                     ?>
-                    <select size="1" name="left" style="width:<?= $len; ?>px">
+                    <select size="1" name="left" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                         <option></option>
                     </select>
                 <?php } ?>
@@ -215,16 +215,16 @@ if (isset($_SESSION['search_indi2'])) {
                 <?= __('Person'); ?> 2
             </td>
             <td>
-                <input type="text" name="search_firstname2" value="<?= $search_firstname2; ?>" size="15">
+                <input type="text" name="search_firstname2" value="<?= $search_firstname2; ?>" size="15" class="form-control form-control-sm">
             </td>
             <td>
-                &nbsp;<input type="text" name="search_lastname2" value="<?= $search_lastname2; ?>" size="15">
+                <input type="text" name="search_lastname2" value="<?= $search_lastname2; ?>" size="15" class="form-control form-control-sm">
             </td>
             <td>
-                <input type="text" name="search_indi2" value="<?= $search_indi2; ?>" size="10">
+                <input type="text" name="search_indi2" value="<?= $search_indi2; ?>" size="10" class="form-control form-control-sm">
             </td>
             <td>
-                &nbsp; <input type="submit" name="search2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+                <input type="submit" name="search2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
             </td>
             <td>
                 <?php
@@ -243,7 +243,7 @@ if (isset($_SESSION['search_indi2'])) {
                     if ($search_result2) {
                         if ($search_result2->rowCount() > 0) {
                 ?>
-                            <select size="1" name="right" style="width:<?= $len; ?>px">
+                            <select size="1" name="right" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                                 <?php
                                 while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
                                     $privacy = $personPrivacy->get_privacy($searchDb2);
@@ -259,7 +259,7 @@ if (isset($_SESSION['search_indi2'])) {
                                 ?>
                             </select>
                         <?php } else { ?>
-                            <select size="1" name="notfound" value="1" style="width:<?= $len; ?>px">
+                            <select size="1" name="notfound" value="1" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                                 <option><?= __('Person not found'); ?></option>
                             </select>
                     <?php
@@ -267,7 +267,7 @@ if (isset($_SESSION['search_indi2'])) {
                     }
                 } else {
                     ?>
-                    <select size="1" name="right" style="width:<?= $len; ?>px">
+                    <select size="1" name="right" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                         <option></option>
                     </select>
                 <?php } ?>

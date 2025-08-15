@@ -1,15 +1,16 @@
 <?php
+
+/**
+ * Select media in editor.
+ */
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
 $showMedia = new Genealogy\Include\ShowMedia();
-?>
 
-<h1 class="center"><?= __('Select media'); ?></h1>
-
-<?php
 $place_item = '';
 $form = '';
 if (isset($_GET['form'])) {
@@ -30,17 +31,6 @@ if (isset($_GET['form'])) {
     }
 }
 
-echo '
-    <script>
-    function select_item(item){
-        /* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
-        window.opener.document.' . $form . '.' . $place_item . '.value=item;
-        top.close();
-        return false;
-    }
-    </script>
-';
-
 $prefx = '../'; // to get out of the admin map
 
 // *** Get main path for selected family tree ***
@@ -52,7 +42,11 @@ if (substr($pict_path, 0, 1) === '|') {
 }
 $array_picture_folder[] = $prefx . $pict_path;
 //$array_picture_sub_dir[]='';
+?>
 
+<h1 class="center"><?= __('Select media'); ?></h1>
+
+<?php
 // *** Extra safety check if folder exists ***
 if (file_exists($array_picture_folder[0])) {
     // *** Get all subdirectories ***
@@ -81,8 +75,13 @@ if (file_exists($array_picture_folder[0])) {
     }
 ?>
     <form method="POST" action="index.php?page=editor_media_select&form=<?= $selected_form . '&event_id=' . $event_id; ?>">
-        <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
-        <input type="submit" name="submit" value="<?= __('Search'); ?>">
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-3">
+                <input type="submit" name="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+            </div>
     </form><br>
 
     <?php
@@ -132,3 +131,13 @@ if (file_exists($array_picture_folder[0])) {
         }
     }
 }
+?>
+
+<script>
+    function select_item(item) {
+        /* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
+        window.opener.document.<?= $form; ?>.<?= $place_item; ?>.value = item;
+        top.close();
+        return false;
+    }
+</script>
