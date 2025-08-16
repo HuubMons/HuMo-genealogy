@@ -118,33 +118,6 @@ table.standard {
     font-size: 13px;
 }
 
-/* Photobook */
-div.photobook {
-    background-color: #FAF1EB;
-    margin: 2px;
-    border: 1px solid #0000ff;
-    height: 190px;
-    width: 200px;
-    float: left;
-    text-align: center;
-    overflow: auto;
-}
-
-div.photobook img {
-    display: inline;
-    margin: 3px;
-    border: 1px solid #ffffff;
-}
-
-div.photobook a:hover img {
-    border: 1px solid #0000ff;
-}
-
-div.photobooktext {
-    font-style: italic;
-    margin: 2px;
-}
-
 /* Bootstrap popover, custom class */
 .popover-wide {
     --bs-popover-max-width: 800px;
