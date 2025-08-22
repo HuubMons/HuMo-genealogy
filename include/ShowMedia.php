@@ -363,7 +363,8 @@ class ShowMedia
         }
 
         // check for mime type and no_thumb file
-        if ($resizePicture->check_media_type($folder, $file) && !is_file($folder . '.' . $file . '.no_thumb')) {
+        //if ($resizePicture->check_media_type($folder, $file) && !is_file($folder . '.' . $file . '.no_thumb')) {
+        if ($resizePicture->check_media_type($folder, $file)) {
             // script will possibily die here and hidden no_thumb file becomes persistent
             // so this code might be skipped afterwards
 

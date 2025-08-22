@@ -56,8 +56,7 @@ $person_found = true;
     <?php if ($editor['new_tree'] == false) { ?>
         <div class="row mb-2">
             <div class="col-md-3">
-                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
+                <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group input-group-sm">
                         <label for="favourites" class="input-group-text"><img src="../images/favorite_blue.png" alt="<?= __('Favourites'); ?>" title="<?= __('Favourites'); ?>">&nbsp;</label>
@@ -73,8 +72,7 @@ $person_found = true;
             </div>
 
             <div class="col-md-3">
-                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
+                <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                         <option value=""><?= __('Latest changes'); ?></option>
@@ -115,8 +113,7 @@ $person_found = true;
             </div>
 
             <div class="col-md-auto">
-                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
+                <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group">
                         <!-- Search persons firstname/ lastname -->
@@ -209,8 +206,7 @@ $person_found = true;
                     // *** Found multiple persons ***
                     elseif ($nr_persons > 0) {
                 ?>
-                        <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
-                            <input type="hidden" name="page" value="<?= $page; ?>">
+                        <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
                             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                             <select size="1" name="person" class="form-select form-select-sm bg-primary-subtle" onChange="this.form.submit();">
                                 <option value=""><?= __('Results'); ?></option>
@@ -256,8 +252,7 @@ $person_found = true;
             ?>
             <div class="col-auto">
                 <!-- Search person GEDCOM number -->
-                <form method="POST" action="index.php?menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="page" value="<?= $page; ?>">
+                <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                     <div class="input-group input-group-sm">
                         <label for="search_id" class="col-md-auto col-form-label col-form-label-sm"><?= __('or ID:'); ?>&nbsp;</label>
@@ -293,8 +288,7 @@ if (isset($_POST['person_remove'])) {
             <?= __('Also remove ALL RELATED PERSONS (including all items)'); ?>
         </label><br>
 
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $page; ?>">
+        <form method="post" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
             <input type="submit" name="person_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
@@ -307,8 +301,7 @@ if (isset($_GET['child_disconnect'])) {
 ?>
     <div class="alert alert-danger">
         <?= __('Are you sure you want to disconnect this child?'); ?>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $_GET['page']; ?>">
+        <form method="post" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;">
             <input type="hidden" name="family_id" value="<?= $_GET['family_id']; ?>">
             <input type="hidden" name="child_disconnect2" value="<?= $_GET['child_disconnect']; ?>">
             <input type="hidden" name="child_disconnect_gedcom" value="<?= $_GET['child_disconnect_gedcom']; ?>">
@@ -448,15 +441,12 @@ if ($check_person) {
             ?>
 
                     <!-- TODO use bootstrap pagination? -->
-                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
-                        <input type="hidden" name="page" value="<?= $page; ?>">
+                    <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="submit" value="<<">
                     </form>
 
-
                     <?php if ($previousDb) { ?>
-                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
-                            <input type="hidden" name="page" value="<?= $page; ?>">
+                        <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="submit" value="<">
                         </form>
                     <?php
@@ -503,8 +493,7 @@ if ($check_person) {
                 }
                 if ($nextDb) {
                 ?>
-                    <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $nextDb->pers_gedcomnumber; ?>" style="display : inline;">
-                        <input type="hidden" name="page" value="<?= $page; ?>">
+                    <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $nextDb->pers_gedcomnumber; ?>" style="display : inline;">
                         <input type="submit" value=">">
                     </form>
                 <?php } else { ?>
@@ -524,8 +513,7 @@ if ($check_person) {
                     $lastDb = $last_result->fetch(PDO::FETCH_OBJ);
                     if (substr($lastDb->pers_gedcomnumber, 2) > substr($person->pers_gedcomnumber, 2)) {
                     ?>
-                        <form method="POST" action="index.php?menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $lastDb->pers_gedcomnumber; ?>" style="display : inline;">
-                            <input type="hidden" name="page" value="<?= $page; ?>">
+                        <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $lastDb->pers_gedcomnumber; ?>" style="display : inline;">
                             <input type="submit" value=">>">
                         </form>
                     <?php } else { ?>

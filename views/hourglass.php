@@ -1,7 +1,7 @@
 <?php
 
 /**
- * HOURGLASS script by Yossi Beck august 2013
+ * Aug. 2023 Yossi Beck: Added HOURGLASS script.
  * Made with extensive use of existing files:
  * - report_ancestor (included with minor changes in the file)
  * - report_descendant (included with minor changes in the file)
@@ -11,19 +11,20 @@
  * - icon added: /images/hourglass.gif
  * - class added to gedcom.css and silverline.css for graph lines
  * 
- * Updated to MVC model by Huub in november 2023.
+ * Nov. 2023 Huub: updated to MVC model.
  * 
  * TODO:
  * - save slider position
  * - think about names in size 8
  */
 
+$ancestorBox = new \Genealogy\Include\AncestorBox();
+
 $genarray = $data["genarray"];
 $hourglass = true;
 
 // *** Ancestor part of report ***
 $_GET['id'] = $_GET['main_person'];
-include_once(__DIR__ . "/ancestor_chart.php");
 $sexe = $data["sexe"];
 
 // THE HORIZONTALLY ALIGN POSITION OF THE BASE PERSON IS DONE IN DESC CHART AND ANCESTOR CHART
@@ -241,12 +242,12 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
             $backgr_col = "#FFFFFF";
             if (isset($sexe[$i + $blocks]) && $sexe[$i + $blocks] != "") {
                 if ($sexe[$i + $blocks] == 'F') {
-                    $sexe_colour = ' ancestor_woman';
-                    $backgr_col = "#FBDEC0";
+                    $sexe_colour = ' box_woman';
+                    //$backgr_col = "#FBDEC0";
                 }
                 if ($sexe[$i + $blocks] == 'M') {
-                    $sexe_colour = ' ancestor_man';
-                    $backgr_col =  "#C0F9FC";
+                    $sexe_colour = ' box_man';
+                    //$backgr_col =  "#C0F9FC";
                 }
             } else {
                 // empty square - give it background so lines won't show through
@@ -255,7 +256,7 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
             echo '<div class="ancestorName' . $sexe_colour . '" style="background-color:' . $backgr_col . '; top: ' . $this_top . 'px; left: ' . $left . 'px; height: ' . $height . 'px; width:' . $width . 'px;';
             echo '">';
             if (isset($sexe[$i + $blocks]) && $sexe[$i + $blocks] != "") {
-                echo ancestor_chart_person($i + $blocks, 'hour' . $data["size"]);
+                echo $ancestorBox->ancestorBox($i + $blocks, 'hour' . $data["size"]);
             } else {
                 echo "&nbsp;"; // otherwise background color doesn't work and lines show through
             }

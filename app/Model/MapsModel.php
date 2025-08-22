@@ -22,7 +22,7 @@ class MapsModel extends BaseModel
     }
 
     // *** Get list of selected family names ***
-    public function get_family_names(): string
+    public function get_family_names(): string|array
     {
         $family_names = '';
         if (isset($_POST['items'])) {

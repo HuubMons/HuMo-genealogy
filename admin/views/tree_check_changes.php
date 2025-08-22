@@ -7,10 +7,7 @@ if (!defined('ADMIN_PAGE')) {
 
 <h3><?= __('Latest changes'); ?></h3>
 
-<form method="POST" action="index.php">
-    <input type="hidden" name="page" value="check">
-    <input type="hidden" name="tab" value="changes">
-
+<form method="POST" action="index.php?page=check&tab=changes">
     <!-- <div class="row p-2 mb-3 mx-sm-1"> -->
     <div class="row gy-2 gx-3 align-items-center">
         <div class="col-auto">

@@ -247,27 +247,39 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 
     // *** Border colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#6E6E6E";
+    if (empty($rgb)) {
+        $rgb = "#6E6E6E";
+    }
     $grey = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Text colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#000000";
+    if (empty($rgb)) {
+        $rgb = "#000000";
+    }
     $color = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Background colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#EEEEEE";
+    if (empty($rgb)) {
+        $rgb = "#EEEEEE";
+    }
     $bgcolor = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Man colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#B2DFEE";
+    if (empty($rgb)) {
+        //$rgb = "#B2DFEE";
+        $rgb = "#e0f0ff";
+    }
     $bgcolorM = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** wife colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#FFE4C4";
+    if (empty($rgb)) {
+        //$rgb = "#FFE4C4";
+        $rgb = "#ffe5e0";
+    }
     $bgcolorF = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // imagemap

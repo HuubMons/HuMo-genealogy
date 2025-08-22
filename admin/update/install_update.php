@@ -375,7 +375,6 @@ if (isset($_GET['re_install'])) {
             ?>
 
             <form method="POST" action="index.php?page=install_update&auto=1&step=3&update_check=1';<?= isset($_GET['install_beta']) ? '&install_beta=1' : ''; ?><?= isset($_GET['re_install']) ? '&re_install=1' : ''; ?>" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
                 <div style="border:1px solid black;height:200px;width:700px;overflow:scroll">
                     <?php
                     // *** Compare new files with old files, show list of renewed files ***

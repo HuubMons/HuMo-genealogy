@@ -13,8 +13,7 @@ $user = $dbh->query($usersql);
 <?php if (isset($_GET['remove_user'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to delete this user?'); ?></strong>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $_GET['page']; ?>">
+        <form method="post" action="index.php?page=users" style="display : inline;">
             <input type="hidden" name="remove_user" value="<?= $_GET['remove_user']; ?>">
             <input type="submit" name="remove_user2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
@@ -42,9 +41,8 @@ $user = $dbh->query($usersql);
     </div>
 <?php } ?>
 
-<form method="POST" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-    <table class="table table-bordered">
+<form method="POST" action="index.php?page=users">
+    <table class="table table-light table-bordered">
         <thead class="table-primary">
             <tr>
                 <th><img src="images/button_drop.png" border="0" alt="remove person"></th>

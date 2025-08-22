@@ -5,10 +5,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 ?>
 
-<form method="post" action="index.php" class="p-2">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-    <input type="hidden" name="menu_admin" value="settings_special">
-
+<form method="post" action="index.php?page=settings&amp;menu_admin=settings_special" class="p-2">
     <h2><?= __('Jewish settings'); ?></h2>
 
     <div class="genealogy_search p-2">

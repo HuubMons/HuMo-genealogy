@@ -133,8 +133,7 @@ if ($person->pers_sexe == 'M') {
                 <div class="row mb-2 <?= $line_selected; ?>">
                     <div class="col-2">
                         <?php if ($fam_count > 1) { ?>
-                            <form method="POST" action="index.php">
-                                <input type="hidden" name="page" value="<?= $page; ?>">
+                            <form method="POST" action="index.php?page=editor&amp;menu_tab=marriage">
                                 <input type="hidden" name="marriage_nr" value="<?= $familyDb->fam_gedcomnumber; ?>">
                                 <input type="submit" name="dummy3" value="<?= __('Family') . ' ' . ($i + 1); ?>" class="btn btn-sm <?= $button_selected; ?>">
                             </form>
@@ -223,8 +222,7 @@ if ($person->pers_sexe == 'M') {
 
 <div style="display:none;" class="row<?= $hideshow; ?> p-3 m-2 genealogy_search">
     <?= add_person('partner', $new_partner_sexe); ?><br><br>
-    <form method="POST" style="display: inline;" action="index.php#marriage" name="form4" id="form4">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" style="display: inline;" action="index.php?page=editor&amp;menu_tab=marriage#marriage" name="form4" id="form4">
         <div class="row mb-2">
             <div class="col-md-3"></div>
             <div class="col-md-7">
@@ -248,8 +246,7 @@ if ($person->pers_sexe == 'M') {
 
 <!-- Marriage editor -->
 <?php if ($person->pers_fams) { ?>
-    <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
         <input type="hidden" name="connect_man_old" value="<?= $man_gedcomnumber; ?>">
         <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
 
@@ -1268,8 +1265,7 @@ if ($person->pers_sexe == 'M') {
             <?= add_person('child', ''); ?><br>
 
             <!-- Search existing person as child -->
-            <form method="POST" action="index.php" style="display : inline;" name="form7" id="form7">
-                <input type="hidden" name="page" value="<?= $page; ?>">
+            <form method="POST" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;" name="form7" id="form7">
                 <?php
                 if (isset($familyDb->fam_children)) {
                     echo '<input type="hidden" name="children" value="' . $familyDb->fam_children . '">';
@@ -1330,7 +1326,7 @@ function add_person($person_kind, $pers_sexe)
     }
     ?>
 
-    <form method="POST" style="display: inline;" action="#marriage" name="<?= $form_name; ?>" id="<?= $form_name; ?>">
+    <form method="POST" style="display: inline;" action="index.php?page=editor#marriage" name="<?= $form_name; ?>" id="<?= $form_name; ?>">
         <?php if ($person_kind != 'partner') { ?>
             <input type="hidden" name="child_connect" value="1">
             <?php if (isset($familyDb->fam_children)) { ?>
@@ -1340,7 +1336,6 @@ function add_person($person_kind, $pers_sexe)
             <input type="hidden" name="family_id" value="<?= $familyDb->fam_gedcomnumber; ?>">
             <input type="hidden" name="marriage_nr" value="<?= $marriage; ?>">
         <?php } ?>
-        <input type="hidden" name="page" value="<?= $page; ?>">
         <input type="hidden" name="pers_name_text" value="">
         <input type="hidden" name="pers_birth_text" value="">
         <input type="hidden" name="pers_bapt_text" value="">

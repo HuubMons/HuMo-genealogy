@@ -254,11 +254,11 @@ for ($w = 0; $w < count($genarray); $w++) {
     $sexe_colour = '';
     $backgr_col = "#FFFFFF";
     if ($genarray[$w]["sex"] == "v") {
-        $sexe_colour = ' ancestor_woman';
-        $backgr_col = "#FBDEC0";     //"#f8bdf1";
+        $sexe_colour = ' box_woman';
+        //$backgr_col = "#FBDEC0";     //"#f8bdf1";
     } else {
-        $sexe_colour = ' ancestor_man';
-        $backgr_col =  "#C0F9FC";      //"#bbf0ff";
+        $sexe_colour = ' box_man';
+        //$backgr_col =  "#C0F9FC";      //"#bbf0ff";
     }
 
     // *** Start person class and calculate privacy ***

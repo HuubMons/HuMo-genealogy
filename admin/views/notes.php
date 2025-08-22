@@ -12,9 +12,7 @@ $tree_result = $dbh->query($tree_sql);
 
 <h1 class="center"><?= __('Notes'); ?></h1>
 
-<form method="POST" action="index.php">
-    <input type="hidden" name="page" value="notes">
-
+<form method="POST" action="index.php?page=notes">
     <div class="p-3 m-2 genealogy_search">
         <div class="row align-items-center">
             <div class="col-auto">
@@ -84,8 +82,7 @@ $tree_result = $dbh->query($tree_sql);
 <?php if (isset($_POST['note_status']) && is_numeric($_POST['note_id']) && $_POST['note_status'] == 'remove') { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this note?'); ?></strong>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="notes">
+        <form method="post" action="index.php?page=notes" style="display : inline;">
             <input type="hidden" name="tree" value="<?= $tree_id; ?>">
             <input type="hidden" name="note_id" value="<?= $_POST['note_id']; ?>">
             <input type="submit" name="note_remove" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
@@ -152,9 +149,8 @@ if (isset($note_tree_id)) {
         }
     ?>
 
-        <form method="POST" action="index.php">
+        <form method="POST" action="index.php?page=notes">
             <input type="hidden" name="tree" value="<?= $tree_id; ?>">
-            <input type="hidden" name="page" value="notes">
             <input type="hidden" name="note_id" value="<?= $noteDb->note_id; ?>">
 
             <div class="p-2 m-2 genealogy_search">

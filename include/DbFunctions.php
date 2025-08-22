@@ -13,6 +13,7 @@
  *      check_person                Check if person is valid.
  *      get_person                  Get a single person from database.
  *      get_person_with_id          Get a single person from database using id number.
+ *      get_quicksearch_results     Get quicksearch results from database.
  *      count_persons               Count persons in family tree.
  *      check_family                Check if family is valid.
  *      get_family                  Get a single family from database.
@@ -328,6 +329,40 @@ class DbFunctions
             echo $e->getMessage() . "<br/>";
         }
         return $person;
+    }
+
+    /**
+     * Get quicksearch results from database.
+     */
+    public function get_quicksearch_results(int $tree_id, string $quicksearch)
+    {
+        $person_result = '';
+        if ($quicksearch != '') {
+            // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+            $quicksearch = str_replace(' ', '%', $quicksearch);
+
+            // *** In case someone entered "Mons, Huub" using a comma ***
+            $quicksearch = str_replace(',', '', $quicksearch);
+
+            //$person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
+            $person_qry = "SELECT * FROM humo_persons
+                WHERE pers_tree_id = :tree_id
+                AND (
+                    CONCAT(pers_firstname, REPLACE(pers_prefix, '_', ' '), pers_lastname) LIKE :quicksearch
+                    OR CONCAT(pers_lastname, REPLACE(pers_prefix, '_', ' '), pers_firstname) LIKE :quicksearch
+                    OR CONCAT(pers_lastname, pers_firstname, REPLACE(pers_prefix, '_', ' ')) LIKE :quicksearch
+                    OR CONCAT(REPLACE(pers_prefix, '_', ' '), pers_lastname, pers_firstname) LIKE :quicksearch
+                )
+                ORDER BY pers_lastname, pers_firstname, CAST(SUBSTRING(pers_gedcomnumber, 2) AS UNSIGNED)";
+            $stmt = $this->dbh->prepare($person_qry);
+            $likeQuicksearch = '%' . $quicksearch . '%';
+            $stmt->execute([
+                ':tree_id' => $tree_id,
+                ':quicksearch' => $likeQuicksearch
+            ]);
+            $person_result = $stmt;
+        }
+        return $person_result;
     }
 
     /**

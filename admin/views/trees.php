@@ -24,8 +24,7 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
     <div class="alert alert-danger">
         <b><?= __('Selected:'); ?> <?= $_GET['treetext_name']; ?></b>
         <?= __('Are you sure you want to remove this tree <b>AND all its statistics</b>?'); ?>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="tree">
+        <form method="post" action="index.php?page=tree" style="display : inline;">
             <input type="hidden" name="tree_id" value="<?= $_GET['remove_tree']; ?>">
             <input type="submit" name="remove_tree2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">

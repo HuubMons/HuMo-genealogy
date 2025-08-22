@@ -88,7 +88,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
 <form method="POST" action="index.php?page=groups">
     <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
-    <table class="table">
+    <table class="table table-light">
         <thead class="table-primary">
             <tr>
                 <th><?= __('Group'); ?>

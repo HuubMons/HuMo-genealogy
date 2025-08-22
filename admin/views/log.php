@@ -54,7 +54,6 @@ if (!defined('ADMIN_PAGE')) {
         printf(__('IP Blacklist: access to %s will be totally blocked for these IP addresses.'), 'HuMo-genealogy');
     ?>
         <form method="post" action="index.php?page=log&amp;menu_admin=log_blacklist" class="mt-2">
-            <input type="hidden" name="page" value="<?= $page; ?>">
             <table class="table" border="1">
                 <tr class="table-primary">
                     <th>Nr.</th>

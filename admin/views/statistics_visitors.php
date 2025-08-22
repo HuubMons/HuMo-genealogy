@@ -6,10 +6,7 @@ if (!defined('ADMIN_PAGE')) {
 ?>
 
 <div class="mb-3">
-    <form method="POST" action="index.php" style="display : inline;">
-        <input type="hidden" name="page" value="<?= $page; ?>">
-        <input type="hidden" name="tab" value="visitors">
-
+    <form method="POST" action="index.php?page=statistics&amp;tab=visitors" style="display : inline;">
         <div class="row">
             <div class="col-md-auto">
                 <select size="1" name="month" class="form-select form-select-sm">

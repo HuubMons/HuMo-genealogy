@@ -1720,8 +1720,7 @@ class EditorModel extends AdminBaseModel
                 if ($resultDb->pers_famc && !isset($_POST['child_connecting'])) {
                     $confirm .= '<div class="alert alert-danger">';
                     $confirm .= __('Child already has parents connected! Are you sure you want to connect this child?');
-                    $confirm .= ' <form method="post" action="index.php" style="display : inline;">';
-                    $confirm .= '<input type="hidden" name="page" value="editor">';
+                    $confirm .= ' <form method="post" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;">';
                     $confirm .= '<input type="hidden" name="family_id" value="' . $_POST['family_id'] . '">';
                     $confirm .= '<input type="hidden" name="children" value="' . $_POST['children'] . '">';
                     $confirm .= '<input type="hidden" name="child_connect2" value="' . $_POST['child_connect2'] . '">';
@@ -2757,12 +2756,11 @@ class EditorModel extends AdminBaseModel
         if (isset($_GET['event_drop'])) {
             $confirm .= '<div class="alert alert-danger">';
             $confirm .= '<strong>' . __('Are you sure you want to remove this event?') . '</strong>';
-            $confirm .= ' <form method="post" action="index.php';
+            $confirm .= ' <form method="post" action="index.php?page=' . $_GET['page'];
             if (isset($_GET['source_id'])) {
-                $confirm .= '?source_id=' . $_GET['source_id'];
+                $confirm .= '&amp;source_id=' . $_GET['source_id'];
             }
             $confirm .= '" style="display : inline;">';
-            $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
             $confirm .= '<input type="hidden" name="event_connect_kind" value="' . $_GET['event_connect_kind'] . '">';
             $confirm .= '<input type="hidden" name="event_kind" value="' . $_GET['event_kind'] . '">';
             $confirm .= '<input type="hidden" name="event_drop" value="' . $_GET['event_drop'] . '">';
@@ -3804,8 +3802,7 @@ class EditorModel extends AdminBaseModel
         if (isset($_GET['note_drop']) && is_numeric($_GET['note_drop'])) {
             $confirm .= '<div class="alert alert-danger">';
             $confirm .= __('Are you sure you want to remove this note?');
-            $confirm .= ' <form method="post" action="index.php" style="display : inline;">';
-            $confirm .= '<input type="hidden" name="page" value="' . $_GET['page'] . '">';
+            $confirm .= ' <form method="post" action="index.php?page=' . $_GET['page'] . '" style="display : inline;">';
             $confirm .= '<input type="hidden" name="note_drop" value="' . $_GET['note_drop'] . '">';
             $confirm .= ' <input type="submit" name="note_drop2" value="' . __('Yes') . '" class="btn btn-sm btn-danger">';
             $confirm .= ' <input type="submit" name="submit" value="' . __('No') . '" class="btn btn-sm btn-success ms-3">';

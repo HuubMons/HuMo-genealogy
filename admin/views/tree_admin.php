@@ -104,20 +104,16 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
 </script>
 <script src="../assets/js/order_items.js"></script>
 
-<form method="post" action="index.php" class="my-3">
-    <input type="hidden" name="page" value="tree">
+<form method="post" action="index.php?page=tree" class="my-3">
     <input type="submit" name="add_tree_data" value="<?= __('Add family tree'); ?>" class="btn btn-sm btn-success">
 </form>
 
-<form method="post" action="index.php">
-    <input type="hidden" name="page" value="tree">
+<form method="post" action="index.php?page=tree">
     <input type="submit" name="add_tree_data_empty" value="<?= __('Add empty line'); ?>" class="btn btn-sm btn-success">
     <?= __('Add empty line in list of family trees'); ?>
 </form>
 
-<form method="post" action="index.php" class="mt-3">
-    <input type="hidden" name="page" value="tree">
-
+<form method="post" action="index.php?page=tree" class="mt-3">
     <div class="row mb-2">
         <div class="col-md-auto">
             <label for="tree_collation" class="col-form-label"><?= __('Collation'); ?></label>

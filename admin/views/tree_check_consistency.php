@@ -35,10 +35,7 @@ if (isset($_POST['mark_all'])) {
 ?>
 
 <!-- displays menu for date consistency check -->
-<form method="POST" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="check">
-    <input type="hidden" name="tab" value="consistency">
-
+<form method="POST" action="index.php?page=check&tab=consistency" style="display : inline;">
     <h3><?= __('Check consistency of dates'); ?></h3>
     <input type="submit" class="btn btn-sm btn-secondary" name="unmark" value="<?= __('Unmark all options'); ?>">
     <input type="submit" class="btn btn-sm btn-secondary ms-2" name="mark_all" value="<?= __('Mark all options'); ?>">

@@ -9,10 +9,8 @@ $generalSettings = new \Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 ?>
 
-<form method="post" action="index.php" class="my-2">
-    <input type="hidden" name="page" value="tree">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" class="my-2">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-    <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
 
     <table class="table" style="width:1200px;">
         <tr class="table-primary">

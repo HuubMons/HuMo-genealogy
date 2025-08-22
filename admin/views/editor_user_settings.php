@@ -66,7 +66,6 @@ if (is_numeric($user)) {
 ?>
 
     <form method="POST" action="index.php?page=editor_user_settings">
-        <input type="hidden" name="page" value="editor_user_settings">
         <input type="hidden" name="id" value="<?= $userDb->user_id; ?>">
         <table class="table">
             <thead class="table-primary">

@@ -5,10 +5,8 @@ if (!defined('ADMIN_PAGE')) {
 }
 ?>
 
-<form method="post" action="index.php">
-    <input type="hidden" name="page" value="tree">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-    <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
 
     <div class="p-2 me-sm-2 genealogy_search">
 

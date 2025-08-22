@@ -56,9 +56,7 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
                 <!-- Set path to pictures -->
                 <div class="col-md-8">
-                    <form method="POST" action="index.php">
-                        <input type="hidden" name="page" value="thumbs">
-                        <input type="hidden" name="menu_tab" value="<?= $thumbs['menu_tab']; ?>">
+                    <form method="POST" action="index.php?page=thumbs&amp;menu_tab=<?= $thumbs['menu_tab']; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
 
                         <div class="form-check">
@@ -131,9 +129,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <div class="col-md-4"><?= __('Create thumbnails'); ?></div>
 
                     <div class="col-md-7">
-                        <form method="POST" action="index.php">
-                            <input type="hidden" name="page" value="thumbs">
-                            <input type="hidden" name="menu_tab" value="picture_thumbnails">
+                        <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_thumbnails">
                             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                             <input type="submit" name="thumbnail" value="<?= __('Create thumbnails'); ?>" class="btn btn-sm btn-success">
                         </form>
@@ -147,9 +143,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <div class="col-md-4"><?= __('Show thumbnails'); ?></div>
 
                     <div class="col-md-7">
-                        <form method="POST" action="index.php">
-                            <input type="hidden" name="page" value="thumbs">
-                            <input type="hidden" name="menu_tab" value="picture_show">
+                        <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_show">
                             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                             <input type="submit" name="change_filename" value="<?= __('Show thumbnails'); ?>" class="btn btn-sm btn-success">
                             <?= ' ' . __('You can change filenames here.'); ?>
@@ -972,7 +966,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         ]);
     }
 
-    // *** Create thumbnails ***
+    // *** Create or show thumbnails ***
     $counter = 0;
     if (isset($_POST["thumbnail"]) || isset($_POST['change_filename'])) {
         $pict_path = $data2Db->tree_pict_path;
@@ -984,7 +978,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         $array_picture_folder[] = $prefx . $pict_path;
 
         // *** Extra safety check if folder exists ***
-        //if (file_exists($selected_picture_folder)){
         if (file_exists($array_picture_folder[0])) {
             // TODO refactor function.
             // *** Get all subdirectories ***
@@ -1019,12 +1012,18 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 !is_dir($selected_picture_folder . $filename)  &&
                                 $resizePicture->check_media_type($selected_picture_folder, $filename)
                             ) {
-
+                                /*
+                                // don't create thumb on corrupt file
                                 if (
-                                    !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
+                                    !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') &&
                                     empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
                                 ) {
                                     // don't create thumb if one exists
+                                    $resizePicture->create_thumbnail($selected_picture_folder, $filename);
+                                }
+                                */
+                                // don't create thumb if one exists
+                                if (empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))) {
                                     $resizePicture->create_thumbnail($selected_picture_folder, $filename);
                                 }
                             }
@@ -1047,31 +1046,26 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 ]);
                                 $picture_privacy = false;
 
-                                //$picture = $showMedia->print_thumbnail($selected_picture_folder, $filename);
                                 $picture = $showMedia->print_thumbnail($selected_picture_folder, $filename, 175, 120, 'BOOTSTRAP_CARD');
+
+                                while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
+                                    $db_functions->set_tree_id($tree_id);
+                                    $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                                    $privacy = $personPrivacy->get_privacy($personDb);
+                                    $name = $personName->get_person_name($personDb, $privacy);
+
+                                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                                    $url = $personLink->get_person_link($personDb, '../');
+                                    $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
+                                }
                         ?>
 
                                 <div class="col-12 col-sm-5 col-md-3 col-lg-2">
                                     <div class="card h-100 shadow-sm">
                                         <?= $picture; ?>
-                                        <?php
-                                        while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                                            $db_functions->set_tree_id($tree_id);
-                                            $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                                            $privacy = $personPrivacy->get_privacy($personDb);
-                                            $name = $personName->get_person_name($personDb, $privacy);
-
-                                            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                            $url = $personLink->get_person_link($personDb, '../');
-                                            $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
-                                        }
-                                        echo $picture_text;
-
-                                        if (isset($_POST['change_filename'])) {
-                                        ?>
-                                            <form method="POST" action="index.php">
-                                                <input type="hidden" name="page" value="thumbs">
-                                                <input type="hidden" name="menu_tab" value="picture_show">
+                                        <?= $picture_text; ?>
+                                        <?php if (isset($_POST['change_filename'])) { ?>
+                                            <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_show">
                                                 <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                                                 <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
                                                 <input type="hidden" name="filename_old" value="<?= $filename; ?>">

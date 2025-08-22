@@ -100,7 +100,7 @@ if (!isset($_POST['install_tables2'])) {
         </div>
 
         <div class="me-4">
-            <table class="table ms-4">
+            <table class="table table-light ms-4">
                 <thead class="table-primary">
                     <tr>
                         <th><?= __('User'); ?></th>

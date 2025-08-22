@@ -69,8 +69,8 @@ class ResizePicture
         $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
         $imtype = strtoupper(substr($file, -3));
         if (Imagick::queryformats($imtype . '*')) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             if ($imtype == 'PDF') {
                 if ($is_ghostscript) {
                     $im = new \Imagick($pict_path_original . '[0]'); //first page of PDF (default: last page)
@@ -97,7 +97,7 @@ class ResizePicture
                 $im2->destroy();
             }
             $success = ($im->writeImage($pict_path_thumb));
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
             $im->clear();
             $im->destroy();
         }
@@ -213,35 +213,35 @@ class ResizePicture
         //}
 
         if (($imtype == 'JPEG' || $imtype == 'JPG') && $is_gdjpg) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             $create_thumb = imagecreatetruecolor($twidth, $theight);
             $source = imagecreatefromjpeg($pict_path_original);
             imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
             $success = imagejpeg($create_thumb, $pict_path_thumb);
             imagedestroy($create_thumb);
             imagedestroy($source);
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
         } elseif ($imtype == 'PNG' && $is_gdpng) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             $create_thumb = imagecreatetruecolor($twidth, $theight);
             $source = imagecreatefrompng($pict_path_original);
             imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
             $success = imagejpeg($create_thumb, $pict_path_thumb);
             imagedestroy($create_thumb);
             imagedestroy($source);
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
         } elseif ($imtype == 'GIF' && $is_gdgif) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             $create_thumb = imagecreatetruecolor($twidth, $theight);
             $source = imagecreatefromgif($pict_path_original);
             imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
             $success = imagejpeg($create_thumb, $pict_path_thumb);
             imagedestroy($create_thumb);
             imagedestroy($source);
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
         }
         return ($success);
     }

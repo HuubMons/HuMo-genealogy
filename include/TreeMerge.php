@@ -1590,44 +1590,28 @@ While in "Relatives merge" mode, any persons who might need merging as a result 
 This is the easiest way to make sure you don\'t forget anyone.');
                 echo '<br><br>';
             ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="tree">
+                <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $this->trees['tree_id']; ?>">
-                    <input type="hidden" name="menu_admin" value="<?= $this->trees['menu_tab']; ?>">
-                    <input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="<?= __('Relatives merge'); ?>" class="btn btn-sm btn-success">
+                    <input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="<?= __('Relatives merge'); ?>" class="btn btn-sm btn-success ms-3">
                 </form>
 
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="tree">
+                <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $this->trees['tree_id']; ?>">
-                    <input type="hidden" name="menu_admin" value="<?= $this->trees['menu_tab']; ?>">
-                    <?php
-                    if (isset($_POST['left'])) {
-                        // manual merge
-                        echo '<input type="submit" name="manual" value="' . __('Continue manual merge') . '" class="btn btn-sm btn-success">';
-                    } else {
-                        // duplicate merge
-                        echo '<input type="submit" name="duplicate_compare" value="' . __('Continue duplicate merge') . '" class="btn btn-sm btn-success">';
-                    }
-                    ?>
+                    <?php if (isset($_POST['left'])) { ?>
+                        <input type="submit" name="manual" value="<?= __('Continue manual merge'); ?>" class="btn btn-sm btn-success ms-5">
+                    <?php } else { ?>
+                        <input type="submit" name="duplicate_compare" value="<?= __('Continue duplicate merge'); ?>" class="btn btn-sm btn-success ms-5">
+                    <?php } ?>
                 </form>
             <?php } else { ?>
                 <br>
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="tree">
+                <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $this->trees['tree_id']; ?>">
-                    <input type="hidden" name="menu_admin" value="<?= $this->trees['menu_tab']; ?>">
-                    <?php
-                    if (isset($_POST['left'])) {
-                        // manual merge
-                        echo '<input type="submit" name="manual" value="' . __('Choose another pair') . '" class="btn btn-sm btn-success">';
-                    } else {
-                        // duplicate merge
-                        echo '<input type="submit" name="duplicate_compare" value="' . __('Continue with next pair') . '" class="btn btn-sm btn-success">';
-                    }
-                    ?>
+                    <?php if (isset($_POST['left'])) { ?>
+                        <input type="submit" name="manual" value="<?= __('Choose another pair'); ?>" class="btn btn-sm btn-success">
+                    <?php } else { ?>
+                        <input type="submit" name="duplicate_compare" value="<?= __('Continue with next pair'); ?>" class="btn btn-sm btn-success">
+                    <?php } ?>
                 </form>
 <?php
             }

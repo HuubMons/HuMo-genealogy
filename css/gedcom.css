@@ -398,14 +398,17 @@ div.ancestorName {
     box-shadow: 3px 3px 6px #bbb;
 }
 
-div.ancestor_man {
+/* Background color in graphical reports for man and woman */
+.box_man {
     /* background-color:#eaf0ff; */
-    background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);
+    /* background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%); */
+    background: #e0f0ff !important;
 }
 
-div.ancestor_woman {
+.box_woman {
     /* background-color:#f8e8f1; */
-    background-image: linear-gradient(to bottom, #FFFFFF 0%, #F5BCA9 100%);
+    /* background-image: linear-gradient(to bottom, #FFFFFF 0%, #F5BCA9 100%); */
+    background: #ffe5e0 !important;
 }
 
 div.ancestor_none {
@@ -544,19 +547,19 @@ table.ancestor_sheet td {
     padding-bottom: 5px;
 }
 
-table.ancestor_sheet td.kw-small {
+.kw-small {
     font-size: 12px;
 }
 
-table.ancestor_sheet td.kw-medium {
+.kw-medium {
     font-size: 14px;
 }
 
-table.ancestor_sheet td.kw-bigger {
+.kw-bigger {
     font-size: 16px;
 }
 
-table.ancestor_sheet td.kw-big {
+.kw-big {
     font-size: 18px;
 }
 
@@ -566,10 +569,6 @@ th.ancestor_head {
     border-color: #777777;
     padding-top: 5px;
     padding-bottom: 5px;
-    font-size: 160%;
-    color: blue;
-    font-weight: bold;
-    text-align: center;
 }
 
 .ancestor_legend {
