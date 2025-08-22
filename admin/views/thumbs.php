@@ -1012,18 +1012,11 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 !is_dir($selected_picture_folder . $filename)  &&
                                 $resizePicture->check_media_type($selected_picture_folder, $filename)
                             ) {
-                                /*
-                                // don't create thumb on corrupt file
+                                // don't create thumb on corrupt file or if thumbnail exists
                                 if (
                                     !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') &&
                                     empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
                                 ) {
-                                    // don't create thumb if one exists
-                                    $resizePicture->create_thumbnail($selected_picture_folder, $filename);
-                                }
-                                */
-                                // don't create thumb if one exists
-                                if (empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))) {
                                     $resizePicture->create_thumbnail($selected_picture_folder, $filename);
                                 }
                             }

@@ -444,13 +444,19 @@ class ShowMedia
         }
 
         if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
-
             // *** Check for old thumbnails ***
             list($width, $height) = getimagesize($folder . 'thumb_' . $file . '.jpg');
             if ($height == 120) {
                 // *** Remove old thumbnail. Will be recreated. ***
                 unlink($folder . 'thumb_' . $file . '.jpg');
-                return '';
+
+                // *** Recreate thumbnail using new size. ***
+                $resizePicture = new \Genealogy\Include\ResizePicture();
+                $resizePicture->create_thumbnail($folder, $file);
+                if (!file_exists($folder . 'thumb_' . $file . '.jpg')) {
+                    // Recreation failed.
+                    return '';
+                }
             }
 
             return ($folder1 . 'thumb_' . $file . '.jpg');
@@ -458,7 +464,6 @@ class ShowMedia
 
         // *** Old naming of thumbnails ***
         if (file_exists($folder . 'thumb_' . $file)) {
-
             // *** Check for old thumbnails ***
             list($width, $height) = getimagesize($folder . 'thumb_' . $file);
             if ($height == 120) {
