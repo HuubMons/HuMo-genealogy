@@ -793,7 +793,7 @@ if ($popup == false) {
         } elseif ($page === 'install_update') {
             include_once(__DIR__ . "/update/install_update.php");
         } elseif ($page === 'update') {
-            include_once(__DIR__ . "/include/update.php");
+            include_once(__DIR__ . "/views/update.php");
         } elseif ($page === 'gedcom_import2') {
             $controllerObj = new Genealogy\Admin\Controller\TreesController($admin_config);
             $trees = $controllerObj->detail($selected_language);
