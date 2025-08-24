@@ -246,7 +246,14 @@ if ($person->pers_sexe == 'M') {
 
 <!-- Marriage editor -->
 <?php if ($person->pers_fams) { ?>
+    <?php /*
+    Don't use this link, witness buttons won't work anymore
     <form method="POST" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
+    */ ?>
+
+    <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
+        <input type="hidden" name="page" value="editor">
+
         <input type="hidden" name="connect_man_old" value="<?= $man_gedcomnumber; ?>">
         <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
 

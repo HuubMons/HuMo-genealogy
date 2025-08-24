@@ -9,7 +9,15 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
 
 <!-- Start of editor table -->
+
+<?php /*
+Don't use this link, witness and other buttons won't work anymore
 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
+*/ ?>
+
+<form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
+    <input type="hidden" name="page" value="editor">
+
     <input type="hidden" name="person" value="<?= $pers_gedcomnumber; ?>">
 
     <!-- Date needed to check if birth or baptise date is changed -->
