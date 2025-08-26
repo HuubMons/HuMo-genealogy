@@ -100,9 +100,18 @@ $user = $dbh->query($usersql);
                     <td>
                         <select size="1" name="<?= $userDb->user_id; ?>group_id" class="form-select form-select-sm">
                             <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
-                                <option value="<?= $groupDb->group_id; ?>" <?= $userDb->user_group_id == $groupDb->group_id ? 'selected' : ''; ?>>
-                                    <?= $groupDb->group_name; ?>
-                                </option>
+                                <?php
+                                // *** Hide admin group for guest user ***
+                                $show_group_option = true;
+                                if ($groupDb->group_id == 1 && $userDb->user_id == 3) {
+                                    $show_group_option = false;
+                                }
+                                if ($show_group_option) {
+                                ?>
+                                    <option value="<?= $groupDb->group_id; ?>" <?= $userDb->user_group_id == $groupDb->group_id ? 'selected' : ''; ?>>
+                                        <?= $groupDb->group_name; ?>
+                                    </option>
+                                <?php } ?>
                             <?php } ?>
                         </select>
                     </td>

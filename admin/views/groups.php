@@ -109,8 +109,8 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 
         <tr>
             <td><?= __('Administrator'); ?></td>
-            <!-- Administrator group: don't change admin rights for administrator -->
-            <td><input type="checkbox" name="group_admin" class="form-check-input" <?= $groupDb->group_admin != 'n' ? 'checked' : ''; ?> <?= $groupDb->group_id == '1' ? 'disabled' : ''; ?>></td>
+            <!-- Administrator and guest group: don't change admin rights for administrator -->
+            <td><input type="checkbox" name="group_admin" class="form-check-input" <?= $groupDb->group_admin != 'n' ? 'checked' : ''; ?> <?= $groupDb->group_id == '1' || $groupDb->group_id == '3' ? 'disabled' : ''; ?>></td>
         </tr>
 
         <tr>
