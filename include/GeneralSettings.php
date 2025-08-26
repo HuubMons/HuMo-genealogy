@@ -18,7 +18,7 @@ class GeneralSettings
 
         // *** Version line, DO NOT CHANGE THIS LINE ***
         // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-        $humo_option["version"] = '6.9.2';  // Version line, DO NOT CHANGE THIS LINE
+        $humo_option["version"] = '6.9.3';  // Version line, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update check using GitHub.
 
         // *** Beta (not stable enough for production, but it's functional ***
@@ -27,7 +27,7 @@ class GeneralSettings
 
         // *** Version date, needed for update check ***
         //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-        $humo_option["version_date"] = '2025-08-08';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+        $humo_option["version_date"] = '2025-08-26';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
         // *** Test lines for update procedure ***

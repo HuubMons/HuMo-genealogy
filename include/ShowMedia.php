@@ -451,7 +451,7 @@ class ShowMedia
                 unlink($folder . 'thumb_' . $file . '.jpg');
 
                 // *** Recreate thumbnail using new size. ***
-                $resizePicture = new \Genealogy\Include\ResizePicture();
+                $resizePicture = new ResizePicture();
                 $resizePicture->create_thumbnail($folder, $file);
                 if (!file_exists($folder . 'thumb_' . $file . '.jpg')) {
                     // Recreation failed.

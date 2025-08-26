@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * List and search persons.
+ * 
+ * Advanced search added by Yossi Beck. Translated and integrated in person search page by Huub.
+ */
+
 namespace Genealogy\App\Model;
 
 use Genealogy\App\Model\BaseModel;
@@ -203,7 +209,6 @@ class ListModel extends BaseModel
             $change = true;
         }
 
-        // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. ***
         $selection['birth_place'] = '';
         if (isset($_POST['birth_place'])) {
             $selection['birth_place'] = $_POST['birth_place'];
@@ -489,6 +494,39 @@ class ListModel extends BaseModel
                         'AND ','       ')
                         END AS order_date";
 
+                /* 
+                        // TODO REFACTOR:
+
+                        // EXAMPLE:
+                        $sql = "SELECT p.* $make_date
+                        FROM
+                            humo_persons p
+                            $join_birth
+                            $join_bapt
+                        WHERE
+                            p.pers_tree_id = :tree_id
+                        GROUP BY
+                            p.pers_id
+                        ORDER BY
+                            $orderby";
+
+                        $make_date = ",
+                            COALESCE(
+                                birth.event_date_year,
+                                bapt.event_date_year
+                            ) AS order_year,
+                            COALESCE(
+                                birth.event_date_month,
+                                bapt.event_date_month
+                            ) AS order_month,
+                            COALESCE(
+                                birth.event_date_day,
+                                bapt.event_date_day
+                            ) AS order_day
+                        ";
+                        */
+
+
                 // DOESN'T WORK:
                 // Use a sort of ucfirst by month? Should be: Jan, Feb, etc.
                 // Something like: LOWER(SUBSTRING(name,2)))
@@ -505,6 +543,11 @@ class ListModel extends BaseModel
                 //  ,'%b' ) ,'%m'),
                 //  date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
                 //  ) ".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
+
+                // TODO REFACTOR:
+                //$orderby = "order_year $desc_asc, order_month $desc_asc, order_day $desc_asc, p.pers_lastname ASC, p.pers_firstname ASC";
+
+
             }
             if ($selectsort == "sort_birthplace") {
                 //$orderby = " pers_birth_place ".$desc_asc.",".$last_or_patronym.$desc_asc;
@@ -576,10 +619,34 @@ class ListModel extends BaseModel
                     )
                     END AS order_date";
 
+
+                // TODO Refactor
+                /*
+                $make_date = ",
+                    COALESCE(
+                        death.event_date_year,
+                        buried.event_date_year
+                    ) AS order_year,
+                    COALESCE(
+                        death.event_date_month,
+                        buried.event_date_month
+                    ) AS order_month,
+                    COALESCE(
+                        death.event_date_day,
+                        buried.event_date_day
+                    ) AS order_day
+                ";
+                */
+
+
                 $orderby = " CONCAT( right(order_date,4),
                     date_format( str_to_date( substring(order_date,-8,3),'%b' ) ,'%m'),
                     date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
                     )" . $desc_asc . ", " . $last_or_patronym . " ASC , pers_firstname ASC";
+
+                // TODO REFACTOR:
+                //$orderby = "order_year $desc_asc, order_month $desc_asc, order_day $desc_asc, p.pers_lastname ASC, p.pers_firstname ASC";
+
             }
             if ($selectsort == "sort_deathplace") {
                 $make_date = ", CASE
@@ -787,14 +854,17 @@ class ListModel extends BaseModel
                     $query .= $and . " pers_lastname=''";
                     $and = " AND ";
                 } elseif ($this->user['group_kindindex'] == "j") {
-                    $query .= $and . " CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " .
-                        $buildCondition->build($selection['pers_lastname'], $selection['part_lastname']);
+                    $query .= $and . " CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) " . $buildCondition->build($selection['pers_lastname'], $selection['part_lastname']);
                     $and = " AND ";
                 } else {
                     $query .= $and . " pers_lastname " . $buildCondition->build($selection['pers_lastname'], $selection['part_lastname']);
                     $and = " AND ";
                 }
             }
+            // TODO Use a parameterized query to prevent SQL injection
+            //$query .= $and . "pers_lastname = :pers_lastname";
+            //$this->queryParams[':pers_lastname'] = $selection['pers_lastname'];
+
             // *** Namelist: search persons without pers_prefix ***
             if ($selection['pers_prefix'] == 'EMPTY') {
                 $query .= $and . "pers_prefix=''";
@@ -805,6 +875,9 @@ class ListModel extends BaseModel
                 $query .= $and . "(pers_prefix='" . $pers_prefix . "' OR pers_prefix ='" . $pers_prefix . '_' . "')";
                 $and = " AND ";
             }
+            // TODO Use a parameterized query to prevent SQL injection
+            //$query .= $and . "pers_prefix = :pers_prefix";
+            //$this->queryParams[':pers_prefix'] = $selection['pers_prefix'];
 
             if ($selection['pers_firstname']) {
                 $query .= $and . "(pers_firstname " . $buildCondition->build($selection['pers_firstname'], $selection['part_firstname']);
@@ -813,6 +886,9 @@ class ListModel extends BaseModel
                 $and = " AND ";
                 $add_event_qry = true;
             }
+            // TODO Use a parameterized query to prevent SQL injection
+            //$query .= $and . "pers_firstname = :pers_firstname";
+            //$this->queryParams[':pers_firstname'] = $selection['pers_firstname'];
 
             // *** Search for born AND baptised place ***
             if ($selection['birth_place']) {
@@ -821,6 +897,9 @@ class ListModel extends BaseModel
                 $query .= " OR pers_bapt_place " . $buildCondition->build($selection['birth_place'], $selection['part_birth_place']) . ')';
                 $and = " AND ";
             }
+            // TODO Use a parameterized query to prevent SQL injection
+            //$query .= $and . "pers_birth_place = :pers_birth_place";
+            //$this->queryParams[':pers_birth_place'] = $selection['pers_birth_place'];
 
             // *** Search for death AND buried place ***
             if ($selection['death_place']) {
@@ -872,6 +951,9 @@ class ListModel extends BaseModel
                 $query .= $and . "(pers_sexe!='M' AND pers_sexe!='F')";
                 $and = " AND ";
             }
+            // TODO Use a parameterized query to prevent SQL injection
+            //$query .= $and . "pers_sexe = :pers_sexe";
+            //$this->queryParams[':pers_sexe'] = $selection['sexe'];
 
             if ($selection['own_code']) {
                 $query .= $and . "pers_own_code " . $buildCondition->build($selection['own_code'], $selection['part_own_code']);
@@ -981,6 +1063,16 @@ class ListModel extends BaseModel
 
             $query_select .= $make_date . " FROM humo_persons";
 
+            /*
+            // TODO REFACTOR:
+            $join_birth = "LEFT JOIN humo_events AS birth
+                ON birth.event_person_id = p.pers_id
+                AND birth.event_kind = 'birth'";
+            $join_bapt = "LEFT JOIN humo_events AS bapt
+                ON bapt.event_person_id = p.pers_id
+                AND bapt.event_kind = 'baptism'";
+            */
+
             if ($add_event_qry) {
                 $query_select .= " LEFT JOIN humo_events
                     ON event_tree_id=pers_tree_id
@@ -1021,6 +1113,17 @@ class ListModel extends BaseModel
                     ON fam_tree_id=pers_tree_id
                     AND find_person=pers_gedcomnumber
                 ";
+
+                /*
+                // TODO test query
+                $query_select .= " LEFT JOIN (
+                    SELECT fam_tree_id, fam_text, fam_man as find_person FROM humo_families WHERE fam_text LIKE '_%'
+                    UNION ALL
+                    SELECT fam_tree_id, fam_text, fam_woman as find_person FROM humo_families WHERE fam_text LIKE '_%'
+                ) AS humo_families
+                ON humo_families.fam_tree_id = pers_tree_id
+                AND humo_families.find_person = pers_gedcomnumber
+                */
             }
 
             // *** GROUP BY is needed to prevent double results if searched for events ***
@@ -1047,6 +1150,19 @@ class ListModel extends BaseModel
                 $query = '';
                 $counter = 0;
                 $multi_tree = '';
+
+                /*
+                // TODO test code.
+                // Cache the list of trees in a class property to avoid repeated queries
+                 if (!isset($this->treeListCache)) {
+                     $this->treeListCache = [];
+                     foreach ($this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $treeRow) {
+                         $this->treeListCache[] = $treeRow;
+                     }
+                 }
+                 foreach ($this->treeListCache as $pdoresult) {
+                */
+
                 foreach ($this->dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
                     if ($select_trees == "all_but_this" && $pdoresult['tree_id'] == $this->tree_id) {
                         continue;

@@ -92,7 +92,7 @@ class RenamePlaceModel extends AdminBaseModel
             ]);
 
             $sql = "UPDATE humo_families SET fam_div_place = :place_new
-                    WHERE fam_tree_id = :tree_id AND fam_div_place = :place_old";
+                WHERE fam_tree_id = :tree_id AND fam_div_place = :place_old";
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':place_new' => $_POST['place_new'],
@@ -101,7 +101,7 @@ class RenamePlaceModel extends AdminBaseModel
             ]);
 
             $sql = "UPDATE humo_addresses SET address_place = :place_new
-                    WHERE address_tree_id = :tree_id AND address_place = :place_old";
+                WHERE address_tree_id = :tree_id AND address_place = :place_old";
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':place_new' => $_POST['place_new'],
@@ -110,7 +110,7 @@ class RenamePlaceModel extends AdminBaseModel
             ]);
 
             $sql = "UPDATE humo_events SET event_place = :place_new
-                    WHERE event_tree_id = :tree_id AND event_place = :place_old";
+                WHERE event_tree_id = :tree_id AND event_place = :place_old";
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':place_new' => $_POST['place_new'],
@@ -119,7 +119,7 @@ class RenamePlaceModel extends AdminBaseModel
             ]);
 
             $sql = "UPDATE humo_sources SET source_place = :place_new
-                    WHERE source_tree_id = :tree_id AND source_place = :place_old";
+                WHERE source_tree_id = :tree_id AND source_place = :place_old";
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':place_new' => $_POST['place_new'],
@@ -128,7 +128,7 @@ class RenamePlaceModel extends AdminBaseModel
             ]);
 
             $sql = "UPDATE humo_connections SET connect_place = :place_new
-                    WHERE connect_tree_id = :tree_id AND connect_place = :place_old";
+                WHERE connect_tree_id = :tree_id AND connect_place = :place_old";
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':place_new' => $_POST['place_new'],
@@ -137,7 +137,7 @@ class RenamePlaceModel extends AdminBaseModel
             ]);
 
             $sql = "UPDATE humo_location SET location_location = :place_new
-                    WHERE location_location = :place_old";
+                WHERE location_location = :place_old";
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':place_new' => $_POST['place_new'],

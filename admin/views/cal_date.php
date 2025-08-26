@@ -148,6 +148,23 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
                     if ($pers_cal_date == '' && $person_db->pers_famc) {
                         $fam_qry = "SELECT fam_man, fam_woman, fam_relation_date, fam_marr_notice_date, fam_marr_date, fam_marr_church_notice_date, fam_marr_church_date, fam_div_date
                             FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $person_db->pers_famc . "'";
+                        
+                        /*
+                        // TODO refactor (also use prepared query?)
+                        $fam_qry = "
+                            SELECT 
+                                fam_man, fam_woman,
+                                -- Marriage event
+                                (SELECT event_date FROM humo_events WHERE event_family_id = f.fam_id AND event_kind = 'marriage' LIMIT 1) AS fam_marr_date,
+                                -- Marriage church event
+                                (SELECT event_date FROM humo_events WHERE event_family_id = f.fam_id AND event_kind = 'marriage_church' LIMIT 1) AS fam_marr_church_date,
+                                -- Divorce event
+                                (SELECT event_date FROM humo_events WHERE event_family_id = f.fam_id AND event_kind = 'divorce' LIMIT 1) AS fam_div_date
+                            FROM humo_families f
+                            WHERE fam_tree_id = '" . $tree_id . "' 
+                            AND fam_gedcomnumber = '" . $person_db->pers_famc . "'";
+                        */
+
                         $fam_result = $dbh->query($fam_qry);
                         $fam_db = $fam_result->fetch(PDO::FETCH_OBJ);
                         if ($fam_db->fam_marr_date) {

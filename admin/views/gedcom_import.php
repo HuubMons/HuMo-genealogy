@@ -2009,7 +2009,7 @@ elseif ($trees['step'] == '4') {
             $dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $trees['tree_id'] . ";') WHERE setting_variable = 'geo_trees'");
             $humo_option['geo_trees'] .= "@" . $trees['tree_id'] . ";";
         }
-    } // end refresh location_status column
+    }
 
 
     // *** Jeroen Beemster Jan 2006. Code rewritten in June 2013 by Huub. Order children and marriages ***

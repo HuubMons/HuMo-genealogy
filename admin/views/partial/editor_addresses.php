@@ -268,7 +268,7 @@ if ($count > 0) {
                                             }
                                             ?>
                                             <div class="row mb-2">
-                                                <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                                <label for="source_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                                 <div class="col-md-7">
                                                     <?php
                                                     source_link3($connect_kind, $connect_sub_kind_source, $connectDb->connect_id);

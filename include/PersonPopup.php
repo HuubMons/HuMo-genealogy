@@ -203,17 +203,14 @@ class PersonPopup
 
             $text = '<div class="dropdown dropend d-inline">';
             $text .= '<button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" ' . $dropdown_style . '>' . $popover_text . '</button>';
-            //$text .= '<ul class="dropdown-menu p-2 bg-light" style="width:' . $dropdown_width . ';">';
             $text .= '<ul class="dropdown-menu p-2 bg-light border-primary-subtle" style="width:' . $dropdown_width . ';">';
             if ($text_extended) {
                 $text .= $text_name;
-                $text .= '<table><tr><td style="width:auto; border: solid 0px; border-right:solid 1px #999999;">';
-                //$text .= '<ul class="list-unstyled">';
+                $text .= '<div class="row"><div class="col-auto" style="border: solid 0px; border-right:solid 1px #999999;">';
                 $text .= $popover_content;
-                //$text .= '</ul>';
-                $text .= '</td><td style="width:auto; border: solid 0px; font-size: 10px;" valign="top">';
+                $text .= '</div><div class="col-auto" style="border: solid 0px; font-size: 10px;">';
                 $text .= $text_extended;
-                $text .= '</td></tr></table>';
+                $text .= '</div></div>';
             } else {
                 $text .= $popover_content;
             }
