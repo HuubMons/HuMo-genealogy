@@ -720,6 +720,10 @@ If possible, try to filter with that'); ?></i>
                         $disabled = ' disabled';
                         echo '<input type="hidden" name="edit_tree_' . $data3Db->tree_id . '" value="1">';
                     }
+                    // *** Guest group is not allowed to edit ***
+                    if ($groupDb->group_id == '3') {
+                        $disabled = ' disabled';
+                    }
                     ?>
                     <input type="checkbox" name="edit_tree_<?= $data3Db->tree_id; ?>" class="form-check-input" <?= $check . $disabled; ?>>
                 </td>
