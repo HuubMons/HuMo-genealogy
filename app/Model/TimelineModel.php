@@ -59,18 +59,6 @@ class TimelineModel extends BaseModel
         $data["marrtext"] = array();
         $data["privacy_filtered"] = false;
 
-        /*
-        $data["bornyear"] = '';
-        if ($personDb->pers_birth_date) {
-            $borndate = $this->julgreg($personDb->pers_birth_date);
-            $temp = substr($borndate, -4);
-            if ($temp > 0 and $temp < 2200) {
-                $data["bornyear"] = $temp;
-                $data["borntext"] = ucfirst(__('birth')) . ' ' . $this->languageDate->language_date($borndate);
-                $data["isborn"] = 1;
-            }
-        }
-        */
         $data["bornyear"] = '';
         if ($personDb->pers_birth_date) {
             $get_date = $this->julgreg($personDb->pers_birth_date, true);
@@ -81,18 +69,6 @@ class TimelineModel extends BaseModel
             }
         }
 
-        /*
-        $data["baptyear"] = '';
-        if ($personDb->pers_bapt_date) {
-            $baptdate = $this->julgreg($personDb->pers_bapt_date);
-            $temp = substr($baptdate, -4);
-            if ($temp > 0 and $temp < 2200) {
-                $data["baptyear"] = $temp;
-                $data["bapttext"] = ucfirst(__('baptised')) . ' ' . $this->languageDate->language_date($baptdate);
-                $data["isborn"] = 1;
-            }
-        }
-        */
         $data["baptyear"] = '';
         if ($personDb->pers_bapt_date) {
             $get_date = $this->julgreg($personDb->pers_bapt_date, true);

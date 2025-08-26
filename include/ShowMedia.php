@@ -136,6 +136,10 @@ class ShowMedia
                 }
             }
 
+            if ($media_nr > 0) {
+                $process_text .= '<div class="container-fluid mt-2">';
+                $process_text .= '<div class="row g-3">';
+            }
             for ($i = 1; $i < ($media_nr + 1); $i++) {
                 $dateplace = $datePlace->date_place($media_event_date[$i], $media_event_place[$i]);
                 // *** If possible show a thumb ***
@@ -181,7 +185,10 @@ class ShowMedia
                         $picture .= $dateplace . '<br>';
                     }
                     $picture .= $title_txt . '</div>';
-                    $picture .= $this->print_thumbnail($tree_pict_path, $event_event); // sing default hight 120px
+
+                    //$picture .= $this->print_thumbnail($tree_pict_path, $event_event); // sing default height
+                    $picture .= $this->print_thumbnail($tree_pict_path, $event_event, 175, 120, 'BOOTSTRAP_CARD');
+
                     $picture .= '</a>';
 
                     $thumb_url = $this->thumbnail_exists($temp_path, $event_event); // returns url of thumb or empty string
@@ -210,8 +217,7 @@ class ShowMedia
                 // *** Show text by picture of little space ***
                 if (isset($media_event_text[$i]) && $media_event_text[$i]) {
                     if ($screen_mode != 'RTF') {
-                        //$picture_text.=' '.str_replace("&", "&amp;", $media_event_text[$i]);
-                        $picture_text .= ' ' . str_replace("&", "&amp;", $processText->process_text($media_event_text[$i]));
+                        $picture_text .= ' ' . str_replace("&", "&amp;", $processText->process_text($media_event_text[$i], 'media'));
                     }
                     if (isset($templ_person["pic_text" . $i])) {
                         $templ_person["pic_text" . $i] .= ' ' . $media_event_text[$i];
@@ -235,9 +241,10 @@ class ShowMedia
                         }
                     }
 
+                    /*
+                    // Original code
                     $process_text .= '<div class="photo">';
                     $process_text .= $picture;
-
                     if (!file_exists($temp_path . $event_event) && !file_exists($temp_path . strtolower($event_event))) {
                         $picture_text .= '<br><b>' . __('Missing image') . ':<br>' . $temp_path . $event_event . '</b>';
                     }
@@ -246,10 +253,29 @@ class ShowMedia
                         $process_text .= '<div class="phototext">' . $picture_text . '</div>';
                     }
                     $process_text .= '</div>' . "\n";
+                    */
+
+                    $process_text .= '<div class="col-12 col-sm-5 col-md-3 col-lg-2">';
+                    $process_text .= '<div class="card h-100 shadow-sm">';
+
+                    $process_text .= $picture;
+                    if (!file_exists($temp_path . $event_event) && !file_exists($temp_path . strtolower($event_event))) {
+                        $picture_text .= '<br><b>' . __('Missing image') . ':<br>' . $temp_path . $event_event . '</b>';
+                    }
+                    // *** Show text by picture ***
+                    if (isset($picture_text)) {
+                        $process_text .= '<div class="card-text small">' . $picture_text . '</div>';
+                    }
+
+                    $process_text .= '</div>';
+                    $process_text .= '</div>';
                 }
             }
 
             if ($media_nr > 0) {
+                $process_text .= '</div>';
+                $process_text .= '</div>';
+
                 $process_text .= '<br clear="All">';
                 $templ_person["got_pics"] = 1;
             }
@@ -269,9 +295,6 @@ class ShowMedia
         $resizePicture = new ResizePicture();
 
         // in current state this function is not displaying all formats of pictures that are allowed - for example it's not displaying webp
-        // echo 'print thumbnail<br>';
-        // echo 'folder:' . $folder;
-        // echo '<br>file:' . $file;
         $img_style = ' style="';
         if ($maxw > 0 && $maxh > 0) {
             $img_style .= 'width:auto; height:auto; max-width:' . $maxw . 'px; max-height:' . $maxh . 'px; ' . $css . '" ' . $attrib;
@@ -283,14 +306,26 @@ class ShowMedia
             $img_style .= 'width:auto; height:120px; ' . $css . '" ' . $attrib;
         }
 
+        // *** Photoalbum, use bootstrap cards ***
+        $img_class = '';
+        if ($css == 'BOOTSTRAP_CARD') {
+            $img_style = '';
+            $img_class = ' class="card-img-top img-fluid"';
+        }
+
+        // *** Change path for admin scripts ***
+        $prefix = '';
+        if (file_exists('../images/missing-image.jpg')) {
+            $prefix = '../';
+        }
+
         if (!$file || !$folder) {
-            if (file_exists('images/thumb_missing-image.jpg')) {
-                // Front pages:
-                return '<img src="images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' missing path/filename">';
-            } else {
-                // Admin pages:
-                return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' missing path/filename">';
+            // *** Don't change class or style in editor (at this moment) ***
+            if (!$prefix) {
+                $img_style = '';
+                $img_class = ' class="card-img-top img-fluid"';
             }
+            return '<img src="' . $prefix . 'images/thumb_missing-image.jpg" ' . $img_style . $img_class . ' title="' . $folder . $file . ' missing path/filename">';
         }
 
         $thumb_url =  $this->thumbnail_exists($folder, $file);
@@ -304,143 +339,93 @@ class ShowMedia
             }
             if ($calling_file === 'editorEvent.php' || $calling_file === 'thumbs.php' || $calling_file === 'editor_media_select.php') {
                 $folder_for_give_media_path = substr($folder, 3);
-                $prefix = '../';
+                //$prefix = '../';
             } else {
                 $folder_for_give_media_path = $folder;
-                $prefix = '';
+                //$prefix = '';
             }
 
-            // I modified thumbnail_exist function to serve also only file in swcond mode with its logic becouse i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
+            // I modified thumbnail_exist function to serve also only file in swcond mode with its logic because i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
             $mode = 'onlyfile';
             $fileName = $this->thumbnail_exists($folder, $file, $mode);
 
             $src_path = $mediaPath->give_media_path($folder_for_give_media_path, $fileName);
-            return '<img src="' . $prefix . $src_path . '"' . $img_style . '>';
+            return '<img src="' . $prefix . $src_path . '"' . $img_style . $img_class . '>';
         }
 
-        // no thumbnail found, create a new one, first check if/where org_file exist
+        // No thumbnail found, create a new one, first check if and where org_file exist
         if (array_key_exists(substr($file, 0, 3), $this->pcat_dirs)) {
+            // photobook categories
             $folder .= substr($file, 0, 2) . '/';
-        } // photobook categories
-        if (!file_exists($folder . $file)) {
-            if (file_exists('images/thumb_missing-image.jpg')) {
-                // Front pages:
-                return '<img src="images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' not found">';
-            } else {
-                // Admin pages:
-                return '<img src="../images/thumb_missing-image.jpg" style="width:auto; height:120px;" title="' . $folder . $file . ' not found">';
-            }
         }
+        if (!file_exists($folder . $file)) {
+            return '<img src="' . $prefix . 'images/thumb_missing-image.jpg" ' . $img_style . $img_class . ' title="' . $folder . $file . ' not found">';
+        }
+
         // check for mime type and no_thumb file
-        if (
-            $resizePicture->check_media_type($folder, $file) &&
-            !is_file($folder . '.' . $file . '.no_thumb')
-        ) {
+        //if ($resizePicture->check_media_type($folder, $file) && !is_file($folder . '.' . $file . '.no_thumb')) {
+        if ($resizePicture->check_media_type($folder, $file)) {
             // script will possibily die here and hidden no_thumb file becomes persistent
-            // so this code might be skiped afterwords
-            if ($humo_option["thumbnail_auto_create"] == 'y' && $resizePicture->create_thumbnail($folder, $file)) {
+            // so this code might be skipped afterwards
+
+            // TODO: aug 2025 thumbnails are created always at this moment, because of new thumbnail size.
+            //if ($humo_option["thumbnail_auto_create"] == 'y' && $resizePicture->create_thumbnail($folder, $file)) {
+            if ($resizePicture->create_thumbnail($folder, $file)) {
                 $src_path = $mediaPath->give_media_path($folder, 'thumb_' . $file . '.jpg');
-                return '<img src="' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             }
         }
 
         $extensions_check = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         $src_path = $mediaPath->give_media_path($folder, $file);
         switch ($extensions_check) {
-                /*
             case 'pdf':
-                return '<img src="../images/pdf.jpg" alt="PDF">';
+                return '<img src="' . $prefix . 'images/pdf.jpg"' . $img_class . ' alt="PDF">';
             case 'docx':
-                return '<img src="../images/msdoc.gif" alt="DOCX">';
+                return '<img src="' . $prefix . 'images/msdoc.gif"' . $img_class . ' alt="DOCX">';
             case 'doc':
-                return '<img src="../images/msdoc.gif" alt="DOC">';
+                return '<img src="' . $prefix . 'images/msdoc.gif"' . $img_class . ' alt="DOC">';
             case 'wmv':
-                return '<img src="../images/video-file.png" alt="WMV">';
+                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="WMV">';
             case 'avi':
-                return '<img src="../images/video-file.png" alt="AVI">';
+                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="AVI">';
             case 'mp4':
-                return '<img src="../images/video-file.png" alt="MP4">';
+                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="MP4">';
             case 'mpg':
-                return '<img src="../images/video-file.png" alt="MPG">';
+                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="MPG">';
             case 'mov':
-                return '<img src="../images/video-file.png" alt="MOV">';
+                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="MOV">';
             case 'wma':
-                return '<img src="../images/video-file.png" alt="WMA">';
+                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="WMA">';
             case 'wav':
-                return '<img src="../images/audio.gif" alt="WAV">';
+                return '<img src="' . $prefix . 'images/audio.gif"' . $img_class . ' alt="WAV">';
             case 'mp3':
-                return '<img src="../images/audio.gif" alt="MP3">';
+                return '<img src="' . $prefix . 'images/audio.gif"' . $img_class . ' alt="MP3">';
             case 'mid':
-                return '<img src="../images/audio.gif" alt="MID">';
+                return '<img src="' . $prefix . 'images/audio.gif"' . $img_class . ' alt="MID">';
             case 'ram':
-                return '<img src="../images/audio.gif" alt="RAM">';
+                return '<img src="' . $prefix . 'images/audio.gif"' . $img_class . ' alt="RAM">';
             case 'ra':
-                return '<img src="../images/audio.gif" alt="RA">';
+                return '<img src="' . $prefix . 'images/audio.gif"' . $img_class . ' alt="RA">';
             case 'jpg':
-                return '<img src="../' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             case 'jpeg':
-                return '<img src="../' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             case 'png':
-                return '<img src="../' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             case 'gif':
-                return '<img src="../' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             case 'tif':
-                return '<img src="../' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             case 'tiff':
-                return '<img src="../' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             case 'bmp':
-                return '<img src="../' . $src_path . '"' . $img_style . '>';
-            */
-
-            case 'pdf':
-                return '<img src="images/pdf.jpg" alt="PDF">';
-            case 'docx':
-                return '<img src="images/msdoc.gif" alt="DOCX">';
-            case 'doc':
-                return '<img src="images/msdoc.gif" alt="DOC">';
-            case 'wmv':
-                return '<img src="images/video-file.png" alt="WMV">';
-            case 'avi':
-                return '<img src="images/video-file.png" alt="AVI">';
-            case 'mp4':
-                return '<img src="images/video-file.png" alt="MP4">';
-            case 'mpg':
-                return '<img src="images/video-file.png" alt="MPG">';
-            case 'mov':
-                return '<img src="images/video-file.png" alt="MOV">';
-            case 'wma':
-                return '<img src="images/video-file.png" alt="WMA">';
-            case 'wav':
-                return '<img src="images/audio.gif" alt="WAV">';
-            case 'mp3':
-                return '<img src="images/audio.gif" alt="MP3">';
-            case 'mid':
-                return '<img src="images/audio.gif" alt="MID">';
-            case 'ram':
-                return '<img src="images/audio.gif" alt="RAM">';
-            case 'ra':
-                return '<img src="images/audio.gif" alt="RA">';
-            case 'jpg':
-                return '<img src="' . $src_path . '"' . $img_style . '>';
-            case 'jpeg':
-                return '<img src="' . $src_path . '"' . $img_style . '>';
-            case 'png':
-                return '<img src="' . $src_path . '"' . $img_style . '>';
-            case 'gif':
-                return '<img src="' . $src_path . '"' . $img_style . '>';
-            case 'tif':
-                return '<img src="' . $src_path . '"' . $img_style . '>';
-            case 'tiff':
-                return '<img src="' . $src_path . '"' . $img_style . '>';
-            case 'bmp':
-                return '<img src="' . $src_path . '"' . $img_style . '>';
+                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
         }
-        //return '<img src="../images/thumb_missing-image.jpg"' . $img_style . '>';
-        //return '<img src="../../images/thumb_missing-image.jpg"' . $img_style . '>';
 
         // No thumbnail found, return the original file.
         $src_path = $mediaPath->give_media_path($folder, $file);
-        return '<img src="' . $src_path . '"' . $img_style . '>';
+        return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
     }
 
     public function thumbnail_exists($folder, $file, $mode = 'both'): string
@@ -457,11 +442,36 @@ class ShowMedia
         if (!$file || !file_exists($folder . $file)) {
             return '';
         }
+
         if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
+            // *** Check for old thumbnails ***
+            list($width, $height) = getimagesize($folder . 'thumb_' . $file . '.jpg');
+            if ($height == 120) {
+                // *** Remove old thumbnail. Will be recreated. ***
+                unlink($folder . 'thumb_' . $file . '.jpg');
+
+                // *** Recreate thumbnail using new size. ***
+                $resizePicture = new ResizePicture();
+                $resizePicture->create_thumbnail($folder, $file);
+                if (!file_exists($folder . 'thumb_' . $file . '.jpg')) {
+                    // Recreation failed.
+                    return '';
+                }
+            }
+
             return ($folder1 . 'thumb_' . $file . '.jpg');
         }
+
+        // *** Old naming of thumbnails ***
         if (file_exists($folder . 'thumb_' . $file)) {
-            // old naming
+            // *** Check for old thumbnails ***
+            list($width, $height) = getimagesize($folder . 'thumb_' . $file);
+            if ($height == 120) {
+                // *** Remove old thumbnail. Will be recreated. ***
+                unlink($folder . 'thumb_' . $file);
+                return '';
+            }
+
             return ($folder1 . 'thumb_' . $file);
         }
         if (file_exists($folder . $pparts['dirname'] . '/thumb_' . $pparts['basename'] . '.jpg')) {

@@ -22,7 +22,7 @@ class PersonPopup
 {
     public function person_popup_menu($personDb, $privacy, $extended = false, $replacement_text = '', $extra_popup_text = '')
     {
-        global $db_functions, $humo_option, $uri_path, $user, $language, $screen_mode, $hourglass, $page, $selectedFamilyTree;
+        global $db_functions, $humo_option, $uri_path, $user, $language, $screen_mode, $selectedFamilyTree;
 
         $botDetector = new BotDetector();
         $datePlace = new DatePlace();
@@ -31,19 +31,18 @@ class PersonPopup
         $personName = new PersonName();
         $processLinks = new ProcessLinks($uri_path);
 
-        $text_start = '';
+        $text_name = '';
         $text = '';
+        $text_extended = '';
         $popover_content = '';
 
         // *** Show pop-up menu ***
         if (!$botDetector->isBot() && $screen_mode != "PDF" && $screen_mode != "RTF") {
-
             // *** Family tree for search in multiple family trees ***
             $db_functions->set_tree_id($personDb->pers_tree_id);
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            $start_url = $personLink->get_person_link($personDb);
-            $family_url = $start_url;
+            $family_url = $personLink->get_person_link($personDb);
 
             // *** Link to own family or parents ***
             $pers_family = '';
@@ -55,52 +54,15 @@ class PersonPopup
                 $pers_family = $pers_fams[0];
             }
 
-            // *** Change start url for a person in a graphical ancestor report ***
-            if ($screen_mode == 'ancestor_chart' && $hourglass === false) {
-                $vars['id'] = $personDb->pers_gedcomnumber;
-                $start_url = $processLinks->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, true, $vars);
-                $start_url .= 'screen_mode=ancestor_chart';
-            }
-
-            $text_start .= '<div class="' . $directionMarkers->rtlmarker . 'sddm" style="display:inline;">' . "\n";
-
-            $text_start .= '<a href="' . $start_url . '"';
-            if ($extended) {
-                if ($page == 'ancestor_sheet') {
-                    $text_start .= ' class="nam" style="z-index:100;display:block; width:100%; height:100%" ';
-                } else {
-                    $text_start .= ' class="nam" style="z-index:100;font-size:10px; display:block; width:100%; height:100%" ';
-                }
-            }
-
-            $random_nr = rand(); // *** Generate a random number to avoid double numbers ***
-            $text_start .= ' onmouseover="mopen(event,\'m1' . $random_nr . $personDb->pers_gedcomnumber . '\',0,0)"';
-            $text_start .= ' onmouseout="mclosetime()">';
-            if ($replacement_text) {
-                $text_start .= $replacement_text;
-            } else {
-                $text_start .= '<img src="images/reports.gif" border="0" alt="reports">';
-            }
-            $text_start .= '</a>';
-
-            // *** Added style="z-index:40;" for ancestor and descendant report ***
-            $text_start .= '<div style="z-index:500; border:1px solid #999999;" id="m1' . $random_nr . $personDb->pers_gedcomnumber .
-                '" class="sddm_fixed" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-
             $name = $personName->get_person_name($personDb, $privacy);
-            $text .= $directionMarkers->dirmark2 . '<span style="font-size:13px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span><br>';
-            $popover_content .= '<li><span style="font-size:13px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span></li>';
-            if ($extended) {
-                $text .= '<table><tr><td style="width:auto; border: solid 0px; border-right:solid 1px #999999;">';
-            }
+            $text_name .= '<li class="mb-2"><span style="font-size:15px;"><b>' . $name["standard_name"] . $name["colour_mark"] . '</b></span></li>';
 
             // *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
             $direct_link = '';
             if ($personDb->pers_fams == '') {
                 $direct_link = '#person_' . $personDb->pers_gedcomnumber;
             }
-            $text .= $directionMarkers->dirmark1 . '<a href="' . $family_url . $direct_link . '"><img src="images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a>';
-            $popover_content .=  '<li><a href="' . $family_url . $direct_link . '"><img src="images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a></li>';
+            $popover_content .=  '<li><a class="dropdown-item" href="' . $family_url . $direct_link . '"><img src="images/family.gif" border="0" alt="' . __('Family group sheet') . '"> ' . __('Family group sheet') . '</a></li>';
 
             if ($user['group_gen_protection'] == 'n' && $personDb->pers_fams != '') {
                 // *** Only show a descendant_report icon if there are children ***
@@ -116,8 +78,7 @@ class PersonPopup
                     $vars['pers_family'] = $pers_family;
                     $path_tmp = $processLinks->get_link($uri_path, 'family', $personDb->pers_tree_id, true, $vars);
                     $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;descendant_report=1';
-                    $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a>';
-                    $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a></li>';
+                    $popover_content .= '<li><a class="dropdown-item" href="' . $path_tmp . '" rel="nofollow"><img src="images/descendant.gif" border="0" alt="' . __('Descendants') . '"> ' . __('Descendants') . '</a></li>';
                 }
             }
 
@@ -125,8 +86,7 @@ class PersonPopup
                 // == Ancestor report: link & icons by Klaas de Winkel ==
                 $vars['id'] = $personDb->pers_gedcomnumber;
                 $path_tmp = $processLinks->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, false, $vars);
-                $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a>';
-                $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a></li>';
+                $popover_content .= '<li><a class="dropdown-item" href="' . $path_tmp . '" rel="nofollow"><img src="images/ancestor_report.gif" border="0" alt="' . __('Ancestor report') . '"> ' . __('Ancestors') . '</a></li>';
             }
 
             // check for timeline folder and tml files
@@ -140,15 +100,13 @@ class PersonPopup
                 if ($user['group_gen_protection'] == 'n' && $tmldates == 1) {
                     $vars['pers_gedcomnumber'] = $personDb->pers_gedcomnumber;
                     $path_tmp = $processLinks->get_link($uri_path, 'timeline', $personDb->pers_tree_id, false, $vars);
-                    $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a>';
-                    $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a></li>';
+                    $popover_content .= '<li><a class="dropdown-item" href="' . $path_tmp . '" rel="nofollow"><img src="images/timeline.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Timeline') . '</a></li>';
                 }
             }
 
             if ($user["group_relcalc"] == 'j') {
                 $relpath = $processLinks->get_link($uri_path, 'relations', $personDb->pers_tree_id, true);
-                $text .= '<a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a>';
-                $popover_content .= '<li><a href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a></li>';
+                $popover_content .= '<li><a class="dropdown-item" href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a></li>';
             }
 
             // DNA charts
@@ -160,8 +118,7 @@ class PersonPopup
                 } else {
                     $path_tmp = 'index.php?page=descendant_chart&amp;tree_id=' . $personDb->pers_tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber . '&amp;dnachart=' . $charttype;
                 }
-                $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a>';
-                $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a></li>';
+                $popover_content .= '<li><a class="dropdown-item" href="' . $path_tmp . '" rel="nofollow"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a></li>';
             }
 
             if ($user['group_gen_protection'] == 'n' && $personDb->pers_famc != '' && $personDb->pers_fams != '' && $check_children) {
@@ -169,8 +126,7 @@ class PersonPopup
                 $vars['pers_family'] = $pers_family;
                 $path_tmp = $processLinks->get_link($uri_path, 'hourglass', $personDb->pers_tree_id, true, $vars);
                 $path_tmp .= "main_person=" . $personDb->pers_gedcomnumber . '&amp;screen_mode=HOUR';
-                $text .= '<a href="' . $path_tmp . '" rel="nofollow"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a>';
-                $popover_content .= '<li><a href="' . $path_tmp . '" rel="nofollow"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a></li>';
+                $popover_content .= '<li><a class="dropdown-item" href="' . $path_tmp . '" rel="nofollow"><img src="images/hourglass.gif" border="0" alt="' . __('Hourglass chart') . '"> ' . __('Hourglass chart') . '</a></li>';
             }
 
             // *** Editor link ***
@@ -179,18 +135,13 @@ class PersonPopup
                 // *** Administrator can always edit in all family trees ***
                 if ($user['group_admin'] == 'j' || in_array($_SESSION['tree_id'], $edit_tree_array)) {
                     $path_tmp = 'admin/index.php?page=editor&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id . '&amp;person=' . $personDb->pers_gedcomnumber;
-                    $text .= '<b>' . __('Admin') . ':</b>';
-                    $popover_content .= '<li><b>' . __('Admin') . ':</b></li>';
-
-                    $text .= '<a href="' . $path_tmp . '" target="_blank"><img src="images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a>';
-                    $popover_content .= '<li><a href="' . $path_tmp . '" target="_blank" rel="nofollow"><img src="images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a></li>';
+                    $popover_content .= '<li class="mt-2"><b>' . __('Admin') . ':</b></li>';
+                    $popover_content .= '<li><a class="dropdown-item" href="' . $path_tmp . '" target="_blank" rel="nofollow"><img src="images/person_edit.gif" border="0" alt="' . __('Timeline') . '"> ' . __('Editor') . '</a></li>';
                 }
             }
 
             // *** Show person picture and person data at right side of the pop-up box ***
             if ($extended) {
-                $text .= '</td><td style="width:auto; border: solid 0px; font-size: 10px;" valign="top">';
-
                 // *** Show picture in pop-up box ***
                 if (!$privacy && $user['group_pictures'] == 'j') {
                     //  *** Path can be changed per family tree ***
@@ -203,59 +154,68 @@ class PersonPopup
                     if (isset($picture_qry[0])) {
                         $pictureDb = $picture_qry[0];
                         $showMedia = new ShowMedia;
-                        $text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 0, 120, 'margin-left:10px; margin-top:5px;') . '<br>';
+                        $text_extended .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 0, 120, 'margin-left:10px; margin-top:5px;') . '<br>';
 
                         //$picture = show_picture($tree_pict_path, $pictureDb->event_event, '', 120);
-                        //$text .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
-                        //$popover_content .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
+                        //$text_extended .= '<img src="' . $picture['path'] . $picture['thumb_prefix'] . $picture['picture'] . $picture['thumb_suffix'] . '" style="margin-left:10px; margin-top:5px;" alt="' . $pictureDb->event_text . '" height="' . $picture['height'] . '"><br>';
                     }
                 }
 
                 // *** Pop-up tekst ***
                 if (!$privacy) {
                     if ($personDb->pers_birth_date || $personDb->pers_birth_place) {
-                        $text .= __('*') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
+                        $text_extended .= __('*') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, $personDb->pers_birth_place);
                     } elseif ($personDb->pers_bapt_date || $personDb->pers_bapt_place) {
-                        $text .= __('~') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
+                        $text_extended .= __('~') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, $personDb->pers_bapt_place);
                     }
 
                     if ($personDb->pers_death_date || $personDb->pers_death_place) {
-                        $text .= '<br>' . __('&#134;') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, $personDb->pers_death_place);
+                        $text_extended .= '<br>' . __('&#134;') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, $personDb->pers_death_place);
                     } elseif ($personDb->pers_buried_date || $personDb->pers_buried_place) {
-                        $text .= '<br>' . __('[]') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
+                        $text_extended .= '<br>' . __('[]') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, $personDb->pers_buried_place);
                     }
 
                     // *** If needed add extra text in the pop-up box ***
                     if ($extra_popup_text) {
-                        $text .= '<br><br>' . $extra_popup_text;
+                        $text_extended .= '<br><br>' . $extra_popup_text;
                     }
                 } else {
-                    $text .= ' ' . __('PRIVACY FILTER');
+                    $text_extended .= ' ' . __('PRIVACY FILTER');
                 }
-
-                $text .= '</td></tr></table>';
             }
-
-            $text = $text_start . $text;
-            $text .= $directionMarkers->dirmark1 . '</div>';
-            $text .= '</div>' . "\n";
 
             // *** Use dropdown button in standard family pages ***
-            // TODO Check outline report (now disabled). text-indent: -1.5em;
-            if ($page != 'descendant_chart' and $page != 'ancestor_chart' and $page != 'hourglass' and $page != 'ancestor_sheet' and $page != 'outline_report') {
-                if ($replacement_text) {
-                    $popover_text = $replacement_text;
-                } else {
-                    $popover_text = '<img src="images/reports.gif" border="0" alt="reports">';
-                }
-                $text = '<div class="dropdown dropend d-inline">';
-                //$text .= '<button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;">' . $popover_text . '</button>';
-                $text .= '<button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;">' . $popover_text . '</button>';
-                $text .= '<ul class="dropdown-menu p-2" style="width:260px;">';
-                $text .= $popover_content;
-                $text .= '</ul>';
-                $text .= '</div>';
+            if ($replacement_text) {
+                $popover_text = $replacement_text;
+            } else {
+                $popover_text = '<img src="images/reports.gif" border="0" alt="reports">';
             }
+
+            $dropdown_style = '';
+            if ($text_extended) {
+                $dropdown_style = 'style="--bs-btn-padding-y: 0rem; --bs-btn-padding-x: 0rem; --bs-btn-font-size: .6rem;"';
+            }
+
+            $dropdown_width = '350px';
+            if ($text_extended) {
+                $dropdown_width = '600px';
+            }
+
+            $text = '<div class="dropdown dropend d-inline">';
+            $text .= '<button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" ' . $dropdown_style . '>' . $popover_text . '</button>';
+            $text .= '<ul class="dropdown-menu p-2 bg-light border-primary-subtle" style="width:' . $dropdown_width . ';">';
+            if ($text_extended) {
+                $text .= $text_name;
+                $text .= '<div class="row"><div class="col-auto" style="border: solid 0px; border-right:solid 1px #999999;">';
+                $text .= $popover_content;
+                $text .= '</div><div class="col-auto" style="border: solid 0px; font-size: 10px;">';
+                $text .= $text_extended;
+                $text .= '</div></div>';
+            } else {
+                $text .= $popover_content;
+            }
+            $text .= '</ul>';
+            $text .= '</div>';
         }
 
         return $text;

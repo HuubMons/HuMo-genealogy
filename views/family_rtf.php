@@ -487,7 +487,7 @@ $link .= "main_person=" . $data["main_person"];
     <?php if ($data["descendant_report"] == true) { ?>
         <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
     <?php } ?>
-    <input type="Submit" name="submit" value="<?= __('Back'); ?>">
+    <input type="Submit" name="submit" value="<?= __('Back'); ?>" class="btn btn-sm btn-primary">
 </form>
 
 <?php

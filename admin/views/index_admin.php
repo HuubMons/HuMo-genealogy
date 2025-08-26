@@ -128,7 +128,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
                             <td><?= __('At a local PC also install database'); ?></td>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="install_database" <?= isset($_POST["install_database"]) ? 'checked' : ''; ?>>
+                                    <input type="checkbox" class="form-check-input" name="install_database" <?= isset($_POST["install_database"]) ? 'checked' : ''; ?>>
                                     <label class="form-check-label"><?= __('YES, also install database'); ?></label>
                                 </div>
                             </td>
@@ -177,8 +177,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
         <div class="row mb-2">
             <div class="col-md-4"></div>
             <div class="col-md-4">
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="install">
+                <form method="post" action="index.php?page=install" style="display : inline;">
                     <input type="submit" name="submit" value="<?= __('Continue installation'); ?>" class="btn btn-success">
                 </form>
             </div>
@@ -200,8 +199,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             <div class="col-md-auto">
                 <?php printf(__('No %s tables found in database.'), 'HuMo-genealogy'); ?><br>
 
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="install">
+                <form method="post" action="index.php?page=install" style="display : inline;">
                     <input type="submit" name="submit" class="btn btn-success" value="<?php printf(__('Install %s database tables'), 'HuMo-genealogy'); ?>">
                 </form>
 
@@ -536,8 +534,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
                                 <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b><br>
 
                                 <!-- Read GEDCOM file -->
-                                <form method="post" action="index.php" style="display : inline;">
-                                    <input type="hidden" name="page" value="tree">
+                                <form method="post" action="index.php?page=tree" style="display : inline;">
                                     <input type="hidden" name="tree_id" value="<?= $familytree->tree_id; ?>">
                                     <input type="submit" name="step1" class="btn btn-sm btn-success" value="<?= __('Import Gedcom file'); ?>">
                                 </form>

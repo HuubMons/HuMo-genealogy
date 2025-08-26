@@ -74,7 +74,7 @@ if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y
                             <input type="text" class="form-control my-2" id="2fa_code" name="2fa_code" placeholder="<?= __('2FA code from app'); ?>" size="30" style="background-color:#FFFFFF">
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="check1" name="user_2fa_enabled" <?= $data["checked"]; ?>>
+                                <input type="checkbox" class="form-check-input" id="check1" name="user_2fa_enabled" <?= $data["checked"]; ?>>
                                 <label class="form-check-label"><?= __('Enable 2FA login'); ?></label>
                             </div>
 

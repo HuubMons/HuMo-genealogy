@@ -82,8 +82,8 @@ if (!defined('ADMIN_PAGE')) {
                         <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
                             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
                             <input type="hidden" name="remove_gedcom_files2" value="<?= $_POST['remove_gedcom_files']; ?>">
-                            <input type="submit" name="remove_confirm" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                            <input type="submit" name="remove_confirm" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+                            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
                         </form>
                     </div>
                 <?php } elseif (isset($_POST['remove_gedcom_files2']) && isset($_POST['remove_confirm'])) { ?>
@@ -165,49 +165,49 @@ if (!defined('ADMIN_PAGE')) {
                         <div class="accordion-body genealogy_search">
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="add_source" value="" id="add_source" <?= $humo_option["gedcom_read_add_source"] == 'y' ? 'checked' : ''; ?>>
+                                <input type="checkbox" name="add_source" value="" id="add_source" <?= $humo_option["gedcom_read_add_source"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
                                 <label class="form-check-label" for="add_source">
                                     <?= __('Add a general source connected to all persons in this GEDCOM file.'); ?>
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="reassign_gedcomnumbers" value="" id="reassign_gedcomnumbers" <?= $humo_option["gedcom_read_reassign_gedcomnumbers"] == 'y' ? 'checked' : ''; ?>>
+                                <input type="checkbox" name="reassign_gedcomnumbers" value="" id="reassign_gedcomnumbers" <?= $humo_option["gedcom_read_reassign_gedcomnumbers"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
                                 <label class="form-check-label" for="reassign_gedcomnumbers">
                                     <?= __('Reassign new ID numbers for persons, fams etc. (don\'t use IDs from GEDCOM)'); ?>
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="order_by_date" value="" id="order_by_date" <?= $humo_option["gedcom_read_order_by_date"] == 'y' ? 'checked' : ''; ?>>
+                                <input type="checkbox" name="order_by_date" value="" id="order_by_date" <?= $humo_option["gedcom_read_order_by_date"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
                                 <label class="form-check-label" for="order_by_date">
                                     <?= __('Order children by date (only needed if children are in wrong order)'); ?>
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="order_by_fams" value="" id="order_by_fams" <?= $humo_option["gedcom_read_order_by_fams"] == 'y' ? 'checked' : ''; ?>>
+                                <input type="checkbox" name="order_by_fams" value="" id="order_by_fams" <?= $humo_option["gedcom_read_order_by_fams"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
                                 <label class="form-check-label" for="order_by_fams">
                                     <?= __('Order families by date (only needed if families are in wrong order)'); ?>
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="process_geo_location" value="" id="process_geo_location" <?= $humo_option["gedcom_read_process_geo_location"] == 'y' ? 'checked' : ''; ?>>
+                                <input type="checkbox" name="process_geo_location" value="" id="process_geo_location" <?= $humo_option["gedcom_read_process_geo_location"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
                                 <label class="form-check-label" for="process_geo_location">
                                     <?= __('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of GEDCOM file!'); ?>
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="save_pictures" value="" id="save_pictures" <?= $humo_option["gedcom_read_save_pictures"] == 'y' ? 'checked' : ''; ?>>
+                                <input type="checkbox" name="save_pictures" value="" id="save_pictures" <?= $humo_option["gedcom_read_save_pictures"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
                                 <label class="form-check-label" for="save_pictures">
                                     <?= __('Don\'t remove picture links from database (only needed for Geneanet GEDCOM file).'); ?><br>
                                     <span style="font-size: 13px;"><?= __('In Geneanet add HuMo-genealogy picture id in the source by a person. Using this example: #media1254,media13454#'); ?></span>
                                 </label>
                             </div>
 
-                            <!-- <input type="checkbox" name="check_gedcom_process_pict_path" checked disabled> -->
+                            <!-- <input name="check_gedcom_process_pict_path" checked disabled class="form-check-input"> -->
                             <div class="row mt-2 mb-3">
                                 <div class="col-md-auto"><?= __('Picture settings'); ?></div>
                                 <div class="col-md-auto">
@@ -238,21 +238,21 @@ if (!defined('ADMIN_PAGE')) {
                         <div class="accordion-body genealogy_search">
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="check_processed" value="" id="check_processed">
+                                <input type="checkbox" name="check_processed" value="" id="check_processed" class="form-check-input">
                                 <label class="form-check-label" for="check_processed">
                                     <?= __('Show non-processed items when processing GEDCOM (can be a long list!'); ?>
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="show_gedcomnumbers" value="" id="show_gedcomnumbers">
+                                <input type="checkbox" name="show_gedcomnumbers" value="" id="show_gedcomnumbers" class="form-check-input">
                                 <label class="form-check-label" for="show_gedcomnumbers">
                                     <?= __('Show all numbers when processing GEDCOM (useful when a time-out occurs!)'); ?>
                                 </label>
                             </div>
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="debug_mode" value="" id="debug_mode">
+                                <input type="checkbox" name="debug_mode" value="" id="debug_mode" class="form-check-input">
                                 <label class="form-check-label" for="debug_mode">
                                     <?= __('Debug mode'); ?>
                                 </label>
@@ -2009,7 +2009,7 @@ elseif ($trees['step'] == '4') {
             $dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $trees['tree_id'] . ";') WHERE setting_variable = 'geo_trees'");
             $humo_option['geo_trees'] .= "@" . $trees['tree_id'] . ";";
         }
-    } // end refresh location_status column
+    }
 
 
     // *** Jeroen Beemster Jan 2006. Code rewritten in June 2013 by Huub. Order children and marriages ***

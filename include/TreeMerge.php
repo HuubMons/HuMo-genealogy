@@ -256,7 +256,7 @@ class TreeMerge
                     }
                 }
                 ?>
-                <td><input type="radio" name="<?= $name; ?>" value="1" <?= $left_item ? 'checked' : ''; ?>> <?= $left_item; ?></td>
+                <td><input type="radio" name="<?= $name; ?>" value="1" class="form-check-input" <?= $left_item ? 'checked' : ''; ?>> <?= $left_item; ?></td>
 
                 <?php
                 if ($name == 'crem' && $right_item == '1') {
@@ -269,7 +269,7 @@ class TreeMerge
                     $right_item = 'Yes';
                 }
                 ?>
-                <td><input type="radio" name="<?= $name; ?>" value="2" <?= !$left_item ? 'checked' : ''; ?>> <?= $right_item; ?></td>
+                <td><input type="radio" name="<?= $name; ?>" value="2" class="form-check-input" <?= !$left_item ? 'checked' : ''; ?>> <?= $right_item; ?></td>
             </tr>
         <?php
         }
@@ -300,7 +300,7 @@ class TreeMerge
                             $notetext = $left_item;
                         }
                     ?>
-                        <input type="checkbox" name="<?= $name; ?>_l" <?= $left_item ? 'checked' : ''; ?>>
+                        <input type="checkbox" name="<?= $name; ?>_l" class="form-check-input" <?= $left_item ? 'checked' : ''; ?>>
 
                         <div class="dropdown dropend d-inline">
                             <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;"><?= $showtext; ?></button>
@@ -328,7 +328,7 @@ class TreeMerge
 
                 <!-- Person 2 -->
                 <td>
-                    <input type="checkbox" name="<?= $name; ?>_r" <?= !$left_item ? 'checked' : ''; ?>>
+                    <input type="checkbox" name="<?= $name; ?>_r" class="form-check-input" <?= !$left_item ? 'checked' : ''; ?>>
 
                     <div class="dropdown dropend d-inline">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;"><?= $showtext; ?></button>
@@ -517,7 +517,7 @@ class TreeMerge
 
                                 $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
                             }
-                            echo '<input type="checkbox" name="l_' . $this_event . '_' . $key . '" checked> ' . $value . '<br>';
+                            echo '<input type="checkbox" name="l_' . $this_event . '_' . $key . '" class="form-check-input" checked> ' . $value . '<br>';
                         }
                     } else {
                         echo __('(no data)');
@@ -549,7 +549,7 @@ class TreeMerge
 
                                 $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
                             }
-                            echo '<input type="checkbox" name="r_' . $this_event . '_' . $key . '" ' . $checked . '> ' . $value . '<br>';
+                            echo '<input type="checkbox" name="r_' . $this_event . '_' . $key . '" class="form-check-input" ' . $checked . '> ' . $value . '<br>';
                         }
                     } else {
                         echo __('(no data)');
@@ -601,7 +601,7 @@ class TreeMerge
                             } else {
                                 $title = '';
                             }
-                            echo '<input type="checkbox" name="l_source_' . $left_sourcesDb->connect_id . '" ' . 'checked' . '> ' . $title . '<br>';
+                            echo '<input type="checkbox" name="l_source_' . $left_sourcesDb->connect_id . '" class="form-check-input" ' . 'checked' . '> ' . $title . '<br>';
                         }
                     } else {
                         echo __('(no data)');
@@ -624,7 +624,7 @@ class TreeMerge
                         } else {
                             $title = '';
                         }
-                        echo '<input type="checkbox" name="r_source_' . $right_sourcesDb->connect_id . '" ' . $checked . '> ' . $title . '<br>';
+                        echo '<input type="checkbox" name="r_source_' . $right_sourcesDb->connect_id . '" class="form-check-input" ' . $checked . '> ' . $title . '<br>';
                     }
                     ?>
                 </td>
@@ -671,7 +671,7 @@ class TreeMerge
                             $l_address = $this->dbh->query("SELECT address_address, address_place FROM humo_addresses WHERE address_tree_id='" . $this->trees['tree_id'] . "' AND address_gedcomnr='" . $left_addressesDb->connect_item_id . "'");
                             $result = $l_address->fetch(PDO::FETCH_OBJ);
                             $title = $result->address_address . ' ' . $result->address_place;
-                            echo '<input type="checkbox" name="l_address_' . $left_addressesDb->connect_id . '" checked> ' . $title . '<br>';
+                            echo '<input type="checkbox" name="l_address_' . $left_addressesDb->connect_id . '" class="form-check-input"checked> ' . $title . '<br>';
                         }
                     } else {
                         echo __('(no data)');
@@ -692,7 +692,7 @@ class TreeMerge
                         $result = $r_address->fetch(PDO::FETCH_OBJ);
                         $title = $result->address_address . ' ' . $result->address_place;
                     ?>
-                        <input type="checkbox" name="r_address_<?= $right_addressesDb->connect_id; ?>" <?= $checked; ?>> <?= $title; ?><br>
+                        <input type="checkbox" name="r_address_<?= $right_addressesDb->connect_id; ?>" class="form-check-input" <?= $checked; ?>> <?= $title; ?><br>
                     <?php } ?>
                 </td>
             </tr>
@@ -1590,44 +1590,28 @@ While in "Relatives merge" mode, any persons who might need merging as a result 
 This is the easiest way to make sure you don\'t forget anyone.');
                 echo '<br><br>';
             ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="tree">
+                <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $this->trees['tree_id']; ?>">
-                    <input type="hidden" name="menu_admin" value="<?= $this->trees['menu_tab']; ?>">
-                    <input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="<?= __('Relatives merge'); ?>" class="btn btn-sm btn-success">
+                    <input type="submit" style="font-weight:bold;font-size:120%" name="relatives" value="<?= __('Relatives merge'); ?>" class="btn btn-sm btn-success ms-3">
                 </form>
 
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="tree">
+                <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $this->trees['tree_id']; ?>">
-                    <input type="hidden" name="menu_admin" value="<?= $this->trees['menu_tab']; ?>">
-                    <?php
-                    if (isset($_POST['left'])) {
-                        // manual merge
-                        echo '<input type="submit" name="manual" value="' . __('Continue manual merge') . '" class="btn btn-sm btn-success">';
-                    } else {
-                        // duplicate merge
-                        echo '<input type="submit" name="duplicate_compare" value="' . __('Continue duplicate merge') . '" class="btn btn-sm btn-success">';
-                    }
-                    ?>
+                    <?php if (isset($_POST['left'])) { ?>
+                        <input type="submit" name="manual" value="<?= __('Continue manual merge'); ?>" class="btn btn-sm btn-success ms-5">
+                    <?php } else { ?>
+                        <input type="submit" name="duplicate_compare" value="<?= __('Continue duplicate merge'); ?>" class="btn btn-sm btn-success ms-5">
+                    <?php } ?>
                 </form>
             <?php } else { ?>
                 <br>
-                <form method="post" action="index.php" style="display : inline;">
-                    <input type="hidden" name="page" value="tree">
+                <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
                     <input type="hidden" name="tree_id" value="<?= $this->trees['tree_id']; ?>">
-                    <input type="hidden" name="menu_admin" value="<?= $this->trees['menu_tab']; ?>">
-                    <?php
-                    if (isset($_POST['left'])) {
-                        // manual merge
-                        echo '<input type="submit" name="manual" value="' . __('Choose another pair') . '" class="btn btn-sm btn-success">';
-                    } else {
-                        // duplicate merge
-                        echo '<input type="submit" name="duplicate_compare" value="' . __('Continue with next pair') . '" class="btn btn-sm btn-success">';
-                    }
-                    ?>
+                    <?php if (isset($_POST['left'])) { ?>
+                        <input type="submit" name="manual" value="<?= __('Choose another pair'); ?>" class="btn btn-sm btn-success">
+                    <?php } else { ?>
+                        <input type="submit" name="duplicate_compare" value="<?= __('Continue with next pair'); ?>" class="btn btn-sm btn-success">
+                    <?php } ?>
                 </form>
 <?php
             }

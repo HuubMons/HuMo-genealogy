@@ -10,25 +10,15 @@
 <tr id="addresses">
     <td style="border-right:0px;"><b><?= __('Addresses'); ?></b></td>
     <td colspan="2">
-        <?php
-        if ($connect_kind == 'person') {
-            echo ' <input type="submit" name="person_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
-        } else {
-            echo ' <input type="submit" name="relation_add_address" value="' . __('Add') . '" class="btn btn-sm btn-outline-primary">';
-        }
-        ?>
+        <input type="submit" name="<?= $connect_kind == 'person' ? 'person_add_address' : 'relation_add_address'; ?>" value="<?= __('Add'); ?>" class="btn btn-sm btn-outline-primary">
 
-        <!-- Help popup for address -->
-        &nbsp;
-        <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-            <a href="#" style="display:inline" onmouseover="mopen(event,'help_address_shared',0,0)" onmouseout="mclosetime()">
-                <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>">
-            </a>
-            <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                <b><?= __('A shared address can be connected to multiple persons or relations.'); ?></b><br>
-                <b><?= __('A shared address is only supported by the Haza-data and HuMo-genealogy programs.'); ?></b><br>
-            </div>
-        </div>
+        <!-- Help popover for address -->
+        <button type="button" class="btn btn-sm btn-secondary"
+            data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide" data-bs-html="true"
+            data-bs-content="<?= __('A shared address can be connected to multiple persons or relations.'); ?><br>
+                <?= __('A shared address is only supported by the Haza-data and HuMo-genealogy programs.'); ?>">
+            ?
+        </button>
     </td>
 </tr>
 
@@ -163,7 +153,7 @@ if ($count > 0) {
                                         <?= __('Address GEDCOM number:'); ?> <?= $address3Db->address_gedcomnr; ?>&nbsp;&nbsp;&nbsp;&nbsp;
 
                                         <!-- Shared address, to connect address to multiple persons or relations -->
-                                        <input type="checkbox" name="address_shared_<?= $address3Db->address_id; ?>" value="no_data" <?= $address3Db->address_shared ? 'checked' : ''; ?>> <?= __('Shared address'); ?><br>
+                                        <input type="checkbox" name="address_shared_<?= $address3Db->address_id; ?>" value="no_data" class="form-check-input" <?= $address3Db->address_shared ? 'checked' : ''; ?>> <?= __('Shared address'); ?><br>
 
                                         <?php
                                         // *** Don't use date here. Date of connection table will be used ***
@@ -178,7 +168,7 @@ if ($count > 0) {
                                         }
                                         ?>
 
-                                        <div class="row mb-2">
+                                        <div class="row my-2">
                                             <label for="address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
@@ -278,7 +268,7 @@ if ($count > 0) {
                                             }
                                             ?>
                                             <div class="row mb-2">
-                                                <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                                                <label for="source_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                                                 <div class="col-md-7">
                                                     <?php
                                                     source_link3($connect_kind, $connect_sub_kind_source, $connectDb->connect_id);
@@ -302,34 +292,42 @@ if ($count > 0) {
                                 <input type="hidden" name="connect_date[<?= $key; ?>]" value="">
                                 <input type="hidden" name="connect_date_prefix[<?= $key; ?>]" value="">
                                 <input type="hidden" name="connect_role[<?= $key; ?>]" value="">
-
-                                <!-- Added april 2024 -->
                                 <input type="hidden" name="connect_text[<?= $key; ?>]" value="">
 
-                                <?= __('Address'); ?>
-                                <select size="1" name="connect_item_id[<?= $key; ?>]" style="width: 300px">
-                                    <option value=""><?= __('Select address'); ?></option>
-                                    <!-- Only shared addresses (at this moment) -->
-                                    <?php while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) { ?>
-                                        <option value="<?= $address2Db->address_gedcomnr; ?>" <?= $connectDb->connect_item_id == $address2Db->address_gedcomnr ? 'selected' : ''; ?>>
-                                            <?= $address2Db->address_place; ?>, <?= $address2Db->address_address; ?>
-                                            <?php
-                                            if ($address2Db->address_text) {
-                                                echo ' ' . substr($address2Db->address_text, 0, 40);
-                                                if (strlen($address2Db->address_text) > 40) {
-                                                    echo '...';
-                                                }
-                                            }
-                                            ?>
-                                            [<?= $address2Db->address_gedcomnr; ?>]
-                                        </option>
-                                    <?php } ?>
-                                </select>
+                                <div class="row">
+                                    <div class="col-md-auto mt-1">
+                                        <?= __('Address'); ?>
+                                    </div>
+                                    <div class="col-md-auto">
+                                        <select size="1" name="connect_item_id[<?= $key; ?>]" style="width: 300px" class="form-select form-select-sm">
+                                            <option value=""><?= __('Select address'); ?></option>
+                                            <!-- Only shared addresses (at this moment) -->
+                                            <?php while ($address2Db = $addressqry->fetch(PDO::FETCH_OBJ)) { ?>
+                                                <option value="<?= $address2Db->address_gedcomnr; ?>" <?= $connectDb->connect_item_id == $address2Db->address_gedcomnr ? 'selected' : ''; ?>>
+                                                    <?= $address2Db->address_place; ?>, <?= $address2Db->address_address; ?>
+                                                    <?php
+                                                    if ($address2Db->address_text) {
+                                                        echo ' ' . substr($address2Db->address_text, 0, 40);
+                                                        if (strlen($address2Db->address_text) > 40) {
+                                                            echo '...';
+                                                        }
+                                                    }
+                                                    ?>
+                                                    [<?= $address2Db->address_gedcomnr; ?>]
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
 
-                                <?= __('Or: add new address'); ?>
-                                <a href="index.php?page=<?= $page; ?><?= $connect_kind == 'person' ? '&amp;person_place_address=1' : '&amp;family_place_address=1'; ?>&amp;address_add2=1&amp;connect_id=<?= $connectDb->connect_id; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>&amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>#addresses">
-                                    [<?= __('Add'); ?>]
-                                </a>
+                                    <div class="col-md-auto mt-1">
+                                        <?= __('Or: add new address'); ?>
+                                    </div>
+                                    <div class="col-md-auto mt-1">
+                                        <a href="index.php?page=<?= $page; ?><?= $connect_kind == 'person' ? '&amp;person_place_address=1' : '&amp;family_place_address=1'; ?>&amp;address_add2=1&amp;connect_id=<?= $connectDb->connect_id; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>&amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>#addresses">
+                                            [<?= __('Add'); ?>]
+                                        </a>
+                                    </div>
+                                </div>
 
                             <?php } ?>
                             </div>

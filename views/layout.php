@@ -233,13 +233,6 @@ $menu_top = getActiveTopMenu($page);
     // *** Style sheet select ***
     include_once(__DIR__ . "/../styles/sss1.php");
 
-    // *** Pop-up menu ***
-    // TODO No longer needed for main menu. But still in use for popups at this moment.
-    ?>
-    <script src="include/popup_menu/popup_menu.js"></script>
-    <link rel="stylesheet" type="text/css" href="include/popup_menu/popup_menu.css">
-
-    <?php
     // TODO replace with bootstrap carousel.
     // *** Always load script, because of "Random photo" at homepage (also used in other pages showing pictures) ***
     // *** Photo lightbox effect using GLightbox ***
@@ -878,6 +871,9 @@ $menu_top = getActiveTopMenu($page);
             </div>
         </footer>
     <?php } ?>
+
+    <!-- Include dropdown hover script -->
+    <script src="assets/js/dropdown-hover.js"></script>
 
 </body>
 

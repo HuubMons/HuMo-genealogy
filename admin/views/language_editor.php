@@ -290,7 +290,7 @@ if ($_SESSION['present_page'] > 0) {
 
             <td><?= msgid_display($value["msgid"]); ?></td>
 
-            <td><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" <?= $fuzz ? 'checked' : ''; ?>></td>
+            <td><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" class="form-check-input" <?= $fuzz ? 'checked' : ''; ?>></td>
 
             <td style="vertical-align:top">
                 <!-- <label for="txt_id<?= $key; ?>" class="form-label">Label</label> -->

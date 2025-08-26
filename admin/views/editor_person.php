@@ -9,8 +9,15 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
 ?>
 
 <!-- Start of editor table -->
+
+<?php /*
+Don't use this link, witness and other buttons won't work anymore
+<form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
+*/ ?>
+
 <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">
-    <input type="hidden" name="page" value="<?= $page; ?>">
+    <input type="hidden" name="page" value="editor">
+
     <input type="hidden" name="person" value="<?= $pers_gedcomnumber; ?>">
 
     <!-- Date needed to check if birth or baptise date is changed -->
@@ -44,86 +51,80 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                     </select>
                 </div>
 
+                <!-- Show archive list -->
+                <?php
+                // TODO move to model script.
+                if ($editor['add_person'] == false) {
+                    $OAfromyear = '';
+                    if ($person->pers_birth_date) {
+                        if (substr($person->pers_birth_date, -4)) {
+                            $OAfromyear = substr($person->pers_birth_date, -4);
+                        }
+                    } elseif ($person->pers_bapt_date) {
+                        if (substr($person->pers_bapt_date, -4)) {
+                            $OAfromyear = substr($person->pers_bapt_date, -4);
+                        }
+                    }
+
+                    // *** GeneaNet ***
+                    // https://nl.geneanet.org/fonds/individus/?size=10&amp;
+                    //nom=Heijnen&prenom=Andreas&ampprenom_operateur=or&amp;place__0__=Wouw+Nederland&amp;go=1
+                    $link_geneanet = 'https://geneanet.org/fonds/individus/?size=10&amp;nom=' . urlencode($person->pers_lastname) . '&amp;prenom=' . urlencode($person->pers_firstname);
+
+                    // *** StamboomZoeker.nl ***
+                    // UITLEG: https://www.stamboomzoeker.nl/page/16/zoekhulp
+                    // sn: Familienaam
+                    // fn: Voornaam
+                    // bd: Twee geboortejaren met een streepje (-) er tussen
+                    // bp: Geboorteplaats
+                    // http://www.stamboomzoeker.nl/?a=search&fn=andreas&sn=heijnen&np=1&bd1=1655&bd2=1655&bp=wouw+nederland
+                    $link_familyseeker = 'http://www.stamboomzoeker.nl/?a=search&amp;fn=' . urlencode($person->pers_firstname) . '&amp;sn=' . urlencode($person->pers_lastname);
+                    if ($OAfromyear !== '') {
+                        $link_familyseeker .= '&amp;bd1=' . $OAfromyear . '&amp;bd2=' . $OAfromyear;
+                    }
+
+                    // *** GenealogieOnline ***
+                    //https://www.genealogieonline.nl/zoeken/index.php?q=mons&vn=nikus&pn=harderwijk
+                    $link_genealogieonline = 'https://genealogieonline.nl/zoeken/index.php?q=' . urlencode($person->pers_lastname) . '&amp;vn=' . urlencode($person->pers_firstname);
+
+                    // FamilySearch
+                    //https://www.familysearch.org/search/record/results?q.givenName=Marie&q.surname=CORNEZ&count=20
+                    $link_familysearch = 'http://www.familysearch.org/search/record/results?count=20&q.givenName=' . urlencode($person->pers_firstname) . '&q.surname=' . urlencode($person->pers_lastname);
+
+                    // *** GrafTombe ***
+                    // http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
+                    // &amp;birthdate_until=1655&amp;submit=Zoeken&amp;r=names-search
+                    $link_graftombe = 'http://www.graftombe.nl/names/search?forename=' . urlencode($person->pers_firstname) . '&amp;surname=' . urlencode($person->pers_lastname);
+                    if ($OAfromyear !== '') {
+                        $link_graftombe .= '&amp;birthdate_from=' . $OAfromyear . '&amp;birthdate_until=' . $OAfromyear;
+                    }
+
+                    // *** WieWasWie ***
+                    // https://www.wiewaswie.nl/nl/zoeken/?q=Andreas+Adriaensen+Heijnen
+                    $link_wiewaswie = 'https://www.wiewaswie.nl/nl/zoeken/?q=' . urlencode($person->pers_firstname) . '+' . urlencode($person->pers_lastname);
+
+                    // *** StamboomOnderzoek ***
+                    // https://www.stamboomonderzoek.com/default/search.php?
+                    // myfirstname=Andreas&mylastname=Heijnen&lnqualify=startswith&mybool=AND&showdeath=1&tree=-x--all--x-
+                }
+                ?>
                 <div class="col-auto">
-                    <label for="admin_online_search" class="col-form-label">
-                        <!-- Show archive list -->
-                        &nbsp;&nbsp;
-                        <div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                            <a href="#" style="display:inline" onmouseover="mopen(event,'archive_menu',0,0)" onmouseout="mclosetime()">[<?= __('Archives'); ?>]</a>
-                            <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153); direction:<?= $rtlmarker; ?>; box-shadow: 2px 2px 2px #999; border-radius: 3px;" id="archive_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                <?php
-                                // *** Show box with list link to archives ***
-                                if ($editor['add_person'] == false) {
-                                    $OAfromyear = '';
-                                    if ($person->pers_birth_date) {
-                                        if (substr($person->pers_birth_date, -4)) $OAfromyear = substr($person->pers_birth_date, -4);
-                                    } elseif ($person->pers_bapt_date) {
-                                        if (substr($person->pers_bapt_date, -4)) $OAfromyear = substr($person->pers_bapt_date, -4);
-                                    }
-
-                                    // *** Show person ***
-                                    //echo '<b>'.__('Person').'</b><br>';
-                                    //echo '<span style="font-weight:bold; font-size:12px">'.show_person($person->pers_gedcomnumber).'</span><br>';
-                                    //echo show_person($person->pers_gedcomnumber).'<br>';
-                                    echo show_person($person->pers_gedcomnumber, false, false) . '<br><br>';
-
-                                    // *** GeneaNet ***
-                                    // https://nl.geneanet.org/fonds/individus/?size=10&amp;
-                                    //nom=Heijnen&prenom=Andreas&ampprenom_operateur=or&amp;place__0__=Wouw+Nederland&amp;go=1
-                                    $link = 'https://geneanet.org/fonds/individus/?size=10&amp;nom=' . urlencode($person->pers_lastname) . '&amp;prenom=' . urlencode($person->pers_firstname);
-                                    //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
-                                    echo '<a href="' . $link . '&amp;go=1" target="_blank">Geneanet.org</a><br><br>';
-
-                                    // *** StamboomZoeker.nl ***
-                                    // UITLEG: https://www.stamboomzoeker.nl/page/16/zoekhulp
-                                    // sn: Familienaam
-                                    // fn: Voornaam
-                                    // bd: Twee geboortejaren met een streepje (-) er tussen
-                                    // bp: Geboorteplaats
-                                    // http://www.stamboomzoeker.nl/?a=search&fn=andreas&sn=heijnen&np=1&bd1=1655&bd2=1655&bp=wouw+nederland
-                                    $link = 'http://www.stamboomzoeker.nl/?a=search&amp;fn=' . urlencode($person->pers_firstname) . '&amp;sn=' . urlencode($person->pers_lastname);
-                                    if ($OAfromyear !== '') {
-                                        $link .= '&amp;bd1=' . $OAfromyear . '&amp;bd2=' . $OAfromyear;
-                                    }
-                                    echo '<a href="' . $link . '" target="_blank">Familytreeseeker.com/ StamboomZoeker.nl</a><br><br>';
-
-                                    // *** GenealogieOnline ***
-                                    //https://www.genealogieonline.nl/zoeken/index.php?q=mons&vn=nikus&pn=harderwijk
-                                    $link = 'https://genealogieonline.nl/zoeken/index.php?q=' . urlencode($person->pers_lastname) . '&amp;vn=' . urlencode($person->pers_firstname);
-                                    //if ($OAfromyear!='') $link.='&amp;bd1='.$OAfromyear.'&amp;bd2='.$OAfromyear;
-                                    echo '<a href="' . $link . '" target="_blank">Genealogyonline.nl/ Genealogieonline.nl</a><br><br>';
-
-                                    // FamilySearch
-                                    //https://www.familysearch.org/search/record/results?q.givenName=Marie&q.surname=CORNEZ&count=20
-                                    $link = 'http://www.familysearch.org/search/record/results?count=20&q.givenName=' . urlencode($person->pers_firstname) . '&q.surname=' . urlencode($person->pers_lastname);
-                                    //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
-                                    echo '<a href="' . $link . '" target="_blank">FamilySearch</a><br><br>';
-
-                                    // *** GrafTombe ***
-                                    // http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
-                                    // &amp;birthdate_until=1655&amp;submit=Zoeken&amp;r=names-search
-                                    $link = 'http://www.graftombe.nl/names/search?forename=' . urlencode($person->pers_firstname) . '&amp;surname=' . urlencode($person->pers_lastname);
-                                    if ($OAfromyear !== '') {
-                                        $link .= '&amp;birthdate_from=' . $OAfromyear . '&amp;birthdate_until=' . $OAfromyear;
-                                    }
-                                    echo '<a href="' . $link . '&amp;submit=Zoeken&amp;r=names-search" target="_blank">Graftombe.nl</a><br><br>';
-
-                                    // *** WieWasWie ***
-                                    // https://www.wiewaswie.nl/nl/zoeken/?q=Andreas+Adriaensen+Heijnen
-                                    $link = 'https://www.wiewaswie.nl/nl/zoeken/?q=' . urlencode($person->pers_firstname) .
-                                        '+' . urlencode($person->pers_lastname);
-                                    //if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
-                                    echo '<a href="' . $link . '" target="_blank">WieWasWie</a><br><br>';
-
-                                    // *** StamboomOnderzoek ***
-                                    // https://www.stamboomonderzoek.com/default/search.php?
-                                    // myfirstname=Andreas&mylastname=Heijnen&lnqualify=startswith&mybool=AND&showdeath=1&tree=-x--all--x-
-                                }
-                                ?>
-                            </div>
-                        </div>
-                    </label>
+                    <div class="dropdown dropend d-inline">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><?= __('Archives'); ?></button>
+                        <ul class="dropdown-menu p-2" style="width:450px;">
+                            <?php if ($editor['add_person'] == false) { ?>
+                                <li class="mb-2"><b><?= show_person($person->pers_gedcomnumber, false, false); ?></b></li>
+                                <li class="mb-2"><a href="<?= $link_geneanet; ?>&amp;go=1" target="_blank">Geneanet.org</a></li>
+                                <li class="mb-2"><a href="<?= $link_familyseeker; ?>" target="_blank">Familytreeseeker.com/ StamboomZoeker.nl</a></li>
+                                <li class="mb-2"><a href="<?= $link_genealogieonline; ?>" target="_blank">Genealogyonline.nl/ Genealogieonline.nl</a></li>
+                                <li class="mb-2"><a href="<?= $link_familysearch; ?>" target="_blank">FamilySearch</a></li>
+                                <li class="mb-2"><a href="<?= $link_graftombe; ?>&amp;submit=Zoeken&amp;r=names-search" target="_blank">Graftombe.nl</a></li>
+                                <li class="mb-2"><a href="<?= $link_wiewaswie; ?>" target="_blank">WieWasWie</a></li>
+                            <?php } ?>
+                        </ul>
+                    </div>
                 </div>
+
             </div>
 
             <?php
@@ -382,7 +383,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                         }
                     } else {
                         ?>
-                        <input type=" submit" name="person_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                        <input type="submit" name="person_add" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
                     <?php } ?>
                 </th>
             </tr>
@@ -508,9 +509,9 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                     <div id="ajax_pers_lastname"><?= $pers_lastname; ?></div>
 
                     <label>Name:</label>
-                    <input id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" type="text">
+                    <input type="text" id="pers_firstname" value="<?= $pers_firstname; ?>" placeholder="Your Name" class="form-control form-control-sm">
                     <label>Name:</label>
-                    <input id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" type="text">
+                    <input type="text" id="pers_lastname" value="<?= $pers_lastname; ?>" placeholder="Your Name" class="form-control form-control-sm">
                     <input id="submit_ajax" type="button" value="Submit" class="btn btn-sm btn-success">
                     <?php
                     // END TEST SCRIPT
@@ -1178,14 +1179,13 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
                         <div class="col-md-2">
                             <div class="input-group">
                                 <input type="text" name="pers_death_age" value="<?= $pers_death_age; ?>" size="3" class="form-control form-control-sm">
-                                &nbsp;&nbsp;<div class="<?= $rtlmarker; ?>sddm" style="display:inline;">
-                                    <a href="#" style="display:inline" onmouseover="mopen(event,'help_menu2',100,400)" onmouseout="mclosetime()">
-                                        <img src="../images/help.png" height="16" width="16" alt="<?= __('Help'); ?>" title="<?= __('Help'); ?>">
-                                    </a>
-                                    <div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:<?= $rtlmarker; ?>" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                                        <b><?= __('If death year and age are used, then birth year is calculated automatically (when empty).'); ?></b><br>
-                                    </div>
-                                </div>
+
+                                <!-- Help popover for events -->
+                                <button type="button" class="btn btn-sm btn-secondary"
+                                    data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide"
+                                    data-bs-content="<?= __('If death year and age are used, then birth year is calculated automatically (when empty).'); ?>">
+                                    ?
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1709,7 +1709,7 @@ $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
             <tr><td><?= __('Quality of data');?></td>
                 <td style="border-right:0px;"></td>
                 <td style="border-left:0px;">
-                    <select size="1" name="pers_quality" aria-label="<?= __('Quality of data'); ?>" style="width: 400px">
+                    <select size="1" name="pers_quality" aria-label="<?= __('Quality of data'); ?>" class="form-select form-select-sm" style="width: 400px">
                         <option value=""><?= ucfirst(__('quality: default'));?></option>
                         $selected=''; if ($pers_quality=='0'){ $selected=' selected'; }
                         <option value="0"<?= $selected;?>><?= ucfirst(__('quality: unreliable evidence or estimated data'));?></option>

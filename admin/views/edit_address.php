@@ -27,8 +27,8 @@ if (isset($tree_id) && $tree_id) {
         <form method="post" action="index.php?page=edit_addresses" style="display : inline;">
             <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
             <input type="hidden" name="address_gedcomnr" value="<?= $_POST['address_gedcomnr']; ?>">
-            <input type="submit" name="address_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="dummy7" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="address_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="dummy7" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php } ?>

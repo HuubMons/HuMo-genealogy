@@ -26,9 +26,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
     $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
 }
 ?>
-<form method="post" action="index.php" enctype="multipart/form-data" class="p-2">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-
+<form method="post" action="index.php?page=settings" enctype="multipart/form-data" class="p-2">
     <div class="genealogy_search p-2">
         <div class="row mb-2">
             <div class="col-md-4">

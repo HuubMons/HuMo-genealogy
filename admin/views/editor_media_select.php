@@ -1,15 +1,16 @@
 <?php
+
+/**
+ * Select media in editor.
+ */
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
 $showMedia = new Genealogy\Include\ShowMedia();
-?>
 
-<h1 class="center"><?= __('Select media'); ?></h1>
-
-<?php
 $place_item = '';
 $form = '';
 if (isset($_GET['form'])) {
@@ -30,17 +31,6 @@ if (isset($_GET['form'])) {
     }
 }
 
-echo '
-    <script>
-    function select_item(item){
-        /* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
-        window.opener.document.' . $form . '.' . $place_item . '.value=item;
-        top.close();
-        return false;
-    }
-    </script>
-';
-
 $prefx = '../'; // to get out of the admin map
 
 // *** Get main path for selected family tree ***
@@ -52,7 +42,11 @@ if (substr($pict_path, 0, 1) === '|') {
 }
 $array_picture_folder[] = $prefx . $pict_path;
 //$array_picture_sub_dir[]='';
+?>
 
+<h1 class="center"><?= __('Select media'); ?></h1>
+
+<?php
 // *** Extra safety check if folder exists ***
 if (file_exists($array_picture_folder[0])) {
     // *** Get all subdirectories ***
@@ -80,9 +74,14 @@ if (file_exists($array_picture_folder[0])) {
         $search_quicksearch = $safeTextDb->safe_text_db($_POST['search_quicksearch']);
     }
 ?>
-    <form method="POST" action="index.php?page=editor_media_select&form=<?= $selected_form . '&event_id=' . $event_id; ?>">
-        <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15">
-        <input type="submit" name="submit" value="<?= __('Search'); ?>">
+    <form method="POST" action="index.php?page=editor_media_select&form=<?= $selected_form; ?>&event_id=<?= $event_id; ?>">
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <input type="text" name="search_quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch; ?>" size="15" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-3">
+                <input type="submit" name="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
+            </div>
     </form><br>
 
     <?php
@@ -91,44 +90,66 @@ if (file_exists($array_picture_folder[0])) {
     $dirname_start = strlen($prefx . $pict_path);
 
     foreach ($array_picture_folder as $selected_picture_folder) {
-        echo '<br style="clear: both">';
-        echo '<h3>' . $selected_picture_folder . '</h3>';
-
-        $dh = opendir($selected_picture_folder);
-        while (false !== ($filename = readdir($dh))) {
-            if (is_dir($selected_picture_folder . $filename)) {
-                //
-            } elseif (
-                !in_array($filename, $ignore) &&
-                substr($filename, 0, 6) !== 'thumb_' &&
-                substr($filename, 0, 1) !== '.'
-            ) {
-                // skip hidden files (unix style)
-                // *** stripos = case-insensitive search ***
-                if ($search_quicksearch == '' || $search_quicksearch != '' && stripos($filename, $search_quicksearch) !== false) {
-                    $sub_dir = substr($selected_picture_folder, $dirname_start);
-                    $list_filename[] = $filename;
-                    $list_filename_order[] = strtolower($filename); // *** So ordering is case-insensitive ***
-                    // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
-                    //echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$filename).'")\'>'.$sub_dir.$filename.'</a><br>';
+        ?>
+        <br style="clear: both">
+        <h3><?= $selected_picture_folder; ?></h3>
+        <div class="container-fluid mt-2">
+            <div class="row g-3">
+                <?php
+                $dh = opendir($selected_picture_folder);
+                while (false !== ($filename = readdir($dh))) {
+                    if (is_dir($selected_picture_folder . $filename)) {
+                        //
+                    } elseif (
+                        !in_array($filename, $ignore) &&
+                        substr($filename, 0, 6) !== 'thumb_' &&
+                        substr($filename, 0, 1) !== '.'
+                    ) {
+                        // skip hidden files (unix style)
+                        // *** stripos = case-insensitive search ***
+                        if ($search_quicksearch == '' || $search_quicksearch != '' && stripos($filename, $search_quicksearch) !== false) {
+                            $sub_dir = substr($selected_picture_folder, $dirname_start);
+                            $list_filename[] = $filename;
+                            $list_filename_order[] = strtolower($filename); // *** So ordering is case-insensitive ***
+                            // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
+                            //echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$filename).'")\'>'.$sub_dir.$filename.'</a><br>';
+                        }
+                    }
                 }
-            }
-        }
 
-        // *** Order language array by name of language (case insensitive!) ***
-        if (isset($list_filename)) {
-            array_multisort($list_filename_order, $list_filename);
-            foreach ($list_filename as $selected_filename) {
-    ?>
-                <div class="photobook">
-                    <?= $showMedia->print_thumbnail($selected_picture_folder, $selected_filename); ?><br>
-                    <!-- Replace ' by &prime; otherwise a place including a ' character can't be selected -->
-                    <a href="" onClick='return select_item("<?= $sub_dir . str_replace("'", "&prime;", $selected_filename); ?>")'><?= $sub_dir . $selected_filename; ?></a><br>
-                </div>
+                // *** Order language array by name of language (case insensitive!) ***
+                if (isset($list_filename)) {
+                    array_multisort($list_filename_order, $list_filename);
+                    foreach ($list_filename as $selected_filename) {
+                        //$picture = $showMedia->print_thumbnail($selected_picture_folder, $selected_filename);
+                        $picture = $showMedia->print_thumbnail($selected_picture_folder, $selected_filename, 175, 120, 'BOOTSTRAP_CARD');
+
+                ?>
+                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                            <div class="card h-100 shadow-sm">
+                                <?= $picture; ?><br>
+                                <!-- Replace ' by &prime; otherwise a place including a ' character can't be selected -->
+                                <a href="" onClick='return select_item("<?= $sub_dir . str_replace("'", "&prime;", $selected_filename); ?>")'><?= $sub_dir . $selected_filename; ?></a><br>
+                            </div>
+                        </div>
+                <?php
+                    }
+                    unset($list_filename);
+                    unset($list_filename_order);
+                }
+                ?>
+            </div>
+        </div>
 <?php
-            }
-            unset($list_filename);
-            unset($list_filename_order);
-        }
     }
 }
+?>
+
+<script>
+    function select_item(item) {
+        /* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
+        window.opener.document.<?= $form; ?>.<?= $place_item; ?>.value = item;
+        top.close();
+        return false;
+    }
+</script>

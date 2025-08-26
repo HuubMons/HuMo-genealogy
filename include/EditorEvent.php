@@ -540,14 +540,18 @@ class EditorEvent
                                                 <?= $this->hide_show_start($data_listDb, $witness_name); ?>
 
                                                 <div class="row mb-1">
-                                                    <!-- <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label> -->
+                                                    <?php /*
+                                                    <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label>
+                                                    */ ?>
                                                     <div class="col-md-3"></div>
                                                     <label for="event" class="col-md-9 col-form-label"><?= __('Select GEDCOM number or type name of person:'); ?></label>
                                                 </div>
 
                                                 <div class="row mb-1">
-                                                    <!-- <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label> -->
-                                                    <!-- <div class="col-md-3"></div> -->
+                                                    <?php /*
+                                                    <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label>
+                                                    <div class="col-md-3"></div>
+                                                    */ ?>
                                                     <label for="event" class="col-md-3 col-form-label"><?= __('GEDCOM number (ID)'); ?></label>
                                                     <div class="col-md-4">
                                                         <div class="input-group">
@@ -565,8 +569,10 @@ class EditorEvent
                                                 -->
 
                                                 <div class="row mb-2">
-                                                    <!-- <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label> -->
-                                                    <!-- <div class="col-md-3"></div> -->
+                                                    <?php /*
+                                                    <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
+                                                    <div class="col-md-3"></div>
+                                                    */ ?>
                                                     <label for="event" class="col-md-3 col-form-label"><?= __('Name'); ?></label>
                                                     <div class="col-md-7">
                                                         <!-- <input type="text" <?= $style; ?> name="text_event[<?= $data_listDb->event_id; ?>]" value="<?= htmlspecialchars($data_listDb->event_event); ?>" placeholder="<?= $event_text; ?>" size="44" class="form-control form-control-sm"> -->
@@ -576,7 +582,9 @@ class EditorEvent
 
                                                 <!-- Select ROLE. If own role is added, ROLE will be OTHER -->
                                                 <div class="row mb-1">
-                                                    <!-- <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label> -->
+                                                    <?php /*
+                                                    <label for="event" class="col-md-3 col-form-label"><?= ucfirst($this->event_text($data_listDb->event_kind, $data_listDb->event_gedcom)); ?></label>
+                                                    */ ?>
                                                     <div class="col-md-3"></div>
                                                     <label for="event" class="col-md-9 col-form-label"><?= __('Select role or type other role:'); ?></label>
                                                 </div>
@@ -607,8 +615,10 @@ class EditorEvent
                                                     </div>
                                                 </div>
                                                 <div class="row mb-2">
-                                                    <!-- <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label> -->
-                                                    <!-- <div class="col-md-3"></div> -->
+                                                    <?php /*
+                                                    <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
+                                                    <div class="col-md-3"></div>
+                                                    */ ?>
                                                     <label for="event" class="col-md-3 col-form-label"><?= __('Other role'); ?></label>
                                                     <div class="col-md-7">
                                                         <?php

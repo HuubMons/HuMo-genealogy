@@ -82,7 +82,7 @@ if (isset($_GET['re_install'])) {
         <?php printf(__('Enable/ disable %s update check.'), 'HuMo-genealogy'); ?><br>
 
         <form method="post" action="index.php?page=install_update&update_check=1" class="mb-3">
-            <input type="checkbox" name="enable_update_check" <?= $humo_option['update_last_check'] != 'DISABLED' ? 'checked' : ''; ?> onChange="this.form.submit();">
+            <input type="checkbox" name="enable_update_check" class="form-check-input" <?= $humo_option['update_last_check'] != 'DISABLED' ? 'checked' : ''; ?> onChange="this.form.submit();">
             <?php printf(__('Check regularly for %s updates.'), 'HuMo-genealogy'); ?><br>
             <input type="hidden" name="enable_update_check_change" value="1">
         </form>
@@ -130,7 +130,7 @@ if (isset($_GET['re_install'])) {
 
         <form name='uploadform' enctype='multipart/form-data' action="index.php?page=install_update&auto=1&step=1&update_check=1<?= $reinstall; ?>" method="post">
             <input type="file" name="upload_file">
-            <input type="submit" name="optional_upload" value="Upload">
+            <input type="submit" name="optional_upload" value="Upload" class="btn btn-secondary btn-sm">
         </form><br>
         */
 
@@ -375,7 +375,6 @@ if (isset($_GET['re_install'])) {
             ?>
 
             <form method="POST" action="index.php?page=install_update&auto=1&step=3&update_check=1';<?= isset($_GET['install_beta']) ? '&install_beta=1' : ''; ?><?= isset($_GET['re_install']) ? '&re_install=1' : ''; ?>" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
                 <div style="border:1px solid black;height:200px;width:700px;overflow:scroll">
                     <?php
                     // *** Compare new files with old files, show list of renewed files ***
@@ -390,7 +389,7 @@ if (isset($_GET['re_install'])) {
 
                                 // *** Optional installation of file ***
                     ?>
-                                <input type="Checkbox" name="install_file<?= $i; ?>" value="yes" <?= ($_GET['step'] == '3' && !isset($_POST['install_file' . $i])) ? '' : ' checked'; ?>> <?= $create_file; ?>
+                                <input type="Checkbox" name="install_file<?= $i; ?>" value="yes" class="form-check-input" <?= ($_GET['step'] == '3' && !isset($_POST['install_file' . $i])) ? '' : ' checked'; ?>> <?= $create_file; ?>
                     <?php
 
                                 // *** Copy update file to existing file ***
@@ -452,7 +451,7 @@ if (isset($_GET['re_install'])) {
                                 if ($_GET['step'] == '3' && isset($_POST['remove_file' . $i])) {
                                     $check = ' checked';
                                 }
-                                echo '<input type="Checkbox" name="remove_file' . $i . '" value="yes"' . $check . '> ';
+                                echo '<input type="Checkbox" name="remove_file' . $i . '" value="yes" class="form-check-input" ' . $check . '> ';
                                 echo $create_file;
 
                                 if ($_GET['step'] == '3' && isset($_POST['remove_file' . $i])) {
@@ -621,7 +620,7 @@ if (isset($_GET['re_install'])) {
 
     <form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">
         <input type="hidden" name="enable_update_check_change" value="1">
-        <input type="checkbox" name="enable_update_check" <?= $humo_option['update_last_check'] != 'DISABLED' ? 'checked' : ''; ?> onChange="this.form.submit();">
+        <input type="checkbox" name="enable_update_check" class="form-check-input" <?= $humo_option['update_last_check'] != 'DISABLED' ? 'checked' : ''; ?> onChange="this.form.submit();">
         <?php printf(__('Check regularly for %s updates.'), 'HuMo-genealogy'); ?><br>
     </form>
 

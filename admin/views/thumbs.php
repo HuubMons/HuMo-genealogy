@@ -21,16 +21,16 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
 <ul class="nav nav-tabs mt-1">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_settings') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('Picture settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_settings' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>"><?= __('Picture settings'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_thumbnails') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_thumbnails"><?= __('Create thumbnails'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_thumbnails' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_thumbnails"><?= __('Create thumbnails'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_show') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_show"><?= __('Show thumbnails'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_show' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_show"><?= __('Show thumbnails'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($thumbs['menu_tab'] == 'picture_categories') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_categories"><?= __('Photo album categories'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_categories' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_categories"><?= __('Photo album categories'); ?></a>
     </li>
 </ul>
 
@@ -56,19 +56,17 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
                 <!-- Set path to pictures -->
                 <div class="col-md-8">
-                    <form method="POST" action="index.php">
-                        <input type="hidden" name="page" value="thumbs">
-                        <input type="hidden" name="menu_tab" value="<?= $thumbs['menu_tab']; ?>">
+                    <form method="POST" action="index.php?page=thumbs&amp;menu_tab=<?= $thumbs['menu_tab']; ?>">
                         <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="yes" name="default_path" id="default_path" <?= $thumbs['default_path'] ? 'checked' : ''; ?>>
+                            <input type="radio" class="form-check-input" value="yes" name="default_path" id="default_path" <?= $thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
                                 <?= __('Use default picture path:'); ?> <b>media/</b>
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="no" name="default_path" id="default_path" <?= !$thumbs['default_path'] ? 'checked' : ''; ?>>
+                            <input type="radio" class="form-check-input" value="no" name="default_path" id="default_path" <?= !$thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
                                 <input type="text" name="tree_pict_path" value="<?= $thumbs['own_pict_path']; ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
                             </label>
@@ -131,9 +129,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <div class="col-md-4"><?= __('Create thumbnails'); ?></div>
 
                     <div class="col-md-7">
-                        <form method="POST" action="index.php">
-                            <input type="hidden" name="page" value="thumbs">
-                            <input type="hidden" name="menu_tab" value="picture_thumbnails">
+                        <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_thumbnails">
                             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                             <input type="submit" name="thumbnail" value="<?= __('Create thumbnails'); ?>" class="btn btn-sm btn-success">
                         </form>
@@ -147,9 +143,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <div class="col-md-4"><?= __('Show thumbnails'); ?></div>
 
                     <div class="col-md-7">
-                        <form method="POST" action="index.php">
-                            <input type="hidden" name="page" value="thumbs">
-                            <input type="hidden" name="menu_tab" value="picture_show">
+                        <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_show">
                             <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
                             <input type="submit" name="change_filename" value="<?= __('Show thumbnails'); ?>" class="btn btn-sm btn-success">
                             <?= ' ' . __('You can change filenames here.'); ?>
@@ -437,19 +431,15 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
 
                     //we take tree paths and tree names to combine them
-                    $tree_qry = "SELECT 
-                    t.tree_id,
-                    t.tree_pict_path,
-                    tt.treetext_tree_id,
-                    tt.treetext_name
-                     FROM 
-                    humo_trees t
-                     JOIN 
-                    humo_tree_texts tt
-                     ON 
-                    t.tree_id = tt.treetext_tree_id
-                      WHERE 
-                    t.tree_pict_path != 'EMPTY'";
+                    $tree_qry = "SELECT
+                        t.tree_id,
+                        t.tree_pict_path,
+                        tt.treetext_tree_id,
+                        tt.treetext_name
+                        FROM humo_trees t
+                        JOIN humo_tree_texts tt
+                        ON t.tree_id = tt.treetext_tree_id
+                        WHERE t.tree_pict_path != 'EMPTY'";
                     $datasql = $dbh->query($tree_qry);
                     $rowCount = $datasql->rowCount();
                     $treepaths = [];
@@ -542,7 +532,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             <?= __('Only use this option if showing of media is disabled for visitors.'); ?>
                         </div>
                     </div>
-
                 </form>
 
             </div>
@@ -977,8 +966,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         ]);
     }
 
-
-    // *** Create thumbnails ***
+    // *** Create or show thumbnails ***
     $counter = 0;
     if (isset($_POST["thumbnail"]) || isset($_POST['change_filename'])) {
         $pict_path = $data2Db->tree_pict_path;
@@ -990,7 +978,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         $array_picture_folder[] = $prefx . $pict_path;
 
         // *** Extra safety check if folder exists ***
-        //if (file_exists($selected_picture_folder)){
         if (file_exists($array_picture_folder[0])) {
             // TODO refactor function.
             // *** Get all subdirectories ***
@@ -1011,79 +998,86 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             get_dirs($prefx, $pict_path);
 
             foreach ($array_picture_folder as $selected_picture_folder) {
-                echo '<br style="clear: both">';
-                echo '<h3>' . $selected_picture_folder . '</h3>';
-
-                $files = preg_grep('/^([^.])/', scandir($selected_picture_folder));
-                foreach ($files as $filename) {
-
-                    if (
-                        substr($filename, 0, 5) !== 'thumb' &&
-                        isset($_POST["thumbnail"]) &&
-                        !is_dir($selected_picture_folder . $filename)  &&
-                        $resizePicture->check_media_type($selected_picture_folder, $filename)
-                    ) {
-
-                        if (
-                            !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') && // don't create thumb on corrupt file
-                            empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
-                        ) {
-                            // don't create thumb if one exists
-                            $resizePicture->create_thumbnail($selected_picture_folder, $filename);
-                        }
-                    }
-
-                    // *** Show thumbnails ***
-                    if (
-                        substr($filename, 0, 5) !== 'thumb' &&
-                        $resizePicture->check_media_type($selected_picture_folder, $filename) &&
-                        !is_dir($selected_picture_folder . $filename)
-                    ) {
         ?>
-                        <div class="photobook">
-                            <?= $showMedia->print_thumbnail($selected_picture_folder, $filename); ?>
-                            <?php
-                            // *** Show name of connected persons ***
-                            $picture_text = '';
-                            $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
-                                AND event_connect_kind = 'person' AND event_kind = 'picture'
-                                AND LOWER(event_event) = :filename";
-                            $afbqry = $dbh->prepare($sql);
-                            $afbqry->execute([
-                                ':tree_id' => $tree_id,
-                                ':filename' => strtolower($filename)
-                            ]);
-                            $picture_privacy = false;
-                            while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                                $db_functions->set_tree_id($tree_id);
-                                $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                                $privacy = $personPrivacy->get_privacy($personDb);
-                                $name = $personName->get_person_name($personDb, $privacy);
-
-                                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                                $url = $personLink->get_person_link($personDb, '../');
-                                $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
+                <br style="clear: both">
+                <h3><?= $selected_picture_folder; ?></h3>
+                <div class="container-fluid mt-2">
+                    <div class="row g-3">
+                        <?php
+                        $files = preg_grep('/^([^.])/', scandir($selected_picture_folder));
+                        foreach ($files as $filename) {
+                            if (
+                                substr($filename, 0, 5) !== 'thumb' &&
+                                isset($_POST["thumbnail"]) &&
+                                !is_dir($selected_picture_folder . $filename)  &&
+                                $resizePicture->check_media_type($selected_picture_folder, $filename)
+                            ) {
+                                // don't create thumb on corrupt file or if thumbnail exists
+                                if (
+                                    !is_file($selected_picture_folder . '.' . $filename . '.no_thumb') &&
+                                    empty($showMedia->thumbnail_exists($selected_picture_folder, $filename))
+                                ) {
+                                    $resizePicture->create_thumbnail($selected_picture_folder, $filename);
+                                }
                             }
-                            echo $picture_text;
 
-                            if (isset($_POST['change_filename'])) {
-                            ?>
-                                <form method="POST" action="index.php">
-                                    <input type="hidden" name="page" value="thumbs">
-                                    <input type="hidden" name="menu_tab" value="picture_show">
-                                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                                    <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
-                                    <input type="hidden" name="filename_old" value="<?= $filename; ?>">
-                                    <input type="text" name="filename" value="<?= $filename; ?>" size="20">
-                                    <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>">
-                                </form>
-                            <?php } else { ?>
-                                <div class="photobooktext"><?= $filename; ?></div>
-                            <?php } ?>
-                        </div>
+                            // *** Show thumbnails ***
+                            if (
+                                substr($filename, 0, 5) !== 'thumb' &&
+                                $resizePicture->check_media_type($selected_picture_folder, $filename) &&
+                                !is_dir($selected_picture_folder . $filename)
+                            ) {
+                                // *** Show name of connected persons ***
+                                $picture_text = '';
+                                $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                                    AND event_connect_kind = 'person' AND event_kind = 'picture'
+                                    AND LOWER(event_event) = :filename";
+                                $afbqry = $dbh->prepare($sql);
+                                $afbqry->execute([
+                                    ':tree_id' => $tree_id,
+                                    ':filename' => strtolower($filename)
+                                ]);
+                                $picture_privacy = false;
+
+                                $picture = $showMedia->print_thumbnail($selected_picture_folder, $filename, 175, 120, 'BOOTSTRAP_CARD');
+
+                                while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
+                                    $db_functions->set_tree_id($tree_id);
+                                    $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                                    $privacy = $personPrivacy->get_privacy($personDb);
+                                    $name = $personName->get_person_name($personDb, $privacy);
+
+                                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                                    $url = $personLink->get_person_link($personDb, '../');
+                                    $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
+                                }
+                        ?>
+
+                                <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                                    <div class="card h-100 shadow-sm">
+                                        <?= $picture; ?>
+                                        <?= $picture_text; ?>
+                                        <?php if (isset($_POST['change_filename'])) { ?>
+                                            <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_show">
+                                                <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                                                <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
+                                                <input type="hidden" name="filename_old" value="<?= $filename; ?>">
+                                                <input type="text" name="filename" value="<?= $filename; ?>" size="20" class="form-control form-control-sm">
+                                                <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>" class="btn btn-secondary btn-sm">
+                                            </form>
+                                        <?php } else { ?>
+                                            <div class="card-text small"><?= $filename; ?></div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+
+                        <?php
+                            }
+                        }
+                        ?>
+                    </div>
+                </div>
     <?php
-                    }
-                }
             }
         }
     }

@@ -9,12 +9,10 @@ $generalSettings = new \Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 ?>
 
-<form method="post" action="index.php" class="my-2">
-    <input type="hidden" name="page" value="tree">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" class="my-2">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-    <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
 
-    <table class="table" style="width:900px;">
+    <table class="table" style="width:1200px;">
         <tr class="table-primary">
             <th colspan="3"><?= __('Merge filter settings'); ?></th>
         </tr>
@@ -25,8 +23,8 @@ $humo_option = $generalSettings->get_humo_option($dbh);
 
         <tr>
             <td><?= __('Max characters to match firstname:'); ?></td>
-            <td>
-                <input type="text" name="merge_chars" value="<?= $humo_option["merge_chars"]; ?>" size="1">
+            <td width="100">
+                <input type="text" name="merge_chars" value="<?= $humo_option["merge_chars"]; ?>" size="1" class="form-control form-control-sm">
             </td>
             <td>
                 <?= __('In different trees, first names may be listed differently: Thomas Julian Booth, Thomas J. Booth, Thomas Booth etc. By default a match of the first 10 characters of the first name will be considered a match. You can change this to another value. Try and find the right balance: if you set a low number of chars you will get many unwanted possible matches. If you set it too high, you may miss possible matches as in the example names above.'); ?>
@@ -40,7 +38,7 @@ $humo_option = $generalSettings->get_humo_option($dbh);
         <tr>
             <td><?= __('include blank lastnames'); ?></td>
             <td>
-                <select size="1" name="merge_lastname">
+                <select size="1" name="merge_lastname" class="form-select form-select-sm">
                     <option value="YES"><?= __('Yes'); ?></option>
                     <option value="NO" <?= $humo_option["merge_lastname"] == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                 </select>
@@ -53,7 +51,7 @@ $humo_option = $generalSettings->get_humo_option($dbh);
         <tr>
             <td><?= __('include blank firstnames'); ?></td>
             <td>
-                <select size="1" name="merge_firstname">
+                <select size="1" name="merge_firstname" class="form-select form-select-sm">
                     <option value="YES"><?= __('Yes'); ?></option>
                     <option value="NO" <?= $humo_option["merge_firstname"] == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                 </select>
@@ -66,7 +64,7 @@ $humo_option = $generalSettings->get_humo_option($dbh);
         <tr>
             <td><?= __('include blank dates'); ?></td>
             <td>
-                <select size="1" name="merge_dates">
+                <select size="1" name="merge_dates" class="form-select form-select-sm">
                     <option value="YES"><?= __('Yes'); ?></option>
                     <option value="NO" <?= $humo_option["merge_dates"] == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                 </select>
@@ -83,7 +81,7 @@ $humo_option = $generalSettings->get_humo_option($dbh);
         <tr>
             <td><?= __('include parents marriage date:'); ?></td>
             <td>
-                <select size="1" name="merge_parentsdate">
+                <select size="1" name="merge_parentsdate" class="form-select form-select-sm">
                     <option value="YES"><?= __('Yes'); ?></option>
                     <option value="NO" <?= $humo_option["merge_parentsdate"] == 'NO' ? 'selected' : ''; ?>><?= __('No'); ?></option>
                 </select>

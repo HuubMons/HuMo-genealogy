@@ -89,63 +89,73 @@ if (!defined('ADMIN_PAGE')) {
                     <div class="col-md-3">
                         <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_item" class="form-select form-select-sm">
                             <option value="select_family_tree"><?= __('Select family tree'); ?></option>
-                            <option value="selected_family_tree" <?php if ($settings['module_item'][$i] == 'selected_family_tree') echo ' selected'; ?>><?= __('Selected family tree'); ?></option>
-                            <option value="search" <?php if ($settings['module_item'][$i] == 'search') echo ' selected'; ?>><?= __('Search'); ?></option>
-                            <option value="names" <?php if ($settings['module_item'][$i] == 'names') echo ' selected'; ?>><?= __('Names'); ?></option>
-                            <option value="history" <?php if ($settings['module_item'][$i] == 'history') echo ' selected'; ?>><?= __('Today in history'); ?></option>
-                            <option value="favourites" <?php if ($settings['module_item'][$i] == 'favourites') echo ' selected'; ?>><?= __('Favourites'); ?></option>
-                            <option value="alphabet" <?php if ($settings['module_item'][$i] == 'alphabet') echo ' selected'; ?>><?= __('Surnames Index'); ?></option>
-                            <option value="random_photo" <?php if ($settings['module_item'][$i] == 'random_photo') echo ' selected'; ?>><?= __('Random photo'); ?></option>
-                            <option value="text" <?php if ($settings['module_item'][$i] == 'text') echo ' selected'; ?>><?= __('Text'); ?></option>
-                            <option value="own_script" <?php if ($settings['module_item'][$i] == 'own_script') echo ' selected'; ?>><?= __('Own script'); ?></option>
-                            <option value="cms_page" <?php if ($settings['module_item'][$i] == 'cms_page') echo ' selected'; ?>><?= __('CMS Own pages'); ?></option>
-                            <option value="empty_line" <?php if ($settings['module_item'][$i] == 'empty_line') echo ' selected'; ?>><?= __('EMPTY LINE'); ?></option>
+                            <option value="selected_family_tree" <?= $settings['module_item'][$i] == 'selected_family_tree' ? ' selected' : ''; ?>><?= __('Selected family tree'); ?></option>
+                            <option value="search" <?= $settings['module_item'][$i] == 'search' ? ' selected' : ''; ?>><?= __('Search'); ?></option>
+                            <option value="names" <?= $settings['module_item'][$i] == 'names' ? ' selected' : ''; ?>><?= __('Names'); ?></option>
+                            <option value="history" <?= $settings['module_item'][$i] == 'history' ? ' selected' : ''; ?>><?= __('Today in history'); ?></option>
+                            <option value="favourites" <?= $settings['module_item'][$i] == 'favourites' ? ' selected' : ''; ?>><?= __('Favourites'); ?></option>
+                            <option value="alphabet" <?= $settings['module_item'][$i] == 'alphabet' ? ' selected' : ''; ?>><?= __('Surnames Index'); ?></option>
+                            <option value="random_photo" <?= $settings['module_item'][$i] == 'random_photo' ? ' selected' : ''; ?>><?= __('Random photo'); ?></option>
+                            <option value="text" <?= $settings['module_item'][$i] == 'text' ? ' selected' : ''; ?>><?= __('Text'); ?></option>
+                            <option value="own_script" <?= $settings['module_item'][$i] == 'own_script' ? ' selected' : ''; ?>><?= __('Own script'); ?></option>
+                            <option value="cms_page" <?= $settings['module_item'][$i] == 'cms_page' ? ' selected' : ''; ?>><?= __('CMS Own pages'); ?></option>
+                            <option value="empty_line" <?= $settings['module_item'][$i] == 'empty_line' ? ' selected' : ''; ?>><?= __('EMPTY LINE'); ?></option>
                         </select>
                     </div>
 
                     <!-- Extra table column used for extra options -->
                     <div class="col-md-auto">
                         <?php if ($settings['module_item'][$i] === 'names') { ?>
-                            <?= __('Columns'); ?>
-                            <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1">
-                                <option value="1">1</option>
-                                <option value="2" <?= $settings['module_option_1'][$i] === '2' ? 'selected' : ''; ?>>2</option>
-                                <option value="3" <?= $settings['module_option_1'][$i] === '3' ? 'selected' : ''; ?>>3</option>
-                                <option value="4" <?= $settings['module_option_1'][$i] === '4' ? 'selected' : ''; ?>>4</option>
-                            </select>
+                            <div class="row">
+                                <div class="col-md-auto mt-1">
+                                    <?= __('Columns'); ?>
+                                </div>
+                                <div class="col-md-auto">
+                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
+                                        <option value="1">1</option>
+                                        <option value="2" <?= $settings['module_option_1'][$i] === '2' ? 'selected' : ''; ?>>2</option>
+                                        <option value="3" <?= $settings['module_option_1'][$i] === '3' ? 'selected' : ''; ?>>3</option>
+                                        <option value="4" <?= $settings['module_option_1'][$i] === '4' ? 'selected' : ''; ?>>4</option>
+                                    </select>
+                                </div>
 
-                            <?= __('Rows'); ?>
-                            <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2">
-                                <option value="1">1</option>
-                                <option value="2" <?= $settings['module_option_2'][$i] === '2' ? 'selected' : ''; ?>>2</option>
-                                <option value="3" <?= $settings['module_option_2'][$i] === '3' ? 'selected' : ''; ?>>3</option>
-                                <option value="4" <?= $settings['module_option_2'][$i] === '4' ? 'selected' : ''; ?>>4</option>
-                                <option value="5" <?= $settings['module_option_2'][$i] === '5' ? 'selected' : ''; ?>>5</option>
-                                <option value="6" <?= $settings['module_option_2'][$i] === '6' ? 'selected' : ''; ?>>6</option>
-                                <option value="7" <?= $settings['module_option_2'][$i] === '7' ? 'selected' : ''; ?>>7</option>
-                                <option value="8" <?= $settings['module_option_2'][$i] === '8' ? 'selected' : ''; ?>>8</option>
-                                <option value="9" <?= $settings['module_option_2'][$i] === '9' ? 'selected' : ''; ?>>9</option>
-                                <option value="10" <?= $settings['module_option_2'][$i] === '10' ? 'selected' : ''; ?>>10</option>
-                                <option value="11" <?= $settings['module_option_2'][$i] === '11' ? 'selected' : ''; ?>>11</option>
-                                <option value="12" <?= $settings['module_option_2'][$i] === '12' ? 'selected' : ''; ?>>12</option>
-                            </select>
+                                <div class="col-md-auto mt-1">
+                                    <?= __('Rows'); ?>
+                                </div>
+                                <div class="col-md-auto">
+                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2" class="form-select form-select-sm">
+                                        <option value="1">1</option>
+                                        <option value="2" <?= $settings['module_option_2'][$i] === '2' ? 'selected' : ''; ?>>2</option>
+                                        <option value="3" <?= $settings['module_option_2'][$i] === '3' ? 'selected' : ''; ?>>3</option>
+                                        <option value="4" <?= $settings['module_option_2'][$i] === '4' ? 'selected' : ''; ?>>4</option>
+                                        <option value="5" <?= $settings['module_option_2'][$i] === '5' ? 'selected' : ''; ?>>5</option>
+                                        <option value="6" <?= $settings['module_option_2'][$i] === '6' ? 'selected' : ''; ?>>6</option>
+                                        <option value="7" <?= $settings['module_option_2'][$i] === '7' ? 'selected' : ''; ?>>7</option>
+                                        <option value="8" <?= $settings['module_option_2'][$i] === '8' ? 'selected' : ''; ?>>8</option>
+                                        <option value="9" <?= $settings['module_option_2'][$i] === '9' ? 'selected' : ''; ?>>9</option>
+                                        <option value="10" <?= $settings['module_option_2'][$i] === '10' ? 'selected' : ''; ?>>10</option>
+                                        <option value="11" <?= $settings['module_option_2'][$i] === '11' ? 'selected' : ''; ?>>11</option>
+                                        <option value="12" <?= $settings['module_option_2'][$i] === '12' ? 'selected' : ''; ?>>12</option>
+                                    </select>
+                                </div>
+                            </div>
                         <?php
                         }
 
                         if ($settings['module_item'][$i] === 'text') {
                         ?>
                             <!-- Header text -->
-                            <input type="text" placeholder="<?= __('Header'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $settings['module_option_1'][$i]; ?>" size="30"><br>
-                            <textarea rows="4" cols="50" placeholder="<?= __('Text'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2"><?= $settings['module_option_2'][$i]; ?></textarea><br>
+                            <input type="text" placeholder="<?= __('Header'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $settings['module_option_1'][$i]; ?>" size="30" class="form-control form-control-sm mb-1">
+                            <textarea rows="4" cols="50" placeholder="<?= __('Text'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2" class="form-control form-control-sm mb-1"><?= $settings['module_option_2'][$i]; ?></textarea>
                             <?= __('Show text block, HTML codes can be used.'); ?>
                         <?php
                         }
 
                         if ($settings['module_item'][$i] === 'own_script') {
                         ?>
-                            <!-- Header text -->
-                            <input type="text" placeholder="<?= __('Header'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $settings['module_option_1'][$i]; ?>" size="30"><br>
-                            <input type="text" placeholder="<?= __('File name'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2" value="<?= $settings['module_option_2'][$i]; ?>" size="30"><br>
+                            <!-- Own script -->
+                            <input type="text" placeholder="<?= __('Header'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $settings['module_option_1'][$i]; ?>" size="30" class="form-control form-control-sm mb-1">
+                            <input type="text" placeholder="<?= __('File name'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2" value="<?= $settings['module_option_2'][$i]; ?>" size="30" class="form-control form-control-sm mb-1">
                             <?= __('File name (full path) of the file with own script.'); ?>
                         <?php
                         }
@@ -153,22 +163,34 @@ if (!defined('ADMIN_PAGE')) {
                         if ($settings['module_item'][$i] === 'cms_page') {
                             $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
                         ?>
-                            <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1">
-                                <?php while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) { ?>
-                                    <option value="<?= $pageDb->page_id; ?>" <?= $settings['module_option_1'][$i] == $pageDb->page_id ? 'selected' : ''; ?>><?= $pageDb->page_title; ?></option>
-                                <?php } ?>
-                            </select>
-                            <?= __('Show text from CMS system.'); ?>
+                            <div class="row">
+                                <div class="col-md-auto">
+                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
+                                        <?php while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) { ?>
+                                            <option value="<?= $pageDb->page_id; ?>" <?= $settings['module_option_1'][$i] == $pageDb->page_id ? 'selected' : ''; ?>><?= $pageDb->page_title; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-auto">
+                                    <?= __('Show text from CMS system.'); ?>
+                                </div>
+                            </div>
                         <?php
                         }
 
                         if ($settings['module_item'][$i] === 'history') {
                         ?>
-                            <?= __('View'); ?>
-                            <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1">
-                                <option value="with_table"><?= __('with table'); ?></option>
-                                <option value="without_table" <?= $settings['module_option_1'][$i] === 'without_table' ? 'selected' : ''; ?>><?= __('without table'); ?></option>
-                            </select>
+                            <div class="row">
+                                <div class="col-md-auto mt-1">
+                                    <?= __('View'); ?>
+                                </div>
+                                <div class="col-md-auto">
+                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
+                                        <option value="with_table"><?= __('with table'); ?></option>
+                                        <option value="without_table" <?= $settings['module_option_1'][$i] === 'without_table' ? 'selected' : ''; ?>><?= __('without table'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
                         <?php } ?>
                     </div>
                 </div>
@@ -330,12 +352,12 @@ $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
     <table class="table table-light">
         <thead class="table-primary">
             <tr>
-                <th colspan="2"><?= __('Slideshow on the homepage'); ?> <input type="submit" name="save_option2" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+                <th colspan="3"><?= __('Slideshow on the homepage'); ?> <input type="submit" name="save_option2" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
             </tr>
         </thead>
 
         <tr>
-            <td colspan="2"><?= __('This option shows a slideshow at the homepage. Put the images in the media/slideshow/ folder at the website.<br>Example of image link:'); ?> <b>media/slideshow/slide01.jpg</b><br>
+            <td colspan="3"><?= __('This option shows a slideshow at the homepage. Put the images in the media/slideshow/ folder at the website.<br>Example of image link:'); ?> <b>media/slideshow/slide01.jpg</b><br>
                 <?= __('Images size should be about:'); ?> <b>950 x 170 pixels.</b>
             </td>
         </tr>
@@ -345,39 +367,43 @@ $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
             <td>
                 <select size="1" name="slideshow_show" class="form-select form-select-sm w-25">
                     <option value="y"><?= __('Yes'); ?></option>
-                    <option value="n" <?php if ($humo_option["slideshow_show"] != 'y') echo ' selected'; ?>><?= __('No'); ?></option>
+                    <option value="n" <?= $humo_option["slideshow_show"] != 'y' ? ' selected' : ''; ?>><?= __('No'); ?></option>
                 </select>
             </td>
+            <td></td>
         </tr>
 
         <!-- Picture 1 -->
         <tr>
             <td><?= __('Link to image'); ?> 1<br><?= __('Link description'); ?> 1</td>
-            <td><input type="text" name="slideshow_slide_01" value="<?= $slideshow_01[0]; ?>" size="40"> media/slideshow/slide01.jpg<br>
-                <input type="text" name="slideshow_text_01" value="<?= $slideshow_01[1]; ?>" size="40">
+            <td><input type="text" name="slideshow_slide_01" value="<?= $slideshow_01[0]; ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_01" value="<?= $slideshow_01[1]; ?>" size="40" class="form-control form-control-sm">
             </td>
+            <td>media/slideshow/slide01.jpg</td>
         </tr>
         <!-- Picture 2 -->
         <tr>
             <td><?= __('Link to image'); ?> 2<br><?= __('Link description'); ?> 2</td>
-            <td><input type="text" name="slideshow_slide_02" value="<?= $slideshow_02[0]; ?>" size="40"> media/slideshow/slide02.jpg<br>
-                <input type="text" name="slideshow_text_02" value="<?= $slideshow_02[1]; ?>" size="40">
+            <td><input type="text" name="slideshow_slide_02" value="<?= $slideshow_02[0]; ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_02" value="<?= $slideshow_02[1]; ?>" size="40" class="form-control form-control-sm">
             </td>
+            <td>media/slideshow/slide02.jpg</td>
         </tr>
         <!-- Picture 3 -->
         <tr>
             <td><?= __('Link to image'); ?> 3<br><?= __('Link description'); ?> 3</td>
-            <td><input type="text" name="slideshow_slide_03" value="<?= $slideshow_03[0]; ?>" size="40"> media/slideshow/slide03.jpg<br>
-                <input type="text" name="slideshow_text_03" value="<?= $slideshow_03[1]; ?>" size="40">
+            <td><input type="text" name="slideshow_slide_03" value="<?= $slideshow_03[0]; ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_03" value="<?= $slideshow_03[1]; ?>" size="40" class="form-control form-control-sm">
             </td>
+            <td>media/slideshow/slide03.jpg</td>
         </tr>
         <!-- Picture 4 -->
         <tr>
             <td><?= __('Link to image'); ?> 4<br><?= __('Link description'); ?> 4</td>
-            <td><input type="text" name="slideshow_slide_04" value="<?= $slideshow_04[0]; ?>" size="40"> media/slideshow/slide04.jpg<br>
-                <input type="text" name="slideshow_text_04" value="<?= $slideshow_04[1]; ?>" size="40">
+            <td><input type="text" name="slideshow_slide_04" value="<?= $slideshow_04[0]; ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_04" value="<?= $slideshow_04[1]; ?>" size="40" class="form-control form-control-sm">
             </td>
+            <td>media/slideshow/slide04.jpg</td>
         </tr>
-
     </table>
-</form><br><br>
+</form>

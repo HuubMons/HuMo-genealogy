@@ -6,9 +6,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-//echo '<h3>'.__('Checking database tables...').'<br>'.__('Please wait till finished').'.</h3>';
-echo '<h3>' . __('Checking database tables...') . '</h3>';
-
 // TODO check translations in this script.
 
 $wrong_indexnr = 0;
@@ -20,10 +17,10 @@ if (isset($_POST['remove'])) {
 }
 ?>
 
+<h3><?= __('Checking database tables...'); ?></h3>
+
 <!-- Option to remove wrong database connections -->
-<form method="POST" action="index.php">
-    <input type="hidden" name="page" value="check">
-    <input type="hidden" name="tab" value="integrity">
+<form method="POST" action="index.php?page=check&tab=integrity">
     <?= __('Remove links to missing items from database (first make a database backup!)'); ?>
     <input type="submit" name="remove" value="<?= __('REMOVE'); ?>" class="btn btn-sm btn-secondary">
 </form>

@@ -29,8 +29,7 @@ if (!defined('ADMIN_PAGE')) {
             </label>
         </div>
         <div class="col-3">
-            <form method="POST" action="index.php" style="display : inline;">
-                <input type="hidden" name="page" value="<?= $page; ?>">
+            <form method="POST" action="index.php?page=edit_places" style="display : inline;">
                 <select size="1" id="place_select" name="place_select" class="form-select form-select-sm" onChange="this.form.submit();">
                     <?php
                     while ($person = $place['result']->fetch(PDO::FETCH_OBJ)) {
@@ -57,8 +56,7 @@ if (!defined('ADMIN_PAGE')) {
 
 <!-- Change selected place -->
 <?php if ($place['select']) { ?>
-    <form method="POST" action="index.php" class="mt-4">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+    <form method="POST" action="index.php?page=edit_places" class="mt-4">
         <input type="hidden" name="place_old" value="<?= $place['select']; ?>">
 
         <div class="row mb-2">

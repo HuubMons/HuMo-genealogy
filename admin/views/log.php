@@ -54,7 +54,6 @@ if (!defined('ADMIN_PAGE')) {
         printf(__('IP Blacklist: access to %s will be totally blocked for these IP addresses.'), 'HuMo-genealogy');
     ?>
         <form method="post" action="index.php?page=log&amp;menu_admin=log_blacklist" class="mt-2">
-            <input type="hidden" name="page" value="<?= $page; ?>">
             <table class="table" border="1">
                 <tr class="table-primary">
                     <th>Nr.</th>
@@ -93,8 +92,8 @@ if (!defined('ADMIN_PAGE')) {
                                 }
                                 ?>
                             </td>
-                            <td><input type="text" name="<?= $blacklist->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5"></td>
-                            <td><input type="text" name="<?= $blacklist->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20"></td>
+                            <td><input type="text" name="<?= $blacklist->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5" class="form-control form-control-sm"></td>
+                            <td><input type="text" name="<?= $blacklist->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20" class="form-control form-control-sm"></td>
                             <td><input type="submit" name="change_link" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></td>
                             <td><input type="submit" name="<?= $blacklist->setting_id; ?>remove_link" value="<?= __('Remove'); ?>" class="btn btn-sm btn-warning"></td>
                         </tr>
@@ -107,8 +106,8 @@ if (!defined('ADMIN_PAGE')) {
                     <tr>
                         <td><br></td>
                         <input type="hidden" name="link_order" value="<?= $new_number; ?>">
-                        <td><input type="text" name="own_code" placeholder="<?= __('IP Address'); ?>" size="5"></td>
-                        <td><input type="text" name="link_text" placeholder="<?= __('Description'); ?>" size="20"></td>
+                        <td><input type="text" name="own_code" placeholder="<?= __('IP Address'); ?>" size="5" class="form-control form-control-sm"></td>
+                        <td><input type="text" name="link_text" placeholder="<?= __('Description'); ?>" size="20" class="form-control form-control-sm"></td>
                         <td><input type="submit" name="add_link" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>
                         <td><br></td>
                     </tr>

@@ -111,126 +111,156 @@ if ($humo_option["url_rewrite"] == "j") {
         <?php include __DIR__ . '/partial/pagination.php'; ?>
     </div>
 
-    <?php
-    // *** Show photos ***
-    $found_privacy_items = false;
-    for ($picture_nr = $item; $picture_nr < ($item + $photoalbum['show_pictures']); $picture_nr++) {
-        if (isset($photoalbum['media_files'][$picture_nr]) && $photoalbum['media_files'][$picture_nr]) {
-            $filename = $photoalbum['media_files'][$picture_nr];
-            $picture_text = '';    // Text with link to person
-            $picture_text2 = '';    // Text without link to person
+    <!-- Show photo's -->
+    <div class="container-fluid">
+        <div class="row g-3">
+            <?php
+            // *** Show photos ***
+            $found_privacy_items = false;
+            for ($picture_nr = $item; $picture_nr < ($item + $photoalbum['show_pictures']); $picture_nr++) {
+                if (isset($photoalbum['media_files'][$picture_nr]) && $photoalbum['media_files'][$picture_nr]) {
+                    $filename = $photoalbum['media_files'][$picture_nr];
+                    $picture_text = '';    // Text with link to person
+                    $picture_text2 = '';    // Text without link to person
 
-            $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
-                AND event_connect_kind = 'person' AND LEFT(event_kind,7) = 'picture' AND LOWER(event_event) = :filename";
-            $afbqry = $dbh->prepare($sql);
-            $afbqry->execute([
-                ':tree_id' => $tree_id,
-                ':filename' => strtolower($filename)
-            ]);
-            if (!$afbqry->rowCount()) {
-                $picture_text = substr($filename, 0, -4);
-            }
-            while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                $personDb = $db_functions->get_person($afbDb->event_connect_id);
-                $privacy = $personPrivacy->get_privacy($personDb);
-                $name = $personName->get_person_name($personDb, $privacy);
-
-                if (!$privacy) {
-                    // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                    $personLink = new \Genealogy\Include\PersonLink();
-                    $url = $personLink->get_person_link($personDb);
-                    $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
-                    $picture_text2 .= $name["standard_name"];
-                } else {
-                    $found_privacy_items = true;
-                }
-
-                $dateplace = $datePlace->date_place($afbDb->event_date, $afbDb->event_place);
-                if ($afbDb->event_text || $dateplace) {
-                    if ($dateplace) {
-                        $picture_text .= $dateplace . ' ';
+                    $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
+                        AND event_connect_kind = 'person' AND LEFT(event_kind,7) = 'picture' AND LOWER(event_event) = :filename";
+                    $afbqry = $dbh->prepare($sql);
+                    $afbqry->execute([
+                        ':tree_id' => $tree_id,
+                        ':filename' => strtolower($filename)
+                    ]);
+                    if (!$afbqry->rowCount()) {
+                        $picture_text = substr($filename, 0, -4);
                     }
-                    $picture_text .= $afbDb->event_text . '<br>';
+                    while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
+                        $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                        $privacy = $personPrivacy->get_privacy($personDb);
+                        $name = $personName->get_person_name($personDb, $privacy);
 
-                    $picture_text2 .= '<br>';
-                    if ($dateplace) {
-                        $picture_text2 .= $dateplace . ' ';
-                    }
-                    $picture_text2 .= $afbDb->event_text;
-                }
-            }
-
-            // *** Show texts from connected objects (where object is saved in seperate table): Family Tree Maker GEDCOM file ***
-            $picture_qry = $dbh->query("SELECT * FROM humo_events
-                WHERE event_tree_id='" . $tree_id . "' AND event_kind='object' AND LOWER(event_event)='" . strtolower($filename) . "'");
-            while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
-                $connect_qry = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
-                    AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
-                while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
-                    $personDb = $db_functions->get_person($connectDb->connect_connect_id);
-                    $privacy = $personPrivacy->get_privacy($personDb);
-                    $name = $personName->get_person_name($personDb, $privacy);
-
-                    if (!$privacy) {
-                        // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-                        $personLink = new \Genealogy\Include\PersonLink();
-                        $url = $personLink->get_person_link($personDb);
-                        if ($picture_text !== '' && $picture_text !== '0') {
-                            $picture_text .= '<br>';
+                        if (!$privacy) {
+                            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                            $personLink = new \Genealogy\Include\PersonLink();
+                            $url = $personLink->get_person_link($personDb);
+                            $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
+                            $picture_text2 .= $name["standard_name"];
+                        } else {
+                            $found_privacy_items = true;
                         }
-                        $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
-                        $picture_text2 .= $name["standard_name"];
+
+                        $dateplace = $datePlace->date_place($afbDb->event_date, $afbDb->event_place);
+                        if ($afbDb->event_text || $dateplace) {
+                            if ($dateplace) {
+                                $picture_text .= $dateplace . ' ';
+                            }
+                            $picture_text .= $afbDb->event_text . '<br>';
+
+                            $picture_text2 .= '<br>';
+                            if ($dateplace) {
+                                $picture_text2 .= $dateplace . ' ';
+                            }
+                            $picture_text2 .= $afbDb->event_text;
+                        }
                     }
 
-                    $dateplace = $datePlace->date_place($pictureDb->event_date, $pictureDb->event_place);
-                    if ($pictureDb->event_text || $dateplace) {
-                        if ($dateplace) {
-                            $picture_text .= $dateplace . ' ';
-                        }
-                        $picture_text .= $pictureDb->event_text . '<br>';
+                    // *** Show texts from connected objects (where object is saved in seperate table): Family Tree Maker GEDCOM file ***
+                    $picture_qry = $dbh->query("SELECT * FROM humo_events
+                        WHERE event_tree_id='" . $tree_id . "' AND event_kind='object' AND LOWER(event_event)='" . strtolower($filename) . "'");
+                    while ($pictureDb = $picture_qry->fetch(PDO::FETCH_OBJ)) {
+                        $connect_qry = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='" . $tree_id . "'
+                            AND connect_sub_kind='pers_object' AND connect_source_id='" . $pictureDb->event_gedcomnr . "'");
+                        while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
+                            $personDb = $db_functions->get_person($connectDb->connect_connect_id);
+                            $privacy = $personPrivacy->get_privacy($personDb);
+                            $name = $personName->get_person_name($personDb, $privacy);
 
-                        $picture_text2 .= '<br>';
-                        if ($dateplace) {
-                            $picture_text2 .= $dateplace . ' ';
+                            if (!$privacy) {
+                                // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+                                $personLink = new \Genealogy\Include\PersonLink();
+                                $url = $personLink->get_person_link($personDb);
+                                if ($picture_text !== '' && $picture_text !== '0') {
+                                    $picture_text .= '<br>';
+                                }
+                                $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
+                                $picture_text2 .= $name["standard_name"];
+                            }
+
+                            $dateplace = $datePlace->date_place($pictureDb->event_date, $pictureDb->event_place);
+                            if ($pictureDb->event_text || $dateplace) {
+                                if ($dateplace) {
+                                    $picture_text .= $dateplace . ' ';
+                                }
+                                $picture_text .= $pictureDb->event_text . '<br>';
+
+                                $picture_text2 .= '<br>';
+                                if ($dateplace) {
+                                    $picture_text2 .= $dateplace . ' ';
+                                }
+                                $picture_text2 .= $pictureDb->event_text;
+                            }
                         }
-                        $picture_text2 .= $pictureDb->event_text;
+                    }
+                    $tmp_dir = $tree_pict_path;
+
+                    //$picture = $showMedia->print_thumbnail($tree_pict_path, $filename, 175, 120);
+                    $picture = $showMedia->print_thumbnail($tree_pict_path, $filename, 175, 120, 'BOOTSTRAP_CARD');
+
+                    if (array_key_exists(substr($filename, 0, 3), $showMedia->get_pcat_dirs())) {
+                        $tmp_dir .= substr($filename, 0, 2) . '/';
+                    }
+                    if (in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'tif'))) {
+                        $href_path = $mediaPath->give_media_path($tmp_dir, $filename);
+            ?>
+
+                        <!-- <div class="col-12 col-sm-6 col-md-4 col-lg-3"> -->
+                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                            <div class="card h-100 shadow-sm">
+                                <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
+                                    <?= $picture ?>
+                                </a>
+                                <div class="card-body p-2">
+                                    <div class="glightbox-desc custom-desc<?= $picture_nr; ?> d-none"><?= $picture_text2; ?></div>
+                                    <div class="card-text small"><?= $picture_text; ?></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <?php } else { ?>
+                        <?php /*
+                        // OLD CODE
+                        <div class="photobook">
+                            <a href="<?= $tmp_dir . $filename; ?>" target="_blank"><?= $picture; ?></a>
+                            <div class="photobooktext"><?= $picture_text; ?></div>
+                        </div>
+                        */ ?>
+
+                        <!-- TODO: test new code -->
+                        <?php /*
+                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                            <div class="card h-100 shadow-sm">
+                                <a href="<?= $tmp_dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
+                                    <img src="<?= $tmp_dir . $filename; ?>" class="card-img-top img-fluid" alt="<?= htmlspecialchars($picture_text2) ?>">
+                                </a>
+                                <div class="card-body p-2">
+                                    <div class="glightbox-desc custom-desc<?= $picture_nr; ?> d-none"><?= $picture_text2; ?></div>
+                                    <div class="card-text small"><?= $picture_text; ?></div>
+                                </div>
+                            </div>
+                        </div>
+                        */ ?>
+            <?php
                     }
                 }
             }
-            $tmp_dir = $tree_pict_path;
-            $picture = $showMedia->print_thumbnail($tree_pict_path, $filename, 175, 120);
-            if (array_key_exists(substr($filename, 0, 3), $showMedia->get_pcat_dirs())) {
-                $tmp_dir .= substr($filename, 0, 2) . '/';
-            }
-            if (in_array(strtolower(pathinfo($filename, PATHINFO_EXTENSION)), array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'tif'))) {
-    ?>
-                <div class="photobook">
-                    <!-- Show photo using the lightbox: GLightbox effect -->
-                    <?php $href_path = $mediaPath->give_media_path($tmp_dir, $filename); ?>
-                    <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
-                        <!-- Need a class for multiple lines and HTML code in a text -->
-                        <div class="glightbox-desc custom-desc<?= $picture_nr; ?>"><?= $picture_text2; ?></div>
-                        <?= $picture; ?>
-                    </a>
-                    <div class="photobooktext"><?= $picture_text; ?></div>
-                </div>
-            <?php } else { ?>
-                <div class="photobook">
-                    <a href="<?= $tmp_dir . $filename; ?>" target="_blank"><?= $picture; ?></a>
-                    <div class="photobooktext"><?= $picture_text; ?></div>
-                </div>
-    <?php
-            }
-        }
-    }
-    ?>
+            ?>
+        </div>
+    </div>
 
     <?php if ($found_privacy_items) { ?>
         <div style="float: left; background-color:white; height:auto; width:98%;padding:5px;"><br>
             <?= __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***'); ?><br><br>
         </div>
     <?php } ?>
-
 
 </div>
 <br clear="all"><br>

@@ -9,19 +9,19 @@ if (!defined('ADMIN_PAGE')) {
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'general_statistics') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=general_statistics"><?= __('General statistics'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics['tab'] == 'general_statistics' ? 'active' : ''; ?>" href="index.php?page=statistics&amp;tab=general_statistics"><?= __('General statistics'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'date_statistics') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=date_statistics"><?= __('Statistics by date'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics['tab'] == 'date_statistics' ? 'active' : ''; ?>" href="index.php?page=statistics&amp;tab=date_statistics"><?= __('Statistics by date'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'visitors') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=visitors"><?= __('Visitors'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics['tab'] == 'visitors' ? 'active' : ''; ?>" href="index.php?page=statistics&amp;tab=visitors"><?= __('Visitors'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'statistics_families') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=statistics_families"><?= __('Families'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics['tab'] == 'statistics_families' ? 'active' : ''; ?>" href="index.php?page=statistics&amp;tab=statistics_families"><?= __('Families'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($statistics['tab'] == 'remove') echo 'active'; ?>" href="index.php?page=statistics&amp;tab=remove"><?= __('Remove statistics'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics['tab'] == 'remove' ? 'active' : ''; ?>" href="index.php?page=statistics&amp;tab=remove"><?= __('Remove statistics'); ?></a>
     </li>
 </ul>
 

@@ -28,13 +28,13 @@ if (isset($backup_files)) {
 
 <ul class="nav nav-tabs mt-1">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($backup['menu_tab'] == 'database_backup') echo 'active'; ?>" href="index.php?page=backup"><?= __('Database backup'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $backup['menu_tab'] == 'database_backup' ? 'active' : ''; ?>" href="index.php?page=backup"><?= __('Database backup'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($backup['menu_tab'] == 'create_backup') echo 'active'; ?>" href="index.php?page=backup&amp;menu_tab=create_backup"><?= __('Create backup file'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $backup['menu_tab'] == 'create_backup' ? 'active' : ''; ?>" href="index.php?page=backup&amp;menu_tab=create_backup"><?= __('Create backup file'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($backup['menu_tab'] == 'restore_backup') echo 'active'; ?>" href="index.php?page=backup&amp;menu_tab=restore_backup"><?= __('Restore database'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $backup['menu_tab'] == 'restore_backup' ? 'active' : ''; ?>" href="index.php?page=backup&amp;menu_tab=restore_backup"><?= __('Restore database'); ?></a>
     </li>
 </ul>
 

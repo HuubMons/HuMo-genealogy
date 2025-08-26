@@ -10,286 +10,225 @@
  * July 2024 Huub: removed doublescroll and html2canvas. Just use browser to print and scroll.
  */
 
-if (!isset($hourglass)) {
-    // *** Check if person gedcomnumber is valid ***
-    $db_functions->check_person($data["main_person"]);
+$ancestorBox = new \Genealogy\Include\AncestorBox();
 
-    echo $data["ancestor_header"];
-}
+// *** Check if person gedcomnumber is valid ***
+$db_functions->check_person($data["main_person"]);
 
-if (!isset($hourglass)) {
-    //Width of the chart. For 6 generations 1000px is right.
-    //If we ever make the anc chart have optionally more generations, the width and length will have to be generated as in report_descendant
-    //$divlen = 1000;
+echo $data["ancestor_header"];
 
-    $top = 50;
+//Width of the chart. For 6 generations 1000px is right.
+//If we ever make the anc chart have optionally more generations, the width and length will have to be generated as in report_descendant
+//$divlen = 1000;
 
-    $column1_left = 10;
-    $column1_top = $top + 520;
+$top = 50;
 
-    $column2_left = 50;
-    $column2_top = $top + 320;
+$column1_left = 10;
+$column1_top = $top + 520;
 
-    $column3_left = 80;
-    $column3_top = $top + 199;
+$column2_left = 50;
+$column2_top = $top + 320;
 
-    $column4_left = 300;
-    $column4_top = $top - 290;
+$column3_left = 80;
+$column3_top = $top + 199;
 
-    $column5_left = 520;
-    $column5_top = $top - 110;
+$column4_left = 300;
+$column4_top = $top - 290;
 
-    $column6_left = 740;
-    $column6_top = $top - 20;
+$column5_left = 520;
+$column5_top = $top - 110;
+
+$column6_left = 740;
+$column6_top = $top - 20;
 ?>
 
-    <div class="container-xl" style="height: 1000px; width:1000px;">
-        <!-- First column name -->
-        <!-- No _ character allowed in name of CSS class because of javascript -->
-        <div class="ancestorName <?= $data["sexe"][1] == 'M' ? 'ancestor_man' : 'ancestor_man'; ?>" align="left" style="top: <?= $column1_top; ?>px; left: <?= $column1_left; ?>px; height: 80px; width:200px;">
-            <?= ancestor_chart_person('1', 'large'); ?>
-        </div>
-
-        <!-- Second column split -->
-        <div class="ancestor_split" style="top: <?= $column2_top; ?>px; left: <?= $column2_left; ?>px; height: 199px"></div>
-        <div class="ancestor_split" style="top: <?= ($column2_top + 281); ?>px; left: <?= $column2_left; ?>px; height: 199px"></div>
-        <!-- Second column names -->
-        <?php for ($i = 1; $i < 3; $i++) { ?>
-            <div class="ancestorName <?= $data["sexe"][$i + 1] == 'M' ? 'ancestor_man' : 'ancestor_woman'; ?>" style="top: <?= (($column2_top - 520) + ($i * 480)); ?>px; left: <?= ($column2_left + 8); ?>px; height: 80px; width:200px;">
-                <?= ancestor_chart_person($i + 1, 'large'); ?>
-            </div>
-        <?php } ?>
-
-        <!-- Third column split -->
-        <div class="ancestor_split" style="top: <?= $column3_top; ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
-        <div class="ancestor_split" style="top: <?= ($column3_top + 162); ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
-        <div class="ancestor_split" style="top: <?= ($column3_top + 480); ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
-        <div class="ancestor_split" style="top: <?= ($column3_top + 642); ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
-        <!-- Third column names -->
-        <?php for ($i = 1; $i < 5; $i++) { ?>
-            <div class="ancestorName <?= $data["sexe"][$i + 3] == 'M' ? 'ancestor_man' : 'ancestor_woman'; ?>" style="top: <?= (($column3_top - 279) + ($i * 240)); ?>px; left: <?= ($column3_left + 40); ?>px; height: 80px; width:200px;">
-                <?= ancestor_chart_person($i + 3, 'large'); ?>
-            </div>
-        <?php
-        }
-
-        // *** Fourth column line ***
-        for ($i = 1; $i < 3; $i++) {
-            echo '<div class="ancestor_line" style="top: ' . ($column4_top + ($i * 485)) . 'px; left: ' . ($column4_left + 24) . 'px; height: 240px;"></div>';
-        }
-        // *** Fourth column split ***
-        for ($i = 1; $i < 5; $i++) {
-            echo '<div class="ancestor_split" style="top: ' . (($column4_top + 185) + ($i * 240)) . 'px; left: ' . ($column4_left + 32) . 'px; height: 120px;"></div>';
-        }
-        // *** Fourth column names ***
-        for ($i = 1; $i < 9; $i++) {
-        ?>
-            <div class="ancestorName <?= $data["sexe"][$i + 7] == 'M' ? 'ancestor_man' : 'ancestor_woman'; ?>" style="top: <?= (($column4_top + 265) + ($i * 120)); ?>px; left: <?= ($column4_left + 40); ?>px; height: 80px; width:200px;">
-                <?= ancestor_chart_person($i + 7, 'large'); ?>
-            </div>
-        <?php
-        }
-
-        // *** Fifth column line ***
-        for ($i = 1; $i < 5; $i++) {
-            echo '<div class="ancestor_line" style="top: ' . ($column5_top + ($i * 240)) . 'px; left: ' . ($column5_left + 24) . 'px; height: 120px;"></div>';
-        }
-        // *** Fifth column split ***
-        for ($i = 1; $i < 9; $i++) {
-            echo '<div class="ancestor_split" style="top: ' . (($column5_top + 90) + ($i * 120)) . 'px; left: ' . ($column5_left + 32) . 'px; height: 60px;"></div>';
-        }
-        // *** Fifth column names ***
-        for ($i = 1; $i < 17; $i++) {
-        ?>
-            <div class="ancestorName <?= $data["sexe"][$i + 15] == 'M' ? 'ancestor_man' : 'ancestor_woman'; ?>" style="top: <?= (($column5_top + 125) + ($i * 60)); ?>px; left: <?= ($column5_left + 40); ?>px; height: 50px; width:200px;">
-                <?= ancestor_chart_person($i + 15, 'medium'); ?>
-            </div>
-        <?php
-        }
-
-        // *** Last column line ***
-        for ($i = 1; $i < 9; $i++) {
-            echo '<div class="ancestor_line" style="top: ' . ($column6_top + ($i * 120)) . 'px; left: ' . ($column6_left + 24) . 'px; height: 60px;"></div>';
-        }
-        // *** Last column split ***
-        for ($i = 1; $i < 17; $i++) {
-            echo '<div class="ancestor_split" style="top: ' . (($column6_top + 45) + ($i * 60)) . 'px; left: ' . ($column6_left + 32) . 'px; height: 30px;"></div>';
-        }
-        // *** Last column names ***
-        for ($i = 1; $i < 33; $i++) {
-        ?>
-            <div class="ancestorName <?= $data["sexe"][$i + 31] == 'M' ? 'ancestor_man' : 'ancestor_woman'; ?>" style="top: <?= (($column6_top + 66) + ($i * 30)); ?>px; left: <?= ($column6_left + 40); ?>px; height:16px; width:200px;">
-                <?= ancestor_chart_person($i + 31, 'small'); ?>
-            </div>
-        <?php } ?>
+<div class="container-xl" style="height: 1000px; width:1000px;">
+    <!-- First column name -->
+    <!-- No _ character allowed in name of CSS class because of javascript -->
+    <div class="ancestorName <?= $data["sexe"][1] == 'M' ? 'box_man' : 'box_woman'; ?>" align="left" style="top: <?= $column1_top; ?>px; left: <?= $column1_left; ?>px; height: 80px; width:200px;">
+        <?= $ancestorBox->ancestorBox('1', 'large'); ?>
     </div>
 
-<?php
-}
+    <!-- Second column split -->
+    <div class="ancestor_split" style="top: <?= $column2_top; ?>px; left: <?= $column2_left; ?>px; height: 199px"></div>
+    <div class="ancestor_split" style="top: <?= ($column2_top + 281); ?>px; left: <?= $column2_left; ?>px; height: 199px"></div>
+    <!-- Second column names -->
+    <?php for ($i = 1; $i < 3; $i++) { ?>
+        <div class="ancestorName <?= $data["sexe"][$i + 1] == 'M' ? 'box_man' : 'box_woman'; ?>" style="top: <?= (($column2_top - 520) + ($i * 480)); ?>px; left: <?= ($column2_left + 8); ?>px; height: 80px; width:200px;">
+            <?= $ancestorBox->ancestorBox($i + 1, 'large'); ?>
+        </div>
+    <?php } ?>
 
-// *** Function to show data ***
-// box_appearance (large, medium, small, and some other boxes...)
-function ancestor_chart_person($id, $box_appearance)
-{
-    global $db_functions, $user, $data, $selectedFamilyTree, $language, $screen_mode;
-
-    $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"], $screen_mode);
-    $personName = new \Genealogy\Include\PersonName();
-    $personPrivacy = new \Genealogy\Include\PersonPrivacy();
-    $personPopup = new \Genealogy\Include\PersonPopup();
-    $datePlace = new \Genealogy\Include\DatePlace();
-
-    $hour_value = ''; // if called from hourglass size of chart is given in box_appearance as "hour45" etc.
-    if (strpos($box_appearance, "hour") !== false) {
-        $hour_value = substr($box_appearance, 4);
+    <!-- Third column split -->
+    <div class="ancestor_split" style="top: <?= $column3_top; ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
+    <div class="ancestor_split" style="top: <?= ($column3_top + 162); ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
+    <div class="ancestor_split" style="top: <?= ($column3_top + 480); ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
+    <div class="ancestor_split" style="top: <?= ($column3_top + 642); ?>px; left: <?= ($column3_left + 32); ?>px; height: 80px;"></div>
+    <!-- Third column names -->
+    <?php for ($i = 1; $i < 5; $i++) { ?>
+        <div class="ancestorName <?= $data["sexe"][$i + 3] == 'M' ? 'box_man' : 'box_woman'; ?>" style="top: <?= (($column3_top - 279) + ($i * 240)); ?>px; left: <?= ($column3_left + 40); ?>px; height: 80px; width:200px;">
+            <?= $ancestorBox->ancestorBox($i + 3, 'large'); ?>
+        </div>
+    <?php
     }
 
-    $text = '';
-    $popup = '';
-
-    if ($data["gedcomnumber"][$id]) {
-        $personDb = $db_functions->get_person($data["gedcomnumber"][$id]);
-        $pers_privacy = $personPrivacy->get_privacy($personDb);
-        $name = $personName->get_person_name($personDb, $pers_privacy);
-        $name2 = $directionMarkers->dirmark2 . $name["name"] . $name["colour_mark"] . $directionMarkers->dirmark2;
-
-        // *** Replace pop-up icon by a text box ***
-        $replacement_text = '';
-        //$replacement_text.='<b>'.$id.'</b>';  // *** Ancestor number: id bold, name not ***
-        $replacement_text .= '<span class="anc_box_name">' . $name2 . '</span>';
-
-        // >>>>> link to show rest of ancestor chart
-        if ($box_appearance == 'small' && isset($personDb->pers_gedcomnumber) && $personDb->pers_famc) {
-            $replacement_text .= ' &gt;&gt;&gt;' . $directionMarkers->dirmark1;
-        }
-
-        if ($pers_privacy) {
-            if ($box_appearance != 'ancestor_sheet_marr') {
-                $replacement_text .= '<br>' . __(' PRIVACY FILTER');  //Tekst privacy weergeven
-            } else {
-                $replacement_text = __(' PRIVACY FILTER');
-            }
-        } else {
-            if ($box_appearance != 'small') {
-                //if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
-                if ($personDb->pers_birth_date) {
-                    //$replacement_text.='<br>'.__('*').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_birth_date,$personDb->pers_birth_place); }
-                    $replacement_text .= '<br>' . __('*') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
-                }
-                //elseif ($personDb->pers_bapt_date OR $personDb->pers_bapt_place){
-                elseif ($personDb->pers_bapt_date) {
-                    //$replacement_text.='<br>'.__('~').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place); }
-                    $replacement_text .= '<br>' . __('~') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
-                }
-
-                //if ($personDb->pers_death_date OR $personDb->pers_death_place){
-                if ($personDb->pers_death_date) {
-                    //$replacement_text.='<br>'.__('&#134;').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_death_date,$personDb->pers_death_place); }
-                    $replacement_text .= '<br>' . __('&#134;') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
-                }
-                //elseif ($personDb->pers_buried_date OR $personDb->pers_buried_place){
-                elseif ($personDb->pers_buried_date) {
-                    //$replacement_text.='<br>'.__('[]').$directionMarkers->dirmark1.' '.$datePlace->date_place($personDb->pers_buried_date,$personDb->pers_buried_place); }
-                    $replacement_text .= '<br>' . __('[]') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
-                }
-
-                if ($box_appearance != 'medium') {
-                    $marr_date = '';
-                    if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
-                        $marr_date = $data["marr_date"][$id];
-                    }
-                    $marr_place = '';
-                    if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
-                        $marr_place = $data["marr_place"][$id];
-                    }
-                    //if ($marr_date OR $marr_place){
-                    if ($marr_date) {
-                        //$replacement_text.='<br>'.__('X').$directionMarkers->dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
-                        $replacement_text .= '<br>' . __('X') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
-                    }
-                }
-                if ($box_appearance == 'ancestor_sheet_marr') {
-                    $replacement_text = '';
-                    $marr_date = '';
-                    if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
-                        $marr_date = $data["marr_date"][$id];
-                    }
-                    $marr_place = '';
-                    if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
-                        $marr_place = $data["marr_place"][$id];
-                    }
-                    //if ($marr_date OR $marr_place){
-                    if ($marr_date) {
-                        //$replacement_text=__('X').$directionMarkers->dirmark1.' '.$datePlace->date_place($marr_date,$marr_place); }
-                        $replacement_text = __('X') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($marr_date, '');
-                    } else $replacement_text = __('X'); // if no details in the row we don't want the row to collapse
-                }
-                if ($box_appearance == 'ancestor_header') {
-                    $replacement_text = '';
-                    $replacement_text .= strip_tags($name2);
-                    $replacement_text .= $directionMarkers->dirmark2;
-                }
-            }
-        }
-
-        if ($hour_value !== '') {
-            // called from hourglass
-            if ($hour_value === '45') {
-                $replacement_text = $name['name'];
-            } elseif ($hour_value === '40') {
-                $replacement_text = '<span class="wordwrap" style="font-size:75%">' . $name['short_firstname'] . '</span>';
-            } elseif ($hour_value > 20 && $hour_value < 40) {
-                $replacement_text = $name['initials'];
-            } elseif ($hour_value < 25) {
-                $replacement_text = "&nbsp;";
-            }
-            // if full scale (50) then the default of this function will be used: name with details
-        }
-
-        $extra_popup_text = '';
-        $marr_date = '';
-        if (isset($data["marr_date"][$id]) and ($data["marr_date"][$id] != '')) {
-            $marr_date = $data["marr_date"][$id];
-        }
-        $marr_place = '';
-        if (isset($data["marr_place"][$id]) and ($data["marr_place"][$id] != '')) {
-            $marr_place = $data["marr_place"][$id];
-        }
-        if ($marr_date || $marr_place) {
-            $extra_popup_text .= '<br>' . __('X') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($marr_date, $marr_place);
-        }
-
-        // *** Show picture by person ***
-        if ($box_appearance != 'small' and $box_appearance != 'medium' and (strpos($box_appearance, "hour") === false or $box_appearance == "hour50")) {
-            // *** Show picture ***
-            if (!$pers_privacy and $user['group_pictures'] == 'j') {
-                //  *** Path can be changed per family tree ***
-                $tree_pict_path = $selectedFamilyTree->tree_pict_path;
-                if (substr($tree_pict_path, 0, 1) == '|') {
-                    $tree_pict_path = 'media/';
-                }
-                $picture_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'picture');
-                // *** Only show 1st picture ***
-                if (isset($picture_qry[0])) {
-                    $pictureDb = $picture_qry[0];
-                    $showMedia = new \Genealogy\Include\ShowMedia();
-                    $text .= $showMedia->print_thumbnail($tree_pict_path, $pictureDb->event_event, 80, 70, 'float:left; margin:5px;');
-                }
-            }
-        }
-
-        if ($box_appearance == 'ancestor_sheet_marr' || $box_appearance == 'ancestor_header') {
-            // cause in that case there is no link
-            $text .= $replacement_text;
-        } else {
-            $text .= $personPopup->person_popup_menu($personDb, $pers_privacy, true, $replacement_text, $extra_popup_text);
-
-            // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-            //$personLink = new PersonLink();
-            //$url = $personLink->get_person_link($personDb);
-            //$text .= '<a href="'.$url.'"><span clas="nam" style="font-size:10px; color: #000000; text-decoration: none;">'.$replacement_text.'</span></a>';
-        }
+    // *** Fourth column line ***
+    for ($i = 1; $i < 3; $i++) {
+        echo '<div class="ancestor_line" style="top: ' . ($column4_top + ($i * 485)) . 'px; left: ' . ($column4_left + 24) . 'px; height: 240px;"></div>';
+    }
+    // *** Fourth column split ***
+    for ($i = 1; $i < 5; $i++) {
+        echo '<div class="ancestor_split" style="top: ' . (($column4_top + 185) + ($i * 240)) . 'px; left: ' . ($column4_left + 32) . 'px; height: 120px;"></div>';
+    }
+    // *** Fourth column names ***
+    for ($i = 1; $i < 9; $i++) {
+    ?>
+        <div class="ancestorName <?= $data["sexe"][$i + 7] == 'M' ? 'box_man' : 'box_woman'; ?>" style="top: <?= (($column4_top + 265) + ($i * 120)); ?>px; left: <?= ($column4_left + 40); ?>px; height: 80px; width:200px;">
+            <?= $ancestorBox->ancestorBox($i + 7, 'large'); ?>
+        </div>
+    <?php
     }
 
-    return $text . "\n";
-}
+    // *** Fifth column line ***
+    for ($i = 1; $i < 5; $i++) {
+        echo '<div class="ancestor_line" style="top: ' . ($column5_top + ($i * 240)) . 'px; left: ' . ($column5_left + 24) . 'px; height: 120px;"></div>';
+    }
+    // *** Fifth column split ***
+    for ($i = 1; $i < 9; $i++) {
+        echo '<div class="ancestor_split" style="top: ' . (($column5_top + 90) + ($i * 120)) . 'px; left: ' . ($column5_left + 32) . 'px; height: 60px;"></div>';
+    }
+    // *** Fifth column names ***
+    for ($i = 1; $i < 17; $i++) {
+    ?>
+        <div class="ancestorName <?= $data["sexe"][$i + 15] == 'M' ? 'box_man' : 'box_woman'; ?>" style="top: <?= (($column5_top + 125) + ($i * 60)); ?>px; left: <?= ($column5_left + 40); ?>px; height: 50px; width:200px;">
+            <?= $ancestorBox->ancestorBox($i + 15, 'medium'); ?>
+        </div>
+    <?php
+    }
+
+    // *** Last column line ***
+    for ($i = 1; $i < 9; $i++) {
+        echo '<div class="ancestor_line" style="top: ' . ($column6_top + ($i * 120)) . 'px; left: ' . ($column6_left + 24) . 'px; height: 60px;"></div>';
+    }
+    // *** Last column split ***
+    for ($i = 1; $i < 17; $i++) {
+        echo '<div class="ancestor_split" style="top: ' . (($column6_top + 45) + ($i * 60)) . 'px; left: ' . ($column6_left + 32) . 'px; height: 30px;"></div>';
+    }
+    // *** Last column names ***
+    for ($i = 1; $i < 33; $i++) {
+    ?>
+        <div class="ancestorName <?= $data["sexe"][$i + 31] == 'M' ? 'box_man' : 'box_woman'; ?>" style="top: <?= (($column6_top + 66) + ($i * 30)); ?>px; left: <?= ($column6_left + 40); ?>px; height:16px; width:200px;">
+            <?= $ancestorBox->ancestorBox($i + 31, 'small'); ?>
+        </div>
+    <?php } ?>
+</div>
+
+
+<?php /*
+<!-- TODO: Test 1 new layout -->
+<div class="container-xl my-4">
+    <?php
+    // Example: $generations = array of arrays, each subarray is a generation with person IDs
+    // You need to build $generations from your $data array
+    $generations = [
+        [1],           // Generation 1 (root)
+        [2, 3],         // Generation 2
+        [4, 5, 6, 7],     // Generation 3
+        [8, 9, 10, 11, 12, 13, 14, 15] // Generation 4
+    ];
+    foreach ($generations as $gen) {
+        $colWidth = intval(12 / count($gen)); // Bootstrap columns per ancestor
+    ?>
+        <div class="row justify-content-center mb-4">
+            <?php
+            foreach ($gen as $id) {
+                $sexClass = isset($data["sexe"][$id]) && $data["sexe"][$id] == 'M' ? 'box_man' : 'box_woman';
+            ?>
+                <div class="col-<?php echo $colWidth; ?> d-flex justify-content-center">
+                    <div class="card p-2 text-center <?php echo $sexClass; ?>" style="min-width:180px; max-width:220px;">
+                        <?php echo ancestor_chart_person($id, 'large'); ?>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    <?php } ?>
+</div>
+*/ ?>
+
+
+<?php /*
+<!-- TEST 2, including SVG lines -->
+<style>
+    .ancestor-box {
+        width: 120px;
+        height: 60px;
+        margin: 0 10px;
+        z-index: 3;
+    }
+</style>
+
+<div class="container position-relative" style="min-height: 500px;">
+    <!-- SVG overlay for lines -->
+    <svg class="ancestor-lines position-absolute top-0 start-0" width="100%" height="100%" style="pointer-events:none; z-index:2;">
+        <!-- Lines will be drawn here by JS -->
+    </svg>
+
+    <!-- Generation 1 -->
+    <div class="row justify-content-center" style="margin-top: 40px;">
+        <div class="col-4 d-flex justify-content-center">
+            <div class="card ancestor-box text-center" id="ancestor-1">Ancestor 1</div>
+        </div>
+    </div>
+
+    <!-- Generation 2 -->
+    <div class="row justify-content-center" style="margin-top: 80px;">
+        <div class="col-2 d-flex justify-content-center">
+            <div class="card ancestor-box text-center" id="ancestor-2">Ancestor 2</div>
+        </div>
+        <div class="col-2 d-flex justify-content-center">
+            <div class="card ancestor-box text-center" id="ancestor-3">Ancestor 3</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function getCenter(el) {
+            const rect = el.getBoundingClientRect();
+            const parentRect = el.offsetParent.getBoundingClientRect();
+            return {
+                x: rect.left - parentRect.left + rect.width / 2,
+                y: rect.top - parentRect.top + rect.height / 2
+            };
+        }
+
+        const svg = document.querySelector('.ancestor-lines');
+        svg.innerHTML = ''; // Clear previous lines
+
+        // Get elements
+        const parent = document.getElementById('ancestor-1');
+        const child1 = document.getElementById('ancestor-2');
+        const child2 = document.getElementById('ancestor-3');
+
+        // Get centers
+        const p = getCenter(parent);
+        const c1 = getCenter(child1);
+        const c2 = getCenter(child2);
+
+        // Draw lines
+        function drawLine(x1, y1, x2, y2) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('stroke', '#888');
+            line.setAttribute('stroke-width', 2);
+            svg.appendChild(line);
+        }
+
+        drawLine(p.x, p.y, c1.x, c1.y);
+        drawLine(p.x, p.y, c2.x, c2.y);
+    });
+</script>
+*/ ?>

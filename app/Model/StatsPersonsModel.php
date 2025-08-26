@@ -71,7 +71,7 @@ class StatsPersonsModel extends BaseModel
         $livingcalc = new CalculateDates;
 
         $persqr = $this->dbh->query("SELECT pers_sexe, pers_gedcomnumber, pers_birth_date, pers_death_date, pers_bapt_date, pers_fams
-        FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'");
+            FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'");
         while ($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
             if ($persstatDb->pers_sexe == "M") {
                 $statistics['countman']++;

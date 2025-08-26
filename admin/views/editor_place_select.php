@@ -1,10 +1,13 @@
 <?php
+
+/**
+ * Select place in editor.
+ */
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-
-echo '<h1 class="center">' . __('Select place') . '</h1>';
 
 $place_item = '';
 $form = '';
@@ -55,17 +58,6 @@ if (isset($_GET['form'])) {
 //	$place_item = $_GET['place_item'];
 //}
 
-echo '
-    <script>
-    function select_item(item){
-        /* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
-        window.opener.document.' . $form . '.' . $place_item . '.value=item;
-        top.close();
-        return false;
-    }
-    </script>
-';
-
 // *** Search for place ***
 $url_add = '';
 if (isset($url_form)) {
@@ -84,10 +76,6 @@ $quicksearch_place = '';
 if (isset($_POST['search_quicksearch_place'])) {
     $quicksearch_place = $safeTextDb->safe_text_db($_POST['search_quicksearch_place']);
 }
-echo '<form method="POST" action="index.php?page=editor_place_select' . $url_add . '" style="display : inline;">';
-echo '<input type="text" name="search_quicksearch_place" placeholder="' . __('Name') . '" value="' . $quicksearch_place . '" size="15">';
-echo ' <input type="submit" value="' . __('Search') . '">';
-echo '</form><br>';
 
 $search = '_%';
 if ($quicksearch_place) {
@@ -119,9 +107,33 @@ $query = "
 $stmt = $dbh->prepare($query);
 $stmt->execute($params);
 $result = $stmt;
+?>
 
+<h1 class="center"><?= __('Select place') ?></h1>
+
+<form method="POST" action="index.php?page=editor_place_select' . $url_add . '" style="display : inline;">
+    <div class="row mb-2">
+        <div class="col-md-4">
+            <input type="text" name="search_quicksearch_place" placeholder="<?= __('Name') ?>" value="<?= $quicksearch_place ?>" size="15" class="form-control form-control-sm">
+        </div>
+        <div class="col-md-3">
+            <input type="submit" value="<?= __('Search') ?>" class="btn btn-sm btn-secondary">
+        </div>
+</form><br>
+
+<?php
 while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
     //echo '<a href="" onClick=\'return select_item("'.$resultDb->place_order.'")\'>'.$resultDb->place_order.'</a><br>';
     // *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
     echo '<a href="" onClick=\'return select_item("' . str_replace("'", "&prime;", $resultDb->place_order) . '")\'>' . $resultDb->place_order . '</a><br>';
 }
+?>
+
+<script>
+    function select_item(item) {
+        /* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
+        window.opener.document.<?= $form ?>.<?= $place_item ?>.value = item;
+        top.close();
+        return false;
+    }
+</script>

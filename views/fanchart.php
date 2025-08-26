@@ -247,27 +247,39 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
 
     // *** Border colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#6E6E6E";
+    if (empty($rgb)) {
+        $rgb = "#6E6E6E";
+    }
     $grey = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Text colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#000000";
+    if (empty($rgb)) {
+        $rgb = "#000000";
+    }
     $color = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Background colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#EEEEEE";
+    if (empty($rgb)) {
+        $rgb = "#EEEEEE";
+    }
     $bgcolor = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** Man colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#B2DFEE";
+    if (empty($rgb)) {
+        //$rgb = "#B2DFEE";
+        $rgb = "#e0f0ff";
+    }
     $bgcolorM = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // *** wife colour ***
     $rgb = '';
-    if (empty($rgb)) $rgb = "#FFE4C4";
+    if (empty($rgb)) {
+        //$rgb = "#FFE4C4";
+        $rgb = "#ffe5e0";
+    }
     $bgcolorF = ImageColorAllocate($image, hexdec(substr($rgb, 1, 2)), hexdec(substr($rgb, 3, 2)), hexdec(substr($rgb, 5, 2)));
 
     // imagemap
@@ -602,26 +614,26 @@ $path_tmp = $processLinks->get_link($uri_path, 'fanchart', $tree_id, false, $var
             <!-- Fan style -->
             <?= __('Fan style'); ?><br>
             <div>
-                <input type="radio" name="fan_style" value="2" <?php if ($data["fan_style"] == 2) echo ' checked'; ?>><?= __('half'); ?><br>
-                <input type="radio" name="fan_style" value="3" <?php if ($data["fan_style"] == 3) echo ' checked'; ?>> 3/4<br>
-                <input type="radio" name="fan_style" value="4" <?php if ($data["fan_style"] == 4) echo ' checked'; ?>><?= __('full'); ?>
+                <input type="radio" name="fan_style" value="2" class="form-check-input" <?= $data["fan_style"] == 2 ? 'checked' : ''; ?>> <?= __('half'); ?><br>
+                <input type="radio" name="fan_style" value="3" class="form-check-input" <?= $data["fan_style"] == 3 ? 'checked' : ''; ?>> 3/4<br>
+                <input type="radio" name="fan_style" value="4" class="form-check-input" <?= $data["fan_style"] == 4 ? 'checked' : ''; ?>> <?= __('full'); ?>
             </div>
         </div>
         <div class="col">
             <!-- Nr. of generations -->
             <?= __('Generations'); ?>:<br>
-            <select name="chosengen">
+            <select name="chosengen" class="form-select form-select-sm">
                 <?php for ($i = 2; $i <= min(9, $maxgens); $i++) {; ?>
-                    <option value="<?= $i; ?>" <?php if ($i == $data["chosengen"]) echo ' selected'; ?>><?= $i; ?></option>
+                    <option value="<?= $i; ?>" <?= $i == $data["chosengen"] ? 'selected' : ''; ?>><?= $i; ?></option>
                 <?php } ?>
             </select><br>
         </div>
         <div class="col">
             <!-- Fontsize -->
             <?= __('Font size'); ?>:<br>
-            <select name="fontsize">
+            <select name="fontsize" class="form-select form-select-sm">
                 <?php for ($i = 5; $i <= 12; $i++) {; ?>
-                    <option value="<?= $i; ?>" <?php if ($i == $data["fontsize"]) echo ' selected'; ?>><?= $i; ?></option>
+                    <option value="<?= $i; ?>" <?= $i == $data["fontsize"] ? 'selected' : ''; ?>><?= $i; ?></option>
                 <?php } ?>
             </select><br>
         </div>
@@ -629,23 +641,26 @@ $path_tmp = $processLinks->get_link($uri_path, 'fanchart', $tree_id, false, $var
             <!-- Date display -->
             <?= __('Date display'); ?>:<br>
             <div>
-                <input type="radio" name="date_display" value="1" <?php if ($data["date_display"] == "1") echo ' checked'; ?>><?= __('No dates'); ?><br>
-                <input type="radio" name="date_display" value="2" <?php if ($data["date_display"] == "2") echo ' checked'; ?>><?= __('Years only'); ?><br>
-                <input type="radio" name="date_display" value="3" <?php if ($data["date_display"] == "3") echo ' checked'; ?>><?= __('Full dates'); ?>
+                <input type="radio" name="date_display" value="1" class="form-check-input" <?= $data["date_display"] == "1" ? 'checked' : ''; ?>> <?= __('No dates'); ?><br>
+                <input type="radio" name="date_display" value="2" class="form-check-input" <?= $data["date_display"] == "2" ? 'checked' : ''; ?>> <?= __('Years only'); ?><br>
+                <input type="radio" name="date_display" value="3" class="form-check-input" <?= $data["date_display"] == "3" ? 'checked' : ''; ?>> <?= __('Full dates'); ?>
             </div>
         </div>
         <div class="col">
             <!-- Fan width in percentages -->
             <?= __('Fan width:'); ?><br>
-            <input type="text" size="3" name="fan_width" value="<?= $menu_fan; ?>"> <b>%</b>
+            <div class="input-group mb-3">
+                <input type="text" size="3" name="fan_width" value="<?= $menu_fan; ?>" class="form-control form-control-sm"> <b></b>
+                <span class="input-group-text">%</span>
+            </div>
             <div style="font-size:10px;"><?= __('"auto" for automatic resizing for best display, or value between 50-300'); ?></div>
         </div>
         <div class="col">
             <!-- Background (for printing with IE) -->
             <?= __('Background'); ?>:<br>
             <div>
-                <input type="radio" name="printing" value="1" <?php if ($data["printing"] == 1) echo " checked"; ?>> <?= __('transparent'); ?><br>
-                <input type="radio" name="printing" value="2" <?php if ($data["printing"] == 2) echo " checked"; ?>> <?= __('white'); ?>
+                <input type="radio" name="printing" value="1" class="form-check-input" <?= $data["printing"] == 1 ? 'checked' : ''; ?>> <?= __('transparent'); ?><br>
+                <input type="radio" name="printing" value="2" class="form-check-input" <?= $data["printing"] == 2 ? 'checked' : ''; ?>> <?= __('white'); ?>
             </div>
         </div>
         <?php
@@ -653,7 +668,7 @@ $path_tmp = $processLinks->get_link($uri_path, 'fanchart', $tree_id, false, $var
         <div class="col">
             <div>
                 <input type="hidden" name="show_desc" value="0">
-                <input type="checkbox" name="show_desc" value="1" <?php if ($showdesc == "1") echo ' checked'; ?>> <span style="font-size:10px;"><?= __('descendants'); ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<?= __('under fanchart'); ?></span>
+                <input type="checkbox" name="show_desc" value="1" class="form-check-input" <?= $showdesc == "1" ? 'checked' : ''; ?>> <span style="font-size:10px;"><?= __('descendants'); ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<?= __('under fanchart'); ?></span>
             </div>
         </div>
         */

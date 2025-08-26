@@ -15,11 +15,20 @@ class ResizePicture
     // lookup which library is available or none
     public function create_thumbnail($folder, $file)
     {
-        $theight = 120; // default
+        /*
+        // Original values.
+        $theight = 120;
+        $twidth = 0;
+        */
+
+        // Aug. 2025: use larger thumbs.
+        $theight = 0;
+        $twidth = 400;
+
         if (extension_loaded('imagick')) {
-            return ($this->create_thumbnail_IM($folder, $file, $theight)); // true on success
+            return ($this->create_thumbnail_IM($folder, $file, $twidth, $theight)); // true on success
         } elseif ((extension_loaded('gd'))) {
-            return ($this->create_thumbnail_GD($folder, $file, $theight)); // true on success
+            return ($this->create_thumbnail_GD($folder, $file, $twidth, $theight)); // true on success
         } else {
             return (false); // no thumbnails
         }
@@ -30,6 +39,7 @@ class ResizePicture
     {
         $maxheight = 2160; // default : 1080;
         $maxwidth = 3840;  // default : 1920;
+
         if (extension_loaded('imagick')) {
             return ($this->resize_picture_IM($folder, $file, $maxwidth, $maxheight)); // true on success
         } elseif ((extension_loaded('gd'))) {
@@ -40,7 +50,7 @@ class ResizePicture
     }
 
     // Imagick library - returns true if a thumbnail has been created 
-    private function create_thumbnail_IM($folder, $file, $theight = 120)
+    private function create_thumbnail_IM($folder, $file, $twidth = 0, $theight = 120)
     {
         $is_ghostscript = false;   // ghostscript has to be installed for pdf handling
         $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling
@@ -59,8 +69,8 @@ class ResizePicture
         $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
         $imtype = strtoupper(substr($file, -3));
         if (Imagick::queryformats($imtype . '*')) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             if ($imtype == 'PDF') {
                 if ($is_ghostscript) {
                     $im = new \Imagick($pict_path_original . '[0]'); //first page of PDF (default: last page)
@@ -76,7 +86,7 @@ class ResizePicture
                 $im = new \Imagick($pict_path_original);
             }
             $im->setbackgroundcolor('rgb(255, 255, 255)');
-            $im->thumbnailImage(0, $theight);                     // automatic proportional scaling
+            $im->thumbnailImage($twidth, $theight);                     // automatic proportional scaling
             // add play_button to movie thumbnails
             if ($add_arrow && is_file(__DIR__ . '/../images/play_button.png')) {
                 $im2 = new \Imagick(__DIR__ . '/../images/play_button.png');
@@ -87,7 +97,7 @@ class ResizePicture
                 $im2->destroy();
             }
             $success = ($im->writeImage($pict_path_thumb));
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
             $im->clear();
             $im->destroy();
         }
@@ -95,7 +105,7 @@ class ResizePicture
     }
 
     // Imagic library - returns true on success or if picture already fits 
-    private function resize_picture_IM($folder, $file, $maxheight = 1080, $maxwidth = 1920)
+    private function resize_picture_IM($folder, $file, $maxwidth = 1920, $maxheight = 1080)
     {
         $success = true;
         $pict_path_original = $folder . $file;
@@ -167,7 +177,7 @@ class ResizePicture
     }
 
     // GD library - returns true if a thumbnail has been created
-    private function create_thumbnail_GD($folder, $file, $theight = 120)
+    private function create_thumbnail_GD($folder, $file, $twidth = 0, $theight = 120)
     {
         $pict_path_original = $folder . $file;
         $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';
@@ -180,41 +190,58 @@ class ResizePicture
         // $imtype = strtoupper(pathinfo($file, PATHINFO_EXTENSION));
         $success = false;
         list($width, $height) = getimagesize($pict_path_original);
+
+        /* Original code to resize thumbs with height = 120 px.
         if ($height == 0) {
             return ($success);
         }
         $twidth = floor($width * ($theight / $height));
+        */
+
+        if ($theight > 0) {
+            $twidth = floor($width * ($theight / $height));
+        } elseif ($twidth > 0 && $width > 0) {
+            $theight = floor($height * ($twidth / $width));
+        }
+        else{
+            //
+        }
+
+        // TODO: If code is used, no thumbnail is shown. For now: just create all thumbnails.
+        //if ($width <= $twidth && $height <= $theight) {
+        //    return (true); // no resizing needed
+        //}
 
         if (($imtype == 'JPEG' || $imtype == 'JPG') && $is_gdjpg) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             $create_thumb = imagecreatetruecolor($twidth, $theight);
             $source = imagecreatefromjpeg($pict_path_original);
             imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
             $success = imagejpeg($create_thumb, $pict_path_thumb);
             imagedestroy($create_thumb);
             imagedestroy($source);
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
         } elseif ($imtype == 'PNG' && $is_gdpng) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             $create_thumb = imagecreatetruecolor($twidth, $theight);
             $source = imagecreatefrompng($pict_path_original);
             imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
             $success = imagejpeg($create_thumb, $pict_path_thumb);
             imagedestroy($create_thumb);
             imagedestroy($source);
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
         } elseif ($imtype == 'GIF' && $is_gdgif) {
-            $fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
-            fclose($fhandle);
+            //$fhandle = fopen($folder . '.' . $file . '.no_thumb', "w"); // create no_thumb to mark corrupt files
+            //fclose($fhandle);
             $create_thumb = imagecreatetruecolor($twidth, $theight);
             $source = imagecreatefromgif($pict_path_original);
             imagecopyresized($create_thumb, $source, 0, 0, 0, 0, $twidth, $theight, $width, $height);
             $success = imagejpeg($create_thumb, $pict_path_thumb);
             imagedestroy($create_thumb);
             imagedestroy($source);
-            unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb   
+            //unlink($folder . '.' . $file . '.no_thumb');  // delete no_thumb
         }
         return ($success);
     }

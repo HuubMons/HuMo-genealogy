@@ -21,7 +21,8 @@ if (!defined('ADMIN_PAGE')) {
 </ul>
 
 <!-- Align content to the left -->
-<div style="float: left; background-color:white; height:500px; padding:10px;">
+<!-- <div style="float: left; background-color:white; width:100%; height:500px; padding:10px;"> -->
+<div style="float: left; background-color:white; width:100%; height:500px; padding:10px;">
 
     <!-- Remove page, only allow numeric values -->
     <?php if (isset($_GET['page_remove']) && is_numeric($_GET['page_remove'])) { ?>
@@ -33,8 +34,8 @@ if (!defined('ADMIN_PAGE')) {
                 <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="edit_cms_pages" value="cms_page">
                     <input type="hidden" name="page_id" value="<?= $_GET['page_remove']; ?>">
-                    <input type="submit" name="page_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                    <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                    <input type="submit" name="page_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+                    <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
                 </form>
             <?php } ?>
         </div>
@@ -55,8 +56,8 @@ Please disconnect the pages from this menu first.'); ?>
                 <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="cms_tab" value="menu">
                     <input type="hidden" name="menu_id" value="<?= $_GET['menu_remove']; ?>">
-                    <input type="submit" name="menu_remove2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-                    <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+                    <input type="submit" name="menu_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+                    <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
                 </form>
             <?php } ?>
         </div>
@@ -118,34 +119,50 @@ Please disconnect the pages from this menu first.'); ?>
                 }
                 ?>
 
+                <!-- TODO improve processing of variables -->
                 <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="cms_pages" value="cms_page">
                     <input type="hidden" name="page_id" value="<?= $edit_cms_pages['page_id']; ?>">
                     <input type="hidden" name="page_menu_id_old" value="<?= $edit_cms_pages['page_menu_id']; ?>">
-                    <input type="text" name="page_title" value="<?= $edit_cms_pages['page_title']; ?>" size=25>
-                    <select size="1" name="page_menu_id" aria-label="<?= __('Select menu'); ?>">
-                        <option value='0'>* <?= __('No menu selected'); ?> *</option>
-                        <option value="9999" <?php if ($edit_cms_pages['page_menu_id'] == '9999') echo ' selected'; ?>>* <?= __('Hide page in menu'); ?> *</option>
-                        <?php
-                        // TODO use $edit_cms_pages['menu_name'] instead of $menuItem->menu_name
-                        $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
-                        while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                        ?>
-                            <option value="<?= $menuDb->menu_id; ?>" <?= $menuDb->menu_id == $edit_cms_pages['page_menu_id'] ? 'selected' : ''; ?>>
-                                <?= $menuDb->menu_name; ?>
-                            </option>
-                        <?php } ?>
-                    </select>
 
-                    <input type="checkbox" name="page_status" <?= $edit_cms_pages['page_status'] ? 'checked' : ''; ?>><?= __('Published'); ?>
+                    <div class="row my-2">
+                        <div class="col-md-auto">
+                            <input type="text" name="page_title" value="<?= $edit_cms_pages['page_title']; ?>" size="25" class="form-control form-control-sm">
+                        </div>
 
-                    <?php if ($edit_cms_pages['select_page'] == 0) { ?>
-                        <input type="submit" name="add_page" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
-                    <?php } else { ?>
-                        <input type="submit" name="change_page" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
-                    <?php } ?>
+                        <div class="col-md-auto">
+                            <select size="1" name="page_menu_id" class="form-select form-select-sm" aria-label="<?= __('Select menu'); ?>">
+                                <option value='0'>* <?= __('No menu selected'); ?> *</option>
+                                <option value="9999" <?= $edit_cms_pages['page_menu_id'] == '9999' ? 'selected' : ''; ?>>* <?= __('Hide page in menu'); ?> *</option>
+                                <?php
+                                // TODO use $edit_cms_pages['menu_name'] instead of $menuItem->menu_name
+                                $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+                                while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                                ?>
+                                    <option value="<?= $menuDb->menu_id; ?>" <?= $menuDb->menu_id == $edit_cms_pages['page_menu_id'] ? 'selected' : ''; ?>>
+                                        <?= $menuDb->menu_name; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
 
-                    <?= __('Visitors counter'); ?>: <?= $edit_cms_pages['page_counter']; ?><br>
+                        <div class="col-md-auto">
+                            <input type="checkbox" name="page_status" class="form-check-input" <?= $edit_cms_pages['page_status'] ? 'checked' : ''; ?>> <?= __('Published'); ?>
+                        </div>
+
+                        <div class="col-md-auto">
+                            <?php if ($edit_cms_pages['select_page'] == 0) { ?>
+                                <input type="submit" name="add_page" value="<?= __('Add'); ?>" class="btn btn-sm btn-success">
+                            <?php } else { ?>
+                                <input type="submit" name="change_page" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                            <?php } ?>
+                        </div>
+
+                        <div class="col-md-auto">
+                            <?= __('Visitors counter'); ?>: <?= $edit_cms_pages['page_counter']; ?>
+                        </div>
+                    </div>
+
                     <textarea id="editor" name="page_text"><?= $edit_cms_pages['page_text']; ?></textarea>
                 </form>
             </div>
@@ -206,9 +223,8 @@ Please disconnect the pages from this menu first.'); ?>
 
         <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
             <input type="hidden" name="cms_tab" value="menu">
-            <div class="row">
-                <div class="col-2"></div>
-                <div class="col-8">
+            <div class="row mt-4">
+                <div class="col-4">
                     <input type="text" name="menu_name" value="" size="50" class="form-control form-control-sm">
                 </div>
                 <div class="col-auto">
@@ -286,10 +302,10 @@ Please disconnect the pages from this menu first.'); ?>
         }
     ?>
 
-        <p>
+        <!-- TODO: use <div> instead of <table> -->
         <form method="post" name="cms_setting_form" action="index.php?page=edit_cms_pages" style="display : inline;">
             <input type="hidden" name="cms_settings" value="1"> <!-- if Save button is not pressed but checkboxes changed! -->
-            <table class="table">
+            <table class="table table-light mt-2">
                 <thead class="table-primary">
                     <tr>
                         <th><?= __('CMS Settings'); ?></th>
@@ -319,10 +335,12 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                             $cms_images_path = substr($cms_images_path, 1);
                         }
                         ?>
-                        <input type="radio" value="yes" name="default_path" <?= $checked1; ?>><?= __('Use default picture path:'); ?><b>media/cms</b><br>
+                        <input type="radio" value="yes" name="default_path" class="form-check-input mb-2" <?= $checked1; ?>> <?= __('Use default picture path:'); ?><b>media/cms</b><br>
 
-                        <input type="radio" value="no" name="default_path" <?= $checked2; ?>>
-                        <input type="text" name="cms_images_path" value="<?= $cms_images_path; ?>" size=25>
+                        <input type="radio" value="no" name="default_path" id="default_path" class="form-check-input" <?= $checked2; ?>>
+                        <label class="form-check-label" for="default_path">
+                            <input type="text" name="cms_images_path" value="<?= $cms_images_path; ?>" size="25" class="form-control form-control-sm">
+                        </label>
                     </td>
                 </tr>
 
@@ -342,21 +360,25 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                             $checked1 = '';
                             $checked2 = ' checked';
                         }
-                        echo '<input type="radio" onChange="document.cms_setting_form.submit()" value="all" name="languages_choice" ' . $checked1 . '> ' . __('Use for all languages');
                         ?>
-                        <select size="1" name="main_page_cms_id" aria-label="<?= __('Select main page'); ?>">
-                            <option value=''>* <?= __('Standard main index'); ?> *</option>
-                            <?php
-                            $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
-                            while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
-                            ?>
-                                <option value="<?= $pageDb->page_id; ?>" <?= $pageDb->page_id == $main_page_cms_id ? 'selected' : ''; ?>>
-                                    <?= $pageDb->page_title; ?>
-                                </option>
-                            <?php } ?>
-                        </select><br><br>
-                        <input type="radio" onChange="document.cms_setting_form.submit()" value="specific" name="languages_choice" <?= $checked2; ?>> <?= __('Set per language'); ?>
+                        <input type="radio" onChange="document.cms_setting_form.submit()" value="all" name="languages_choice" id="languages_choice" class="form-check-input" <?= $checked1; ?>>
+                        <label class="form-check-label" for="languages_choice">
+                            <?= __('Use for all languages'); ?>
 
+                            <select size="1" name="main_page_cms_id" class="form-select form-select-sm" aria-label="<?= __('Select main page'); ?>">
+                                <option value=''>* <?= __('Standard main index'); ?> *</option>
+                                <?php
+                                $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
+                                while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
+                                ?>
+                                    <option value="<?= $pageDb->page_id; ?>" <?= $pageDb->page_id == $main_page_cms_id ? 'selected' : ''; ?>>
+                                        <?= $pageDb->page_title; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </label><br><br>
+
+                        <input type="radio" onChange="document.cms_setting_form.submit()" value="specific" name="languages_choice" class="form-check-input" <?= $checked2; ?>> <?= __('Set per language'); ?>
                         <?php if ($checked1 === '') { ?>
                             <br>
                             <table style="border:none">
@@ -381,10 +403,10 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
 
                                     <tr>
                                         <td>
-                                            <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"><?= $language["name"]; ?>
+                                            <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"> <?= $language["name"]; ?>
                                         </td>
                                         <td>
-                                            <select size="1" name="main_page_cms_id_<?= $language_file[$i]; ?>" aria-label="<?= __('Select main page'); ?>">
+                                            <select size="1" name="main_page_cms_id_<?= $language_file[$i]; ?>" class="form-select form-select-sm" aria-label="<?= __('Select main page'); ?>">
                                                 <option value=''>* <?= __('Standard main index'); ?> *</option>
                                                 <?php
                                                 $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");

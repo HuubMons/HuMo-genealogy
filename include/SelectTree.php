@@ -17,9 +17,7 @@ class SelectTree
         $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
         $tree_search_result = $dbh->query($tree_search_sql);
 ?>
-        <form method="POST" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $page; ?>">
-
+        <form method="POST" action="index.php?page=<?= $page; ?>" style="display : inline;">
             <?php if ($menu_tab) { ?>
                 <input type="hidden" name="menu_tab" value="<?= $menu_tab; ?>">
             <?php } ?>
@@ -29,7 +27,7 @@ class SelectTree
                 <?php
                 while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
                     $edit_tree_array = explode(";", $group_edit_trees);
-                    // *** Administrator can always edit in all family trees ***
+                    // *** Administrator always can edit in all family trees ***
                     if ($group_administrator == 'j' || in_array($tree_searchDb->tree_id, $edit_tree_array)) {
                         $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
                 ?>

@@ -20,16 +20,12 @@ You will be notified of results as the action is completed'); ?>
 
 <br><br>
 
-<form method="post" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="tree">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-    <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
     <input type="submit" name="auto_merge" value="<?= __('Start automatic merge'); ?>" class="btn btn-sm btn-secondary">
 </form>
 
-<form method="post" action="index.php" style="display : inline;">
-    <input type="hidden" name="page" value="tree">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">
     <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-    <input type="hidden" name="menu_admin" value="<?= $trees['menu_tab']; ?>">
     <input type="submit" value="<?= __('Back to main merge menu'); ?>" class="btn btn-sm btn-success ms-5   ">
 </form>

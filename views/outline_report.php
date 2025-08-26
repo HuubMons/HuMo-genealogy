@@ -29,10 +29,10 @@ echo $data["descendant_header"];
 
         <?php if ($data["show_details"] == true) { ?>
             <input type="hidden" name="show_details" value="0">
-            <input class="btn btn-sm btn-success" type="Submit" name="submit" value="<?= __('Hide full details'); ?>">
+            <input type="Submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Hide full details'); ?>">
         <?php } else { ?>
             <input type="hidden" name="show_details" value="1">
-            <input class="btn btn-sm btn-success" type="Submit" name="submit" value="<?= __('Show full details'); ?>">
+            <input type="Submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Show full details'); ?>">
         <?php } ?>
     </form>
 
@@ -44,10 +44,10 @@ echo $data["descendant_header"];
             <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
             <?php if ($data["show_date"] == true) { ?>
                 <input type="hidden" name="show_date" value="0">
-                <input class="btn btn-sm btn-success" type="Submit" name="submit" value="<?= __('Hide dates'); ?>">
+                <input type="Submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Hide dates'); ?>">
             <?php } else { ?>
                 <input type="hidden" name="show_date" value="1">
-                <input class="btn btn-sm btn-success" type="Submit" name="submit" value="<?= __('Show dates'); ?>">
+                <input type="Submit" class="btn btn-sm btn-success" name="submit" value="<?= __('Show dates'); ?>">
             <?php } ?>
         </form>
 
@@ -107,7 +107,7 @@ echo $data["descendant_header"];
                 <input type="hidden" name="dates_behind_names" value="<?= $data["dates_behind_names"]; ?>">
                 <input type="hidden" name="show_date" value="<?= $data["show_date"]; ?>">
                 <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('PDF (Portrait)'); ?>">
+                <input type="Submit" class="btn btn-sm btn-info" name="submit" value="<?= __('PDF (Portrait)'); ?>">
             </form>
 
             <!-- Show pdf button portrait -->
@@ -119,7 +119,7 @@ echo $data["descendant_header"];
                 <input type="hidden" name="dates_behind_names" value="<?= $data["dates_behind_names"]; ?>">
                 <input type="hidden" name="show_date" value="<?= $data["show_date"]; ?>">
                 <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                <input class="btn btn-sm btn-info" type="Submit" name="submit" value="<?= __('PDF (Landscape)'); ?>">
+                <input type="Submit" class="btn btn-sm btn-info" name="submit" value="<?= __('PDF (Landscape)'); ?>">
             </form>
     <?php
         }

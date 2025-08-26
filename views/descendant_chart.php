@@ -254,11 +254,11 @@ for ($w = 0; $w < count($genarray); $w++) {
     $sexe_colour = '';
     $backgr_col = "#FFFFFF";
     if ($genarray[$w]["sex"] == "v") {
-        $sexe_colour = ' ancestor_woman';
-        $backgr_col = "#FBDEC0";     //"#f8bdf1";
+        $sexe_colour = ' box_woman';
+        //$backgr_col = "#FBDEC0";     //"#f8bdf1";
     } else {
-        $sexe_colour = ' ancestor_man';
-        $backgr_col =  "#C0F9FC";      //"#bbf0ff";
+        $sexe_colour = ' box_man';
+        //$backgr_col =  "#C0F9FC";      //"#bbf0ff";
     }
 
     // *** Start person class and calculate privacy ***
@@ -417,11 +417,11 @@ for ($w = 0; $w < count($genarray); $w++) {
                         $extra_popup_text .= __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
                     } else {
                         if ($woman->pers_birth_date || $woman->pers_birth_place) {
-                            $extra_popup_text .= __('born') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
+                            $extra_popup_text .= ' '.__('born') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
                         }
 
                         if ($woman->pers_death_date || $woman->pers_death_place) {
-                            $extra_popup_text .= __('died ') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
+                            $extra_popup_text .= ' '.__('died') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
                         }
                     }
                 } else {

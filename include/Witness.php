@@ -157,7 +157,7 @@ class Witness
         $text = '';
         if ($gedcomnr) {
             $source_prep = $dbh->prepare("SELECT * FROM humo_events
-            WHERE event_tree_id=:event_tree_id AND event_connect_id2=:event_connect_id2 AND event_kind='ASSO'
+                WHERE event_tree_id=:event_tree_id AND event_connect_id2=:event_connect_id2 AND event_kind='ASSO'
             ORDER BY event_kind
         ");
             $source_prep->bindParam(':event_tree_id', $tree_id);

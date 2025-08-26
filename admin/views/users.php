@@ -13,11 +13,10 @@ $user = $dbh->query($usersql);
 <?php if (isset($_GET['remove_user'])) { ?>
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to delete this user?'); ?></strong>
-        <form method="post" action="index.php" style="display : inline;">
-            <input type="hidden" name="page" value="<?= $_GET['page']; ?>">
+        <form method="post" action="index.php?page=users" style="display : inline;">
             <input type="hidden" name="remove_user" value="<?= $_GET['remove_user']; ?>">
-            <input type="submit" name="remove_user2" value="<?= __('Yes'); ?>" style="color : red; font-weight: bold;">
-            <input type="submit" name="submit" value="<?= __('No'); ?>" style="color : blue; font-weight: bold;">
+            <input type="submit" name="remove_user2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php } ?>
@@ -42,11 +41,11 @@ $user = $dbh->query($usersql);
     </div>
 <?php } ?>
 
-<form method="POST" action="index.php">
-    <input type="hidden" name="page" value="<?= $page; ?>">
-    <table class="table table-bordered">
+<form method="POST" action="index.php?page=users">
+    <table class="table table-light table-bordered">
         <thead class="table-primary">
             <tr>
+                <th><img src="images/button_drop.png" border="0" alt="remove person"></th>
                 <th><?= __('User'); ?></th>
                 <th><?= __('E-mail address'); ?></th>
                 <th><?= __('Change password'); ?></th>
@@ -66,18 +65,18 @@ $user = $dbh->query($usersql);
                         <a href="index.php?page=users&remove_user=<?= $userDb->user_id; ?>">
                             <img src="images/button_drop.png" border="0" alt="remove person">
                         </a>
-                    <?php } else { ?>
-                        &nbsp;&nbsp;
-                    <?php
-                    }
+                    <?php } ?>
+                </td>
 
+                <td>
+                    <?php
                     // *** It's not allowed to change username "guest" (gast = backwards compatibility) ***
                     if ($userDb->user_name == 'gast' || $userDb->user_name == 'guest') {
                     ?>
                         <input type="hidden" name="<?= $userDb->user_id; ?>username" value="<?= $userDb->user_name; ?>">
                         <b><?= $userDb->user_name; ?></b>
                     <?php } else { ?>
-                        <input type="text" name="<?= $userDb->user_id; ?>username" value="<?= $userDb->user_name; ?>" size="15">
+                        <input type="text" name="<?= $userDb->user_id; ?>username" value="<?= $userDb->user_name; ?>" size="15" class="form-control form-control-sm">
                     <?php } ?>
                 </td>
 
@@ -86,8 +85,8 @@ $user = $dbh->query($usersql);
                     <td><input type="hidden" name="<?= $userDb->user_id; ?>usermail" value=""><br></td>
                     <td><b><?= __('no need to log in'); ?></b></td>
                 <?php } else { ?>
-                    <td><input type="text" name="<?= $userDb->user_id; ?>usermail" value="<?= $userDb->user_mail; ?>" size="20"></td>
-                    <td><input type="password" name="<?= $userDb->user_id; ?>password" size="15"></td>
+                    <td><input type="text" name="<?= $userDb->user_id; ?>usermail" value="<?= $userDb->user_mail; ?>" size="20" class="form-control form-control-sm"></td>
+                    <td><input type="password" name="<?= $userDb->user_id; ?>password" size="15" class="form-control form-control-sm"></td>
                 <?php } ?>
 
                 <!-- User groups. 1st user is always admin. -->
@@ -99,7 +98,7 @@ $user = $dbh->query($usersql);
                     $groupresult = $dbh->query($groupsql);
                 ?>
                     <td>
-                        <select size="1" name="<?= $userDb->user_id; ?>group_id">
+                        <select size="1" name="<?= $userDb->user_id; ?>group_id" class="form-select form-select-sm">
                             <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
                                 <option value="<?= $groupDb->group_id; ?>" <?= $userDb->user_group_id == $groupDb->group_id ? 'selected' : ''; ?>>
                                     <?= $groupDb->group_name; ?>
@@ -166,12 +165,13 @@ $user = $dbh->query($usersql);
         ?>
         <!-- Add user -->
         <tr class="table-secondary">
-            <td><input type="text" name="add_username" size="15"></td>
-            <td><input type="text" name="add_usermail" size="20"></td>
-            <td><input type="password" name="add_password" size="15"></td>
+            <td></td>
+            <td><input type="text" name="add_username" size="15" class="form-control form-control-sm"></td>
+            <td><input type="text" name="add_usermail" size="20" class="form-control form-control-sm"></td>
+            <td><input type="password" name="add_password" size="15" class="form-control form-control-sm"></td>
             <td>
                 <!-- Select group for new user, default=family group. -->
-                <select size='1' name='add_group_id'>
+                <select size="1" name="add_group_id" class="form-select form-select-sm">
                     <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
                         <option value="<?= $groupDb->group_id; ?>" <?= $groupDb->group_id == '2' ? 'selected' : ''; ?>><?= $groupDb->group_name; ?></option>
                     <?php } ?>

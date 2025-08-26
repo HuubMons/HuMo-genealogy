@@ -170,20 +170,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                     $idsearch = false; // flag for search with ID;
                     if ($search_quicksearch != '') {
-                        // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-                        $search_quicksearch = str_replace(' ', '%', $search_quicksearch);
-
-                        // *** In case someone entered "Mons, Huub" using a comma ***
-                        $search_quicksearch = str_replace(',', '', $search_quicksearch);
-
-                        $person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
-                            WHERE pers_tree_id='" . $tree_id . "'
-                            AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
-                            OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch%' 
-                            OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
-                            OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
-                            ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
-                        $person_result = $dbh->query($person_qry);
+                        $person_result = $db_functions->get_quicksearch_results($tree_id, $search_quicksearch);
                     } elseif ($search_id != '') {
                         // TODO: check this. Input is now validated GEDCOM number.
                         if (substr($search_id, 0, 1) != "i" and substr($search_id, 0, 1) != "I") {
@@ -239,16 +226,12 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <div class="col-md-4"><?= __('Choose type of export'); ?></div>
                 <div class="col-md-8">
                     <input type="radio" value="descendant" name="kind_tree" <?= (isset($_POST['kind_tree']) && $_POST['kind_tree'] == "ancestor") ? '' : 'checked'; ?> class="form-check-input"> <?= __('Descendants'); ?><br>
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_spouses" value="1" <?= isset($_POST['kind_tree']) and !isset($_POST['desc_spouses']) ? '' : 'checked'; ?> class="form-check-input"> <?= __('Include spouses of descendants'); ?><br>
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="desc_sp_parents" value="1" <?= isset($_POST['desc_sp_parents']) ? 'checked' : ''; ?> class="form-check-input"> <?= __('Include parents of spouses'); ?><br>
+                    <input type="checkbox" name="desc_spouses" value="1" <?= isset($_POST['kind_tree']) and !isset($_POST['desc_spouses']) ? '' : 'checked'; ?> class="form-check-input ms-4"> <?= __('Include spouses of descendants'); ?><br>
+                    <input type="checkbox" name="desc_sp_parents" value="1" <?= isset($_POST['desc_sp_parents']) ? 'checked' : ''; ?> class="form-check-input ms-4"> <?= __('Include parents of spouses'); ?><br>
 
                     <input type="radio" value="ancestor" name="kind_tree" <?= isset($_POST['kind_tree']) and $_POST['kind_tree'] == "ancestor" ? 'checked' : ''; ?> class="form-check-input"> <?= __('Ancestors'); ?><br>
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_spouses" value="1" <?= isset($_POST['kind_tree']) and !isset($_POST['ances_spouses']) ? '' : 'checked'; ?> class="form-check-input"> <?= __('Include spouse(s) of base person'); ?><br>
-
-                    &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" <?= isset($_POST['ances_sibbl']) ? 'checked' : ''; ?> class="form-check-input"> <?= __('Include sibblings of ancestors and base person'); ?>
+                    <input type="checkbox" name="ances_spouses" value="1" <?= isset($_POST['kind_tree']) and !isset($_POST['ances_spouses']) ? '' : 'checked'; ?> class="form-check-input ms-4"> <?= __('Include spouse(s) of base person'); ?><br>
+                    <input type="checkbox" name="ances_sibbl" value="1" <?= isset($_POST['ances_sibbl']) ? 'checked' : ''; ?> class="form-check-input ms-4"> <?= __('Include sibblings of ancestors and base person'); ?>
                 </div>
             </div>
         <?php } ?>

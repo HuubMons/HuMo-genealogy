@@ -64,19 +64,19 @@ table.ancestor_sheet td {
     padding-bottom: 5px;
 }
 
-table.ancestor_sheet td.kw-small {
+.kw-small {
     font-size: 10px;
 }
 
-table.ancestor_sheet td.kw-medium {
+.kw-medium {
     font-size: 12px;
 }
 
-table.ancestor_sheet td.kw-bigger {
+.kw-bigger {
     font-size: 14px;
 }
 
-table.ancestor_sheet td.kw-big {
+.kw-big {
     font-size: 16px;
 }
 

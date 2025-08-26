@@ -178,10 +178,6 @@ include_once(__DIR__ . "/../languages/gettext.php");
 // *** Load ***
 Load_default_textdomain();
 
-// *** TODO: Only in use to get $rtlmarker to show a sddm popup. Will be replaced with bootstrap popup ***
-$directonMarkers = new Genealogy\Include\DirectionMarkers($language["dir"]);
-$rtlmarker = $directonMarkers->rtlmarker;
-
 //TODO remove PHP-MySQL login from admin pages, only login in front main page?
 // *** Process login form ***
 $fault = false;
@@ -400,10 +396,6 @@ if (file_exists('../media/favicon.ico')) {
     <?php if ($popup == false) { ?>
         <link href="admin_print.css" rel="stylesheet" type="text/css" media="print">
     <?php } ?>
-
-    <!-- Pop-up menu -->
-    <link rel="stylesheet" type="text/css" href="../include/popup_menu/popup_menu.css">
-    <script src="../include/popup_menu/popup_menu.js"></script>
 </head>
 
 <?php
@@ -801,7 +793,7 @@ if ($popup == false) {
         } elseif ($page === 'install_update') {
             include_once(__DIR__ . "/update/install_update.php");
         } elseif ($page === 'update') {
-            include_once(__DIR__ . "/include/update.php");
+            include_once(__DIR__ . "/views/update.php");
         } elseif ($page === 'gedcom_import2') {
             $controllerObj = new Genealogy\Admin\Controller\TreesController($admin_config);
             $trees = $controllerObj->detail($selected_language);

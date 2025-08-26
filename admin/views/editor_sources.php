@@ -35,9 +35,9 @@ $nr_sources = count($connect_sql);
 <b><?= __('Source'); ?> - <?= $editSources['source_header']; ?></b>
 
 <form method="POST" action="<?= $phpself2; ?>">
-    <input type="hidden" name="page" value="<?= $page; ?>">
     <input type="submit" name="submit" title="submit" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
 
+    <!-- TODO check this. Allready added in $phpself2 link -->
     <?php if ($event_person) { ?>
         <input type="hidden" name="event_person" value="1">
     <?php } ?>
@@ -354,13 +354,15 @@ $nr_sources = count($connect_sql);
 <?php if (!isset($_POST['connect_add'])) { ?>
     <h3><?= __('Add'); ?></h3>
     <form method="POST" action="<?= $phpself2; ?>">
-        <input type="hidden" name="page" value="<?= $page; ?>">
+
+        <!-- TODO check this. Allready added in $phpself2 link -->
         <?php if ($event_person) { ?>
             <input type="hidden" name="event_person" value="1">
         <?php } ?>
         <?php if ($event_family) { ?>
             <input type="hidden" name="event_family" value="1">
         <?php } ?>
+
         <input type="hidden" name="connect_kind" value="<?= $editSources['connect_kind']; ?>">
         <input type="hidden" name="connect_sub_kind" value="<?= $editSources['connect_sub_kind']; ?>">
         <input type="hidden" name="connect_connect_id" value="<?= $editSources['connect_connect_id']; ?>">

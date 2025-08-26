@@ -42,7 +42,7 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
         <div class="row mb-2">
             <div class="col-2">
                 <div class="form-check">
-                    <input type="Checkbox" name="select_marriage_notice" value="1" <?php if ($data["select_marriage_notice"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <input type="Checkbox" name="select_marriage_notice" value="1" <?= $data["select_marriage_notice"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                     <span class="place_index_selected" style="float:none;"><?= __('&infin;'); ?></span>
                     <?= __('Marriage notice'); ?></span>
                 </div>
@@ -50,7 +50,7 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
 
             <div class="col-2">
                 <div class="form-check">
-                    <input type="Checkbox" name="select_marriage" value="1" <?php if ($data["select_marriage"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <input type="Checkbox" name="select_marriage" value="1" <?= $data["select_marriage"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                     <span class="place_index_selected" style="float:none;"><?= __('X'); ?></span>
                     <?= __('Marriage'); ?></span>
                 </div>
@@ -58,7 +58,7 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
 
             <div class="col-2">
                 <div class="form-check">
-                    <input type="Checkbox" name="select_marriage_notice_religious" value="1" <?php if ($data["select_marriage_notice_religious"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <input type="Checkbox" name="select_marriage_notice_religious" value="1" <?= $data["select_marriage_notice_religious"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                     <span class="place_index_selected" style="float:none;"><?= __('o'); ?></span>
                     <?= __('Married notice (religious)'); ?></span>
                 </div>
@@ -66,7 +66,7 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
 
             <div class="col-2">
                 <div class="form-check">
-                    <input type="Checkbox" name="select_marriage_religious" value="1" <?php if ($data["select_marriage_religious"] == '1') echo ' checked'; ?> class="form-check-input">
+                    <input type="Checkbox" name="select_marriage_religious" value="1" <?= $data["select_marriage_religious"] == '1' ? 'checked' : ''; ?> class="form-check-input">
                     <span class="place_index_selected" style="float:none;"><?= __('x'); ?></span>
                     <?= __('Married (religious)'); ?></span><br clear="all">
                 </div>
@@ -173,10 +173,10 @@ if ($person_result->rowCount() == 0) {
     <form method="POST" action="<?= $uri_path_string . $button_line; ?>" style="display : inline;">
         <?php if ($list_expanded == true) { ?>
             <input type="hidden" name="list_expanded" value="0">
-            <input type="submit" name="submit" value="<?= __('Concise view'); ?>">
+            <input type="submit" name="submit" value="<?= __('Concise view'); ?>" class="btn btn-sm btn-secondary">
         <?php } else { ?>
             <input type="hidden" name="list_expanded" value="1">
-            <input type="submit" name="submit" value="<?= __('Expanded view'); ?>">
+            <input type="submit" name="submit" value="<?= __('Expanded view'); ?>" class="btn btn-sm btn-secondary">
         <?php } ?>
     </form>
 

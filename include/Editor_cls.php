@@ -113,7 +113,7 @@ class Editor_cls
         if ($humo_option['admin_hebnight'] == "y" and $hebnight != 'n') {
         ?>
             <span style="white-space: nowrap">
-                <input type="checkbox" id="<?= $hebvar; ?>" value="y" name="<?= $hebvar; ?>" <?= $hebnight == 'y' ? 'checked' : ''; ?>> <label for="<?= $hebvar; ?>"><?= __('After nightfall'); ?></label>
+                <input type="checkbox" id="<?= $hebvar; ?>" value="y" name="<?= $hebvar; ?>" class="form-check-input" <?= $hebnight == 'y' ? 'checked' : ''; ?>> <label for="<?= $hebvar; ?>"><?= __('After nightfall'); ?></label>
             </span>
 <?php
         }
