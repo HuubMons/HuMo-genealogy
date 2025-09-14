@@ -50,8 +50,8 @@ class RegisterModel extends BaseModel
             $usersql = 'SELECT * FROM humo_users WHERE user_name = :user_name';
             $stmt = $this->dbh->prepare($usersql);
             $stmt->execute([':user_name' => $_POST["register_name"]]);
-            $user = $this->dbh->query($usersql);
-            $userDb = $user->fetch(PDO::FETCH_OBJ);
+            $userDb = $stmt->fetch(PDO::FETCH_OBJ);
+
             if (isset($userDb->user_id) || strtolower($_POST["register_name"]) === "admin") {
                 $register["error"] = __('ERROR: username already exists');
             }
