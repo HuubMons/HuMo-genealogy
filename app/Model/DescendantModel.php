@@ -587,7 +587,7 @@ class DescendantModel extends FamilyModel
         } // End of single person
 
         // *** If source footnotes are selected, show them here ***
-        if (isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
+        if ((!isset($dna) OR $dna =='') AND isset($_SESSION['save_source_presentation']) && $_SESSION['save_source_presentation'] == 'footnote') {
             echo $showSourcesFootnotes->show_sources_footnotes();
         }
 
