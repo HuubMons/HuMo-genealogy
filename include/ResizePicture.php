@@ -54,8 +54,11 @@ class ResizePicture
     {
         $is_ghostscript = false;   // ghostscript has to be installed for pdf handling
         $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling
+
+        $no_shell_exec = !function_exists('shell_exec') || in_array('shell_exec', array_map('trim', explode(',', ini_get('disable_functions'))));
+
         $no_windows = (strtolower(substr(PHP_OS, 0, 3)) !== 'win');
-        if ($no_windows) {
+        if ($no_windows && !$no_shell_exec) {
             if (trim(shell_exec('type -P gs'))) {
                 $is_ghostscript = true;
             }
