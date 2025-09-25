@@ -26,7 +26,11 @@ class Migration20
 
         //$start_time = time();
 
-        // TODO also change installation table.
+        // *** Empty location_status. Field will be used for geolocation status ***
+        $this->dbh->exec("UPDATE humo_location SET location_status = ''");
+
+        $this->dbh->exec("ALTER TABLE humo_events MODIFY event_date VARCHAR(40) CHARACTER SET utf8 NULL DEFAULT NULL;");
+
         $this->dbh->exec("
             ALTER TABLE humo_events
             ADD COLUMN event_person_id INT UNSIGNED NULL after event_order,
@@ -38,8 +42,8 @@ class Migration20
             ADD COLUMN event_time VARCHAR(25) NULL after event_date_day,
             ADD COLUMN event_authority TEXT NULL after event_event_extra,
             ADD COLUMN event_stillborn VARCHAR(1) DEFAULT 'n' AFTER event_authority,
-            ADD COLUMN event_death_cause VARCHAR(255) DEFAULT NULL AFTER event_stillborn,
-            ADD COLUMN event_cremation VARCHAR(1) DEFAULT NULL AFTER event_death_cause,
+            ADD COLUMN event_cause VARCHAR(255) DEFAULT NULL AFTER event_stillborn,
+            ADD COLUMN event_cremation VARCHAR(1) DEFAULT NULL AFTER event_cause,
             ADD COLUMN event_end_date VARCHAR(35) DEFAULT NULL AFTER event_cremation
         ");
 
@@ -69,15 +73,18 @@ class Migration20
             OR (pers_birth_time IS NOT NULL AND pers_birth_time != '')
             OR (pers_stillborn IS NOT NULL AND pers_stillborn != '')
             ");
+
+            $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_birth_date_hebnight");
         } else {
             $this->dbh->exec("
-            INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_time, event_place, event_text, event_new_datetime)
-            SELECT pers_tree_id, pers_gedcomnumber, 'person', 'birth', pers_birth_date, pers_birth_time, pers_birth_place, pers_birth_text, '" . $event_new_datetime . "'
+            INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_time, event_place, event_text, event_stillborn, event_new_datetime)
+            SELECT pers_tree_id, pers_gedcomnumber, 'person', 'birth', pers_birth_date, pers_birth_time, pers_birth_place, pers_birth_text, pers_stillborn, '" . $event_new_datetime . "'
             FROM humo_persons
             WHERE (pers_birth_date IS NOT NULL AND pers_birth_date != '')
             OR (pers_birth_place IS NOT NULL AND pers_birth_place != '')
             OR (pers_birth_text IS NOT NULL AND pers_birth_text != '')
             OR (pers_birth_time IS NOT NULL AND pers_birth_time != '')
+            OR (pers_stillborn IS NOT NULL AND pers_stillborn != '')
             ");
         }
 
@@ -100,8 +107,8 @@ class Migration20
 
         if ($humo_option['admin_hebnight'] == "y") {
             $this->dbh->exec("
-            INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_time, event_place, event_text, event_date_hebnight, event_death_cause, event_new_datetime)
-            SELECT pers_tree_id, pers_gedcomnumber, 'person', 'death', pers_death_date, pers_death_time, pers_death_place, pers_death_text, pers_death_date_hebnight, pers_death_cause, '" . $event_new_datetime . "'
+            INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_time, event_place, event_text, event_date_hebnight, event_cause, event_pers_age, event_new_datetime)
+            SELECT pers_tree_id, pers_gedcomnumber, 'person', 'death', pers_death_date, pers_death_time, pers_death_place, pers_death_text, pers_death_date_hebnight, pers_death_cause, pers_death_age, '" . $event_new_datetime . "'
             FROM humo_persons
             WHERE (pers_death_date IS NOT NULL AND pers_death_date != '')
             OR (pers_death_place IS NOT NULL AND pers_death_place != '')
@@ -109,10 +116,12 @@ class Migration20
             OR (pers_death_time IS NOT NULL AND pers_death_time != '')
             OR (pers_death_age IS NOT NULL AND pers_death_age != '')
             ");
+
+            $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_death_date_hebnight");
         } else {
             $this->dbh->exec("
-            INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_time, event_place, event_text, event_death_cause, event_new_datetime)
-            SELECT pers_tree_id, pers_gedcomnumber, 'person', 'death', pers_death_date, pers_death_time, pers_death_place, pers_death_text, pers_death_cause, '" . $event_new_datetime . "'
+            INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_time, event_place, event_text, event_cause, event_pers_age, event_new_datetime)
+            SELECT pers_tree_id, pers_gedcomnumber, 'person', 'death', pers_death_date, pers_death_time, pers_death_place, pers_death_text, pers_death_cause, pers_death_age, '" . $event_new_datetime . "'
             FROM humo_persons
             WHERE (pers_death_date IS NOT NULL AND pers_death_date != '')
             OR (pers_death_place IS NOT NULL AND pers_death_place != '')
@@ -135,6 +144,8 @@ class Migration20
             OR (pers_buried_place IS NOT NULL AND pers_buried_place != '')
             OR (pers_buried_text IS NOT NULL AND pers_buried_text != '')
             ");
+
+            $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_buried_date_hebnight");
         } else {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_place, event_text, event_cremation, event_new_datetime)
@@ -167,12 +178,14 @@ class Migration20
         if ($humo_option['admin_hebnight'] == "y") {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_heb_night, event_place, event_text, event_new_datetime)
-            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marriage_notice', fam_marr_notice_date, fam_marr_heb_night, fam_marr_notice_place, fam_marr_notice_text, '" . $event_new_datetime . "'
+            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marriage_notice', fam_marr_notice_date, fam_marr_notice_date_hebnight, fam_marr_notice_place, fam_marr_notice_text, '" . $event_new_datetime . "'
             FROM humo_families
             WHERE (fam_marr_notice_date IS NOT NULL AND fam_marr_notice_date != '')
             OR (fam_marr_notice_place IS NOT NULL AND fam_marr_notice_place != '')
             OR (fam_marr_notice_text IS NOT NULL AND fam_marr_notice_text != '')
             ");
+
+            $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_marr_notice_date_hebnight");
         } else {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_place, event_text, event_new_datetime)
@@ -191,13 +204,15 @@ class Migration20
         if ($humo_option['admin_hebnight'] == "y") {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_heb_night, event_place, event_text, event_authority, event_new_datetime)
-            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marriage', fam_marr_date, fam_marr_heb_night, fam_marr_place, fam_marr_text, fam_marr_authority, '" . $event_new_datetime . "'
+            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marriage', fam_marr_date, fam_marr_date_hebnight, fam_marr_place, fam_marr_text, fam_marr_authority, '" . $event_new_datetime . "'
             FROM humo_families
             WHERE (fam_marr_date IS NOT NULL AND fam_marr_date != '')
             OR (fam_marr_place IS NOT NULL AND fam_marr_place != '')
             OR (fam_marr_text IS NOT NULL AND fam_marr_text != '')
             OR (fam_marr_authority IS NOT NULL AND fam_marr_authority != '')
         ");
+
+            $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_marr_date_hebnight");
         } else {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_place, event_text, event_authority, event_new_datetime)
@@ -217,12 +232,14 @@ class Migration20
         if ($humo_option['admin_hebnight'] == "y") {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_heb_night, event_place, event_text, event_new_datetime)
-            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marr_church_notice', fam_marr_church_notice_date, fam_marr_church_notice_heb_night, fam_marr_church_notice_place, fam_marr_church_notice_text, '" . $event_new_datetime . "'
+            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marr_church_notice', fam_marr_church_notice_date, fam_marr_church_notice_date_hebnight, fam_marr_church_notice_place, fam_marr_church_notice_text, '" . $event_new_datetime . "'
             FROM humo_families
             WHERE (fam_marr_church_notice_date IS NOT NULL AND fam_marr_church_notice_date != '')
             OR (fam_marr_church_notice_place IS NOT NULL AND fam_marr_church_notice_place != '')
             OR (fam_marr_church_notice_text IS NOT NULL AND fam_marr_church_notice_text != '')
         ");
+
+            $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_marr_church_notice_date_hebnight");
         } else {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_place, event_text, event_new_datetime)
@@ -241,12 +258,14 @@ class Migration20
         if ($humo_option['admin_hebnight'] == "y") {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_heb_night, event_place, event_text, event_new_datetime)
-            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marr_church', fam_marr_church_date, fam_marr_church_heb_night, fam_marr_church_place, fam_marr_church_text, '" . $event_new_datetime . "'
+            SELECT fam_tree_id, fam_gedcomnumber, 'family', 'marr_church', fam_marr_church_date, fam_marr_church_hebnight, fam_marr_church_date_place, fam_marr_church_text, '" . $event_new_datetime . "'
             FROM humo_families
             WHERE (fam_marr_church_date IS NOT NULL AND fam_marr_church_date != '')
             OR (fam_marr_church_place IS NOT NULL AND fam_marr_church_place != '')
             OR (fam_marr_church_text IS NOT NULL AND fam_marr_church_text != '')
         ");
+
+            $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_marr_church_date_hebnight");
         } else {
             $this->dbh->exec("
             INSERT INTO humo_events (event_tree_id, event_connect_id, event_connect_kind, event_kind, event_date, event_place, event_text, event_new_datetime)
@@ -292,7 +311,6 @@ class Migration20
         // *** Show processing time ***
         //$end_time = time();
         //echo '11. ' . $end_time - $start_time . ' ' . __('seconds.') . '<br>';
-
 
         // Temp. index to improve speed.
         $this->dbh->exec("ALTER TABLE humo_events ADD INDEX idx_event_place (event_place(100))");
@@ -356,7 +374,7 @@ class Migration20
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_buried_place");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_buried_text");
 
-        // TODO LET OP pers_place_index kan er ook uit? Nog enkele items uit scripts verwijderen.
+        // *** Remove old pers_place_index field ***
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_place_index");
 
         // *** Remove old family fields ***
@@ -392,6 +410,9 @@ class Migration20
         //$end_time = time();
         //echo '14. ' . $end_time - $start_time . ' ' . __('seconds.') . '<br>';
 
+        // *** Add unsigned to location_id (do not add PRIMARY KEY, it's allready defined) ***
+        $this->dbh->exec("ALTER TABLE humo_location MODIFY location_id INT UNSIGNED NOT NULL AUTO_INCREMENT");
+
         // *** Add foreign key constraints ***
         $this->dbh->exec("
             ALTER TABLE humo_events
@@ -401,6 +422,13 @@ class Migration20
                 FOREIGN KEY (event_relation_id) REFERENCES humo_families(fam_id),
             ADD CONSTRAINT fk_event_place
                 FOREIGN KEY (event_place_id) REFERENCES humo_location(location_id)
+        ");
+
+        // *** Set event_changed_datetime to NULL in all new items (because these values were changed during the upgrade) ***
+        $this->dbh->exec("
+            UPDATE humo_events
+            SET event_changed_datetime = NULL
+            WHERE event_new_datetime = '" . $event_new_datetime . "'
         ");
 
         // *** Show processing time ***
