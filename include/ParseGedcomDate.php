@@ -10,7 +10,7 @@
 
 namespace Genealogy\Include;
 
-class parseGedcomDate
+class ParseGedcomDate
 {
     public function parse($gedcomDate): array
     {

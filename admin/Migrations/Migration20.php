@@ -22,7 +22,7 @@ class Migration20
     {
         global $humo_option;
 
-        $parseGedcomDate = new \Genealogy\Include\parseGedcomDate();
+        $parseGedcomDate = new \Genealogy\Include\ParseGedcomDate();
 
         //$start_time = time();
 
