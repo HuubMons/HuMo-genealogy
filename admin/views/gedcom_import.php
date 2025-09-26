@@ -192,12 +192,14 @@ if (!defined('ADMIN_PAGE')) {
                                 </label>
                             </div>
 
+                            <?php /*
                             <div class="form-check">
                                 <input type="checkbox" name="process_geo_location" value="" id="process_geo_location" <?= $humo_option["gedcom_read_process_geo_location"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
                                 <label class="form-check-label" for="process_geo_location">
                                     <?= __('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of GEDCOM file!'); ?>
                                 </label>
                             </div>
+                            */ ?>
 
                             <div class="form-check">
                                 <input type="checkbox" name="save_pictures" value="" id="save_pictures" <?= $humo_option["gedcom_read_save_pictures"] == 'y' ? 'checked' : ''; ?> class="form-check-input">
@@ -364,11 +366,13 @@ elseif ($trees['step'] == '2') {
     }
     $db_functions->update_settings('gedcom_read_order_by_fams', $setting_value);
 
+    /*
     $setting_value = 'n';
     if (isset($_POST["process_geo_location"])) {
         $setting_value = 'y';
     }
     $db_functions->update_settings('gedcom_read_process_geo_location', $setting_value);
+    */
 
     if (isset($_POST['gedcom_process_pict_path'])) {
         $db_functions->update_settings('gedcom_process_pict_path', $_POST['gedcom_process_pict_path']);
@@ -443,7 +447,6 @@ elseif ($trees['step'] == '2') {
         </div>
 
 
-
         <!-- TEST -->
         <?php /*
         <?php $_SESSION['save_import_progress'] = 1; ?>
@@ -456,7 +459,6 @@ elseif ($trees['step'] == '2') {
             bar.innerText = "1%";
         </script>
         */ ?>
-
 
 
         <script>
@@ -996,11 +998,15 @@ elseif ($trees['step'] == '3') {
         // TEST: show memory usage
         //if (!isset($memory)) $memory=memory_get_usage();
         //$calc_memory=(memory_get_usage()-$memory);
-        //if ($calc_memory>100){ echo '<b>'; }
+        //if ($calc_memory>100){
+        //  echo '<b>';
+        //}
         //	echo '<br>'.memory_get_usage().' '.$calc_memory.'@ ';
         //	$memory=memory_get_usage();
         //	echo ' '.$buffer;
-        //if ($calc_memory>100){ echo '!!</b>'; }
+        //if ($calc_memory>100){
+        //  echo '!!</b>';
+        //}
 
         // *** Commit genealogical data every x records. CAN ONLY BE USED WITH InnoDB TABLES!! ***
         if ($commit_records > 1) {
@@ -1044,11 +1050,15 @@ elseif ($trees['step'] == '3') {
                 // TEST: show memory usage
                 //if (!isset($memory)) $memory=memory_get_usage();
                 //$calc_memory=(memory_get_usage()-$memory);
-                //if ($calc_memory>100){ echo '<b>'; }
+                //if ($calc_memory>100){
+                //  echo '<b>';
+                //}
                 //	echo '<br>'.memory_get_usage().' '.$calc_memory.'@ ';
                 //	$memory=memory_get_usage();
                 //	echo ' '.$buffer;
-                //if ($calc_memory>100){ echo '!!</b>'; }
+                //if ($calc_memory>100){
+                //  echo '!!</b>';
+                //}
 
             } elseif ($process_gedcom === "family") {
                 $buffer2 = encode($buffer2, $_POST["gedcom_accent"]);
@@ -1501,10 +1511,7 @@ elseif ($trees['step'] == '4') {
         */
 
         while ($person2Db = $person2_qry->fetch(PDO::FETCH_OBJ)) {
-            $person_qry = $dbh->query("SELECT pers_id, pers_gedcomnumber, pers_text, pers_name_text,
-                pers_birth_text, pers_bapt_text, pers_death_text, pers_buried_text
-                FROM humo_persons WHERE pers_id='" . $person2Db->pers_id . "'");
-            $personDb = $person_qry->fetch(PDO::FETCH_OBJ);
+            $personDb = $db_functions->get_person_by_id($person2Db->pers_id);
 
             $pers_text = '';
             //TODO use array to check for first character?
@@ -1517,10 +1524,6 @@ elseif ($trees['step'] == '4') {
 
                     // *** Search for all connected sources ***
                     $connect_order = 0;
-                    //$connect_qry = "SELECT * FROM humo_connections WHERE connect_tree_id='" . $trees['tree_id'] . "'
-                    //    AND connect_kind='ref_text' AND connect_sub_kind='ref_text_source'
-                    //    AND connect_connect_id='" . $search_textDb->text_gedcomnr . "'
-                    //    ORDER BY connect_order";
                     $connect_qry = "SELECT connect_source_id FROM humo_connections
                         WHERE connect_tree_id='" . $trees['tree_id'] . "'
                         AND connect_kind='ref_text' AND connect_sub_kind='ref_text_source'
@@ -1558,44 +1561,69 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            $pers_birth_text = '';
+            //$pers_birth_text = '';
             if (substr($personDb->pers_birth_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_birth_text, 1, -1));
                 if ($search_textDb) {
-                    $pers_birth_text = $search_textDb->text_text;
+                    //$pers_birth_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $personDb->pers_birth_event_id
+                    ]);
                 }
             }
 
-            $pers_bapt_text = '';
+            //$pers_bapt_text = '';
             if (substr($personDb->pers_bapt_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_bapt_text, 1, -1));
                 if ($search_textDb) {
-                    $pers_bapt_text = $search_textDb->text_text;
+                    //$pers_bapt_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $personDb->pers_bapt_event_id
+                    ]);
                 }
             }
 
-            $pers_death_text = '';
+            //$pers_death_text = '';
             if (substr($personDb->pers_death_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_death_text, 1, -1));
                 if ($search_textDb) {
-                    $pers_death_text = $search_textDb->text_text;
+                    //$pers_death_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $personDb->pers_death_event_id
+                    ]);
                 }
             }
 
-            $pers_buried_text = '';
+            //$pers_buried_text = '';
             if (substr($personDb->pers_buried_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_buried_text, 1, -1));
                 if ($search_textDb) {
-                    $pers_buried_text = $search_textDb->text_text;
+                    //$pers_buried_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $personDb->pers_buried_event_id
+                    ]);
                 }
             }
 
             // *** Save all standard person texts ***
-            if ($pers_text || $pers_name_text || $pers_birth_text || $pers_bapt_text || $pers_death_text || $pers_buried_text) {
+            //if ($pers_text || $pers_name_text || $pers_birth_text || $pers_bapt_text || $pers_death_text || $pers_buried_text) {
+            if ($pers_text || $pers_name_text) {
                 $first_item = true;
                 // *** Remark: no need to check for fam_tree_id because fam_id is used ***
                 // Build the fields to update and their values
@@ -1610,6 +1638,7 @@ elseif ($trees['step'] == '4') {
                     $fields[] = "pers_name_text = :pers_name_text";
                     $params[':pers_name_text'] = $pers_name_text;
                 }
+                /*
                 if ($pers_birth_text) {
                     $fields[] = "pers_birth_text = :pers_birth_text";
                     $params[':pers_birth_text'] = $pers_birth_text;
@@ -1626,6 +1655,7 @@ elseif ($trees['step'] == '4') {
                     $fields[] = "pers_buried_text = :pers_buried_text";
                     $params[':pers_buried_text'] = $pers_buried_text;
                 }
+                */
 
                 if (!empty($fields)) {
                     $sql = "UPDATE humo_persons SET " . implode(', ', $fields) . " WHERE pers_id = :pers_id";
@@ -1700,11 +1730,13 @@ elseif ($trees['step'] == '4') {
         // *** Memory improvement, only read 1 full record at a time ***
         $fam_qry2 = $dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='" . $trees['tree_id'] . "'");
         while ($famDb2 = $fam_qry2->fetch(PDO::FETCH_OBJ)) {
-            //$fam_qry = $dbh->query("SELECT * FROM humo_families WHERE fam_id='" . $famDb2->fam_id . "'");
+            /*
             $fam_qry = $dbh->query("SELECT fam_id, fam_gedcomnumber, fam_text, fam_relation_text, fam_marr_notice_text,
                 fam_marr_text, fam_marr_church_notice_text, fam_marr_church_text, fam_div_text
                 FROM humo_families WHERE fam_id='" . $famDb2->fam_id . "'");
             $famDb = $fam_qry->fetch(PDO::FETCH_OBJ);
+            */
+            $famDb = $db_functions->get_family_by_id($famDb2->fam_id);
 
             $fam_text = '';
             if (substr($famDb->fam_text, 0, 1) === '@') {
@@ -1715,21 +1747,33 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            $fam_relation_text = '';
+            //$fam_relation_text = '';
             if (substr($famDb->fam_relation_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_relation_text, 1, -1));
                 if ($search_textDb) {
-                    $fam_relation_text = $search_textDb->text_text;
+                    //$fam_relation_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $fam_personDb->fam_relation_event_id
+                    ]);
                 }
             }
 
-            $fam_marr_notice_text = '';
+            //$fam_marr_notice_text = '';
             if (substr($famDb->fam_marr_notice_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_notice_text, 1, -1));
                 if ($search_textDb) {
-                    $fam_marr_notice_text = $search_textDb->text_text;
+                    //$fam_marr_notice_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $famDb->fam_marr_event_id
+                    ]);
                 }
             }
 
@@ -1768,37 +1812,54 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            $fam_marr_church_notice_text = '';
+            //$fam_marr_church_notice_text = '';
             if (substr($famDb->fam_marr_church_notice_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_notice_text, 1, -1));
                 if ($search_textDb) {
-                    $fam_marr_church_notice_text = $search_textDb->text_text;
+                    //$fam_marr_church_notice_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $famDb->fam_marr_church_notice_event_id
+                    ]);
                 }
             }
 
-            $fam_marr_church_text = '';
+            //$fam_marr_church_text = '';
             if (substr($famDb->fam_marr_church_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_text, 1, -1));
                 if ($search_textDb) {
-                    $fam_marr_church_text = $search_textDb->text_text;
+                    //$fam_marr_church_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $famDb->fam_marr_church_event_id
+                    ]);
                 }
             }
 
-            $fam_div_text = '';
+            //$fam_div_text = '';
             if (substr($famDb->fam_div_text, 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_div_text, 1, -1));
                 if ($search_textDb) {
-                    $fam_div_text = $search_textDb->text_text;
+                    //$fam_div_text = $search_textDb->text_text;
+
+                    $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
+                    $stmt->execute([
+                        ':event_text' => $search_textDb->text_text,
+                        ':event_id' => $famDb->fam_div_event_id
+                    ]);
                 }
             }
 
             // *** Save all standard family texts ***
-            if (
-                $fam_text || $fam_relation_text || $fam_marr_notice_text || $fam_marr_text || $fam_marr_church_notice_text || $fam_marr_church_text || $fam_div_text
-            ) {
+            // $fam_text || $fam_relation_text || $fam_marr_notice_text || $fam_marr_text || $fam_marr_church_notice_text || $fam_marr_church_text || $fam_div_text
+            if ($fam_text) {
                 $first_item = true;
                 // *** Remark: no need to check for fam_tree_id because fam_id is used ***
                 // Build the fields to update and their values
@@ -1809,6 +1870,7 @@ elseif ($trees['step'] == '4') {
                     $fields[] = "fam_text = :fam_text";
                     $params[':fam_text'] = $fam_text;
                 }
+                /*
                 if ($fam_relation_text) {
                     $fields[] = "fam_relation_text = :fam_relation_text";
                     $params[':fam_relation_text'] = $fam_relation_text;
@@ -1833,6 +1895,7 @@ elseif ($trees['step'] == '4') {
                     $fields[] = "fam_div_text = :fam_div_text";
                     $params[':fam_div_text'] = $fam_div_text;
                 }
+                */
 
                 if (!empty($fields)) {
                     $sql = "UPDATE humo_families SET " . implode(', ', $fields) . " WHERE fam_id = :fam_id";
@@ -1962,59 +2025,12 @@ elseif ($trees['step'] == '4') {
         }
     }
 
-    // Refresh the location_status column
-    if ($humo_option["gedcom_read_process_geo_location"] == 'y') {
-
-        // after import, and ONLY for people with a humo_location table for googlemaps, refresh the location_status fields
-        echo '<br>&gt;&gt;&gt; ' . __('Updating location database...');
-
-        $all_loc = $dbh->query("SELECT location_location FROM humo_location");
-        while ($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {
-            $loca_array[$all_locDb->location_location] = '';
-        }
-        $status_string = '';
-
-        $tree_id_string = " AND ( ";
-        $id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ;
-        foreach ($id_arr as $value) {
-            $tree_id_string .= "tree_id='" . substr($value, 1) . "' OR ";  // substr removes leading "@" in geo_trees setting string
-        }
-        $tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " and add ")"
-
-        $tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
-        $tree_pref_result = $dbh->query($tree_pref_sql);
-        while ($tree_prefDb = $tree_pref_result->fetch(PDO::FETCH_OBJ)) {
-            $result = $dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "'");
-            while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
-                if (isset($loca_array[$resultDb->pers_birth_place]) && strpos($loca_array[$resultDb->pers_birth_place], $tree_prefDb->tree_prefix . "birth ") === false) {
-                    $loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix . "birth ";
-                }
-                if (isset($loca_array[$resultDb->pers_bapt_place]) && strpos($loca_array[$resultDb->pers_bapt_place], $tree_prefDb->tree_prefix . "bapt ") === false) {
-                    $loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix . "bapt ";
-                }
-                if (isset($loca_array[$resultDb->pers_death_place]) && strpos($loca_array[$resultDb->pers_death_place], $tree_prefDb->tree_prefix . "death ") === false) {
-                    $loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix . "death ";
-                }
-                if (isset($loca_array[$resultDb->pers_buried_place]) && strpos($loca_array[$resultDb->pers_buried_place], $tree_prefDb->tree_prefix . "buried ") === false) {
-                    $loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix . "buried ";
-                }
-            }
-        }
-        /*
-        foreach ($loca_array as $key => $value) {
-            $dbh->query("UPDATE humo_location SET location_status = '" . $value . "' WHERE location_location = '" . addslashes($key) . "'");
-        }
-        */
-        if (strpos($humo_option['geo_trees'], "@" . $trees['tree_id'] . ";") === false) {
-            $dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $trees['tree_id'] . ";') WHERE setting_variable = 'geo_trees'");
-            $humo_option['geo_trees'] .= "@" . $trees['tree_id'] . ";";
-        }
-    }
-
-
     // *** Jeroen Beemster Jan 2006. Code rewritten in June 2013 by Huub. Order children and marriages ***
     // If there are children without dates, ordering doesn't work very good...
     if ($humo_option["gedcom_read_order_by_date"] == 'y') {
+        $db_functions->set_tree_id($trees['tree_id']);
+
+        // TODO double function.
         function date_string($text)
         {
             $text = str_replace("JAN", "01", $text);
@@ -2035,17 +2051,15 @@ elseif ($trees['step'] == '4') {
 
         echo '<br>&gt;&gt;&gt; ' . __('Order children...');
 
-        //$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$trees['tree_id']."' AND fam_children!=''");
+        // TODO only get fam_id and fam_children
         $fam_qry = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $trees['tree_id'] . "' AND fam_children!='' AND (INSTR(fam_children,';')>0) ");
         while ($famDb = $fam_qry->fetch(PDO::FETCH_OBJ)) {
             $child_array = explode(";", $famDb->fam_children);
             //echo '<br>'.$famDb->fam_children.' ';
             $nr_children = count($child_array);
-            //if ($nr_children > 1) {
             unset($children_array);
             for ($i = 0; $i < $nr_children; $i++) {
-                $child = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $child_array[$i] . "'");
-                $childDb = $child->fetch(PDO::FETCH_OBJ);
+                $childDb = $db_functions->get_person($child_array[$i]);
 
                 $child_array_nr = $child_array[$i];
                 if ($childDb->pers_birth_date) {
@@ -2077,6 +2091,8 @@ elseif ($trees['step'] == '4') {
     // *** Order families, added in november 2018 by Huub. ***
     // If there is a relation without dates, ordering doesn't work very good...
     if ($humo_option["gedcom_read_order_by_fams"] == 'y') {
+        $db_functions->set_tree_id($trees['tree_id']);
+
         function date_string2($text)
         {
             $text = str_replace("JAN", "01", $text);
@@ -2098,16 +2114,15 @@ elseif ($trees['step'] == '4') {
         echo '<br>&gt;&gt;&gt; ' . __('Order families...');
 
         // *** Find only persons with multiple relations ***
+        // TODO only get pers_id and pers_fams
         $person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_fams!='' AND (INSTR(pers_fams,';')>0) ");
         while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
-            //echo '<br>'.$personDb->pers_fams.' - ';
             $fam_array = explode(";", $personDb->pers_fams);
             $nr_fams = count($fam_array);
 
             unset($families_array);
             for ($i = 0; $i < $nr_fams; $i++) {
-                $fam_qry = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $trees['tree_id'] . "' AND fam_gedcomnumber='" . $fam_array[$i] . "'");
-                $famDb = $fam_qry->fetch(PDO::FETCH_OBJ);
+                $famDb = $db_functions->get_family($fam_array[$i]);
 
                 $fam_array_nr = $fam_array[$i];
                 if ($famDb->fam_relation_date) {

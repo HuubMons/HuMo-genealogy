@@ -73,18 +73,24 @@ $languageDate = new Genealogy\Include\LanguageDate;
     $privcount = 0; // *** Privacy counter ***
     // *** Build page ***
     if ($data["ann_choice"] == 'birthdays') {
-
-        // *** Build query ***
-        $sql = "SELECT *, abs(substring( pers_birth_date,1,2 )) as birth_day, substring( pers_birth_date,-4 ) as birth_year
-            FROM humo_persons
-            WHERE pers_tree_id = :tree_id AND (substring( pers_birth_date, 4,3) = :month
-            OR substring( pers_birth_date, 3,3) = :month)
-            order by birth_day, birth_year ";
+        $sql = "SELECT p.*,
+            e.event_date_day as birth_day,
+            e.event_date_year as birth_year,
+            d.event_date as pers_death_date
+            FROM humo_persons p
+            INNER JOIN humo_events e ON e.event_person_id = p.pers_id AND e.event_kind = 'birth'
+            LEFT JOIN humo_events d ON d.event_person_id = p.pers_id AND d.event_kind = 'death'
+            WHERE p.pers_tree_id = :tree_id
+              AND (e.event_date_month = :month)
+            ORDER BY birth_day, birth_year";
 
         try {
             $qry = $dbh->prepare($sql);
             $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
-            $qry->bindValue(':month', $data["month"], PDO::PARAM_STR);
+            // TODO: just use NUMERIC $data["month"].
+            // convert month to numeric format
+            $month_numeric = date('m', strtotime($data["month"]));
+            $qry->bindValue(':month', $month_numeric, PDO::PARAM_STR);
             $qry->execute();
         } catch (PDOException $e) {
             echo $e->getMessage() . '<br>';
@@ -108,8 +114,10 @@ $languageDate = new Genealogy\Include\LanguageDate;
                         $calendar_day = $record->birth_day;
                         $birth_day = $record->birth_day . ' ' . $data["month"];
 
-                        $privacy = $personPrivacy->get_privacy($record);
-                        $name = $personName->get_person_name($record, $privacy);
+                        // *** Get all data for privacy filter ***
+                        $record2 = $db_functions -> get_person_with_id($record->pers_id);
+                        $privacy = $personPrivacy->get_privacy($record2);
+                        $name = $personName->get_person_name($record2, $privacy);
 
                         if (!$privacy) {
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -133,7 +141,7 @@ $languageDate = new Genealogy\Include\LanguageDate;
 
                                 <td><?= $privacy ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
 
-                                <td align="left"><a href="<?= $url;?>"><?= $name["standard_name"];?></a></td>
+                                <td align="left"><a href="<?= $url; ?>"><?= $name["standard_name"]; ?></a></td>
 
                                 <td>
                                     <div class="pale"><?= $privacy ? __(' PRIVACY FILTER') : $died; ?>
@@ -161,12 +169,15 @@ $languageDate = new Genealogy\Include\LanguageDate;
 
         // *** Build query ***
         if ($data["civil"]) {
-            $sql = "SELECT *, abs(substring( fam_marr_date,1,2 )) as marr_day, substring( fam_marr_date,-4 ) as marr_year
-                FROM humo_families
-                WHERE fam_tree_id = :tree_id AND (substring( fam_marr_date, 4,3) = :month
-                OR substring( fam_marr_date, 3,3) = :month)
-                order by marr_day, marr_year ";
-
+            $sql = "SELECT f.*, 
+                    abs(SUBSTRING(e.event_date,1,2)) as marr_day, 
+                    SUBSTRING(e.event_date,-4) as marr_year
+                FROM humo_families f
+                INNER JOIN humo_events e ON e.event_relation_id = f.fam_id
+                WHERE f.fam_tree_id = :tree_id
+                    AND (SUBSTRING(e.event_date, 4,3) = :month OR SUBSTRING(e.event_date, 3,3) = :month)
+                    AND e.event_kind = 'marriage'
+                ORDER BY marr_day, marr_year";
             try {
                 $qry = $dbh->prepare($sql);
                 $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
@@ -193,11 +204,15 @@ $languageDate = new Genealogy\Include\LanguageDate;
         }
 
         if ($data["relig"]) {
-            $sql = "SELECT *, abs(substring( fam_marr_church_date,1,2 )) as marr_day, substring( fam_marr_church_date,-4 ) as marr_year
-                FROM humo_families
-                WHERE fam_tree_id = :tree_id AND (substring( fam_marr_church_date, 4,3) = :month
-                OR substring( fam_marr_church_date, 3,3) = :month)
-                order by marr_day, marr_year ";
+            $sql = "SELECT f.*, 
+                    abs(SUBSTRING(e.event_date,1,2)) as marr_day, 
+                    SUBSTRING(e.event_date,-4) as marr_year
+                FROM humo_families f
+                INNER JOIN humo_events e ON e.event_relation_id = f.fam_id
+                WHERE f.fam_tree_id = :tree_id
+                    AND (SUBSTRING(e.event_date, 4,3) = :month OR SUBSTRING(e.event_date, 3,3) = :month)
+                    AND e.event_kind = 'marr_church'
+                ORDER BY marr_day, marr_year";
             try {
                 $qry = $dbh->prepare($sql);
                 $qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);

@@ -149,13 +149,13 @@ if (isset($database_check) && $database_check) {
     }
 
     // *** Check HuMo-genealogy database status, will be changed if database update is needed ***
-    if (isset($humo_option["update_status"]) && $humo_option["update_status"] < 19) {
+    if (isset($humo_option["update_status"]) && $humo_option["update_status"] < 20) {
         $page = 'update';
         $main_admin['show_menu'] = false;
     }
 
     if (
-        isset($_GET['page']) && ($_GET['page'] == 'editor_sources' || $_GET['page'] == 'editor_place_select' || $_GET['page'] == 'editor_person_select' || $_GET['page'] == 'editor_relation_select' || $_GET['page'] == 'editor_media_select' || $_GET['page'] == 'editor_user_settings' || $_GET['page'] == 'gedcom_import2')
+        isset($_GET['page']) && ($_GET['page'] == 'editor_sources' || $_GET['page'] == 'editor_person_select' || $_GET['page'] == 'editor_relation_select' || $_GET['page'] == 'editor_media_select' || $_GET['page'] == 'editor_user_settings' || $_GET['page'] == 'gedcom_import2')
     ) {
         $main_admin['show_menu'] = false;
         $popup = true;
@@ -718,8 +718,6 @@ if ($popup == false) {
             $controllerObj = new Genealogy\Admin\Controller\RenamePlaceController($admin_config);
             $place = $controllerObj->detail();
             include_once(__DIR__ . "/views/edit_rename_place.php");
-        } elseif ($page === 'editor_place_select') {
-            include_once(__DIR__ . "/views/editor_place_select.php");
         } elseif ($page === 'editor_person_select') {
             include_once(__DIR__ . "/views/editor_person_select.php");
         } elseif ($page === 'editor_relation_select') {

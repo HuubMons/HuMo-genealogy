@@ -110,7 +110,7 @@ $limit = 500; // *** Limit results ***
                         // *** August 2022: new query ***
                         $search_name1 = '%' . $relation["search_name1"] . '%';
                         $search_qry = "
-                            SELECT * FROM humo_persons 
+                            SELECT pers_id FROM humo_persons 
                             LEFT JOIN humo_events
                                 ON event_connect_id=pers_gedcomnumber 
                                 AND event_kind='name' 
@@ -135,7 +135,7 @@ $limit = 500; // *** Limit results ***
                         $stmt->execute();
                         $search_result = $stmt;
                     } elseif ($relation["search_gednr1"] != '') {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND (pers_gedcomnumber = :gednr1 OR pers_gedcomnumber = :gednr1_prefixed)";
+                        $search_qry = "SELECT pers_id FROM humo_persons WHERE pers_tree_id = :tree_id AND (pers_gedcomnumber = :gednr1 OR pers_gedcomnumber = :gednr1_prefixed)";
                         $stmt = $dbh->prepare($search_qry);
                         $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
                         $stmt->bindValue(':gednr1', $relation["search_gednr1"], PDO::PARAM_STR);
@@ -143,7 +143,7 @@ $limit = 500; // *** Limit results ***
                         $stmt->execute();
                         $search_result = $stmt;
                     } else {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
+                        $search_qry = "SELECT pers_id FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
                         $stmt = $dbh->prepare($search_qry);
                         $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
                         $stmt->execute();
@@ -159,7 +159,10 @@ $limit = 500; // *** Limit results ***
 
                             <select size="1" name="person1" aria-label="<?= __('Select person 1'); ?>" class="form-select form-select-sm">
                                 <?php
-                                while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
+                                $db_functions -> set_tree_id($tree_id);
+                                while ($search2Db = $search_result->fetch(PDO::FETCH_OBJ)) {
+                                    // *** Also get pers_bapt_date and pers_birth_date for showing in list ***
+                                    $searchDb = $db_functions->get_person_with_id($search2Db->pers_id);
                                     $privacy = $personPrivacy->get_privacy($searchDb);
                                     $name = $personName->get_person_name($searchDb, $privacy);
                                     if ($name["show_name"]) {
@@ -170,7 +173,7 @@ $limit = 500; // *** Limit results ***
                                         if ($searchDb->pers_birth_date) {
                                             $birth = ' ' . __('*') . ' ' . $datePlace->date_place($searchDb->pers_birth_date, '');
                                         }
-                                        if ($personPrivacy) {
+                                        if ($privacy) {
                                             $birth = '';
                                         }
 
@@ -235,7 +238,7 @@ $limit = 500; // *** Limit results ***
 
                         $search_name2 = '%' . $relation["search_name2"] . '%';
                         $search_qry = "
-                            SELECT * FROM humo_persons 
+                            SELECT pers_id FROM humo_persons 
                             LEFT JOIN humo_events
                                 ON event_connect_id=pers_gedcomnumber 
                                 AND event_kind='name' 
@@ -260,7 +263,7 @@ $limit = 500; // *** Limit results ***
                         $stmt2->execute();
                         $search_result2 = $stmt2;
                     } elseif ($relation["search_gednr2"] != '') {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id AND (pers_gedcomnumber = :gednr2 OR pers_gedcomnumber = :gednr2_prefixed)";
+                        $search_qry = "SELECT pers_id FROM humo_persons WHERE pers_tree_id = :tree_id AND (pers_gedcomnumber = :gednr2 OR pers_gedcomnumber = :gednr2_prefixed)";
                         $stmt2 = $dbh->prepare($search_qry);
                         $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
                         $stmt2->bindValue(':gednr2', $relation["search_gednr2"], PDO::PARAM_STR);
@@ -268,7 +271,7 @@ $limit = 500; // *** Limit results ***
                         $stmt2->execute();
                         $search_result2 = $stmt2;
                     } else {
-                        $search_qry = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
+                        $search_qry = "SELECT pers_id FROM humo_persons WHERE pers_tree_id = :tree_id ORDER BY pers_lastname, pers_firstname LIMIT 0, $limit";
                         $stmt2 = $dbh->prepare($search_qry);
                         $stmt2->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
                         $stmt2->execute();
@@ -284,7 +287,10 @@ $limit = 500; // *** Limit results ***
 
                             <select size="1" name="person2" aria-label="<?= __('Select person 2'); ?>" class="form-select form-select-sm">
                                 <?php
-                                while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                $db_functions -> set_tree_id($tree_id);
+                                while ($search2Db2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                    // *** Also get pers_bapt_date and pers_birth_date for showing in list ***
+                                    $searchDb2 = $db_functions->get_person_with_id($search2Db2->pers_id);
                                     $privacy = $personPrivacy->get_privacy($searchDb2);
                                     $name = $personName->get_person_name($searchDb2, $privacy);
                                     if ($name["show_name"]) {
@@ -295,7 +301,7 @@ $limit = 500; // *** Limit results ***
                                         if ($searchDb2->pers_birth_date) {
                                             $birth = ' ' . __('*') . ' ' . $datePlace->date_place($searchDb2->pers_birth_date, '');
                                         }
-                                        if ($personPrivacy) {
+                                        if ($privacy) {
                                             $birth = '';
                                         }
 

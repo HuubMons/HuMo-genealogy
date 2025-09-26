@@ -5,14 +5,8 @@ $link = $processLinks->get_link($uri_path, 'maps', $tree_id);
 $link2 = $processLinks->get_link($uri_path, 'maps', $tree_id, true);
 
 // *** Select family tree ***
-$tree_id_string = " AND ( ";
-$id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ";"
-foreach ($id_arr as $value) {
-    $tree_id_string .= "tree_id='" . substr($value, 1) . "' OR ";  // substr removes leading "@" in geo_trees setting string
-}
-$tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " and add ")"
-$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
-$tree_search_result = $dbh->query($tree_search_sql);
+$tree_search_result = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+
 $count = 0;
 
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
@@ -174,9 +168,31 @@ $datePlace = new \Genealogy\Include\DatePlace();
 
             <form method="POST" action="<?= $link; ?>">
                 <?php
+                /*
                 $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
                     FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
                     AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ORDER BY totalname";
+                */
+
+                // Get family names based on birth events and linked locations
+                $fam_search = "
+                    SELECT 
+                        CONCAT(pers_lastname, '_', LOWER(SUBSTRING_INDEX(pers_prefix, '_', 1))) AS totalname
+                    FROM humo_persons
+                    LEFT JOIN humo_events ON humo_events.event_person_id = humo_persons.pers_id
+                    LEFT JOIN humo_location ON humo_location.location_id = humo_events.event_place_id
+                    WHERE 
+                        humo_persons.pers_tree_id = '" . $tree_id . "'
+                        AND humo_persons.pers_lastname != ''
+                        AND (
+                            (humo_events.event_kind = 'birth' AND humo_location.location_lat IS NOT NULL)
+                            OR
+                            (humo_events.event_kind = 'baptism' AND humo_location.location_lat IS NOT NULL)
+                        )
+                    GROUP BY totalname
+                    ORDER BY totalname
+                ";
+
                 $fam_search_result = $dbh->query($fam_search);
                 ?>
                 <div class="modal fade" id="familynameModal" tabindex="-1" aria-labelledby="familynameModalLabel" aria-hidden="true">
@@ -283,7 +299,8 @@ $datePlace = new \Genealogy\Include\DatePlace();
                                         <select id="desc_map" name="desc_map" onChange="window.location=this.value;" class="form-select form-select-sm mb-2">
                                             <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
                                             <?php
-                                            while ($desc_searchDb = $desc_search_result->fetch(PDO::FETCH_OBJ)) {
+                                            while ($desc_search2Db = $desc_search_result->fetch(PDO::FETCH_OBJ)) {
+                                                $desc_searchDb = $db_functions->get_person_with_id($desc_search2Db->pers_id);
                                                 $privacy = $personPrivacy->get_privacy($desc_searchDb);
                                                 $name = $personName->get_person_name($desc_searchDb, $privacy);
                                             ?>
@@ -381,7 +398,8 @@ $datePlace = new \Genealogy\Include\DatePlace();
                                         <select id="desc_map" name="desc_map" onChange="window.location=this.value;" class="form-select form-select-sm mb-2">
                                             <option value="toptext"><?= __('Pick a name from the pulldown list'); ?></option>
                                             <?php
-                                            while ($anc_searchDb = $anc_search_result->fetch(PDO::FETCH_OBJ)) {
+                                            while ($anc_search2Db = $anc_search_result->fetch(PDO::FETCH_OBJ)) {
+                                                $anc_searchDb = $db_functions->get_person_with_id($anc_search2Db->pers_id);
                                                 $privacy = $personPrivacy->get_privacy($anc_searchDb);
                                                 $name = $personName->get_person_name($anc_searchDb, $privacy);
                                             ?>
@@ -416,18 +434,6 @@ $datePlace = new \Genealogy\Include\DatePlace();
                 elseif($maps['display_death']) {
                     echo ' <input style="font-size:14px" type="button" value="'.__('Mark all death locations').'" onclick="makeSelection(3)"> ';
                 }
-                */
-
-                // PULL-DOWN: FIND LOCATION
-                // TODO: location_status could probably be totally removed. Combine google_initiate results with this query to generate a location list.
-                /*
-                if ($maps['display_birth']) {
-                    $loc_search = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_status LIKE '%" . $tree_prefix_quoted . "birth%' OR location_status LIKE '%" . $tree_prefix_quoted . "bapt%' OR location_status = '' ORDER BY location_location";
-                }
-                if ($maps['display_death']) {
-                    $loc_search = "SELECT * FROM humo_location WHERE location_lat IS NOT NULL AND location_status LIKE '%" . $tree_prefix_quoted . "death%' OR location_status LIKE '%" . $tree_prefix_quoted . "buried%' OR location_status = '' ORDER BY location_location";
-                }
-                $loc_search_result = $dbh->query($loc_search);
                 */
                 //if ($loc_search_result !== false) {
                 ?>

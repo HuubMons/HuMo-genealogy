@@ -97,7 +97,9 @@ else {
         }
 
         // TEST code (only works with family, will give error in descendant report and DNA reports:
-        // if (!isset($descendant_family_id2[0])){ break; }
+        // if (!isset($descendant_family_id2[0])){
+        // break;
+        // }
 
         // *** Copy array ***
         unset($descendant_family_id);

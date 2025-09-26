@@ -140,9 +140,7 @@
         show_status($dbh, $humo_option, 'v6.7.2', 17);
         show_status($dbh, $humo_option, 'v6.7.9', 18);
         show_status($dbh, $humo_option, 'v6.7.9a', 19);
-
-        // TODO new update:
-        // show_status($dbh, $humo_option, 'v6.9.4', 20);
+        show_status($dbh, $humo_option, 'v6.9.4', 20);
 
         /**
          * Remarks for programmers:

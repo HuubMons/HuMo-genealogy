@@ -162,7 +162,7 @@ if (!isset($_POST['install_tables2'])) {
 
         <div class="form-check">
             <input type="checkbox" class="form-check-input" name="table_location" <?= $check_location; ?> <?= !$install['table_location'] ? 'disabled' : ''; ?>>
-            <label class="form-check-label"><?= __('(Re) create location table. <b>This will remove all locations used for World map.</b>'); ?></label>
+            <label class="form-check-label"><?= __('(Re) create location table. <b>This is the general table for all places.</b>'); ?></label>
         </div><br>
 
         <p><b><?= __('Family tree tables'); ?></b></p>
@@ -219,7 +219,7 @@ if (isset($_POST['install_tables2'])) {
         // *** Other settings are saved in the table in file: settingsGlobal.php ***
 
         // *** Update status number. Number must be: update_status+1! ***
-        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','19')");
+        $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','20')");
     }
 
     if (!$install['table_stat_date'] || isset($_POST["table_stat_date"])) {
@@ -517,11 +517,11 @@ if (isset($_POST['install_tables2'])) {
         printf(__('create table: %s.'), 'humo_location');
         echo '<br>';
         $dbh->query("CREATE TABLE humo_location (
-                location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                location_location VARCHAR(120) CHARACTER SET utf8,
-                location_lat FLOAT(10,6),
-                location_lng FLOAT(10,6),
-                location_status TEXT
+            location_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            location_location VARCHAR(120) CHARACTER SET utf8,
+            location_lat FLOAT(10,6),
+            location_lng FLOAT(10,6),
+            location_status TEXT
             ) DEFAULT CHARSET=utf8");
     }
 
@@ -632,26 +632,7 @@ if (isset($_POST['install_tables2'])) {
             pers_name_text text CHARACTER SET utf8,
             pers_sexe varchar(1) CHARACTER SET utf8,
             pers_own_code varchar(100) CHARACTER SET utf8,
-            pers_birth_place varchar(120) CHARACTER SET utf8,
-            pers_birth_date varchar(35) CHARACTER SET utf8,
-            pers_birth_time varchar(25) CHARACTER SET utf8,
-            pers_birth_text text CHARACTER SET utf8,
-            pers_stillborn varchar(1) CHARACTER SET utf8 DEFAULT 'n',
-            pers_bapt_place varchar(120) CHARACTER SET utf8,
-            pers_bapt_date varchar(35) CHARACTER SET utf8,
-            pers_bapt_text text CHARACTER SET utf8,
             pers_religion varchar(50) CHARACTER SET utf8,
-            pers_death_place varchar(120) CHARACTER SET utf8,
-            pers_death_date varchar(35) CHARACTER SET utf8,
-            pers_death_time varchar(25) CHARACTER SET utf8,
-            pers_death_text text CHARACTER SET utf8,
-            pers_death_cause varchar(255) CHARACTER SET utf8,
-            pers_death_age varchar(15) CHARACTER SET utf8,
-            pers_buried_place varchar(120) CHARACTER SET utf8,
-            pers_buried_date varchar(35) CHARACTER SET utf8,
-            pers_buried_text text CHARACTER SET utf8,
-            pers_cremation varchar(1) CHARACTER SET utf8,
-            pers_place_index text CHARACTER SET utf8,
             pers_text text CHARACTER SET utf8,
             pers_alive varchar(20) CHARACTER SET utf8,
             pers_cal_date varchar(35) CHARACTER SET utf8,
@@ -685,28 +666,7 @@ if (isset($_POST['install_tables2'])) {
             fam_woman_age varchar(15) CHARACTER SET utf8,
             fam_children text CHARACTER SET utf8,
             fam_kind varchar(50) CHARACTER SET utf8,
-            fam_relation_date varchar(35) CHARACTER SET utf8,
-            fam_relation_place varchar(120) CHARACTER SET utf8,
-            fam_relation_text text CHARACTER SET utf8,
-            fam_relation_end_date varchar(35) CHARACTER SET utf8,
-            fam_marr_notice_date varchar(35) CHARACTER SET utf8,
-            fam_marr_notice_place varchar(120) CHARACTER SET utf8,
-            fam_marr_notice_text text CHARACTER SET utf8,
-            fam_marr_date varchar(35) CHARACTER SET utf8,
-            fam_marr_place varchar(120) CHARACTER SET utf8,
-            fam_marr_text text CHARACTER SET utf8,
-            fam_marr_authority text CHARACTER SET utf8,
-            fam_marr_church_notice_date varchar(35) CHARACTER SET utf8,
-            fam_marr_church_notice_place varchar(120) CHARACTER SET utf8,
-            fam_marr_church_notice_text text CHARACTER SET utf8,
-            fam_marr_church_date varchar(35) CHARACTER SET utf8,
-            fam_marr_church_place varchar(120) CHARACTER SET utf8,
-            fam_marr_church_text text CHARACTER SET utf8,
             fam_religion varchar(50) CHARACTER SET utf8,
-            fam_div_date varchar(35) CHARACTER SET utf8,
-            fam_div_place varchar(120) CHARACTER SET utf8,
-            fam_div_text text CHARACTER SET utf8,
-            fam_div_authority text CHARACTER SET utf8,
             fam_text text CHARACTER SET utf8,
             fam_alive int(1),
             fam_cal_date varchar(35) CHARACTER SET utf8,
@@ -929,6 +889,8 @@ if (isset($_POST['install_tables2'])) {
             event_tree_id smallint(5),
             event_gedcomnr varchar(25) CHARACTER SET utf8,
             event_order mediumint(6),
+            event_person_id INT UNSIGNED NULL,
+            event_relation_id INT UNSIGNED NULL,
             event_connect_kind varchar(25) CHARACTER SET utf8,
             event_connect_id varchar(25) DEFAULT NULL,
             event_connect_kind2 varchar(25) CHARACTER SET utf8,
@@ -937,9 +899,19 @@ if (isset($_POST['install_tables2'])) {
             event_kind varchar(20) CHARACTER SET utf8,
             event_event text CHARACTER SET utf8,
             event_event_extra text CHARACTER SET utf8,
+            event_authority TEXT NULL,
+            event_stillborn VARCHAR(1) DEFAULT 'n',
+            event_cause VARCHAR(255) DEFAULT NULL,
+            event_cremation VARCHAR(1) DEFAULT NULL,
+            event_end_date VARCHAR(35) DEFAULT NULL,
             event_gedcom varchar(20) CHARACTER SET utf8,
-            event_date varchar(35) CHARACTER SET utf8,
-            event_place varchar(120) CHARACTER SET utf8,
+            event_date varchar(40) CHARACTER SET utf8,
+            event_date_year INT NULL,
+            event_date_hebnight VARCHAR(10) CHARACTER SET utf8,
+            event_date_month TINYINT NULL,
+            event_date_day TINYINT NULL,
+            event_time VARCHAR(25) NULL,
+            event_place_id INT UNSIGNED NULL,
             event_text text CHARACTER SET utf8,
             event_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
             event_new_user_id smallint NULL DEFAULT NULL,
@@ -950,8 +922,22 @@ if (isset($_POST['install_tables2'])) {
             KEY (event_tree_id),
             KEY (event_connect_id),
             KEY (event_connect_id2),
-            KEY (event_kind)
+            KEY (event_kind),
+            KEY (event_person_id),
+            KEY (event_relation_id),
+            KEY (event_place_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+
+        // *** Aug. 2025: add foreign key constraints ***
+        $dbh->query("
+        ALTER TABLE humo_events
+        ADD CONSTRAINT fk_event_person
+            FOREIGN KEY (event_person_id) REFERENCES humo_persons(pers_id),
+        ADD CONSTRAINT fk_event_family
+            FOREIGN KEY (event_relation_id) REFERENCES humo_families(fam_id),
+        ADD CONSTRAINT fk_event_place
+            FOREIGN KEY (event_place_id) REFERENCES humo_location(location_id)
+        ");
     }
     ?><br>
 

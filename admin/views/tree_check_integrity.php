@@ -40,6 +40,7 @@ if (isset($_POST['remove'])) {
 
     // *** Check person table ***
     // *** First get pers_id, otherwise there will be a memory problem if a large family tree is used ***
+    // TODO check queries. Just get: pers_id,pers_gedcomnumber,pers_famc,pers_fams
     $person_start = $dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
     while ($person_startDb = $person_start->fetch()) {
 

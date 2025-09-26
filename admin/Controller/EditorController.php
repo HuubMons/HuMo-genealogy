@@ -21,7 +21,6 @@ class EditorController
         $editorModel = new EditorModel($this->admin_config, $tree_prefix, $this->editor_cls);
 
         //$editorModel->set_pers_alive();
-        $editorModel->set_hebrew_night();
         $editorModel->set_pers_gedcomnumber();
         $editorModel->set_search_name();
         $editorModel->set_marriage();

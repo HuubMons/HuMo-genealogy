@@ -147,6 +147,10 @@ class TreesModel extends AdminBaseModel
             $sql = "DELETE FROM humo_trees WHERE tree_id='" . $_POST['tree_id'] . "'";
             $this->dbh->query($sql);
 
+            // *** Remove events ***
+            $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $_POST['tree_id'] . "'";
+            $this->dbh->query($sql);
+
             // *** Remove items from table family_tree_text ***
             $sql = "DELETE FROM humo_tree_texts WHERE treetext_tree_id='" . $_POST['tree_id'] . "'";
             $this->dbh->query($sql);
@@ -163,6 +167,10 @@ class TreesModel extends AdminBaseModel
             $sql = "DELETE FROM humo_sources WHERE source_tree_id='" . $_POST['tree_id'] . "'";
             $this->dbh->query($sql);
 
+            // *** Remove repositories ***
+            $sql = "DELETE FROM humo_repositories WHERE repo_tree_id='" . $_POST['tree_id'] . "'";
+            $this->dbh->query($sql);
+
             // *** Remove texts ***
             $sql = "DELETE FROM humo_texts WHERE text_tree_id='" . $_POST['tree_id'] . "'";
             $this->dbh->query($sql);
@@ -173,10 +181,6 @@ class TreesModel extends AdminBaseModel
 
             // *** Remove addresses ***
             $sql = "DELETE FROM humo_addresses WHERE address_tree_id='" . $_POST['tree_id'] . "'";
-            $this->dbh->query($sql);
-
-            // *** Remove events ***
-            $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $_POST['tree_id'] . "'";
             $this->dbh->query($sql);
 
             // *** Remove statistics ***
@@ -198,21 +202,6 @@ class TreesModel extends AdminBaseModel
             // *** Remove adjusted glider settings ***
             $sql = "DELETE FROM humo_settings WHERE setting_variable='gslider_" . $remove . "'";
             $this->dbh->query($sql);
-
-            // *** Remove geo_tree settings for this tree ***
-            $sql = "UPDATE humo_settings SET setting_value = REPLACE(setting_value, CONCAT('@'," . $_POST['tree_id'] . ",';'), '')  WHERE setting_variable='geo_trees'";
-            $this->dbh->query($sql);
-
-            // *** Remove tree_prefix of this tree from location table (humo2_birth, humo2_death, humo2_bapt, humo2_buried)  ***
-            $loc_qry = "SELECT * FROM humo_location";
-            $loc_result = $this->dbh->query($loc_qry);
-            while ($loc_resultDb = $loc_result->fetch(PDO::FETCH_OBJ)) {
-                if ($loc_resultDb->location_status && strpos($loc_resultDb->location_status, $remove) !== false) {
-                    // only do this if the prefix appears
-                    $stat_qry = "UPDATE humo_location SET location_status = REPLACE(REPLACE(REPLACE(REPLACE(location_status, CONCAT('" . $remove . "','birth'),''),CONCAT('" . $remove . "','death'),''),CONCAT('" . $remove . "','bapt'),''),CONCAT('" . $remove . "','buried'),'')  WHERE location_id = '" . $loc_resultDb->location_id . "'";
-                    $this->dbh->query($stat_qry);
-                }
-            }
 
             unset($_POST['tree_id']);
 
@@ -318,7 +307,6 @@ class TreesModel extends AdminBaseModel
 
         // *** Change collation of tree ***
         if (isset($_POST['tree_collation'])) {
-
             $collation = $_POST['tree_collation'];
 
             $stmt1 = $this->dbh->prepare("ALTER TABLE humo_persons CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE $collation;");

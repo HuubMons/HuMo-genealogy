@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Rename places.
  */
@@ -13,10 +14,6 @@ if (!defined('ADMIN_PAGE')) {
 
 <div class="p-3 my-md-2 genealogy_search container-md">
     <div class="row">
-        <div class="col-3">
-            <?= $selectTree->select_tree($dbh, $page, $tree_id); ?>
-        </div>
-
         <div class="col-auto">
             <label for="count_places" class="col-form-label">
                 <?= $place['result']->rowCount(); ?> <?= __('Places'); ?>.
@@ -50,7 +47,7 @@ if (!defined('ADMIN_PAGE')) {
         <div class="col-auto">
             <input type="submit" name="dummy8" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
         </div>
-                -->
+        -->
     </div>
 </div>
 

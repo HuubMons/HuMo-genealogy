@@ -21,29 +21,28 @@ $found = false; // if this stays false, displays message that no problems where 
         <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid person dates:'); ?></td>
     </tr>
     <?php
-    $person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
-        WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
-    while ($persdateDb = $person->fetch()) {
-        if (isset($persdateDb['pers_birth_date']) && $persdateDb['pers_birth_date'] != '') {
-            $result = invalid($persdateDb['pers_birth_date'], $persdateDb['pers_gedcomnumber'], 'pers_birth_date');
+    $person = $db_functions->get_persons($tree_id);
+    foreach ($person as $persdateDb) {
+        if (isset($persdateDb->pers_birth_date) && $persdateDb->pers_birth_date != '') {
+            $result = invalid($persdateDb->pers_birth_date, $persdateDb->pers_gedcomnumber, 'pers_birth_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($persdateDb['pers_bapt_date']) && $persdateDb['pers_bapt_date'] != '') {
-            $result = invalid($persdateDb['pers_bapt_date'], $persdateDb['pers_gedcomnumber'], 'pers_bapt_date');
+        if (isset($persdateDb->pers_bapt_date) && $persdateDb->pers_bapt_date != '') {
+            $result = invalid($persdateDb->pers_bapt_date, $persdateDb->pers_gedcomnumber, 'pers_bapt_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($persdateDb['pers_death_date']) && $persdateDb['pers_death_date'] != '') {
-            $result = invalid($persdateDb['pers_death_date'], $persdateDb['pers_gedcomnumber'], 'pers_death_date');
+        if (isset($persdateDb->pers_death_date) && $persdateDb->pers_death_date != '') {
+            $result = invalid($persdateDb->pers_death_date, $persdateDb->pers_gedcomnumber, 'pers_death_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($persdateDb['pers_buried_date']) && $persdateDb['pers_buried_date'] != '') {
-            $result = invalid($persdateDb['pers_buried_date'], $persdateDb['pers_gedcomnumber'], 'pers_buried_date');
+        if (isset($persdateDb->pers_buried_date) && $persdateDb->pers_buried_date != '') {
+            $result = invalid($persdateDb->pers_buried_date, $persdateDb->pers_gedcomnumber, 'pers_buried_date');
         }
         if ($result === true) {
             $found = true;
@@ -62,40 +61,42 @@ $found = false; // if this stays false, displays message that no problems where 
     </tr>
     <?php
     $found = false;
-    $family = $dbh->query("SELECT fam_gedcomnumber, fam_div_date, fam_marr_church_date, fam_marr_church_notice_date, fam_marr_date, fam_marr_notice_date, fam_relation_date FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
-    while ($famdateDb = $family->fetch()) {
-        if (isset($famdateDb['fam_div_date']) && $famdateDb['fam_div_date'] != '') {
-            $result = invalid($famdateDb['fam_div_date'], $famdateDb['fam_gedcomnumber'], 'fam_div_date');
+    //$family = $dbh->query("SELECT fam_gedcomnumber, fam_div_date, fam_marr_church_date, fam_marr_church_notice_date, fam_marr_date, fam_marr_notice_date, fam_relation_date FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
+    $family = $dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
+    while ($famdate2Db = $family->fetch()) {
+        $famdateDb = $db_functions->get_family_with_id($famdate2Db['fam_id']);
+        if (isset($famdateDb->fam_div_date) && $famdateDb->fam_div_date != '') {
+            $result = invalid($famdateDb->fam_div_date, $famdateDb->fam_gedcomnumber, 'fam_div_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_church_date']) && $famdateDb['fam_marr_church_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_church_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_church_date');
+        if (isset($famdateDb->fam_marr_church_date) && $famdateDb->fam_marr_church_date != '') {
+            $result = invalid($famdateDb->fam_marr_church_date, $famdateDb->fam_gedcomnumber, 'fam_marr_church_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_church_notice_date']) && $famdateDb['fam_marr_church_notice_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_church_notice_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_church_notice_date');
+        if (isset($famdateDb->fam_marr_church_notice_date) && $famdateDb->fam_marr_church_notice_date != '') {
+            $result = invalid($famdateDb->fam_marr_church_notice_date, $famdateDb->fam_gedcomnumber, 'fam_marr_church_notice_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_date']) && $famdateDb['fam_marr_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_date');
+        if (isset($famdateDb->fam_marr_date) && $famdateDb->fam_marr_date != '') {
+            $result = invalid($famdateDb->fam_marr_date, $famdateDb->fam_gedcomnumber, 'fam_marr_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_notice_date']) && $famdateDb['fam_marr_notice_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_notice_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_notice_date');
+        if (isset($famdateDb->fam_marr_notice_date) && $famdateDb->fam_marr_notice_date != '') {
+            $result = invalid($famdateDb->fam_marr_notice_date, $famdateDb->fam_gedcomnumber, 'fam_marr_notice_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_relation_date']) && $famdateDb['fam_relation_date'] != '') {
-            $result = invalid($famdateDb['fam_relation_date'], $famdateDb['fam_gedcomnumber'], 'fam_relation_date');
+        if (isset($famdateDb->fam_relation_date) && $famdateDb->fam_relation_date != '') {
+            $result = invalid($famdateDb->fam_relation_date, $famdateDb->fam_gedcomnumber, 'fam_relation_date');
         }
         if ($result === true) {
             $found = true;

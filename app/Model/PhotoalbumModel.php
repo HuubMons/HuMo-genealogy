@@ -124,7 +124,8 @@ class PhotoalbumModel extends BaseModel
         $photoalbum['media_files'] = [];
 
         // *** Create an array of all pics with person_id's. Also check for OBJECT (Family Tree Maker GEDCOM file) ***
-        $qry = "SELECT event_event, event_kind, event_connect_kind, event_connect_id, event_gedcomnr FROM humo_events
+        $qry = "SELECT event_event, event_kind, event_connect_kind, event_connect_id, event_gedcomnr
+            FROM humo_events
             WHERE (event_tree_id='" . $this->tree_id . "' AND event_connect_kind='person' AND event_kind='picture' AND event_connect_id NOT LIKE '')
             OR (event_tree_id='" . $this->tree_id . "' AND event_kind='object')
             ORDER BY event_event";

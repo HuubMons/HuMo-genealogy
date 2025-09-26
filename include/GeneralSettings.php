@@ -260,10 +260,12 @@ class GeneralSettings
             $dbh->query("INSERT INTO humo_settings SET setting_variable='gedcom_read_order_by_fams', setting_value='n'");
         }
 
+        /*
         if (!isset($humo_option["gedcom_read_process_geo_location"])) {
             $humo_option["gedcom_read_process_geo_location"] = 'n';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='gedcom_read_process_geo_location', setting_value='n'");
         }
+        */
 
         if (!isset($humo_option["gedcom_process_pict_path"])) {
             $humo_option["gedcom_process_pict_path"] = 'file_name';
@@ -329,12 +331,6 @@ class GeneralSettings
         if (!isset($humo_option["one_name_thename"])) {
             $humo_option["one_name_thename"] = '';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='one_name_thename', setting_value=''");
-        }
-
-        if (!isset($humo_option["geo_trees"])) {
-            $geo_string = '';
-            $humo_option["geo_trees"] = $geo_string;
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value='" . $geo_string . "'");
         }
 
         // *** Slideshow_show homepage ***

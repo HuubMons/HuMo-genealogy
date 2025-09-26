@@ -85,14 +85,14 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
             <td>
                 <?php
                 // *** Process estimates/ calculated date for privacy filter ***
-                $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND (pers_cal_date='' OR pers_cal_date IS NULL)";
-
+                $person_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND (pers_cal_date='' OR pers_cal_date IS NULL)";
                 if (isset($_POST['recalculate'])) {
-                    $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
+                    $person_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'";
                 }
-
                 $person_result = $dbh->query($person_qry);
-                while ($person_db = $person_result->fetch(PDO::FETCH_OBJ)) {
+                while ($person1_db = $person_result->fetch(PDO::FETCH_OBJ)) {
+                    $person_db = $db_functions->get_person($person1_db->pers_gedcomnumber);
+
                     $pers_cal_date = '';
                     $used_item = '';
 
@@ -146,27 +146,13 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
 
                     // *** Check marriage of parents ***
                     if ($pers_cal_date == '' && $person_db->pers_famc) {
-                        $fam_qry = "SELECT fam_man, fam_woman, fam_relation_date, fam_marr_notice_date, fam_marr_date, fam_marr_church_notice_date, fam_marr_church_date, fam_div_date
-                            FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $person_db->pers_famc . "'";
-                        
-                        /*
-                        // TODO refactor (also use prepared query?)
-                        $fam_qry = "
-                            SELECT 
-                                fam_man, fam_woman,
-                                -- Marriage event
-                                (SELECT event_date FROM humo_events WHERE event_family_id = f.fam_id AND event_kind = 'marriage' LIMIT 1) AS fam_marr_date,
-                                -- Marriage church event
-                                (SELECT event_date FROM humo_events WHERE event_family_id = f.fam_id AND event_kind = 'marriage_church' LIMIT 1) AS fam_marr_church_date,
-                                -- Divorce event
-                                (SELECT event_date FROM humo_events WHERE event_family_id = f.fam_id AND event_kind = 'divorce' LIMIT 1) AS fam_div_date
-                            FROM humo_families f
-                            WHERE fam_tree_id = '" . $tree_id . "' 
-                            AND fam_gedcomnumber = '" . $person_db->pers_famc . "'";
-                        */
+                        //$fam_qry = "SELECT fam_man, fam_woman, fam_relation_date, fam_marr_notice_date, fam_marr_date, fam_marr_church_notice_date, fam_marr_church_date, fam_div_date
+                        //    FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $person_db->pers_famc . "'";
+                        //$fam_result = $dbh->query($fam_qry);
+                        //$fam_db = $fam_result->fetch(PDO::FETCH_OBJ);
 
-                        $fam_result = $dbh->query($fam_qry);
-                        $fam_db = $fam_result->fetch(PDO::FETCH_OBJ);
+                        $fam_db =  $db_functions->get_family($person_db->pers_famc);
+
                         if ($fam_db->fam_marr_date) {
                             $pers_cal_date = $fam_db->fam_marr_date;
                             $pers_cal_date = calculate_year($pers_cal_date);

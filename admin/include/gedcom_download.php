@@ -1,6 +1,8 @@
 <?php
 // *** Safety line ***
-//if (!defined('ADMIN_PAGE')){ exit; }
+//if (!defined('ADMIN_PAGE')){
+//  exit;
+//}
 
 //echo '<H1 align=center>'.__('GEDCOM file export').'</H1>';
 

@@ -7,6 +7,60 @@ if (!defined('ADMIN_PAGE')) {
 
 $limit = 2500;
 
+
+
+
+
+// *** Remove records in chunks because of InnoDb database... ***
+printf(__('Remove old family tree items from %s table...'), 'humo_events');
+echo ' ';
+ob_flush();
+flush();
+$total = $dbh->query("SELECT COUNT(*) FROM humo_events WHERE event_tree_id='" . $trees['tree_id'] . "'");
+$total = $total->fetch();
+$nr_records = $total[0];
+if ($nr_records > 0) {
+    $loop = $nr_records / $limit;
+    for ($i = 0; $i <= $loop; $i++) {
+        if ($humo_option["gedcom_read_save_pictures"] === 'y') {
+            $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_kind != 'picture' LIMIT " . $limit;
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+            $stmt->execute();
+        } else {
+            $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id LIMIT " . $limit;
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+            $stmt->execute();
+        }
+
+        echo '*';
+        ob_flush();
+        flush();
+    }
+    if ($humo_option["gedcom_read_save_pictures"] === 'y') {
+        $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id AND event_kind != 'picture'";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
+    } else {
+        $sql = "DELETE FROM humo_events WHERE event_tree_id = :tree_id";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+    echo ' ' . __('Optimize table...');
+    ob_flush();
+    flush();
+    $dbh->query("OPTIMIZE TABLE humo_events");
+}
+
+
+echo '<br>';
+
+
+
 // ob_start(); // Doesn't work. The statusbar is not updated in the browser.
 printf(__('Remove old family tree items from %s table...'), 'humo_persons');
 echo ' ';
@@ -28,6 +82,19 @@ if ($nr_records > 0) {
     $stmt = $dbh->prepare("DELETE FROM humo_persons WHERE pers_tree_id=:tree_id");
     $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
     $stmt->execute();
+
+    /*
+    // TODO Or use this code (no need for extra DELETE query at the end)
+    do {
+        $stmt = $dbh->prepare("DELETE FROM humo_persons WHERE pers_tree_id=:tree_id LIMIT $limit");
+        $stmt->bindValue(':tree_id', $trees['tree_id'], PDO::PARAM_STR);
+        $stmt->execute();
+        $deleted = $stmt->rowCount();
+        echo '*';
+        ob_flush();
+        flush();
+    } while ($deleted > 0);
+    */
 
     echo ' ' . __('Optimize table...');
     ob_flush();
@@ -275,6 +342,7 @@ $_SESSION['save_import_progress'] = 90;
 
 echo '<br>';
 
+/*
 // *** Remove records in chunks because of InnoDb database... ***
 printf(__('Remove old family tree items from %s table...'), 'humo_events');
 echo ' ';
@@ -319,6 +387,7 @@ if ($nr_records > 0) {
     flush();
     $dbh->query("OPTIMIZE TABLE humo_events");
 }
+*/
 
 // *** Update progressbar ***
 $_SESSION['save_import_progress'] = 100;

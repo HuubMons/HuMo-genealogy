@@ -8,6 +8,9 @@
 
 namespace Genealogy\Include;
 
+use Genealogy\Include\EventManager;
+use PDO;
+
 class GedcomImport
 {
     private $dbh, $tree_id, $tree_prefix, $humo_option;
@@ -24,8 +27,7 @@ class GedcomImport
     private $calculated_event_id, $calculated_connect_id;
     //private $calculated_address_id;
 
-    // *** Google geolocation ***
-    private $geocode_nr, $geocode_plac, $geocode_lati, $geocode_long, $geocode_type;
+    private $eventManager;
 
     public function __construct($dbh, $tree_id, $tree_prefix, $humo_option, $add_tree, $reassign)
     {
@@ -42,6 +44,8 @@ class GedcomImport
 
         $this->event_nr1 = 0;
         $this->event_nr2 = 0;
+
+        $this->eventManager = new EventManager($this->dbh);
 
         /**
          * Insert a temporary line into database to get latest id.
@@ -83,7 +87,9 @@ class GedcomImport
         $line2 = explode("\n", $person_array);
 
         //TEST LINE
-        //echo '<p>'; for ($z=1; $z<=count($line2)-2; $z++){ echo $z.' '.$line2[$z].'<br>'; }
+        //echo '<p>'; for ($z=1; $z<=count($line2)-2; $z++){
+        //  echo $z.' '.$line2[$z].'<br>';
+        //}
 
         // Use array for new variables.
         unset($person);  //Reset array
@@ -99,25 +105,41 @@ class GedcomImport
         $pers_name_text = '';
         $fams = '';
         $pers_famc = '';
+
         $pers_birth_date = '';
         $pers_birth_time = '';
         $pers_birth_place = '';
+        $pers_birth_place_lati = '';
+        $pers_birth_place_long = '';
         $pers_birth_text = '';
         $pers_stillborn = '';
+        $pers_birth_date_hebnight = '';
+
         $pers_bapt_date = '';
         $pers_bapt_place = '';
+        $pers_bapt_place_lati = '';
+        $pers_bapt_place_long = '';
         $pers_bapt_text = '';
         $pers_religion = '';
+
         $pers_death_date = '';
         $pers_death_time = '';
         $pers_death_place = '';
+        $pers_death_place_lati = '';
+        $pers_death_place_long = '';
         $pers_death_text = '';
-        $pers_buried_date = '';
-        $pers_buried_place = '';
-        $pers_buried_text = '';
-        $pers_cremation = '';
         $pers_death_cause = '';
         $person["pers_death_age"] = '';
+        $pers_death_date_hebnight = '';
+
+        $pers_buried_date = '';
+        $pers_buried_place = '';
+        $pers_buried_place_lati = '';
+        $pers_buried_place_long = '';
+        $pers_buried_text = '';
+        $pers_cremation = '';
+        $pers_buried_date_hebnight = '';
+
         $person["pers_cal_date"] = '';
         $pers_sexe = '';
         $person["pers_quality"] = '';
@@ -128,9 +150,6 @@ class GedcomImport
         $person["changed_date"] = '';
         $person["changed_time"] = '';
         $person["changed_user_id"] = '';
-        $pers_birth_date_hebnight = '';
-        $pers_death_date_hebnight = '';
-        $pers_buried_date_hebnight = '';
         $pers_heb_flag = '';
         $pers_alive = '';
         if ($this->gen_program == 'Haza-Data') {
@@ -154,9 +173,6 @@ class GedcomImport
 
         // *** Save sources in a seperate table ***
         $this->nrsource = 0;
-
-        // *** Location data for Google maps ***
-        $this->geocode_nr = 0;
 
         // *** For source connect table ***
         $this->connect_nr = 0;
@@ -197,7 +213,9 @@ class GedcomImport
             $this->buffer[0] = rtrim($this->buffer[0], "\n\r");  // strip newline
 
             // TEST: show memory usage
-            //if (!isset($memory)){ $memory=memory_get_usage(); }
+            //if (!isset($memory)){
+            //  $memory=memory_get_usage();
+            //}
             //$calc_memory=(memory_get_usage()-$memory);
             //echo '<br>&nbsp;&nbsp;&nbsp;'.memory_get_usage().' '.$calc_memory.'# '.$this->buffer[0];
             //$memory=memory_get_usage();
@@ -689,7 +707,9 @@ class GedcomImport
                 if ($this->buffer[7] === '2 _ADPN') {
                     $process_event = true;
                 }
-                //if ($this->buffer[7]=='1 _HEBN'){ $process_event=true; }
+                //if ($this->buffer[7]=='1 _HEBN'){
+                //  $process_event=true;
+                //}
                 if ($this->buffer[7] === '2 _HEBN') {
                     $process_event = true;
                 }
@@ -815,7 +835,9 @@ class GedcomImport
                 $this->processed = true;
                 $pers_firstname = '(?) ' . $pers_firstname;
             }
-            //if ($this->buffer[6]=='2 QUAY'){ $this->processed = true; $person["pers_quality"]=$this->process_quality(); }
+            //if ($this->buffer[6]=='2 QUAY'){
+            //  $this->processed = true; $person["pers_quality"]=$this->process_quality();
+            //}
 
             // *** Pro-gen: 1 _PATR Jans ***
             if ($this->buffer[7] === '1 _PATR') {
@@ -898,7 +920,9 @@ class GedcomImport
             // 2 NOTE De moeder trouwde met David Hoofien-de koetsier van haar
             // 3 CONT vader- en werd daarom onterft.Deze was van de fam.
             if ($this->level[1] == 'ANCI') {
-                //if (substr($this->buffer[0], 0, 6)=='1 ANCI'){ $this->processed = true; $person["pers_text"].="<br>".substr($this->buffer[0],7); }
+                //if (substr($this->buffer[0], 0, 6)=='1 ANCI'){
+                //  $this->processed = true; $person["pers_text"].="<br>".substr($this->buffer[0],7);
+                //}
                 if ($this->buffer[6] === '1 ANCI') {
                     $this->processed = true;
                     $person["pers_text"] .= substr($this->buffer[0], 7);
@@ -982,7 +1006,17 @@ class GedcomImport
                         $this->processed = true;
                         $pers_birth_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_birth_place);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $pers_birth_place_lati = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $pers_birth_place_long = $this->get_longitude();
+                    }
                 }
 
                 // *** Texts ***
@@ -1123,7 +1157,17 @@ class GedcomImport
                         $this->processed = true;
                         $pers_bapt_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_bapt_place);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $pers_bapt_place_lati = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $pers_bapt_place_long = $this->get_longitude();
+                    }
                 }
 
                 // *** Texts ***
@@ -1243,7 +1287,9 @@ class GedcomImport
                 }
 
                 // Aldfaer uses DEAT without further data!
-                // if ($this->gen_program=='ALDFAER') { $pers_alive='deceased'; }
+                // if ($this->gen_program=='ALDFAER') {
+                //  $pers_alive='deceased';
+                //}
                 // Legacy death without further date. "1 DEAT Y"
                 $pers_alive = 'deceased';
 
@@ -1254,7 +1300,7 @@ class GedcomImport
                 //}
                 if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    //dorotree programm can have multiple death dates, only first one is saved:
+                    // Dorotree programm can have multiple death dates, only first one is saved:
                     if (!$pers_death_date) {
                         $pers_death_date = trim(substr($this->buffer[0], 7));
                     }
@@ -1283,7 +1329,17 @@ class GedcomImport
                         $this->processed = true;
                         $pers_death_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_death_place);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $pers_death_place_lati = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $pers_death_place_long = $this->get_longitude();
+                    }
                 }
 
                 // *** Texts ***
@@ -1430,7 +1486,17 @@ class GedcomImport
                         $this->processed = true;
                         $pers_buried_place = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($pers_buried_place);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $pers_buried_place_lati = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $pers_buried_place_long = $this->get_longitude();
+                    }
                 }
 
                 // *** Texts ***
@@ -2415,33 +2481,10 @@ class GedcomImport
         }
 
         // *** Process estimates/ calculated date for privacy filter ***
-        if ($pers_birth_date) $person["pers_cal_date"] = $pers_birth_date;
-        elseif ($pers_bapt_date) $person["pers_cal_date"] = $pers_bapt_date;
-
-        // for Jewish dates after nightfall
-        $heb_qry = '';
-        if ($pers_heb_flag == 1) {
-            // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
-            $column_qry = $this->dbh->query('SHOW COLUMNS FROM humo_persons');
-            while ($columnDb = $column_qry->fetch()) {
-                $field_value = $columnDb['Field'];
-                $field[$field_value] = $field_value;
-            }
-            if (!isset($field['pers_birth_date_hebnight'])) {
-                $sql = "ALTER TABLE humo_persons ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_birth_date;";
-                $this->dbh->query($sql);
-            }
-            if (!isset($field['pers_death_date_hebnight'])) {
-                $sql = "ALTER TABLE humo_persons ADD pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_death_date;";
-                $this->dbh->query($sql);
-            }
-            if (!isset($field['pers_buried_date_hebnight'])) {
-                $sql = "ALTER TABLE humo_persons ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_buried_date;";
-                $this->dbh->query($sql);
-            }
-            // we have to add these values to the query below
-            $heb_qry .= "pers_birth_date_hebnight='" . $pers_birth_date_hebnight . "',
-                pers_death_date_hebnight='" . $pers_death_date_hebnight . "', pers_buried_date_hebnight='" . $pers_buried_date_hebnight . "',";
+        if ($pers_birth_date) {
+            $person["pers_cal_date"] = $pers_birth_date;
+        } elseif ($pers_bapt_date) {
+            $person["pers_cal_date"] = $pers_bapt_date;
         }
 
         // Lastname prefixes, THIS PART SLOWS DOWN READING A BIT!!!
@@ -2471,26 +2514,8 @@ class GedcomImport
             pers_prefix = :pers_prefix,
             pers_patronym = :pers_patronym,
             pers_text = :pers_text,
-            pers_birth_date = :pers_birth_date,
-            pers_birth_time = :pers_birth_time,
-            pers_birth_place = :pers_birth_place,
-            pers_birth_text = :pers_birth_text,
-            pers_stillborn = :pers_stillborn,
-            pers_bapt_date = :pers_bapt_date,
-            pers_bapt_place = :pers_bapt_place,
-            pers_bapt_text = :pers_bapt_text,
             pers_religion = :pers_religion,
-            pers_death_date = :pers_death_date,
-            pers_death_time = :pers_death_time,
-            pers_death_place = :pers_death_place,
-            pers_death_text = :pers_death_text,
-            pers_buried_date = :pers_buried_date,
-            pers_buried_place = :pers_buried_place,
-            pers_buried_text = :pers_buried_text,
             pers_cal_date = :pers_cal_date,
-            pers_cremation = :pers_cremation,
-            pers_death_cause = :pers_death_cause,
-            pers_death_age = :pers_death_age,
             pers_sexe = :pers_sexe,
             pers_own_code = :pers_own_code,
             pers_quality = :pers_quality,
@@ -2513,26 +2538,8 @@ class GedcomImport
             ':pers_prefix' => $person["pers_prefix"],
             ':pers_patronym' => $person["pers_patronym"],
             ':pers_text' => $person["pers_text"],
-            ':pers_birth_date' => $this->process_date($pers_birth_date),
-            ':pers_birth_time' => $pers_birth_time,
-            ':pers_birth_place' => $pers_birth_place,
-            ':pers_birth_text' => $pers_birth_text,
-            ':pers_stillborn' => $pers_stillborn,
-            ':pers_bapt_date' => $this->process_date($pers_bapt_date),
-            ':pers_bapt_place' => $pers_bapt_place,
-            ':pers_bapt_text' => $pers_bapt_text,
             ':pers_religion' => $pers_religion,
-            ':pers_death_date' => $this->process_date($pers_death_date),
-            ':pers_death_time' => $pers_death_time,
-            ':pers_death_place' => $pers_death_place,
-            ':pers_death_text' => $pers_death_text,
-            ':pers_buried_date' => $this->process_date($pers_buried_date),
-            ':pers_buried_place' => $pers_buried_place,
-            ':pers_buried_text' => $pers_buried_text,
             ':pers_cal_date' => $this->process_date($person["pers_cal_date"]),
-            ':pers_cremation' => $pers_cremation,
-            ':pers_death_cause' => $pers_death_cause,
-            ':pers_death_age' => $person["pers_death_age"],
             ':pers_sexe' => $pers_sexe,
             ':pers_own_code' => $person["pers_own_code"],
             ':pers_quality' => $person["pers_quality"],
@@ -2541,6 +2548,7 @@ class GedcomImport
             ':pers_changed_user_id' => $person["changed_user_id"],
             ':pers_new_datetime' => date('Y-m-d H:i:s', strtotime($person["new_date"] . ' ' . $person["new_time"])),
         ]);
+
 
         // TODO debug isn't usefull anymore because prepared query is used
         if (isset($_POST['debug_mode']) && $_SESSION['debug_person'] < 2) {
@@ -2565,7 +2573,7 @@ class GedcomImport
         }
 
         // *** Empty variable to free memory ***
-        unset($person);
+        //unset($person);
 
 
         // *** Save sources ***
@@ -2621,6 +2629,7 @@ class GedcomImport
             }
             //$source_id=$this->dbh->lastInsertId();
             unset($this->source);
+            $this->nrsource = 0;
         }
 
         // *** Save unprocessed items ***
@@ -2666,37 +2675,9 @@ class GedcomImport
             }
 
             unset($this->address_array);
+            $this->nraddress2 = 0;
         }
         // unprocessed items?????
-
-
-        // *** Store geolocations in humo_locations table ***
-        if ($this->geocode_nr > 0) {
-            for ($i = 1; $i <= $this->geocode_nr; $i++) {
-                $stmt = $this->dbh->prepare("SELECT * FROM humo_location WHERE location_location = :location_location");
-                $stmt->execute([':location_location' => $this->geocode_plac[$i]]);
-                $loc_qry = $stmt;
-
-                if (!$loc_qry->rowCount() && $this->geocode_type[$this->geocode_nr] != "") {
-                    // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
-                    $geosql = "INSERT IGNORE INTO humo_location SET
-                        location_location = :location_location,
-                        location_lat = :location_lat,
-                        location_lng = :location_lng";
-                    $stmt = $this->dbh->prepare($geosql);
-                    $stmt->execute([
-                        ':location_location' => $this->geocode_plac[$i],
-                        ':location_lat' => $this->geocode_lati[$i],
-                        ':location_lng' => $this->geocode_long[$i]
-                    ]);
-                }
-            }
-            // TODO: check if this is still needed.
-            if (strpos($this->humo_option['geo_trees'], "@" . $this->tree_id . ";") === false) {
-                $this->dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $this->tree_id . ";') WHERE setting_variable = 'geo_trees'");
-                $this->humo_option['geo_trees'] .= "@" . $this->tree_id . ";";
-            }
-        }
 
         // *** Save events in seperate table ***
         if ($this->event_nr > 0) {
@@ -2721,45 +2702,35 @@ class GedcomImport
                     }
                 }
 
-                $gebeurtsql = "INSERT IGNORE INTO humo_events SET
-                    event_tree_id = :event_tree_id,
-                    event_order = :event_order,
-                    event_connect_kind = :event_connect_kind,
-                    event_connect_id = :event_connect_id,";
-                if (isset($this->event['connect_id2'][$i])) {
-                    $gebeurtsql .= "
-                    event_connect_kind2 = :event_connect_kind2,
-                    event_connect_id2 = :event_connect_id2,";
-                }
-                $gebeurtsql .= "
-                    event_kind = :event_kind,
-                    event_event = :event_event,
-                    event_event_extra = :event_event_extra,
-                    event_gedcom = :event_gedcom,
-                    event_date = :event_date,
-                    event_text = :event_text,
-                    event_place = :event_place";
 
-                $params = [
-                    ':event_tree_id' => $this->tree_id,
-                    ':event_order' => $event_order,
-                    ':event_connect_kind' => $this->event['connect_kind'][$i],
-                    ':event_connect_id' => $this->event['connect_id'][$i],
-                    ':event_kind' => $this->event['kind'][$i],
-                    ':event_event' => $this->event['event'][$i],
-                    ':event_event_extra' => $this->event['event_extra'][$i],
-                    ':event_gedcom' => $this->event['gedcom'][$i],
-                    ':event_date' => $this->process_date($this->event['date'][$i]),
-                    ':event_text' => $this->event['text'][$i],
-                    ':event_place' => $this->event['place'][$i],
+                // TODO check variable name. Should be general events?
+                //'event_date_hebnight' => isset($_POST["pers_birth_date_hebnight"]) ? $_POST["pers_birth_date_hebnight"] : ''
+                $birth_event = [
+                    'tree_id' => $this->tree_id,
+                    'event_order' => $event_order,
+                    'event_person_id' => $pers_id,
+                    'event_connect_kind' => $this->event['connect_kind'][$i],
+                    'event_connect_id' => $this->event['connect_id'][$i],
+                    'event_kind' => $this->event['kind'][$i],
+
+                    'event_gedcom' => $this->event['gedcom'][$i],
+                    'event_date' => $this->event['date'][$i],
+                    'event_place' => $this->event['place'][$i],
+                    'event_text' => $this->event['text'][$i],
                 ];
-                if (isset($this->event['connect_id2'][$i])) {
-                    $params[':event_connect_kind2'] = $this->event['connect_kind2'][$i];
-                    $params[':event_connect_id2'] = $this->event['connect_id2'][$i];
+                if (isset($this->event['event'][$i])) {
+                    $birth_event['event_event'] = $this->event['event'][$i];
                 }
 
-                $stmt = $this->dbh->prepare($gebeurtsql);
-                $stmt->execute($params);
+                if (isset($this->event['connect_id2'][$i])) {
+                    $birth_event['event_connect_kind2'] = $this->event['connect_kind2'][$i];
+                    $birth_event['event_connect_id2'] = $this->event['connect_id2'][$i];
+                }
+
+                $this->eventManager->update_event($birth_event);
+
+
+
 
                 //TEST LINES to check calculated_event_id.
                 //echo $this->event['calculated_event_id'][$i] . ' ';
@@ -2769,8 +2740,141 @@ class GedcomImport
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->event);
+            $this->event_nr = 0;
             //echo ' '.memory_get_usage().'@ ';
         }
+
+
+        // *** Update of birth, baptise etc. is done after update of events table. Otherwise $this->event_nr will be wrong ***
+        $update_birth = false;
+        if (
+            !empty($pers_birth_date) ||
+            !empty($pers_birth_time) ||
+            !empty($pers_birth_place) ||
+            !empty($pers_birth_text) ||
+            !empty($pers_stillborn) ||
+            !empty($pers_birth_date_hebnight)
+        ) {
+            $update_birth = true;
+        }
+
+        if ($update_birth) {
+            $birth_event = [
+                'tree_id' => $this->tree_id,
+                'event_person_id' => $pers_id,
+                'event_connect_kind' => 'person',
+                'event_connect_id' => $pers_gedcomnumber,
+                'event_kind' => 'birth',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($pers_birth_date),
+                'event_time' => $pers_birth_time,
+                'event_place' => $pers_birth_place,
+                'event_place_lat' => $pers_birth_place_lati,
+                'event_place_lon' => $pers_birth_place_long,
+                'event_text' => $pers_birth_text,
+                'event_stillborn' => !empty($pers_stillborn) ? 'y' : '',
+                'event_date_hebnight' => isset($pers_birth_date_hebnight) ? $pers_birth_date_hebnight : ''
+            ];
+            $this->eventManager->update_event($birth_event);
+        }
+
+        // Add baptise event if any baptise data is present
+        $update_bapt = false;
+        if (
+            !empty($pers_bapt_date) ||
+            !empty($pers_bapt_place) ||
+            !empty($pers_bapt_text)
+        ) {
+            $update_bapt = true;
+        }
+
+        if ($update_bapt) {
+            $bapt_event = [
+                'tree_id' => $this->tree_id,
+                'event_person_id' => $pers_id,
+                'event_connect_kind' => 'person',
+                'event_connect_id' => $pers_gedcomnumber,
+                'event_kind' => 'baptism',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($pers_bapt_date),
+                'event_place_lat' => $pers_bapt_place_lati,
+                'event_place_lon' => $pers_bapt_place_long,
+                'event_place' => $pers_bapt_place,
+                'event_text' => $pers_bapt_text,
+            ];
+            $this->eventManager->update_event($bapt_event);
+        }
+
+        // Add death event if any death data is present
+        $update_death = false;
+        if (
+            !empty($pers_death_date) ||
+            !empty($pers_death_time) ||
+            !empty($pers_death_place) ||
+            !empty($pers_death_text) ||
+            !empty($pers_death_cause) ||
+            !empty($person["pers_death_age"]) ||
+            !empty($pers_death_date_hebnight)
+        ) {
+            $update_death = true;
+        }
+
+        if ($update_death) {
+            $death_event = [
+                'tree_id' => $this->tree_id,
+                'event_person_id' => $pers_id,
+                'event_connect_kind' => 'person',
+                'event_connect_id' => $pers_gedcomnumber,
+                'event_kind' => 'death',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($pers_death_date),
+                'event_time' => $pers_death_time,
+                'event_place' => $pers_death_place,
+                'event_place_lat' => $pers_death_place_lati,
+                'event_place_lon' => $pers_death_place_long,
+                'event_text' => $pers_death_text,
+                'event_cause' => $pers_death_cause,
+                'event_pers_age' => $person["pers_death_age"],
+                'event_date_hebnight' => isset($pers_death_date_hebnight) ? $pers_death_date_hebnight : ''
+            ];
+            $this->eventManager->update_event($death_event);
+        }
+
+        // Add burial event if any burial data is present
+        $update_buried = false;
+        if (
+            !empty($pers_buried_date) ||
+            !empty($pers_buried_place) ||
+            !empty($pers_buried_text) ||
+            !empty($pers_cremation) ||
+            !empty($pers_buried_date_hebnight)
+        ) {
+            $update_buried = true;
+        }
+
+        if ($update_buried) {
+            $buried_event = [
+                'tree_id' => $this->tree_id,
+                'event_person_id' => $pers_id,
+                'event_connect_kind' => 'person',
+                'event_connect_id' => $pers_gedcomnumber,
+                'event_kind' => 'burial',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($pers_buried_date),
+                'event_place' => $pers_buried_place,
+                'event_place_lat' => $pers_buried_place_lati,
+                'event_place_lon' => $pers_buried_place_long,
+                'event_text' => $pers_buried_text,
+                'event_cremation' => $pers_cremation,
+                'event_date_hebnight' => isset($pers_buried_date_hebnight) ? $pers_buried_date_hebnight : ''
+            ];
+            $this->eventManager->update_event($buried_event);
+        }
+
 
         // *** Add a general source to all persons in this GEDCOM file (source_id is temporary number!) ***
         if ($this->humo_option["gedcom_read_add_source"] == 'y') {
@@ -2845,6 +2949,7 @@ class GedcomImport
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->connect);
+            $this->connect_nr = 0;
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -2877,31 +2982,50 @@ class GedcomImport
         $family["fam_religion"] = '';
         $family["fam_kind"] = '';
         $family["fam_text"] = '';
+
         $family["fam_marr_church_notice_date"] = '';
         $family["fam_marr_church_notice_place"] = '';
+        $family["fam_marr_church_notice_place_lati"] = '';
+        $family["fam_marr_church_notice_place_long"] = '';
         $family["fam_marr_church_notice_text"] = '';
+
         $family["fam_marr_church_date"] = '';
         $family["fam_marr_church_place"] = '';
+        $family["fam_marr_church_place_lati"] = '';
+        $family["fam_marr_church_place_long"] = '';
         $family["fam_marr_church_text"] = '';
+
         // *** Living together ***
         $family["fam_relation_date"] = '';
         $family["fam_relation_place"] = '';
+        $family["fam_relation_place_lati"] = '';
+        $family["fam_relation_place_long"] = '';
         $family["fam_relation_text"] = '';
         $family["fam_relation_end_date"] = '';
         $family["fam_man_age"] = '';
         $family["fam_woman_age"] = '';
+
         $family["fam_marr_notice_date"] = '';
         $family["fam_marr_notice_place"] = '';
+        $family["fam_marr_notice_place_lati"] = '';
+        $family["fam_marr_notice_place_long"] = '';
         $family["fam_marr_notice_text"] = '';
+
         $family["fam_marr_date"] = '';
         $family["fam_marr_place"] = '';
+        $family["fam_marr_place_lati"] = '';
+        $family["fam_marr_place_long"] = '';
         $family["fam_marr_text"] = '';
         $family["fam_marr_authority"] = '';
+
         $family["fam_div"] = false;
         $family["fam_div_date"] = '';
         $family["fam_div_place"] = '';
+        $family["fam_div_place_lati"] = '';
+        $family["fam_div_place_long"] = '';
         $family["fam_div_text"] = '';
         $family["fam_div_authority"] = '';
+
         $family["fam_cal_date"] = '';
         $family["fam_unprocessed_tags"] = '';
 
@@ -2931,8 +3055,6 @@ class GedcomImport
 
         // *** Save sources in a seperate table ***
         $this->nrsource = 0;
-
-        $this->geocode_nr = 0;
 
         // *** Process 1st line ***
         $this->buffer[0] = $line2[0];
@@ -3223,7 +3345,17 @@ class GedcomImport
                         $this->processed = true;
                         $family["fam_marr_church_notice_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_church_notice_place"]);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $family["fam_marr_church_notice_place_lati"] = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $family["fam_marr_church_notice_place_long"] = $this->get_longitude();
+                    }
                 }
 
                 if ($this->level[2] == 'NOTE') {
@@ -3274,7 +3406,17 @@ class GedcomImport
                         $this->processed = true;
                         $family["fam_marr_notice_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_notice_place"]);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $family["fam_marr_notice_place_lati"] = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $family["fam_marr_notice_place_long"] = $this->get_longitude();
+                    }
                 }
 
                 if ($this->level[2] == 'NOTE') {
@@ -3484,7 +3626,17 @@ class GedcomImport
                         $this->processed = true;
                         $family["fam_marr_church_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_church_place"]);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $family["fam_marr_church_place_lati"] = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $family["fam_marr_church_place_long"] = $this->get_longitude();
+                    }
                 }
 
                 if ($this->level[2] == 'NOTE') {
@@ -3531,7 +3683,17 @@ class GedcomImport
                         $this->processed = true;
                         $family["fam_marr_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_marr_place"]);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $family["fam_marr_place_lati"] = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $family["fam_marr_place_long"] = $this->get_longitude();
+                    }
                 }
 
                 if ($this->level[2] == 'NOTE') {
@@ -3616,7 +3778,17 @@ class GedcomImport
                         $this->processed = true;
                         $family["fam_" . $finrelation . "_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_" . $finrelation . "_place"]);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $family["fam_" . $finrelation . "_place_lati"] = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $family["fam_" . $finrelation . "_place_long"] = $this->get_longitude();
+                    }
                 }
 
                 //TODO check these lines.
@@ -3684,7 +3856,9 @@ class GedcomImport
                 }
                 if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_relation_date"])  $family["fam_relation_date"] = trim(substr($this->buffer[0], 7));
+                    if (!$family["fam_relation_date"]) {
+                        $family["fam_relation_date"] = trim(substr($this->buffer[0], 7));
+                    }
                 }
             }
             if ($this->level[1] == '_END') {
@@ -3693,7 +3867,9 @@ class GedcomImport
                 }
                 if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_relation_end_date"])  $family["fam_relation_end_date"] = trim(substr($this->buffer[0], 7));
+                    if (!$family["fam_relation_end_date"]) {
+                        $family["fam_relation_end_date"] = trim(substr($this->buffer[0], 7));
+                    }
                 }
             }
 
@@ -3708,7 +3884,9 @@ class GedcomImport
                 }
                 if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_relation_date"])  $family["fam_relation_date"] = substr($this->buffer[0], 7);
+                    if (!$family["fam_relation_date"]) {
+                        $family["fam_relation_date"] = substr($this->buffer[0], 7);
+                    }
                 }
 
                 if ($this->level[2] == 'PLAC') {
@@ -3716,7 +3894,17 @@ class GedcomImport
                         $this->processed = true;
                         $family["fam_relation_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_relation_place"]);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $family["fam_relation_place_lati"] = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $family["fam_relation_place_long"] = $this->get_longitude();
+                    }
                 }
 
                 if ($this->level[2] == 'NOTE') {
@@ -3752,7 +3940,9 @@ class GedcomImport
 
                 if ($this->buffer[6] === '2 DATE') {
                     $this->processed = true;
-                    if (!$family["fam_div_date"])  $family["fam_div_date"] = trim(substr($this->buffer[0], 7));
+                    if (!$family["fam_div_date"]) {
+                        $family["fam_div_date"] = trim(substr($this->buffer[0], 7));
+                    }
                 }
 
                 if ($this->level[2] == 'PLAC') {
@@ -3760,7 +3950,17 @@ class GedcomImport
                         $this->processed = true;
                         $family["fam_div_place"] = $this->process_place(substr($this->buffer[0], 7));
                     }
-                    $this->process_places($family["fam_div_place"]);
+
+                    // *** Get latitude and longitude ***
+                    if (substr($this->buffer[0], 0, 5) === '3 MAP') {
+                        $this->processed = true;
+                    } elseif ($this->buffer[6] === '4 LATI') {
+                        $this->processed = true;
+                        $family["fam_div_place_lati"] = $this->get_latitude();
+                    } elseif ($this->buffer[6] === '4 LONG') {
+                        $this->processed = true;
+                        $family["fam_div_place_long"] = $this->get_longitude();
+                    }
                 }
 
                 if ($this->level[2] == 'NOTE') {
@@ -4027,7 +4227,9 @@ class GedcomImport
             if ($this->buffer[0] == '2 ADDR') {
                 $this->processed = true;
             }
-            //if ($this->buffer[0]=='1 RESI'){ $this->processed = true; }
+            //if ($this->buffer[0]=='1 RESI'){
+            //  $this->processed = true;
+            //}
             if ($this->buffer[0] == '1 REPO') {
                 $this->processed = true;
             }
@@ -4125,35 +4327,7 @@ class GedcomImport
             $family["fam_cal_date"] = $family["fam_marr_church_date"];
         }
 
-        // for Jewish dates after nightfall
-        $heb_qry = '';
-        if ($heb_flag == 1) {
-            // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
-            $column_qry = $this->dbh->query('SHOW COLUMNS FROM humo_families');
-            while ($columnDb = $column_qry->fetch()) {
-                $field_value = $columnDb['Field'];
-                $field[$field_value] = $field_value;
-            }
-            if (!isset($field['fam_marr_notice_date_hebnight'])) {
-                $sql = "ALTER TABLE humo_families ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_notice_date;";
-                $this->dbh->query($sql);
-            }
-            if (!isset($field['fam_marr_date_hebnight'])) {
-                $sql = "ALTER TABLE humo_families ADD fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_date;";
-                $this->dbh->query($sql);
-            }
-            if (!isset($field['fam_marr_church_notice_date_hebnight'])) {
-                $sql = "ALTER TABLE humo_families ADD fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_notice_date;";
-                $this->dbh->query($sql);
-            }
-            if (!isset($field['fam_marr_church_date_hebnight'])) {
-                $sql = "ALTER TABLE humo_families ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_date;";
-                $this->dbh->query($sql);
-            }
-            // we have to add these values to the query below
-            $heb_qry .= "fam_marr_notice_date_hebnight='" . $family["fam_marr_notice_date_hebnight"] . "',fam_marr_date_hebnight='" . $family["fam_marr_date_hebnight"] . "',fam_marr_church_notice_date_hebnight='" . $family["fam_marr_church_notice_date_hebnight"] . "',fam_marr_church_date_hebnight='" . $family["fam_marr_church_date_hebnight"] . "',";
-        }
-
+        // *** Save data ***
         $sql = "INSERT IGNORE INTO humo_families SET
             fam_tree_id = :fam_tree_id,
             fam_gedcomnumber = :fam_gedcomnumber,
@@ -4165,27 +4339,6 @@ class GedcomImport
             fam_religion = :fam_religion,
             fam_kind = :fam_kind,
             fam_text = :fam_text,
-            fam_marr_church_notice_date = :fam_marr_church_notice_date,
-            fam_marr_church_notice_place = :fam_marr_church_notice_place,
-            fam_marr_church_notice_text = :fam_marr_church_notice_text,
-            fam_marr_church_date = :fam_marr_church_date,
-            fam_marr_church_place = :fam_marr_church_place,
-            fam_marr_church_text = :fam_marr_church_text,
-            fam_relation_date = :fam_relation_date,
-            fam_relation_place = :fam_relation_place,
-            fam_relation_text = :fam_relation_text,
-            fam_relation_end_date = :fam_relation_end_date,
-            fam_marr_notice_date = :fam_marr_notice_date,
-            fam_marr_notice_place = :fam_marr_notice_place,
-            fam_marr_notice_text = :fam_marr_notice_text,
-            fam_marr_date = :fam_marr_date,
-            fam_marr_place = :fam_marr_place,
-            fam_marr_text = :fam_marr_text,
-            fam_marr_authority = :fam_marr_authority,
-            fam_div_date = :fam_div_date,
-            fam_div_place = :fam_div_place,
-            fam_div_text = :fam_div_text,
-            fam_div_authority = :fam_div_authority,
             fam_cal_date = :fam_cal_date,
             fam_new_user_id = :fam_new_user_id,
             fam_changed_user_id = :fam_changed_user_id,
@@ -4203,27 +4356,6 @@ class GedcomImport
             ':fam_religion' => $family["fam_religion"],
             ':fam_kind' => $family["fam_kind"],
             ':fam_text' => $family["fam_text"],
-            ':fam_marr_church_notice_date' => $this->process_date($family["fam_marr_church_notice_date"]),
-            ':fam_marr_church_notice_place' => $family["fam_marr_church_notice_place"],
-            ':fam_marr_church_notice_text' => $family["fam_marr_church_notice_text"],
-            ':fam_marr_church_date' => $this->process_date($family["fam_marr_church_date"]),
-            ':fam_marr_church_place' => $family["fam_marr_church_place"],
-            ':fam_marr_church_text' => $family["fam_marr_church_text"],
-            ':fam_relation_date' => $this->process_date($family["fam_relation_date"]),
-            ':fam_relation_place' => $family["fam_relation_place"],
-            ':fam_relation_text' => $family["fam_relation_text"],
-            ':fam_relation_end_date' => $this->process_date($family["fam_relation_end_date"]),
-            ':fam_marr_notice_date' => $this->process_date($family["fam_marr_notice_date"]),
-            ':fam_marr_notice_place' => $family["fam_marr_notice_place"],
-            ':fam_marr_notice_text' => $family["fam_marr_notice_text"],
-            ':fam_marr_date' => $this->process_date($family["fam_marr_date"]),
-            ':fam_marr_place' => $family["fam_marr_place"],
-            ':fam_marr_text' => $family["fam_marr_text"],
-            ':fam_marr_authority' => $family["fam_marr_authority"],
-            ':fam_div_date' => $this->process_date($family["fam_div_date"]),
-            ':fam_div_place' => $family["fam_div_place"],
-            ':fam_div_text' => $family["fam_div_text"],
-            ':fam_div_authority' => $family["fam_div_authority"],
             ':fam_cal_date' => $this->process_date($family["fam_cal_date"]),
             ':fam_new_user_id' => $family["new_user_id"],
             ':fam_changed_user_id' => $family["changed_user_id"],
@@ -4300,6 +4432,7 @@ class GedcomImport
             }
             //$source_id=$this->dbh->lastInsertId();
             unset($this->source);
+            $this->nrsource = 0;
         }
         // Unprocessed items???
 
@@ -4328,42 +4461,18 @@ class GedcomImport
                 ]);
             }
             unset($this->address_array);
+            $this->nraddress2 = 0;
         }
         // Unprocessed items???
-
-        // store geolocations in humo_locations table
-        if ($this->geocode_nr > 0) {
-            for ($i = 1; $i <= $this->geocode_nr; $i++) {
-                $stmt = $this->dbh->prepare("SELECT * FROM humo_location WHERE location_location = :location_location");
-                $stmt->execute([':location_location' => $this->geocode_plac[$i]]);
-                $loc_qry = $stmt;
-
-                if (!$loc_qry->rowCount() && $this->geocode_type[$this->geocode_nr] != "") {
-                    // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
-                    $geosql = "INSERT IGNORE INTO humo_location SET
-                        location_location = :location_location,
-                        location_lat = :location_lat,
-                        location_lng = :location_lng";
-                    $stmt = $this->dbh->prepare($geosql);
-                    $stmt->execute([
-                        ':location_location' => $this->geocode_plac[$i],
-                        ':location_lat' => $this->geocode_lati[$i],
-                        ':location_lng' => $this->geocode_long[$i]
-                    ]);
-                }
-            }
-            if (strpos($this->humo_option['geo_trees'], "@" . $this->tree_id . ";") === false) {
-                $this->dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@" . $this->tree_id . ";') WHERE setting_variable = 'geo_trees'");
-                $this->humo_option['geo_trees'] .= "@" . $this->tree_id . ";";
-            }
-        }
 
         // *** Save events ***
         if ($this->event_nr > 0) {
             $event_order = 0;
             $check_event_kind = $this->event['kind']['1'];
             for ($i = 1; $i <= $this->event_nr; $i++) {
-                //if ($i==1){ $check_event_kind=$this->event['kind'][$i]; }
+                //if ($i==1){
+                //  $check_event_kind=$this->event['kind'][$i];
+                //}
                 $event_order++;
                 if ($check_event_kind != $this->event['kind'][$i]) {
                     $event_order = 1;
@@ -4373,52 +4482,181 @@ class GedcomImport
                     $this->event['text'][$i] = $this->reassign_ged($this->event['text'][$i], 'N');
                 }
 
-                $gebeurtsql = "INSERT IGNORE INTO humo_events SET
-                    event_tree_id = :event_tree_id,
-                    event_order = :event_order,
-                    event_connect_kind = :event_connect_kind,
-                    event_connect_id = :event_connect_id,";
-                if (isset($this->event['connect_id2'][$i])) {
-                    $gebeurtsql .= "
-                    event_connect_kind2 = :event_connect_kind2,
-                    event_connect_id2 = :event_connect_id2,";
-                }
-                $gebeurtsql .= "
-                    event_kind = :event_kind,
-                    event_event = :event_event,
-                    event_event_extra = :event_event_extra,
-                    event_gedcom = :event_gedcom,
-                    event_date = :event_date,
-                    event_text = :event_text,
-                    event_place = :event_place";
 
-                $params = [
-                    ':event_tree_id' => $this->tree_id,
-                    ':event_order' => $event_order,
-                    ':event_connect_kind' => $this->event['connect_kind'][$i],
-                    ':event_connect_id' => $this->event['connect_id'][$i],
-                    ':event_kind' => $this->event['kind'][$i],
-                    ':event_event' => $this->event['event'][$i],
-                    ':event_event_extra' => $this->event['event_extra'][$i],
-                    ':event_gedcom' => $this->event['gedcom'][$i],
-                    ':event_date' => $this->process_date($this->event['date'][$i]),
-                    ':event_text' => $this->event['text'][$i],
-                    ':event_place' => $this->event['place'][$i],
+                // TODO TEST $relation_event.
+                //'event_date_hebnight' => isset($_POST["pers_birth_date_hebnight"]) ? $_POST["pers_birth_date_hebnight"] : ''
+                $relation_event = [
+                    'tree_id' => $this->tree_id,
+                    'event_order' => $event_order,
+                    'event_relation_id' => $fam_id,
+                    'event_connect_kind' => $this->event['connect_kind'][$i],
+                    'event_connect_id' => $this->event['connect_id'][$i],
+                    'event_kind' => $this->event['kind'][$i],
+                    'event_gedcom' => $this->event['gedcom'][$i],
+                    'event_date' => $this->process_date($this->event['date'][$i]),
+                    'event_place' => $this->event['place'][$i],
+                    'event_text' => $this->event['text'][$i],
                 ];
+                if (isset($this->event['event'][$i])) {
+                    $relation_event['event_event'] =  $this->event['event'][$i];
+                }
                 if (isset($this->event['connect_id2'][$i])) {
-                    $params[':event_connect_kind2'] = $this->event['connect_kind2'][$i];
-                    $params[':event_connect_id2'] = $this->event['connect_id2'][$i];
+                    $relation_event['event_connect_kind2'] = $this->event['connect_kind2'][$i];
+                    $relation_event['event_connect_id2'] = $this->event['connect_id2'][$i];
                 }
 
-                $stmt = $this->dbh->prepare($gebeurtsql);
-                $stmt->execute($params);
+                $this->eventManager->update_event($relation_event);
             }
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->event);
+            $this->event_nr = 0;
             //$event=null;
             //echo ' '.memory_get_usage().'@ ';
+        }
+
+
+        // *** These events are saved seperately after events table update. Otherwise $this->event_nr will be wrong ***
+        if (
+            !empty($family["fam_relation_date"]) ||
+            !empty($family["fam_relation_place"]) ||
+            !empty($family["fam_relation_text"]) ||
+            !empty($family["fam_relation_end_date"])
+        ) {
+            $relation_event = [
+                'tree_id' => $this->tree_id,
+                'event_relation_id' => $fam_id,
+                'event_connect_kind' => 'family',
+                'event_connect_id' => $gedcomnumber,
+                'event_kind' => 'relation',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($family["fam_relation_date"]),
+                'event_place' => $family["fam_relation_place"],
+                'event_place_lat' => $family["fam_relation_place_lati"],
+                'event_place_lon' => $family["fam_relation_place_long"],
+                'event_text' => $family["fam_relation_text"],
+                'event_end_date' => $this->process_date($family["fam_relation_end_date"])
+            ];
+            $this->eventManager->update_event($relation_event);
+        }
+
+        // Add fam_marr_notice event if any marriage notice data is present
+        if (
+            !empty($family["fam_marr_notice_date"]) ||
+            !empty($family["fam_marr_notice_place"]) ||
+            !empty($family["fam_marr_notice_text"])
+        ) {
+            $marr_notice_event = [
+                'tree_id' => $this->tree_id,
+                'event_relation_id' => $fam_id,
+                'event_connect_kind' => 'family',
+                'event_connect_id' => $gedcomnumber,
+                'event_kind' => 'marriage_notice',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($family["fam_marr_notice_date"]),
+                'event_place' => $family["fam_marr_notice_place"],
+                'event_place_lat' => $family["fam_marr_notice_place_lati"],
+                'event_place_lon' => $family["fam_marr_notice_place_long"],
+                'event_text' => $family["fam_marr_notice_text"],
+            ];
+            $this->eventManager->update_event($marr_notice_event);
+        }
+
+        // Add fam_marr event if any marriage data is present
+        if (
+            !empty($family["fam_marr_date"]) ||
+            !empty($family["fam_marr_place"]) ||
+            !empty($family["fam_marr_text"])
+        ) {
+            $marr_event = [
+                'tree_id' => $this->tree_id,
+                'event_relation_id' => $fam_id,
+                'event_connect_kind' => 'family',
+                'event_connect_id' => $gedcomnumber,
+                'event_kind' => 'marriage',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($family["fam_marr_date"]),
+                'event_place' => $family["fam_marr_place"],
+                'event_place_lat' => $family["fam_marr_place_lati"],
+                'event_place_lon' => $family["fam_marr_place_long"],
+                'event_text' => $family["fam_marr_text"],
+            ];
+            $this->eventManager->update_event($marr_event);
+        }
+
+        // Add fam_marr_church_notice event if any church marriage notice data is present
+        if (
+            !empty($family["fam_marr_church_notice_date"]) ||
+            !empty($family["fam_marr_church_notice_place"]) ||
+            !empty($family["fam_marr_church_notice_text"])
+        ) {
+            $marr_church_notice_event = [
+                'tree_id' => $this->tree_id,
+                'event_relation_id' => $fam_id,
+                'event_connect_kind' => 'family',
+                'event_connect_id' => $gedcomnumber,
+                'event_kind' => 'marr_church_notice',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($family["fam_marr_church_notice_date"]),
+                'event_place' => $family["fam_marr_church_notice_place"],
+                'event_place_lat' => $family["fam_marr_church_notice_place_lati"],
+                'event_place_lon' => $family["fam_marr_church_notice_place_long"],
+                'event_text' => $family["fam_marr_church_notice_text"],
+            ];
+            $this->eventManager->update_event($marr_church_notice_event);
+        }
+
+        // Add fam_marr_church event if any church marriage data is present
+        if (
+            !empty($family["fam_marr_church_date"]) ||
+            !empty($family["fam_marr_church_place"]) ||
+            !empty($family["fam_marr_church_text"])
+        ) {
+            $marr_church_event = [
+                'tree_id' => $this->tree_id,
+                'event_relation_id' => $fam_id,
+                'event_connect_kind' => 'family',
+                'event_connect_id' => $gedcomnumber,
+                'event_kind' => 'marr_church',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($family["fam_marr_church_date"]),
+                'event_place' => $family["fam_marr_church_place"],
+                'event_place_lat' => $family["fam_marr_church_place_lati"],
+                'event_place_lon' => $family["fam_marr_church_place_long"],
+                'event_text' => $family["fam_marr_church_text"],
+            ];
+            $this->eventManager->update_event($marr_church_event);
+        }
+
+        // Add fam_div event if any divorce data is present
+        if (
+            !empty($family["fam_div_date"]) ||
+            !empty($family["fam_div_place"]) ||
+            !empty($family["fam_div_text"]) ||
+            !empty($family["fam_div_authority"])
+        ) {
+            $div_event = [
+                'tree_id' => $this->tree_id,
+                'event_relation_id' => $fam_id,
+                'event_connect_kind' => 'family',
+                'event_connect_id' => $gedcomnumber,
+                'event_kind' => 'divorce',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $this->process_date($family["fam_div_date"]),
+                'event_place' => $family["fam_div_place"],
+                'event_place_lat' => $family["fam_div_place_lati"],
+                'event_place_lon' => $family["fam_div_place_long"],
+                'event_text' => $family["fam_div_text"],
+                'event_authority' => $family["fam_div_authority"]
+            ];
+            $this->eventManager->update_event($div_event);
         }
 
 
@@ -4475,6 +4713,7 @@ class GedcomImport
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->connect);
+            $this->connect_nr = 0;
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -4685,7 +4924,9 @@ class GedcomImport
                     $check_connect = $this->connect['kind'][$i] . $this->connect['sub_kind'][$i] . $this->connect['connect_id'][$i];
                 }
 
-                //if($this->add_tree==true OR $this->reassign==true) { $this->connect['text'][$i] = $this->reassign_ged($this->connect['text'][$i],'N'); }
+                //if($this->add_tree==true OR $this->reassign==true) {
+                //  $this->connect['text'][$i] = $this->reassign_ged($this->connect['text'][$i],'N');
+                //}
                 $this->connect['text'][$i] = $text['text_gedcomnr'];    // *** Allready re-assigned ***
 
                 $gebeurtsql = "INSERT IGNORE INTO humo_connections SET
@@ -4721,6 +4962,7 @@ class GedcomImport
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->connect);
+            $this->connect_nr = 0;
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5090,7 +5332,9 @@ class GedcomImport
             if ($this->buffer[0] === '0 TRLR') {
                 $this->processed = true;
             }
-            //if ($this->buffer[0]=='1 REPO'){ $this->processed = true; }
+            //if ($this->buffer[0]=='1 REPO'){
+            //  $this->processed = true;
+            //}
             if (!$this->processed) {
                 if (isset($_POST['check_processed'])) {
                     $this->not_processed[] = '0 ' . $this->level[0] . '</td><td>1 ' . $this->level[1] . '<br></td><td>2 ' . $this->level[2] . '<br></td><td>3 ' . $this->level[3] . '<br></td><td>' . $this->buffer[0];
@@ -5116,25 +5360,6 @@ class GedcomImport
             }
         }
 
-        // Don't use this anymore. Because HuMo-genealogy sources will be changed when using EXPORT and IMPORT of GEDCOM ***
-        // *** Generate title if there is no title in GEDCOM file (BK etc.). ***
-        //if ($source["source_title"]==''){
-        //	if ($source["source_auth"]){ $source["source_title"]=$source["source_auth"]; }
-        //	if ($source["source_subj"]){ $source["source_title"]=$source["source_subj"]; }
-        //}
-        // *** Aldfaer sources: no title, no subject ***
-        //if ($source["source_title"]=='' AND $source["source_subj"]=='' AND $source["source_text"]){
-        //	$words = explode(" ", $source["source_text"]);
-        //	// Check for multiple words in text
-        //	$source["source_title"].=' '.$words[0];
-        //	if (isset($words[1])){ $source["source_title"].=' '.$words[1]; }
-        //	if (count($words)>2){ $source["source_title"].=' '.$words[2]; }
-        //	if (count($words)>3){ $source["source_title"].=' '.$words[3]; }
-        //	if (count($words)>2){ $source["source_title"].='...'; }
-        //}
-        // *** If there is still no title, then use ... ***
-        //if ($source["source_title"]==''){ $source["source_title"]="..."; }
-
         if (($this->add_tree == true or $this->reassign == true) && $source["source_text"]) {
             $source["source_text"] = $this->reassign_ged($source["source_text"], 'N');
         }
@@ -5144,7 +5369,9 @@ class GedcomImport
             $event_order = 0;
             $check_event_kind = $this->event['kind']['1'];
             for ($i = 1; $i <= $this->event_nr; $i++) {
-                //if ($i==1){ $check_event_kind=$this->event['kind'][$i]; }
+                //if ($i==1){
+                //  $check_event_kind=$this->event['kind'][$i];
+                //}
                 $event_order++;
                 if ($check_event_kind != $this->event['kind'][$i]) {
                     $event_order = 1;
@@ -5155,37 +5382,26 @@ class GedcomImport
                     $this->event['text'][$i] = $this->reassign_ged($this->event['text'][$i], 'N');
                 }
 
-                $gebeurtsql = "INSERT IGNORE INTO humo_events SET
-                    event_tree_id = :event_tree_id,
-                    event_order = :event_order,
-                    event_connect_kind = :event_connect_kind,
-                    event_connect_id = :event_connect_id,
-                    event_kind = :event_kind,
-                    event_event = :event_event,
-                    event_event_extra = :event_event_extra,
-                    event_gedcom = :event_gedcom,
-                    event_date = :event_date,
-                    event_text = :event_text,
-                    event_place = :event_place";
-                $stmt = $this->dbh->prepare($gebeurtsql);
-                $stmt->execute([
-                    ':event_tree_id' => $this->tree_id,
-                    ':event_order' => $event_order,
-                    ':event_connect_kind' => $this->event['connect_kind'][$i],
-                    ':event_connect_id' => $this->event['connect_id'][$i],
-                    ':event_kind' => $this->event['kind'][$i],
-                    ':event_event' => $this->event['event'][$i],
-                    ':event_event_extra' => $this->event['event_extra'][$i],
-                    ':event_gedcom' => $this->event['gedcom'][$i],
-                    ':event_date' => $this->process_date($this->event['date'][$i]),
-                    ':event_text' => $this->event['text'][$i],
-                    ':event_place' => $this->event['place'][$i],
-                ]);
+                $source_event = [
+                    'tree_id' => $this->tree_id,
+                    'event_order' => $event_order,
+                    'event_connect_kind' => $this->event['connect_kind'][$i],
+                    'event_connect_id' => $this->event['connect_id'][$i],
+                    'event_kind' => $this->event['kind'][$i],
+                    'event_event' =>  $this->event['event'][$i],
+                    'event_event_extra' => $this->event['event_extra'][$i],
+                    'event_gedcom' => $this->event['gedcom'][$i],
+                    'event_date' => $this->event['date'][$i],
+                    'event_place' => $this->event['place'][$i],
+                    'event_text' => $this->event['text'][$i],
+                ];
+                $this->eventManager->update_event($source_event);
             }
 
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->event);
+            $this->event_nr = 0;
             //$event=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5243,6 +5459,7 @@ class GedcomImport
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->connect);
+            $this->connect_nr = 0;
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -5896,6 +6113,7 @@ class GedcomImport
             // *** Reset array to free memory ***
             //echo '<br>====>>>>'.memory_get_usage().' RESET ';
             unset($this->connect);
+            $this->connect_nr = 0;
             //$this->connect=null;
             //echo ' '.memory_get_usage().'@ ';
         }
@@ -6114,42 +6332,22 @@ class GedcomImport
         if ($this->add_tree == true || $this->reassign == true) {
             $this->event['text'] = $this->reassign_ged($this->event['text'], 'O');
         }
-        // *** Save object ***
-        $eventsql = "INSERT IGNORE INTO humo_events SET
-            event_tree_id = :event_tree_id,
-            event_gedcomnr = :event_gedcomnr,
-            event_order = :event_order,
-            event_connect_kind = :event_connect_kind,
-            event_connect_id = :event_connect_id,
-            event_kind = :event_kind,
-            event_event = :event_event,
-            event_event_extra = :event_event_extra,
-            event_gedcom = :event_gedcom,
-            event_date = :event_date,
-            event_place = :event_place,
-            event_text = :event_text,
-            event_new_user_id = :event_new_user_id,
-            event_changed_user_id = :event_changed_user_id,
-            event_new_datetime = :event_new_datetime"
-            . $this->changed_datetime('event_changed_datetime', $this->event["changed_date"], $this->event["changed_time"]);
-        $stmt = $this->dbh->prepare($eventsql);
-        $stmt->execute([
-            ':event_tree_id' => $this->tree_id,
-            ':event_gedcomnr' => $this->event['gedcomnr'],
-            ':event_order' => 1,
-            ':event_connect_kind' => '',
-            ':event_connect_id' => '',
-            ':event_kind' => 'object',
-            ':event_event' => $this->event['event'],
-            ':event_event_extra' => $this->event['event_extra'],
-            ':event_gedcom' => 'OBJE',
-            ':event_date' => $this->process_date($this->event['date']),
-            ':event_place' => $this->event['place'],
-            ':event_text' => $this->event['text'],
-            ':event_new_user_id' => $this->event["new_user_id"],
-            ':event_changed_user_id' => $this->event["changed_user_id"],
-            ':event_new_datetime' => date('Y-m-d H:i:s', strtotime($this->event["new_date"] . ' ' . $this->event["new_time"]))
-        ]);
+
+        $object_event = [
+            'tree_id' => $this->tree_id,
+            'event_gedcomnr' => $this->event['gedcomnr'],
+            'event_order' => 1,
+            'event_connect_kind' => '',
+            'event_connect_id' => '',
+            'event_kind' => 'object',
+            'event_event' =>  $this->event['event'],
+            'event_event_extra' => $this->event['event_extra'],
+            'event_gedcom' => 'OBJE',
+            'event_date' => $this->event['date'],
+            'event_place' => $this->event['place'],
+            'event_text' => $this->event['text'],
+        ];
+        $this->eventManager->update_event($object_event);
 
         $event_id = $this->dbh->lastInsertId();
 
@@ -6176,17 +6374,31 @@ class GedcomImport
     private function non_processed_items($this->buffer[0]){
         // *** Not processed items for list by reading of GEDCOM ***
         $this->not_processed_tmp='0 '.$this->level[0].'</td><td>1 '.$this->level[1].'<br></td><td>';
-        if ($this->level[2]){ $this->not_processed_tmp.="2 $this->level[2]"; }
+        if ($this->level[2]){
+            $this->not_processed_tmp.="2 $this->level[2]";
+        }
         $this->not_processed_tmp.="<br></td><td>";
-        if ($this->level[3]){ $this->not_processed_tmp.="3 $this->level[3]"; }
+        if ($this->level[3]){
+            $this->not_processed_tmp.="3 $this->level[3]";
+        }
         $this->not_processed_tmp.="<br></td><td>$this->buffer[0]";
         $this->not_processed[]=$this->not_processed_tmp;
 
-        //if ($process){ $process.="<br>\n"; }
-        //if ($this->level[1]){ $process.='0 '.$this->level[0]; }
-        //if ($this->level[2]){ $process.='|1 '.$this->level[1]; }
-        //if ($this->level[3]){ $process.='|2 '.$this->level[2]; }
-        //if ($this->level[4]){ $process.='|3 '.$this->level[3]; }
+        //if ($process){
+        //  $process.="<br>\n";
+        //}
+        //if ($this->level[1]){
+        //  $process.='0 '.$this->level[0];
+        //}
+        //if ($this->level[2]){
+        //  $process.='|1 '.$this->level[1];
+        //}
+        //if ($this->level[3]){
+        //  $process.='|2 '.$this->level[2];
+        //}
+        //if ($this->level[4]){
+        //  $process.='|3 '.$this->level[3];
+        //}
         //$process.='|'.$this->buffer[0];
         //return $process;
     }
@@ -6199,10 +6411,9 @@ class GedcomImport
 
         // in case years under 1000 are given as 0945, make it 945
         $date = str_replace(" 0", " ", $date); //gets rid of "bet 2 may 0954 AND jun 0951" and "5 may 0985"
-        //if(substr($date,-4,1)=="0") {
-        //	 // if there is still a "0" this means we had the year by itself "0985" with nothing before it
+
+        // if there is still a "0" this means we had the year by itself "0985" with nothing before it
         if (substr($date, -4, 1) === "0" && strlen($date) == 4) {
-            // if there is still a "0" this means we had the year by itself "0985" with nothing before it
             // the strlen code was added to prevent that double dates with a 0 in position 4th from the end, will be erroneously changed  (1960/61 --> /61)
             $date = substr($date, -3, 3);
         }
@@ -6339,13 +6550,24 @@ class GedcomImport
                 $letter = "R";
             } // after using repo array "RP" above (to differentiate from "R" for addresses) we change it back to "R"
             $newged = $letter . $tempged;
-            //if(substr($gednr,0,1)=='@') { $newged = '@'.$newged.'@'; } // if the gedcomnumber was @N23@ it has to be returned as such with the adjusted number
-            //if ($letter=='N') echo $gednr.'-'.$newged.'<br>';
-            //if ($letter=='N') return '@'.$newged.'@';
+            // if the gedcomnumber was @N23@ it has to be returned as such with the adjusted number
+            //if(substr($gednr,0,1)=='@') {
+            //  $newged = '@'.$newged.'@';
+            //}
+            //if ($letter=='N'){
+            // echo $gednr.'-'.$newged.'<br>';
+            //}
+            //if ($letter=='N'){
+            // return '@'.$newged.'@';
+            //}
             return $newged;
         } else {
-            //	//if ($letter=='N') echo $gednr.'-'.$newged.'!<br>';
-            //	//if ($letter=='N') return '@'.$newged.'@';
+            //if ($letter=='N'){
+            //  echo $gednr.'-'.$newged.'!<br>';
+            //}
+            //if ($letter=='N'){
+            //  return '@'.$newged.'@';
+            //}
             return $gednr;
         }
     }
@@ -6359,43 +6581,28 @@ class GedcomImport
     }
 
     // *** Process places ***
-    public function process_places($map_place): void
+    function get_latitude()
     {
         // 2 PLAC Cleveland, Ohio, USA
         // 3 MAP
         // 4 LATI N41.500347
         // 4 LONG W81.66687
-        if (substr($this->level[3], 0, 3) === 'MAP') {
-            //if ($this->buffer[6]==$number.' PLAC'){ $this->processed = true; $place=substr($this->buffer[0], 7); }
 
-            if (substr($this->buffer[0], 0, 5) === '3 MAP') {
-                $this->processed = true;
-                $this->geocode_nr++;
-                $this->geocode_plac[$this->geocode_nr] = $map_place;
-                $this->geocode_type[$this->geocode_nr] = ''; // needed to enter location_status as "humo3_death" later
-                if ($this->level[1] == 'BIRT') {
-                    $this->geocode_type[$this->geocode_nr] = "birth";
-                } elseif ($this->level[1] == 'BAPT') {
-                    $this->geocode_type[$this->geocode_nr] = "bapt";
-                } elseif ($this->level[1] == 'DEAT') {
-                    $this->geocode_type[$this->geocode_nr] = "death";
-                } elseif ($this->level[1] == 'BURI') {
-                    $this->geocode_type[$this->geocode_nr] = "buried";
-                }
-            } elseif ($this->buffer[6] === '4 LATI') {
-                $this->processed = true;
-                $geocode = (substr($this->buffer[0], 7));
-                $geocode = substr($geocode, 0, 1) === 'S' ? '-' . substr($geocode, 1) : substr($geocode, 1);
-                $this->geocode_lati[$this->geocode_nr] = $geocode;
-            } elseif ($this->buffer[6] === '4 LONG') {
-                $this->processed = true;
-                $geocode = (substr($this->buffer[0], 7));
-                $geocode = substr($geocode, 0, 1) === 'W' ? '-' . substr($geocode, 1) : substr($geocode, 1);
-                $this->geocode_long[$this->geocode_nr] = $geocode;
-            }
-        }
+        $geocode = (substr($this->buffer[0], 7));
+        $geocode = substr($geocode, 0, 1) === 'S' ? '-' . substr($geocode, 1) : substr($geocode, 1);
+        return $geocode;
     }
+    function get_longitude()
+    {
+        // 2 PLAC Cleveland, Ohio, USA
+        // 3 MAP
+        // 4 LATI N41.500347
+        // 4 LONG W81.66687
 
+        $geocode = (substr($this->buffer[0], 7));
+        $geocode = substr($geocode, 0, 1) === 'W' ? '-' . substr($geocode, 1) : substr($geocode, 1);
+        return $geocode;
+    }
 
 
     // *** Process addresses by person and relation ***
@@ -6714,7 +6921,9 @@ class GedcomImport
             }
 
             // *** Date by living place for BK etc. ***
-            //if ($this->buffer[6]=='2 DATE'){ $this->processed = true; $this->address_array["date"][$this->nraddress2]=substr($this->buffer[0],7); }
+            //if ($this->buffer[6]=='2 DATE'){
+            //  $this->processed = true; $this->address_array["date"][$this->nraddress2]=substr($this->buffer[0],7);
+            //}
             if ($this->buffer[6] === '2 DATE') {
                 $this->processed = true;
                 $this->connect['date'][$this->connect_nr] = substr($this->buffer[0], 7);

@@ -748,11 +748,9 @@ $selected_place = '';
                     </a>
                 </th>
 
-                <?php
-                if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
-                    echo '<th><br></th>';
-                }
-                ?>
+                <?php if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') { ?>
+                    <th><br></th>
+                <?php } ?>
             </tr>
         </thead>
         <?php
@@ -916,6 +914,7 @@ $selected_place = '';
                                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
                                     if ($resultDb && $resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                                        //if ($selected_place == $personDb->pers_address) {
                                         echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
                                     } else {
                                         echo '<span class="place_index">&nbsp;</span>';
@@ -941,20 +940,46 @@ $selected_place = '';
                                 // *** Places by events like occupations etc. ***
                                 if ($list["select_event"] == '1') {
                                     // *** Check if this is the living place of a person. Can't be checked using query variables... ***
+                                    /*
                                     $query = "SELECT event_place FROM humo_events
                                         WHERE event_tree_id = :tree_id
                                         AND event_connect_id = :gedcomnumber
                                         AND event_place = :place_order";
+                                    */
+
+
+                                    // TODO: test
+                                    // Get place_id from location table
+                                    //$place_id_query = "SELECT place_id FROM humo_location WHERE place_name = :place_order";
+
+                                    /*
+                                    $place_id_query = "SELECT location_id FROM humo_location WHERE location_location = :place_order";
+                                    $place_id_stmt = $dbh->prepare($place_id_query);
+                                    $place_id_stmt->execute([
+                                        ':place_order' => $personDb->place_order
+                                    ]);
+                                    $place_id_result = $place_id_stmt->fetch(PDO::FETCH_OBJ);
+                                    $place_id = $place_id_result ? $place_id_result->location_id : null;
+
+                                    $query = "SELECT event_place_id FROM humo_events
+                                        WHERE event_tree_id = :tree_id
+                                        AND event_connect_id = :gedcomnumber
+                                        AND event_place_id = :place_id
+                                        AND event_kind NOT IN ('birth', 'baptism', 'death', 'burial')";
+
                                     $stmt = $dbh->prepare($query);
                                     $stmt->execute([
                                         ':tree_id' => $personDb->pers_tree_id,
                                         ':gedcomnumber' => $personDb->pers_gedcomnumber,
-                                        ':place_order' => $personDb->place_order
+                                        ':place_id' => $place_id
                                     ]);
                                     $result = $stmt;
                                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
+                                    */
 
-                                    if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                                    //if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                                    //if ($resultDb && $selected_place == $personDb->place_order) {
+                                    if ($selected_place == $personDb->event_place) {
                                         echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
                                     } else {
                                         echo '<span class="place_index">&nbsp;</span>';

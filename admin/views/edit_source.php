@@ -199,7 +199,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Place'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_place" value="<?= htmlspecialchars($editSource['data']['place']); ?>" size="50" class="form-control form-control-sm">
+                    <input type="text" name="source_place" value="<?= htmlspecialchars($editSource['data']['place']); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="50" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
 
@@ -367,6 +367,10 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
         <iframe src="<?= $sourcestring; ?>" class="iframe">
             <p>Your browser does not support iframes.</p>
         </iframe>
+    <?php } ?>
+
+    <!-- Autocomplete for place names -->
+    <script src="../assets/js/place_autocomplete.js"></script>
+
 <?php
-    }
 }

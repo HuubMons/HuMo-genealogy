@@ -162,6 +162,7 @@ if (isset($_SESSION['search_indi2'])) {
                         $indi = (substr($search_indi, 0, 1) === "I" || substr($search_indi, 0, 1) === "i") ? strtoupper($search_indi) : "I" . $search_indi;
                         $indi_string = " AND pers_gedcomnumber ='" . $indi . "' ";
                     }
+                    // TODO only get pers_id
                     $search_qry = "SELECT * FROM humo_persons
                         WHERE pers_tree_id='" . $trees['tree_id'] . "' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
                         LIKE '%" . $search_lastname . "%' AND pers_firstname LIKE '%" . $search_firstname . "%' " . $indi_string . "
@@ -172,7 +173,8 @@ if (isset($_SESSION['search_indi2'])) {
                 ?>
                             <select size="1" name="left" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                                 <?php
-                                while ($searchDb = $search_result->fetch(PDO::FETCH_OBJ)) {
+                                while ($search1Db = $search_result->fetch(PDO::FETCH_OBJ)) {
+                                    $searchDb = $db_functions->get_person_with_id($search1Db->pers_id);
                                     $privacy = $personPrivacy->get_privacy($searchDb);
                                     $name = $personName->get_person_name($searchDb, $privacy);
                                     if ($name["show_name"]) {
@@ -243,7 +245,8 @@ if (isset($_SESSION['search_indi2'])) {
                 ?>
                             <select size="1" name="right" style="width:<?= $len; ?>px" class="form-select form-select-sm">
                                 <?php
-                                while ($searchDb2 = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                while ($search2Db = $search_result2->fetch(PDO::FETCH_OBJ)) {
+                                    $searchDb2 = $db_functions->get_person_with_id($search2Db->pers_id);
                                     $privacy = $personPrivacy->get_privacy($searchDb2);
                                     $name = $personName->get_person_name($searchDb2, $privacy);
                                     if ($name["show_name"]) {

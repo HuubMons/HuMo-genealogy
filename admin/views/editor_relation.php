@@ -15,6 +15,8 @@ if (!defined('ADMIN_PAGE')) {
 $datePlace = new \Genealogy\Include\DatePlace();
 $languageDate = new \Genealogy\Include\LanguageDate;
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
+$eventManager = new \Genealogy\Include\EventManager($dbh);
+
 
 // TODO: move code to model script.
 if ($person->pers_fams) {
@@ -99,6 +101,8 @@ if ($person->pers_fams) {
 
     $person1 = $db_functions->get_person($man_gedcomnumber); // TODO: there allready is $person for person data.
     $person2 = $db_functions->get_person($woman_gedcomnumber);
+
+    $check_family_eventsDb = $familyDb;
 }
 
 $hideshow = '700';
@@ -118,7 +122,19 @@ if ($person->pers_sexe == 'M') {
         $fam_count = count($fams1);
         if ($fam_count > 0) {
             for ($i = 0; $i < $fam_count; $i++) {
-                $family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $fams1[$i] . "'");
+                //$family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $fams1[$i] . "'");
+
+                // TODO: use family_id
+                $qry = "SELECT f.*, e.event_date AS fam_marr_date
+                    FROM humo_families f
+                    LEFT JOIN humo_events e
+                        ON f.fam_tree_id = e.event_tree_id
+                        AND f.fam_gedcomnumber = e.event_connect_id
+                        AND e.event_connect_kind = 'family'
+                        AND e.event_kind = 'marriage'
+                    WHERE f.fam_tree_id='" . $tree_id . "' AND f.fam_gedcomnumber='" . $fams1[$i] . "'";
+
+                $family = $dbh->query($qry);
                 $familyDb = $family->fetch(PDO::FETCH_OBJ);
 
                 // *** Highlight selected relation if there are multiple relations ***
@@ -182,14 +198,28 @@ if ($person->pers_sexe == 'M') {
             isset($_POST["fam_man_age"]) && $_POST["fam_man_age"] != '' && $fam_marr_date != '' && $person1->pers_birth_date == '' && $person1->pers_bapt_date == ''
         ) {
             $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
-            $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
-                WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :man_gedcomnumber";
-            $stmt = $dbh->prepare($sql);
-            $stmt->execute([
-                ':pers_birth_date' => $pers_birth_date,
-                ':tree_id' => $tree_id,
-                ':man_gedcomnumber' => $man_gedcomnumber
+
+            // *** Check if there is a birth event ***
+            $birth_event = $dbh->prepare("SELECT * FROM humo_events WHERE event_person_id = :person_id AND event_kind = 'birth'");
+            $birth_event->execute([
+                ':person_id' => $person1->pers_id
             ]);
+            $birth_eventDb = $birth_event->fetch(PDO::FETCH_OBJ);
+
+            $data = [
+                'tree_id' => $tree_id,
+                'event_person_id' => $person1->pers_id,
+                'event_connect_kind' => 'person',
+                'event_connect_id' => $man_gedcomnumber,
+                'event_kind' => 'birth',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $pers_birth_date
+            ];
+            if ($birth_eventDb && isset($birth_eventDb->event_id)) {
+                $data['event_id'] = $birth_eventDb->event_id;
+            }
+            $eventManager->update_event($data);
         }
 
         // *** Automatically calculate birth date if marriage date and marriage age by woman is used ***
@@ -197,14 +227,28 @@ if ($person->pers_sexe == 'M') {
             isset($_POST["fam_woman_age"]) && $_POST["fam_woman_age"] != '' && $fam_marr_date != '' && $person2->pers_birth_date == '' && $person2->pers_bapt_date == ''
         ) {
             $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
-            $sql = "UPDATE humo_persons SET pers_birth_date = :pers_birth_date
-                WHERE pers_tree_id = :tree_id AND pers_gedcomnumber = :woman_gedcomnumber";
-            $stmt = $dbh->prepare($sql);
-            $stmt->execute([
-                ':pers_birth_date' => $pers_birth_date,
-                ':tree_id' => $tree_id,
-                ':woman_gedcomnumber' => $woman_gedcomnumber
+
+            // *** Check if there is a birth event ***
+            $birth_event = $dbh->prepare("SELECT * FROM humo_events WHERE event_person_id = :person_id AND event_kind = 'birth'");
+            $birth_event->execute([
+                ':person_id' => $person2->pers_id
             ]);
+            $birth_eventDb = $birth_event->fetch(PDO::FETCH_OBJ);
+
+            $data = [
+                'tree_id' => $tree_id,
+                'event_person_id' => $person2->pers_id,
+                'event_connect_kind' => 'person',
+                'event_connect_id' => $woman_gedcomnumber,
+                'event_kind' => 'birth',
+                'event_event' => '',
+                'event_gedcom' => '',
+                'event_date' => $pers_birth_date
+            ];
+            if ($birth_eventDb && isset($birth_eventDb->event_id)) {
+                $data['event_id'] = $birth_eventDb->event_id;
+            }
+            $eventManager->update_event($data);
         }
     } ?>
 </div>
@@ -264,6 +308,60 @@ if ($person->pers_sexe == 'M') {
             <input type="hidden" name="marriage" value="<?= $marriage; ?>">
         <?php } ?>
 
+        <!-- Event IDs needed to check if event is changed -->
+        <?php if (isset($check_family_eventsDb->fam_relation_event_id)) { ?>
+            <input type="hidden" name="fam_relation_event_id" value="<?= $check_family_eventsDb->fam_relation_event_id; ?>">
+
+            <input type="hidden" name="fam_relation_date_previous" value="<?= $fam_relation_date; ?>">
+            <input type="hidden" name="fam_relation_place_previous" value="<?= $fam_relation_place; ?>">
+            <input type="hidden" name="fam_relation_text_previous" value="<?= $fam_relation_text; ?>">
+            <input type="hidden" name="fam_relation_end_date_previous" value="<?= $fam_relation_end_date; ?>">
+        <?php } ?>
+
+        <?php if (isset($check_family_eventsDb->fam_marr_notice_event_id)) { ?>
+            <input type="hidden" name="fam_marr_notice_event_id" value="<?= $check_family_eventsDb->fam_marr_notice_event_id; ?>">
+
+            <input type="hidden" name="fam_marr_notice_date_previous" value="<?= $fam_marr_notice_date; ?>">
+            <input type="hidden" name="fam_marr_notice_date_hebnight_previous" value="<?= $fam_marr_notice_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+            <input type="hidden" name="fam_marr_notice_place_previous" value="<?= $fam_marr_notice_place; ?>">
+            <input type="hidden" name="fam_marr_notice_text_previous" value="<?= $fam_marr_notice_text; ?>">
+        <?php } ?>
+
+        <?php if (isset($check_family_eventsDb->fam_marr_event_id)) { ?>
+            <input type="hidden" name="fam_marr_event_id" value="<?= $check_family_eventsDb->fam_marr_event_id; ?>">
+
+            <input type="hidden" name="fam_marr_date_previous" value="<?= $fam_marr_date; ?>">
+            <input type="hidden" name="fam_marr_date_hebnight_previous" value="<?= $fam_marr_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+            <input type="hidden" name="fam_marr_place_previous" value="<?= $fam_marr_place; ?>">
+            <input type="hidden" name="fam_marr_text_previous" value="<?= $fam_marr_text; ?>">
+        <?php } ?>
+
+        <?php if (isset($check_family_eventsDb->fam_marr_church_notice_event_id)) { ?>
+            <input type="hidden" name="fam_marr_church_notice_event_id" value="<?= $check_family_eventsDb->fam_marr_church_notice_event_id; ?>">
+
+            <input type="hidden" name="fam_marr_church_notice_date_previous" value="<?= $fam_marr_church_notice_date; ?>">
+            <input type="hidden" name="fam_marr_church_notice_date_hebnight_previous" value="<?= $fam_marr_church_notice_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+            <input type="hidden" name="fam_marr_church_notice_place_previous" value="<?= $fam_marr_church_notice_place; ?>">
+            <input type="hidden" name="fam_marr_church_notice_text_previous" value="<?= $fam_marr_church_notice_text; ?>">
+        <?php } ?>
+
+        <?php if (isset($check_family_eventsDb->fam_marr_church_event_id)) { ?>
+            <input type="hidden" name="fam_marr_church_event_id" value="<?= $check_family_eventsDb->fam_marr_church_event_id; ?>">
+
+            <input type="hidden" name="fam_marr_church_date_previous" value="<?= $fam_marr_church_date; ?>">
+            <input type="hidden" name="fam_marr_church_date_hebnight_previous" value="<?= $fam_marr_church_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+            <input type="hidden" name="fam_marr_church_place_previous" value="<?= $fam_marr_church_place; ?>">
+            <input type="hidden" name="fam_marr_church_text_previous" value="<?= $fam_marr_church_text; ?>">
+        <?php } ?>
+        <?php if (isset($check_family_eventsDb->fam_div_event_id)) { ?>
+            <input type="hidden" name="fam_div_event_id" value="<?= $check_family_eventsDb->fam_div_event_id; ?>">
+
+            <input type="hidden" name="fam_div_date_previous" value="<?= $fam_div_date; ?>">
+            <input type="hidden" name="fam_div_date_hebnight_previous" value="<?= $fam_div_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+            <input type="hidden" name="fam_div_place_previous" value="<?= $fam_div_place; ?>">
+            <input type="hidden" name="fam_div_text_previous" value="<?= $fam_div_text; ?>">
+            <input type="hidden" name="fam_div_authority_previous" value="<?= $fam_div_authority; ?>">
+        <?php } ?>
 
         <?php
         if (isset($_GET['fam_remove']) || isset($_POST['fam_remove'])) {
@@ -301,6 +399,27 @@ if ($person->pers_sexe == 'M') {
 
                     <th id="target2" colspan="2" style="font-size: 1.5em;">
                         <input type="submit" name="marriage_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+
+                        <!-- Popover to show user information -->
+                        <?php
+                        // *** Person added by user ***
+                        $content = __('Added by') . ' ';
+                        if ($familyDb->fam_new_user_id || $familyDb->fam_new_datetime) {
+                            $content .= $db_functions->get_user_name($familyDb->fam_new_user_id) . ' ' . $languageDate->show_datetime($familyDb->fam_new_datetime);
+                        }
+                        // *** Person changed by user ***
+                        if ($familyDb->fam_changed_user_id || $familyDb->fam_changed_datetime) {
+                            $content .=  '<br>' . __('Changed by') . ' ';
+                            $content .= $db_functions->get_user_name($familyDb->fam_changed_user_id) . ' ' . $languageDate->show_datetime($familyDb->fam_changed_datetime);
+                        }
+                        ?>
+                        <button type="button" class="btn btn-sm btn-info"
+                            data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide" data-bs-html="true"
+                            data-bs-content="<?= $content; ?>">
+                            <?= __('Info'); ?>
+                        </button>
+
+
                         [<?= $fam_gedcomnumber; ?>] <?= show_person($man_gedcomnumber); ?> <?= __('and'); ?> <?= show_person($woman_gedcomnumber); ?>
                     </th>
                 </tr>
@@ -395,8 +514,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_relation_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_relation_place" value="<?= htmlspecialchars($fam_relation_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    <input type="text" name="fam_relation_place" id="fam_relation_place" value="<?= htmlspecialchars($fam_relation_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -472,8 +590,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_notice_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_notice_place" value="<?= htmlspecialchars($fam_marr_notice_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    <input type="text" name="fam_marr_notice_place" id="fam_marr_notice_place" value="<?= htmlspecialchars($fam_marr_notice_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -566,8 +683,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_place" value="<?= htmlspecialchars($fam_marr_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    <input type="text" name="fam_marr_place" id="fam_marr_place" value="<?= htmlspecialchars($fam_marr_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -701,8 +817,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_church_notice_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_church_notice_place" value="<?= htmlspecialchars($fam_marr_church_notice_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    <input type="text" name="fam_marr_church_notice_place" id="fam_marr_church_notice_place" value="<?= htmlspecialchars($fam_marr_church_notice_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -777,8 +892,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_church_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_church_place" value="<?= htmlspecialchars($fam_marr_church_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    <input type="text" name="fam_marr_church_place" id="fam_marr_church_place" value="<?= htmlspecialchars($fam_marr_church_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -875,8 +989,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_div_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_div_place" value="<?= htmlspecialchars($fam_div_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                    <input type="text" name="fam_div_place" id="fam_div_place" value="<?= htmlspecialchars($fam_div_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -1068,30 +1181,9 @@ if ($person->pers_sexe == 'M') {
             // *** Show editor notes ***
             $note_connect_kind = 'family';
             include_once __DIR__ . '/partial/editor_notes.php';
-
-            // *** Relation added by user ***
-            // TODO check for 1970-01-01 00:00:01
-            if ($familyDb->fam_new_user_id || $familyDb->fam_new_datetime) {
             ?>
-                <tr>
-                    <td><?= __('Added by'); ?></td>
-                    <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_new_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_new_user_id); ?></td>
-                </tr>
-            <?php
-            }
 
-            // *** Relation changed by user ***
-            if ($familyDb->fam_changed_user_id || $familyDb->fam_changed_datetime) {
-            ?>
-                <tr>
-                    <td><?= __('Changed by'); ?></td>
-                    <td colspan="2"><?= $languageDate->show_datetime($familyDb->fam_changed_datetime) . ' ' . $db_functions->get_user_name($familyDb->fam_changed_user_id); ?></td>
-                </tr>
-            <?php
-            }
-
-            // *** Extra "Save" line ***
-            ?>
+            <!-- Extra "Save" line -->
             <tr>
                 <td></td>
                 <td colspan="2">
@@ -1273,11 +1365,30 @@ if ($person->pers_sexe == 'M') {
 
             <!-- Search existing person as child -->
             <form method="POST" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;" name="form7" id="form7">
-                <?php
-                if (isset($familyDb->fam_children)) {
-                    echo '<input type="hidden" name="children" value="' . $familyDb->fam_children . '">';
-                }
-                ?>
+                <?php if (isset($familyDb->fam_children)) { ?>
+                    <input type="hidden" name="children" value="<?= $familyDb->fam_children; ?>">
+                <?php               } ?>
+
+                <!-- Event IDs needed to check if event is changed -->
+                <?php if (isset($familyDb->fam_relation_event_id)) { ?>
+                    <input type="hidden" name="fam_relation_event_id" value="<?= $familyDb->fam_relation_event_id; ?>">
+                <?php } ?>
+                <?php if (isset($familyDb->fam_marr_event_id)) { ?>
+                    <input type="hidden" name="fam_marr_event_id" value="<?= $familyDb->fam_marr_event_id; ?>">
+                <?php } ?>
+                <?php if (isset($familyDb->fam_div_event_id)) { ?>
+                    <input type="hidden" name="fam_div_event_id" value="<?= $familyDb->fam_div_event_id; ?>">
+                <?php } ?>
+                <?php if (isset($familyDb->fam_marr_church_event_id)) { ?>
+                    <input type="hidden" name="fam_marr_church_event_id" value="<?= $familyDb->fam_marr_church_event_id; ?>">
+                <?php } ?>
+                <?php if (isset($familyDb->fam_marr_church_notice_event_id)) { ?>
+                    <input type="hidden" name="fam_marr_church_notice_event_id" value="<?= $familyDb->fam_marr_church_notice_event_id; ?>">
+                <?php } ?>
+                <?php if (isset($familyDb->fam_marr_notice_event_id)) { ?>
+                    <input type="hidden" name="fam_marr_notice_event_id" value="<?= $familyDb->fam_marr_notice_event_id; ?>">
+                <?php } ?>
+
                 <input type="hidden" name="family_id" value="<?= $familyDb->fam_gedcomnumber; ?>">
 
                 <div class="row mb-2">
@@ -1387,15 +1498,14 @@ function add_person($person_kind, $pers_sexe)
             <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
-                    <input type="text" name="pers_birth_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <input type="text" name="pers_birth_place" id="pers_birth_place" value="" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
         </div>
         <!-- Birth time and stillborn option -->
         <?php if ($person_kind == 'child') { ?>
             <div class="row mb-2">
-                <label for="pers_birth_place" class="col-sm-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
+                <label for="pers_birth_time" class="col-sm-3 col-form-label"><?= ucfirst(__('birth time')); ?></label>
                 <div class="col-md-2">
                     <input type="text" name="pers_birth_time" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
                 </div>
@@ -1421,8 +1531,7 @@ function add_person($person_kind, $pers_sexe)
             <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
-                    <input type="text" name="pers_bapt_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <input type="text" name="pers_bapt_place" id="pers_bapt_place" value="" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
         </div>
@@ -1441,8 +1550,7 @@ function add_person($person_kind, $pers_sexe)
             <label for="pers_bapt_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
-                    <input type="text" name="pers_death_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <input type="text" name="pers_death_place" id="pers_death_place" value="" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
         </div>
@@ -1461,8 +1569,7 @@ function add_person($person_kind, $pers_sexe)
             <label for="pers_buried_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
             <div class="col-md-7">
                 <div class="input-group">
-                    <input type="text" name="pers_buried_place" value="" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <input type="text" name="pers_buried_place" id="pers_buried_place" value="" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
         </div>

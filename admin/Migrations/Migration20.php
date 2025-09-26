@@ -417,11 +417,20 @@ class Migration20
         $this->dbh->exec("
             ALTER TABLE humo_events
             ADD CONSTRAINT fk_event_person
-                FOREIGN KEY (event_person_id) REFERENCES humo_persons(pers_id),
+            FOREIGN KEY (event_person_id) REFERENCES humo_persons(pers_id)
+            ON DELETE SET NULL ON UPDATE CASCADE
+        ");
+        $this->dbh->exec("
+            ALTER TABLE humo_events
             ADD CONSTRAINT fk_event_family
-                FOREIGN KEY (event_relation_id) REFERENCES humo_families(fam_id),
+            FOREIGN KEY (event_relation_id) REFERENCES humo_families(fam_id)
+            ON DELETE SET NULL ON UPDATE CASCADE
+        ");
+        $this->dbh->exec("
+            ALTER TABLE humo_events
             ADD CONSTRAINT fk_event_place
-                FOREIGN KEY (event_place_id) REFERENCES humo_location(location_id)
+            FOREIGN KEY (event_place_id) REFERENCES humo_location(location_id)
+            ON DELETE SET NULL ON UPDATE CASCADE
         ");
 
         // *** Set event_changed_datetime to NULL in all new items (because these values were changed during the upgrade) ***

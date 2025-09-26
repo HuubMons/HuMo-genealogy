@@ -58,7 +58,10 @@ class GroupsModel extends AdminBaseModel
             if (isset($_POST["group_admin"]) || $this->group_id == 1) {
                 $group_admin = 'j';
             }
-            //$group_editor='n'; if (isset($_POST["group_editor"])){ $group_editor='j'; }
+            //$group_editor='n';
+            //if (isset($_POST["group_editor"])){
+            //  $group_editor='j';
+            //}
             $group_statistics = 'n';
             if (isset($_POST["group_statistics"])) {
                 $group_statistics = 'j';
@@ -170,7 +173,9 @@ class GroupsModel extends AdminBaseModel
                 $group_show_age_living_person = 'y';
             }
 
-            //if (!isset($_POST["group_user_notes"])){ $_POST["group_user_notes"]='n'; }
+            //if (!isset($_POST["group_user_notes"])){
+            //  $_POST["group_user_notes"]='n';
+            //}
             $group_user_notes = 'n';
             if (isset($_POST["group_user_notes"]) && $this->group_id != 3) {
                 $group_user_notes = 'y';

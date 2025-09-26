@@ -160,17 +160,19 @@ if ($search_quicksearch_man != '') {
         //make entry "48" into "I48"
         $search_man_id = "I" . $search_man_id;
     }
-    $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_man_id . "'";
+    $person_qry = "SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $search_man_id . "'";
     $person_result = $dbh->query($person_qry);
 } else {
-    $person_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $man_gedcomnumber . "'";
+    $person_qry = "SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $man_gedcomnumber . "'";
     $person_result = $dbh->query($person_qry);
 }
 
 $editor_cls = new \Genealogy\Include\Editor_cls;
+//$DbFunctions = new \Genealogy\Include\DbFunctions;
 
 if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10) !== 'add_child_') {
-    while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
+    while ($person2 = $person_result->fetch(PDO::FETCH_OBJ)) {
+        $person = $db_functions->get_person_with_id($person2->pers_id);
         echo '<a href="" onClick=\'return select_item("' . $person->pers_gedcomnumber . '")\'>' . $editor_cls->show_selected_person($person) . '</a>';
         if ($person->pers_famc) {
             echo ' (' . __('Parents') . ' ' . $person->pers_famc . ')';
@@ -180,9 +182,12 @@ if ($_GET['person_item'] != 'add_partner' && substr($_GET['person_item'], 0, 10)
 } else {
     $search = array("'", '"');
     $replace = array("&#39;", '\"');
-    while ($person = $person_result->fetch(PDO::FETCH_OBJ)) {
+    while ($person2 = $person_result->fetch(PDO::FETCH_OBJ)) {
+        $person = $db_functions->get_person_with_id($person2->pers_id);
         $bdate_arr = explode(" ", $person->pers_birth_date);
-        //if(is_numeric(substr($bdate_arr[0],0,1))===false){ $dateprefix = $bdate_arr[0]." "; $dateself = substr($person->pers_birth_date,strpos($person->pers_birth_date," ")+1);}
+        //if(is_numeric(substr($bdate_arr[0],0,1))===false){
+        //  $dateprefix = $bdate_arr[0]." "; $dateself = substr($person->pers_birth_date,strpos($person->pers_birth_date," ")+1);
+        //}
         if (substr($bdate_arr[0], 0, 3) === "BEF" || substr($bdate_arr[0], 0, 3) === "AFT" || substr($bdate_arr[0], 0, 3) === "ABT" || substr($bdate_arr[0], 0, 3) === "BET") {
             $dateprefix = $bdate_arr[0] . " ";
             $dateself = substr($person->pers_birth_date, strpos($person->pers_birth_date, " ") + 1);

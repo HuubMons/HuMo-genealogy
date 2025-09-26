@@ -59,15 +59,17 @@ class Ansel2Unicode
             $this->_mapping[$num_chars][strtolower($key)] = $value; // Put mapping in right place
         }
         /*
-		//print "<br>after mapsplit ".date('h:i:s:u')."<br>";
-		// Delete temporary ini file efterwards if exists
-		if (file_exists($temp_ini_file)) { unlink($temp_ini_file); }
-		}
-		else {
-			echo '<p>No mapping file with name '.$conversionFile.' exists. Download this file '.
-			'from <a href="http://www.heiner-eichmann.de/gedcom/ans2uni.con.zip">here</a>.';
-		}
-		*/
+        //print "<br>after mapsplit ".date('h:i:s:u')."<br>";
+        // Delete temporary ini file efterwards if exists
+        if (file_exists($temp_ini_file)) {
+                unlink($temp_ini_file);
+        }
+        }
+        else {
+            echo '<p>No mapping file with name '.$conversionFile.' exists. Download this file '.
+            'from <a href="http://www.heiner-eichmann.de/gedcom/ans2uni.con.zip">here</a>.';
+        }
+        */
     }
 
 

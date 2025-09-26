@@ -64,7 +64,8 @@ $person_found = true;
                         <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                             <option value=""><?= __('Favourites list'); ?></option>
                             <?php while ($favDb = $editor['favorites']->fetch(PDO::FETCH_OBJ)) { ?>
-                                <option value="<?= $favDb->setting_value; ?>"><?= $editor_cls->show_selected_person($favDb); ?></option>
+                                <?php $favoDb = $db_functions->get_person_with_id($favDb->pers_id); ?>
+                                <option value="<?= $favDb->setting_value; ?>"><?= $editor_cls->show_selected_person($favoDb); ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -80,10 +81,7 @@ $person_found = true;
                         if (isset($pers_id)) {
                             $counter = count($pers_id);
                             for ($i = 0; $i < $counter; $i++) {
-                                $person2_qry = "SELECT * FROM humo_persons WHERE pers_id = :pers_id";
-                                $person2_stmt = $dbh->prepare($person2_qry);
-                                $person2_stmt->execute([':pers_id' => $pers_id[$i]]);
-                                $person2 = $person2_stmt->fetch(PDO::FETCH_OBJ);
+                                $person2 = $db_functions->get_person_with_id($pers_id[$i]);
                                 if ($person2) {
                                     $pers_user = '';
                                     if ($person2->pers_new_user_id) {
@@ -134,7 +132,6 @@ $person_found = true;
                 // *** In case someone entered "Mons, Huub" using a comma ***
                 $search_name = str_replace(',', '', $search_name);
 
-                // *** December 2021: removed pers_callname from query ***
                 // *** January added by Chris: GROUP BY event_id. Otherwise no results in some cases? ***
                 $person_qry = "
                     SELECT * FROM humo_persons
@@ -277,7 +274,9 @@ $person_found = true;
 if (isset($_POST['person_remove'])) {
     $disabled = ' disabled';
     $selected = '';
-    //if ($selected_alive=='alive'){ $selected=' checked'; }
+    //if ($selected_alive=='alive'){
+    //  $selected=' checked';
+    //}
 ?>
     <div class="alert alert-danger">
         <?= __('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?'); ?><br>
@@ -770,22 +769,22 @@ if ($check_person) {
             $person_text = $person->pers_text;
 
             $pers_birth_date = $person->pers_birth_date;
-            $pers_birth_place = $person->pers_birth_place;
+            $pers_birth_place = isset($person->pers_birth_place) ? $person->pers_birth_place : '';
             $pers_birth_time = $person->pers_birth_time;
             $pers_stillborn = $person->pers_stillborn;
             $pers_birth_text = $person->pers_birth_text;
             $pers_bapt_date = $person->pers_bapt_date;
-            $pers_bapt_place = $person->pers_bapt_place;
+            $pers_bapt_place = isset($person->pers_bapt_place) ? $person->pers_bapt_place : '';
             $pers_religion = $person->pers_religion;
             $pers_bapt_text = $person->pers_bapt_text;
             $pers_death_date = $person->pers_death_date;
-            $pers_death_place = $person->pers_death_place;
+            $pers_death_place = isset($person->pers_death_place) ? $person->pers_death_place : '';
             $pers_death_time = $person->pers_death_time;
             $pers_death_cause = $person->pers_death_cause;
             $pers_death_text = $person->pers_death_text;
             $pers_death_age = $person->pers_death_age;
             $pers_buried_date = $person->pers_buried_date;
-            $pers_buried_place = $person->pers_buried_place;
+            $pers_buried_place = isset($person->pers_buried_place) ? $person->pers_buried_place : '';
             $pers_cremation = $person->pers_cremation;
             $pers_buried_text = $person->pers_buried_text;
             $pers_quality = $person->pers_quality;
@@ -884,6 +883,10 @@ if ($check_person) {
         }
         ?>
     </div>
+
+    <!-- Autocomplete for place names -->
+    <script src="../assets/js/place_autocomplete.js"></script>
+
 <?php
 }
 

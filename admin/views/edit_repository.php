@@ -169,7 +169,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Place'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_place" value="<?= htmlspecialchars($repo_place); ?>" size="50" class="form-control form-control-sm">
+                    <input type="text" name="repo_place" value="<?= htmlspecialchars($repo_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="50" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
 
@@ -236,5 +236,9 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
 
         </div>
     </form>
+
+    <!-- Autocomplete for place names -->
+    <script src="../assets/js/place_autocomplete.js"></script>
+
 <?php
 }

@@ -65,11 +65,14 @@ class ShowMedia
 
             // *** Standard connected media by person and family ***
             // TODO: show these items seperately: picture_birth, picture_death, picture_marriage, picture_burial etc.
-            $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
-                AND event_connect_kind = :event_connect_kind
-                AND event_connect_id = :event_connect_id
-                AND LEFT(event_kind, 7) = 'picture'
-                ORDER BY event_kind, event_order";
+            $sql = "SELECT e.*, l.location_location AS event_place
+                FROM humo_events e
+                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                WHERE e.event_tree_id = :tree_id
+                AND e.event_connect_kind = :event_connect_kind
+                AND e.event_connect_id = :event_connect_id
+                AND LEFT(e.event_kind, 7) = 'picture'
+                ORDER BY e.event_kind, e.event_order";
             $picture_qry = $dbh->prepare($sql);
             $picture_qry->execute([
                 ':tree_id' => $tree_id,

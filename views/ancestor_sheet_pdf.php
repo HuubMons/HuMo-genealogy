@@ -80,6 +80,7 @@ if (__('&#134;') == '&#134;' or __('&#134;') == "†") {
 function data_array($id, $width, $height): void
 {
     global $db_functions, $data_array, $data, $dsign;
+
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName = new \Genealogy\Include\PersonName();
     $languageDate = new \Genealogy\Include\LanguageDate();
