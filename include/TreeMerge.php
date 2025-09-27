@@ -1477,13 +1477,6 @@ class TreeMerge
         $this->check_regular_text('text', $text, 'pers_text');
 
         // *** Add or update birth event (left person) ***
-        /*
-        $this->check_regular('b_date', $b_date, 'pers_birth_date');
-        $this->check_regular('b_place', $b_place, 'pers_birth_place');
-        $this->check_regular('b_time', $b_time, 'pers_birth_time');
-        $this->check_regular_text('b_text', $b_text, 'pers_birth_text');
-        $this->check_regular('stborn', $stborn, 'pers_stillborn');
-        */
         // TODO: pers_birth_date_hebnight
         if ($b_date == '2' || $b_place == '2' || $b_time == '2' || $b_text == '2' || $stborn == '2') {
             $birth_event = [
@@ -1525,11 +1518,6 @@ class TreeMerge
         }
 
         // *** Add or update baptise event (left person) ***
-        /*
-        $this->check_regular('bp_date', $bp_date, 'pers_bapt_date');
-        $this->check_regular('bp_place', $bp_place, 'pers_bapt_place');
-        $this->check_regular_text('bp_text', $bp_text, 'pers_bapt_text');
-        */
         if ($bp_date == '2' || $bp_place == '2' || $bp_text == '2') {
             $baptise_event = [
                 'tree_id' => $this->leftPerson->pers_tree_id,
@@ -1563,13 +1551,6 @@ class TreeMerge
         }
 
         // *** Add or update death event (left person) ***
-        /*
-        $this->check_regular('d_date', $d_date, 'pers_death_date');
-        $this->check_regular('d_place', $d_place, 'pers_death_place');
-        $this->check_regular('d_time', $d_time, 'pers_death_time');
-        $this->check_regular_text('d_text', $d_text, 'pers_death_text');
-        $this->check_regular('d_cause', $d_cause, 'pers_death_cause');
-        */
         //TODO: pers_death_date_hebnight, pers_death_age
         if ($d_date == '2' || $d_place == '2' || $d_time == '2' || $d_text == '2' || $d_cause == '2') {
             $death_event = [
@@ -1607,12 +1588,6 @@ class TreeMerge
         }
 
         // *** Add or update buried event (left person) ***
-        /*
-        $this->check_regular('br_date', $br_date, 'pers_buried_date');
-        $this->check_regular('br_place', $br_place, 'pers_buried_place');
-        $this->check_regular_text('br_text', $br_text, 'pers_buried_text');
-        $this->check_regular('crem', $crem, 'pers_cremation');
-        */
         // TODO pers_buried_date_hebnight
         if ($br_date == '2' || $br_place == '2' || $br_text == '2' || $crem == '2') {
             $buried_event = [
@@ -1649,14 +1624,6 @@ class TreeMerge
         // check for posted event, address and source items (separate functions below process input from comparison form)
         if ($mode != 'automatic') {
             $right_event_array = array();
-            /*
-            $left_events = $this->dbh->query("SELECT * FROM humo_events
-                WHERE event_tree_id='" . $this->trees['tree_id'] . "' 
-                AND (event_connect_kind='person' OR event_kind='ASSO') 
-                AND event_connect_id ='" . $this->leftPerson->pers_gedcomnumber . "' 
-                ORDER BY event_kind ");
-            */
-
             // Skip events like birth, baptise, death and buried
             $skip_events = ["birth", "baptism", "death", "burial"];
             $left_events = $this->dbh->query("SELECT * FROM humo_events
@@ -1665,14 +1632,6 @@ class TreeMerge
                 AND event_connect_id ='" . $this->leftPerson->pers_gedcomnumber . "' 
                 AND event_kind NOT IN ('" . implode("','", $skip_events) . "')
                 ORDER BY event_kind ");
-
-            /*
-            $right_events = $this->dbh->query("SELECT * FROM humo_events
-                WHERE event_tree_id='" . $this->trees['tree_id'] . "' 
-                AND (event_connect_kind='person' OR event_kind='ASSO') 
-                AND event_connect_id ='" . $this->rightPerson->pers_gedcomnumber . "' 
-                ORDER BY event_kind ");
-            */
 
             // Skip events like birth, baptism, death and burial
             $skip_events = ["birth", "baptism", "death", "burial"];

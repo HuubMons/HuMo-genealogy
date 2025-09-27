@@ -301,8 +301,8 @@ if (isset($_POST['duplicate_compare'])) {
         b.event_date AS pers_birth_date,
         d.event_date AS pers_death_date
         FROM humo_persons p
-        LEFT JOIN humo_events b ON b.event_tree_id='" . $trees['tree_id'] . "' AND b.event_connect_kind='person' AND b.event_connect_id=p.pers_id AND b.event_kind='BIRT'
-        LEFT JOIN humo_events d ON d.event_tree_id='" . $trees['tree_id'] . "' AND d.event_connect_kind='person' AND d.event_connect_id=p.pers_id AND d.event_kind='DEAT'
+        LEFT JOIN humo_events b ON b.event_person_id=p.pers_id AND b.event_kind='birth'
+        LEFT JOIN humo_events d ON d.event_person_id=p.pers_id AND d.event_kind='death'
         WHERE p.pers_tree_id='" . $trees['tree_id'] . "'" . $famname_search . " ORDER BY p.pers_id";
     $pers = $dbh->query($qry);
     unset($dupl_arr); // just to make sure...
@@ -313,8 +313,8 @@ if (isset($_POST['duplicate_compare'])) {
             b.event_date AS pers_birth_date,
             d.event_date AS pers_death_date
             FROM humo_persons p
-            LEFT JOIN humo_events b ON b.event_tree_id='" . $trees['tree_id'] . "' AND b.event_connect_kind='person' AND b.event_connect_id=p.pers_id AND b.event_kind='BIRT'
-            LEFT JOIN humo_events d ON d.event_tree_id='" . $trees['tree_id'] . "' AND d.event_connect_kind='person' AND d.event_connect_id=p.pers_id AND d.event_kind='DEAT'
+            LEFT JOIN humo_events b ON b.event_person_id=p.pers_id AND b.event_kind='birth'
+            LEFT JOIN humo_events d ON d.event_person_id=p.pers_id AND d.event_kind='death'
             WHERE p.pers_tree_id='" . $trees['tree_id'] . "' AND p.pers_id > " . $persDb->pers_id;
 
         if ($humo_option["merge_firstname"] == 'YES') {
@@ -369,18 +369,15 @@ if (isset($_POST['duplicate_compare'])) {
 
     echo '<br>' . __('Please wait while the automatic merges are processed...') . '<br>';
     $merges = 0;
-    // TODO This can be skipped? AND b.event_connect_kind='person'
     $qry = "SELECT p.pers_id, p.pers_lastname, p.pers_firstname,
             b.event_date AS pers_birth_date, 
             d.event_date AS pers_death_date, 
             p.pers_famc
         FROM humo_persons p
         LEFT JOIN humo_events b ON b.event_tree_id='" . $trees['tree_id'] . "' 
-            AND b.event_connect_kind='person' 
-            AND b.event_connect_id=p.pers_id 
+            AND b.event_person_id=p.pers_id 
             AND b.event_kind='birth'
         LEFT JOIN humo_events d ON d.event_tree_id='" . $trees['tree_id'] . "' 
-            AND d.event_connect_kind='person' 
             AND d.event_person_id=p.pers_id 
             AND d.event_kind='death'
         WHERE p.pers_tree_id='" . $trees['tree_id'] . "'
@@ -397,14 +394,8 @@ if (isset($_POST['duplicate_compare'])) {
                 d.event_date AS pers_death_date, 
                 p.pers_famc
             FROM humo_persons p
-            LEFT JOIN humo_events b ON b.event_tree_id='" . $trees['tree_id'] . "' 
-                AND b.event_connect_kind='person' 
-                AND b.event_connect_id=p.pers_id 
-                AND b.event_kind='birth'
-            LEFT JOIN humo_events d ON d.event_tree_id='" . $trees['tree_id'] . "' 
-                AND d.event_connect_kind='person' 
-                AND d.event_person_id=p.pers_id 
-                AND d.event_kind='death'
+            LEFT JOIN humo_events b ON b.event_person_id=p.pers_id AND b.event_kind='birth'
+            LEFT JOIN humo_events d ON d.event_person_id=p.pers_id AND d.event_kind='death'
             WHERE p.pers_tree_id='" . $trees['tree_id'] . "'
                 AND p.pers_id > '" . $persDb->pers_id . "'
                 AND (p.pers_lastname !='' AND p.pers_lastname = '" . $persDb->pers_lastname . "')
@@ -419,23 +410,15 @@ if (isset($_POST['duplicate_compare'])) {
                 // get the two families
                 $qry = "SELECT f.fam_man, f.fam_woman, e.event_date AS fam_marr_date
                     FROM humo_families f
-                    LEFT JOIN humo_events e ON e.event_tree_id = f.fam_tree_id
-                        AND e.event_connect_kind = 'family'
-                        AND e.event_relation_id = f.fam_id
-                        AND e.event_kind = 'marriage'
-                    WHERE f.fam_tree_id='" . $trees['tree_id'] . "' 
-                        AND f.fam_gedcomnumber='" . $persDb->pers_famc . "'";
+                    LEFT JOIN humo_events e ON e.event_relation_id = f.fam_id AND e.event_kind = 'marriage'
+                    WHERE f.fam_tree_id='" . $trees['tree_id'] . "' AND f.fam_gedcomnumber='" . $persDb->pers_famc . "'";
                 $fam1 = $dbh->query($qry);
                 $fam1Db = $fam1->fetch(PDO::FETCH_OBJ);
 
                 $qry = "SELECT f.fam_man, f.fam_woman, e.event_date AS fam_marr_date
                     FROM humo_families f
-                    LEFT JOIN humo_events e ON e.event_tree_id = f.fam_tree_id
-                        AND e.event_connect_kind = 'family'
-                        AND e.event_relation_id = f.fam_id
-                        AND e.event_kind = 'marriage'
-                    WHERE f.fam_tree_id='" . $trees['tree_id'] . "' 
-                        AND f.fam_gedcomnumber='" . $pers2Db->pers_famc . "'";
+                    LEFT JOIN humo_events e ON e.event_relation_id = f.fam_id AND e.event_kind = 'marriage'
+                    WHERE f.fam_tree_id='" . $trees['tree_id'] . "' AND f.fam_gedcomnumber='" . $pers2Db->pers_famc . "'";
                 $fam2 = $dbh->query($qry);
                 $fam2Db = $fam2->fetch(PDO::FETCH_OBJ);
 
@@ -452,17 +435,21 @@ if (isset($_POST['duplicate_compare'])) {
 
                     if ($go) {
                         // no use doing all this if the marriage date doesn't match
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam1Db->fam_man . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
+                            WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam1Db->fam_man . "'";
                         $fath1 = $dbh->query($qry);
                         $fath1Db = $fath1->fetch(PDO::FETCH_OBJ);
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam1Db->fam_woman . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
+                            WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam1Db->fam_woman . "'";
                         $moth1 = $dbh->query($qry);
                         $moth1Db = $moth1->fetch(PDO::FETCH_OBJ);
 
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam2Db->fam_man . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
+                            WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam2Db->fam_man . "'";
                         $fath2 = $dbh->query($qry);
                         $fath2Db = $fath2->fetch(PDO::FETCH_OBJ);
-                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam2Db->fam_woman . "'";
+                        $qry = "SELECT pers_lastname, pers_firstname FROM humo_persons
+                            WHERE pers_tree_id='" . $trees['tree_id'] . "' AND pers_gedcomnumber='" . $fam2Db->fam_woman . "'";
                         $moth2 = $dbh->query($qry);
                         $moth2Db = $moth2->fetch(PDO::FETCH_OBJ);
                         if (($fath1->rowCount() > 0 && $moth1->rowCount() > 0

@@ -440,40 +440,9 @@ class ListModel extends BaseModel
                     ) AS order_day
                 ";
 
-                /*
-                $this->orderby = " CONCAT( substring(order_date,-4),
-                    date_format( str_to_date( substring(order_date,-8,3),'%b' ) ,'%m'),
-                    date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
-                    ) " . $desc_asc . ", " . $last_or_patronym . " ASC , pers_firstname ASC";
-                */
-
-                // TODO REFACTOR:
                 $this->orderby = " order_year $desc_asc, order_month $desc_asc, order_day $desc_asc, $last_or_patronym ASC, pers_firstname ASC";
             }
             if ($selectsort == "sort_birthplace") {
-                //$this->orderby = " pers_birth_place ".$desc_asc.",".$last_or_patronym.$desc_asc;
-
-                //$this->make_date = ", CASE
-                //    WHEN pers_birth_place = '' THEN pers_bapt_place ELSE pers_birth_place
-                //    END AS place";
-
-                /*
-                $this->make_date = ", CASE 
-                    WHEN birth_location.location_location IS NULL OR birth_location.location_location = '' 
-                        THEN bapt_location.location_location 
-                    ELSE birth_location.location_location 
-                END AS place";
-                */
-
-                /*
-                $this->make_date = ", CASE 
-                    WHEN pers_birth_place IS NULL OR pers_birth_place = '' 
-                        THEN pers_bapt_place 
-                    ELSE pers_birth_place 
-                END AS place";
-                */
-
-                // Use event table for birth and baptism place
                 $this->make_date = ",
                     COALESCE(
                         birth_location.location_location,
@@ -485,7 +454,6 @@ class ListModel extends BaseModel
             }
 
             if ($selectsort == "sort_deathdate") {
-                // TODO Refactor
                 $this->make_date = ",
                     COALESCE(
                         death.event_date_year,
@@ -501,21 +469,9 @@ class ListModel extends BaseModel
                     ) AS order_day
                 ";
 
-                /*
-                $this->orderby = " CONCAT( right(order_date,4),
-                    date_format( str_to_date( substring(order_date,-8,3),'%b' ) ,'%m'),
-                    date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
-                    )" . $desc_asc . ", " . $last_or_patronym . " ASC , pers_firstname ASC";
-                */
-
-                // TODO REFACTOR:
                 $this->orderby = " order_year $desc_asc, order_month $desc_asc, order_day $desc_asc, $last_or_patronym ASC, pers_firstname ASC";
             }
             if ($selectsort == "sort_deathplace") {
-                //$this->make_date = ", CASE
-                //    WHEN pers_death_place = '' THEN pers_buried_place ELSE pers_death_place
-                //    END AS place";
-
                 $this->make_date = ",
                     COALESCE(
                         death_location.location_location,
@@ -816,22 +772,6 @@ class ListModel extends BaseModel
             }
 
             if ($this->selection['birth_year']) {
-                /*
-                if (!$this->selection['birth_year_end']) {
-                    // filled in one year: exact date
-                    // *** Also search for baptise ***
-                    $this->query .= $and . "(pers_birth_date LIKE '%" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "%'";
-                    $and = " AND ";
-                    $this->query .= " OR pers_bapt_date LIKE '%" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "%')";
-                    $and = " AND ";
-                } else {
-                    // *** Also search for baptise ***
-                    $this->query .= $and . "(RIGHT(pers_birth_date, 4)>='" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "' AND RIGHT(pers_birth_date, 4)<='" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "'";
-                    $and = " AND ";
-                    $this->query .= " OR RIGHT(pers_bapt_date, 4)>='" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "' AND RIGHT(pers_bapt_date, 4)<='" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "')";
-                    $and = " AND ";
-                }
-                */
                 if (!$this->selection['birth_year_end']) {
                     // filled in one year: exact date
                     // Search birth and baptism year using event table
@@ -853,26 +793,6 @@ class ListModel extends BaseModel
                     $and = " AND ";
                 } else {
                     // Search birth and baptism year range using event table
-                    /*
-                    $this->query .= $and . "(
-                        (pers_id IN (
-                            SELECT event_person_id
-                            FROM humo_events
-                            WHERE event_kind = 'birth'
-                            AND event_date_year >= '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "'
-                            AND event_date_year <= '" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "'
-                        ))
-                        OR
-                        (pers_id IN (
-                            SELECT event_person_id
-                            FROM humo_events
-                            WHERE event_kind = 'baptism'
-                            AND event_date_year >= '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "'
-                            AND event_date_year <= '" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "'
-                        ))
-                    )";
-                    */
-
                     $this->query .= $and . "(
                         (pers_id IN (
                             SELECT event_person_id
@@ -894,23 +814,6 @@ class ListModel extends BaseModel
             }
 
             if ($this->selection['death_year']) {
-                /*
-                if (!$this->selection['death_year_end']) {
-                    // filled in one year: exact date
-                    // ** Also search for buried date ***
-                    $this->query .= $and . "(pers_death_date LIKE '%" . $safeTextDb->safe_text_db($this->selection['death_year']) . "%'";
-                    $and = " AND ";
-                    $this->query .= "OR pers_buried_date LIKE '%" . $safeTextDb->safe_text_db($this->selection['death_year']) . "%')";
-                    $and = " AND ";
-                } else {
-                    // ** Also search for buried date ***
-                    $this->query .= $and . "(RIGHT(pers_death_date, 4)>='" . $safeTextDb->safe_text_db($this->selection['death_year']) . "' AND RIGHT(pers_death_date, 4)<='" . $safeTextDb->safe_text_db($this->selection['death_year_end']) . "'";
-                    $and = " AND ";
-                    $this->query .= " OR RIGHT(pers_buried_date, 4)>='" . $safeTextDb->safe_text_db($this->selection['death_year']) . "' AND RIGHT(pers_buried_date, 4)<='" . $safeTextDb->safe_text_db($this->selection['death_year_end']) . "')";
-                    $and = " AND ";
-                }
-                */
-
                 if (!$this->selection['death_year_end']) {
                     // filled in one year: exact date
                     // Search death and burial year using event table
@@ -1089,21 +992,6 @@ class ListModel extends BaseModel
             $query_select .= $this->make_date . " FROM humo_persons";
 
             if ($add_event_qry) {
-                /*
-                $query_select .= " LEFT JOIN humo_events
-                    ON event_tree_id=pers_tree_id
-                    AND event_connect_id=pers_gedcomnumber";
-                // *** If event_kind='name' is used, search for name will work, but other events are hidden! ***
-                //AND event_kind='name'";
-                */
-
-                /*
-                $query_select .= " LEFT JOIN humo_events as events
-                    ON event_tree_id=pers_tree_id
-                    AND event_connect_id=pers_gedcomnumber
-                    AND event_kind NOT IN ('birth', 'baptism', 'burial', 'death')";
-                */
-
                 $query_select .= " LEFT JOIN humo_events as events
                     ON events.event_tree_id=pers_tree_id
                     AND events.event_connect_id=pers_gedcomnumber
@@ -1184,7 +1072,6 @@ class ListModel extends BaseModel
     }
 
 
-
     public function qry_quicksearch()
     {
         $safeTextDb = new SafeTextDb();
@@ -1247,57 +1134,9 @@ class ListModel extends BaseModel
          * Nov. 2022: changed first patronymic line
          * April 2023: added pers_firstname, event_event. To find "firstname eventname" (event could be a kind of lastname too).
          */
-        /*
-        $this->query .= "SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,
-            humo_persons2.*,
-            humo_persons1.pers_id,
-            event_event,
-            event_kind
-            " . $this->make_date . "
-            FROM humo_persons as humo_persons2
-            RIGHT JOIN 
-            (
-                SELECT pers_id, event_event, event_kind
-                FROM humo_persons
-                LEFT JOIN humo_events
-                ON event_connect_id=pers_gedcomnumber
-                AND event_kind='name' AND event_tree_id=pers_tree_id
-                WHERE (" . $multi_tree . ")
-                    AND 
-                    ( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
-                    OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
-                    OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
-                    OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
-                    OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
-                    OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
-                    OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%' 
-                    OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
-
-                    OR CONCAT(pers_firstname,event_event) LIKE '%" . $safeTextDb->safe_text_db($quicksearch) . "%'
-                    )
-                GROUP BY pers_id, event_event, event_kind
-            ) as humo_persons1
-            ON humo_persons1.pers_id = humo_persons2.pers_id
-        ";
-        */
-
 
         // TODO remove birth.event_place_id AS pers_birth_place_id ????
         // TODO date_year, date_month, etc nazien.
-
-        // Removed from query:
-        //birth.event_date_year AS pers_birth_year,
-        //birth.event_date_month AS pers_birth_month,
-        //birth.event_date_day AS pers_birth_day,
-        //bapt.event_date_year AS pers_bapt_year,
-        //bapt.event_date_month AS pers_bapt_month,
-        //bapt.event_date_day AS pers_bapt_day,
-        //death.event_date_year AS pers_death_year,
-        //death.event_date_month AS pers_death_month,
-        //death.event_date_day AS pers_death_day,
-        //buried.event_date_year AS pers_buried_year,
-        //buried.event_date_month AS pers_buried_month,
-        //buried.event_date_day AS pers_buried_day
         $this->query .= "SELECT SQL_CALC_FOUND_ROWS
             CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,
             humo_persons2.*, 
@@ -1389,35 +1228,6 @@ class ListModel extends BaseModel
         if ($this->user['group_kindindex'] == "j") {
             $base_query .= "CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,";
         }
-        /*
-        $base_query = "
-            birth_location.location_location as pers_birth_place,
-            birth.event_date AS pers_birth_date,
-            bapt_location.location_location as pers_bapt_place,
-            bapt.event_date AS pers_bapt_date,
-            death_location.location_location as pers_death_place,
-            death.event_date AS pers_death_date,
-            buried_location.location_location as pers_buried_place,
-            buried.event_date AS pers_buried_date
-            FROM humo_persons
-            LEFT JOIN humo_events AS birth
-                ON birth.event_person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
-            LEFT JOIN humo_location AS birth_location
-                ON birth.event_place_id = birth_location.location_id
-            LEFT JOIN humo_events AS bapt
-                ON bapt.event_person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
-            LEFT JOIN humo_location AS bapt_location
-                ON bapt.event_place_id = bapt_location.location_id
-            LEFT JOIN humo_events AS death
-                ON death.event_person_id = humo_persons.pers_id AND death.event_kind = 'death'
-            LEFT JOIN humo_location AS death_location
-                ON death.event_place_id = death_location.location_id
-            LEFT JOIN humo_events AS buried
-                ON buried.event_person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
-            LEFT JOIN humo_location AS buried_location
-                ON buried.event_place_id = buried_location.location_id
-            WHERE humo_persons.pers_tree_id='" . $this->tree_id . "'";
-        */
 
         // TODO pers_address is added, but doesn't work yet.
         // Maybe just use previous query, and add NULL at some places?
@@ -1523,7 +1333,6 @@ class ListModel extends BaseModel
         }
 
 
-
         // TODO: see also code in view file.
         // TODO: doesn't work yet
         // *** Search residence ***
@@ -1550,8 +1359,6 @@ class ListModel extends BaseModel
             $start = true;
         }
         */
-
-
 
 
         // *** Search death place ***
@@ -1828,21 +1635,6 @@ class ListModel extends BaseModel
         // *** Standard index ***
         if ($this->query == '' or $this->index_list == 'standard') {
             //$this->query = "SELECT * " . $this->make_date . " FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' ORDER BY " . $this->orderby;
-
-            // Use event table for birth, baptism, death, and burial data
-            // Removed from query:
-            // birth.event_date_year AS pers_birth_year,
-            // birth.event_date_month AS pers_birth_month,
-            // birth.event_date_day AS pers_birth_day,
-            // bapt.event_date_year AS pers_bapt_year,
-            // bapt.event_date_month AS pers_bapt_month,
-            // bapt.event_date_day AS pers_bapt_day,
-            // death.event_date_year AS pers_death_year,
-            // death.event_date_month AS pers_death_month,
-            // death.event_date_day AS pers_death_day,
-            // buried.event_date_year AS pers_buried_year,
-            // buried.event_date_month AS pers_buried_month,
-            // buried.event_date_day AS pers_buried_day,
             $this->query = "SELECT humo_persons.*, 
                 birth.event_date AS pers_birth_date,
                 birth.event_date_year, birth.event_date_month, birth.event_date_day,
@@ -1955,6 +1747,7 @@ class ListModel extends BaseModel
 
     // *** NOT IN USE YET ***
     // $query_select .= $this->getEventJoins('humo_persons');
+    /*
     private function getEventJoins($personAlias = 'humo_persons')
     {
         return "
@@ -1979,4 +1772,5 @@ class ListModel extends BaseModel
             ON buried.event_place_id = buried_location.location_id
     ";
     }
+    */
 }

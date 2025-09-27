@@ -92,8 +92,6 @@ class EventManager
         $sql = "UPDATE humo_events SET " . implode(', ', $assignments) . " WHERE event_id = :event_id";
         */
 
-
-        // Build the SQL dynamically to include event_person_id or event_relation_id
         $columns = [
             'event_tree_id',
             'event_place_id',
@@ -148,6 +146,16 @@ class EventManager
             } elseif ($data['event_connect_kind'] === 'family') {
                 $columns[] = 'event_relation_id';
                 $values[] = ':event_relation_id';
+            } else {
+                // *** If event_person_id or event_relation_id is set ***
+                if (isset($data['event_person_id'])) {
+                    $columns[] = 'event_person_id';
+                    $values[] = ':event_person_id';
+                }
+                if (isset($data['event_relation_id'])) {
+                    $columns[] = 'event_relation_id';
+                    $values[] = ':event_relation_id';
+                }
             }
         }
 
@@ -238,6 +246,14 @@ class EventManager
 
                     $family = $this->db_functions->get_family($data['event_connect_id']);
                     $stmt->bindValue(':event_relation_id', isset($family->fam_id) ? $family->fam_id : null, PDO::PARAM_INT);
+                }
+            } else {
+                // *** If event_person_id or event_relation_id is set ***
+                if (isset($data['event_person_id'])) {
+                    $stmt->bindValue(':event_person_id', $data['event_person_id'], PDO::PARAM_INT);
+                }
+                if (isset($data['event_relation_id'])) {
+                    $stmt->bindValue(':event_relation_id', $data['event_relation_id'], PDO::PARAM_INT);
                 }
             }
         }

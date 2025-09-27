@@ -47,7 +47,10 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
         $original_media_filename = $media_filename;
     }
 
-    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND (event_connect_kind='person' OR event_connect_kind='family') AND event_connect_id NOT LIKE '' AND event_event='" . $original_media_filename . "'";
+    $qry = "SELECT * FROM humo_events
+        WHERE event_tree_id='" . $tree_id . "' 
+        AND (event_connect_kind='person' OR event_connect_kind='family') 
+        AND event_connect_id NOT LIKE '' AND event_event='" . $original_media_filename . "'";
     $media_qry = $dbh->query($qry);
     $media_qryDb = $media_qry->fetch(PDO::FETCH_OBJ);
 

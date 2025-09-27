@@ -109,13 +109,8 @@ function mapbirthplace($place)
                 // the 'All birth locations' button
 ?>
                 <b><u><?= __('All persons born here: '); ?></u></b><br>
-            <?php
-                /*
-                $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
-                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                    AND " . $idstring . $namestring . " (pers_birth_place = '" . $place . "' OR (pers_birth_place = '' AND pers_bapt_place = '" . $place . "')) ORDER BY wholename";
-                */
 
+            <?php
                 $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename
                     FROM humo_persons p
                     INNER JOIN humo_events e ON e.event_person_id = p.pers_id
@@ -131,17 +126,6 @@ function mapbirthplace($place)
                 <b><u><?= __('Persons born here until ') . $map_max; ?>:</u></b><br>
         <?php
                 // TODO use event_date_year
-                /*
-                $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
-                    WHERE pers_tree_id='" . $tree_id . "'
-                    AND " . $idstring . $namestring . " (pers_birth_place = '" . $place . "' OR (pers_birth_place = '' AND pers_bapt_place = '" . $place . "'))
-                    AND ((SUBSTR(pers_birth_date,-LEAST(4,CHAR_LENGTH(pers_birth_date))) < " . $map_max . "
-                    AND SUBSTR(pers_birth_date,-LEAST(4,CHAR_LENGTH(pers_birth_date))) > " . $min . ")
-                    OR (pers_birth_date='' AND SUBSTR(pers_bapt_date,-LEAST(4,CHAR_LENGTH(pers_bapt_date))) < " . $map_max . "
-                        AND SUBSTR(pers_bapt_date,-LEAST(4,CHAR_LENGTH(pers_bapt_date))) > " . $min . "))
-                    ORDER BY wholename";
-                */
-
                 $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename, e.event_date_year AS pers_birth_date
                     FROM humo_persons p
                     INNER JOIN humo_events e ON e.event_gedcomnumber = p.pers_gedcomnumber
@@ -158,14 +142,6 @@ function mapbirthplace($place)
             if (isset($_GET['all'])) {
                 // the 'All birth locations' button
                 echo '<b><u>' . __('All persons that died here: ') . '</u></b><br>';
-                /*
-                $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
-                    FROM humo_persons
-                    WHERE pers_tree_id='" . $tree_id . "'
-                    AND " . $idstring . $namestring . "
-                    (pers_death_place = '" . $place . "' OR (pers_death_place = '' AND pers_buried_place = '" . $place . "'))
-                    ORDER BY wholename";
-                */
 
                 $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename
                     FROM humo_persons p
@@ -179,14 +155,7 @@ function mapbirthplace($place)
             } else {
                 // *** Slider is used ***
                 echo '<b><u>' . __('Persons that died here until ') . $map_max . ':</u></b><br>';
-                /*
-                $sql = "SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
-                    WHERE pers_tree_id='" . $tree_id . "' AND " . $idstring . $namestring . "
-                    (pers_death_place = '" . $place . "' OR (pers_death_place = '' AND pers_buried_place = '" . $place . "')) AND
-                    ((SUBSTR(pers_death_date,-LEAST(4,CHAR_LENGTH(pers_death_date))) < " . $map_max . " AND SUBSTR(pers_death_date,-LEAST(4,CHAR_LENGTH(pers_death_date))) > " . $min . ") OR
-                    (pers_death_date='' AND SUBSTR(pers_buried_date,-LEAST(4,CHAR_LENGTH(pers_buried_date))) < " . $map_max . " AND SUBSTR(pers_buried_date,-LEAST(4,CHAR_LENGTH(pers_buried_date))) > " . $min . "))
-                    ORDER BY wholename";
-                */
+
                 $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename, e.event_date_year AS pers_death_date
                     FROM humo_persons p
                     INNER JOIN humo_events e ON e.event_gedcomnumber = p.pers_gedcomnumber

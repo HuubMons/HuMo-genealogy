@@ -461,16 +461,18 @@ elseif ($trees['step'] == '2') {
         */ ?>
 
 
+        <? /*
+        // REMOVED FROM SCRIPT:
+        // var add_source = "<?= isset($_POST['add_source']) ? htmlspecialchars($_POST['add_source'], ENT_QUOTES, 'UTF-8') : ''; ?>";
+        // data.append('add_source', add_source);
+
+        // var gedcom_file = "<?= isset($_POST['gedcom_file']) ? htmlspecialchars($_POST['gedcom_file'], ENT_QUOTES, 'UTF-8') : ''; ?>";
+        // data.append('gedcom_file', gedcom_file);
+        */ ?>
+
         <script>
             // Send $_POST to file.
             // var data = new FormData();
-
-            // var add_source = "<?= isset($_POST['add_source']) ? htmlspecialchars($_POST['add_source'], ENT_QUOTES, 'UTF-8') : ''; ?>";
-            // data.append('add_source', add_source);
-
-            // var gedcom_file = "<?= isset($_POST['gedcom_file']) ? htmlspecialchars($_POST['gedcom_file'], ENT_QUOTES, 'UTF-8') : ''; ?>";
-            // data.append('gedcom_file', gedcom_file);
-
 
             // *** Read progress value every second ***
             function checkProgress() {
@@ -1870,32 +1872,6 @@ elseif ($trees['step'] == '4') {
                     $fields[] = "fam_text = :fam_text";
                     $params[':fam_text'] = $fam_text;
                 }
-                /*
-                if ($fam_relation_text) {
-                    $fields[] = "fam_relation_text = :fam_relation_text";
-                    $params[':fam_relation_text'] = $fam_relation_text;
-                }
-                if ($fam_marr_notice_text) {
-                    $fields[] = "fam_marr_notice_text = :fam_marr_notice_text";
-                    $params[':fam_marr_notice_text'] = $fam_marr_notice_text;
-                }
-                if ($fam_marr_text) {
-                    $fields[] = "fam_marr_text = :fam_marr_text";
-                    $params[':fam_marr_text'] = $fam_marr_text;
-                }
-                if ($fam_marr_church_notice_text) {
-                    $fields[] = "fam_marr_church_notice_text = :fam_marr_church_notice_text";
-                    $params[':fam_marr_church_notice_text'] = $fam_marr_church_notice_text;
-                }
-                if ($fam_marr_church_text) {
-                    $fields[] = "fam_marr_church_text = :fam_marr_church_text";
-                    $params[':fam_marr_church_text'] = $fam_marr_church_text;
-                }
-                if ($fam_div_text) {
-                    $fields[] = "fam_div_text = :fam_div_text";
-                    $params[':fam_div_text'] = $fam_div_text;
-                }
-                */
 
                 if (!empty($fields)) {
                     $sql = "UPDATE humo_families SET " . implode(', ', $fields) . " WHERE fam_id = :fam_id";

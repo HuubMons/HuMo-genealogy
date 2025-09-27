@@ -401,8 +401,8 @@ class EditorModel extends AdminBaseModel
                 $confirm .= __('Person disconnected from parents.') . '<br>';
             }
 
-            // TODO use event_person_id
-            $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $this->pers_gedcomnumber . "'";
+            // *** Remove birth, bapt. etc. ***
+            $sql = "DELETE FROM humo_events WHERE event_person_id='" . $personDb->pers_id . "'";
             $this->dbh->query($sql);
 
             $sql = "DELETE FROM humo_addresses WHERE address_tree_id='" . $this->tree_id . "'
@@ -410,7 +410,7 @@ class EditorModel extends AdminBaseModel
                 AND address_connect_id='" . $this->pers_gedcomnumber . "'";
             $this->dbh->query($sql);
 
-            $sql = "DELETE FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $this->pers_gedcomnumber . "'";
+            $sql = "DELETE FROM humo_persons WHERE pers_id='" . $personDb->pers_id . "'";
             $this->dbh->query($sql);
 
             $sql = "DELETE FROM humo_connections WHERE connect_tree_id='" . $this->tree_id . "' AND connect_connect_id='" . $this->pers_gedcomnumber . "'";
@@ -424,23 +424,6 @@ class EditorModel extends AdminBaseModel
             $this->cache_latest_changes(true);
 
             $confirm .= '<strong>' . __('Person is removed') . '</strong>';
-
-            // *** Select new person ***
-            //$new_nr_qry = "SELECT * FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='" . $this->tree_id . "' LIMIT 0,1";
-            //$new_nr_result = $this->dbh->query($new_nr_qry);
-            //if ($new_nr_result and $new_nr_result->rowCount()) {
-            //    $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
-            //    $this->pers_gedcomnumber = $new_nr->setting_value;
-            //    $_SESSION['admin_pers_gedcomnumber'] = $this->pers_gedcomnumber;
-            //} else {
-            //    $new_nr_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' LIMIT 0,1";
-            //    $new_nr_result = $this->dbh->query($new_nr_qry);
-            //    $new_nr = $new_nr_result->fetch(PDO::FETCH_OBJ);
-            //    if ($new_nr->pers_gedcomnumber) {
-            //        $this->pers_gedcomnumber = $new_nr->pers_gedcomnumber;
-            //        $_SESSION['admin_pers_gedcomnumber'] = $this->pers_gedcomnumber;
-            //    }
-            //}
 
             $this->family_tree_update();
 
@@ -1209,7 +1192,7 @@ class EditorModel extends AdminBaseModel
             }
 
             // Extra UPDATE queries if brit mila is displayed. Also check even_brit_date to prevent errors if relation is added.
-            if ($this->humo_option['admin_brit'] == "y" && isset ($_POST["even_brit_date"])) {
+            if ($this->humo_option['admin_brit'] == "y" && isset($_POST["even_brit_date"])) {
                 if ($_POST["even_brit_date"] || $_POST["even_brit_place"] || $_POST["even_brit_text"]) {
                     $data = [
                         'tree_id' => $this->tree_id,
@@ -1228,7 +1211,7 @@ class EditorModel extends AdminBaseModel
             }
 
             // Extra UPDATE queries if Bar Mitsva is displayed. Also check even_barm_date to prevent errors if relation is added.
-            if ($this->humo_option['admin_barm'] == "y" && isset ($_POST["even_barm_date"])) {
+            if ($this->humo_option['admin_barm'] == "y" && isset($_POST["even_barm_date"])) {
                 if ($_POST["even_barm_date"] || $_POST["even_barm_place"] || $_POST["even_barm_text"]) {
                     $barmbasm = $_POST["pers_sexe"] == "F" ? "BASM" : "BARM";
                     $data = [
@@ -2488,6 +2471,8 @@ class EditorModel extends AdminBaseModel
         }
 
         if ($new_event) {
+            $event_person_id = '';
+            $event_relation_id = '';
             if (isset($_POST['marriage'])) {
                 $marriage = $_POST['marriage'];
             } // *** Needed to check $_POST for multiple relations ***
@@ -2495,6 +2480,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_name') {
                 $event_connect_kind = 'person';
                 $event_connect_id = $this->pers_gedcomnumber;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'name';
 
                 if ($_POST['event_gedcom_add'] == 'NPFX') {
@@ -2520,6 +2506,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_birth_declaration') {
                 $event_connect_kind = 'birth_declaration';
                 $event_connect_id = $this->pers_gedcomnumber;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = '';
@@ -2527,6 +2514,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_baptism_witness') {
                 $event_connect_kind = 'CHR';
                 $event_connect_id = $this->pers_gedcomnumber;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = 'WITN';
@@ -2534,6 +2522,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_death_declaration') {
                 $event_connect_kind = 'death_declaration';
                 $event_connect_id = $this->pers_gedcomnumber;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = '';
@@ -2541,6 +2530,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_burial_witness') {
                 $event_connect_kind = 'BURI';
                 $event_connect_id = $this->pers_gedcomnumber;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = 'WITN';
@@ -2548,6 +2538,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_marriage_witness') {
                 $event_connect_kind = 'MARR';
                 $event_connect_id = $marriage;
+                //$event_relation_id = 
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = 'WITN';
@@ -2555,6 +2546,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_marriage_witness_rel') {
                 $event_connect_kind = 'MARR_REL';
                 $event_connect_id = $marriage;
+                //$event_relation_id = 
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = 'WITN';
@@ -2563,6 +2555,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_profession') {
                 $event_connect_kind = 'person';
                 $event_connect_id = $this->pers_gedcomnumber;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'profession';
                 $event_gedcom = '';
                 $event_event = $_POST['event_event_profession'];
@@ -2571,6 +2564,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_religion') {
                 $event_connect_kind = 'person';
                 $event_connect_id = $this->pers_gedcomnumber;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'religion';
                 $event_gedcom = 'RELI';
                 $event_event = $_POST['event_event_religion'];
@@ -2580,6 +2574,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_picture') {
                 $event_connect_kind = 'person';
                 $event_connect_id = $this->pers_gedcomnumber;
+                                $event_person_id = $this->person->pers_id;
                 $event_kind = 'picture';
                 $event_event = '';
                 $event_gedcom = '';
@@ -2588,6 +2583,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_marriage_picture') {
                 $event_connect_kind = 'family';
                 $event_connect_id = $marriage;
+                // $event_relation_id=$this->relation->fam_id;
                 $event_kind = 'picture';
                 $event_event = '';
                 $event_gedcom = '';
@@ -2615,6 +2611,12 @@ class EditorModel extends AdminBaseModel
                 'event_place' => '',
                 'event_text' => ''
             ];
+            if ($event_person_id) {
+                $data['event_person_id'] = $event_person_id;
+            }
+            if ($event_relation_id) {
+                $data['event_relation_id'] = $event_relation_id;
+            }
             $eventManager->update_event($data);
         }
 

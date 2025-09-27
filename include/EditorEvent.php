@@ -28,7 +28,7 @@ class EditorEvent
     //	return $d;
     //}
 
-    // TODO create class, also use for include/witness.php.
+    // TODO create class, also used for include/witness.php.
     // *** Show event_kind text ***
     function event_text($event_kind, $event_gedcom = '', $event_event_extra = '')
     {
@@ -46,8 +46,12 @@ class EditorEvent
             $event_text = __('godfather');
         } elseif ($event_kind == 'ASSO' && $event_gedcom == 'OTHER') {
             $event_text = $event_event_extra;
-            if ($event_text == 'informant') $event_text = __('informant');
-            if ($event_text == 'funeral leader') $event_text = __('funeral leader');
+            if ($event_text == 'informant') {
+                $event_text = __('informant');
+            }
+            if ($event_text == 'funeral leader') {
+                $event_text = __('funeral leader');
+            }
         } elseif ($event_kind == 'ASSO') {
             $event_text = __('witness');
         } elseif ($event_kind == 'name') {
@@ -211,6 +215,7 @@ class EditorEvent
             $hebtext .= " AND ((event_gedcom!='BARM' AND event_gedcom!='BASM') OR event_gedcom IS NULL) ";
         }
 
+        // *** Remark: not all queries needs event_place (from location table) ***
         if ($event_kind == 'person') {
             // *** Filter several events, allready shown in seperate lines in editor ***
             $qry = "SELECT e.*, l.location_location AS event_place
@@ -224,14 +229,10 @@ class EditorEvent
                 " . $hebtext . "
                 ORDER BY e.event_kind, e.event_order";
         } elseif ($event_kind == 'name') {
-
             $hebclause = '';
             if ($humo_option['admin_hebname'] == 'y') {
                 $hebclause = " AND event_gedcom!='_HEBN' ";
             }
-            //$qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "'
-            // AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "'
-            // AND event_kind='name' " . $hebclause . "ORDER BY event_order";
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
                 LEFT JOIN humo_location l ON e.event_place_id = l.location_id
@@ -250,9 +251,6 @@ class EditorEvent
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='title' ORDER BY event_order";
         } elseif ($event_kind == 'lordship') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='lordship' ORDER BY event_order";
-            //} elseif ($event_connect_kind == 'birth_declaration') {
-            //    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='birth_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='witness' ORDER BY event_order";
-
         } elseif ($event_kind == 'ASSO' && $event_connect_kind == 'CHR') {
             // ADDED oct. 2024
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='CHR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
@@ -264,7 +262,6 @@ class EditorEvent
         } elseif ($event_connect_kind == 'death_declaration') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='death_declaration' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_order";
         } elseif ($event_kind == 'profession') {
-            //$qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='profession' ORDER BY event_order";
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
                 LEFT JOIN humo_location l ON e.event_place_id = l.location_id
@@ -274,7 +271,6 @@ class EditorEvent
                 AND e.event_kind='profession' 
                 ORDER BY e.event_order";
         } elseif ($event_kind == 'religion') {
-            //$qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='person' AND event_connect_id='" . $event_connect_id . "' AND event_kind='religion' ORDER BY event_order";
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
                 LEFT JOIN humo_location l ON e.event_place_id = l.location_id
@@ -293,7 +289,6 @@ class EditorEvent
                 $searchpic = " AND event_event LIKE '%" . $search_picture . "%' ";
             }
 
-            // Join with location table to get place name
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
                 LEFT JOIN humo_location l ON e.event_place_id = l.location_id
@@ -312,10 +307,8 @@ class EditorEvent
                 AND e.event_kind NOT IN ('ASSO', 'picture', 'relation', 'marriage_notice', 'marriage', 'marr_church_notice', 'marr_church', 'divorce')
                 ORDER BY e.event_kind, e.event_order";
         } elseif ($event_connect_kind == 'MARR' && $event_kind == 'ASSO') {
-            // TODO: remove this query
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_kind, event_order";
         } elseif ($event_connect_kind == 'MARR_REL' && $event_kind == 'ASSO') {
-            // TODO: remove this query
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='MARR_REL' AND event_connect_id='" . $event_connect_id . "' AND event_kind='ASSO' ORDER BY event_kind, event_order";
         } elseif ($event_kind == 'marriage_picture') {
             $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_connect_kind='family' AND event_connect_id='" . $event_connect_id . "' AND event_kind='picture' ORDER BY event_order";
@@ -330,7 +323,6 @@ class EditorEvent
         if ($count > 0) {
             $show_event_add = true;
         }
-
 
         // TODO move to view scripts?
         // *** Show pictures by person, family and (shared) source ***
@@ -614,12 +606,12 @@ class EditorEvent
                                                     </div>
                                                 </div>
 
-                                                <!--
+                                                <?php /*
                                                 <div class="row">
                                                     <div class="col-3"></div>
                                                     <label for="event" class="col-md-3 col-form-label"><b><?= __('or'); ?>:</b></label>
                                                 </div>
-                                                -->
+                                                */?>
 
                                                 <div class="row mb-2">
                                                     <?php /*
