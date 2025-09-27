@@ -1627,18 +1627,16 @@ class TreeMerge
             // Skip events like birth, baptise, death and buried
             $skip_events = ["birth", "baptism", "death", "burial"];
             $left_events = $this->dbh->query("SELECT * FROM humo_events
-                WHERE event_tree_id='" . $this->trees['tree_id'] . "' 
-                AND (event_connect_kind='person' OR event_kind='ASSO') 
-                AND event_connect_id ='" . $this->leftPerson->pers_gedcomnumber . "' 
+                WHERE (event_connect_kind='person' OR event_kind='ASSO') 
+                AND event_person_id ='" . $this->leftPerson->pers_id . "' 
                 AND event_kind NOT IN ('" . implode("','", $skip_events) . "')
                 ORDER BY event_kind ");
 
             // Skip events like birth, baptism, death and burial
             $skip_events = ["birth", "baptism", "death", "burial"];
             $right_events = $this->dbh->query("SELECT * FROM humo_events
-                WHERE event_tree_id='" . $this->trees['tree_id'] . "' 
-                AND (event_connect_kind='person' OR event_kind='ASSO') 
-                AND event_connect_id ='" . $this->rightPerson->pers_gedcomnumber . "' 
+                WHERE (event_connect_kind='person' OR event_kind='ASSO') 
+                AND event_person_id ='" . $this->rightPerson->pers_id . "' 
                 AND event_kind NOT IN ('" . implode("','", $skip_events) . "')
                 ORDER BY event_kind ");
 
@@ -1711,10 +1709,9 @@ class TreeMerge
             }
         } else {
             // for automatic mode check for situation where right has event/source/address data and left not. In that case use right's.
-            // $right_result = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->trees['tree_id'] . "' AND event_connect_kind='person' AND event_connect_id ='" . $this->rightPerson->pers_gedcomnumber . "'");
-            $right_result = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->trees['tree_id'] . "' AND (event_connect_kind='person' OR event_kind='ASSO') AND event_connect_id ='" . $this->rightPerson->pers_gedcomnumber . "'");
+            $right_result = $this->dbh->query("SELECT * FROM humo_events WHERE event_person_id ='" . $this->rightPerson->pers_id . "'");
             while ($right_resultDb = $right_result->fetch(PDO::FETCH_OBJ)) {
-                $left_result = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->trees['tree_id'] . "' AND event_connect_id ='" . $this->leftPerson->pers_gedcomnumber . "'");
+                $left_result = $this->dbh->query("SELECT * FROM humo_events WHERE event_person_id ='" . $this->leftPerson->pers_id . "'");
                 $foundleft = false;
                 while ($left_resultDb = $left_result->fetch(PDO::FETCH_OBJ)) {
                     if ($left_resultDb->event_kind == $right_resultDb->event_kind && $left_resultDb->event_gedcom == $right_resultDb->event_gedcom) {
@@ -1767,20 +1764,19 @@ class TreeMerge
         $qry = "DELETE FROM humo_connections WHERE connect_tree_id='" . $this->trees['tree_id'] . "' AND connect_connect_id ='" . $this->rightPerson->pers_gedcomnumber . "'";
         $this->dbh->query($qry);
 
-        $qry = "DELETE FROM humo_events WHERE event_tree_id='" . $this->trees['tree_id'] . "' AND (event_connect_kind='person' OR event_kind='ASSO')  AND event_connect_id ='" . $this->rightPerson->pers_gedcomnumber . "'";
+        $qry = "DELETE FROM humo_events WHERE event_person_id ='" . $this->rightPerson->pers_id . "'";
         $this->dbh->query($qry);
 
-        // CLEANUP: This person's I may still exist in the humo_events table under "event_event",
+        // CLEANUP: This person's I may still exist in the humo_events table under "event_event" (in event_connect_id2 field),
         // in case of birth/death declaration or bapt/burial witness. If so, change the GEDCOM to the left person's I:
         $qry = "UPDATE humo_events
-            SET event_connect_id2 = '" . $this->leftPerson->pers_gedcomnumber . "',
-                event_person_id = '" . $this->leftPerson->pers_id . "'
-            WHERE event_tree_id='" . $this->trees['tree_id'] . "' AND event_connect_id2 ='" . $this->rightPerson->pers_gedcomnumber . "'";
+            SET event_connect_id2 = '" . $this->leftPerson->pers_gedcomnumber . "'
+            WHERE event_tree_id='" . $this->trees['tree_id'] . "'
+            AND event_connect_id2 ='" . $this->rightPerson->pers_gedcomnumber . "'";
         $this->dbh->query($qry);
 
         // Delete right I from humo_persons table
-        // TODO use pers_id.
-        $qry = "DELETE FROM humo_persons WHERE pers_tree_id='" . $this->trees['tree_id'] . "' AND pers_gedcomnumber ='" . $this->rightPerson->pers_gedcomnumber . "'";
+        $qry = "DELETE FROM humo_persons WHERE pers_id ='" . $this->rightPerson->pers_id . "'";
         $this->dbh->query($qry);
 
         // Remove from the relatives-to-merge pairs in the database any pairs that contain the deleted right person

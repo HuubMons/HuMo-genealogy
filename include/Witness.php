@@ -39,7 +39,6 @@ class Witness
         $text_array = [];
 
         if ($gedcomnr) {
-            //get_events_connect($event_connect_kind, $event_connect_id, $event_kind)
             $witness_qry = $db_functions->get_events_connect($event_connect_kind, $gedcomnr, $event_kind);
 
             $last_text = ''; // *** Show texts only once ***

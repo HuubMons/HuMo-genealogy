@@ -57,7 +57,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
     $file_allowed = false;
 
     if ($media_qryDb && $media_qryDb->event_connect_kind === 'person') {
-        $personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
+        $personmnDb = $db_functions->get_person_with_id($media_qryDb->event_person_id);
         $man_privacy = $personPrivacy->get_privacy($personmnDb);
         if ($personmnDb && !$man_privacy) {
             $file_allowed = true;
@@ -65,7 +65,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
             $file_allowed = false;
         }
     } elseif ($media_qryDb && $media_qryDb->event_connect_kind === 'family') {
-        $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $media_qryDb->event_connect_id . "'";
+        $qry2 = $db_functions->get_family_with_id($media_qryDb->event_relation_id);
         $family_qry = $dbh->query($qry2);
         $family_qryDb2 = $family_qry->fetch(PDO::FETCH_OBJ);
 

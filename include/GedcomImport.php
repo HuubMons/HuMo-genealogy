@@ -1664,31 +1664,16 @@ class GedcomImport
                     $this->event['calculated_event_id'][$this->event_nr1] = $this->calculated_event_id;
                     $this->event['level'][$this->event_nr1] = '1';
 
-                    // *** Changed in jan. 2023 ***
-                    // Jan 2024: Database example
-                    // event_connect_id = I1 (main person)
-                    // event_connect_id2 = I2012 (witness)
-
                     // 1 ASSO only used in Aldfaer GEDCOM 5.x?
 
                     // *** Oct. 2024: BE AWARE Aldfaer GEDCOM 5.x is probably wrong. ASSO should be by main person, not by witness. ***
                     // *** This is changed in Aldfaer GEDCOM 7! ***
                     // TODO check for GEDCOM 5 or 7 AND check for Aldfaer GEDCOM.
-
                     // TODO if this code is used for GEDCOM 7: switch connect_id and connect_id2.
-                    //$this->event['connect_kind'][$this->event_nr1] = 'person';
                     $this->event['connect_kind'][$this->event_nr1] = 'BURI';
                     $this->event['connect_id'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
                     $this->event['connect_kind2'][$this->event_nr1] = 'person';
                     $this->event['connect_id2'][$this->event_nr1] = $pers_gedcomnumber;
-                    //}
-                    // *** This code isn't needed? OR: use this code for HuMo-gen. ***
-                    //else{
-                    //$this->event['connect_kind'][$this->event_nr1] = 'person';
-                    //$this->event['connect_id'][$this->event_nr1] = $pers_gedcomnumber;
-                    //$this->event['connect_kind2'][$this->event_nr1] = 'person';
-                    //$this->event['connect_id2'][$this->event_nr1] = substr($this->buffer[0], 8, -1);
-                    //}
 
                     $this->event['kind'][$this->event_nr1] = 'ASSO';
                     $this->event['event'][$this->event_nr1] = '';
@@ -2728,8 +2713,6 @@ class GedcomImport
                 }
 
                 $this->eventManager->update_event($birth_event);
-
-
 
 
                 //TEST LINES to check calculated_event_id.
@@ -7516,10 +7499,6 @@ class GedcomImport
 
         if ($this->buffer[6] === '2 ASSO') {
             $this->processed = true;
-
-            // Database example
-            // event_connect_id = I1 (main person)
-            // event_connect_id2 = I2012 (witness)
 
             // *** Remark: date, place, text, source isn't needed for ASSO's (and not supported in GEDCOM 7). These items are stored in one "birth/ death declaration event ***
             if ($this->level[1] == 'EVEN') {

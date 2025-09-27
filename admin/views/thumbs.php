@@ -1053,7 +1053,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                                 while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
                                     $db_functions->set_tree_id($tree_id);
-                                    $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                                    $personDb = $db_functions->get_person_with_id($afbDb->event_person_id);
                                     $privacy = $personPrivacy->get_privacy($personDb);
                                     $name = $personName->get_person_name($personDb, $privacy);
 

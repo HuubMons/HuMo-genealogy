@@ -36,7 +36,7 @@ class LatestChangesModel extends BaseModel
                 SELECT pers_id
                 FROM humo_persons
                 LEFT JOIN humo_events
-                    ON pers_gedcomnumber=event_connect_id AND pers_tree_id=event_tree_id AND event_kind='name'
+                    ON pers_id=event_person_id AND event_kind='name'
                     WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE :searchTerm
                     OR event_event LIKE :searchTerm)
                     AND ((pers_changed_datetime IS NOT NULL) OR (pers_new_datetime IS NOT NULL))

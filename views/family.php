@@ -533,7 +533,7 @@ else {
                      */
                     $famc_adoptive_qry_prep = $db_functions->get_events_kind($familyDb->fam_gedcomnumber, 'adoption');
                     foreach ($famc_adoptive_qry_prep as $famc_adoptiveDb) {
-                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person_with_id($famc_adoptiveDb->event_person_id);
                         $child_privacy = $personPrivacy->get_privacy($childDb);
                         ?>
                         <tr>
@@ -551,7 +551,7 @@ else {
                      */
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_man, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
-                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person_with_id($famc_adoptiveDb->event_person_id);
                         $privacy_child = $personPrivacy->get_privacy($childDb);
                     ?>
                         <tr>
@@ -580,7 +580,7 @@ else {
                      */
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_woman, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
-                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person_with_id($famc_adoptiveDb->event_person_id);
                         $child_privacy = $personPrivacy->get_privacy($childDb);
                     ?>
                         <tr>

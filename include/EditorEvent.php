@@ -552,7 +552,6 @@ class EditorEvent
                                             ) {
                                                 // *** Hide or show editor fields ***
                                                 if ($data_listDb->event_connect_id2) {
-                                                    //$witness_name = show_person($data_listDb->event_connect_id2, $gedcom_date = false, $show_link = false);
                                                     $witness_name = show_person($data_listDb->event_connect_id2, false, false);
                                                 } else {
                                                     $witness_name = $data_listDb->event_event;

@@ -394,14 +394,13 @@ class EditorModel extends AdminBaseModel
                     $fam_children3 = implode(";", $fam_children2);
                 }
 
-                $sql = "UPDATE humo_families SET fam_children='" . $fam_children3 . "'
-                    WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . $personDb->pers_famc . "'";
+                $sql = "UPDATE humo_families SET fam_children='" . $fam_children3 . "' WHERE fam_id='" . $famDb->fam_id . "'";
                 $this->dbh->query($sql);
 
                 $confirm .= __('Person disconnected from parents.') . '<br>';
             }
 
-            // *** Remove birth, bapt. etc. ***
+            // *** Remove birth, bapt. events etc. ***
             $sql = "DELETE FROM humo_events WHERE event_person_id='" . $personDb->pers_id . "'";
             $this->dbh->query($sql);
 
@@ -1402,8 +1401,8 @@ class EditorModel extends AdminBaseModel
                 $child_gedcomnumber = explode(";", $new_nr->fam_children);
                 foreach ($child_gedcomnumber as $i => $value) {
                     // *** Find child data ***
-                    // TODO check line
-                    $resultDb = $this->db_functions->get_person($child_gedcomnumber[$i]);
+                    // TODO check line. Could be used for pers_id to improve update query.
+                    //$resultDb = $this->db_functions->get_person($child_gedcomnumber[$i]);
 
                     // *** Remove parents from child record ***
                     $stmt = $this->dbh->prepare(
@@ -1428,15 +1427,14 @@ class EditorModel extends AdminBaseModel
                 $this->fams_remove($new_nr->fam_woman, $fam_remove);
             }
 
-            $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                AND event_connect_kind='family' AND event_connect_id='" . $fam_remove . "'";
+            $sql = "DELETE FROM humo_events WHERE event_relation_id='" . $new_nr->fam_id . "'";
             $this->dbh->query($sql);
 
             $sql = "DELETE FROM humo_addresses WHERE address_tree_id='" . $this->tree_id . "'
                 AND address_connect_sub_kind='family' AND address_connect_id='" . $fam_remove . "'";
             $this->dbh->query($sql);
 
-            $sql = "DELETE FROM humo_families WHERE fam_tree_id='" . $this->tree_id . "' AND fam_gedcomnumber='" . $fam_remove . "'";
+            $sql = "DELETE FROM humo_families WHERE fam_id='" . $new_nr->fam_id . "'";
             $this->dbh->query($sql);
 
             $sql = "DELETE FROM humo_connections WHERE connect_tree_id='" . $this->tree_id . "' AND connect_connect_id='" . $fam_remove . "'";
@@ -2475,6 +2473,15 @@ class EditorModel extends AdminBaseModel
             $event_relation_id = '';
             if (isset($_POST['marriage'])) {
                 $marriage = $_POST['marriage'];
+
+                $fam_stmt = $this->dbh->prepare("SELECT fam_id FROM humo_families WHERE fam_tree_id = :tree_id AND fam_gedcomnumber = :marriage LIMIT 1");
+                $fam_stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
+                $fam_stmt->bindValue(':marriage', $marriage, PDO::PARAM_STR);
+                $fam_stmt->execute();
+                $fam_row = $fam_stmt->fetch(PDO::FETCH_OBJ);
+                if ($fam_row) {
+                    $event_relation_id = $fam_row->fam_id;
+                }
             } // *** Needed to check $_POST for multiple relations ***
 
             if ($event_add == 'add_name') {
@@ -2538,7 +2545,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_marriage_witness') {
                 $event_connect_kind = 'MARR';
                 $event_connect_id = $marriage;
-                //$event_relation_id = 
+                $event_relation_id = $event_relation_id;
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = 'WITN';
@@ -2546,7 +2553,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_marriage_witness_rel') {
                 $event_connect_kind = 'MARR_REL';
                 $event_connect_id = $marriage;
-                //$event_relation_id = 
+                $event_relation_id = $event_relation_id;
                 $event_kind = 'ASSO';
                 $event_event = '';
                 $event_gedcom = 'WITN';
@@ -2574,7 +2581,7 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_picture') {
                 $event_connect_kind = 'person';
                 $event_connect_id = $this->pers_gedcomnumber;
-                                $event_person_id = $this->person->pers_id;
+                $event_person_id = $this->person->pers_id;
                 $event_kind = 'picture';
                 $event_event = '';
                 $event_gedcom = '';
@@ -2583,14 +2590,13 @@ class EditorModel extends AdminBaseModel
             if ($event_add == 'add_marriage_picture') {
                 $event_connect_kind = 'family';
                 $event_connect_id = $marriage;
-                // $event_relation_id=$this->relation->fam_id;
+                $event_relation_id = $event_relation_id;
                 $event_kind = 'picture';
                 $event_event = '';
                 $event_gedcom = '';
             }
             // *** Picture by source ***
             if ($event_add == 'add_source_picture') {
-                //$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; $event_gedcom='';
                 $event_connect_kind = 'source';
                 $event_connect_id = $_POST['source_gedcomnr'];
                 $event_kind = 'picture';
@@ -3005,14 +3011,12 @@ class EditorModel extends AdminBaseModel
             $event_kind = $this->safeTextDb->safe_text_db($_POST['event_kind']);
             $event_order_id = $this->safeTextDb->safe_text_db($_POST['event_drop']);
 
-            //if (isset($_POST['event_person'])) {
             if ($_POST['event_connect_kind'] == 'person') {
-
                 // *** Remove NON SHARED source from event (connection in humo_connections table) ***
                 $event_sql = "SELECT * FROM humo_events
-                    WHERE event_tree_id='" . $this->tree_id . "'
-                    AND event_connect_kind='person' AND event_connect_id='" . $this->pers_gedcomnumber . "'
-                    AND event_kind='" . $event_kind . "' AND event_order='" . $event_order_id . "'";
+                    WHERE event_person_id='" . $this->person->pers_id . "'
+                    AND event_kind='" . $event_kind . "'
+                    AND event_order='" . $event_order_id . "'";
                 $event_qry = $this->dbh->query($event_sql);
                 $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
                 $event_event = $eventDb->event_event;
@@ -3023,12 +3027,10 @@ class EditorModel extends AdminBaseModel
                 if (isset($_POST['event_descendants']) || isset($_POST['event_ancestors'])) {
                     // *** Get event_event from selected person, needed to remove colour from descendant and/ or ancestors ***
                     $event_sql = "SELECT event_event FROM humo_events
-                        WHERE event_tree_id = :tree_id
-                        AND event_connect_kind = 'person' AND event_connect_id = :pers_gedcomnumber
+                        WHERE event_person_id = :pers_id
                         AND event_kind = 'person_colour_mark' AND event_order = :event_order_id";
                     $event_qry = $this->dbh->prepare($event_sql);
-                    $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
-                    $event_qry->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                    $event_qry->bindValue(':pers_id', $this->person->pers_id, PDO::PARAM_STR);
                     $event_qry->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
                     $event_qry->execute();
                     $eventDb = $event_qry->fetch(PDO::FETCH_OBJ);
@@ -3036,26 +3038,21 @@ class EditorModel extends AdminBaseModel
                 }
 
                 $sql = "DELETE FROM humo_events
-                    WHERE event_tree_id = :tree_id
-                    AND event_connect_kind = 'person'
-                    AND event_connect_id = :pers_gedcomnumber
+                    WHERE event_person_id = :pers_id
                     AND event_kind = :event_kind
                     AND event_order = :event_order_id";
                 $stmt = $this->dbh->prepare($sql);
-                $stmt->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
-                $stmt->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $stmt->bindValue(':pers_id', $this->person->pers_id, PDO::PARAM_STR);
                 $stmt->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
                 $stmt->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
                 $stmt->execute();
 
                 // *** Change order of events ***
                 $event_sql = "SELECT * FROM humo_events
-                    WHERE event_tree_id = :tree_id
-                    AND event_connect_kind = 'person' AND event_connect_id = :pers_gedcomnumber
+                    WHERE event_person_id = :pers_id
                     AND event_kind = :event_kind AND event_order > :event_order_id ORDER BY event_order";
                 $event_qry = $this->dbh->prepare($event_sql);
-                $event_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
-                $event_qry->bindValue(':pers_gedcomnumber', $this->pers_gedcomnumber, PDO::PARAM_STR);
+                $event_qry->bindValue(':pers_id', $this->person->pers_id, PDO::PARAM_INT);
                 $event_qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
                 $event_qry->bindValue(':event_order_id', $event_order_id, PDO::PARAM_STR);
                 $event_qry->execute();

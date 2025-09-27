@@ -688,7 +688,7 @@ class TreeIndexModel extends BaseModel
                 $is_privacy = true;
 
                 if ($pic_conn_kind == 'person') {
-                    $personmnDb = $this->db_functions->get_person($picqryDb->event_connect_id);
+                    $personmnDb = $this->db_functions->get_person_with_id($picqryDb->event_person_id);
                     $man_privacy = $personPrivacy->get_privacy($personmnDb);
                     if (!$man_privacy) {
                         $is_privacy = false;
@@ -699,9 +699,7 @@ class TreeIndexModel extends BaseModel
                         $url = $this->personLink->get_person_link($personmnDb);
                     }
                 } elseif ($pic_conn_kind == 'family') {
-                    $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $picqryDb->event_connect_id . "'";
-                    $picqry2 = $this->dbh->query($qry2);
-                    $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
+                    $picqryDb2 = $this->db_functions->get_family_with_id($picqryDb->event_relation_id);
 
                     $personmnDb2 = $this->db_functions->get_person($picqryDb2->fam_man);
                     $man_privacy = $personPrivacy->get_privacy($personmnDb2);
@@ -945,7 +943,7 @@ class TreeIndexModel extends BaseModel
 
         $sql = "SELECT p.*, e.event_kind, e.event_date_day, e.event_date_year, e.event_date_month
             FROM humo_persons p
-            LEFT JOIN humo_events e ON p.pers_gedcomnumber = e.event_connect_id
+            LEFT JOIN humo_events e ON p.pers_id = e.event_person_id
             AND e.event_tree_id = p.pers_tree_id
             AND e.event_connect_kind = 'person'
             WHERE p.pers_tree_id = :tree_id

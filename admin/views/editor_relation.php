@@ -122,15 +122,10 @@ if ($person->pers_sexe == 'M') {
         $fam_count = count($fams1);
         if ($fam_count > 0) {
             for ($i = 0; $i < $fam_count; $i++) {
-                //$family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $fams1[$i] . "'");
-
-                // TODO: use family_id
                 $qry = "SELECT f.*, e.event_date AS fam_marr_date
                     FROM humo_families f
                     LEFT JOIN humo_events e
-                        ON f.fam_tree_id = e.event_tree_id
-                        AND f.fam_gedcomnumber = e.event_connect_id
-                        AND e.event_connect_kind = 'family'
+                        ON f.fam_id = e.event_relation_id
                         AND e.event_kind = 'marriage'
                     WHERE f.fam_tree_id='" . $tree_id . "' AND f.fam_gedcomnumber='" . $fams1[$i] . "'";
 

@@ -58,9 +58,7 @@ use PDOException;
 
 class DbFunctions
 {
-    //public int $tree_id = 0;
     public $tree_id = 0;
-    //public string $tree_prefix = '';
     public $tree_prefix = '';
     private $dbh;
 
@@ -122,7 +120,9 @@ class DbFunctions
         $check = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
         while ($checkDb = $check->fetch(PDO::FETCH_OBJ)) {
             $list = explode("|", $checkDb->setting_value);
-            //if ($ip_address==$list[0]) $allowed=false;
+            //if ($ip_address==$list[0]){
+            //  $allowed=false;
+            //}
             if (strcmp($ip_address, $list[0]) == 0) {
                 $allowed = false;
             }
@@ -371,12 +371,6 @@ class DbFunctions
                     WHERE pers_tree_id=:pers_tree_id 
                     AND pers_gedcomnumber=:pers_gedcomnumber";
             } else {
-                /*
-                $sql = "SELECT * FROM humo_persons
-                    WHERE pers_tree_id=:pers_tree_id 
-                    AND pers_gedcomnumber=:pers_gedcomnumber";
-                */
-
                 $sql = $this->get_person_base_qry();
                 $sql .= " WHERE p.pers_tree_id=:pers_tree_id 
                     AND p.pers_gedcomnumber = :pers_gedcomnumber";
@@ -401,8 +395,6 @@ class DbFunctions
     public function get_person_with_id(int $pers_id)
     {
         try {
-            //$sql = "SELECT * FROM humo_persons WHERE pers_id=:pers_id";
-
             $sql = $this->get_person_base_qry();
             $sql .= " WHERE p.pers_id=:pers_id";
 
@@ -609,17 +601,12 @@ class DbFunctions
      */
     public function get_family(string|null $fam_gedcomnumber, string $item = '')
     {
-        //$qryDb = false;
         try {
             if ($item == 'man-woman') {
                 $sql = "SELECT fam_man, fam_woman, fam_children FROM humo_families
                     WHERE fam_tree_id=:fam_tree_id 
                     AND fam_gedcomnumber=:fam_gedcomnumber";
             } else {
-                /*
-                $sql = "SELECT * FROM humo_families WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
-                */
-
                 // TODO add event_date_hebnight
                 $sql = $this->get_family_base_qry();
                 $sql .= " WHERE f.fam_tree_id=:fam_tree_id
@@ -645,8 +632,6 @@ class DbFunctions
     public function get_family_with_id(int $fam_id)
     {
         try {
-            //$sql = "SELECT * FROM humo_persons WHERE pers_id=:pers_id";
-
             $sql = $this->get_family_base_qry();
             $sql .= " WHERE f.fam_id=:fam_id";
 
@@ -711,8 +696,6 @@ class DbFunctions
     public function get_event(int|null $event_id)
     {
         try {
-            //$sql = "SELECT * FROM humo_events WHERE event_id=:event_id";
-
             $sql = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
                 LEFT JOIN humo_location l ON e.event_place_id = l.location_id
@@ -765,15 +748,6 @@ class DbFunctions
     public function get_events_connect(string $event_connect_kind, string $event_connect_id, string $event_kind)
     {
         try {
-            /*
-            $sql = "SELECT * FROM humo_events
-                WHERE event_tree_id=:event_tree_id 
-                AND event_connect_kind=:event_connect_kind 
-                AND event_connect_id=:event_connect_id 
-                AND event_kind=:event_kind 
-                ORDER BY event_order";
-            */
-
             if ($event_kind === 'all') {
                 $sql = "SELECT e.*, l.location_location AS event_place
                     FROM humo_events e
@@ -995,7 +969,6 @@ class DbFunctions
      */
     public function generate_gedcomnr(int $tree_id, string $item): string
     {
-        $qryDb = false;
         $new_gedcomnumber = 0;
         try {
             // *** Command preg_replace \D removes all non-digit characters (including spaces etc.) ***

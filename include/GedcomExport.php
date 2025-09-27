@@ -448,7 +448,6 @@ class GedcomExport
                         // *** New sept. 2023 ***
                         // *** Remark: only exported if there is another birth item ***
                         // *** Oct 2024: for GEDCOM 7 changed to seperate event ***
-                        //$this->export_witnesses($event_connect_kind, $event_connect_id, $event_kind)
                         if ($this->gedcom_version == '551') {
                             $this->buffer .= $this->export_witnesses('birth_declaration', $person->pers_gedcomnumber, 'ASSO');
                         }
@@ -527,7 +526,6 @@ class GedcomExport
                         }
 
                         // *** Remark: only exported if there is another baptism item ***
-                        // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
                         $this->buffer .= $this->export_witnesses('CHR', $person->pers_gedcomnumber, 'ASSO');
                     }
                 }
@@ -566,7 +564,6 @@ class GedcomExport
 
                         // *** Remark: only exported if there is another baptism item ***
                         // *** Oct 2024: for GEDCOM 7 changed to seperate event ***
-                        // $this->export_witnesses($event_connect_kind, $event_connect_id, $event_kind)
                         if ($this->gedcom_version == '551') {
                             $this->buffer .= $this->export_witnesses('death_declaration', $person->pers_gedcomnumber, 'ASSO');
                         }
@@ -576,8 +573,6 @@ class GedcomExport
                 //  *** NEW oct. 2024: seperate event for death registration ***
                 if ($this->gedcom_version != '551') {
                     $death_declarationDb = $this->db_functions->get_events_connect('person', $person->pers_gedcomnumber, 'death_declaration');
-                    //$death_registrationqry = $this->dbh->query($qry);
-                    //$death_declarationDb = $death_registrationqry->fetch(PDO::FETCH_OBJ);
                     $death_decl_witnesses = $this->export_witnesses('death_declaration', $person->pers_gedcomnumber, 'ASSO');
 
                     if ($death_declarationDb || $death_decl_witnesses) {
@@ -637,8 +632,6 @@ class GedcomExport
                         }
 
                         // *** Remark: only exported if there is another baptism item ***
-                        // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
-                        // $this->export_witnesses($event_connect_kind, $event_connect_id, $event_kind)
                         $this->buffer .= $this->export_witnesses('BURI', $person->pers_gedcomnumber, 'ASSO');
                     }
                 }
@@ -731,11 +724,7 @@ class GedcomExport
                     }
 
                     // *** Person color marks ***
-                    //$sourceqry = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                    //    AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
-                    //    AND event_kind='person_colour_mark' ORDER BY event_order");
                     $sourceqry = $this->db_functions->get_events_connect('person', $person->pers_gedcomnumber, 'person_colour_mark');
-                    //while ($sourceDb = $sourceqry->fetch(PDO::FETCH_OBJ)) {
                     foreach ($sourceqry as $sourceDb) {
                         $this->buffer .= '1 _COLOR ' . $sourceDb->event_event . "\r\n";
                         //if ($this->gedcom_sources=='yes'){
@@ -744,13 +733,8 @@ class GedcomExport
                     }
 
                     // *** Person events ***
-                    //$event_qry = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                    //    AND event_connect_kind='person' AND event_connect_id='" . $person->pers_gedcomnumber . "'
-                    //    AND event_kind='event' ORDER BY event_order");
                     $event_qry = $this->db_functions->get_events_connect('person', $person->pers_gedcomnumber, 'event');
-                    //while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                     foreach ($event_qry as $eventDb) {
-
                         // TODO: Check: ADOP, no longer in use?
                         $eventMapping = [
                             'ADOP' => '1 ADOP',
@@ -947,11 +931,10 @@ class GedcomExport
                 }
 
 
-
                 /* TODO (used twice for family events)
                 // *** Create general family_events array ***
-                //$event_qry = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                //    AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
+                //$event_qry = $this->dbh->query("SELECT * FROM humo_events
+                //    WHERE event_relation_id='" . $family->fam_id . "'
                 //    ORDER BY event_kind, event_order");
                 $event_qry = $db_functions->get_events_connect('family', $family->fam_gedcomnumber, 'all');
                 $family_events = $event_qry->fetchAll(PDO::FETCH_ASSOC);
@@ -967,7 +950,6 @@ class GedcomExport
                     echo '<br>';
                 }
                 */
-
 
 
                 if ($family->fam_man) {
@@ -1103,7 +1085,6 @@ class GedcomExport
                         }
 
                         // *** Remark: only exported if there is another baptism item ***
-                        // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
                         $this->buffer .= $this->export_witnesses('MARR', $family->fam_gedcomnumber, 'ASSO');
                     }
                 }
@@ -1136,9 +1117,6 @@ class GedcomExport
                         }
 
                         // *** Remark: only exported if there is another baptism item ***
-                        // *** $event_tree_id, $event_connect_kind,$event_connect_id, $event_kind ***
-                        // $this->export_witnesses($event_connect_kind, $event_connect_id, $event_kind)
-                        //$this->buffer .= $this->export_witnesses('family', $family->fam_gedcomnumber, 'marriage_witness_rel');
                         $this->buffer .= $this->export_witnesses('MARR_REL', $family->fam_gedcomnumber, 'ASSO');
                     }
                 }
@@ -1186,13 +1164,8 @@ class GedcomExport
                     $this->addresses_export('family', 'family_address', $family->fam_gedcomnumber);
 
                     // *** Family pictures ***
-                    //$sourceqry = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                    //    AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
-                    //    AND event_kind='picture' ORDER BY event_order");
                     $sourceqry = $this->db_functions->get_events_connect('family', $family->fam_gedcomnumber, 'picture');
-                    //while ($sourceDb = $sourceqry->fetch(PDO::FETCH_OBJ)) {
                     foreach ($sourceqry as $sourceDb) {
-
                         $this->buffer .= "1 OBJE\r\n";
                         $this->buffer .= "2 FORM jpg\r\n";
                         $this->buffer .= '2 FILE ' . $sourceDb->event_event . "\r\n";
@@ -1216,13 +1189,8 @@ class GedcomExport
                     }
 
                     // *** Family events ***
-                    //$event_qry = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                    //    AND event_connect_kind='family' AND event_connect_id='" . $family->fam_gedcomnumber . "'
-                    //    AND event_kind='event' ORDER BY event_order");
                     $event_qry = $this->db_functions->get_events_connect('family', $family->fam_gedcomnumber, 'event');
-                    //while ($eventDb = $event_qry->fetch(PDO::FETCH_OBJ)) {
                     foreach ($event_qry as $eventDb) {
-
                         $process_event = false;
                         if ($eventDb->event_gedcom == 'ANUL') {
                             $process_event = true;
@@ -1478,13 +1446,8 @@ class GedcomExport
                         }
 
                         // *** Source pictures ***
-                        //$source_pic_qry = $this->dbh->query("SELECT * FROM humo_events WHERE event_tree_id='" . $this->tree_id . "'
-                        //    AND event_connect_kind='source' AND event_connect_id='" . $sourceDb->source_gedcomnr . "'
-                        //    AND event_kind='picture' ORDER BY event_order");
                         $source_pic_qry = $this->db_functions->get_events_connect('source', $sourceDb->source_gedcomnr, 'picture');
-                        //while ($source_picDb = $source_pic_qry->fetch(PDO::FETCH_OBJ)) {
                         foreach ($source_pic_qry as $source_picDb) {
-
                             $this->buffer .= "1 OBJE\r\n";
                             $this->buffer .= "2 FORM jpg\r\n";
                             $this->buffer .= '2 FILE ' . $source_picDb->event_event . "\r\n";

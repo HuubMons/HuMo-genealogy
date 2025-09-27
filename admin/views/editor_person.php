@@ -484,14 +484,9 @@ Don't use this link, witness and other buttons won't work anymore
 
                     <?php
                     if ($humo_option['admin_hebname'] == "y") {
-                        // user requested hebrew name field to be displayed here, not under "events"
-                        // TODO use event_person_id.
                         $sql = "SELECT * FROM humo_events 
-                            WHERE event_tree_id = '" . $tree_id . "'
-                            AND event_gedcom = '_HEBN' 
-                            AND event_connect_id = '" . $pers_gedcomnumber . "' 
-                            AND event_kind='name' 
-                            AND event_connect_kind='person'";
+                            WHERE event_gedcom = '_HEBN' AND event_kind='name'
+                            AND event_person_id = '" . $person->pers_id . "'";
                         $result = $dbh->query($sql);
                         if ($result->rowCount() > 0) {
                             $hebnameDb = $result->fetch(PDO::FETCH_OBJ);
@@ -876,6 +871,7 @@ Don't use this link, witness and other buttons won't work anymore
                 </span>
             </td>
         </tr>
+
         <?php
         // *** Birth declaration ***
         if ($editor['add_person'] == false) {
@@ -895,10 +891,7 @@ Don't use this link, witness and other buttons won't work anymore
             $sql = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
                 LEFT JOIN humo_location l ON e.event_place_id = l.location_id
-                WHERE e.event_tree_id = '" . $tree_id . "'
-                  AND e.event_gedcom = '_BRTM'
-                  AND e.event_connect_id = '" . $pers_gedcomnumber . "'
-                  AND e.event_connect_kind = 'person'";
+                WHERE e.event_gedcom = '_BRTM' AND e.event_person_id = '" . $person->pers_id . "'";
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $britDb = $result->fetch(PDO::FETCH_OBJ);
@@ -995,9 +988,7 @@ Don't use this link, witness and other buttons won't work anymore
                 FROM humo_events e
                 LEFT JOIN humo_location l ON e.event_place_id = l.location_id
                 WHERE (e.event_gedcom = 'BARM' OR e.event_gedcom = 'BASM')
-                  AND e.event_tree_id = '" . $tree_id . "'
-                  AND e.event_connect_id = '" . $pers_gedcomnumber . "'
-                  AND e.event_connect_kind = 'person'";
+                AND e.event_person_id = '" . $person->pers_id . "'";
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $barmDb = $result->fetch(PDO::FETCH_OBJ);

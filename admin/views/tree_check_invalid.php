@@ -270,7 +270,7 @@ function invalid($date, $gednr, $table)
             $ev = $dbh->query("SELECT * FROM humo_events WHERE event_id = '" . $gednr . "'");
             $evDb = $ev->fetch();
             if ($evDb['event_connect_kind'] == 'person' && $evDb['event_connect_id'] != '') {
-                $persDb = $db_functions->get_person($evDb['event_connect_id']);
+                $persDb = $db_functions->get_person_with_id($evDb['event_person_id']);
                 $fullname = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix . ' ' . $persDb->pers_lastname);
                 $evdetail = $evDb['event_event'];
                 if ($evdetail == '') {
@@ -288,14 +288,12 @@ function invalid($date, $gednr, $table)
                 </tr>
             <?php
             } elseif ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
-                $fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
-                $famDb = $fam->fetch();
+                $famDb = $db_functions->get_family_with_id($evDb['event_relation_id']);
 
-                $spouse1Db = $db_functions->get_person($famDb['fam_man']);
+                $spouse1Db = $db_functions->get_person($famDb->fam_man);
                 $name1 = $spouse1Db->pers_firstname . ' ' . str_replace("_", " ", $spouse1Db->pers_prefix . ' ' . $spouse1Db->pers_lastname);
 
-                $spouse2Db = $db_functions->get_person($famDb['fam_woman']);
+                $spouse2Db = $db_functions->get_person($famDb->fam_woman);
                 $name2 = $spouse2Db->pers_firstname . ' ' . str_replace("_", " ", $spouse2Db->pers_prefix . ' ' . $spouse2Db->pers_lastname);
 
                 $fullname = $name1 . ' and ' . $name2;
@@ -312,7 +310,7 @@ function invalid($date, $gednr, $table)
                 }
             ?>
                 <tr>
-                    <td><?= $famDb['fam_gedcomnumber']; ?></td>
+                    <td><?= $famDb->fam_gedcomnumber; ?></td>
                     <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by marriage'); ?>)</td>
                     <td><?= $evDb['event_kind'] . $evdetail; ?></td>
                     <td><?= $directionMarkers->dirmark2 . $date; ?></td>
@@ -359,20 +357,18 @@ function invalid($date, $gednr, $table)
                 $ev = $dbh->query("SELECT * FROM humo_events WHERE event_id ='" . $connectDb['connect_connect_id'] . "'");
                 $evDb = $ev->fetch();
                 if ($evDb['event_connect_kind'] == 'person' && $evDb['event_connect_id'] != '') {
-                    $persDb = $db_functions->get_person($evDb['event_connect_id']);
+                    $persDb = $db_functions->get_person_with_id($evDb['event_person_id']);
                     $gednr = $persDb->pers_gedcomnumber; // for url string
                     $gedcomnr = $persDb->pers_gedcomnumber; // for first column
                     $name = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix) . ' ' . $persDb->pers_lastname;
                 }
                 if ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
-                    $fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
-                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
-                    $famDb = $fam->fetch();
+                    $famDb = $db_functions->get_family_with_id($evDb['event_relation_id']);
 
-                    $spouse1Db = $db_functions->get_person($famDb['fam_man']);
+                    $spouse1Db = $db_functions->get_person($famDb->fam_man);
                     $name1 = $spouse1Db->pers_firstname . ' ' . str_replace("_", " ", $spouse1Db->pers_prefix . ' ' . $spouse1Db->pers_lastname);
 
-                    $spouse2Db = $db_functions->get_person($famDb['fam_woman']);
+                    $spouse2Db = $db_functions->get_person($famDb->fam_woman);
                     $name2 = $spouse2Db->pers_firstname . ' ' . str_replace("_", " ", $spouse2Db->pers_prefix . ' ' . $spouse2Db->pers_lastname);
 
                     $name = $name1 . ' and ' . $name2;
@@ -380,7 +376,7 @@ function invalid($date, $gednr, $table)
                     if ($spousegednr == '') {
                         $spousegednr = $spouse2Db->pers_gedcomnumber;
                     }
-                    $gedcomnr = $famDb['fam_gedcomnumber']; // for first column
+                    $gedcomnr = $famDb->fam_gedcomnumber; // for first column
                 }
                 if (substr($connectDb['connect_sub_kind'], -6) === 'source') {
                     $name = '<a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $gednr . '" target=\'_blank\'>' . $name . '</a> (' . __('Click relevant event source') . ')';
