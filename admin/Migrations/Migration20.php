@@ -298,13 +298,13 @@ class Migration20
         // *** Use person id's ***
         $this->dbh->exec("
             UPDATE humo_events e
-            JOIN humo_persons p ON e.event_connect_id = p.pers_gedcomnumber AND e.event_tree_id = p.pers_tree_id AND e.event_connect_kind = 'person'
+            JOIN humo_persons p ON e.event_connect_id = p.pers_gedcomnumber AND e.event_tree_id = p.pers_tree_id AND (e.event_connect_kind = 'person' OR e.event_kind = 'ASSO')
             SET e.event_person_id = p.pers_id
         ");
         // *** Use family id's ***
         $this->dbh->exec("
             UPDATE humo_events e
-            JOIN humo_families f ON e.event_connect_id = f.fam_gedcomnumber AND e.event_tree_id = f.fam_tree_id AND e.event_connect_kind = 'family'
+            JOIN humo_families f ON e.event_connect_id = f.fam_gedcomnumber AND e.event_tree_id = f.fam_tree_id AND (e.event_connect_kind = 'family' OR e.event_kind = 'ASSO')
             SET e.event_relation_id = f.fam_id
         ");
 
