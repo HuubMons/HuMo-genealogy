@@ -261,7 +261,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_birth_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_birth_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="birth_place" value="<?= $safeTextShow->safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="birth_place" value="<?= $safeTextShow->safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
@@ -281,7 +281,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_death_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_death_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="death_place" value="<?= $safeTextShow->safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="death_place" value="<?= $safeTextShow->safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
                 </div>
@@ -370,7 +370,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="pers_place" value="<?= $safeTextShow->safe_text_show($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="pers_place" value="<?= $safeTextShow->safe_text_show($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
@@ -1142,8 +1142,19 @@ if (isset($data["page_nr"]) && !$selection['spouse_firstname'] && !$selection['s
 <?php
     include __DIR__ . '/partial/pagination.php';
 }
+?>
 
-echo '<br>';
+<!-- Autocomplete for place names -->
+<?php if ($list["adv_search"] == true) { ?>
+    <script>
+        var autocompleteSource = "include/AutocompletePlace.php";
+    </script>
+    <script src="assets/js/place_autocomplete.js"></script>
+<?php } ?>
+
+<br>
+
+<?php
 //for testing only:
 //echo 'Query: <pre>'.$query."</pre> LIMIT ".$list["item"].",".$list["nr_persons"].'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';

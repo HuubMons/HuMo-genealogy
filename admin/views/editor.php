@@ -885,6 +885,9 @@ if ($check_person) {
     </div>
 
     <!-- Autocomplete for place names -->
+    <script>
+        var autocompleteSource = "../include/AutocompletePlace.php";
+    </script>
     <script src="../assets/js/place_autocomplete.js"></script>
 
 <?php

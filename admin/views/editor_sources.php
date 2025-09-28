@@ -401,4 +401,7 @@ $nr_sources = count($connect_sql);
 ?>
 
 <!-- Autocomplete for place names -->
+<script>
+    var autocompleteSource = "../include/AutocompletePlace.php";
+</script>
 <script src="../assets/js/place_autocomplete.js"></script>

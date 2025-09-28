@@ -50,12 +50,16 @@
         // *** Example: this is version update 19. So check should be > 18 ***
         $check_number = $version_number - 1;
         if ((int)$humo_option["update_status"] > $check_number) {
+            // *** Only show update status if update version > 6 (v4.9.1) ***
+            if ($version_number > 6) {
         ?>
-            <tr>
-                <td>HuMo-genealogy update <?= $version ?></td>
-                <td style="background-color:#00FF00">OK</td>
-            </tr>
-        <?php } else { ?>
+                <tr>
+                    <td>HuMo-genealogy update <?= $version ?></td>
+                    <td style="background-color:#00FF00">OK</td>
+                </tr>
+            <?php
+            }
+        } else { ?>
             <tr>
                 <td>HuMo-genealogy update <?= $version ?></td>
                 <td style="background-color:#00FF00">
@@ -140,7 +144,7 @@
         show_status($dbh, $humo_option, 'v6.7.2', 17);
         show_status($dbh, $humo_option, 'v6.7.9', 18);
         show_status($dbh, $humo_option, 'v6.7.9a', 19);
-        show_status($dbh, $humo_option, 'v6.9.4', 20);
+        show_status($dbh, $humo_option, 'v7.0', 20);
 
         /**
          * Remarks for programmers:
@@ -149,8 +153,6 @@
          * 3) Don't forget to add new database fields in the tables of install.php!
          * Change database fields: check if database changes can be made in general parts of this update script.
          * Use LIMIT 0,1 to prevent update problems (in large family trees) if possible: SELECT * FROM humo_stat_date LIMIT 0,1
-         *
-         * Future update(s): remove some old datafields.
          *
          * TODO: use functions or migration tool.
          * private function tableExists(string $table): bool

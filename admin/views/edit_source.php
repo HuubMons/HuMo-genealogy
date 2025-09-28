@@ -370,6 +370,9 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
     <?php } ?>
 
     <!-- Autocomplete for place names -->
+    <script>
+        var autocompleteSource = "../include/AutocompletePlace.php";
+    </script>
     <script src="../assets/js/place_autocomplete.js"></script>
 
 <?php

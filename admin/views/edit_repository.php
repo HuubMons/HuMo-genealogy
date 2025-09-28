@@ -238,6 +238,9 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
     </form>
 
     <!-- Autocomplete for place names -->
+    <script>
+        var autocompleteSource = "../include/AutocompletePlace.php";
+    </script>
     <script src="../assets/js/place_autocomplete.js"></script>
 
 <?php

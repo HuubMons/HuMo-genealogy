@@ -623,9 +623,5 @@ if (isset($_GET['re_install'])) {
         <input type="checkbox" name="enable_update_check" class="form-check-input" <?= $humo_option['update_last_check'] != 'DISABLED' ? 'checked' : ''; ?> onChange="this.form.submit();">
         <?php printf(__('Check regularly for %s updates.'), 'HuMo-genealogy'); ?><br>
     </form>
-
-    <?php /*
-    <p><iframe height=" 300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe></p>
-    */ ?>
 <?php
 }

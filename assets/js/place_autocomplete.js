@@ -1,6 +1,6 @@
 $(function () {
     $(".place-autocomplete").autocomplete({
-        source: "../include/AutocompletePlace.php",
+        source: autocompleteSource,
         minLength: 2
     });
 });

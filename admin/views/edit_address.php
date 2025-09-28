@@ -303,6 +303,9 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
     <?php } ?>
 
     <!-- Autocomplete for place names -->
+    <script>
+        var autocompleteSource = "../include/AutocompletePlace.php";
+    </script>
     <script src="../assets/js/place_autocomplete.js"></script>
 
 <?php
