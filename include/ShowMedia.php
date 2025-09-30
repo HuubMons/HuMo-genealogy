@@ -258,7 +258,7 @@ class ShowMedia
                     $process_text .= '</div>' . "\n";
                     */
 
-                    $process_text .= '<div class="col-12 col-sm-5 col-md-3 col-lg-2">';
+                    $process_text .= '<div class="col-6 col-sm-6 col-md-3 col-lg-2">';
                     $process_text .= '<div class="card h-100 shadow-sm">';
 
                     $process_text .= $picture;
@@ -449,7 +449,7 @@ class ShowMedia
         if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
             // *** Check for old thumbnails ***
             list($width, $height) = getimagesize($folder . 'thumb_' . $file . '.jpg');
-            if ($height == 120) {
+            if ($height == 120 || $width == 400) {
                 // *** Remove old thumbnail. Will be recreated. ***
                 unlink($folder . 'thumb_' . $file . '.jpg');
 

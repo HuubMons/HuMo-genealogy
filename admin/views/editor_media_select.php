@@ -125,7 +125,7 @@ if (file_exists($array_picture_folder[0])) {
                         $picture = $showMedia->print_thumbnail($selected_picture_folder, $selected_filename, 175, 120, 'BOOTSTRAP_CARD');
 
                 ?>
-                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                        <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                             <div class="card h-100 shadow-sm">
                                 <?= $picture; ?><br>
                                 <!-- Replace ' by &prime; otherwise a place including a ' character can't be selected -->

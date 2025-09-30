@@ -218,7 +218,7 @@ if ($humo_option["url_rewrite"] == "j") {
             ?>
 
                         <!-- <div class="col-12 col-sm-6 col-md-4 col-lg-3"> -->
-                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                        <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                             <div class="card h-100 shadow-sm">
                                 <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                                     <?= $picture ?>
@@ -241,7 +241,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
                         <!-- TODO: test new code -->
                         <?php /*
-                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                        <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                             <div class="card h-100 shadow-sm">
                                 <a href="<?= $tmp_dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                                     <img src="<?= $tmp_dir . $filename; ?>" class="card-img-top img-fluid" alt="<?= htmlspecialchars($picture_text2) ?>">

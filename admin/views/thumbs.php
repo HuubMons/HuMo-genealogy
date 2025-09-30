@@ -1063,7 +1063,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 }
                         ?>
 
-                                <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                                <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                                     <div class="card h-100 shadow-sm">
                                         <?= $picture; ?>
                                         <?= $picture_text; ?>
