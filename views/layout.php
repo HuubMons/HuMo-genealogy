@@ -202,6 +202,7 @@ $menu_top = getActiveTopMenu($page);
 
     // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
     // *** Needed for zoomslider ***
+    // *** Needed for autocomplete in list script ***
     if (
         strpos($_SERVER['REQUEST_URI'], "maps") !== false
         || strpos($_SERVER['REQUEST_URI'], "descendant") !== false
