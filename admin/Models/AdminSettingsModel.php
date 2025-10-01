@@ -35,7 +35,7 @@ class AdminSettingsModel extends AdminBaseModel
 
     public function save_settings($settings): void
     {
-        $safeTextDb = new SafeTextDb();
+        //$safeTextDb = new SafeTextDb();
 
         if (isset($_POST['save_option'])) {
             // *** Update settings ***
@@ -106,7 +106,7 @@ class AdminSettingsModel extends AdminBaseModel
             if ($_POST['ip_api']) {
                 // *** Reset settings ***
                 $this->dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_collection'");
-                $this->dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_geoplugin_old'");
+                //$this->dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_geoplugin_old'");
                 $this->dbh->query("UPDATE humo_settings SET setting_value='dis|" . substr($this->humo_option['ip_api_geoplugin'], 4) . "' WHERE setting_variable='ip_api_geoplugin'");
                 $this->dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_ip_api'");
                 $this->dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable='ip_api_freeipapi'");
@@ -115,7 +115,7 @@ class AdminSettingsModel extends AdminBaseModel
                 // *** This option disables the ip_api setting ***
                 $this->dbh->query("UPDATE humo_settings SET setting_value='dis' WHERE setting_variable='ip_api_collection'");
             } elseif ($_POST['ip_api'] == 'ip_api_geoplugin_old') {
-                $this->dbh->query("UPDATE humo_settings SET setting_value='ena' WHERE setting_variable='ip_api_geoplugin_old'");
+                //$this->dbh->query("UPDATE humo_settings SET setting_value='ena' WHERE setting_variable='ip_api_geoplugin_old'");
             } elseif ($_POST['ip_api'] == 'ip_api_geoplugin') {
                 $this->dbh->query("UPDATE humo_settings SET setting_value='ena|" . $_POST['geoplugin_key'] . "' WHERE setting_variable='ip_api_geoplugin'");
             } elseif ($_POST['ip_api'] == 'ip_api_ip_api') {
@@ -124,21 +124,23 @@ class AdminSettingsModel extends AdminBaseModel
                 $this->dbh->query("UPDATE humo_settings SET setting_value='ena' WHERE setting_variable='ip_api_freeipapi'");
             }
 
-            if (strpos($this->humo_option['default_timeline'], $settings['time_lang'] . "!") === false) {
-                // no entry for this language yet - append it using a prepared statement
-                $sql = "UPDATE humo_settings SET setting_value=CONCAT(setting_value, :timeline) WHERE setting_variable='default_timeline'";
-                $stmt = $this->dbh->prepare($sql);
-                $stmt->bindValue(':timeline', $_POST["default_timeline"], PDO::PARAM_STR);
-                $stmt->execute();
-            } else {
-                $time_arr = explode("@", substr($this->humo_option['default_timeline'], 0, -1));
-                foreach ($time_arr as $key => $value) {
-                    if (strpos($value, $settings['time_lang'] . "!") !== false) {
-                        $time_arr[$key] = substr($safeTextDb->safe_text_db($_POST["default_timeline"]), 0, -1);
+            if (isset($_POST["default_timeline"])) {
+                if (strpos($this->humo_option['default_timeline'], $settings['time_lang'] . "!") === false) {
+                    // no entry for this language yet - append it using a prepared statement
+                    $sql = "UPDATE humo_settings SET setting_value=CONCAT(setting_value, :timeline) WHERE setting_variable='default_timeline'";
+                    $stmt = $this->dbh->prepare($sql);
+                    $stmt->bindValue(':timeline', $_POST["default_timeline"], PDO::PARAM_STR);
+                    $stmt->execute();
+                } else {
+                    $time_arr = explode("@", substr($this->humo_option['default_timeline'], 0, -1));
+                    foreach ($time_arr as $key => $value) {
+                        if (strpos($value, $settings['time_lang'] . "!") !== false) {
+                            $time_arr[$key] = substr($_POST["default_timeline"], 0, -1);
+                        }
                     }
+                    $time_str = implode("@", $time_arr) . "@";
+                    $this->db_functions->update_settings('default_timeline', $time_str);
                 }
-                $time_str = implode("@", $time_arr) . "@";
-                $this->db_functions->update_settings('default_timeline', $time_str);
             }
 
             // *** Upload favicon icon to folder /media ***

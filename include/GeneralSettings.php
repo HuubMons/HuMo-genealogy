@@ -506,14 +506,16 @@ class GeneralSettings
 
         // *** IP API used for country statistics ***
         if (!isset($humo_option["ip_api_collection"])) {
-            $humo_option["ip_api_collection"] = '';
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_collection', setting_value=''");
+            // *** Default option in oct. 2025 ***
+            $humo_option["ip_api_collection"] = 'dis';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_collection', setting_value='dis'");
         }
 
+        // *** Disabled in settings ***
         if (!isset($humo_option["ip_api_geoplugin_old"])) {
-            // *** Default option in 2025 ***
-            $humo_option["ip_api_geoplugin_old"] = 'ena';
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_geoplugin_old', setting_value='ena'");
+            // *** Was default option in sept. 2025 ***
+            $humo_option["ip_api_geoplugin_old"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_geoplugin_old', setting_value=''");
         }
 
         if (!isset($humo_option["ip_api_geoplugin"])) {

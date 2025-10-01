@@ -440,6 +440,10 @@ class Migration20
             WHERE event_new_datetime = '" . $event_new_datetime . "'
         ");
 
+        // *** Free geoplugin no longer available ***
+        $stmt = $this->dbh->exec("UPDATE humo_settings SET setting_value = '' WHERE setting_variable = 'ip_api_geoplugin_old'");
+        $stmt = $this->dbh->exec("UPDATE humo_settings SET setting_value = 'dis' WHERE setting_variable = 'ip_api_collection'");
+
         // *** Show processing time ***
         //$end_time = time();
         //echo 'Eind. ' . $end_time - $start_time . ' ' . __('seconds.') . '<br>';
