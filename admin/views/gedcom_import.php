@@ -1513,7 +1513,7 @@ elseif ($trees['step'] == '4') {
         */
 
         while ($person2Db = $person2_qry->fetch(PDO::FETCH_OBJ)) {
-            $personDb = $db_functions->get_person_by_id($person2Db->pers_id);
+            $personDb = $db_functions->get_person_with_id($person2Db->pers_id);
 
             $pers_text = '';
             //TODO use array to check for first character?
@@ -1555,7 +1555,7 @@ elseif ($trees['step'] == '4') {
             }
 
             $pers_name_text = '';
-            if (substr($personDb->pers_name_text, 0, 1) === '@') {
+            if (substr($personDb->pers_name_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_name_text, 1, -1));
                 if ($search_textDb) {
@@ -1564,7 +1564,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$pers_birth_text = '';
-            if (substr($personDb->pers_birth_text, 0, 1) === '@') {
+            if (substr($personDb->pers_birth_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_birth_text, 1, -1));
                 if ($search_textDb) {
@@ -1579,7 +1579,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$pers_bapt_text = '';
-            if (substr($personDb->pers_bapt_text, 0, 1) === '@') {
+            if (substr($personDb->pers_bapt_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_bapt_text, 1, -1));
                 if ($search_textDb) {
@@ -1594,7 +1594,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$pers_death_text = '';
-            if (substr($personDb->pers_death_text, 0, 1) === '@') {
+            if (substr($personDb->pers_death_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_death_text, 1, -1));
                 if ($search_textDb) {
@@ -1609,7 +1609,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$pers_buried_text = '';
-            if (substr($personDb->pers_buried_text, 0, 1) === '@') {
+            if (substr($personDb->pers_buried_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_buried_text, 1, -1));
                 if ($search_textDb) {
@@ -1738,10 +1738,10 @@ elseif ($trees['step'] == '4') {
                 FROM humo_families WHERE fam_id='" . $famDb2->fam_id . "'");
             $famDb = $fam_qry->fetch(PDO::FETCH_OBJ);
             */
-            $famDb = $db_functions->get_family_by_id($famDb2->fam_id);
+            $famDb = $db_functions->get_family_with_id($famDb2->fam_id);
 
             $fam_text = '';
-            if (substr($famDb->fam_text, 0, 1) === '@') {
+            if (substr($famDb->fam_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_text, 1, -1));
                 if ($search_textDb) {
@@ -1750,7 +1750,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$fam_relation_text = '';
-            if (substr($famDb->fam_relation_text, 0, 1) === '@') {
+            if (substr($famDb->fam_relation_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_relation_text, 1, -1));
                 if ($search_textDb) {
@@ -1765,7 +1765,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$fam_marr_notice_text = '';
-            if (substr($famDb->fam_marr_notice_text, 0, 1) === '@') {
+            if (substr($famDb->fam_marr_notice_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_notice_text, 1, -1));
                 if ($search_textDb) {
@@ -1780,7 +1780,7 @@ elseif ($trees['step'] == '4') {
             }
 
             $fam_marr_text = '';
-            if (substr($famDb->fam_marr_text, 0, 1) === '@') {
+            if (substr($famDb->fam_marr_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_text, 1, -1));
                 if ($search_textDb) {
@@ -1815,7 +1815,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$fam_marr_church_notice_text = '';
-            if (substr($famDb->fam_marr_church_notice_text, 0, 1) === '@') {
+            if (substr($famDb->fam_marr_church_notice_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_notice_text, 1, -1));
                 if ($search_textDb) {
@@ -1830,7 +1830,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$fam_marr_church_text = '';
-            if (substr($famDb->fam_marr_church_text, 0, 1) === '@') {
+            if (substr($famDb->fam_marr_church_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_text, 1, -1));
                 if ($search_textDb) {
@@ -1845,7 +1845,7 @@ elseif ($trees['step'] == '4') {
             }
 
             //$fam_div_text = '';
-            if (substr($famDb->fam_div_text, 0, 1) === '@') {
+            if (substr($famDb->fam_div_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_div_text, 1, -1));
                 if ($search_textDb) {
