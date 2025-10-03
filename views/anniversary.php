@@ -74,14 +74,14 @@ $languageDate = new Genealogy\Include\LanguageDate;
     // *** Build page ***
     if ($data["ann_choice"] == 'birthdays') {
         $sql = "SELECT p.*,
-            e.event_date_day as birth_day,
-            e.event_date_year as birth_year,
+            e.date_day as birth_day,
+            e.date_year as birth_year,
             d.event_date as pers_death_date
             FROM humo_persons p
-            INNER JOIN humo_events e ON e.event_person_id = p.pers_id AND e.event_kind = 'birth'
-            LEFT JOIN humo_events d ON d.event_person_id = p.pers_id AND d.event_kind = 'death'
+            INNER JOIN humo_events e ON e.person_id = p.pers_id AND e.event_kind = 'birth'
+            LEFT JOIN humo_events d ON d.person_id = p.pers_id AND d.event_kind = 'death'
             WHERE p.pers_tree_id = :tree_id
-              AND (e.event_date_month = :month)
+              AND (e.date_month = :month)
             ORDER BY birth_day, birth_year";
 
         try {
@@ -173,7 +173,7 @@ $languageDate = new Genealogy\Include\LanguageDate;
                     abs(SUBSTRING(e.event_date,1,2)) as marr_day, 
                     SUBSTRING(e.event_date,-4) as marr_year
                 FROM humo_families f
-                INNER JOIN humo_events e ON e.event_relation_id = f.fam_id
+                INNER JOIN humo_events e ON e.relation_id = f.fam_id
                 WHERE f.fam_tree_id = :tree_id
                     AND (SUBSTRING(e.event_date, 4,3) = :month OR SUBSTRING(e.event_date, 3,3) = :month)
                     AND e.event_kind = 'marriage'
@@ -208,7 +208,7 @@ $languageDate = new Genealogy\Include\LanguageDate;
                     abs(SUBSTRING(e.event_date,1,2)) as marr_day, 
                     SUBSTRING(e.event_date,-4) as marr_year
                 FROM humo_families f
-                INNER JOIN humo_events e ON e.event_relation_id = f.fam_id
+                INNER JOIN humo_events e ON e.relation_id = f.fam_id
                 WHERE f.fam_tree_id = :tree_id
                     AND (SUBSTRING(e.event_date, 4,3) = :month OR SUBSTRING(e.event_date, 3,3) = :month)
                     AND e.event_kind = 'marr_church'

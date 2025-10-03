@@ -125,7 +125,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
                     $sql = "SELECT e.*, l.location_location AS event_place 
                         FROM humo_events e
-                        LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                        LEFT JOIN humo_location l ON e.place_id = l.location_id
                         WHERE e.event_tree_id = :tree_id
                         AND e.event_connect_kind = 'person'
                         AND LEFT(e.event_kind,7) = 'picture'
@@ -139,7 +139,7 @@ if ($humo_option["url_rewrite"] == "j") {
                         $picture_text = substr($filename, 0, -4);
                     }
                     while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                        $personDb = $db_functions->get_person_with_id($afbDb->event_person_id);
+                        $personDb = $db_functions->get_person_with_id($afbDb->person_id);
                         $privacy = $personPrivacy->get_privacy($personDb);
                         $name = $personName->get_person_name($personDb, $privacy);
 

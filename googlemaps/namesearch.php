@@ -113,8 +113,8 @@ function mapbirthplace($place)
             <?php
                 $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename
                     FROM humo_persons p
-                    INNER JOIN humo_events e ON e.event_person_id = p.pers_id
-                    INNER JOIN humo_location l ON e.event_place_id = l.location_id
+                    INNER JOIN humo_events e ON e.person_id = p.pers_id
+                    INNER JOIN humo_location l ON e.place_id = l.location_id
                     WHERE p.pers_tree_id = '" . $tree_id . "'
                     AND " . $idstring . $namestring . "
                     (e.event_kind = 'birth' AND l.location_location = '" . $place . "')
@@ -125,15 +125,15 @@ function mapbirthplace($place)
             ?>
                 <b><u><?= __('Persons born here until ') . $map_max; ?>:</u></b><br>
         <?php
-                // TODO use event_date_year
-                $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename, e.event_date_year AS pers_birth_date
+                // TODO use date_year
+                $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename, e.date_year AS pers_birth_date
                     FROM humo_persons p
                     INNER JOIN humo_events e ON e.event_gedcomnumber = p.pers_gedcomnumber
-                    INNER JOIN humo_location l ON e.event_place_id = l.location_id
+                    INNER JOIN humo_location l ON e.place_id = l.location_id
                     WHERE p.pers_tree_id = '" . $tree_id . "'
                     AND " . $idstring . $namestring . "
                     (e.event_kind = 'birth' AND l.location_location = '" . $place . "')
-                    AND (e.event_date_year < " . $map_max . " AND e.event_date_year > " . $min . ")
+                    AND (e.date_year < " . $map_max . " AND e.date_year > " . $min . ")
                     ORDER BY wholename";
 
                 $maplist = $dbh->query($sql);
@@ -146,7 +146,7 @@ function mapbirthplace($place)
                 $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename
                     FROM humo_persons p
                     INNER JOIN humo_events e ON e.event_gedcomnumber = p.pers_gedcomnumber
-                    INNER JOIN humo_location l ON e.event_place_id = l.location_id
+                    INNER JOIN humo_location l ON e.place_id = l.location_id
                     WHERE p.pers_tree_id = '" . $tree_id . "'
                     AND " . $idstring . $namestring . "
                     (e.event_kind = 'death' AND l.location_location = '" . $place . "')
@@ -156,13 +156,13 @@ function mapbirthplace($place)
                 // *** Slider is used ***
                 echo '<b><u>' . __('Persons that died here until ') . $map_max . ':</u></b><br>';
 
-                $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename, e.event_date_year AS pers_death_date
+                $sql = "SELECT p.*, CONCAT(p.pers_lastname, p.pers_firstname) AS wholename, e.date_year AS pers_death_date
                     FROM humo_persons p
                     INNER JOIN humo_events e ON e.event_gedcomnumber = p.pers_gedcomnumber
-                    INNER JOIN humo_location l ON e.event_place_id = l.location_id
+                    INNER JOIN humo_location l ON e.place_id = l.location_id
                     WHERE p.pers_tree_id = '" . $tree_id . "' AND " . $idstring . $namestring . "
                     (e.event_kind = 'death' AND l.location_location = '" . $place . "')
-                    AND (e.event_date_year < " . $map_max . " AND e.event_date_year > " . $min . ")
+                    AND (e.date_year < " . $map_max . " AND e.date_year > " . $min . ")
                     ORDER BY wholename";
                 $maplist = $dbh->query($sql);
             }

@@ -160,16 +160,16 @@ if (!isset($_POST['install_tables2'])) {
             <label class="form-check-label"><?= __('Empty statistics country table.'); ?></label>
         </div>
 
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" name="table_location" <?= $check_location; ?> <?= !$install['table_location'] ? 'disabled' : ''; ?>>
-            <label class="form-check-label"><?= __('(Re) create location table. <b>This is the general table for all places.</b>'); ?></label>
-        </div><br>
-
-        <p><b><?= __('Family tree tables'); ?></b></p>
+        <div class="my-3"><b><?= __('Family tree tables'); ?></b></div>
 
         <div class="form-check">
             <input type="checkbox" class="form-check-input" name="table_trees" <?= $check_trees; ?> <?= !$install['table_trees'] ? 'disabled' : ''; ?>>
             <label class="form-check-label"><?= __('(Re) create all family tree tables. <b>*** ALL EXISTING FAMILY TREES WILL BE REMOVED! ***</b>'); ?></label>
+        </div>
+
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="table_location" <?= $check_location; ?> <?= !$install['table_location'] ? 'disabled' : ''; ?>>
+            <label class="form-check-label"><?= __('(Re) create location table. <b>This is the general table for all places.</b>'); ?></label>
         </div>
 
         <?php if (isset($_POST['install_tables'])) { ?>
@@ -889,8 +889,8 @@ if (isset($_POST['install_tables2'])) {
             event_tree_id smallint(5),
             event_gedcomnr varchar(25) CHARACTER SET utf8,
             event_order mediumint(6),
-            event_person_id INT UNSIGNED NULL,
-            event_relation_id INT UNSIGNED NULL,
+            person_id INT UNSIGNED NULL,
+            relation_id INT UNSIGNED NULL,
             event_connect_kind varchar(25) CHARACTER SET utf8,
             event_connect_id varchar(25) DEFAULT NULL,
             event_connect_kind2 varchar(25) CHARACTER SET utf8,
@@ -899,19 +899,19 @@ if (isset($_POST['install_tables2'])) {
             event_kind varchar(20) CHARACTER SET utf8,
             event_event text CHARACTER SET utf8,
             event_event_extra text CHARACTER SET utf8,
-            event_authority TEXT NULL,
-            event_stillborn VARCHAR(1) DEFAULT 'n',
-            event_cause VARCHAR(255) DEFAULT NULL,
-            event_cremation VARCHAR(1) DEFAULT NULL,
+            authority TEXT NULL,
+            stillborn VARCHAR(1) DEFAULT 'n',
+            cause VARCHAR(255) DEFAULT NULL,
+            cremation VARCHAR(1) DEFAULT NULL,
             event_end_date VARCHAR(35) DEFAULT NULL,
             event_gedcom varchar(20) CHARACTER SET utf8,
             event_date varchar(40) CHARACTER SET utf8,
-            event_date_year INT NULL,
+            date_year INT NULL,
             event_date_hebnight VARCHAR(10) CHARACTER SET utf8,
-            event_date_month TINYINT NULL,
-            event_date_day TINYINT NULL,
+            date_month TINYINT NULL,
+            date_day TINYINT NULL,
             event_time VARCHAR(25) NULL,
-            event_place_id INT UNSIGNED NULL,
+            place_id INT UNSIGNED NULL,
             event_text text CHARACTER SET utf8,
             event_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
             event_new_user_id smallint NULL DEFAULT NULL,
@@ -923,20 +923,20 @@ if (isset($_POST['install_tables2'])) {
             KEY (event_connect_id),
             KEY (event_connect_id2),
             KEY (event_kind),
-            KEY (event_person_id),
-            KEY (event_relation_id),
-            KEY (event_place_id)
+            KEY (person_id),
+            KEY (relation_id),
+            KEY (place_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
         // *** Aug. 2025: add foreign key constraints ***
         $dbh->query("
         ALTER TABLE humo_events
         ADD CONSTRAINT fk_event_person
-            FOREIGN KEY (event_person_id) REFERENCES humo_persons(pers_id),
+            FOREIGN KEY (person_id) REFERENCES humo_persons(pers_id),
         ADD CONSTRAINT fk_event_family
-            FOREIGN KEY (event_relation_id) REFERENCES humo_families(fam_id),
+            FOREIGN KEY (relation_id) REFERENCES humo_families(fam_id),
         ADD CONSTRAINT fk_event_place
-            FOREIGN KEY (event_place_id) REFERENCES humo_location(location_id)
+            FOREIGN KEY (place_id) REFERENCES humo_location(location_id)
         ");
     }
     ?><br>

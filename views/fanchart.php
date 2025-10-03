@@ -309,7 +309,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
         while ($sosa >= $p2) {
             $pid = $data["fanchart_item"][$sosa]['standard_name'];
 
-            // TODO use event_date_year.
+            // TODO use date_year.
             $birthyr = $data["fanchart_item"][$sosa]['birth_bapt_date'] ? $data["fanchart_item"][$sosa]['birth_bapt_date'] : '';
             $deathyr = $data["fanchart_item"][$sosa]['death_burr_date'] ? $data["fanchart_item"][$sosa]['death_burr_date'] : '';
 

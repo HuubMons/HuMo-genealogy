@@ -2693,7 +2693,7 @@ class GedcomImport
                 $birth_event = [
                     'tree_id' => $this->tree_id,
                     'event_order' => $event_order,
-                    'event_person_id' => $pers_id,
+                    'person_id' => $pers_id,
                     'event_connect_kind' => $this->event['connect_kind'][$i],
                     'event_connect_id' => $this->event['connect_id'][$i],
                     'event_kind' => $this->event['kind'][$i],
@@ -2744,7 +2744,7 @@ class GedcomImport
         if ($update_birth) {
             $birth_event = [
                 'tree_id' => $this->tree_id,
-                'event_person_id' => $pers_id,
+                'person_id' => $pers_id,
                 'event_connect_kind' => 'person',
                 'event_connect_id' => $pers_gedcomnumber,
                 'event_kind' => 'birth',
@@ -2756,7 +2756,7 @@ class GedcomImport
                 'event_place_lat' => $pers_birth_place_lati,
                 'event_place_lon' => $pers_birth_place_long,
                 'event_text' => $pers_birth_text,
-                'event_stillborn' => !empty($pers_stillborn) ? 'y' : '',
+                'stillborn' => !empty($pers_stillborn) ? 'y' : '',
                 'event_date_hebnight' => isset($pers_birth_date_hebnight) ? $pers_birth_date_hebnight : ''
             ];
             $this->eventManager->update_event($birth_event);
@@ -2775,7 +2775,7 @@ class GedcomImport
         if ($update_bapt) {
             $bapt_event = [
                 'tree_id' => $this->tree_id,
-                'event_person_id' => $pers_id,
+                'person_id' => $pers_id,
                 'event_connect_kind' => 'person',
                 'event_connect_id' => $pers_gedcomnumber,
                 'event_kind' => 'baptism',
@@ -2807,7 +2807,7 @@ class GedcomImport
         if ($update_death) {
             $death_event = [
                 'tree_id' => $this->tree_id,
-                'event_person_id' => $pers_id,
+                'person_id' => $pers_id,
                 'event_connect_kind' => 'person',
                 'event_connect_id' => $pers_gedcomnumber,
                 'event_kind' => 'death',
@@ -2819,7 +2819,7 @@ class GedcomImport
                 'event_place_lat' => $pers_death_place_lati,
                 'event_place_lon' => $pers_death_place_long,
                 'event_text' => $pers_death_text,
-                'event_cause' => $pers_death_cause,
+                'cause' => $pers_death_cause,
                 'event_pers_age' => $person["pers_death_age"],
                 'event_date_hebnight' => isset($pers_death_date_hebnight) ? $pers_death_date_hebnight : ''
             ];
@@ -2841,7 +2841,7 @@ class GedcomImport
         if ($update_buried) {
             $buried_event = [
                 'tree_id' => $this->tree_id,
-                'event_person_id' => $pers_id,
+                'person_id' => $pers_id,
                 'event_connect_kind' => 'person',
                 'event_connect_id' => $pers_gedcomnumber,
                 'event_kind' => 'burial',
@@ -2852,7 +2852,7 @@ class GedcomImport
                 'event_place_lat' => $pers_buried_place_lati,
                 'event_place_lon' => $pers_buried_place_long,
                 'event_text' => $pers_buried_text,
-                'event_cremation' => $pers_cremation,
+                'cremation' => $pers_cremation,
                 'event_date_hebnight' => isset($pers_buried_date_hebnight) ? $pers_buried_date_hebnight : ''
             ];
             $this->eventManager->update_event($buried_event);
@@ -4471,7 +4471,7 @@ class GedcomImport
                 $relation_event = [
                     'tree_id' => $this->tree_id,
                     'event_order' => $event_order,
-                    'event_relation_id' => $fam_id,
+                    'relation_id' => $fam_id,
                     'event_connect_kind' => $this->event['connect_kind'][$i],
                     'event_connect_id' => $this->event['connect_id'][$i],
                     'event_kind' => $this->event['kind'][$i],
@@ -4509,7 +4509,7 @@ class GedcomImport
         ) {
             $relation_event = [
                 'tree_id' => $this->tree_id,
-                'event_relation_id' => $fam_id,
+                'relation_id' => $fam_id,
                 'event_connect_kind' => 'family',
                 'event_connect_id' => $gedcomnumber,
                 'event_kind' => 'relation',
@@ -4533,7 +4533,7 @@ class GedcomImport
         ) {
             $marr_notice_event = [
                 'tree_id' => $this->tree_id,
-                'event_relation_id' => $fam_id,
+                'relation_id' => $fam_id,
                 'event_connect_kind' => 'family',
                 'event_connect_id' => $gedcomnumber,
                 'event_kind' => 'marriage_notice',
@@ -4556,7 +4556,7 @@ class GedcomImport
         ) {
             $marr_event = [
                 'tree_id' => $this->tree_id,
-                'event_relation_id' => $fam_id,
+                'relation_id' => $fam_id,
                 'event_connect_kind' => 'family',
                 'event_connect_id' => $gedcomnumber,
                 'event_kind' => 'marriage',
@@ -4579,7 +4579,7 @@ class GedcomImport
         ) {
             $marr_church_notice_event = [
                 'tree_id' => $this->tree_id,
-                'event_relation_id' => $fam_id,
+                'relation_id' => $fam_id,
                 'event_connect_kind' => 'family',
                 'event_connect_id' => $gedcomnumber,
                 'event_kind' => 'marr_church_notice',
@@ -4602,7 +4602,7 @@ class GedcomImport
         ) {
             $marr_church_event = [
                 'tree_id' => $this->tree_id,
-                'event_relation_id' => $fam_id,
+                'relation_id' => $fam_id,
                 'event_connect_kind' => 'family',
                 'event_connect_id' => $gedcomnumber,
                 'event_kind' => 'marr_church',
@@ -4626,7 +4626,7 @@ class GedcomImport
         ) {
             $div_event = [
                 'tree_id' => $this->tree_id,
-                'event_relation_id' => $fam_id,
+                'relation_id' => $fam_id,
                 'event_connect_kind' => 'family',
                 'event_connect_id' => $gedcomnumber,
                 'event_kind' => 'divorce',
@@ -4637,7 +4637,7 @@ class GedcomImport
                 'event_place_lat' => $family["fam_div_place_lati"],
                 'event_place_lon' => $family["fam_div_place_long"],
                 'event_text' => $family["fam_div_text"],
-                'event_authority' => $family["fam_div_authority"]
+                'authority' => $family["fam_div_authority"]
             ];
             $this->eventManager->update_event($div_event);
         }

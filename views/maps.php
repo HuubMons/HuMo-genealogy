@@ -168,19 +168,13 @@ $datePlace = new \Genealogy\Include\DatePlace();
 
             <form method="POST" action="<?= $link; ?>">
                 <?php
-                /*
-                $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
-                    FROM humo_persons WHERE pers_tree_id='" . $tree_id . "'
-                    AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ORDER BY totalname";
-                */
-
                 // Get family names based on birth events and linked locations
                 $fam_search = "
                     SELECT 
                         CONCAT(pers_lastname, '_', LOWER(SUBSTRING_INDEX(pers_prefix, '_', 1))) AS totalname
                     FROM humo_persons
-                    LEFT JOIN humo_events ON humo_events.event_person_id = humo_persons.pers_id
-                    LEFT JOIN humo_location ON humo_location.location_id = humo_events.event_place_id
+                    LEFT JOIN humo_events ON humo_events.person_id = humo_persons.pers_id
+                    LEFT JOIN humo_location ON humo_location.location_id = humo_events.place_id
                     WHERE 
                         humo_persons.pers_tree_id = '" . $tree_id . "'
                         AND humo_persons.pers_lastname != ''

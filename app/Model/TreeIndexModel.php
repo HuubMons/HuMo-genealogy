@@ -654,7 +654,7 @@ class TreeIndexModel extends BaseModel
         // i added also family kind photos
         $qry = "SELECT e.*, l.location_location AS event_place
             FROM humo_events e
-            LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+            LEFT JOIN humo_location l ON e.place_id = l.location_id
             WHERE e.event_tree_id='" . $this->tree_id . "' 
             AND e.event_kind='picture' 
             AND (e.event_connect_kind='person' OR e.event_connect_kind='family')  
@@ -688,7 +688,7 @@ class TreeIndexModel extends BaseModel
                 $is_privacy = true;
 
                 if ($pic_conn_kind == 'person') {
-                    $personmnDb = $this->db_functions->get_person_with_id($picqryDb->event_person_id);
+                    $personmnDb = $this->db_functions->get_person_with_id($picqryDb->person_id);
                     $man_privacy = $personPrivacy->get_privacy($personmnDb);
                     if (!$man_privacy) {
                         $is_privacy = false;
@@ -699,7 +699,7 @@ class TreeIndexModel extends BaseModel
                         $url = $this->personLink->get_person_link($personmnDb);
                     }
                 } elseif ($pic_conn_kind == 'family') {
-                    $picqryDb2 = $this->db_functions->get_family_with_id($picqryDb->event_relation_id);
+                    $picqryDb2 = $this->db_functions->get_family_with_id($picqryDb->relation_id);
 
                     $personmnDb2 = $this->db_functions->get_person($picqryDb2->fam_man);
                     $man_privacy = $personPrivacy->get_privacy($personmnDb2);
@@ -941,20 +941,20 @@ class TreeIndexModel extends BaseModel
         $count_privacy = 0;
         $text = '';
 
-        $sql = "SELECT p.*, e.event_kind, e.event_date_day, e.event_date_year, e.event_date_month
+        $sql = "SELECT p.*, e.event_kind, e.date_day, e.date_year, e.date_month
             FROM humo_persons p
-            LEFT JOIN humo_events e ON p.pers_id = e.event_person_id
+            LEFT JOIN humo_events e ON p.pers_id = e.person_id
             AND e.event_tree_id = p.pers_tree_id
             AND e.event_connect_kind = 'person'
             WHERE p.pers_tree_id = :tree_id
             AND (
-                (e.event_kind = 'birth' AND e.event_date_month = :month AND e.event_date_day = :day)
+                (e.event_kind = 'birth' AND e.date_month = :month AND e.date_day = :day)
                 OR
-                (e.event_kind = 'baptism' AND e.event_date_month = :month AND e.event_date_day = :day)
+                (e.event_kind = 'baptism' AND e.date_month = :month AND e.date_day = :day)
                 OR
-                (e.event_kind = 'death' AND e.event_date_month = :month AND e.event_date_day = :day)
+                (e.event_kind = 'death' AND e.date_month = :month AND e.date_day = :day)
             )
-            ORDER BY e.event_date_year DESC
+            ORDER BY e.date_year DESC
             LIMIT 0,30
         ";
         try {
@@ -971,12 +971,8 @@ class TreeIndexModel extends BaseModel
         while ($record2 = $birth_qry->fetch(PDO::FETCH_OBJ)) {
             // *** Get all data from person ***
             $record = $this->db_functions->get_person_with_id($record2->pers_id);
-
-            //echo $record2->event_kind.' '.$record2->event_date_day.' '.$record2->event_date_month.' '.$record2->event_date_year.'<br><br><br>';
-
             $privacy = $personPrivacy->get_privacy($record);
             $name = $personName->get_person_name($record, $privacy);
-            //echo $record->pers_id.'!!!<br><br><br>';
             if (!$privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) === $today || substr($record->pers_birth_date, 0, 6) === $today2) {
                     // *** First order birth, using C ***

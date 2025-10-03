@@ -30,21 +30,6 @@
         $humo_update = $_SESSION['save_humo_update'];
     }
 
-    // TODO: for now disabled. If enabled, status of update isn't shown (will be "OK").
-    // *** Reload page to prevent timeout ***
-    function reload_page()
-    {
-        // Maybe use if timer > 25 seconds?
-        //$start_time = time();
-        //$end_time = time();
-        //echo $end_time - $start_time
-    ?>
-        <script>
-            /* window.location = "index.php?page=update&proceed=1"; */
-        </script>
-        <?php
-    }
-
     function show_status($dbh, $humo_option, $version, $version_number)
     {
         // *** Example: this is version update 19. So check should be > 18 ***
@@ -72,18 +57,22 @@
 
                     // *** Update "update_status" ***
                     $dbh->query("UPDATE humo_settings SET setting_value=" . $version_number . " WHERE setting_variable='update_status'");
-
-                    // *** Reload page to prevent timeout problems ***
-                    reload_page();
                     ?>
+
+                    <div class="mt-2"><a class="btn btn-warning" href="index.php?page=update&proceed=1"><?= __('Reload for next update') ?></a></div>
+
                 </td>
             </tr>
 
             <script>
                 document.getElementById("information <?= str_replace('.', '_', $version) ?>").innerHTML = "<?= __('Database updated!') ?>";
             </script>
-    <?php
 
+            <?php
+            // *** Stop so button can be pressed to reload ***
+            exit;
+            ?>
+    <?php
         }
     }
     ?>

@@ -233,16 +233,16 @@ class MapsModel extends BaseModel
                     humo_location.*, 
                     humo_persons.*, 
                     humo_events.event_connect_id,
-                    humo_events.event_place_id AS birth_place_id,
+                    humo_events.place_id AS birth_place_id,
                     l_birth.location_location AS pers_birth_place
                 FROM humo_location
                 LEFT JOIN humo_events 
                     ON humo_events.event_kind = 'birth'
-                    AND humo_events.event_place_id = humo_location.location_id
+                    AND humo_events.place_id = humo_location.location_id
                 LEFT JOIN humo_persons 
-                    ON humo_persons.pers_id = humo_events.event_person_id
+                    ON humo_persons.pers_id = humo_events.person_id
                 LEFT JOIN humo_location l_birth
-                    ON l_birth.location_id = humo_events.event_place_id
+                    ON l_birth.location_id = humo_events.place_id
                 WHERE humo_location.location_lat IS NOT NULL
                     AND humo_persons.pers_tree_id='" . $this->tree_id . "' " . $namesearch_string . "
                 ORDER BY humo_location.location_location"
@@ -260,16 +260,16 @@ class MapsModel extends BaseModel
                     humo_location.*, 
                     humo_persons.*, 
                     humo_events.event_connect_id,
-                    humo_events.event_place_id AS death_place_id,
+                    humo_events.place_id AS death_place_id,
                     l_death.location_location AS pers_death_place
                 FROM humo_location
                 LEFT JOIN humo_events 
                     ON humo_events.event_kind = 'death'
-                    AND humo_events.event_place_id = humo_location.location_id
+                    AND humo_events.place_id = humo_location.location_id
                 LEFT JOIN humo_persons 
-                    ON humo_persons.pers_id = humo_events.event_person_id
+                    ON humo_persons.pers_id = humo_events.person_id
                 LEFT JOIN humo_location l_death
-                    ON l_death.location_id = humo_events.event_place_id
+                    ON l_death.location_id = humo_events.place_id
                 WHERE humo_location.location_lat IS NOT NULL
                     AND humo_persons.pers_tree_id='" . $this->tree_id . "' " . $namesearch_string . "
                 ORDER BY humo_location.location_location"
@@ -335,7 +335,7 @@ class MapsModel extends BaseModel
         return $maps;
     }
 
-    // TODO: this function should be rebuild. Use event_date_year, and locarray isn't needed anymore?
+    // TODO: this function should be rebuild. Use date_year, and locarray isn't needed anymore?
     // Also get relation dates from events table?
     public function get_locations_google($maps): array
     {
@@ -388,10 +388,10 @@ class MapsModel extends BaseModel
                     $person_results = $this->dbh->query(
                         "SELECT 
                             p.pers_firstname, 
-                            e_birth.event_place_id AS birth_place_id,
+                            e_birth.place_id AS birth_place_id,
                             l_birth.location_location AS pers_birth_place,
                             e_birth.event_date AS pers_birth_date,
-                            e_bapt.event_place_id AS bapt_place_id,
+                            e_bapt.place_id AS bapt_place_id,
                             l_bapt.location_location AS pers_bapt_place,
                             e_bapt.event_date AS pers_bapt_date
                         FROM humo_persons p
@@ -404,12 +404,12 @@ class MapsModel extends BaseModel
                             AND e_bapt.event_connect_id = p.pers_gedcomnumber
                             AND e_bapt.event_tree_id = p.pers_tree_id
                         LEFT JOIN humo_location l_birth
-                            ON l_birth.location_id = e_birth.event_place_id
+                            ON l_birth.location_id = e_birth.place_id
                         LEFT JOIN humo_location l_bapt
-                            ON l_bapt.location_id = e_bapt.event_place_id
+                            ON l_bapt.location_id = e_bapt.place_id
                         WHERE p.pers_tree_id='" . $this->tree_id . "'
                             AND p.pers_gedcomnumber ='" . $value . "'
-                            AND (e_birth.event_place_id IS NOT NULL OR e_bapt.event_place_id IS NOT NULL)"
+                            AND (e_birth.place_id IS NOT NULL OR e_bapt.place_id IS NOT NULL)"
                     );
 
 
@@ -425,10 +425,10 @@ class MapsModel extends BaseModel
                     $person_results = $this->dbh->query(
                         "SELECT 
                             p.pers_firstname, 
-                            e_death.event_place_id AS death_place_id,
+                            e_death.place_id AS death_place_id,
                             l_death.location_location AS pers_death_place,
                             e_death.event_date AS pers_death_date,
-                            e_burial.event_place_id AS buried_place_id,
+                            e_burial.place_id AS buried_place_id,
                             l_burial.location_location AS pers_buried_place,
                             e_burial.event_date AS pers_buried_date
                         FROM humo_persons p
@@ -441,12 +441,12 @@ class MapsModel extends BaseModel
                             AND e_burial.event_connect_id = p.pers_gedcomnumber
                             AND e_burial.event_tree_id = p.pers_tree_id
                         LEFT JOIN humo_location l_death
-                            ON l_death.location_id = e_death.event_place_id
+                            ON l_death.location_id = e_death.place_id
                         LEFT JOIN humo_location l_burial
-                            ON l_burial.location_id = e_burial.event_place_id
+                            ON l_burial.location_id = e_burial.place_id
                         WHERE p.pers_tree_id='" . $this->tree_id . "'
                             AND p.pers_gedcomnumber ='" . $value . "'
-                            AND (e_death.event_place_id IS NOT NULL OR e_burial.event_place_id IS NOT NULL)"
+                            AND (e_death.place_id IS NOT NULL OR e_burial.place_id IS NOT NULL)"
                     );
 
                     $personDb = $person_results->fetch(PDO::FETCH_OBJ);
@@ -475,7 +475,7 @@ class MapsModel extends BaseModel
                     if (isset($locarray[$place])) {
                         // birthplace exists in location database
                         if ($date) {
-                            // TODO use new event_date_year field
+                            // TODO use new date_year field
                             $year = substr($date, -4);
 
                             if ($year > 1 and $year < $maps['slider_min']) {
@@ -537,16 +537,16 @@ class MapsModel extends BaseModel
                     FROM humo_persons p
                     LEFT JOIN humo_events e_birth 
                         ON e_birth.event_kind = 'birth'
-                        AND e_birth.event_person_id = p.pers_id
+                        AND e_birth.person_id = p.pers_id
                         AND e_birth.event_tree_id = p.pers_tree_id
                     LEFT JOIN humo_events e_bapt 
                         ON e_bapt.event_kind = 'baptism'
-                        AND e_bapt.event_person_id = p.pers_id
+                        AND e_bapt.person_id = p.pers_id
                         AND e_bapt.event_tree_id = p.pers_tree_id
                     LEFT JOIN humo_location l_birth
-                        ON l_birth.location_id = e_birth.event_place_id
+                        ON l_birth.location_id = e_birth.place_id
                     LEFT JOIN humo_location l_bapt
-                        ON l_bapt.location_id = e_bapt.event_place_id
+                        ON l_bapt.location_id = e_bapt.place_id
                     WHERE p.pers_tree_id='" . $this->tree_id . "'
                         AND (l_birth.location_location !='' OR (l_birth.location_location ='' AND l_bapt.location_location !='')) " . $namesearch_string
                 );
@@ -567,16 +567,16 @@ class MapsModel extends BaseModel
                     FROM humo_persons p
                     LEFT JOIN humo_events e_death 
                         ON e_death.event_kind = 'death'
-                        AND e_death.event_person_id = p.pers_id
+                        AND e_death.person_id = p.pers_id
                         AND e_death.event_tree_id = p.pers_tree_id
                     LEFT JOIN humo_events e_burial 
                         ON e_burial.event_kind = 'burial'
-                        AND e_burial.event_person_id = p.pers_id
+                        AND e_burial.person_id = p.pers_id
                         AND e_burial.event_tree_id = p.pers_tree_id
                     LEFT JOIN humo_location l_death
-                        ON l_death.location_id = e_death.event_place_id
+                        ON l_death.location_id = e_death.place_id
                     LEFT JOIN humo_location l_burial
-                        ON l_burial.location_id = e_burial.event_place_id
+                        ON l_burial.location_id = e_burial.place_id
                     WHERE p.pers_tree_id='" . $this->tree_id . "'
                         AND (l_death.location_location !='' OR (l_death.location_location ='' AND l_burial.location_location !='')) " . $namesearch_string
                 );

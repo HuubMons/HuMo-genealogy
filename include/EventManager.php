@@ -43,7 +43,7 @@ class EventManager
 
         $event_place_id = isset($data['event_place']) ? $processPlaceId->get_id($data['event_place'], $event_place_lat, $event_place_lon) : null;
         $event_end_date = isset($data['event_end_date']) ? $data['event_end_date'] : null;
-        $event_authority = isset($data['event_authority']) ? $data['event_authority'] : null;
+        $event_authority = isset($data['authority']) ? $data['authority'] : null;
         $event_date_hebnight = isset($data['event_date_hebnight']) ? $data['event_date_hebnight'] : '';
 
         // *** Generate new order number ***
@@ -83,8 +83,8 @@ class EventManager
             // Only add if param is set in $data or is a required field
             $param_name = ltrim($param, ':');
             if (isset($data[$param_name]) || in_array($param_name, [
-                'tree_id','event_date','event_date_hebnight','event_date_year','event_date_month','event_date_day',
-                'event_place_id','event_text','event_order','event_new_user_id'
+                'tree_id','event_date','event_date_hebnight','date_year','date_month','date_day',
+                'place_id','event_text','event_order','event_new_user_id'
             ])) {
                 $assignments[] = "$column = $param";
             }
@@ -94,27 +94,27 @@ class EventManager
 
         $columns = [
             'event_tree_id',
-            'event_place_id',
+            'place_id',
             'event_new_user_id',
             'event_date',
             'event_end_date',
-            'event_date_year',
-            'event_date_month',
-            'event_date_day',
+            'date_year',
+            'date_month',
+            'date_day',
             'event_date_hebnight',
-            'event_authority'
+            'authority'
         ];
         $values = [
             ':tree_id',
-            ':event_place_id',
+            ':place_id',
             ':event_new_user_id',
             ':event_date',
             ':event_end_date',
-            ':event_date_year',
-            ':event_date_month',
-            ':event_date_day',
+            ':date_year',
+            ':date_month',
+            ':date_day',
             ':event_date_hebnight',
-            ':event_authority'
+            ':authority'
         ];
 
         // *** Data fields for new event ***
@@ -139,22 +139,22 @@ class EventManager
             ];
             $values = array_merge($values, $values2);
 
-            // If event_connect_kind = person, add event_person_id. If it's family, add event_relation_id
+            // If event_connect_kind = person, add person_id. If it's family, add relation_id
             if ($data['event_connect_kind'] === 'person') {
-                $columns[] = 'event_person_id';
-                $values[] = ':event_person_id';
+                $columns[] = 'person_id';
+                $values[] = ':person_id';
             } elseif ($data['event_connect_kind'] === 'family') {
-                $columns[] = 'event_relation_id';
-                $values[] = ':event_relation_id';
+                $columns[] = 'relation_id';
+                $values[] = ':relation_id';
             } else {
-                // *** If event_person_id or event_relation_id is set ***
-                if (isset($data['event_person_id'])) {
-                    $columns[] = 'event_person_id';
-                    $values[] = ':event_person_id';
+                // *** If person_id or relation_id is set ***
+                if (isset($data['person_id'])) {
+                    $columns[] = 'person_id';
+                    $values[] = ':person_id';
                 }
-                if (isset($data['event_relation_id'])) {
-                    $columns[] = 'event_relation_id';
-                    $values[] = ':event_relation_id';
+                if (isset($data['relation_id'])) {
+                    $columns[] = 'relation_id';
+                    $values[] = ':relation_id';
                 }
             }
         }
@@ -181,21 +181,21 @@ class EventManager
             $columns[] = 'event_time';
             $values[] = ':event_time';
         }
-        if (isset($data['event_stillborn'])) {
-            $columns[] = 'event_stillborn';
-            $values[] = ':event_stillborn';
+        if (isset($data['stillborn'])) {
+            $columns[] = 'stillborn';
+            $values[] = ':stillborn';
         }
-        if (isset($data['event_cause'])) {
-            $columns[] = 'event_cause';
-            $values[] = ':event_cause';
+        if (isset($data['cause'])) {
+            $columns[] = 'cause';
+            $values[] = ':cause';
         }
         if (isset($data['event_pers_age'])) {
             $columns[] = 'event_pers_age';
             $values[] = ':event_pers_age';
         }
-        if (isset($data['event_cremation'])) {
-            $columns[] = 'event_cremation';
-            $values[] = ':event_cremation';
+        if (isset($data['cremation'])) {
+            $columns[] = 'cremation';
+            $values[] = ':cremation';
         }
         if (isset($data['event_text'])) {
             $columns[] = 'event_text';
@@ -225,35 +225,35 @@ class EventManager
 
         $stmt = $this->dbh->prepare($sql);
 
-        // *** New event: try to get event_person_id ***
+        // *** New event: try to get person_id ***
         if (!isset($data['event_id'])) {
             if ($data['event_connect_kind'] === 'person') {
-                if (isset($data['event_person_id'])) {
-                    $stmt->bindValue(':event_person_id', $data['event_person_id'], PDO::PARAM_INT);
+                if (isset($data['person_id'])) {
+                    $stmt->bindValue(':person_id', $data['person_id'], PDO::PARAM_INT);
                 } else {
                     // *** Get person_id ***
                     $this->db_functions->set_tree_id($data['tree_id']);
 
                     $person = $this->db_functions->get_person($data['event_connect_id']);
-                    $stmt->bindValue(':event_person_id', isset($person->pers_id) ? $person->pers_id : null, PDO::PARAM_INT);
+                    $stmt->bindValue(':person_id', isset($person->pers_id) ? $person->pers_id : null, PDO::PARAM_INT);
                 }
             } elseif ($data['event_connect_kind'] === 'family') {
-                if (isset($data['event_relation_id'])) {
-                    $stmt->bindValue(':event_relation_id', $data['event_relation_id'], PDO::PARAM_INT);
+                if (isset($data['relation_id'])) {
+                    $stmt->bindValue(':relation_id', $data['relation_id'], PDO::PARAM_INT);
                 } else {
                     // *** Get relation_id ***
                     $this->db_functions->set_tree_id($data['tree_id']);
 
                     $family = $this->db_functions->get_family($data['event_connect_id']);
-                    $stmt->bindValue(':event_relation_id', isset($family->fam_id) ? $family->fam_id : null, PDO::PARAM_INT);
+                    $stmt->bindValue(':relation_id', isset($family->fam_id) ? $family->fam_id : null, PDO::PARAM_INT);
                 }
             } else {
-                // *** If event_person_id or event_relation_id is set ***
-                if (isset($data['event_person_id'])) {
-                    $stmt->bindValue(':event_person_id', $data['event_person_id'], PDO::PARAM_INT);
+                // *** If person_id or relation_id is set ***
+                if (isset($data['person_id'])) {
+                    $stmt->bindValue(':person_id', $data['person_id'], PDO::PARAM_INT);
                 }
-                if (isset($data['event_relation_id'])) {
-                    $stmt->bindValue(':event_relation_id', $data['event_relation_id'], PDO::PARAM_INT);
+                if (isset($data['relation_id'])) {
+                    $stmt->bindValue(':relation_id', $data['relation_id'], PDO::PARAM_INT);
                 }
             }
         }
@@ -278,17 +278,17 @@ class EventManager
         if (isset($data['event_time'])) {
             $stmt->bindValue(':event_time', $data['event_time'], PDO::PARAM_STR);
         }
-        if (isset($data['event_stillborn'])) {
-            $stmt->bindValue(':event_stillborn', $data['event_stillborn'], PDO::PARAM_STR);
+        if (isset($data['stillborn'])) {
+            $stmt->bindValue(':stillborn', $data['stillborn'], PDO::PARAM_STR);
         }
-        if (isset($data['event_cause'])) {
-            $stmt->bindValue(':event_cause', $data['event_cause'], PDO::PARAM_STR);
+        if (isset($data['cause'])) {
+            $stmt->bindValue(':cause', $data['cause'], PDO::PARAM_STR);
         }
         if (isset($data['event_pers_age'])) {
             $stmt->bindValue(':event_pers_age', $data['event_pers_age'], PDO::PARAM_INT);
         }
-        if (isset($data['event_cremation'])) {
-            $stmt->bindValue(':event_cremation', $data['event_cremation'], PDO::PARAM_STR);
+        if (isset($data['cremation'])) {
+            $stmt->bindValue(':cremation', $data['cremation'], PDO::PARAM_STR);
         }
         if (isset($data['event_text'])) {
             $stmt->bindValue(':event_text', $data['event_text'], PDO::PARAM_STR);
@@ -297,11 +297,11 @@ class EventManager
         $stmt->bindValue(':event_date', $event_date, PDO::PARAM_STR);
         $stmt->bindValue(':event_end_date', $event_end_date, PDO::PARAM_STR);
         $stmt->bindValue(':event_date_hebnight', $event_date_hebnight, PDO::PARAM_STR);
-        $stmt->bindValue(':event_authority', $event_authority, PDO::PARAM_STR);
-        $stmt->bindValue(':event_date_year', $parsed['year'], PDO::PARAM_INT);
-        $stmt->bindValue(':event_date_month', $parsed['month'], PDO::PARAM_INT);
-        $stmt->bindValue(':event_date_day', $parsed['day'], PDO::PARAM_INT);
-        $stmt->bindValue(':event_place_id', $event_place_id, PDO::PARAM_INT);
+        $stmt->bindValue(':authority', $event_authority, PDO::PARAM_STR);
+        $stmt->bindValue(':date_year', $parsed['year'], PDO::PARAM_INT);
+        $stmt->bindValue(':date_month', $parsed['month'], PDO::PARAM_INT);
+        $stmt->bindValue(':date_day', $parsed['day'], PDO::PARAM_INT);
+        $stmt->bindValue(':place_id', $event_place_id, PDO::PARAM_INT);
         $stmt->bindValue(':event_new_user_id', $this->userid, PDO::PARAM_STR);
         if (isset($data['event_changed_user_id'])) {
             $stmt->bindValue(':event_changed_user_id', $data['event_changed_user_id'], PDO::PARAM_INT);

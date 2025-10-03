@@ -270,7 +270,7 @@ function invalid($date, $gednr, $table)
             $ev = $dbh->query("SELECT * FROM humo_events WHERE event_id = '" . $gednr . "'");
             $evDb = $ev->fetch();
             if ($evDb['event_connect_kind'] == 'person' && $evDb['event_connect_id'] != '') {
-                $persDb = $db_functions->get_person_with_id($evDb['event_person_id']);
+                $persDb = $db_functions->get_person_with_id($evDb['person_id']);
                 $fullname = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix . ' ' . $persDb->pers_lastname);
                 $evdetail = $evDb['event_event'];
                 if ($evdetail == '') {
@@ -288,7 +288,7 @@ function invalid($date, $gednr, $table)
                 </tr>
             <?php
             } elseif ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
-                $famDb = $db_functions->get_family_with_id($evDb['event_relation_id']);
+                $famDb = $db_functions->get_family_with_id($evDb['relation_id']);
 
                 $spouse1Db = $db_functions->get_person($famDb->fam_man);
                 $name1 = $spouse1Db->pers_firstname . ' ' . str_replace("_", " ", $spouse1Db->pers_prefix . ' ' . $spouse1Db->pers_lastname);
@@ -357,13 +357,13 @@ function invalid($date, $gednr, $table)
                 $ev = $dbh->query("SELECT * FROM humo_events WHERE event_id ='" . $connectDb['connect_connect_id'] . "'");
                 $evDb = $ev->fetch();
                 if ($evDb['event_connect_kind'] == 'person' && $evDb['event_connect_id'] != '') {
-                    $persDb = $db_functions->get_person_with_id($evDb['event_person_id']);
+                    $persDb = $db_functions->get_person_with_id($evDb['person_id']);
                     $gednr = $persDb->pers_gedcomnumber; // for url string
                     $gedcomnr = $persDb->pers_gedcomnumber; // for first column
                     $name = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix) . ' ' . $persDb->pers_lastname;
                 }
                 if ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
-                    $famDb = $db_functions->get_family_with_id($evDb['event_relation_id']);
+                    $famDb = $db_functions->get_family_with_id($evDb['relation_id']);
 
                     $spouse1Db = $db_functions->get_person($famDb->fam_man);
                     $name1 = $spouse1Db->pers_firstname . ' ' . str_replace("_", " ", $spouse1Db->pers_prefix . ' ' . $spouse1Db->pers_lastname);

@@ -486,7 +486,7 @@ Don't use this link, witness and other buttons won't work anymore
                     if ($humo_option['admin_hebname'] == "y") {
                         $sql = "SELECT * FROM humo_events 
                             WHERE event_gedcom = '_HEBN' AND event_kind='name'
-                            AND event_person_id = '" . $person->pers_id . "'";
+                            AND person_id = '" . $person->pers_id . "'";
                         $result = $dbh->query($sql);
                         if ($result->rowCount() > 0) {
                             $hebnameDb = $result->fetch(PDO::FETCH_OBJ);
@@ -890,8 +890,8 @@ Don't use this link, witness and other buttons won't work anymore
 
             $sql = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
-                WHERE e.event_gedcom = '_BRTM' AND e.event_person_id = '" . $person->pers_id . "'";
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
+                WHERE e.event_gedcom = '_BRTM' AND e.person_id = '" . $person->pers_id . "'";
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $britDb = $result->fetch(PDO::FETCH_OBJ);
@@ -986,9 +986,9 @@ Don't use this link, witness and other buttons won't work anymore
 
             $sql = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE (e.event_gedcom = 'BARM' OR e.event_gedcom = 'BASM')
-                AND e.event_person_id = '" . $person->pers_id . "'";
+                AND e.person_id = '" . $person->pers_id . "'";
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $barmDb = $result->fetch(PDO::FETCH_OBJ);

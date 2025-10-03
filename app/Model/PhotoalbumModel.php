@@ -168,7 +168,7 @@ class PhotoalbumModel extends BaseModel
             if ($search_media) {
                 $quicksearch = str_replace(" ", "%", $search_media);
                 $querie = "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_id='" . $picqryDb->event_person_id . "'
+                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_id='" . $picqryDb->person_id . "'
                     AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
                 $persoon = $this->dbh->query($querie);
                 $personDb = $persoon->fetch(PDO::FETCH_OBJ);
@@ -179,9 +179,9 @@ class PhotoalbumModel extends BaseModel
 
             // *** Check for privacy of connected persons ***
             if ($process_picture) {
-                if ($picqryDb->event_person_id) {
+                if ($picqryDb->person_id) {
                     // *** Check privacy filter ***
-                    $personDb = $this->db_functions->get_person_with_id($picqryDb->event_person_id);
+                    $personDb = $this->db_functions->get_person_with_id($picqryDb->person_id);
                     $privacy = $personPrivacy->get_privacy($personDb);
                     if ($privacy) {
                         $process_picture = false;

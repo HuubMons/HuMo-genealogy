@@ -125,7 +125,7 @@ if ($person->pers_sexe == 'M') {
                 $qry = "SELECT f.*, e.event_date AS fam_marr_date
                     FROM humo_families f
                     LEFT JOIN humo_events e
-                        ON f.fam_id = e.event_relation_id
+                        ON f.fam_id = e.relation_id
                         AND e.event_kind = 'marriage'
                     WHERE f.fam_tree_id='" . $tree_id . "' AND f.fam_gedcomnumber='" . $fams1[$i] . "'";
 
@@ -195,7 +195,7 @@ if ($person->pers_sexe == 'M') {
             $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_man_age"]);
 
             // *** Check if there is a birth event ***
-            $birth_event = $dbh->prepare("SELECT * FROM humo_events WHERE event_person_id = :person_id AND event_kind = 'birth'");
+            $birth_event = $dbh->prepare("SELECT * FROM humo_events WHERE person_id = :person_id AND event_kind = 'birth'");
             $birth_event->execute([
                 ':person_id' => $person1->pers_id
             ]);
@@ -203,7 +203,7 @@ if ($person->pers_sexe == 'M') {
 
             $data = [
                 'tree_id' => $tree_id,
-                'event_person_id' => $person1->pers_id,
+                'person_id' => $person1->pers_id,
                 'event_connect_kind' => 'person',
                 'event_connect_id' => $man_gedcomnumber,
                 'event_kind' => 'birth',
@@ -224,7 +224,7 @@ if ($person->pers_sexe == 'M') {
             $pers_birth_date = 'ABT ' . (substr($fam_marr_date, -4) - $_POST["fam_woman_age"]);
 
             // *** Check if there is a birth event ***
-            $birth_event = $dbh->prepare("SELECT * FROM humo_events WHERE event_person_id = :person_id AND event_kind = 'birth'");
+            $birth_event = $dbh->prepare("SELECT * FROM humo_events WHERE person_id = :person_id AND event_kind = 'birth'");
             $birth_event->execute([
                 ':person_id' => $person2->pers_id
             ]);
@@ -232,7 +232,7 @@ if ($person->pers_sexe == 'M') {
 
             $data = [
                 'tree_id' => $tree_id,
-                'event_person_id' => $person2->pers_id,
+                'person_id' => $person2->pers_id,
                 'event_connect_kind' => 'person',
                 'event_connect_id' => $woman_gedcomnumber,
                 'event_kind' => 'birth',

@@ -120,24 +120,24 @@ class ListPlacesFamiliesModel extends BaseModel
             FROM humo_families
 
             LEFT JOIN humo_events AS marr_notice
-            ON humo_families.fam_id = marr_notice.event_relation_id AND marr_notice.event_kind = 'marriage_notice'
+            ON humo_families.fam_id = marr_notice.relation_id AND marr_notice.event_kind = 'marriage_notice'
             LEFT JOIN humo_location AS marr_notice_location
-            ON marr_notice.event_place_id = marr_notice_location.location_id
+            ON marr_notice.place_id = marr_notice_location.location_id
 
             LEFT JOIN humo_events AS marriage
-            ON humo_families.fam_id = marriage.event_relation_id AND marriage.event_kind = 'marriage'
+            ON humo_families.fam_id = marriage.relation_id AND marriage.event_kind = 'marriage'
             LEFT JOIN humo_location AS marriage_location
-            ON marriage.event_place_id = marriage_location.location_id
+            ON marriage.place_id = marriage_location.location_id
 
             LEFT JOIN humo_events AS marr_church_notice
-            ON humo_families.fam_id = marr_church_notice.event_relation_id AND marr_church_notice.event_kind = 'marr_church_notice'
+            ON humo_families.fam_id = marr_church_notice.relation_id AND marr_church_notice.event_kind = 'marr_church_notice'
             LEFT JOIN humo_location AS marr_church_notice_location
-            ON marr_church_notice.event_place_id = marr_church_notice_location.location_id
+            ON marr_church_notice.place_id = marr_church_notice_location.location_id
 
             LEFT JOIN humo_events AS marr_church
-            ON humo_families.fam_id = marr_church.event_relation_id AND marr_church.event_kind = 'marr_church'
+            ON humo_families.fam_id = marr_church.relation_id AND marr_church.event_kind = 'marr_church'
             LEFT JOIN humo_location AS marr_church_location
-            ON marr_church.event_place_id = marr_church_location.location_id
+            ON marr_church.place_id = marr_church_location.location_id
         ";
 
         // *** Search marriage place ***

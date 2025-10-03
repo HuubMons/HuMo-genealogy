@@ -67,7 +67,7 @@ class ShowMedia
             // TODO: show these items seperately: picture_birth, picture_death, picture_marriage, picture_burial etc.
             $sql = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_tree_id = :tree_id
                 AND e.event_connect_kind = :event_connect_kind
                 AND e.event_connect_id = :event_connect_id

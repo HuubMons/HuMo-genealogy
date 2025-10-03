@@ -307,8 +307,8 @@ class DbFunctions
             MAX(CASE WHEN e.event_kind = 'burial' THEN e.event_text END) AS pers_buried_text
         FROM
             humo_persons p
-        LEFT JOIN humo_events e ON e.event_person_id = p.pers_id
-        LEFT JOIN humo_location pl ON e.event_place_id = pl.location_id";
+        LEFT JOIN humo_events e ON e.person_id = p.pers_id
+        LEFT JOIN humo_location pl ON e.place_id = pl.location_id";
         */
 
         // Query without MAX (there is only a single event for each item):
@@ -320,7 +320,7 @@ class DbFunctions
             birthpl.location_location AS pers_birth_place,
             birth.event_text   AS pers_birth_text,
             birth.event_id AS pers_birth_event_id,
-            birth.event_stillborn AS pers_stillborn,
+            birth.stillborn AS pers_stillborn,
             birth.event_date_hebnight AS pers_birth_date_hebnight,
 
             COALESCE(bapt.event_date, '')    AS pers_bapt_date,
@@ -335,25 +335,25 @@ class DbFunctions
             deathpl.location_location AS pers_death_place,
             death.event_text   AS pers_death_text,
             death.event_id     AS pers_death_event_id,
-            death.event_cause  AS pers_death_cause,
+            death.cause  AS pers_death_cause,
             death.event_date_hebnight AS pers_death_date_hebnight,
 
             burial.event_date  AS pers_buried_date,
             burialpl.location_location AS pers_buried_place,
             burial.event_text  AS pers_buried_text,
             burial.event_id    AS pers_buried_event_id,
-            burial.event_cremation AS pers_cremation,
+            burial.cremation AS pers_cremation,
             burial.event_date_hebnight AS pers_buried_date_hebnight
 
         FROM humo_persons p
-        LEFT JOIN humo_events birth ON birth.event_person_id = p.pers_id AND birth.event_kind = 'birth'
-        LEFT JOIN humo_location birthpl ON birth.event_place_id = birthpl.location_id
-        LEFT JOIN humo_events bapt ON bapt.event_person_id = p.pers_id AND bapt.event_kind = 'baptism'
-        LEFT JOIN humo_location baptpl ON bapt.event_place_id = baptpl.location_id
-        LEFT JOIN humo_events death ON death.event_person_id = p.pers_id AND death.event_kind = 'death'
-        LEFT JOIN humo_location deathpl ON death.event_place_id = deathpl.location_id
-        LEFT JOIN humo_events burial ON burial.event_person_id = p.pers_id AND burial.event_kind = 'burial'
-        LEFT JOIN humo_location burialpl ON burial.event_place_id = burialpl.location_id";
+        LEFT JOIN humo_events birth ON birth.person_id = p.pers_id AND birth.event_kind = 'birth'
+        LEFT JOIN humo_location birthpl ON birth.place_id = birthpl.location_id
+        LEFT JOIN humo_events bapt ON bapt.person_id = p.pers_id AND bapt.event_kind = 'baptism'
+        LEFT JOIN humo_location baptpl ON bapt.place_id = baptpl.location_id
+        LEFT JOIN humo_events death ON death.person_id = p.pers_id AND death.event_kind = 'death'
+        LEFT JOIN humo_location deathpl ON death.place_id = deathpl.location_id
+        LEFT JOIN humo_events burial ON burial.person_id = p.pers_id AND burial.event_kind = 'burial'
+        LEFT JOIN humo_location burialpl ON burial.place_id = burialpl.location_id";
     }
 
 
@@ -532,14 +532,14 @@ class DbFunctions
         marriage.event_date_hebnight AS fam_marr_date_hebnight,
         marriagepl.location_location AS fam_marr_place,
         marriage.event_text AS fam_marr_text,
-        marriage.event_authority AS fam_marr_authority,
+        marriage.authority AS fam_marr_authority,
         marriage.event_id AS fam_marr_event_id,
 
         divorce.event_date AS fam_div_date,
         divorce.event_date_hebnight AS fam_div_date_hebnight,
         divorcepl.location_location AS fam_div_place,
         divorce.event_text AS fam_div_text,
-        divorce.event_authority AS fam_div_authority,
+        divorce.authority AS fam_div_authority,
         divorce.event_id AS fam_div_event_id,
 
         relation.event_date AS fam_relation_date,
@@ -547,49 +547,49 @@ class DbFunctions
         relation.event_date_hebnight AS fam_relation_date_hebnight,
         relationpl.location_location AS fam_relation_place,
         relation.event_text AS fam_relation_text,
-        relation.event_authority AS fam_relation_authority,
+        relation.authority AS fam_relation_authority,
         relation.event_id AS fam_relation_event_id,
 
         marrchurch.event_date AS fam_marr_church_date,
         marrchurch.event_date_hebnight AS fam_marr_church_date_hebnight,
         marrchurchpl.location_location AS fam_marr_church_place,
         marrchurch.event_text AS fam_marr_church_text,
-        marrchurch.event_authority AS fam_marr_church_authority,
+        marrchurch.authority AS fam_marr_church_authority,
         marrchurch.event_id AS fam_marr_church_event_id,
 
         marrchurchnotice.event_date AS fam_marr_church_notice_date,
         marrchurchnotice.event_date_hebnight AS fam_marr_church_notice_date_hebnight,
         marrchurchnoticepl.location_location AS fam_marr_church_notice_place,
         marrchurchnotice.event_text AS fam_marr_church_notice_text,
-        marrchurchnotice.event_authority AS fam_marr_church_notice_authority,
+        marrchurchnotice.authority AS fam_marr_church_notice_authority,
         marrchurchnotice.event_id AS fam_marr_church_notice_event_id,
 
         marrnotice.event_date AS fam_marr_notice_date,
         marrnotice.event_date_hebnight AS fam_marr_notice_date_hebnight,
         marrnoticepl.location_location AS fam_marr_notice_place,
         marrnotice.event_text AS fam_marr_notice_text,
-        marrnotice.event_authority AS fam_marr_notice_authority,
+        marrnotice.authority AS fam_marr_notice_authority,
         marrnotice.event_id AS fam_marr_notice_event_id
 
         FROM humo_families f
 
-        LEFT JOIN humo_events marriage ON marriage.event_relation_id = f.fam_id AND marriage.event_kind = 'marriage'
-        LEFT JOIN humo_location marriagepl ON marriage.event_place_id = marriagepl.location_id
+        LEFT JOIN humo_events marriage ON marriage.relation_id = f.fam_id AND marriage.event_kind = 'marriage'
+        LEFT JOIN humo_location marriagepl ON marriage.place_id = marriagepl.location_id
 
-        LEFT JOIN humo_events divorce ON divorce.event_relation_id = f.fam_id AND divorce.event_kind = 'divorce'
-        LEFT JOIN humo_location divorcepl ON divorce.event_place_id = divorcepl.location_id
+        LEFT JOIN humo_events divorce ON divorce.relation_id = f.fam_id AND divorce.event_kind = 'divorce'
+        LEFT JOIN humo_location divorcepl ON divorce.place_id = divorcepl.location_id
 
-        LEFT JOIN humo_events relation ON relation.event_relation_id = f.fam_id AND relation.event_kind = 'relation'
-        LEFT JOIN humo_location relationpl ON relation.event_place_id = relationpl.location_id
+        LEFT JOIN humo_events relation ON relation.relation_id = f.fam_id AND relation.event_kind = 'relation'
+        LEFT JOIN humo_location relationpl ON relation.place_id = relationpl.location_id
         
-        LEFT JOIN humo_events marrchurch ON marrchurch.event_relation_id = f.fam_id AND marrchurch.event_kind = 'marr_church'
-        LEFT JOIN humo_location marrchurchpl ON marrchurch.event_place_id = marrchurchpl.location_id
+        LEFT JOIN humo_events marrchurch ON marrchurch.relation_id = f.fam_id AND marrchurch.event_kind = 'marr_church'
+        LEFT JOIN humo_location marrchurchpl ON marrchurch.place_id = marrchurchpl.location_id
 
-        LEFT JOIN humo_events marrchurchnotice ON marrchurchnotice.event_relation_id = f.fam_id AND marrchurchnotice.event_kind = 'marr_church_notice'
-        LEFT JOIN humo_location marrchurchnoticepl ON marrchurchnotice.event_place_id = marrchurchnoticepl.location_id
+        LEFT JOIN humo_events marrchurchnotice ON marrchurchnotice.relation_id = f.fam_id AND marrchurchnotice.event_kind = 'marr_church_notice'
+        LEFT JOIN humo_location marrchurchnoticepl ON marrchurchnotice.place_id = marrchurchnoticepl.location_id
 
-        LEFT JOIN humo_events marrnotice ON marrnotice.event_relation_id = f.fam_id AND marrnotice.event_kind = 'marriage_notice'
-        LEFT JOIN humo_location marrnoticepl ON marrnotice.event_place_id = marrnoticepl.location_id";
+        LEFT JOIN humo_events marrnotice ON marrnotice.relation_id = f.fam_id AND marrnotice.event_kind = 'marriage_notice'
+        LEFT JOIN humo_location marrnoticepl ON marrnotice.place_id = marrnoticepl.location_id";
     }
 
     /**
@@ -698,7 +698,7 @@ class DbFunctions
         try {
             $sql = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_id=:event_id";
 
             $stmt = $this->dbh->prepare($sql);
@@ -751,7 +751,7 @@ class DbFunctions
             if ($event_kind === 'all') {
                 $sql = "SELECT e.*, l.location_location AS event_place
                     FROM humo_events e
-                    LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                    LEFT JOIN humo_location l ON e.place_id = l.location_id
                     WHERE e.event_tree_id=:event_tree_id 
                     AND e.event_connect_kind=:event_connect_kind 
                     AND e.event_connect_id=:event_connect_id 
@@ -764,7 +764,7 @@ class DbFunctions
             } else {
                 $sql = "SELECT e.*, l.location_location AS event_place
                     FROM humo_events e
-                    LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                    LEFT JOIN humo_location l ON e.place_id = l.location_id
                     WHERE e.event_tree_id=:event_tree_id 
                     AND e.event_connect_kind=:event_connect_kind 
                     AND e.event_connect_id=:event_connect_id 

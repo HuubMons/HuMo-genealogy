@@ -220,7 +220,7 @@ class EditorEvent
             // *** Filter several events, allready shown in seperate lines in editor ***
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_tree_id='" . $tree_id . "'
                 AND e.event_connect_kind='person'
                 AND e.event_connect_id='" . $event_connect_id . "'
@@ -235,7 +235,7 @@ class EditorEvent
             }
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_tree_id='" . $tree_id . "' 
                 AND e.event_connect_kind='person' 
                 AND e.event_connect_id='" . $event_connect_id . "' 
@@ -264,7 +264,7 @@ class EditorEvent
         } elseif ($event_kind == 'profession') {
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_tree_id='" . $tree_id . "' 
                 AND e.event_connect_kind='person' 
                 AND e.event_connect_id='" . $event_connect_id . "' 
@@ -273,7 +273,7 @@ class EditorEvent
         } elseif ($event_kind == 'religion') {
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_tree_id='" . $tree_id . "' 
                 AND e.event_connect_kind='person' 
                 AND e.event_connect_id='" . $event_connect_id . "' 
@@ -291,7 +291,7 @@ class EditorEvent
 
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_tree_id='" . $tree_id . "' 
                 AND e.event_connect_kind='person' 
                 AND e.event_connect_id='" . $event_connect_id . "' 
@@ -300,7 +300,7 @@ class EditorEvent
         } elseif ($event_kind == 'family') {
             $qry = "SELECT e.*, l.location_location AS event_place
                 FROM humo_events e
-                LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
                 WHERE e.event_tree_id='" . $tree_id . "' 
                 AND e.event_connect_kind='family' 
                 AND e.event_connect_id='" . $event_connect_id . "'

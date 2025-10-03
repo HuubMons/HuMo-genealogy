@@ -401,7 +401,7 @@ class EditorModel extends AdminBaseModel
             }
 
             // *** Remove birth, bapt. events etc. ***
-            $sql = "DELETE FROM humo_events WHERE event_person_id='" . $personDb->pers_id . "'";
+            $sql = "DELETE FROM humo_events WHERE person_id='" . $personDb->pers_id . "'";
             $this->dbh->query($sql);
 
             $sql = "DELETE FROM humo_addresses WHERE address_tree_id='" . $this->tree_id . "'
@@ -634,7 +634,7 @@ class EditorModel extends AdminBaseModel
                 //echo 'UPDATE birth!';
                 $birth_event = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $this->person->pers_id,
+                    'person_id' => $this->person->pers_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $this->pers_gedcomnumber,
                     'event_kind' => 'birth',
@@ -644,7 +644,7 @@ class EditorModel extends AdminBaseModel
                     'event_time' => $_POST["pers_birth_time"],
                     'event_place' => $_POST["pers_birth_place"],
                     'event_text' => $this->editor_cls->text_process($_POST["pers_birth_text"], true),
-                    'event_stillborn' => isset($_POST["pers_stillborn"]) ? 'y' : '',
+                    'stillborn' => isset($_POST["pers_stillborn"]) ? 'y' : '',
                     'event_date_hebnight' => isset($_POST["pers_birth_date_hebnight"]) ? $_POST["pers_birth_date_hebnight"] : ''
                 ];
                 if (isset($_POST['pers_birth_event_id'])) {
@@ -678,7 +678,7 @@ class EditorModel extends AdminBaseModel
                 //echo 'UPDATE baptise!';
                 $baptise_event = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $this->person->pers_id,
+                    'person_id' => $this->person->pers_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $this->pers_gedcomnumber,
                     'event_kind' => 'baptism',
@@ -742,7 +742,7 @@ class EditorModel extends AdminBaseModel
                 //echo 'UPDATE death!';
                 $death_event = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $this->person->pers_id,
+                    'person_id' => $this->person->pers_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $this->pers_gedcomnumber,
                     'event_kind' => 'death',
@@ -752,7 +752,7 @@ class EditorModel extends AdminBaseModel
                     'event_time' => $_POST["pers_death_time"],
                     'event_place' => $_POST["pers_death_place"],
                     'event_text' => $this->editor_cls->text_process($_POST["pers_death_text"], true),
-                    'event_cause' => $event_cause,
+                    'cause' => $event_cause,
                     'event_pers_age' => $_POST["pers_death_age"],
                     'event_date_hebnight' => isset($_POST["pers_death_date_hebnight"]) ? $_POST["pers_death_date_hebnight"] : ''
                 ];
@@ -799,7 +799,7 @@ class EditorModel extends AdminBaseModel
                 //echo 'UPDATE burial!';
                 $burial_event = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $this->person->pers_id,
+                    'person_id' => $this->person->pers_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $this->pers_gedcomnumber,
                     'event_kind' => 'burial',
@@ -808,7 +808,7 @@ class EditorModel extends AdminBaseModel
                     'event_date' => $this->editor_cls->date_process("pers_buried_date"),
                     'event_place' => $_POST["pers_buried_place"],
                     'event_text' => $this->editor_cls->text_process($_POST["pers_buried_text"], true),
-                    'event_cremation' => $_POST["pers_cremation"],
+                    'cremation' => $_POST["pers_cremation"],
                     'event_date_hebnight' => isset($_POST["pers_buried_date_hebnight"]) ? $_POST["pers_buried_date_hebnight"] : ''
                 ];
                 if (isset($_POST['pers_buried_event_id'])) {
@@ -828,7 +828,7 @@ class EditorModel extends AdminBaseModel
                     'tree_id' => $this->tree_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $this->pers_gedcomnumber,
-                    'event_person_id' => $this->person->pers_id,
+                    'person_id' => $this->person->pers_id,
                     'event_kind' => 'birth_declaration',
                     'event_event' => '',
                     'event_gedcom' => 'EVEN',
@@ -853,7 +853,7 @@ class EditorModel extends AdminBaseModel
                     'tree_id' => $this->tree_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $this->pers_gedcomnumber,
-                    'event_person_id' => $this->person->pers_id,
+                    'person_id' => $this->person->pers_id,
                     'event_kind' => 'death_declaration',
                     'event_event' => '',
                     'event_gedcom' => 'EVEN',
@@ -874,7 +874,7 @@ class EditorModel extends AdminBaseModel
                         'tree_id' => $this->tree_id,
                         'event_connect_kind' => 'person',
                         'event_connect_id' => $this->pers_gedcomnumber,
-                        'event_person_id' => $this->person->pers_id,
+                        'person_id' => $this->person->pers_id,
                         'event_kind' => 'name',
                         'event_event' => $_POST["even_hebname"],
                         'event_gedcom' => '_HEBN',
@@ -900,7 +900,7 @@ class EditorModel extends AdminBaseModel
                         'tree_id' => $this->tree_id,
                         'event_connect_kind' => 'person',
                         'event_connect_id' => $this->pers_gedcomnumber,
-                        'event_person_id' => $this->person->pers_id,
+                        'person_id' => $this->person->pers_id,
                         'event_kind' => 'event',
                         'event_event' => '',
                         'event_gedcom' => '_BRTM',
@@ -926,7 +926,7 @@ class EditorModel extends AdminBaseModel
                         'tree_id' => $this->tree_id,
                         'event_connect_kind' => 'person',
                         'event_connect_id' => $this->pers_gedcomnumber,
-                        'event_person_id' => $this->person->pers_id,
+                        'person_id' => $this->person->pers_id,
                         'event_kind' => 'event',
                         'event_event' => '',
                         'event_gedcom' => $barmbasm,
@@ -1051,7 +1051,7 @@ class EditorModel extends AdminBaseModel
             ) {
                 $data = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $person_id,
+                    'person_id' => $person_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $new_gedcomnumber,
                     'event_kind' => 'birth',
@@ -1061,7 +1061,7 @@ class EditorModel extends AdminBaseModel
                     'event_time' => $_POST["pers_birth_time"],
                     'event_place' => $_POST["pers_birth_place"],
                     'event_text' => $this->editor_cls->text_process($_POST["pers_birth_text"], true),
-                    'event_stillborn' => $pers_stillborn
+                    'stillborn' => $pers_stillborn
                 ];
                 if (isset($_POST["pers_birth_date_hebnight"])) {
                     $data['event_date_hebnight'] = $_POST["pers_birth_date_hebnight"];
@@ -1078,7 +1078,7 @@ class EditorModel extends AdminBaseModel
             ) {
                 $data = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $person_id,
+                    'person_id' => $person_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $new_gedcomnumber,
                     'event_kind' => 'baptism',
@@ -1103,7 +1103,7 @@ class EditorModel extends AdminBaseModel
             ) {
                 $data = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $person_id,
+                    'person_id' => $person_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $new_gedcomnumber,
                     'event_kind' => 'death',
@@ -1113,7 +1113,7 @@ class EditorModel extends AdminBaseModel
                     'event_time' => $_POST["pers_death_time"],
                     'event_place' => $_POST["pers_death_place"],
                     'event_text' => $this->editor_cls->text_process($_POST["pers_death_text"], true),
-                    'event_cause' => $pers_death_cause,
+                    'cause' => $pers_death_cause,
                     'event_pers_age' => $_POST["pers_death_age"]
                 ];
                 if (isset($_POST["pers_death_date_hebnight"])) {
@@ -1132,7 +1132,7 @@ class EditorModel extends AdminBaseModel
             ) {
                 $data = [
                     'tree_id' => $this->tree_id,
-                    'event_person_id' => $person_id,
+                    'person_id' => $person_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $new_gedcomnumber,
                     'event_kind' => 'burial',
@@ -1159,7 +1159,7 @@ class EditorModel extends AdminBaseModel
                     'tree_id' => $this->tree_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $new_gedcomnumber,
-                    'event_person_id' => $person_id,
+                    'person_id' => $person_id,
                     'event_kind' => 'birth_declaration',
                     'event_event' => '',
                     'event_gedcom' => 'EVEN',
@@ -1179,7 +1179,7 @@ class EditorModel extends AdminBaseModel
                     'tree_id' => $this->tree_id,
                     'event_connect_kind' => 'person',
                     'event_connect_id' => $new_gedcomnumber,
-                    'event_person_id' => $person_id,
+                    'person_id' => $person_id,
                     'event_kind' => 'death_declaration',
                     'event_event' => '',
                     'event_gedcom' => 'EVEN',
@@ -1197,7 +1197,7 @@ class EditorModel extends AdminBaseModel
                         'tree_id' => $this->tree_id,
                         'event_connect_kind' => 'person',
                         'event_connect_id' => $new_gedcomnumber,
-                        'event_person_id' => $person_id,
+                        'person_id' => $person_id,
                         'event_kind' => 'event',
                         'event_event' => '',
                         'event_gedcom' => '_BRTM',
@@ -1217,7 +1217,7 @@ class EditorModel extends AdminBaseModel
                         'tree_id' => $this->tree_id,
                         'event_connect_kind' => 'person',
                         'event_connect_id' => $new_gedcomnumber,
-                        'event_person_id' => $person_id,
+                        'person_id' => $person_id,
                         'event_kind' => 'event',
                         'event_event' => '',
                         'event_gedcom' => $barmbasm,
@@ -1427,7 +1427,7 @@ class EditorModel extends AdminBaseModel
                 $this->fams_remove($new_nr->fam_woman, $fam_remove);
             }
 
-            $sql = "DELETE FROM humo_events WHERE event_relation_id='" . $new_nr->fam_id . "'";
+            $sql = "DELETE FROM humo_events WHERE relation_id='" . $new_nr->fam_id . "'";
             $this->dbh->query($sql);
 
             $sql = "DELETE FROM humo_addresses WHERE address_tree_id='" . $this->tree_id . "'
@@ -2202,7 +2202,7 @@ class EditorModel extends AdminBaseModel
                     'event_connect_id' => $_POST['marriage'],
                     'event_kind' => 'marriage',
                     'event_event' => '',
-                    'event_authority' => $_POST["fam_marr_authority"],
+                    'authority' => $_POST["fam_marr_authority"],
                     'event_gedcom' => '',
                     'event_date' => $this->editor_cls->date_process("fam_marr_date"),
                     'event_place' => $_POST["fam_marr_place"],
@@ -2345,7 +2345,7 @@ class EditorModel extends AdminBaseModel
                     'event_connect_id' => $_POST['marriage'],
                     'event_kind' => 'divorce',
                     'event_event' => '',
-                    'event_authority' => $_POST["fam_div_authority"],
+                    'authority' => $_POST["fam_div_authority"],
                     'event_gedcom' => '',
                     'event_date' => $this->editor_cls->date_process("fam_div_date"),
                     'event_place' => $_POST["fam_div_place"],
@@ -2618,10 +2618,10 @@ class EditorModel extends AdminBaseModel
                 'event_text' => ''
             ];
             if ($event_person_id) {
-                $data['event_person_id'] = $event_person_id;
+                $data['person_id'] = $event_person_id;
             }
             if ($event_relation_id) {
-                $data['event_relation_id'] = $event_relation_id;
+                $data['relation_id'] = $event_relation_id;
             }
             $eventManager->update_event($data);
         }
@@ -2766,7 +2766,7 @@ class EditorModel extends AdminBaseModel
                     // *** Read old values ***
                     $event_qry = "SELECT e.*, l.location_location AS event_place
                         FROM humo_events e
-                        LEFT JOIN humo_location l ON e.event_place_id = l.location_id
+                        LEFT JOIN humo_location l ON e.place_id = l.location_id
                         WHERE e.event_id='" . $event_id . "'";
                     $event_result = $this->dbh->query($event_qry);
                     $eventDb = $event_result->fetch(PDO::FETCH_OBJ);
@@ -3014,7 +3014,7 @@ class EditorModel extends AdminBaseModel
             if ($_POST['event_connect_kind'] == 'person') {
                 // *** Remove NON SHARED source from event (connection in humo_connections table) ***
                 $event_sql = "SELECT * FROM humo_events
-                    WHERE event_person_id='" . $this->person->pers_id . "'
+                    WHERE person_id='" . $this->person->pers_id . "'
                     AND event_kind='" . $event_kind . "'
                     AND event_order='" . $event_order_id . "'";
                 $event_qry = $this->dbh->query($event_sql);
@@ -3027,7 +3027,7 @@ class EditorModel extends AdminBaseModel
                 if (isset($_POST['event_descendants']) || isset($_POST['event_ancestors'])) {
                     // *** Get event_event from selected person, needed to remove colour from descendant and/ or ancestors ***
                     $event_sql = "SELECT event_event FROM humo_events
-                        WHERE event_person_id = :pers_id
+                        WHERE person_id = :pers_id
                         AND event_kind = 'person_colour_mark' AND event_order = :event_order_id";
                     $event_qry = $this->dbh->prepare($event_sql);
                     $event_qry->bindValue(':pers_id', $this->person->pers_id, PDO::PARAM_STR);
@@ -3038,7 +3038,7 @@ class EditorModel extends AdminBaseModel
                 }
 
                 $sql = "DELETE FROM humo_events
-                    WHERE event_person_id = :pers_id
+                    WHERE person_id = :pers_id
                     AND event_kind = :event_kind
                     AND event_order = :event_order_id";
                 $stmt = $this->dbh->prepare($sql);
@@ -3049,7 +3049,7 @@ class EditorModel extends AdminBaseModel
 
                 // *** Change order of events ***
                 $event_sql = "SELECT * FROM humo_events
-                    WHERE event_person_id = :pers_id
+                    WHERE person_id = :pers_id
                     AND event_kind = :event_kind AND event_order > :event_order_id ORDER BY event_order";
                 $event_qry = $this->dbh->prepare($event_sql);
                 $event_qry->bindValue(':pers_id', $this->person->pers_id, PDO::PARAM_INT);

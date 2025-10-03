@@ -346,7 +346,7 @@ if (isset($_POST['remove'])) {
         // TODO also check witnesses: ASSO.
         // *** Check person ***
         if ($connect->event_connect_kind == 'person' && $connect->event_connect_id) {
-            $person = $db_functions->get_person_with_id($connect->event_person_id);
+            $person = $db_functions->get_person_with_id($connect->person_id);
             if (!$person) {
                 if (isset($_POST['remove'])) {
                     $sql = "DELETE FROM humo_events WHERE event_id='" . $connect->event_id . "'";
@@ -364,7 +364,7 @@ if (isset($_POST['remove'])) {
 
         // *** Check family ***
         if ($connect->event_connect_kind == 'family' && $connect->event_connect_id) {
-            $family = $db_functions->get_family_with_id($connect->event_relation_id);
+            $family = $db_functions->get_family_with_id($connect->relation_id);
             if (!$family) {
                 if (isset($_POST['remove'])) {
                     $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_id='" . $connect->event_id . "'";

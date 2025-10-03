@@ -934,7 +934,7 @@ class GedcomExport
                 /* TODO (used twice for family events)
                 // *** Create general family_events array ***
                 //$event_qry = $this->dbh->query("SELECT * FROM humo_events
-                //    WHERE event_relation_id='" . $family->fam_id . "'
+                //    WHERE relation_id='" . $family->fam_id . "'
                 //    ORDER BY event_kind, event_order");
                 $event_qry = $db_functions->get_events_connect('family', $family->fam_gedcomnumber, 'all');
                 $family_events = $event_qry->fetchAll(PDO::FETCH_ASSOC);

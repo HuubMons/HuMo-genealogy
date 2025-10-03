@@ -427,16 +427,16 @@ class ListModel extends BaseModel
             if ($selectsort == "sort_birthdate") {
                 $this->make_date = ",
                     COALESCE(
-                        birth.event_date_year,
-                        bapt.event_date_year
+                        birth.date_year,
+                        bapt.date_year
                     ) AS order_year,
                     COALESCE(
-                        birth.event_date_month,
-                        bapt.event_date_month
+                        birth.date_month,
+                        bapt.date_month
                     ) AS order_month,
                     COALESCE(
-                        birth.event_date_day,
-                        bapt.event_date_day
+                        birth.date_day,
+                        bapt.date_day
                     ) AS order_day
                 ";
 
@@ -456,16 +456,16 @@ class ListModel extends BaseModel
             if ($selectsort == "sort_deathdate") {
                 $this->make_date = ",
                     COALESCE(
-                        death.event_date_year,
-                        buried.event_date_year
+                        death.date_year,
+                        buried.date_year
                     ) AS order_year,
                     COALESCE(
-                        death.event_date_month,
-                        buried.event_date_month
+                        death.date_month,
+                        buried.date_month
                     ) AS order_month,
                     COALESCE(
-                        death.event_date_day,
-                        buried.event_date_day
+                        death.date_day,
+                        buried.date_day
                     ) AS order_day
                 ";
 
@@ -724,14 +724,14 @@ class ListModel extends BaseModel
                 // Get birth and baptism place from events table.
                 $this->query .= $and . "(
                     (pers_id IN (
-                        SELECT event_person_id
+                        SELECT person_id
                         FROM humo_events
                         WHERE event_kind = 'birth'
                         AND birth_location.location_location " . $buildCondition->build($this->selection['birth_place'], $this->selection['part_birth_place']) . "
                     ))
                     OR
                     (pers_id IN (
-                        SELECT event_person_id
+                        SELECT person_id
                         FROM humo_events
                         WHERE event_kind = 'baptism'
                         AND bapt_location.location_location " . $buildCondition->build($this->selection['birth_place'], $this->selection['part_birth_place']) . "
@@ -755,14 +755,14 @@ class ListModel extends BaseModel
                 // Use event table for death and buried place search
                 $this->query .= $and . "(
                     (pers_id IN (
-                        SELECT event_person_id
+                        SELECT person_id
                         FROM humo_events
                         WHERE event_kind = 'death'
                         AND death_location.location_location " . $buildCondition->build($this->selection['death_place'], $this->selection['part_death_place']) . "
                     ))
                     OR
                     (pers_id IN (
-                        SELECT event_person_id
+                        SELECT person_id
                         FROM humo_events
                         WHERE event_kind = 'burial'
                         AND buried_location.location_location " . $buildCondition->build($this->selection['death_place'], $this->selection['part_death_place']) . "
@@ -777,17 +777,17 @@ class ListModel extends BaseModel
                     // Search birth and baptism year using event table
                     $this->query .= $and . "(
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'birth'
-                            AND event_date_year = '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "'
+                            AND date_year = '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "'
                         ))
                         OR
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'baptism'
-                            AND event_date_year = '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "'
+                            AND date_year = '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "'
                         ))
                     )";
                     $and = " AND ";
@@ -795,17 +795,17 @@ class ListModel extends BaseModel
                     // Search birth and baptism year range using event table
                     $this->query .= $and . "(
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'birth'
-                            AND event_date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "'
+                            AND date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "'
                         ))
                         OR
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'baptism'
-                            AND event_date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "'
+                            AND date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['birth_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['birth_year_end']) . "'
                         ))
                     )";
 
@@ -819,17 +819,17 @@ class ListModel extends BaseModel
                     // Search death and burial year using event table
                     $this->query .= $and . "(
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'death'
-                            AND event_date_year = '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "'
+                            AND date_year = '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "'
                         ))
                         OR
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'burial'
-                            AND event_date_year = '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "'
+                            AND date_year = '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "'
                         ))
                     )";
                     $and = " AND ";
@@ -837,17 +837,17 @@ class ListModel extends BaseModel
                     // Search death and burial year range using event table
                     $this->query .= $and . "(
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'death'
-                            AND event_date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['death_year_end']) . "'
+                            AND date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['death_year_end']) . "'
                         ))
                         OR
                         (pers_id IN (
-                            SELECT event_person_id
+                            SELECT person_id
                             FROM humo_events
                             WHERE event_kind = 'burial'
-                            AND event_date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['death_year_end']) . "'
+                            AND date_year BETWEEN '" . $safeTextDb->safe_text_db($this->selection['death_year']) . "' AND '" . $safeTextDb->safe_text_db($this->selection['death_year_end']) . "'
                         ))
                     )";
                     $and = " AND ";
@@ -975,19 +975,19 @@ class ListModel extends BaseModel
             }
 
             //NIEUW
-            // TODO birth.event_date_year, birth.event_date_month, birth.event_date_day. Maybe not needed here?
+            // TODO birth.date_year, birth.date_month, birth.date_day. Maybe not needed here?
             $query_select .= ",
                 birth.event_date AS pers_birth_date,
-                birth.event_date_year, birth.event_date_month, birth.event_date_day,
+                birth.date_year, birth.date_month, birth.date_day,
                 birth_location.location_location AS pers_birth_place,
                 bapt.event_date AS pers_bapt_date,
-                bapt.event_date_year, bapt.event_date_month, bapt.event_date_day,
+                bapt.date_year, bapt.date_month, bapt.date_day,
                 bapt_location.location_location AS pers_bapt_place,
                 death.event_date AS pers_death_date,
-                death.event_date_year, death.event_date_month, death.event_date_day,
+                death.date_year, death.date_month, death.date_day,
                 death_location.location_location AS pers_death_place,
                 buried.event_date AS pers_buried_date,
-                buried.event_date_year, buried.event_date_month, buried.event_date_day,
+                buried.date_year, buried.date_month, buried.date_day,
                 buried_location.location_location AS pers_buried_place";
             $query_select .= $this->make_date . " FROM humo_persons";
 
@@ -1044,24 +1044,24 @@ class ListModel extends BaseModel
             }
 
             $query_select .= " LEFT JOIN humo_events AS birth
-                    ON birth.event_person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
+                    ON birth.person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
                 LEFT JOIN humo_location AS birth_location
-                    ON birth.event_place_id = birth_location.location_id";
+                    ON birth.place_id = birth_location.location_id";
 
             $query_select .= " LEFT JOIN humo_events AS bapt
-                    ON bapt.event_person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
+                    ON bapt.person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
                 LEFT JOIN humo_location AS bapt_location
-                    ON bapt.event_place_id = bapt_location.location_id";
+                    ON bapt.place_id = bapt_location.location_id";
 
             $query_select .= " LEFT JOIN humo_events AS death
-                    ON death.event_person_id = humo_persons.pers_id AND death.event_kind = 'death'
+                    ON death.person_id = humo_persons.pers_id AND death.event_kind = 'death'
                 LEFT JOIN humo_location AS death_location
-                    ON death.event_place_id = death_location.location_id";
+                    ON death.place_id = death_location.location_id";
 
             $query_select .= " LEFT JOIN humo_events AS buried
-                    ON buried.event_person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
+                    ON buried.person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
                 LEFT JOIN humo_location AS buried_location
-                    ON buried.event_place_id = buried_location.location_id";
+                    ON buried.place_id = buried_location.location_id";
 
             // *** GROUP BY is needed to prevent double results if searched for events ***
             $query_select .= " WHERE (" . $multi_tree . ") " . $this->query . " GROUP BY pers_id";
@@ -1135,7 +1135,7 @@ class ListModel extends BaseModel
          * April 2023: added pers_firstname, event_event. To find "firstname eventname" (event could be a kind of lastname too).
          */
 
-        // TODO remove birth.event_place_id AS pers_birth_place_id ????
+        // TODO remove birth.place_id AS pers_birth_place_id ????
         // TODO date_year, date_month, etc nazien.
         $this->query .= "SELECT SQL_CALC_FOUND_ROWS
             CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,
@@ -1145,16 +1145,16 @@ class ListModel extends BaseModel
             humo_persons1.event_kind,
             birth_location.location_location AS pers_birth_place,
             birth.event_date AS pers_birth_date,
-            birth.event_date_year, birth.event_date_month, birth.event_date_day,
+            birth.date_year, birth.date_month, birth.date_day,
             bapt_location.location_location AS pers_bapt_place,
             bapt.event_date AS pers_bapt_date,
-            bapt.event_date_year, bapt.event_date_month, bapt.event_date_day,
+            bapt.date_year, bapt.date_month, bapt.date_day,
             death_location.location_location AS pers_death_place,
             death.event_date AS pers_death_date,
-            death.event_date_year, death.event_date_month, death.event_date_day,
+            death.date_year, death.date_month, death.date_day,
             buried_location.location_location AS pers_buried_place,
             buried.event_date AS pers_buried_date,
-            buried.event_date_year, buried.event_date_month, buried.event_date_day
+            buried.date_year, buried.date_month, buried.date_day
             " . $this->make_date . "
             FROM humo_persons as humo_persons2
             RIGHT JOIN 
@@ -1180,25 +1180,25 @@ class ListModel extends BaseModel
             ) as humo_persons1
             ON humo_persons1.pers_id = humo_persons2.pers_id
             LEFT JOIN humo_events AS birth
-                ON birth.event_person_id = humo_persons2.pers_id
+                ON birth.person_id = humo_persons2.pers_id
                 AND birth.event_kind = 'birth'
             LEFT JOIN humo_location AS birth_location
-                ON birth.event_place_id = birth_location.location_id
+                ON birth.place_id = birth_location.location_id
             LEFT JOIN humo_events AS bapt
-                ON bapt.event_person_id = humo_persons2.pers_id
+                ON bapt.person_id = humo_persons2.pers_id
                 AND bapt.event_kind = 'baptism'
             LEFT JOIN humo_location AS bapt_location
-                ON bapt.event_place_id = bapt_location.location_id
+                ON bapt.place_id = bapt_location.location_id
             LEFT JOIN humo_events AS death
-                ON death.event_person_id = humo_persons2.pers_id
+                ON death.person_id = humo_persons2.pers_id
                 AND death.event_kind = 'death'
             LEFT JOIN humo_location AS death_location
-                ON death.event_place_id = death_location.location_id
+                ON death.place_id = death_location.location_id
             LEFT JOIN humo_events AS buried
-                ON buried.event_person_id = humo_persons2.pers_id
+                ON buried.person_id = humo_persons2.pers_id
                 AND buried.event_kind = 'burial'
             LEFT JOIN humo_location AS buried_location
-                ON buried.event_place_id = buried_location.location_id";
+                ON buried.place_id = buried_location.location_id";
 
         // *** Prevent double results (if there are multiple nick names) ***
         // *** 31-03-2023 BE AWARE: disabled option ONLY_GROUP_BY in header script ***
@@ -1243,21 +1243,21 @@ class ListModel extends BaseModel
             address_location.location_location AS pers_address
             FROM humo_persons
             LEFT JOIN humo_events AS birth
-            ON birth.event_person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
+            ON birth.person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
             LEFT JOIN humo_location AS birth_location
-            ON birth.event_place_id = birth_location.location_id
+            ON birth.place_id = birth_location.location_id
             LEFT JOIN humo_events AS bapt
-            ON bapt.event_person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
+            ON bapt.person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
             LEFT JOIN humo_location AS bapt_location
-            ON bapt.event_place_id = bapt_location.location_id
+            ON bapt.place_id = bapt_location.location_id
             LEFT JOIN humo_events AS death
-            ON death.event_person_id = humo_persons.pers_id AND death.event_kind = 'death'
+            ON death.person_id = humo_persons.pers_id AND death.event_kind = 'death'
             LEFT JOIN humo_location AS death_location
-            ON death.event_place_id = death_location.location_id
+            ON death.place_id = death_location.location_id
             LEFT JOIN humo_events AS buried
-            ON buried.event_person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
+            ON buried.person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
             LEFT JOIN humo_location AS buried_location
-            ON buried.event_place_id = buried_location.location_id
+            ON buried.place_id = buried_location.location_id
 
             LEFT JOIN humo_connections
             ON humo_connections.connect_connect_id = humo_persons.pers_gedcomnumber
@@ -1463,7 +1463,7 @@ class ListModel extends BaseModel
                         ON humo_events.event_connect_id = humo_persons.pers_gedcomnumber
                         AND humo_events.event_tree_id = humo_persons.pers_tree_id
                     LEFT JOIN humo_location
-                        ON humo_events.event_place_id = humo_location.location_id
+                        ON humo_events.place_id = humo_location.location_id
                     WHERE humo_persons.pers_tree_id='" . $this->tree_id . "'";
             } else {
                 $this->query .= "(SELECT " . $calc . "humo_persons.*,
@@ -1496,23 +1496,23 @@ class ListModel extends BaseModel
                     ON humo_events.event_connect_id = humo_persons.pers_gedcomnumber
                     AND humo_events.event_tree_id = humo_persons.pers_tree_id
                 LEFT JOIN humo_location
-                    ON humo_events.event_place_id = humo_location.location_id
+                    ON humo_events.place_id = humo_location.location_id
                 LEFT JOIN humo_events AS birth
-                    ON birth.event_person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
+                    ON birth.person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
                 LEFT JOIN humo_location AS birth_location
-                    ON birth.event_place_id = birth_location.location_id
+                    ON birth.place_id = birth_location.location_id
                 LEFT JOIN humo_events AS bapt
-                    ON bapt.event_person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
+                    ON bapt.person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
                 LEFT JOIN humo_location AS bapt_location
-                    ON bapt.event_place_id = bapt_location.location_id
+                    ON bapt.place_id = bapt_location.location_id
                 LEFT JOIN humo_events AS death
-                    ON death.event_person_id = humo_persons.pers_id AND death.event_kind = 'death'
+                    ON death.person_id = humo_persons.pers_id AND death.event_kind = 'death'
                 LEFT JOIN humo_location AS death_location
-                    ON death.event_place_id = death_location.location_id
+                    ON death.place_id = death_location.location_id
                 LEFT JOIN humo_events AS buried
-                    ON buried.event_person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
+                    ON buried.person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
                 LEFT JOIN humo_location AS buried_location
-                    ON buried.event_place_id = buried_location.location_id
+                    ON buried.place_id = buried_location.location_id
                 WHERE humo_persons.pers_tree_id='" . $this->tree_id . "'";
 
             if ($data["place_name"]) {
@@ -1548,29 +1548,29 @@ class ListModel extends BaseModel
             FROM humo_persons
 
             LEFT JOIN humo_events AS birth
-            ON birth.event_person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
+            ON birth.person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
             LEFT JOIN humo_location AS birth_location
-            ON birth.event_place_id = birth_location.location_id
+            ON birth.place_id = birth_location.location_id
             
             LEFT JOIN humo_events AS bapt
-            ON bapt.event_person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
+            ON bapt.person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
             LEFT JOIN humo_location AS bapt_location
-            ON bapt.event_place_id = bapt_location.location_id
+            ON bapt.place_id = bapt_location.location_id
 
             LEFT JOIN humo_events AS death
-            ON death.event_person_id = humo_persons.pers_id AND death.event_kind = 'death'
+            ON death.person_id = humo_persons.pers_id AND death.event_kind = 'death'
             LEFT JOIN humo_location AS death_location
-            ON death.event_place_id = death_location.location_id
+            ON death.place_id = death_location.location_id
 
             LEFT JOIN humo_events AS buried
-            ON buried.event_person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
+            ON buried.person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
             LEFT JOIN humo_location AS buried_location
-            ON buried.event_place_id = buried_location.location_id
+            ON buried.place_id = buried_location.location_id
 
             LEFT JOIN humo_events AS events
-            ON events.event_person_id = humo_persons.pers_id
+            ON events.person_id = humo_persons.pers_id
             LEFT JOIN humo_location AS events_location
-            ON events.event_place_id = events_location.location_id
+            ON events.place_id = events_location.location_id
 
             WHERE humo_persons.pers_tree_id='" . $this->tree_id . "'";
 
@@ -1602,27 +1602,27 @@ class ListModel extends BaseModel
         //    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_patronym LIKE '_%' AND pers_lastname='' ORDER BY " . $this->orderby;
         $this->query = "SELECT SQL_CALC_FOUND_ROWS humo_persons.*, 
             birth.event_date AS pers_birth_date,
-            birth.event_date_year, birth.event_date_month, birth.event_date_day,
+            birth.date_year, birth.date_month, birth.date_day,
             birth_location.location_location AS pers_birth_place,
             bapt.event_date AS pers_bapt_date,
-            bapt.event_date_year, bapt.event_date_month, bapt.event_date_day,
+            bapt.date_year, bapt.date_month, bapt.date_day,
             bapt_location.location_location AS pers_bapt_place,
             death.event_date AS pers_death_date,
-            death.event_date_year, death.event_date_month, death.event_date_day,
+            death.date_year, death.date_month, death.date_day,
             death_location.location_location AS pers_death_place,
             buried.event_date AS pers_buried_date,
-            buried.event_date_year, buried.event_date_month, buried.event_date_day,
+            buried.date_year, buried.date_month, buried.date_day,
             buried_location.location_location AS pers_buried_place
             " . $this->make_date . "
             FROM humo_persons
-            LEFT JOIN humo_events AS birth ON birth.event_person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
-            LEFT JOIN humo_location AS birth_location ON birth.event_place_id = birth_location.location_id
-            LEFT JOIN humo_events AS bapt ON bapt.event_person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
-            LEFT JOIN humo_location AS bapt_location ON bapt.event_place_id = bapt_location.location_id
-            LEFT JOIN humo_events AS death ON death.event_person_id = humo_persons.pers_id AND death.event_kind = 'death'
-            LEFT JOIN humo_location AS death_location ON death.event_place_id = death_location.location_id
-            LEFT JOIN humo_events AS buried ON buried.event_person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
-            LEFT JOIN humo_location AS buried_location ON buried.event_place_id = buried_location.location_id
+            LEFT JOIN humo_events AS birth ON birth.person_id = humo_persons.pers_id AND birth.event_kind = 'birth'
+            LEFT JOIN humo_location AS birth_location ON birth.place_id = birth_location.location_id
+            LEFT JOIN humo_events AS bapt ON bapt.person_id = humo_persons.pers_id AND bapt.event_kind = 'baptism'
+            LEFT JOIN humo_location AS bapt_location ON bapt.place_id = bapt_location.location_id
+            LEFT JOIN humo_events AS death ON death.person_id = humo_persons.pers_id AND death.event_kind = 'death'
+            LEFT JOIN humo_location AS death_location ON death.place_id = death_location.location_id
+            LEFT JOIN humo_events AS buried ON buried.person_id = humo_persons.pers_id AND buried.event_kind = 'burial'
+            LEFT JOIN humo_location AS buried_location ON buried.place_id = buried_location.location_id
             WHERE humo_persons.pers_tree_id='" . $this->tree_id . "' 
             AND humo_persons.pers_patronym LIKE '_%' 
             AND humo_persons.pers_lastname='' 
@@ -1637,40 +1637,40 @@ class ListModel extends BaseModel
             //$this->query = "SELECT * " . $this->make_date . " FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' ORDER BY " . $this->orderby;
             $this->query = "SELECT humo_persons.*, 
                 birth.event_date AS pers_birth_date,
-                birth.event_date_year, birth.event_date_month, birth.event_date_day,
+                birth.date_year, birth.date_month, birth.date_day,
                 birth_location.location_location AS pers_birth_place,
                 bapt.event_date AS pers_bapt_date,
-                bapt.event_date_year, bapt.event_date_month, bapt.event_date_day,
+                bapt.date_year, bapt.date_month, bapt.date_day,
                 bapt_location.location_location AS pers_bapt_place,
                 death.event_date AS pers_death_date,
-                death.event_date_year, death.event_date_month, death.event_date_day,
+                death.date_year, death.date_month, death.date_day,
                 death_location.location_location AS pers_death_place,
                 buried.event_date AS pers_buried_date,
-                buried.event_date_year, buried.event_date_month, buried.event_date_day,
+                buried.date_year, buried.date_month, buried.date_day,
                 buried_location.location_location AS pers_buried_place,
-                buried.event_date_year, buried.event_date_month, buried.event_date_day
+                buried.date_year, buried.date_month, buried.date_day
                 " . $this->make_date . "
                 FROM humo_persons
                 LEFT JOIN humo_events AS birth
-                    ON birth.event_person_id = humo_persons.pers_id
+                    ON birth.person_id = humo_persons.pers_id
                     AND birth.event_kind = 'birth'
                 LEFT JOIN humo_location AS birth_location
-                    ON birth.event_place_id = birth_location.location_id
+                    ON birth.place_id = birth_location.location_id
                 LEFT JOIN humo_events AS bapt
-                    ON bapt.event_person_id = humo_persons.pers_id
+                    ON bapt.person_id = humo_persons.pers_id
                     AND bapt.event_kind = 'baptism'
                 LEFT JOIN humo_location AS bapt_location
-                    ON bapt.event_place_id = bapt_location.location_id
+                    ON bapt.place_id = bapt_location.location_id
                 LEFT JOIN humo_events AS death
-                    ON death.event_person_id = humo_persons.pers_id
+                    ON death.person_id = humo_persons.pers_id
                     AND death.event_kind = 'death'
                 LEFT JOIN humo_location AS death_location
-                    ON death.event_place_id = death_location.location_id
+                    ON death.place_id = death_location.location_id
                 LEFT JOIN humo_events AS buried
-                    ON buried.event_person_id = humo_persons.pers_id
+                    ON buried.person_id = humo_persons.pers_id
                     AND buried.event_kind = 'burial'
                 LEFT JOIN humo_location AS buried_location
-                    ON buried.event_place_id = buried_location.location_id
+                    ON buried.place_id = buried_location.location_id
                 WHERE humo_persons.pers_tree_id='" . $this->tree_id . "' 
                 GROUP BY humo_persons.pers_id
                 ORDER BY " . $this->orderby;
@@ -1752,24 +1752,24 @@ class ListModel extends BaseModel
     {
         return "
         LEFT JOIN humo_events AS birth
-            ON birth.event_person_id = {$personAlias}.pers_id AND birth.event_kind = 'birth'
+            ON birth.person_id = {$personAlias}.pers_id AND birth.event_kind = 'birth'
         LEFT JOIN humo_location AS birth_location
-            ON birth.event_place_id = birth_location.location_id
+            ON birth.place_id = birth_location.location_id
 
         LEFT JOIN humo_events AS bapt
-            ON bapt.event_person_id = {$personAlias}.pers_id AND bapt.event_kind = 'baptism'
+            ON bapt.person_id = {$personAlias}.pers_id AND bapt.event_kind = 'baptism'
         LEFT JOIN humo_location AS bapt_location
-            ON bapt.event_place_id = bapt_location.location_id
+            ON bapt.place_id = bapt_location.location_id
 
         LEFT JOIN humo_events AS death
-            ON death.event_person_id = {$personAlias}.pers_id AND death.event_kind = 'death'
+            ON death.person_id = {$personAlias}.pers_id AND death.event_kind = 'death'
         LEFT JOIN humo_location AS death_location
-            ON death.event_place_id = death_location.location_id
+            ON death.place_id = death_location.location_id
 
         LEFT JOIN humo_events AS buried
-            ON buried.event_person_id = {$personAlias}.pers_id AND buried.event_kind = 'burial'
+            ON buried.person_id = {$personAlias}.pers_id AND buried.event_kind = 'burial'
         LEFT JOIN humo_location AS buried_location
-            ON buried.event_place_id = buried_location.location_id
+            ON buried.place_id = buried_location.location_id
     ";
     }
     */
