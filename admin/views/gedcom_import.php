@@ -697,16 +697,16 @@ elseif ($trees['step'] == '3') {
         $largest_object_ged = $db_functions->generate_gedcomnr($trees['tree_id'], 'event');
     }
 
-    // for merging when we read in a new tree we have to make sure that the relevant rel_merge row in the Db is removed.
+    // For merging when we read in a new tree we have to make sure that the relevant rel_merge row in the Db is removed.
     $qry = "DELETE FROM humo_settings WHERE setting_variable ='rel_merge_" . $trees['tree_id'] . "'";
     $dbh->query($qry);
     // we have to make sure that the dupl_arr session is unset if it exists.
-    if (isset($_SESSION['dupl_arr_' . $tree_prefix])) {
-        unset($_SESSION['dupl_arr_' . $tree_prefix]);
+    if (isset($_SESSION['dupl_arr_' . $trees['tree_id']])) {
+        unset($_SESSION['dupl_arr_' . $trees['tree_id']]);
         // we have to make sure the present_compare session is unset, if exists
     }
-    if (isset($_SESSION['present_compare_' . $tree_prefix])) {
-        unset($_SESSION['present_compare_' . $tree_prefix]);
+    if (isset($_SESSION['present_compare_' . $trees['tree_id']])) {
+        unset($_SESSION['present_compare_' . $trees['tree_id']]);
     }
     // End step 3 merge additions 
 
