@@ -254,6 +254,8 @@ class AdminCmsPagesModel extends AdminBaseModel
 
     public function get_categories()
     {
+        $edit_cms_pages = [];
+
         // *** Get menu names ***
         $qry_menu = $this->dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
         while ($menuItem = $qry_menu->fetch(PDO::FETCH_OBJ)) {
@@ -320,6 +322,11 @@ class AdminCmsPagesModel extends AdminBaseModel
             $edit_cms_pages['menu_name'][9999] = '* ' . __('Hide page in menu') . ' *';
             $edit_cms_pages['menu_nr_pages'][9999] = $count_pages;
         }
+
+        if (!isset($edit_cms_pages['menu_id'])) {
+            $edit_cms_pages['menu_id'] = [];
+        }
+
         return $edit_cms_pages;
     }
 }

@@ -104,9 +104,13 @@ class ShowMedia
 
             if ($event_connect_kind == 'person' || $event_connect_kind == 'family' || $event_connect_kind == 'source') {
                 foreach ($connect_sql as $connectDb) {
-                    $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
-                        AND event_gedcomnr = :event_gedcomnr AND event_kind = 'object'
-                        ORDER BY event_order";
+                    $sql = "SELECT e.*, l.location_location AS event_place
+                        FROM humo_events e
+                        LEFT JOIN humo_location l ON e.place_id = l.location_id
+                        WHERE e.event_tree_id = :tree_id
+                        AND e.event_gedcomnr = :event_gedcomnr
+                        AND e.event_kind = 'object'
+                        ORDER BY e.event_order";
                     $picture_qry = $dbh->prepare($sql);
                     $picture_qry->execute([
                         ':tree_id' => $tree_id,

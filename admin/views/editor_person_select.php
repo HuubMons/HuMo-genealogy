@@ -133,27 +133,7 @@ if (isset($_POST['search_man_id']) && $validateGedcomnumber->validate($_POST['se
 
 <?php
 if ($search_quicksearch_man != '') {
-    // *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-    $search_quicksearch_man = str_replace(' ', '%', $search_quicksearch_man);
-    // *** In case someone entered "Mons, Huub" using a comma ***
-    $search_quicksearch_man = str_replace(',', '', $search_quicksearch_man);
-
-    $person_qry = "SELECT *
-    FROM humo_persons
-    WHERE pers_tree_id = :tree_id
-        AND (
-            CONCAT(pers_firstname, REPLACE(pers_prefix, '_', ' '), pers_lastname) LIKE :search
-            OR CONCAT(pers_lastname, REPLACE(pers_prefix, '_', ' '), pers_firstname) LIKE :search
-            OR CONCAT(pers_lastname, pers_firstname, REPLACE(pers_prefix, '_', ' ')) LIKE :search
-            OR CONCAT(REPLACE(pers_prefix, '_', ' '), pers_lastname, pers_firstname) LIKE :search
-        )
-    ORDER BY pers_lastname, pers_firstname";
-    $stmt = $dbh->prepare($person_qry);
-    $like_search = '%' . $search_quicksearch_man . '%';
-    $stmt->bindParam(':tree_id', $tree_id, PDO::PARAM_STR);
-    $stmt->bindParam(':search', $like_search, PDO::PARAM_STR);
-    $stmt->execute();
-    $person_result = $stmt;
+    $person_result = $db_functions->get_quicksearch_results($tree_id, $search_quicksearch_man);
 } elseif ($search_man_id != '') {
     // TODO check this.
     if (substr($search_man_id, 0, 1) !== "i" && substr($search_man_id, 0, 1) !== "I") {

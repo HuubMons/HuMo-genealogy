@@ -3515,7 +3515,7 @@ class EditorModel extends AdminBaseModel
             // *** Remove (NON-SHARED) source by all connections ***
             /*
             if ($eventDb->connect_source_id){
-                //DOESN'T WORK
+                // TODO DOESN'T WORK (update: recheck because tree_id was missing)
                 //$sourceDb = $this->db_functions->get_source($eventDb->connect_source_id);
                 $source_sql="SELECT * FROM humo_sources
                     WHERE source_gedcomnr='".$eventDb->connect_source_id."'

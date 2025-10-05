@@ -453,7 +453,6 @@ class DbFunctions
             // *** In case someone entered "Mons, Huub" using a comma ***
             $quicksearch = str_replace(',', '', $quicksearch);
 
-            //$person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
             $person_qry = "SELECT * FROM humo_persons
                 WHERE pers_tree_id = :tree_id
                 AND (
