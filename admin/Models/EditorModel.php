@@ -1485,7 +1485,6 @@ class EditorModel extends AdminBaseModel
             $stmt->execute();
 
             // *** Add father ***
-            //pers_callname='',
             $pers_alive1 = '';
             if (isset($_POST['pers_alive1'])) {
                 $pers_alive1 = $this->safeTextDb->safe_text_db($_POST['pers_alive1']);
@@ -1587,7 +1586,6 @@ class EditorModel extends AdminBaseModel
             }
 
             // *** Add mother ***
-            //pers_callname='',
             $pers_alive2 = '';
             if (isset($_POST['pers_alive2'])) {
                 $pers_alive2 = $this->safeTextDb->safe_text_db($_POST['pers_alive2']);
@@ -3511,24 +3509,6 @@ class EditorModel extends AdminBaseModel
             $connect_sub_kind = $eventDb->connect_sub_kind;
             $connect_connect_id = $eventDb->connect_connect_id;
             //echo $connect_kind.' '.$connect_sub_kind.' '.$connect_connect_id.'!!';
-
-            // *** Remove (NON-SHARED) source by all connections ***
-            /*
-            if ($eventDb->connect_source_id){
-                // TODO DOESN'T WORK (update: recheck because tree_id was missing)
-                //$sourceDb = $this->db_functions->get_source($eventDb->connect_source_id);
-                $source_sql="SELECT * FROM humo_sources
-                    WHERE source_gedcomnr='".$eventDb->connect_source_id."'
-                    AND source_shared!='1'";
-                //echo $source_sql.'<br>';
-                $source_qry=$this->dbh->query($source_sql);
-                $sourceDb=$source_qry->fetch(PDO::FETCH_OBJ);
-                if ($sourceDb){
-                    $sql="DELETE FROM humo_sources WHERE source_id='".$sourceDb->source_id."'";
-                    $this->dbh->query($sql);
-                }
-            }
-            */
 
             // *** Remove NON SHARED addresses ***
             if ($connect_sub_kind == 'person_address' || $connect_sub_kind == 'family_address') {

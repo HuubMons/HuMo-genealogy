@@ -35,8 +35,8 @@
         // *** Example: this is version update 19. So check should be > 18 ***
         $check_number = $version_number - 1;
         if ((int)$humo_option["update_status"] > $check_number) {
-            // *** Only show update status if update version > 6 (v4.9.1) ***
-            if ($version_number > 6) {
+            // *** Only show update status if update version > 14 (v5.9) ***
+            if ($version_number > 14) {
         ?>
                 <tr>
                     <td>HuMo-genealogy update <?= $version ?></td>
@@ -134,6 +134,7 @@
         show_status($dbh, $humo_option, 'v6.7.9', 18);
         show_status($dbh, $humo_option, 'v6.7.9a', 19);
         show_status($dbh, $humo_option, 'v7.0', 20);
+        //show_status($dbh, $humo_option, 'v7.0.1', 21); // *** Future update ***
 
         /**
          * Remarks for programmers:

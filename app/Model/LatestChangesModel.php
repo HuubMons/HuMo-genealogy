@@ -73,7 +73,6 @@ class LatestChangesModel extends BaseModel
         $i = 0;
         $changes = [];
 
-        $this->db_functions->set_tree_id($this->tree_id);
         while ($person2 = $person_result->fetch(PDO::FETCH_OBJ)) {
             // *** Get person from database to have all fields (not only those selected in the query) ***
             $person = $this->db_functions->get_person_with_id($person2->pers_id);

@@ -19,5 +19,8 @@ class BaseModel
         $this->humo_option = $config['humo_option'];
         $this->uri_path = $config['uri_path'];
         $this->selectedFamilyTree = $config['selectedFamilyTree'];
+
+        // *** Set tree_id in db_functions ***
+        $this->db_functions->set_tree_id($this->tree_id);
     }
 }

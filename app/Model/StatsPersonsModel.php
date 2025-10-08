@@ -69,7 +69,6 @@ class StatsPersonsModel extends BaseModel
         $statistics['average_living_woman_marr'] = 0;
 
         $livingcalc = new CalculateDates;
-        $this->db_functions->set_tree_id($this->tree_id);
 
         // TODO: only get persons including a birth, bapt, death or buried date.
         $persqr = $this->dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'");

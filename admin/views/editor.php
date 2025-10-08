@@ -720,7 +720,7 @@ if ($check_person) {
 
         if ($editor['add_person'] == true) {
             $pers_gedcomnumber = '';
-            $pers_firstname = ''; //$pers_callname='';
+            $pers_firstname = '';
             $pers_prefix = '';
             $pers_lastname = '';
             $pers_patronym = '';
@@ -757,7 +757,7 @@ if ($check_person) {
             $pers_buried_date_hebnight = '';
         } else {
             $pers_gedcomnumber = $person->pers_gedcomnumber;
-            $pers_firstname = str_replace('"', '&#34;', $person->pers_firstname); //$pers_callname=str_replace('"','&#34;',$person->pers_callname);
+            $pers_firstname = str_replace('"', '&#34;', $person->pers_firstname);
             $pers_prefix = str_replace('"', '&#34;', $person->pers_prefix);
             $pers_lastname = str_replace('"', '&#34;', $person->pers_lastname);
             $pers_patronym = str_replace('"', '&#34;', $person->pers_patronym);

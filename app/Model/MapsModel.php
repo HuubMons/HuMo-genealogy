@@ -276,7 +276,6 @@ class MapsModel extends BaseModel
             );
         }
 
-        $this->db_functions->set_tree_id($this->tree_id);
         while ($personDb = $person_results->fetch(PDO::FETCH_OBJ)) {
             if ($maps['display_birth']) {
                 $place = $personDb->pers_birth_place;

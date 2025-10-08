@@ -1563,13 +1563,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$pers_birth_text = '';
             if (substr($personDb->pers_birth_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_birth_text, 1, -1));
                 if ($search_textDb) {
-                    //$pers_birth_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1578,13 +1575,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$pers_bapt_text = '';
             if (substr($personDb->pers_bapt_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_bapt_text, 1, -1));
                 if ($search_textDb) {
-                    //$pers_bapt_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1593,13 +1587,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$pers_death_text = '';
             if (substr($personDb->pers_death_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_death_text, 1, -1));
                 if ($search_textDb) {
-                    //$pers_death_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1608,13 +1599,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$pers_buried_text = '';
             if (substr($personDb->pers_buried_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($personDb->pers_buried_text, 1, -1));
                 if ($search_textDb) {
-                    //$pers_buried_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1640,24 +1628,6 @@ elseif ($trees['step'] == '4') {
                     $fields[] = "pers_name_text = :pers_name_text";
                     $params[':pers_name_text'] = $pers_name_text;
                 }
-                /*
-                if ($pers_birth_text) {
-                    $fields[] = "pers_birth_text = :pers_birth_text";
-                    $params[':pers_birth_text'] = $pers_birth_text;
-                }
-                if ($pers_bapt_text) {
-                    $fields[] = "pers_bapt_text = :pers_bapt_text";
-                    $params[':pers_bapt_text'] = $pers_bapt_text;
-                }
-                if ($pers_death_text) {
-                    $fields[] = "pers_death_text = :pers_death_text";
-                    $params[':pers_death_text'] = $pers_death_text;
-                }
-                if ($pers_buried_text) {
-                    $fields[] = "pers_buried_text = :pers_buried_text";
-                    $params[':pers_buried_text'] = $pers_buried_text;
-                }
-                */
 
                 if (!empty($fields)) {
                     $sql = "UPDATE humo_persons SET " . implode(', ', $fields) . " WHERE pers_id = :pers_id";
@@ -1749,13 +1719,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$fam_relation_text = '';
             if (substr($famDb->fam_relation_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_relation_text, 1, -1));
                 if ($search_textDb) {
-                    //$fam_relation_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1764,13 +1731,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$fam_marr_notice_text = '';
             if (substr($famDb->fam_marr_notice_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_notice_text, 1, -1));
                 if ($search_textDb) {
-                    //$fam_marr_notice_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1814,13 +1778,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$fam_marr_church_notice_text = '';
             if (substr($famDb->fam_marr_church_notice_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_notice_text, 1, -1));
                 if ($search_textDb) {
-                    //$fam_marr_church_notice_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1829,13 +1790,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$fam_marr_church_text = '';
             if (substr($famDb->fam_marr_church_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_marr_church_text, 1, -1));
                 if ($search_textDb) {
-                    //$fam_marr_church_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1844,13 +1802,10 @@ elseif ($trees['step'] == '4') {
                 }
             }
 
-            //$fam_div_text = '';
             if (substr($famDb->fam_div_text ?? '', 0, 1) === '@') {
                 $total_processed_texts++;
                 $search_textDb = $db_functions->get_text(substr($famDb->fam_div_text, 1, -1));
                 if ($search_textDb) {
-                    //$fam_div_text = $search_textDb->text_text;
-
                     $stmt = $dbh->prepare("UPDATE humo_events SET event_text = :event_text WHERE event_id = :event_id");
                     $stmt->execute([
                         ':event_text' => $search_textDb->text_text,
@@ -1860,7 +1815,6 @@ elseif ($trees['step'] == '4') {
             }
 
             // *** Save all standard family texts ***
-            // $fam_text || $fam_relation_text || $fam_marr_notice_text || $fam_marr_text || $fam_marr_church_notice_text || $fam_marr_church_text || $fam_div_text
             if ($fam_text) {
                 $first_item = true;
                 // *** Remark: no need to check for fam_tree_id because fam_id is used ***

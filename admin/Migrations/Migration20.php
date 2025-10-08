@@ -305,8 +305,10 @@ class Migration20
 
         // *** Remove old person fields ***
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_birth_date");
+        $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_birth_time");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_birth_place");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_birth_text");
+        $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_stillborn");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_bapt_date");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_bapt_place");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_bapt_text");
@@ -315,17 +317,23 @@ class Migration20
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_death_place");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_death_text");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_death_age");
+        $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_death_cause");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_buried_date");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_buried_place");
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_buried_text");
+        $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_cremation");
 
         // *** Remove old pers_place_index field ***
         $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_place_index");
+
+        // *** Remove old pers_callname field ***
+        $this->dbh->exec("ALTER TABLE humo_persons DROP COLUMN pers_callname");
 
         // *** Remove old family fields ***
         $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_relation_date");
         $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_relation_place");
         $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_relation_text");
+        $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_relation_end_date");
         $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_marr_notice_date");
         $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_marr_notice_place");
         $this->dbh->exec("ALTER TABLE humo_families DROP COLUMN fam_marr_notice_text");
@@ -384,5 +392,8 @@ class Migration20
         // *** Free geoplugin no longer available ***
         $stmt = $this->dbh->exec("UPDATE humo_settings SET setting_value = '' WHERE setting_variable = 'ip_api_geoplugin_old'");
         $stmt = $this->dbh->exec("UPDATE humo_settings SET setting_value = 'dis' WHERE setting_variable = 'ip_api_collection'");
+
+        // *** Remove old fam_place_index field ***
+        $this->dbh->exec("ALTER TABLE humo_sources DROP COLUMN source_shared");
     }
 }

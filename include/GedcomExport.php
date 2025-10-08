@@ -279,16 +279,6 @@ class GedcomExport
                 $this->buffer .= '/' . str_replace("_", " ", $person->pers_prefix);
                 $this->buffer .= $person->pers_lastname . "/\r\n";
 
-                // *** december 2021: pers_callname no longer in use ***
-                //if ($person->pers_callname){
-                //  $this->buffer.='2 NICK '.$person->pers_callname."\r\n";
-                //}
-
-                // Prefix is exported by name!
-                //if ($person->pers_prefix){
-                //  $this->buffer.='2 SPFX '.$person->pers_prefix."\r\n";
-                //}
-
                 // *** Create general person_events array ***
                 $person_events = $this->db_functions->get_events_connect('person', $person->pers_gedcomnumber, 'all');
 

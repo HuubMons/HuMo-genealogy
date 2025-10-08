@@ -99,7 +99,6 @@ class GedcomImport
         $person["pers_text"] = '';
         $person["pers_own_code"] = '';
 
-        //$pers_callname='';
         $pers_firstname = '';
         $pers_lastname = '';
         $pers_name_text = '';
@@ -476,18 +475,6 @@ class GedcomImport
                         if ($this->gen_program == "RootsMagic") {
                             $this->processed = true;
                         } else {
-                            //$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
-                            //$pers_aka=substr($name,7); // *** If "2 TYPE aka" is used
-
-                            //if ($pers_callname){
-                            //	$pers_callname=$pers_callname.", ".substr($name,7);
-                            //} else {
-                            //	$pers_callname=substr($name,7);
-                            //}
-                            //$pers_callname=str_replace("/", " ", $pers_callname);
-                            //$pers_callname=str_replace("  ", " ", $pers_callname);
-                            //$pers_callname=rtrim($pers_callname);
-
                             $this->processed = true;
                             $pers_aka = substr($name, 7);
                             // *** Remove / if nickname starts with / ***
@@ -606,9 +593,6 @@ class GedcomImport
                     //$this->event['date'][$this->event_nr1]='';
                     //$this->event['text'][$this->event_nr1]='';
                     //$this->event['place'][$this->event_nr1]='';
-
-                    // *** Empty original pers_call_name ***
-                    //$pers_callname=$pers_callname_org;
                 }
 
                 // *** GEDCOM 5.5 lastname prefix: 2 SPFX Le ***
@@ -854,16 +838,6 @@ class GedcomImport
             // *** Finnish genealogy program SukuJutut (and some other genealogical programs) ***
             // 1 ALIA Frederik Hektor /McLean/
             if ($this->buffer[6] === '1 ALIA') {
-                //$this->processed = true;
-                //$this->buffer[0] = str_replace("/", "", $this->buffer[0]);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
-                //if ($pers_callname){
-                //	$pers_callname=$pers_callname.", ".substr($this->buffer[0], 7);
-                //}
-                //else {
-                //	$pers_callname=substr($this->buffer[0],7);
-                //}
-                //$pers_callname=rtrim($pers_callname);
-
                 $this->processed = true;
                 $pers_aka = substr($this->buffer[0], 7);
                 $pers_aka = str_replace("/", "", $pers_aka);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
@@ -889,21 +863,6 @@ class GedcomImport
                 $this->event['text'][$this->event_nr1] = '';
                 $this->event['place'][$this->event_nr1] = '';
             }
-
-            // *** December 2021: now processed as event **
-            // *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
-            /*
-            if ($this->buffer[6]=='2 NICK'){
-                $this->processed = true;
-                if ($pers_callname){
-                    $pers_callname=$pers_callname.", ".substr($this->buffer[0],7);
-                }
-                else {
-                    $pers_callname=substr($this->buffer[0],7);
-                }
-                $pers_callname=rtrim($pers_callname);
-            }
-            */
 
             // *** Text(s) by person ***
             if ($this->level[1] == 'NOTE') {
@@ -3260,7 +3219,8 @@ class GedcomImport
                 /*
                 if ($this->buffer[7]=='2 _FREL' OR $this->buffer[7]=='2 _MREL'){
                     $this->processed = true;
-                    $child_array=explode(";",$fam_children); $count_children=count($child_array);
+                    $child_array=explode(";",$fam_children);
+                    $count_children=count($child_array);
 
                     $this->event_nr++;
                     $this->event_nr1 = $this->event_nr;
