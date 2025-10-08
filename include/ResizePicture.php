@@ -22,8 +22,12 @@ class ResizePicture
         */
 
         // Aug. 2025: use larger thumbs.
+        //$theight = 0;
+        //$twidth = 400;
+
+        // Sept. 2025: smaller thumbnails.
         $theight = 0;
-        $twidth = 400;
+        $twidth = 200;
 
         if (extension_loaded('imagick')) {
             return ($this->create_thumbnail_IM($folder, $file, $twidth, $theight)); // true on success
@@ -50,12 +54,15 @@ class ResizePicture
     }
 
     // Imagick library - returns true if a thumbnail has been created 
-    private function create_thumbnail_IM($folder, $file, $twidth = 0, $theight = 120)
+    private function create_thumbnail_IM($folder, $file, $twidth = 200, $theight = 0)
     {
         $is_ghostscript = false;   // ghostscript has to be installed for pdf handling
         $is_ffmpeg      = false;   // ffmpeg has to be installed for video handling
+
+        $no_shell_exec = !function_exists('shell_exec') || in_array('shell_exec', array_map('trim', explode(',', ini_get('disable_functions'))));
+
         $no_windows = (strtolower(substr(PHP_OS, 0, 3)) !== 'win');
-        if ($no_windows) {
+        if ($no_windows && !$no_shell_exec) {
             if (trim(shell_exec('type -P gs'))) {
                 $is_ghostscript = true;
             }
@@ -177,7 +184,7 @@ class ResizePicture
     }
 
     // GD library - returns true if a thumbnail has been created
-    private function create_thumbnail_GD($folder, $file, $twidth = 0, $theight = 120)
+    private function create_thumbnail_GD($folder, $file, $twidth = 200, $theight = 0)
     {
         $pict_path_original = $folder . $file;
         $pict_path_thumb = $folder . 'thumb_' . $file . '.jpg';

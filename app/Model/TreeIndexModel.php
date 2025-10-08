@@ -652,10 +652,16 @@ class TreeIndexModel extends BaseModel
 
         // *** Loop through pictures and find first available picture without privacy filter ***
         // i added also family kind photos
-        $qry = "SELECT * FROM humo_events
-            WHERE event_tree_id='" . $this->tree_id . "' AND event_kind='picture' AND (event_connect_kind='person' OR event_connect_kind='family')  AND event_connect_id NOT LIKE ''
+        $qry = "SELECT e.*, l.location_location AS event_place
+            FROM humo_events e
+            LEFT JOIN humo_location l ON e.place_id = l.location_id
+            WHERE e.event_tree_id='" . $this->tree_id . "' 
+            AND e.event_kind='picture' 
+            AND (e.event_connect_kind='person' OR e.event_connect_kind='family')  
+            AND e.event_connect_id NOT LIKE ''
             ORDER BY RAND()";
         $picqry = $this->dbh->query($qry);
+
         // We will go unique-random aproach than only randomness
         // 'ORDER BY RAND' is pseudorandom. It's still not random - now im implementing uniqueness
         // first we count number of rows with this query
@@ -682,7 +688,7 @@ class TreeIndexModel extends BaseModel
                 $is_privacy = true;
 
                 if ($pic_conn_kind == 'person') {
-                    $personmnDb = $this->db_functions->get_person($picqryDb->event_connect_id);
+                    $personmnDb = $this->db_functions->get_person_with_id($picqryDb->person_id);
                     $man_privacy = $personPrivacy->get_privacy($personmnDb);
                     if (!$man_privacy) {
                         $is_privacy = false;
@@ -693,9 +699,7 @@ class TreeIndexModel extends BaseModel
                         $url = $this->personLink->get_person_link($personmnDb);
                     }
                 } elseif ($pic_conn_kind == 'family') {
-                    $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $picqryDb->event_connect_id . "'";
-                    $picqry2 = $this->dbh->query($qry2);
-                    $picqryDb2 = $picqry2->fetch(PDO::FETCH_OBJ);
+                    $picqryDb2 = $this->db_functions->get_family_with_id($picqryDb->relation_id);
 
                     $personmnDb2 = $this->db_functions->get_person($picqryDb2->fam_man);
                     $man_privacy = $personPrivacy->get_privacy($personmnDb2);
@@ -780,8 +784,10 @@ class TreeIndexModel extends BaseModel
                 $link_text[] = $item[1];
                 $link_order[] = $data2Db->setting_order;
             }
-            $person = $this->dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_own_code NOT LIKE ''");
-            while ($personDb = $person->fetch(PDO::FETCH_OBJ)) {
+            $person = $this->dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "' AND pers_own_code NOT LIKE ''");
+            while ($person2Db = $person->fetch(PDO::FETCH_OBJ)) {
+                // *** Get person with ID to have all fields available (for privacy check) ***
+                $personDb = $this->db_functions->get_person_with_id($person2Db->pers_id);
                 if (in_array($personDb->pers_own_code, $pers_own_code)) {
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $path_tmp = $this->personLink->get_person_link($personDb);
@@ -935,35 +941,40 @@ class TreeIndexModel extends BaseModel
         $count_privacy = 0;
         $text = '';
 
-        // *** Check user group is restricted sources can be shown ***
-        // *** Calculate present date, month and year ***
-        $sql = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id
+        $sql = "SELECT p.*, e.event_kind, e.date_day, e.date_year, e.date_month
+            FROM humo_persons p
+            LEFT JOIN humo_events e ON p.pers_id = e.person_id
+            AND e.event_tree_id = p.pers_tree_id
+            AND e.event_connect_kind = 'person'
+            WHERE p.pers_tree_id = :tree_id
             AND (
-                substring( pers_birth_date,1,6) = :today OR substring( pers_birth_date, 1,6 ) = :today2
-                OR substring( pers_bapt_date,1,6) = :today OR substring( pers_bapt_date, 1,6 ) = :today2
-                OR substring( pers_death_date,1,6) = :today OR substring( pers_death_date, 1,6 ) = :today2
+                (e.event_kind = 'birth' AND e.date_month = :month AND e.date_day = :day)
+                OR
+                (e.event_kind = 'baptism' AND e.date_month = :month AND e.date_day = :day)
+                OR
+                (e.event_kind = 'death' AND e.date_month = :month AND e.date_day = :day)
             )
-            ORDER BY substring(pers_birth_date,-4) DESC
+            ORDER BY e.date_year DESC
             LIMIT 0,30
         ";
         try {
             $birth_qry = $this->dbh->prepare($sql);
-            $birth_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_STR);
-            $birth_qry->bindValue(':today', $today, PDO::PARAM_STR);
-            $birth_qry->bindValue(':today2', $today2, PDO::PARAM_STR);
+            $birth_qry->bindValue(':tree_id', $this->tree_id, PDO::PARAM_INT);
+            $birth_qry->bindValue(':month', date('n'), PDO::PARAM_INT);
+            $birth_qry->bindValue(':day', date('j'), PDO::PARAM_INT);
             $birth_qry->execute();
         } catch (PDOException $e) {
             //echo $e->getMessage() . "<br/>";
         }
 
         // *** Save results in an array, so it's possible to order the results by date ***
-        while ($record = $birth_qry->fetch(PDO::FETCH_OBJ)) {
+        while ($record2 = $birth_qry->fetch(PDO::FETCH_OBJ)) {
+            // *** Get all data from person ***
+            $record = $this->db_functions->get_person_with_id($record2->pers_id);
             $privacy = $personPrivacy->get_privacy($record);
             $name = $personName->get_person_name($record, $privacy);
-
             if (!$privacy) {
                 if (trim(substr($record->pers_birth_date, 0, 6)) === $today || substr($record->pers_birth_date, 0, 6) === $today2) {
-                    //$history['order'][]=substr($record->pers_birth_date,-4);
                     // *** First order birth, using C ***
                     $history['order'][] = 'C' . substr($record->pers_birth_date, -4);
                     if ($view == 'with_table') {

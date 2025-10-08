@@ -65,11 +65,14 @@ class ShowMedia
 
             // *** Standard connected media by person and family ***
             // TODO: show these items seperately: picture_birth, picture_death, picture_marriage, picture_burial etc.
-            $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
-                AND event_connect_kind = :event_connect_kind
-                AND event_connect_id = :event_connect_id
-                AND LEFT(event_kind, 7) = 'picture'
-                ORDER BY event_kind, event_order";
+            $sql = "SELECT e.*, l.location_location AS event_place
+                FROM humo_events e
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
+                WHERE e.event_tree_id = :tree_id
+                AND e.event_connect_kind = :event_connect_kind
+                AND e.event_connect_id = :event_connect_id
+                AND LEFT(e.event_kind, 7) = 'picture'
+                ORDER BY e.event_kind, e.event_order";
             $picture_qry = $dbh->prepare($sql);
             $picture_qry->execute([
                 ':tree_id' => $tree_id,
@@ -101,9 +104,13 @@ class ShowMedia
 
             if ($event_connect_kind == 'person' || $event_connect_kind == 'family' || $event_connect_kind == 'source') {
                 foreach ($connect_sql as $connectDb) {
-                    $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
-                        AND event_gedcomnr = :event_gedcomnr AND event_kind = 'object'
-                        ORDER BY event_order";
+                    $sql = "SELECT e.*, l.location_location AS event_place
+                        FROM humo_events e
+                        LEFT JOIN humo_location l ON e.place_id = l.location_id
+                        WHERE e.event_tree_id = :tree_id
+                        AND e.event_gedcomnr = :event_gedcomnr
+                        AND e.event_kind = 'object'
+                        ORDER BY e.event_order";
                     $picture_qry = $dbh->prepare($sql);
                     $picture_qry->execute([
                         ':tree_id' => $tree_id,
@@ -255,7 +262,7 @@ class ShowMedia
                     $process_text .= '</div>' . "\n";
                     */
 
-                    $process_text .= '<div class="col-12 col-sm-5 col-md-3 col-lg-2">';
+                    $process_text .= '<div class="col-6 col-sm-6 col-md-3 col-lg-2">';
                     $process_text .= '<div class="card h-100 shadow-sm">';
 
                     $process_text .= $picture;
@@ -446,7 +453,7 @@ class ShowMedia
         if (file_exists($folder . 'thumb_' . $file . '.jpg')) {
             // *** Check for old thumbnails ***
             list($width, $height) = getimagesize($folder . 'thumb_' . $file . '.jpg');
-            if ($height == 120) {
+            if ($height == 120 || $width == 400) {
                 // *** Remove old thumbnail. Will be recreated. ***
                 unlink($folder . 'thumb_' . $file . '.jpg');
 

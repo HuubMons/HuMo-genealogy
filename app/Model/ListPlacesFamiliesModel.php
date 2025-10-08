@@ -104,13 +104,53 @@ class ListPlacesFamiliesModel extends BaseModel
         $query = '';
         $start = false;
 
+        $base_query = "
+            marr_notice_location.location_location AS fam_marr_notice_place,
+            marr_notice.event_date AS fam_marr_notice_date,
+
+            marriage_location.location_location AS fam_marr_place,
+            marriage.event_date AS fam_marr_date,
+
+            marr_church_notice_location.location_location AS fam_marr_church_notice_place,
+            marr_church_notice.event_date AS fam_marr_church_notice_date,
+
+            marr_church_location.location_location AS fam_marr_church_place,
+            marr_church.event_date AS fam_marr_church_date
+
+            FROM humo_families
+
+            LEFT JOIN humo_events AS marr_notice
+            ON humo_families.fam_id = marr_notice.relation_id AND marr_notice.event_kind = 'marriage_notice'
+            LEFT JOIN humo_location AS marr_notice_location
+            ON marr_notice.place_id = marr_notice_location.location_id
+
+            LEFT JOIN humo_events AS marriage
+            ON humo_families.fam_id = marriage.relation_id AND marriage.event_kind = 'marriage'
+            LEFT JOIN humo_location AS marriage_location
+            ON marriage.place_id = marriage_location.location_id
+
+            LEFT JOIN humo_events AS marr_church_notice
+            ON humo_families.fam_id = marr_church_notice.relation_id AND marr_church_notice.event_kind = 'marr_church_notice'
+            LEFT JOIN humo_location AS marr_church_notice_location
+            ON marr_church_notice.place_id = marr_church_notice_location.location_id
+
+            LEFT JOIN humo_events AS marr_church
+            ON humo_families.fam_id = marr_church.relation_id AND marr_church.event_kind = 'marr_church'
+            LEFT JOIN humo_location AS marr_church_location
+            ON marr_church.place_id = marr_church_location.location_id
+        ";
+
         // *** Search marriage place ***
         if ($data["select_marriage"] == '1') {
-            $query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order FROM humo_families";
+            //$query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order FROM humo_families";
+
+            $query = "(SELECT SQL_CALC_FOUND_ROWS *, marriage_location.location_location as place_order,";
+            $query .= $base_query;
+
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marriage_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marriage_location.location_location LIKE '_%'";
             }
             $query .= ')';
             $start = true;
@@ -124,11 +164,15 @@ class ListPlacesFamiliesModel extends BaseModel
             } else {
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
-            $query .= "(SELECT " . $calc . "*, fam_marr_church_place as place_order FROM humo_families";
+            //$query .= "(SELECT " . $calc . "*, fam_marr_church_place as place_order FROM humo_families";
+
+            $query .= "(SELECT " . $calc . "*, marr_church_location.location_location as place_order,";
+            $query .= $base_query;
+
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_location.location_location LIKE '_%'";
             }
             $query .= ')';
             $start = true;
@@ -142,11 +186,16 @@ class ListPlacesFamiliesModel extends BaseModel
             } else {
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
-            $query .= "(SELECT " . $calc . "*, fam_marr_notice_place as place_order FROM humo_families";
+
+            //$query .= "(SELECT " . $calc . "*, fam_marr_notice_place as place_order FROM humo_families";
+
+            $query .= "(SELECT " . $calc . "*, marr_notice_location.location_location as place_order,";
+            $query .= $base_query;
+
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_notice_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_notice_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_notice_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_notice_location.location_location LIKE '_%'";
             }
             $query .= ')';
             $start = true;
@@ -160,18 +209,24 @@ class ListPlacesFamiliesModel extends BaseModel
             } else {
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
-            $query .= "(SELECT " . $calc . "*, fam_marr_church_notice_place as place_order FROM humo_families";
+
+            //$query .= "(SELECT " . $calc . "*, fam_marr_church_notice_place as place_order FROM humo_families";
+
+            $query .= "(SELECT " . $calc . "*, marr_church_notice_location.location_location as place_order,";
+            $query .= $base_query;
+
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_notice_place " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_notice_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND fam_marr_church_notice_place LIKE '_%'";
+                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_notice_location.location_location LIKE '_%'";
             }
             $query .= ')';
             $start = true;
         }
 
         // *** Order by place and marriage date ***
-        $query .= ' ORDER BY place_order, substring(fam_marr_date,-4)';
+        //$query .= ' ORDER BY place_order, substring(fam_marr_date,-4)';
+        $query .= ' ORDER BY place_order';
         return $query;
     }
 }

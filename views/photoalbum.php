@@ -123,8 +123,13 @@ if ($humo_option["url_rewrite"] == "j") {
                     $picture_text = '';    // Text with link to person
                     $picture_text2 = '';    // Text without link to person
 
-                    $sql = "SELECT * FROM humo_events WHERE event_tree_id = :tree_id
-                        AND event_connect_kind = 'person' AND LEFT(event_kind,7) = 'picture' AND LOWER(event_event) = :filename";
+                    $sql = "SELECT e.*, l.location_location AS event_place 
+                        FROM humo_events e
+                        LEFT JOIN humo_location l ON e.place_id = l.location_id
+                        WHERE e.event_tree_id = :tree_id
+                        AND e.event_connect_kind = 'person'
+                        AND LEFT(e.event_kind,7) = 'picture'
+                        AND LOWER(e.event_event) = :filename";
                     $afbqry = $dbh->prepare($sql);
                     $afbqry->execute([
                         ':tree_id' => $tree_id,
@@ -134,7 +139,7 @@ if ($humo_option["url_rewrite"] == "j") {
                         $picture_text = substr($filename, 0, -4);
                     }
                     while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
-                        $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                        $personDb = $db_functions->get_person_with_id($afbDb->person_id);
                         $privacy = $personPrivacy->get_privacy($personDb);
                         $name = $personName->get_person_name($personDb, $privacy);
 
@@ -213,7 +218,7 @@ if ($humo_option["url_rewrite"] == "j") {
             ?>
 
                         <!-- <div class="col-12 col-sm-6 col-md-4 col-lg-3"> -->
-                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                        <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                             <div class="card h-100 shadow-sm">
                                 <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                                     <?= $picture ?>
@@ -236,7 +241,7 @@ if ($humo_option["url_rewrite"] == "j") {
 
                         <!-- TODO: test new code -->
                         <?php /*
-                        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                        <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                             <div class="card h-100 shadow-sm">
                                 <a href="<?= $tmp_dir . $filename; ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
                                     <img src="<?= $tmp_dir . $filename; ?>" class="card-img-top img-fluid" alt="<?= htmlspecialchars($picture_text2) ?>">

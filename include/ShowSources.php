@@ -139,8 +139,6 @@ class ShowSources
                     $combiner_check = $connectDb->connect_source_id . '_' . $connectDb->connect_role . '_' . $connectDb->connect_page . '_' . $connectDb->connect_date . ' ' . $connectDb->connect_place . ' ' . $connectDb->connect_text;
 
                     // *** Jan. 2021: No shared source. Footnotes can be combined! ***
-                    //if ($sourceDb->source_shared=='')
-                    //if ($sourceDb->source_title=='')
                     if (isset($sourceDb->source_title) && $sourceDb->source_title == '') {
                         $combiner_check = $connectDb->connect_role . '_' . $connectDb->connect_page . '_' . $connectDb->connect_date . ' ' . $connectDb->connect_place . ' ' . $sourceDb->source_text;
                     }
@@ -226,7 +224,6 @@ class ShowSources
 
                         $source_link = '';
                         // *** Only show link if there is a source_title. Source is only shared if there is a source_title ***
-                        //if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1'){
                         if ($user['group_sources'] == 'j' && $sourceDb->source_title != '') {
                             // TODO use function
                             if ($humo_option["url_rewrite"] == "j") {
@@ -325,11 +322,10 @@ class ShowSources
                         }
 
                         // *** Only show link if there is a shared source ***
-                        //if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1') $source_array['text'].= '</a>'; // *** End of link ***
                         if ($user['group_sources'] == 'j' && $sourceDb->source_title != '') {
                             $source_array['text'] .= '</a>';
                         } // *** End of link ***
-                    } // *** End of shared source ***
+                    }
 
                     // *** Show (extra) source text ***
                     if ($connectDb->connect_text && $source_status === 'publish') {

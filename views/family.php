@@ -97,7 +97,9 @@ else {
         }
 
         // TEST code (only works with family, will give error in descendant report and DNA reports:
-        // if (!isset($descendant_family_id2[0])){ break; }
+        // if (!isset($descendant_family_id2[0])){
+        // break;
+        // }
 
         // *** Copy array ***
         unset($descendant_family_id);
@@ -210,12 +212,14 @@ else {
                                 //$index['visitor_ip'] = '8.8.8.8';
 
                                 // *** Geoplugin without key (old method in 2025) ***
+                                /*
                                 if ($humo_option['ip_api_geoplugin_old'] == 'ena') {
                                     include_once(__DIR__ . '/../include/geoplugin/geoplugin.class.php');
                                     $geoplugin = new geoPlugin();
                                     $geoplugin->locate();
                                     $stat_country_code = $geoplugin->countryCode;
                                 }
+                                */
 
                                 // *** GeoPlugin using key ***
                                 if ($humo_option['geoplugin_checked'] == 'ena') {
@@ -226,11 +230,13 @@ else {
                                 }
 
                                 // *** IP-API ***
-                                $url = "http://ip-api.com/json/" . $index['visitor_ip'];
-                                $response = file_get_contents($url);
-                                $ip_data = json_decode($response, true);
-                                if (isset($ip_data['countryCode'])) {
-                                    $stat_country_code = $ip_data['countryCode'];
+                                if ($humo_option['ip_api_checked'] == 'ena') {
+                                    $url = "http://ip-api.com/json/" . $index['visitor_ip'];
+                                    $response = file_get_contents($url);
+                                    $ip_data = json_decode($response, true);
+                                    if (isset($ip_data['countryCode'])) {
+                                        $stat_country_code = $ip_data['countryCode'];
+                                    }
                                 }
 
                                 // *** FreeIPAPI ***
@@ -531,7 +537,7 @@ else {
                      */
                     $famc_adoptive_qry_prep = $db_functions->get_events_kind($familyDb->fam_gedcomnumber, 'adoption');
                     foreach ($famc_adoptive_qry_prep as $famc_adoptiveDb) {
-                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person_with_id($famc_adoptiveDb->person_id);
                         $child_privacy = $personPrivacy->get_privacy($childDb);
                         ?>
                         <tr>
@@ -549,7 +555,7 @@ else {
                      */
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_man, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
-                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person_with_id($famc_adoptiveDb->person_id);
                         $privacy_child = $personPrivacy->get_privacy($childDb);
                     ?>
                         <tr>
@@ -578,7 +584,7 @@ else {
                      */
                     $famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_woman, 'adoption_by_person');
                     foreach ($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb) {
-                        $childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
+                        $childDb = $db_functions->get_person_with_id($famc_adoptiveDb->person_id);
                         $child_privacy = $personPrivacy->get_privacy($childDb);
                     ?>
                         <tr>

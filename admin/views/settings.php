@@ -606,6 +606,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <div class="col-md-auto">
                     <select size="1" name="default_timeline" class="form-select form-select-sm">
                         <?php
+                        // TODO: improve editing of default timelines.
                         for ($i = 0; $i < count($timeline_files); $i++) {
                             $timeline = str_replace(".txt", "", $timeline_files[$i]);
                             $select = "";
@@ -855,8 +856,8 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <div class="col-md-4"><?= __('GeoPlugin: without license.'); ?></div>
             <div class="col-md-8">
                 <div class="form-check">
-                    <input type="radio" value="ip_api_geoplugin_old" name="ip_api" id="ip_api_geoplugin_old" class="form-check-input" <?= $humo_option['ip_api_geoplugin_old'] == 'ena' ? 'checked' : ''; ?>>
-                    <label class="form-check-label" for="ip_api_geoplugin_old"><?= __('Use geoplugin.com.'); ?> <?= __('Default plugin in 2025, but will probably stop working in the future.'); ?></label>
+                    <input type="radio" value="ip_api_geoplugin_old" name="ip_api" id="ip_api_geoplugin_old" class="form-check-input" disabled>
+                    <label class="form-check-label" for="ip_api_geoplugin_old"><?= __('Use geoplugin.com.'); ?> <?= __('Oct. 2025: this option is no longer available.');?></label>
                 </div>
             </div>
         </div>

@@ -8,17 +8,7 @@ if (!defined('ADMIN_PAGE')) {
 $showTreeText = new \Genealogy\Include\ShowTreeText();
 
 // *** Select family tree ***
-$tree_id_string = " AND ( ";
-$id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to remove trailing ;
-foreach ($id_arr as $value) {
-    $tree_id_string .= "tree_id='" . substr($value, 1) . "' OR ";  // substr removes leading "@" in geo_trees setting string
-}
-$tree_id_string = substr($tree_id_string, 0, -4) . ")"; // take off last " ON " and add ")"
-
-$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' " . $tree_id_string . " ORDER BY tree_order";
-//echo $tree_search_sql;
-$tree_search_result = $dbh->query($tree_search_sql);
-$rowspan = $tree_search_result->rowCount() + 1;
+$tree_search_result = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 ?>
 
 <div class="p-3 m-2 genealogy_search container-md">
@@ -35,12 +25,11 @@ $rowspan = $tree_search_result->rowCount() + 1;
     <div class="row mb-2">
         <div class="col-md-12">
             <form name="slider" action="index.php?page=maps&amp;menu=settings" method="POST">
-                <table>
+                <table class="table">
                     <tr>
                         <th><?= __('Name of tree'); ?></th>
                         <th style="text-align:center"><?= __('Starting year'); ?></th>
                         <th style="text-align:center"><?= __('Interval'); ?></th>
-                        <th rowspan=<?= $rowspan; ?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="submit" value="<?= __('Change'); ?>" class="btn btn-sm btn-secondary"></th>
                     </tr>
                     <?php
                     // *** REMARK: only works if there are multiple places in location table ***
@@ -62,19 +51,23 @@ $rowspan = $tree_search_result->rowCount() + 1;
                             ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
                         }
 
-                        $treetext = $showTreeText ->show_tree_text($tree_searchDb->tree_id, $selected_language);
+                        $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
                         $interval = round((2010 - ${"slider_choice" . $tree_searchDb->tree_prefix}) / 9);
                     ?>
                         <tr>
                             <td><?= $treetext['name']; ?></td>
                             <td>
-                                <?php
-                                echo "<input style='text-align:center' type='text' name='" . $offset . "' value='{${"slider_choice" .$tree_searchDb->tree_prefix}}' class='form-control form-control-sm'>";
-                                ?>
+                                <input style='text-align:center' type='text' name='<?= $offset; ?>' value='<?= ${"slider_choice" . $tree_searchDb->tree_prefix}; ?>' class='form-control form-control-sm'>
                             </td>
-                            <td style='text-align:center'><?= $interval; ?></td>
+                            <td style="text-align:center"><?= $interval; ?></td>
                         </tr>
                     <?php } ?>
+
+                    <tr>
+                        <th colspan="3" style="text-align:center;">
+                            <input type="submit" name="submit" value="<?= __('Change'); ?>" class="btn btn-sm btn-secondary">
+                        </th>
+                    </tr>
                 </table>
             </form><br>
         </div>

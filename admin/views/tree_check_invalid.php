@@ -21,29 +21,28 @@ $found = false; // if this stays false, displays message that no problems where 
         <td colspan="4" class="table-secondary" style="font-weight:bold"><?= __('Invalid person dates:'); ?></td>
     </tr>
     <?php
-    $person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
-        WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
-    while ($persdateDb = $person->fetch()) {
-        if (isset($persdateDb['pers_birth_date']) && $persdateDb['pers_birth_date'] != '') {
-            $result = invalid($persdateDb['pers_birth_date'], $persdateDb['pers_gedcomnumber'], 'pers_birth_date');
+    $person = $db_functions->get_persons($tree_id);
+    foreach ($person as $persdateDb) {
+        if (isset($persdateDb->pers_birth_date) && $persdateDb->pers_birth_date != '') {
+            $result = invalid($persdateDb->pers_birth_date, $persdateDb->pers_gedcomnumber, 'pers_birth_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($persdateDb['pers_bapt_date']) && $persdateDb['pers_bapt_date'] != '') {
-            $result = invalid($persdateDb['pers_bapt_date'], $persdateDb['pers_gedcomnumber'], 'pers_bapt_date');
+        if (isset($persdateDb->pers_bapt_date) && $persdateDb->pers_bapt_date != '') {
+            $result = invalid($persdateDb->pers_bapt_date, $persdateDb->pers_gedcomnumber, 'pers_bapt_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($persdateDb['pers_death_date']) && $persdateDb['pers_death_date'] != '') {
-            $result = invalid($persdateDb['pers_death_date'], $persdateDb['pers_gedcomnumber'], 'pers_death_date');
+        if (isset($persdateDb->pers_death_date) && $persdateDb->pers_death_date != '') {
+            $result = invalid($persdateDb->pers_death_date, $persdateDb->pers_gedcomnumber, 'pers_death_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($persdateDb['pers_buried_date']) && $persdateDb['pers_buried_date'] != '') {
-            $result = invalid($persdateDb['pers_buried_date'], $persdateDb['pers_gedcomnumber'], 'pers_buried_date');
+        if (isset($persdateDb->pers_buried_date) && $persdateDb->pers_buried_date != '') {
+            $result = invalid($persdateDb->pers_buried_date, $persdateDb->pers_gedcomnumber, 'pers_buried_date');
         }
         if ($result === true) {
             $found = true;
@@ -62,40 +61,42 @@ $found = false; // if this stays false, displays message that no problems where 
     </tr>
     <?php
     $found = false;
-    $family = $dbh->query("SELECT fam_gedcomnumber, fam_div_date, fam_marr_church_date, fam_marr_church_notice_date, fam_marr_date, fam_marr_notice_date, fam_relation_date FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
-    while ($famdateDb = $family->fetch()) {
-        if (isset($famdateDb['fam_div_date']) && $famdateDb['fam_div_date'] != '') {
-            $result = invalid($famdateDb['fam_div_date'], $famdateDb['fam_gedcomnumber'], 'fam_div_date');
+    //$family = $dbh->query("SELECT fam_gedcomnumber, fam_div_date, fam_marr_church_date, fam_marr_church_notice_date, fam_marr_date, fam_marr_notice_date, fam_relation_date FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
+    $family = $dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='" . $tree_id . "'");
+    while ($famdate2Db = $family->fetch()) {
+        $famdateDb = $db_functions->get_family_with_id($famdate2Db['fam_id']);
+        if (isset($famdateDb->fam_div_date) && $famdateDb->fam_div_date != '') {
+            $result = invalid($famdateDb->fam_div_date, $famdateDb->fam_gedcomnumber, 'fam_div_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_church_date']) && $famdateDb['fam_marr_church_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_church_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_church_date');
+        if (isset($famdateDb->fam_marr_church_date) && $famdateDb->fam_marr_church_date != '') {
+            $result = invalid($famdateDb->fam_marr_church_date, $famdateDb->fam_gedcomnumber, 'fam_marr_church_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_church_notice_date']) && $famdateDb['fam_marr_church_notice_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_church_notice_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_church_notice_date');
+        if (isset($famdateDb->fam_marr_church_notice_date) && $famdateDb->fam_marr_church_notice_date != '') {
+            $result = invalid($famdateDb->fam_marr_church_notice_date, $famdateDb->fam_gedcomnumber, 'fam_marr_church_notice_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_date']) && $famdateDb['fam_marr_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_date');
+        if (isset($famdateDb->fam_marr_date) && $famdateDb->fam_marr_date != '') {
+            $result = invalid($famdateDb->fam_marr_date, $famdateDb->fam_gedcomnumber, 'fam_marr_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_marr_notice_date']) && $famdateDb['fam_marr_notice_date'] != '') {
-            $result = invalid($famdateDb['fam_marr_notice_date'], $famdateDb['fam_gedcomnumber'], 'fam_marr_notice_date');
+        if (isset($famdateDb->fam_marr_notice_date) && $famdateDb->fam_marr_notice_date != '') {
+            $result = invalid($famdateDb->fam_marr_notice_date, $famdateDb->fam_gedcomnumber, 'fam_marr_notice_date');
         }
         if ($result === true) {
             $found = true;
         }
-        if (isset($famdateDb['fam_relation_date']) && $famdateDb['fam_relation_date'] != '') {
-            $result = invalid($famdateDb['fam_relation_date'], $famdateDb['fam_gedcomnumber'], 'fam_relation_date');
+        if (isset($famdateDb->fam_relation_date) && $famdateDb->fam_relation_date != '') {
+            $result = invalid($famdateDb->fam_relation_date, $famdateDb->fam_gedcomnumber, 'fam_relation_date');
         }
         if ($result === true) {
             $found = true;
@@ -269,7 +270,7 @@ function invalid($date, $gednr, $table)
             $ev = $dbh->query("SELECT * FROM humo_events WHERE event_id = '" . $gednr . "'");
             $evDb = $ev->fetch();
             if ($evDb['event_connect_kind'] == 'person' && $evDb['event_connect_id'] != '') {
-                $persDb = $db_functions->get_person($evDb['event_connect_id']);
+                $persDb = $db_functions->get_person_with_id($evDb['person_id']);
                 $fullname = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix . ' ' . $persDb->pers_lastname);
                 $evdetail = $evDb['event_event'];
                 if ($evdetail == '') {
@@ -287,14 +288,12 @@ function invalid($date, $gednr, $table)
                 </tr>
             <?php
             } elseif ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
-                $fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
-                    WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
-                $famDb = $fam->fetch();
+                $famDb = $db_functions->get_family_with_id($evDb['relation_id']);
 
-                $spouse1Db = $db_functions->get_person($famDb['fam_man']);
+                $spouse1Db = $db_functions->get_person($famDb->fam_man);
                 $name1 = $spouse1Db->pers_firstname . ' ' . str_replace("_", " ", $spouse1Db->pers_prefix . ' ' . $spouse1Db->pers_lastname);
 
-                $spouse2Db = $db_functions->get_person($famDb['fam_woman']);
+                $spouse2Db = $db_functions->get_person($famDb->fam_woman);
                 $name2 = $spouse2Db->pers_firstname . ' ' . str_replace("_", " ", $spouse2Db->pers_prefix . ' ' . $spouse2Db->pers_lastname);
 
                 $fullname = $name1 . ' and ' . $name2;
@@ -311,7 +310,7 @@ function invalid($date, $gednr, $table)
                 }
             ?>
                 <tr>
-                    <td><?= $famDb['fam_gedcomnumber']; ?></td>
+                    <td><?= $famDb->fam_gedcomnumber; ?></td>
                     <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by marriage'); ?>)</td>
                     <td><?= $evDb['event_kind'] . $evdetail; ?></td>
                     <td><?= $directionMarkers->dirmark2 . $date; ?></td>
@@ -358,20 +357,18 @@ function invalid($date, $gednr, $table)
                 $ev = $dbh->query("SELECT * FROM humo_events WHERE event_id ='" . $connectDb['connect_connect_id'] . "'");
                 $evDb = $ev->fetch();
                 if ($evDb['event_connect_kind'] == 'person' && $evDb['event_connect_id'] != '') {
-                    $persDb = $db_functions->get_person($evDb['event_connect_id']);
+                    $persDb = $db_functions->get_person_with_id($evDb['person_id']);
                     $gednr = $persDb->pers_gedcomnumber; // for url string
                     $gedcomnr = $persDb->pers_gedcomnumber; // for first column
                     $name = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix) . ' ' . $persDb->pers_lastname;
                 }
                 if ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
-                    $fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
-                        WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber = '" . $evDb['event_connect_id'] . "'");
-                    $famDb = $fam->fetch();
+                    $famDb = $db_functions->get_family_with_id($evDb['relation_id']);
 
-                    $spouse1Db = $db_functions->get_person($famDb['fam_man']);
+                    $spouse1Db = $db_functions->get_person($famDb->fam_man);
                     $name1 = $spouse1Db->pers_firstname . ' ' . str_replace("_", " ", $spouse1Db->pers_prefix . ' ' . $spouse1Db->pers_lastname);
 
-                    $spouse2Db = $db_functions->get_person($famDb['fam_woman']);
+                    $spouse2Db = $db_functions->get_person($famDb->fam_woman);
                     $name2 = $spouse2Db->pers_firstname . ' ' . str_replace("_", " ", $spouse2Db->pers_prefix . ' ' . $spouse2Db->pers_lastname);
 
                     $name = $name1 . ' and ' . $name2;
@@ -379,7 +376,7 @@ function invalid($date, $gednr, $table)
                     if ($spousegednr == '') {
                         $spousegednr = $spouse2Db->pers_gedcomnumber;
                     }
-                    $gedcomnr = $famDb['fam_gedcomnumber']; // for first column
+                    $gedcomnr = $famDb->fam_gedcomnumber; // for first column
                 }
                 if (substr($connectDb['connect_sub_kind'], -6) === 'source') {
                     $name = '<a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $gednr . '" target=\'_blank\'>' . $name . '</a> (' . __('Click relevant event source') . ')';

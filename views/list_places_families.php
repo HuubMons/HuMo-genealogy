@@ -88,8 +88,8 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
                 </select>
             </div>
 
-            <div class="col-2">
-                <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($data["place_name"]); ?>" size="15" class="form-control form-control-sm">
+            <div class="col-3">
+                <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($data["place_name"]); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
             </div>
 
             <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -472,5 +472,9 @@ function show_person($familyDb)
             ?>
         </td>
     </tr>
-<?php
-}
+<?php } ?>
+
+<script>
+    var autocompleteSource = "include/AutocompletePlace.php";
+</script>
+<script src="assets/js/place_autocomplete.js"></script>

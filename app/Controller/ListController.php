@@ -38,18 +38,34 @@ class ListController
         $desc_asc = $listModel->getDescAsc($order);
         $order_select = $listModel->getOrderSelect();
 
-        $get_orderby = $listModel->getQueryOrderBy($index_list, $desc_asc, $order_select);
+        $get_orderby = $listModel->getQueryOrderBy($desc_asc, $order_select);
 
         $select_trees = $listModel->getSelectTrees();
         $selection = $listModel->getSelection();
 
         $quicksearch = $listModel->getQuickSearch();
-        $adv_search = $listModel->getAdvSearch($selection);
+        $adv_search = $listModel->getAdvSearch();
 
-        $get_data = $listModel->getIndexPlaces($index_list);
+        $get_data = $listModel->getIndexPlaces();
 
+
+        if ($index_list == 'quicksearch') {
+            $listModel->qry_quicksearch();
+        } elseif ($index_list == 'patronym') {
+            $listModel->qry_patronym();
+        } elseif ($index_list == 'places') {
+            $listModel->qry_places();
+        } else {
+            $listModel->qry_advanced_search();
+        }
+
+        // Final check for valid query.
+        $listModel->qry_standard();
 
         $person_result = $listModel->build_query();
+
+
+
         return array(
             "index_list" => $index_list,
             "order" => $order,

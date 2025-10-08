@@ -70,9 +70,10 @@ class StatsPersonsModel extends BaseModel
 
         $livingcalc = new CalculateDates;
 
-        $persqr = $this->dbh->query("SELECT pers_sexe, pers_gedcomnumber, pers_birth_date, pers_death_date, pers_bapt_date, pers_fams
-            FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'");
-        while ($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
+        // TODO: only get persons including a birth, bapt, death or buried date.
+        $persqr = $this->dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $this->tree_id . "'");
+        while ($persstat2Db = $persqr->fetch(PDO::FETCH_OBJ)) {
+            $persstatDb = $this->db_functions->get_person_with_id($persstat2Db->pers_id);
             if ($persstatDb->pers_sexe == "M") {
                 $statistics['countman']++;
 
@@ -304,6 +305,10 @@ class StatsPersonsModel extends BaseModel
 
     private function convert_date_number($date)
     {
+        if ($date == '') {
+            return null;
+        }
+
         //31 SEP 2010 -> 20100931
         // *** Remove ABT from date ***
         $date = str_replace("ABT ", "", $date);

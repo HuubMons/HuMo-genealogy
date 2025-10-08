@@ -25,6 +25,10 @@ class TimelineModel extends BaseModel
         $data["year"] = '';
         $data["date_translated"] = '';
 
+        if (empty($process_date)) {
+            return false;
+        }
+
         // Alters a julian/gregorian date entry such as 4 mar 1572/3 to use regular date for calculations
         if (strpos($process_date, '/') > 0) {
             $date_array = explode('/', $process_date);

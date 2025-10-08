@@ -47,14 +47,17 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
         $original_media_filename = $media_filename;
     }
 
-    $qry = "SELECT * FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND (event_connect_kind='person' OR event_connect_kind='family') AND event_connect_id NOT LIKE '' AND event_event='" . $original_media_filename . "'";
+    $qry = "SELECT * FROM humo_events
+        WHERE event_tree_id='" . $tree_id . "' 
+        AND (event_connect_kind='person' OR event_connect_kind='family') 
+        AND event_connect_id NOT LIKE '' AND event_event='" . $original_media_filename . "'";
     $media_qry = $dbh->query($qry);
     $media_qryDb = $media_qry->fetch(PDO::FETCH_OBJ);
 
     $file_allowed = false;
 
     if ($media_qryDb && $media_qryDb->event_connect_kind === 'person') {
-        $personmnDb = $db_functions->get_person($media_qryDb->event_connect_id);
+        $personmnDb = $db_functions->get_person_with_id($media_qryDb->person_id);
         $man_privacy = $personPrivacy->get_privacy($personmnDb);
         if ($personmnDb && !$man_privacy) {
             $file_allowed = true;
@@ -62,7 +65,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'show_media_file' && isset($_GET['m
             $file_allowed = false;
         }
     } elseif ($media_qryDb && $media_qryDb->event_connect_kind === 'family') {
-        $qry2 = "SELECT * FROM humo_families WHERE fam_gedcomnumber='" . $media_qryDb->event_connect_id . "'";
+        $qry2 = $db_functions->get_family_with_id($media_qryDb->relation_id);
         $family_qry = $dbh->query($qry2);
         $family_qryDb2 = $family_qry->fetch(PDO::FETCH_OBJ);
 

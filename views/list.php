@@ -101,8 +101,8 @@ if ($list["index_list"] == 'places') {
                     </select>
                 </div>
 
-                <div class="col-2">
-                    <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($list["place_name"]); ?>" size="15" class="form-control form-control-sm">
+                <div class="col-3">
+                    <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($list["place_name"]); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
                 </div>
 
                 <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -261,7 +261,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_birth_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_birth_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="birth_place" value="<?= $safeTextShow->safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="birth_place" value="<?= $safeTextShow->safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
@@ -281,7 +281,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_death_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_death_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="death_place" value="<?= $safeTextShow->safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="death_place" value="<?= $safeTextShow->safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
                 </div>
@@ -370,7 +370,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="pers_place" value="<?= $safeTextShow->safe_text_show($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="pers_place" value="<?= $safeTextShow->safe_text_show($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
@@ -541,7 +541,7 @@ if ($list["person_result"]->rowCount() > 0) {
     if (!$selection['spouse_firstname'] && !$selection['spouse_lastname'] && $selection['parent_status'] != "motheronly" && $selection['parent_status'] != "fatheronly") {
         echo $list["count_persons"] . __(' persons found.');
     } else {
-        echo '<div id="found_div">&nbsp;</div>';
+        echo '<div>&nbsp;</div>';
     }
 
     // *** Normal or expanded list ***
@@ -607,7 +607,6 @@ $listnr = "2";      // default 20% margin
 //if($list["index_list"] != "places" AND ($list["order_select"]=='sort_birthdate' OR $list["order_select"]=='sort_deathdate' OR $list["order_select"]=='sort_baptdate' OR $list["order_select"]=='sort_burieddate')) {
 //	$listnr="3";   // 5% margin
 //}
-//echo '<div class="'.$dir.'index_list'.$listnr.'">';
 
 //*** Show persons ***
 $privcount = 0; // *** Count privacy persons ***
@@ -748,29 +747,16 @@ $selected_place = '';
                     </a>
                 </th>
 
-                <?php
-                if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') {
-                    echo '<th><br></th>';
-                }
-                ?>
+                <?php if ($select_trees == 'all_trees' or $select_trees == 'all_but_this') { ?>
+                    <th><br></th>
+                <?php } ?>
             </tr>
         </thead>
         <?php
     }
     $pers_counter = 0;
 
-    /*
-    if ($list["adv_search"] == true and $selection['parent_status'] != "allpersons" and $selection['parent_status'] != "noparents") {
-        echo '<script>document.getElementById("found_div").innerHTML = "' . __('Loading...') . '";</script>';
-    }
-    */
-
     while ($personDb = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
-        //while ($person1Db = $list["person_result"]->fetch(PDO::FETCH_OBJ)) {
-
-        // *** Preparation for second query. Needed to solve GROUP BY problems ***
-        //$personDb = $db_functions->get_person_with_id($person1Db->pers_id);
-
         $spouse_found = true;
 
         // *** Search name of spouse ***
@@ -916,6 +902,7 @@ $selected_place = '';
                                     $resultDb = $result->fetch(PDO::FETCH_OBJ);
 
                                     if ($resultDb && $resultDb->address_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                                        //if ($selected_place == $personDb->pers_address) {
                                         echo '<span class="place_index place_index_selected">' . __('^') . '</span>';
                                     } else {
                                         echo '<span class="place_index">&nbsp;</span>';
@@ -940,21 +927,7 @@ $selected_place = '';
 
                                 // *** Places by events like occupations etc. ***
                                 if ($list["select_event"] == '1') {
-                                    // *** Check if this is the living place of a person. Can't be checked using query variables... ***
-                                    $query = "SELECT event_place FROM humo_events
-                                        WHERE event_tree_id = :tree_id
-                                        AND event_connect_id = :gedcomnumber
-                                        AND event_place = :place_order";
-                                    $stmt = $dbh->prepare($query);
-                                    $stmt->execute([
-                                        ':tree_id' => $personDb->pers_tree_id,
-                                        ':gedcomnumber' => $personDb->pers_gedcomnumber,
-                                        ':place_order' => $personDb->place_order
-                                    ]);
-                                    $result = $stmt;
-                                    $resultDb = $result->fetch(PDO::FETCH_OBJ);
-
-                                    if ($resultDb && $resultDb->event_place == $personDb->place_order && $selected_place == $personDb->place_order) {
+                                    if ($selected_place == $personDb->event_place) {
                                         echo '<span class="place_index place_index_selected">' . substr(__('Events'), 0, 1) . '</span>';
                                     } else {
                                         echo '<span class="place_index">&nbsp;</span>';
@@ -1162,8 +1135,6 @@ $selected_place = '';
     <br><?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
 <?php }
 
-//echo '</div>';
-
 // *** Don't execute this code if spouse search is used or mother/father only persons***
 if (isset($data["page_nr"]) && !$selection['spouse_firstname'] && !$selection['spouse_lastname'] && $selection['parent_status'] != "motheronly" && $selection['parent_status'] != "fatheronly") {
 ?>
@@ -1171,17 +1142,19 @@ if (isset($data["page_nr"]) && !$selection['spouse_firstname'] && !$selection['s
 <?php
     include __DIR__ . '/partial/pagination.php';
 }
+?>
 
-//echo '</div>';
+<!-- Autocomplete for place names -->
+<?php if ($list["adv_search"] == true || $list["index_list"] == 'places') { ?>
+    <script>
+        var autocompleteSource = "include/AutocompletePlace.php";
+    </script>
+    <script src="assets/js/place_autocomplete.js"></script>
+<?php } ?>
 
-//TODO check this code. In some cases found_div isn't used.
-/*
-echo '<script> 
-    document.getElementById("found_div").innerHTML = \'' . $pers_counter . __(' persons found.') . '\';
-</script>';
-*/
+<br>
 
-echo '<br>';
+<?php
 //for testing only:
 //echo 'Query: <pre>'.$query."</pre> LIMIT ".$list["item"].",".$list["nr_persons"].'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';

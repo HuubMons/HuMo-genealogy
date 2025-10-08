@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Get latitude and longitude from location name through Google Maps API or GeoKeo API.
+ *
+ * Sept. 2025 Huub: rebuild script because the location table is now used to store all locations in family trees.
+ * Field location_status isn't used to store family trees anymore. It's now used for geolocation status.
+ */
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
@@ -13,108 +20,16 @@ if (isset($_POST['makedatabase'])) {
     $flag_stop = 0;
 }
 
+/*
 if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
     $dbh->query("DELETE FROM humo_location WHERE location_id = " . $_POST['location_id']);
 }
-
-// *** Empty entire geolocation table ***
-if (isset($_POST['deletedatabase2'])) {
-    $dbh->query("TRUNCATE TABLE humo_location");
-    $db_functions->update_settings('geo_trees', '');
-}
-
-if (isset($_POST['check_new'])) {
-    if ($maps['geo_tree_id'] != 0) {
-        // (only take bapt place if no birth place and only take burial place if no death place)
-        $unionstring = "SELECT pers_birth_place FROM humo_persons WHERE pers_tree_id='" . $maps['geo_tree_id'] . "' 
-            UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_tree_id='" . $maps['geo_tree_id'] . "' AND pers_birth_place = ''
-            UNION SELECT pers_death_place FROM humo_persons WHERE pers_tree_id='" . $maps['geo_tree_id'] . "'
-            UNION SELECT pers_buried_place FROM humo_persons WHERE pers_tree_id='" . $maps['geo_tree_id'] . "' AND pers_death_place = ''";
-    } else {
-        // (only take bapt place if no birth place and only take burial place if no death place)
-        $unionstring = "SELECT pers_birth_place FROM humo_persons
-            UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
-            UNION SELECT pers_death_place FROM humo_persons
-            UNION SELECT pers_buried_place FROM humo_persons WHERE pers_death_place = ''";
-    }
-    //echo $unionstring;
-    // from here on we can use only "pers_birth_place", since the UNION puts also all other locations under pers_birth_place
-    $map_person = $dbh->query("SELECT pers_birth_place, count(*) AS quantity FROM (" . $unionstring . ") AS x GROUP BY pers_birth_place ");
-
-    $add_locations = array();
-
-    // make array of all existing locations in database	
-    $exist_locs = array();
-    $location = $dbh->query("SELECT location_location FROM humo_location WHERE location_lat IS NOT NULL");
-    while ($locationDb = $location->fetch(PDO::FETCH_OBJ)) {
-        $exist_locs[] = $locationDb->location_location;
-    }
-
-    // make array of all non-recognized locations (from previous attempts)
-    $non_exist_locs = array();
-
-    $no_location = $dbh->query("SELECT location_location FROM humo_location WHERE location_lat IS NULL");
-    while ($no_locationDb = $no_location->fetch(PDO::FETCH_OBJ)) {
-        $non_exist_locs[] = $no_locationDb->location_location;
-    }
-
-    $thistree_non_exist = array();
-
-    while ($personDb = $map_person->fetch(PDO::FETCH_OBJ)) {
-        // for each location we check:
-        // 1. if it has already been indexed (if so, skip it)
-        // 2. if in the past it couldn't be found by google api (if so, skip it)
-        // If neither of these two cases - add it to the array of locations to be queried through google api ($add_locations)
-
-        // TODO check this code.
-        foreach ($exist_locs as $value) {
-            if ($value == $personDb->pers_birth_place) {
-                // this location has already been mapped
-                continue 2;  //continue the outer while loop 
-            }
-        }
-
-        // TODO check this code.
-        foreach ($non_exist_locs as $value) {
-            if ($value == $personDb->pers_birth_place) {
-                // this location cannot be mapped (not found by google api)
-                $thistree_non_exist[] = $value;
-                continue 2;  //continue the outer while loop
-            }
-        }
-
-        // add the new location to an array for use if the user presses YES
-        if ($personDb->pers_birth_place) {
-            $add_locations[] = $personDb->pers_birth_place;
-        }
-    }
-}
+*/
 ?>
 
 <!-- Alert boxes -->
+<?php /*
 <form action="index.php?page=maps&amp;menu=locations" method="post">
-    <!-- Confirm to delete entire geolocation table -->
-    <?php if (isset($_POST['deletedatabase'])) { ?>
-        <div class="alert alert-danger" role="alert">
-            <?= __('Are your sure you want to delete the <b>entire geolocation database</b>?'); ?>
-            <input type="submit" value="<?= __('Yes'); ?>" name="deletedatabase2" class="btn btn-sm btn-danger">
-            <input type="submit" value="<?= __('No'); ?>" name="" class="btn btn-sm btn-primary">
-        </div>
-    <?php } ?>
-    <?php if (isset($_POST['deletedatabase2'])) { ?>
-        <div class="alert alert-success" role="alert"><?= __('Geolocation database is deleted!'); ?></div>
-    <?php } ?>
-
-    <?php
-    /*
-    if (isset($_POST['refresh'])) {
-        refresh_status($dbh, $humo_option);  // see function at end of script
-    ?>
-        <div class="alert alert-success" role="alert"><?= __('The locationlist has been refreshed.'); ?></div>
-    <?php }
-    */
-    ?>
-
     <?php if (isset($_POST['loc_delete']) && (is_numeric($_POST['location_id']))) { ?>
         <input type="hidden" name="location_id" value="<?= $_POST['location_id']; ?>">
         <div class="alert alert-danger" role="alert">
@@ -127,11 +42,30 @@ if (isset($_POST['check_new'])) {
         <div class="alert alert-success" role="alert"><?= __('Location is deleted.'); ?></div>
     <?php } ?>
 </form>
-
+*/ ?>
 
 <div class="p-3 m-2 genealogy_search container-md">
     <div class="row mb-1 p-2 bg-primary-subtle">
-        <?= __('Create or update geolocation database'); ?>
+        <?= __('Update geolocation database'); ?>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <?php
+            // TODO: add queries in model script
+            $loc_list = $dbh->query("SELECT location_id FROM humo_location WHERE location_lat IS NOT NULL ORDER BY location_location");
+            $num_rows = $loc_list->rowCount();
+
+            $index_list = $dbh->query("SELECT location_id FROM humo_location WHERE location_lat IS NULL AND (location_status != 'failed' OR location_status IS NULL)");
+            $num_rows1 = $index_list->rowCount();
+
+            $no_loc_list = $dbh->query("SELECT location_id FROM humo_location WHERE location_status = 'failed' ORDER BY location_location");
+            $num_rows2 = $no_loc_list->rowCount();
+            ?>
+            <?php printf(__('%d locations indexed.'), $num_rows); ?><br>
+            <?php printf(__('%d new locations to be indexed.'), $num_rows1); ?><br>
+            <?php printf(__('%d non-indexable locations.'), $num_rows2); ?>
+        </div>
     </div>
 
     <?php
@@ -142,11 +76,11 @@ if (isset($_POST['check_new'])) {
     <form method="POST" action="index.php?page=maps&amp;menu=locations">
         <div class="row mb-2">
             <div class="col-md-12 mb-1">
-                <?= __('Check how many new locations have to be indexed and how long the indexing may take (approximately).'); ?><br>
+                <?= __('Check how long the indexing may take (approximately).'); ?>
             </div>
 
             <div class="col-md-auto">
-                <select name="tree_id" class="form-select form-select-sm">
+                <select name="tree_id" class="form-select form-select-sm" disabled>
                     <option value="0"><?= __('All family trees'); ?></option>
                     <?php
                     while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
@@ -167,6 +101,20 @@ if (isset($_POST['check_new'])) {
 
     <?php
     if (isset($_POST['check_new'])) {
+        // *** New locations to index ***
+        $add_locations = array();
+        $location = $dbh->query("SELECT location_location FROM humo_location WHERE location_lat IS NULL AND (location_status != 'failed' OR location_status IS NULL)");
+        while ($locationDb = $location->fetch(PDO::FETCH_OBJ)) {
+            $add_locations[] = $locationDb->location_location;
+        }
+
+        // *** Previous indexing failed ***
+        $thistree_non_exist = array();
+        $no_location = $dbh->query("SELECT location_location FROM humo_location WHERE location_status = 'failed'");
+        while ($no_locationDb = $no_location->fetch(PDO::FETCH_OBJ)) {
+            $thistree_non_exist[] = $no_locationDb->location_location;
+        }
+
         if (!$add_locations) {
     ?>
             <div class="alert alert-success" role="alert">
@@ -208,7 +156,6 @@ if (isset($_POST['check_new'])) {
                 <?php } ?>
 
             </div>
-
         <?php
         }
 
@@ -232,32 +179,10 @@ if (isset($_POST['check_new'])) {
     }
     ?>
 
-
     <?php if (isset($_POST['makedatabase'])) { ?>
-        <?= __('Started adding to data base.'); ?><br>
+        <?= __('Started adding to database.'); ?><br>
         <?php
         sleep(1); // make sure this gets printed before the next is executed
-
-        // TODO Sept. 2024: refresh option is no longer needed. Also check geo_trees variable.
-        // If the locations are taken from one tree, add the id of this tree to humo_settings "geo_trees", if not already there
-        // so we can update correctly with the "REFRESH BIRTH/DEATH STATUS" option further on.
-        if ($maps['geo_tree_id'] != '') {
-            if (strpos($humo_option['geo_trees'], "@" . $maps['geo_tree_id'] . ";") === false) {
-                // this tree_id does not appear already
-                $db_functions->update_settings('geo_trees', $humo_option['geo_trees'] . "@" . $maps['geo_tree_id']);
-                // add tree_prefix if not already present
-                $humo_option['geo_trees'] .= "@" . $maps['geo_tree_id'] . ';'; // humo_option is used further on before page is refreshed so we have to update it manually
-            }
-        } else {
-            $str = "";
-            $tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-            $tree_search_result = $dbh->query($tree_search_sql);
-            while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-                $str .= "@" . $tree_searchDb->tree_id . ";";
-            }
-            $db_functions->update_settings('geo_trees', $str);
-            $humo_option['geo_trees'] = $str; // humo_option is used further on before page is refreshed so we have to update it manually
-        }
 
         // *** Index new locations or non indexed locations from database ***
         if (isset($_POST['non_exist_locations'])) {
@@ -284,12 +209,15 @@ if (isset($_POST['check_new'])) {
                     $latitude = $json->results[0]->geometry->location->lat;
                     $longitude = $json->results[0]->geometry->location->lng;
 
-                    if (isset($_POST['non_exist_locations'])) {
-                        $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location, location_lat = :lat, location_lng = :lng WHERE location_location = :location");
-                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
-                        $stmt->bindValue(':lat', $latitude, PDO::PARAM_STR);
-                        $stmt->bindValue(':lng', $longitude, PDO::PARAM_STR);
-                        $stmt->execute();
+                    //if (isset($_POST['non_exist_locations'])) {
+                    $stmt = $dbh->prepare("UPDATE humo_location
+                        SET location_location = :location, location_lat = :lat, location_lng = :lng, location_status = NULL
+                        WHERE location_location = :location");
+                    $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                    $stmt->bindValue(':lat', $latitude, PDO::PARAM_STR);
+                    $stmt->bindValue(':lng', $longitude, PDO::PARAM_STR);
+                    $stmt->execute();
+                    /*
                     } else {
                         $stmt = $dbh->prepare("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES (:location, :lat, :lng)");
                         $stmt->bindValue(':location', $value, PDO::PARAM_STR);
@@ -297,6 +225,7 @@ if (isset($_POST['check_new'])) {
                         $stmt->bindValue(':lng', $longitude, PDO::PARAM_STR);
                         $stmt->execute();
                     }
+                    */
 
                     sleep(1);
                 } else {
@@ -304,11 +233,9 @@ if (isset($_POST['check_new'])) {
                     //$map_notfound_array[] = $json_output['status'] . ' - ' . $value;
                     //$map_count_notfound++;
 
-                    if (!isset($_POST['non_exist_locations'])) {
-                        $stmt = $dbh->prepare("INSERT INTO humo_location (location_location) VALUES (:location)");
-                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
-                        $stmt->execute();
-                    }
+                    $stmt = $dbh->prepare("UPDATE humo_location SET location_status = 'failed' WHERE location_location = :location");
+                    $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                    $stmt->execute();
 
                     sleep(1);
                 }
@@ -363,19 +290,14 @@ if (isset($_POST['check_new'])) {
                     $lat = $json_output['results'][0]['geometry']['location']['lat'];
                     $lng = $json_output['results'][0]['geometry']['location']['lng'];
 
-                    if (isset($_POST['non_exist_locations'])) {
-                        $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location, location_lat = :lat, location_lng = :lng WHERE location_location = :location");
-                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
-                        $stmt->bindValue(':lat', $lat, PDO::PARAM_STR);
-                        $stmt->bindValue(':lng', $lng, PDO::PARAM_STR);
-                        $stmt->execute();
-                    } else {
-                        $stmt = $dbh->prepare("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES (:location, :lat, :lng)");
-                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
-                        $stmt->bindValue(':lat', $lat, PDO::PARAM_STR);
-                        $stmt->bindValue(':lng', $lng, PDO::PARAM_STR);
-                        $stmt->execute();
-                    }
+                    //if (isset($_POST['non_exist_locations'])) {
+                    $stmt = $dbh->prepare("UPDATE humo_location
+                        SET location_location = :location, location_lat = :lat, location_lng = :lng, location_status = NULL
+                        WHERE location_location = :location");
+                    $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                    $stmt->bindValue(':lat', $lat, PDO::PARAM_STR);
+                    $stmt->bindValue(':lng', $lng, PDO::PARAM_STR);
+                    $stmt->execute();
 
                     sleep(1);  // crucial, otherwise google kicks you out after a few queries
                 } elseif ($json_output['status'] == "ZERO_RESULTS") {
@@ -383,11 +305,9 @@ if (isset($_POST['check_new'])) {
                     $map_notfound_array[] = $json_output['status'] . ' - ' . $value;
                     $map_count_notfound++;
 
-                    if (!isset($_POST['non_exist_locations'])) {
-                        $stmt = $dbh->prepare("INSERT INTO humo_location (location_location) VALUES (:location)");
-                        $stmt->bindValue(':location', $value, PDO::PARAM_STR);
-                        $stmt->execute();
-                    }
+                    $stmt = $dbh->prepare("UPDATE humo_location SET location_status = 'failed' WHERE location_location = :location");
+                    $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                    $stmt->execute();
 
                     sleep(1);  // crucial, otherwise google kicks you out after a few queries
                 } elseif ($json_output['status'] == "OVER_QUERY_LIMIT") {
@@ -407,7 +327,6 @@ if (isset($_POST['check_new'])) {
                 }
             }
         }
-
 
         if ($flag_stop == 0) {
             ?>
@@ -443,45 +362,9 @@ if (isset($_POST['check_new'])) {
             }
         }
 
-        // refresh the location_status column
-        //refresh_status($dbh, $humo_option);  // see function at end of script
-
         unset($_SESSION['add_locations']);
         ?>
     <?php } ?>
-
-    <?php
-    /* Sept. 2024: no longer needed.
-    <form action="index.php?page=maps&amp;menu=locations" method="post">
-        <div class="row mb-2">
-            <div class="col-md-12">
-                <?= __('Refresh the location list to display a proper functional "Find a location on the map" list.'); ?><br>
-                <input type="checkbox" name="purge" class="form-check-input"> <?= __('Also delete all locations that have become obsolete (not connected to any persons anymore).'); ?>
-                <input type="submit" value="<?= __('Refresh'); ?>" name="refresh" class="btn btn-sm btn-secondary">
-            </div>
-        </div>
-    </form>
-    */
-    ?>
-
-    <div class="row mb-2">
-        <div class="col-md-12">
-            <?php
-            $loc_list = $dbh->query("SELECT location_id FROM humo_location WHERE location_lat IS NOT NULL ORDER BY location_location");
-            $num_rows = $loc_list->rowCount();
-
-            $no_loc_list = $dbh->query("SELECT location_id FROM humo_location WHERE location_lat IS NULL ORDER BY location_location");
-            $num_rows1 = $no_loc_list->rowCount();
-            ?>
-            <br>
-            <form action="index.php?page=maps&amp;menu=locations" method="post">
-                <input type="submit" value="<?= __('Delete entire geolocation database'); ?>" name="deletedatabase" class="btn btn-sm btn-danger">
-                <?php printf(__('%d locations.'), $num_rows); ?>
-                <?php printf(__('%d non-indexable locations.'), $num_rows1); ?>
-            </form>
-        </div>
-    </div>
-
 </div>
 
 <div class="p-3 m-2 genealogy_search container-md">
@@ -630,7 +513,6 @@ if (isset($_POST['check_new'])) {
 
             <div class="row mb-2">
                 <div class="col-md-6">
-
                     <?php
                     $leave_bottom = false;
                     if (isset($_POST['loc_change']) || isset($_POST['yes_change']) || isset($_POST['cancel_change'])) {
@@ -677,11 +559,13 @@ if (isset($_POST['check_new'])) {
                         $result = $stmt;
                         if ($result->rowCount() == 0) {
                             // doesn't exist yet
+                            /*
                             $stmt = $dbh->prepare("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES (:location, :lat, :lng)");
                             $stmt->bindValue(':location', $_POST['add_name'], PDO::PARAM_STR);
                             $stmt->bindValue(':lat', floatval($_POST['location_lat']));
                             $stmt->bindValue(':lng', floatval($_POST['location_lng']));
                             $stmt->execute();
+                            */
                         } elseif (is_numeric($_POST['location_id'])) {
                             $stmt = $dbh->prepare("UPDATE humo_location SET location_location = :location_location, location_lat = :location_lat, location_lng = :location_lng WHERE location_id = :location_id");
                             $stmt->bindValue(':location_location', $_POST['add_name'], PDO::PARAM_STR);
@@ -732,9 +616,7 @@ if (isset($_POST['check_new'])) {
                                 </select>
                             </div>
                         </div>
-
                     </form>
-
 
                     <?php
                     if (isset($_POST['loc_add'])) {
@@ -815,14 +697,12 @@ if (isset($_POST['check_new'])) {
                         <?= __('You can also drag the marker.'); ?><br><br>
 
                         <input type="submit" name="loc_change" value="<?= __('Change this location'); ?>" class="btn btn-sm btn-secondary">&nbsp;
-                        <input type="submit" name="loc_add" value="<?= __('Add this location'); ?>" class="btn btn-sm btn-secondary">
-                        <input type="submit" name="loc_delete" value="<?= __('Delete this location'); ?>" class="btn btn-sm btn-danger">
-
+                        <?php /* <input type="submit" name="loc_add" value="<?= __('Add this location'); ?>" class="btn btn-sm btn-secondary"> */ ?>
+                        <?php /* <input type="submit" name="loc_delete" value="<?= __('Delete this location'); ?>" class="btn btn-sm btn-danger"> */ ?>
                     </form>
-
                 </div>
-                <div class="col-md-6">
 
+                <div class="col-md-6">
                     <!-- Show Google Maps -->
                     <?php if ($maps['use_world_map'] == 'Google') { ?>
                         <div id="map_canvas" style="height:360px;"></div>
@@ -856,47 +736,4 @@ if (isset($_POST['check_new'])) {
             </div>
         </div>
     </div>
-
-    <?php
-    // *** Function to refresh location_status column ***
-    /*
-    function refresh_status($dbh, $humo_option)
-    {
-        $all_loc = $dbh->query("SELECT location_location FROM humo_location");
-        while ($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {
-            $loca_array[$all_locDb->location_location] = "";
-        }
-
-        $tree_id_string = " WHERE ";
-        $id_arr = explode(";", substr($humo_option['geo_trees'], 0, -1)); // substr to take off last ;
-        foreach ($id_arr as $value) {
-            $tree_id_string .= "pers_tree_id='" . substr($value, 1) . "' OR ";   // substr removes leading "@" in geo_trees setting string
-        }
-        $tree_id_string = substr($tree_id_string, 0, -4); // take off last " OR"
-
-        $result = $dbh->query("SELECT pers_tree_id, pers_tree_prefix, pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
-        FROM humo_persons" . $tree_id_string);
-        while ($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
-            if (isset($loca_array[$resultDb->pers_birth_place]) && strpos($loca_array[$resultDb->pers_birth_place], $resultDb->pers_tree_prefix . "birth ") === false) {
-                $loca_array[$resultDb->pers_birth_place] .= $resultDb->pers_tree_prefix . "birth ";
-            }
-            if (isset($loca_array[$resultDb->pers_bapt_place]) && strpos($loca_array[$resultDb->pers_bapt_place], $resultDb->pers_tree_prefix . "bapt ") === false) {
-                $loca_array[$resultDb->pers_bapt_place] .= $resultDb->pers_tree_prefix . "bapt ";
-            }
-            if (isset($loca_array[$resultDb->pers_death_place]) && strpos($loca_array[$resultDb->pers_death_place], $resultDb->pers_tree_prefix . "death ") === false) {
-                $loca_array[$resultDb->pers_death_place] .= $resultDb->pers_tree_prefix . "death ";
-            }
-            if (isset($loca_array[$resultDb->pers_buried_place]) && strpos($loca_array[$resultDb->pers_buried_place], $resultDb->pers_tree_prefix . "buried ") === false) {
-                $loca_array[$resultDb->pers_buried_place] .= $resultDb->pers_tree_prefix . "buried ";
-            }
-        }
-
-        foreach ($loca_array as $key => $value) {
-            if (isset($_POST['purge']) && ($value === "" || $value == NULL)) {
-                $dbh->query("DELETE FROM humo_location WHERE location_location = '" . addslashes($key) . "'");
-            } else {
-                $dbh->query("UPDATE humo_location SET location_status = '" . $value . "' WHERE location_location = '" . addslashes($key) . "'");
-            }
-        }
-    }
-    */
+</div>

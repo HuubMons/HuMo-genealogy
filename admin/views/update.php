@@ -30,32 +30,21 @@
         $humo_update = $_SESSION['save_humo_update'];
     }
 
-    // TODO: for now disabled. If enabled, status of update isn't shown (will be "OK").
-    // *** Reload page to prevent timeout ***
-    function reload_page()
-    {
-        // Maybe use if timer > 25 seconds?
-        //$start_time = time();
-        //$end_time = time();
-        //echo $end_time - $start_time
-    ?>
-        <script>
-            /* window.location = "index.php?page=update&proceed=1"; */
-        </script>
-        <?php
-    }
-
     function show_status($dbh, $humo_option, $version, $version_number)
     {
         // *** Example: this is version update 19. So check should be > 18 ***
         $check_number = $version_number - 1;
         if ((int)$humo_option["update_status"] > $check_number) {
+            // *** Only show update status if update version > 14 (v5.9) ***
+            if ($version_number > 14) {
         ?>
-            <tr>
-                <td>HuMo-genealogy update <?= $version ?></td>
-                <td style="background-color:#00FF00">OK</td>
-            </tr>
-        <?php } else { ?>
+                <tr>
+                    <td>HuMo-genealogy update <?= $version ?></td>
+                    <td style="background-color:#00FF00">OK</td>
+                </tr>
+            <?php
+            }
+        } else { ?>
             <tr>
                 <td>HuMo-genealogy update <?= $version ?></td>
                 <td style="background-color:#00FF00">
@@ -68,18 +57,22 @@
 
                     // *** Update "update_status" ***
                     $dbh->query("UPDATE humo_settings SET setting_value=" . $version_number . " WHERE setting_variable='update_status'");
-
-                    // *** Reload page to prevent timeout problems ***
-                    reload_page();
                     ?>
+
+                    <div class="mt-2"><a class="btn btn-warning" href="index.php?page=update&proceed=1"><?= __('Reload for next update') ?></a></div>
+
                 </td>
             </tr>
 
             <script>
                 document.getElementById("information <?= str_replace('.', '_', $version) ?>").innerHTML = "<?= __('Database updated!') ?>";
             </script>
-    <?php
 
+            <?php
+            // *** Stop so button can be pressed to reload ***
+            exit;
+            ?>
+    <?php
         }
     }
     ?>
@@ -140,9 +133,8 @@
         show_status($dbh, $humo_option, 'v6.7.2', 17);
         show_status($dbh, $humo_option, 'v6.7.9', 18);
         show_status($dbh, $humo_option, 'v6.7.9a', 19);
-
-        // TODO new update:
-        // show_status($dbh, $humo_option, 'v6.9.4', 20);
+        show_status($dbh, $humo_option, 'v7.0', 20);
+        //show_status($dbh, $humo_option, 'v7.0.1', 21); // *** Future update ***
 
         /**
          * Remarks for programmers:
@@ -151,8 +143,6 @@
          * 3) Don't forget to add new database fields in the tables of install.php!
          * Change database fields: check if database changes can be made in general parts of this update script.
          * Use LIMIT 0,1 to prevent update problems (in large family trees) if possible: SELECT * FROM humo_stat_date LIMIT 0,1
-         *
-         * Future update(s): remove some old datafields.
          *
          * TODO: use functions or migration tool.
          * private function tableExists(string $table): bool

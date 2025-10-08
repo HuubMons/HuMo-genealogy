@@ -40,6 +40,7 @@ if (isset($_POST['remove'])) {
 
     // *** Check person table ***
     // *** First get pers_id, otherwise there will be a memory problem if a large family tree is used ***
+    // TODO check queries. Just get: pers_id,pers_gedcomnumber,pers_famc,pers_fams
     $person_start = $dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='" . $tree_id . "' ORDER BY pers_lastname,pers_firstname");
     while ($person_startDb = $person_start->fetch()) {
 
@@ -338,18 +339,17 @@ if (isset($_POST['remove'])) {
     $connect_qry_start = "SELECT event_id FROM humo_events WHERE event_tree_id='" . $tree_id . "'";
     $connect_result_start = $dbh->query($connect_qry_start);
     while ($connect_start = $connect_result_start->fetch(PDO::FETCH_OBJ)) {
-
         $connect_qry = "SELECT * FROM humo_events WHERE event_id='" . $connect_start->event_id . "'";
         $connect_result = $dbh->query($connect_qry);
         $connect = $connect_result->fetch(PDO::FETCH_OBJ);
 
+        // TODO also check witnesses: ASSO.
         // *** Check person ***
         if ($connect->event_connect_kind == 'person' && $connect->event_connect_id) {
-            // Use function check_person?
-            $person = $db_functions->get_person($connect->event_connect_id);
+            $person = $db_functions->get_person_with_id($connect->person_id);
             if (!$person) {
                 if (isset($_POST['remove'])) {
-                    $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_id='" . $connect->event_id . "'";
+                    $sql = "DELETE FROM humo_events WHERE event_id='" . $connect->event_id . "'";
                     $dbh->query($sql);
                 }
             ?>
@@ -364,12 +364,8 @@ if (isset($_POST['remove'])) {
 
         // *** Check family ***
         if ($connect->event_connect_kind == 'family' && $connect->event_connect_id) {
-            // Create function check_family?
-            $person_qry = "SELECT * FROM humo_families WHERE fam_tree_id='" . $tree_id . "'
-                AND fam_gedcomnumber='" . $connect->event_connect_id . "'";
-            $person_result = $dbh->query($person_qry);
-            $person = $person_result->fetch(PDO::FETCH_OBJ);
-            if (!$person) {
+            $family = $db_functions->get_family_with_id($connect->relation_id);
+            if (!$family) {
                 if (isset($_POST['remove'])) {
                     $sql = "DELETE FROM humo_events WHERE event_tree_id='" . $tree_id . "' AND event_id='" . $connect->event_id . "'";
                     $dbh->query($sql);

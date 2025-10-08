@@ -35,8 +35,6 @@ class ShowSourcesFootnotes
                     $sourceDb = $db_functions->get_source($connectDb->connect_source_id);
                     // *** Always show title of source, show link only after permission check ***
                     $text .= '<a name="source_ref' . ($j + 1) . '"><b>' . ($j + 1) . ')</b></a>';
-                    //if ($user['group_sources']=='j'){
-                    //if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1'){
                     if ($user['group_sources'] == 'j' && $sourceDb->source_title != '') {
                         if ($humo_option["url_rewrite"] == "j") {
                             $url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;

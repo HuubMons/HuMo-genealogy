@@ -149,7 +149,7 @@ $nr_sources = count($connect_sql);
                             <div class="row mb-2">
                                 <label for="source_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_place[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_place); ?>" size="15" class="form-control form-control-sm">
+                                    <input type="text" name="source_place[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
 
@@ -398,3 +398,10 @@ $nr_sources = count($connect_sql);
     <script src="../assets/js/order_sources.js"></script>
 <?php
 }
+?>
+
+<!-- Autocomplete for place names -->
+<script>
+    var autocompleteSource = "../include/AutocompletePlace.php";
+</script>
+<script src="../assets/js/place_autocomplete.js"></script>

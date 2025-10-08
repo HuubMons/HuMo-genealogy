@@ -124,7 +124,7 @@ class PhotoalbumModel extends BaseModel
         $photoalbum['media_files'] = [];
 
         // *** Create an array of all pics with person_id's. Also check for OBJECT (Family Tree Maker GEDCOM file) ***
-        $qry = "SELECT event_event, event_kind, event_connect_kind, event_connect_id, event_gedcomnr FROM humo_events
+        $qry = "SELECT * FROM humo_events
             WHERE (event_tree_id='" . $this->tree_id . "' AND event_connect_kind='person' AND event_kind='picture' AND event_connect_id NOT LIKE '')
             OR (event_tree_id='" . $this->tree_id . "' AND event_kind='object')
             ORDER BY event_event";
@@ -168,7 +168,7 @@ class PhotoalbumModel extends BaseModel
             if ($search_media) {
                 $quicksearch = str_replace(" ", "%", $search_media);
                 $querie = "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
-                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_gedcomnumber='" . $picqryDb->event_connect_id . "'
+                    WHERE pers_tree_id='" . $this->tree_id . "' AND pers_id='" . $picqryDb->person_id . "'
                     AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
                 $persoon = $this->dbh->query($querie);
                 $personDb = $persoon->fetch(PDO::FETCH_OBJ);
@@ -179,9 +179,9 @@ class PhotoalbumModel extends BaseModel
 
             // *** Check for privacy of connected persons ***
             if ($process_picture) {
-                if ($picqryDb->event_connect_id) {
+                if ($picqryDb->person_id) {
                     // *** Check privacy filter ***
-                    $personDb = $this->db_functions->get_person($picqryDb->event_connect_id);
+                    $personDb = $this->db_functions->get_person_with_id($picqryDb->person_id);
                     $privacy = $personPrivacy->get_privacy($personDb);
                     if ($privacy) {
                         $process_picture = false;
@@ -212,20 +212,12 @@ class PhotoalbumModel extends BaseModel
             if ($process_picture) {
                 if (!isset($photoalbum['media_files']) || !in_array($picname, $photoalbum['media_files'])) {
                     // this pic does not appear in the array yet
-                    //$connected_persons[$picname]=$picqryDb->event_connect_id; // example: $connected_persons['an_example.jpg']="I354"
-
                     // *** Skip PDF and RTF files ***
                     $check_file = strtolower($picname);
                     if (substr($check_file, -4) !== '.pdf' && substr($check_file, -4) !== '.rtf') {
                         $photoalbum['media_files'][] = $picname;
                     }
                 }
-
-                //else {
-                // pic already exists in array with other person_id. Append this one.
-                //	$connected_persons[$picname] .= '@@'.$picqryDb->event_connect_id; // example: $connected_persons['an_example.jpg']="I354@@I653"
-                //	//$photoalbum['media_files'][]=$picname;
-                //}
             }
 
             // *** Check if media belongs to category ***

@@ -30,8 +30,8 @@ foreach ($familytrees as $familytree) {
     // *** Check if family tree is shown or hidden for user group ***
     $hide_tree_array = explode(";", $user['group_hide_trees']);
     if (!in_array($familytree->tree_id, $hide_tree_array)) {
-        $person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='" . $familytree->tree_id . "' ORDER BY pers_lastname");
-        while ($personDb = $person_qry->fetch(PDO::FETCH_OBJ)) {
+        $persons = $db_functions->get_persons($familytree->tree_id);
+        foreach ($persons as $personDb) {
             $privacy = $personPrivacy->get_privacy($personDb);
             // *** Completely filter person ***
             if (
@@ -103,5 +103,5 @@ foreach ($familytrees as $familytree) {
                 echo $text . "\r\n";
             }
         }
-    } // *** End of hidden family tree ***
+    }
 }

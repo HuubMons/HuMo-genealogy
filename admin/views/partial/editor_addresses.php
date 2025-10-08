@@ -172,8 +172,7 @@ if ($count > 0) {
                                             <label for="address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
-                                                    <input type="text" name="address_place_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_place; ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                                    <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=<?= $form; ?>&amp;place_item=address_place&amp;address_id=<?= $address3Db->address_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
+                                                    <input type="text" name="address_place_<?= $address3Db->address_id; ?>" id="address_place_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_place; ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                                 </div>
                                             </div>
                                         </div>

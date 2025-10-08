@@ -35,6 +35,7 @@ if (isset($_SESSION['admin_tree_id'])) {
 
         // *** Add event. If event is new, use: $new_event=true. ***
         // *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+        // OLD CODE:
         add_event(false, $event_connect_kind, $event_connect_id, $event_kind, $event_event, $event_gedcom, '', '', '');
     }
     */

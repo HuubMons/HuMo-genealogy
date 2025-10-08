@@ -468,7 +468,7 @@ class CalculateDates
     // *** Function calculate_marriage added by Huub Mons ***
     public function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check = false)
     {
-        $marr_date = strtoupper($marr_date);
+        $marr_date = strtoupper($marr_date ?? '');
 
         // *** Also calculate marriage if only marriage date is known ***
         $baptism = false;

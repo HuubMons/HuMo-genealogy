@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Edit or add an (shared) address.
  */
@@ -141,7 +142,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                     <?= __('Place'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="address_place" value="<?= htmlspecialchars($address_place); ?>" size="50" class="form-control form-control-sm">
+                    <input type="text" name="address_place" value="<?= htmlspecialchars($address_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="50" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
 
@@ -299,6 +300,13 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
         <iframe src="<?= $url; ?>" class="iframe">
             <p>Your browser does not support iframes.</p>
         </iframe>
+    <?php } ?>
+
+    <!-- Autocomplete for place names -->
+    <script>
+        var autocompleteSource = "../include/AutocompletePlace.php";
+    </script>
+    <script src="../assets/js/place_autocomplete.js"></script>
+
 <?php
-    }
 }

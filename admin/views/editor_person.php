@@ -24,6 +24,43 @@ Don't use this link, witness and other buttons won't work anymore
     <input type="hidden" name="pers_birth_date_previous" value="<?= $pers_birth_date; ?>">
     <input type="hidden" name="pers_bapt_date_previous" value="<?= $pers_bapt_date; ?>">
 
+    <!-- Event IDs needed to check if event is changed -->
+    <?php if (isset($person->pers_birth_event_id)) { ?>
+        <input type="hidden" name="pers_birth_event_id" value="<?= $person->pers_birth_event_id; ?>">
+
+        <input type="hidden" name="pers_birth_time_previous" value="<?= $pers_birth_time; ?>">
+        <input type="hidden" name="pers_birth_place_previous" value="<?= $pers_birth_place; ?>">
+        <input type="hidden" name="pers_birth_text_previous" value="<?= $pers_birth_text; ?>">
+        <input type="hidden" name="pers_stillborn_previous" value="<?= $pers_stillborn == 'y' ? 'y' : 'n'; ?>">
+        <input type="hidden" name="pers_birth_date_hebnight_previous" value="<?= $pers_birth_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+    <?php } ?>
+    <?php if (isset($person->pers_bapt_event_id)) { ?>
+        <input type="hidden" name="pers_bapt_event_id" value="<?= $person->pers_bapt_event_id; ?>">
+
+        <input type="hidden" name="pers_bapt_place_previous" value="<?= $pers_bapt_place; ?>">
+        <input type="hidden" name="pers_bapt_text_previous" value="<?= $pers_bapt_text; ?>">
+    <?php } ?>
+    <?php if (isset($person->pers_death_event_id)) { ?>
+        <input type="hidden" name="pers_death_event_id" value="<?= $person->pers_death_event_id; ?>">
+
+        <input type="hidden" name="pers_death_date_previous" value="<?= $pers_death_date; ?>">
+        <input type="hidden" name="pers_death_time_previous" value="<?= $pers_death_time; ?>">
+        <input type="hidden" name="pers_death_place_previous" value="<?= $pers_death_place; ?>">
+        <input type="hidden" name="pers_death_text_previous" value="<?= $pers_death_text; ?>">
+        <input type="hidden" name="pers_death_cause_previous" value="<?= $pers_death_cause; ?>">
+        <input type="hidden" name="pers_death_age_previous" value="<?= $pers_death_age; ?>">
+        <input type="hidden" name="pers_death_date_hebnight_previous" value="<?= $pers_death_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+    <?php } ?>
+    <?php if (isset($person->pers_buried_event_id)) { ?>
+        <input type="hidden" name="pers_buried_event_id" value="<?= $person->pers_buried_event_id; ?>">
+
+        <input type="hidden" name="pers_buried_date_previous" value="<?= $pers_buried_date; ?>">
+        <input type="hidden" name="pers_buried_place_previous" value="<?= $pers_buried_place; ?>">
+        <input type="hidden" name="pers_buried_text_previous" value="<?= $pers_buried_text; ?>">
+        <input type="hidden" name="pers_cremation_previous" value="<?= $pers_cremation; ?>">
+        <input type="hidden" name="pers_buried_date_hebnight_previous" value="<?= $pers_buried_date_hebnight == 'y' ? 'y' : 'n'; ?>">
+    <?php } ?>
+
     <?php
     if ($editor['add_person'] == false) {
         // *** Update settings ***
@@ -149,7 +186,8 @@ Don't use this link, witness and other buttons won't work anymore
                         <b><?= __('Search'); ?>: <a href="https://www.openarch.nl/search.php?name=<?= urlencode($name . $year_or_period); ?>" target="_blank">https://www.openarch.nl/search.php?name=<?= $name . $year_or_period; ?></a></b><br>
                         <?php
                         if (isset($jsonData["response"]["docs"]) && count($jsonData["response"]["docs"]) > 0) {
-                            foreach ($jsonData["response"]["docs"] as $OAresult) {   # het voordeel van JSON/json_dcode is dat je er eenvoudig mee kunt werken (geen Iterator nodig)
+                            foreach ($jsonData["response"]["docs"] as $OAresult) {
+                                // het voordeel van JSON/json_dcode is dat je er eenvoudig mee kunt werken (geen Iterator nodig)
                                 $OAday = '';
                                 if (isset($OAresult["eventdate"]["day"])) {
                                     $OAday = $OAresult["eventdate"]["day"];
@@ -353,10 +391,27 @@ Don't use this link, witness and other buttons won't work anymore
                 <td><a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">[+]</span> <?= __('All'); ?></a></td>
 
                 <th style="font-size: 1.5em;" colspan="2">
-                    <?php
-                    if ($editor['add_person'] == false) {
-                    ?>
+                    <?php if ($editor['add_person'] == false) { ?>
                         <input type="submit" name="person_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+
+                        <!-- Popover to show user information -->
+                        <?php
+                        // *** Person added by user ***
+                        $content = __('Added by') . ' ';
+                        if ($person->pers_new_user_id || $person->pers_new_datetime) {
+                            $content .= $db_functions->get_user_name($person->pers_new_user_id) . ' ' . $languageDate->show_datetime($person->pers_new_datetime);
+                        }
+                        // *** Person changed by user ***
+                        if ($person->pers_changed_user_id || $person->pers_changed_datetime) {
+                            $content .=  '<br>' . __('Changed by') . ' ';
+                            $content .= $db_functions->get_user_name($person->pers_changed_user_id) . ' ' . $languageDate->show_datetime($person->pers_changed_datetime);
+                        }
+                        ?>
+                        <button type="button" class="btn btn-sm btn-info"
+                            data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide" data-bs-html="true"
+                            data-bs-content="<?= $content; ?>">
+                            <?= __('Info'); ?>
+                        </button>
 
                         <?php
                         echo '[' . $pers_gedcomnumber . '] ' . show_person($person->pers_gedcomnumber, false, false);
@@ -429,20 +484,24 @@ Don't use this link, witness and other buttons won't work anymore
 
                     <?php
                     if ($humo_option['admin_hebname'] == "y") {
-                        // user requested hebrew name field to be displayed here, not under "events"
-                        $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_kind='name' AND event_connect_kind='person'";
+                        $sql = "SELECT * FROM humo_events 
+                            WHERE event_gedcom = '_HEBN' AND event_kind='name'
+                            AND person_id = '" . $person->pers_id . "'";
                         $result = $dbh->query($sql);
                         if ($result->rowCount() > 0) {
                             $hebnameDb = $result->fetch(PDO::FETCH_OBJ);
                             $he_name =  $hebnameDb->event_event;
+                            $he_name_id = $hebnameDb->event_id;
                         } else {
                             $he_name = '';
+                            $he_name_id = '';
                         }
                     ?>
                         <!-- Hebrew name -->
                         <div class="row mb-2">
                             <label for="hebrew_name" class="col-md-3 col-form-label"><?= ucfirst(__('Hebrew name')); ?></label>
                             <div class="col-md-7">
+                                <input type="hidden" name="even_hebname_id" value="<?= $he_name_id; ?>">
                                 <input type="text" name="even_hebname" value="<?= htmlspecialchars($he_name); ?>" size="35" class="form-control form-control-sm">
                                 <span style="font-size: 13px;"><?= __("For example: Joseph ben Hirsch Zvi"); ?></span>
                             </div>
@@ -680,8 +739,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <label for="pers_birth_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_birth_place" value="<?= htmlspecialchars($pers_birth_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                                <input type="text" name="pers_birth_place" id="pers_birth_place" value="<?= htmlspecialchars($pers_birth_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -730,21 +788,22 @@ Don't use this link, witness and other buttons won't work anymore
         // *** Use hideshow to show and hide the editor lines ***
         $hideshow = '201';
         // *** If items are missing show all editor fields ***
-        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+        $display = ' display:none;';
+        //if ($address3Db->address_address=='' AND $address3Db->address_place==''){
+        //    $display='';
+        //}
 
-        $sql = "SELECT * FROM humo_events WHERE event_tree_id = '" . $tree_id . "' AND event_kind = 'birth_declaration' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
-        $result = $dbh->query($sql);
-        if ($result->rowCount() > 0) {
-            $birth_declDb = $result->fetch(PDO::FETCH_OBJ);
+        $birth_decl_id = '';
+        $birth_decl_date = '';
+        $birth_decl_place = '';
+        $birth_decl_text = '';
+        // *** Normally one 1 result should be returned, but use foreach to prevent errors ***
+        $birth_decl_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'birth_declaration');
+        foreach ($birth_decl_qry as $birth_declDb) {
             $birth_decl_id = $birth_declDb->event_id;
             $birth_decl_date = $birth_declDb->event_date;
-            $birth_decl_place = $birth_declDb->event_place;
+            $birth_decl_place = $birth_declDb->event_place ? $birth_declDb->event_place : '';
             $birth_decl_text = $birth_declDb->event_text;
-        } else {
-            $birth_decl_id = '';
-            $birth_decl_date = '';
-            $birth_decl_place = '';
-            $birth_decl_text = '';
         }
         ?>
         <tr>
@@ -770,8 +829,7 @@ Don't use this link, witness and other buttons won't work anymore
                     <div class="row mb-2">
                         <label for="birth_decl_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                         <div class="col-md-7">
-                            <!-- TODO check this -->
-                            <?php $editor_cls->date_show($birth_decl_date, 'birth_decl_date', '', '', ''); ?>
+                            <?php $editor_cls->date_show($birth_decl_date, 'birth_decl_date', '', 'n', ''); ?>
                         </div>
                     </div>
 
@@ -779,10 +837,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <label for="birth_decl_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="birth_decl_place" value="<?= htmlspecialchars($birth_decl_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=birth_decl_place","","<?= $field_popup; ?>")'>
-                                    <img src="../images/search.png" alt="<?= __('Search'); ?>">
-                                </a><br>
+                                <input type="text" name="birth_decl_place" id="birth_decl_place" value="<?= htmlspecialchars($birth_decl_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -816,28 +871,33 @@ Don't use this link, witness and other buttons won't work anymore
                 </span>
             </td>
         </tr>
+
         <?php
         // *** Birth declaration ***
         if ($editor['add_person'] == false) {
-            //show_event($event_connect_kind, $event_connect_id, $event_kind)
             echo $EditorEvent->show_event('birth_declaration', $pers_gedcomnumber, 'witness');
         }
 
         // **** BRIT MILA ***
         if ($humo_option['admin_brit'] == "y" && $pers_sexe != "F") {
-
             // *** Use hideshow to show and hide the editor lines ***
             $hideshow = '20';
             // *** If items are missing show all editor fields ***
-            $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+            $display = ' display:none;';
+            //if ($address3Db->address_address=='' AND $address3Db->address_place==''){
+            //  $display='';
+            //}
 
-            $sql = "SELECT * FROM humo_events WHERE event_gedcom = '_BRTM' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
+            $sql = "SELECT e.*, l.location_location AS event_place
+                FROM humo_events e
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
+                WHERE e.event_gedcom = '_BRTM' AND e.person_id = '" . $person->pers_id . "'";
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $britDb = $result->fetch(PDO::FETCH_OBJ);
                 $britid = $britDb->event_id;
                 $britdate = $britDb->event_date;
-                $britplace = $britDb->event_place;
+                $britplace = $britDb->event_place ? $britDb->event_place : '';
                 $brittext = $britDb->event_text;
             } else {
                 $britid = '';
@@ -845,10 +905,13 @@ Don't use this link, witness and other buttons won't work anymore
                 $britplace = '';
                 $brittext = '';
             }
-            //$britDb = $result->fetch(PDO::FETCH_OBJ);
         ?>
             <tr>
-                <td><?= ucfirst(__('Brit Mila')); ?></td>
+                <td>
+                    <?= ucfirst(__('Brit Mila')); ?>
+
+                    <input type="hidden" name="brit_id" value="<?= $britid; ?>">
+                </td>
                 <td colspan="2">
                     <?php
                     $hideshow_text = hideshow_date_place($britdate, $britplace);
@@ -871,7 +934,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <div class="row mb-2">
                             <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="even_brit_place" value="<?= htmlspecialchars($britplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="even_brit_place" id="even_brit_place" value="<?= htmlspecialchars($britplace); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
 
@@ -904,7 +967,6 @@ Don't use this link, witness and other buttons won't work anymore
                         }
 
                         echo '<i>' . __('To display this, the option "Show events" has to be checked in "Users -> Groups"') . '</i>';
-                        // echo '<a href="#" onClick=\'window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'")\'><img src="../images/search.png" alt="'.__('Search').'"></a>';
                         ?>
                     </span>
                 </td>
@@ -917,15 +979,22 @@ Don't use this link, witness and other buttons won't work anymore
             // *** Use hideshow to show and hide the editor lines ***
             $hideshow = '21';
             // *** If items are missing show all editor fields ***
-            $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+            $display = ' display:none;';
+            //if ($address3Db->address_address=='' AND $address3Db->address_place==''){
+            //  $display='';
+            //}
 
-            $sql = "SELECT * FROM humo_events WHERE (event_gedcom = 'BARM' OR event_gedcom = 'BASM') AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
+            $sql = "SELECT e.*, l.location_location AS event_place
+                FROM humo_events e
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
+                WHERE (e.event_gedcom = 'BARM' OR e.event_gedcom = 'BASM')
+                AND e.person_id = '" . $person->pers_id . "'";
             $result = $dbh->query($sql);
             if ($result->rowCount() > 0) {
                 $barmDb = $result->fetch(PDO::FETCH_OBJ);
                 $barid =  $barmDb->event_id;
                 $bardate =  $barmDb->event_date;
-                $barplace =  $barmDb->event_place;
+                $barplace =  $barmDb->event_place ? $barmDb->event_place : '';
                 $bartext =  $barmDb->event_text;
             } else {
                 $barid = '';
@@ -938,6 +1007,8 @@ Don't use this link, witness and other buttons won't work anymore
             <tr>
                 <td>
                     <?= $pers_sexe == "F" ? __('Bat Mitzvah') : __('Bar Mitzvah'); ?>
+
+                    <input type="hidden" name="barm_id" value="<?= $barid; ?>">
                 </td>
 
                 <td colspan="2">
@@ -960,7 +1031,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <div class="row mb-2">
                             <label for="even_barm_date" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="even_barm_place" value="<?= htmlspecialchars($barplace); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
+                                <input type="text" name="even_barm_place" id="even_barm_place" value="<?= htmlspecialchars($barplace); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
 
@@ -1002,7 +1073,10 @@ Don't use this link, witness and other buttons won't work anymore
         // *** Use hideshow to show and hide the editor lines ***
         $hideshow = '3';
         // *** If items are missing show all editor fields ***
-        $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+        $display = ' display:none;';
+        //if ($address3Db->address_address=='' AND $address3Db->address_place==''){
+        //  $display='';
+        //}
         ?>
         <tr>
             <td><a name="baptised"></a><b><?= ucfirst(__('baptised')); ?></b></td>
@@ -1034,8 +1108,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <label for="pers_bapt_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_bapt_place" value="<?= htmlspecialchars($pers_bapt_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                                <input type="text" name="pers_bapt_place" id="pers_bapt_place" value="<?= htmlspecialchars($pers_bapt_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -1167,8 +1240,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <label for="pers_death_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_death_place" value="<?= htmlspecialchars($pers_death_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                                <input type="text" name="pers_death_place" id="pers_death_place" value="<?= htmlspecialchars($pers_death_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -1191,7 +1263,7 @@ Don't use this link, witness and other buttons won't work anymore
                     </div>
 
                     <div class="row mb-2">
-                        <label for="pers_death_place" class="col-md-3 col-form-label"><?= ucfirst(__('death time')); ?></label>
+                        <label for="pers_death_time" class="col-md-3 col-form-label"><?= ucfirst(__('death time')); ?></label>
                         <div class="col-md-2">
                             <input type="text" name="pers_death_time" value="<?= $pers_death_time; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
                         </div>
@@ -1248,7 +1320,7 @@ Don't use this link, witness and other buttons won't work anymore
 
                     <?php if (!isset($_GET['add_person'])) { ?>
                         <div class="row mb-2">
-                            <label for="pers_birth_text" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
+                            <label for="pers_death_source" class="col-md-3 col-form-label"><?= __('Source'); ?></label>
                             <div class="col-md-7">
                                 <?php
                                 source_link3('person', 'pers_death_source', $pers_gedcomnumber);
@@ -1269,19 +1341,17 @@ Don't use this link, witness and other buttons won't work anymore
         // *** If items are missing show all editor fields ***
         $display = ' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
-        $sql = "SELECT * FROM humo_events WHERE event_tree_id = '" . $tree_id . "' AND event_kind = 'death_declaration' AND event_connect_id = '" . $pers_gedcomnumber . "' AND event_connect_kind='person'";
-        $result = $dbh->query($sql);
-        if ($result->rowCount() > 0) {
-            $death_declDb = $result->fetch(PDO::FETCH_OBJ);
+        $death_decl_id = '';
+        $death_decl_date = '';
+        $death_decl_place = '';
+        $death_decl_text = '';
+        // *** Normally one 1 result should be returned, but use foreach to prevent errors ***
+        $death_decl_qry = $db_functions->get_events_connect('person', $pers_gedcomnumber, 'death_declaration');
+        foreach ($death_decl_qry as $death_declDb) {
             $death_decl_id = $death_declDb->event_id;
             $death_decl_date = $death_declDb->event_date;
-            $death_decl_place = $death_declDb->event_place;
+            $death_decl_place = $death_declDb->event_place ? $death_declDb->event_place : '';
             $death_decl_text = $death_declDb->event_text;
-        } else {
-            $death_decl_id = '';
-            $death_decl_date = '';
-            $death_decl_place = '';
-            $death_decl_text = '';
         }
         ?>
         <tr>
@@ -1307,8 +1377,7 @@ Don't use this link, witness and other buttons won't work anymore
                     <div class="row mb-2">
                         <label for="death_decl_date" class="col-md-3 col-form-label"><?= __('Date'); ?></label>
                         <div class="col-md-7">
-                            <!-- TODO check this -->
-                            <?php $editor_cls->date_show($death_decl_date, 'death_decl_date', '', '', ''); ?>
+                            <?php $editor_cls->date_show($death_decl_date, 'death_decl_date', '', 'n', ''); ?>
                         </div>
                     </div>
 
@@ -1316,8 +1385,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <label for="death_decl_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="death_decl_place" value="<?= htmlspecialchars($death_decl_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=death_decl_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                                <input type="text" name="death_decl_place" id="death_decl_place" value="<?= htmlspecialchars($death_decl_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -1393,8 +1461,7 @@ Don't use this link, witness and other buttons won't work anymore
                         <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
                             <div class="input-group">
-                                <input type="text" name="pers_buried_place" value="<?= htmlspecialchars($pers_buried_place); ?>" size="<?= $field_place; ?>" class="form-control form-control-sm">
-                                <a href="#" onClick='window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a><br>
+                                <input type="text" name="pers_buried_place" id="pers_buried_place" value="<?= htmlspecialchars($pers_buried_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                             </div>
                         </div>
                     </div>
@@ -1583,7 +1650,7 @@ Don't use this link, witness and other buttons won't work anymore
                     <div class="row mb-2">
                         <label for="event_place_profession" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
-                            <input type="text" name="event_place_profession" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            <input type="text" name="event_place_profession" id="event_place_profession" value="" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_date; ?>" class="place-autocomplete form-control form-control-sm">
                         </div>
                     </div>
 
@@ -1642,7 +1709,7 @@ Don't use this link, witness and other buttons won't work anymore
                     <div class="row mb-2">
                         <label for="event_place_religion" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                         <div class="col-md-7">
-                            <input type="text" name="event_place_religion" value="" size="<?= $field_date; ?>" class="form-control form-control-sm">
+                            <input type="text" name="event_place_religion" id="event_place_religion" value="" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_date; ?>" class="place-autocomplete form-control form-control-sm">
                         </div>
                     </div>
 
@@ -1711,14 +1778,10 @@ Don't use this link, witness and other buttons won't work anymore
                 <td style="border-left:0px;">
                     <select size="1" name="pers_quality" aria-label="<?= __('Quality of data'); ?>" class="form-select form-select-sm" style="width: 400px">
                         <option value=""><?= ucfirst(__('quality: default'));?></option>
-                        $selected=''; if ($pers_quality=='0'){ $selected=' selected'; }
-                        <option value="0"<?= $selected;?>><?= ucfirst(__('quality: unreliable evidence or estimated data'));?></option>
-                        $selected=''; if ($pers_quality=='1'){ $selected=' selected'; }
-                        <option value="1"<?= $selected;?>><?= ucfirst(__('quality: questionable reliability of evidence'));?></option>
-                        $selected=''; if ($pers_quality=='2'){ $selected=' selected'; }
-                        <option value="2"<?= $selected;?>><?= ucfirst(__('quality: data from secondary evidence'));?></option>
-                        $selected=''; if ($pers_quality=='3'){ $selected=' selected'; }
-                        <option value="3"<?= $selected;?>><?= ucfirst(__('quality: data from direct source'));?></option>
+                        <option value="0"<?= $pers_quality=='0' ? ' selected' : '';?>><?= ucfirst(__('quality: unreliable evidence or estimated data'));?></option>
+                        <option value="1"<?= $pers_quality=='1' ? ' selected' : '';?>><?= ucfirst(__('quality: questionable reliability of evidence'));?></option>
+                        <option value="2"<?= $pers_quality=='2' ? ' selected' : '';?>><?= ucfirst(__('quality: data from secondary evidence'));?></option>
+                        <option value="3"<?= $pers_quality=='3' ? ' selected' : '';?>><?= ucfirst(__('quality: data from direct source'));?></option>
                     </select>
                 </td>
                 <td></td>
@@ -1796,30 +1859,6 @@ Don't use this link, witness and other buttons won't work anymore
                         <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>)<br>
                         <b><?= $noteDb->note_names; ?></b><br>
                         <textarea readonly rows="1" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
-                    </td>
-                </tr>
-            <?php
-            }
-
-            // *** Person added by user ***
-            if ($person->pers_new_user_id || $person->pers_new_datetime) {
-            ?>
-                <tr>
-                    <td><?= __('Added by'); ?></td>
-                    <td colspan="2">
-                        <?= $languageDate->show_datetime($person->pers_new_datetime) . ' ' . $db_functions->get_user_name($person->pers_new_user_id); ?>
-                    </td>
-                </tr>
-            <?php
-            }
-
-            // *** Person changed by user ***
-            if ($person->pers_changed_user_id || $person->pers_changed_datetime) {
-            ?>
-                <tr>
-                    <td><?= __('Changed by'); ?></td>
-                    <td colspan="2">
-                        <?= $languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $db_functions->get_user_name($person->pers_changed_user_id); ?>
                     </td>
                 </tr>
         <?php

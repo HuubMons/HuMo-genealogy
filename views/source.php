@@ -166,18 +166,14 @@ if (!isset($data["sourceDb"]->source_id)) {
                         $event_Db = $db_functions->get_event($connectDb->connect_connect_id);
                         // *** Person source ***
                         if (isset($event_Db->event_connect_kind) && $event_Db->event_connect_kind == 'person' && $event_Db->event_connect_id) {
-                            $personDb = $db_functions->get_person($event_Db->event_connect_id);
+                            $personDb = $db_functions->get_person_with_id($event_Db->person_id);
                             $privacy = $personPrivacy->get_privacy($personDb);
                             $name = $personName->get_person_name($personDb, $privacy);
-
-                            echo __('Source for:');
-
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                             $url = $personLink->get_person_link($personDb);
-                            $privacy = $personPrivacy->get_privacy($personDb);
-                            $name = $personName->get_person_name($personDb, $privacy);
-                            echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
 
+                            echo __('Source for:');
+                            echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
                             if ($event_Db->event_event) {
                                 echo ' [' . $event_Db->event_event . ']';
                             }
@@ -243,7 +239,7 @@ if (!isset($data["sourceDb"]->source_id)) {
                         // *** Family source ***
                         if (isset($event_Db->event_connect_kind) && $event_Db->event_connect_kind == 'family' && $event_Db->event_connect_id) {
                             echo __('Source for family:');
-                            $familyDb = $db_functions->get_family($event_Db->event_connect_id);
+                            $familyDb = $db_functions->get_family_with_id($event_Db->relation_id);
 
                             if ($familyDb->fam_man) {
                                 $personDb = $db_functions->get_person($familyDb->fam_man);

@@ -46,7 +46,7 @@ class AdminMapsModel extends AdminBaseModel
             }
         } elseif (isset($_POST['api_1'])) {
             // *** No value in database, add new value ***
-            $stmt = $this->dbh->prepare("INSERT INTO humo_settings SET setting_value = :setting_value WHERE setting_variable = 'google_api_key'");
+            $stmt = $this->dbh->prepare("INSERT INTO humo_settings SET setting_value = :setting_value, setting_variable = 'google_api_key'");
             $stmt->bindValue(':setting_value', $_POST['api_1'], PDO::PARAM_STR);
             $stmt->execute();
 

@@ -28,7 +28,7 @@ if (isset($_SESSION['dupl_arr_' . $trees['tree_id']])) {
     <form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">
         <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
         <input type="submit" style="min-width:150px" name="duplicate_compare" value="<?= __('Continue duplicate merge'); ?>" class="btn btn-sm btn-success">
-    </form>
+    </form><br><br>
 <?php } ?>
 
 <form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">

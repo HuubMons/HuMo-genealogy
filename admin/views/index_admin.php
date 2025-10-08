@@ -86,7 +86,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
 
                 <!-- Get database settings -->
                 <form method="post" action="index.php" style="display : inline;">
-                    <table class="table" border="1" cellspacing="0" bgcolor="#DDFD9B">
+                    <table class="table table-striped-columns" border="1" cellspacing="0" bgcolor="#DDFD9B">
                         <tr>
                             <th><?= __('Database setting'); ?></th>
                             <th><?= __('Database value'); ?></th>

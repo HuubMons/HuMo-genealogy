@@ -18,7 +18,7 @@ class GeneralSettings
 
         // *** Version line, DO NOT CHANGE THIS LINE ***
         // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-        $humo_option["version"] = '6.9.3';  // Version line, DO NOT CHANGE THIS LINE
+        $humo_option["version"] = '7.0';  // Version line, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update check using GitHub.
 
         // *** Beta (not stable enough for production, but it's functional ***
@@ -27,7 +27,7 @@ class GeneralSettings
 
         // *** Version date, needed for update check ***
         //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-        $humo_option["version_date"] = '2025-08-26';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+        $humo_option["version_date"] = '2025-10-08';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
         // *** Test lines for update procedure ***
@@ -260,10 +260,12 @@ class GeneralSettings
             $dbh->query("INSERT INTO humo_settings SET setting_variable='gedcom_read_order_by_fams', setting_value='n'");
         }
 
+        /*
         if (!isset($humo_option["gedcom_read_process_geo_location"])) {
             $humo_option["gedcom_read_process_geo_location"] = 'n';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='gedcom_read_process_geo_location', setting_value='n'");
         }
+        */
 
         if (!isset($humo_option["gedcom_process_pict_path"])) {
             $humo_option["gedcom_process_pict_path"] = 'file_name';
@@ -329,12 +331,6 @@ class GeneralSettings
         if (!isset($humo_option["one_name_thename"])) {
             $humo_option["one_name_thename"] = '';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='one_name_thename', setting_value=''");
-        }
-
-        if (!isset($humo_option["geo_trees"])) {
-            $geo_string = '';
-            $humo_option["geo_trees"] = $geo_string;
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value='" . $geo_string . "'");
         }
 
         // *** Slideshow_show homepage ***
@@ -510,14 +506,16 @@ class GeneralSettings
 
         // *** IP API used for country statistics ***
         if (!isset($humo_option["ip_api_collection"])) {
-            $humo_option["ip_api_collection"] = '';
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_collection', setting_value=''");
+            // *** Default option in oct. 2025 ***
+            $humo_option["ip_api_collection"] = 'dis';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_collection', setting_value='dis'");
         }
 
+        // *** Disabled in settings ***
         if (!isset($humo_option["ip_api_geoplugin_old"])) {
-            // *** Default option in 2025 ***
-            $humo_option["ip_api_geoplugin_old"] = 'ena';
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_geoplugin_old', setting_value='ena'");
+            // *** Was default option in sept. 2025 ***
+            $humo_option["ip_api_geoplugin_old"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='ip_api_geoplugin_old', setting_value=''");
         }
 
         if (!isset($humo_option["ip_api_geoplugin"])) {

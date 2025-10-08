@@ -122,6 +122,34 @@ table.standard {
 .popover-wide {
     --bs-popover-max-width: 800px;
 }
+
 .popover-extra-wide {
     --bs-popover-max-width: 1000px;
+}
+
+/* Hide autocomplete results at screen */
+.ui-helper-hidden-accessible {
+    display: none;
+}
+
+/* Improve layout of autocomplete results */
+.ui-autocomplete {
+    max-height: 250px;
+    max-width: 400px;
+    overflow-y: auto;
+    font-size: 1rem;
+    background: #fff;
+    border: 1px solid #bdbdbd;
+    z-index: 1051 !important;
+}
+
+.ui-menu-item-wrapper {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.ui-state-active,
+.ui-menu-item-wrapper.ui-state-active {
+    background: #007bff !important;
+    color: #fff !important;
 }

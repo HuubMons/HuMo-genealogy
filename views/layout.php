@@ -202,8 +202,12 @@ $menu_top = getActiveTopMenu($page);
 
     // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
     // *** Needed for zoomslider ***
+    // *** Needed for autocomplete in list script ***
     if (
-        strpos($_SERVER['REQUEST_URI'], "maps") !== false || strpos($_SERVER['REQUEST_URI'], "descendant") !== false || strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
+        strpos($_SERVER['REQUEST_URI'], "maps") !== false
+        || strpos($_SERVER['REQUEST_URI'], "descendant") !== false
+        || strpos($_SERVER['REQUEST_URI'], "HOUR") !== false
+        || strpos($_SERVER['REQUEST_URI'], "list") !== false
     ) {
     ?>
         <script src="assets/jquery/jquery.min.js"></script>
@@ -610,8 +614,6 @@ $menu_top = getActiveTopMenu($page);
                         //
                     } else {
                         // make sure at least one of the submenus is activated, otherwise don't show TOOLS menu
-                        //	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
-                        //		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
                         if (
                             $user["group_birthday_list"] == 'j' || $user["group_showstatistics"] == 'j' || $user["group_relcalc"] == 'j' || $user["group_googlemaps"] == 'j' || $user["group_contact"] == 'j' && $selectedFamilyTree->tree_owner && $selectedFamilyTree->tree_email || $user["group_latestchanges"] == 'j'
                         ) {

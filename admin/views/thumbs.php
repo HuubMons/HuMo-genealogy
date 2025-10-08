@@ -163,6 +163,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 $is_thumblib = true;
             }
 
+            $no_shell_exec = !function_exists('shell_exec') || in_array('shell_exec', array_map('trim', explode(',', ini_get('disable_functions'))));
+
             // Auto create thumbnails
             if (isset($_POST["thumbnail_auto_create"]) && ($_POST["thumbnail_auto_create"] == 'y' || $_POST["thumbnail_auto_create"] == 'n')) {
                 $db_functions->update_settings('thumbnail_auto_create', $_POST["thumbnail_auto_create"]);
@@ -190,7 +192,11 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             <?= __('Ghostscript (PDF support)'); ?>
                         </div>
                         <div class="col-md-auto">
-                            <b><?= (trim(shell_exec('type -P gs'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')); ?></b>
+                            <?php if ($no_shell_exec) { ?>
+                                <b><?= __('Unknown (shell_exec disabled)'); ?></b>
+                            <?php } else { ?>
+                                <b><?= (trim(shell_exec('type -P gs'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')); ?></b>
+                            <?php } ?>
                         </div>
                     </div>
 
@@ -199,7 +205,11 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             <?= __('ffmpeg (movie support)'); ?>
                         </div>
                         <div class="col-md-auto">
-                            <b><?= (trim(shell_exec('type -P ffmpeg'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')); ?></b>
+                            <?php if ($no_shell_exec) { ?>
+                                <b><?= __('Unknown (shell_exec disabled)'); ?></b>
+                            <?php } else { ?>
+                                <b><?= (trim(shell_exec('type -P ffmpeg'))) ? strtolower(__('Yes')) . '<br>' : strtolower(__('No')); ?></b>
+                            <?php } ?>
                         </div>
                     </div>
                 <?php } ?>
@@ -1043,7 +1053,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                                 while ($afbDb = $afbqry->fetch(PDO::FETCH_OBJ)) {
                                     $db_functions->set_tree_id($tree_id);
-                                    $personDb = $db_functions->get_person($afbDb->event_connect_id);
+                                    $personDb = $db_functions->get_person_with_id($afbDb->person_id);
                                     $privacy = $personPrivacy->get_privacy($personDb);
                                     $name = $personName->get_person_name($personDb, $privacy);
 
@@ -1053,7 +1063,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 }
                         ?>
 
-                                <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+                                <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                                     <div class="card h-100 shadow-sm">
                                         <?= $picture; ?>
                                         <?= $picture_text; ?>

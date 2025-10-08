@@ -3,7 +3,7 @@
 /**--------------------[database functions]----------------------------
  *
  * AUTHOR        : Huub Mons. Created: jan. 2015.
- * THANKS TO    : Michael.j.Falconer
+ * THANKS TO     : Michael.j.Falconer
  *
  * FUNCTIONS:
  *      check_visitor               Check for valid visitor.
@@ -13,6 +13,7 @@
  *      check_person                Check if person is valid.
  *      get_person                  Get a single person from database.
  *      get_person_with_id          Get a single person from database using id number.
+ *      get_persons                 Get all persons from selected family tree.
  *      get_quicksearch_results     Get quicksearch results from database.
  *      count_persons               Count persons in family tree.
  *      check_family                Check if family is valid.
@@ -57,9 +58,7 @@ use PDOException;
 
 class DbFunctions
 {
-    //public int $tree_id = 0;
     public $tree_id = 0;
-    //public string $tree_prefix = '';
     public $tree_prefix = '';
     private $dbh;
 
@@ -121,7 +120,9 @@ class DbFunctions
         $check = $this->dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
         while ($checkDb = $check->fetch(PDO::FETCH_OBJ)) {
             $list = explode("|", $checkDb->setting_value);
-            //if ($ip_address==$list[0]) $allowed=false;
+            //if ($ip_address==$list[0]){
+            //  $allowed=false;
+            //}
             if (strcmp($ip_address, $list[0]) == 0) {
                 $allowed = false;
             }
@@ -281,6 +282,81 @@ class DbFunctions
         }
     }
 
+
+    private function get_person_base_qry()
+    {
+        // MAX is used to get the latest event information (in case there are multiple rows).
+        /*
+        return "SELECT
+            p.*,
+            -- Birth
+            MAX(CASE WHEN e.event_kind = 'birth' THEN e.event_date END) AS pers_birth_date,
+            MAX(CASE WHEN e.event_kind = 'birth' THEN pl.location_location END) AS pers_birth_place,
+            MAX(CASE WHEN e.event_kind = 'birth' THEN e.event_text END) AS pers_birth_text,
+            -- Baptism
+            MAX(CASE WHEN e.event_kind = 'baptism' THEN e.event_date END) AS pers_bapt_date,
+            MAX(CASE WHEN e.event_kind = 'baptism' THEN pl.location_location END) AS pers_bapt_place,
+            MAX(CASE WHEN e.event_kind = 'baptism' THEN e.event_text END) AS pers_bapt_text,
+            -- Death
+            MAX(CASE WHEN e.event_kind = 'death' THEN e.event_date END) AS pers_death_date,
+            MAX(CASE WHEN e.event_kind = 'death' THEN pl.location_location END) AS pers_death_place,
+            MAX(CASE WHEN e.event_kind = 'death' THEN e.event_text END) AS pers_death_text,
+            -- Burial
+            MAX(CASE WHEN e.event_kind = 'burial' THEN e.event_date END) AS pers_buried_date,
+            MAX(CASE WHEN e.event_kind = 'burial' THEN pl.location_location END) AS pers_buried_place,
+            MAX(CASE WHEN e.event_kind = 'burial' THEN e.event_text END) AS pers_buried_text
+        FROM
+            humo_persons p
+        LEFT JOIN humo_events e ON e.person_id = p.pers_id
+        LEFT JOIN humo_location pl ON e.place_id = pl.location_id";
+        */
+
+        // Query without MAX (there is only a single event for each item):
+        return "SELECT
+            p.*,
+
+            COALESCE(birth.event_date, '') AS pers_birth_date,
+            birth.event_time AS pers_birth_time,
+            birthpl.location_location AS pers_birth_place,
+            birth.event_text   AS pers_birth_text,
+            birth.event_id AS pers_birth_event_id,
+            birth.stillborn AS pers_stillborn,
+            birth.event_date_hebnight AS pers_birth_date_hebnight,
+
+            COALESCE(bapt.event_date, '')    AS pers_bapt_date,
+            baptpl.location_location AS pers_bapt_place,
+            bapt.event_text    AS pers_bapt_text,
+            bapt.event_id      AS pers_bapt_event_id,
+            bapt.event_date_hebnight AS pers_bapt_date_hebnight,
+
+            death.event_date   AS pers_death_date,
+            death.event_time   AS pers_death_time,
+            death.event_pers_age AS pers_death_age,
+            deathpl.location_location AS pers_death_place,
+            death.event_text   AS pers_death_text,
+            death.event_id     AS pers_death_event_id,
+            death.cause  AS pers_death_cause,
+            death.event_date_hebnight AS pers_death_date_hebnight,
+
+            burial.event_date  AS pers_buried_date,
+            burialpl.location_location AS pers_buried_place,
+            burial.event_text  AS pers_buried_text,
+            burial.event_id    AS pers_buried_event_id,
+            burial.cremation AS pers_cremation,
+            burial.event_date_hebnight AS pers_buried_date_hebnight
+
+        FROM humo_persons p
+        LEFT JOIN humo_events birth ON birth.person_id = p.pers_id AND birth.event_kind = 'birth'
+        LEFT JOIN humo_location birthpl ON birth.place_id = birthpl.location_id
+        LEFT JOIN humo_events bapt ON bapt.person_id = p.pers_id AND bapt.event_kind = 'baptism'
+        LEFT JOIN humo_location baptpl ON bapt.place_id = baptpl.location_id
+        LEFT JOIN humo_events death ON death.person_id = p.pers_id AND death.event_kind = 'death'
+        LEFT JOIN humo_location deathpl ON death.place_id = deathpl.location_id
+        LEFT JOIN humo_events burial ON burial.person_id = p.pers_id AND burial.event_kind = 'burial'
+        LEFT JOIN humo_location burialpl ON burial.place_id = burialpl.location_id";
+    }
+
+
     /**
      * FUNCTION     : Get a single person from database.
      * QUERY 1      : SELECT * FROM humo_persons WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
@@ -295,68 +371,9 @@ class DbFunctions
                     WHERE pers_tree_id=:pers_tree_id 
                     AND pers_gedcomnumber=:pers_gedcomnumber";
             } else {
-                $sql = "SELECT * FROM humo_persons
-                    WHERE pers_tree_id=:pers_tree_id 
-                    AND pers_gedcomnumber=:pers_gedcomnumber";
-
-                // *** TODO: New query, if items are moved to events table ***
-                // MAX is used to get the latest event information (in case there are multiple rows).
-                /*
-                $sql = "SELECT
-                    p.*,
-                    -- Birth
-                    MAX(CASE WHEN e.event_kind = 'birth' THEN e.event_date END) AS pers_birth_date,
-                    MAX(CASE WHEN e.event_kind = 'birth' THEN pl.location_location END) AS pers_birth_place,
-                    MAX(CASE WHEN e.event_kind = 'birth' THEN e.event_text END) AS pers_birth_text,
-                    -- Baptism
-                    MAX(CASE WHEN e.event_kind = 'baptism' THEN e.event_date END) AS pers_bapt_date,
-                    MAX(CASE WHEN e.event_kind = 'baptism' THEN pl.location_location END) AS pers_bapt_place,
-                    MAX(CASE WHEN e.event_kind = 'baptism' THEN e.event_text END) AS pers_bapt_text,
-                    -- Death
-                    MAX(CASE WHEN e.event_kind = 'death' THEN e.event_date END) AS pers_death_date,
-                    MAX(CASE WHEN e.event_kind = 'death' THEN pl.location_location END) AS pers_death_place,
-                    MAX(CASE WHEN e.event_kind = 'death' THEN e.event_text END) AS pers_death_text,
-                    -- Burial
-                    MAX(CASE WHEN e.event_kind = 'burial' THEN e.event_date END) AS pers_buried_date,
-                    MAX(CASE WHEN e.event_kind = 'burial' THEN pl.location_location END) AS pers_buried_place,
-                    MAX(CASE WHEN e.event_kind = 'burial' THEN e.event_text END) AS pers_buried_text
-                FROM
-                    humo_persons p
-                LEFT JOIN humo_events e ON e.event_person_id = p.pers_id
-                LEFT JOIN humo_location pl ON e.event_place_id = pl.location_id
-				WHERE p.pers_tree_id=:pers_tree_id 
-                AND p.pers_gedcomnumber=:pers_gedcomnumber";
-                */
-
-                // OF zonder MAX (there are only single events for each item):
-                // TODO add event_date_hebnight
-                /*
-                $sql = "SELECT
-                    p.*,
-                    birth.event_date   AS pers_birth_date,
-                    birthpl.location_location AS pers_birth_place,
-                    birth.event_text   AS pers_birth_text,
-                    bapt.event_date    AS pers_bapt_date,
-                    baptpl.location_location AS pers_bapt_place,
-                    bapt.event_text    AS pers_bapt_text,
-                    death.event_date   AS pers_death_date,
-                    deathpl.location_location AS pers_death_place,
-                    death.event_text   AS pers_death_text,
-                    burial.event_date  AS pers_buried_date,
-                    burialpl.location_location AS pers_buried_place,
-                    burial.event_text  AS pers_buried_text
-                FROM humo_persons p
-                LEFT JOIN humo_events birth ON birth.event_person_id = p.pers_id AND birth.event_kind = 'birth'
-                LEFT JOIN humo_location birthpl ON birth.event_place_id = birthpl.location_id
-                LEFT JOIN humo_events bapt ON bapt.event_person_id = p.pers_id AND bapt.event_kind = 'baptism'
-                LEFT JOIN humo_location baptpl ON bapt.event_place_id = baptpl.location_id
-                LEFT JOIN humo_events death ON death.event_person_id = p.pers_id AND death.event_kind = 'death'
-                LEFT JOIN humo_location deathpl ON death.event_place_id = deathpl.location_id
-                LEFT JOIN humo_events burial ON burial.event_person_id = p.pers_id AND burial.event_kind = 'burial'
-                LEFT JOIN humo_location burialpl ON burial.event_place_id = burialpl.location_id
-                WHERE p.pers_tree_id = :pers_tree_id
-                AND p.pers_gedcomnumber = :pers_gedcomnumber";
-                */
+                $sql = $this->get_person_base_qry();
+                $sql .= " WHERE p.pers_tree_id=:pers_tree_id 
+                    AND p.pers_gedcomnumber = :pers_gedcomnumber";
             }
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
@@ -378,7 +395,9 @@ class DbFunctions
     public function get_person_with_id(int $pers_id)
     {
         try {
-            $sql = "SELECT * FROM humo_persons WHERE pers_id=:pers_id";
+            $sql = $this->get_person_base_qry();
+            $sql .= " WHERE p.pers_id=:pers_id";
+
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':pers_id' => $pers_id
@@ -388,6 +407,37 @@ class DbFunctions
             echo $e->getMessage() . "<br/>";
         }
         return $person;
+    }
+
+    /**
+     * Sep. 2025 Huub: added new function to get all persons included birth_date, birth_place, etc. from selected family tree.
+     * FUNCTION     : Get all persons from selected family tree.
+     * OPTIONAL     : $tree_id to override class variable.
+     * RETURNS      : all persons from family tree.
+     */
+    public function get_persons(int $tree_id)
+    {
+        $persons = array();
+
+        if (isset($tree_id) && is_numeric($tree_id) && $tree_id > 0) {
+            $tree_id = $tree_id;
+        } else {
+            $tree_id = $this->tree_id;
+        }
+
+        try {
+            $sql = $this->get_person_base_qry();
+            $sql .= " WHERE p.pers_tree_id=:pers_tree_id ORDER BY p.pers_lastname, p.pers_firstname";
+
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':pers_tree_id' => $tree_id
+            ]);
+            $persons = $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            echo $e->getMessage() . "<br/>";
+        }
+        return $persons;
     }
 
     /**
@@ -403,7 +453,6 @@ class DbFunctions
             // *** In case someone entered "Mons, Huub" using a comma ***
             $quicksearch = str_replace(',', '', $quicksearch);
 
-            //$person_qry = "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
             $person_qry = "SELECT * FROM humo_persons
                 WHERE pers_tree_id = :tree_id
                 AND (
@@ -474,6 +523,74 @@ class DbFunctions
         }
     }
 
+    private function get_family_base_qry(): string
+    {
+        return "SELECT
+        f.*,
+        marriage.event_date AS fam_marr_date,
+        marriage.event_date_hebnight AS fam_marr_date_hebnight,
+        marriagepl.location_location AS fam_marr_place,
+        marriage.event_text AS fam_marr_text,
+        marriage.authority AS fam_marr_authority,
+        marriage.event_id AS fam_marr_event_id,
+
+        divorce.event_date AS fam_div_date,
+        divorce.event_date_hebnight AS fam_div_date_hebnight,
+        divorcepl.location_location AS fam_div_place,
+        divorce.event_text AS fam_div_text,
+        divorce.authority AS fam_div_authority,
+        divorce.event_id AS fam_div_event_id,
+
+        relation.event_date AS fam_relation_date,
+        relation.event_end_date AS fam_relation_end_date,
+        relation.event_date_hebnight AS fam_relation_date_hebnight,
+        relationpl.location_location AS fam_relation_place,
+        relation.event_text AS fam_relation_text,
+        relation.authority AS fam_relation_authority,
+        relation.event_id AS fam_relation_event_id,
+
+        marrchurch.event_date AS fam_marr_church_date,
+        marrchurch.event_date_hebnight AS fam_marr_church_date_hebnight,
+        marrchurchpl.location_location AS fam_marr_church_place,
+        marrchurch.event_text AS fam_marr_church_text,
+        marrchurch.authority AS fam_marr_church_authority,
+        marrchurch.event_id AS fam_marr_church_event_id,
+
+        marrchurchnotice.event_date AS fam_marr_church_notice_date,
+        marrchurchnotice.event_date_hebnight AS fam_marr_church_notice_date_hebnight,
+        marrchurchnoticepl.location_location AS fam_marr_church_notice_place,
+        marrchurchnotice.event_text AS fam_marr_church_notice_text,
+        marrchurchnotice.authority AS fam_marr_church_notice_authority,
+        marrchurchnotice.event_id AS fam_marr_church_notice_event_id,
+
+        marrnotice.event_date AS fam_marr_notice_date,
+        marrnotice.event_date_hebnight AS fam_marr_notice_date_hebnight,
+        marrnoticepl.location_location AS fam_marr_notice_place,
+        marrnotice.event_text AS fam_marr_notice_text,
+        marrnotice.authority AS fam_marr_notice_authority,
+        marrnotice.event_id AS fam_marr_notice_event_id
+
+        FROM humo_families f
+
+        LEFT JOIN humo_events marriage ON marriage.relation_id = f.fam_id AND marriage.event_kind = 'marriage'
+        LEFT JOIN humo_location marriagepl ON marriage.place_id = marriagepl.location_id
+
+        LEFT JOIN humo_events divorce ON divorce.relation_id = f.fam_id AND divorce.event_kind = 'divorce'
+        LEFT JOIN humo_location divorcepl ON divorce.place_id = divorcepl.location_id
+
+        LEFT JOIN humo_events relation ON relation.relation_id = f.fam_id AND relation.event_kind = 'relation'
+        LEFT JOIN humo_location relationpl ON relation.place_id = relationpl.location_id
+        
+        LEFT JOIN humo_events marrchurch ON marrchurch.relation_id = f.fam_id AND marrchurch.event_kind = 'marr_church'
+        LEFT JOIN humo_location marrchurchpl ON marrchurch.place_id = marrchurchpl.location_id
+
+        LEFT JOIN humo_events marrchurchnotice ON marrchurchnotice.relation_id = f.fam_id AND marrchurchnotice.event_kind = 'marr_church_notice'
+        LEFT JOIN humo_location marrchurchnoticepl ON marrchurchnotice.place_id = marrchurchnoticepl.location_id
+
+        LEFT JOIN humo_events marrnotice ON marrnotice.relation_id = f.fam_id AND marrnotice.event_kind = 'marriage_notice'
+        LEFT JOIN humo_location marrnoticepl ON marrnotice.place_id = marrnoticepl.location_id";
+    }
+
     /**
      * FUNCTION     : Get a single family from database.
      * QUERY 1      : SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
@@ -483,74 +600,43 @@ class DbFunctions
      */
     public function get_family(string|null $fam_gedcomnumber, string $item = '')
     {
-        //$qryDb = false;
         try {
             if ($item == 'man-woman') {
                 $sql = "SELECT fam_man, fam_woman, fam_children FROM humo_families
                     WHERE fam_tree_id=:fam_tree_id 
                     AND fam_gedcomnumber=:fam_gedcomnumber";
             } else {
-                $sql = "SELECT * FROM humo_families
-                    WHERE fam_tree_id=:fam_tree_id 
-                    AND fam_gedcomnumber=:fam_gedcomnumber";
-
-                /*
                 // TODO add event_date_hebnight
-                $sql = "SELECT
-                    f.*,
-                    marriage.event_date AS fam_marr_date,
-                    marriagepl.location_location AS fam_marr_place,
-                    marriage.event_text AS fam_marr_text,
-                    marriage.event_authority AS fam_marr_authority,
-
-                    divorce.event_date AS fam_div_date,
-                    divorcepl.location_location AS fam_div_place,
-                    divorce.event_text AS fam_div_text,
-                    divorce.event_authority AS fam_div_authority,
-
-                    relation.event_date AS fam_relation_date,
-                    relationpl.location_location AS fam_relation_place,
-                    relation.event_text AS fam_relation_text,
-
-                    marrchurch.event_date AS fam_marr_church_date,
-                    marrchurchpl.location_location AS fam_marr_church_place,
-                    marrchurch.event_text AS fam_marr_church_text,
-
-                    marrchurchnotice.event_date AS fam_marr_church_notice_date,
-                    marrchurchnoticepl.location_location AS fam_marr_church_notice_place,
-                    marrchurchnotice.event_text AS fam_marr_church_notice_text,
-
-                    marrnotice.event_date AS fam_marr_notice_date,
-                    marrnoticepl.location_location AS fam_marr_notice_place,
-                    marrnotice.event_text AS fam_marr_notice_text
-
-                    FROM humo_families f
-                    LEFT JOIN humo_events marriage ON marriage.event_relation_id = f.fam_id AND marriage.event_kind = 'marriage'
-                    LEFT JOIN humo_location marriagepl ON marriage.event_place_id = marriagepl.location_id
-
-                    LEFT JOIN humo_events divorce ON divorce.event_relation_id = f.fam_id AND divorce.event_kind = 'divorce'
-                    LEFT JOIN humo_location divorcepl ON divorce.event_place_id = divorcepl.location_id
-
-                    LEFT JOIN humo_events relation ON relation.event_relation_id = f.fam_id AND relation.event_kind = 'relation'
-                    LEFT JOIN humo_location relationpl ON relation.event_place_id = relationpl.location_id
-                    
-                    LEFT JOIN humo_events marrchurch ON marrchurch.event_relation_id = f.fam_id AND marrchurch.event_kind = 'marriage_church'
-                    LEFT JOIN humo_location marrchurchpl ON marrchurch.event_place_id = marrchurchpl.location_id
-
-                    LEFT JOIN humo_events marrchurchnotice ON marrchurchnotice.event_relation_id = f.fam_id AND marrchurchnotice.event_kind = 'marr_church_notice'
-                    LEFT JOIN humo_location marrchurchnoticepl ON marrchurchnotice.event_place_id = marrchurchnoticepl.location_id
-
-                    LEFT JOIN humo_events marrnotice ON marrnotice.event_relation_id = f.fam_id AND marrnotice.event_kind = 'marriage_notice'
-                    LEFT JOIN humo_location marrnoticepl ON marrnotice.event_place_id = marrnoticepl.location_id
-
-                    WHERE f.fam_tree_id=:fam_tree_id 
+                $sql = $this->get_family_base_qry();
+                $sql .= " WHERE f.fam_tree_id=:fam_tree_id
                     AND f.fam_gedcomnumber=:fam_gedcomnumber";
-                */
             }
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':fam_tree_id' => $this->tree_id,
                 ':fam_gedcomnumber' => $fam_gedcomnumber
+            ]);
+            $family = $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            echo $e->getMessage() . "<br/>";
+        }
+        return $family;
+    }
+
+    /**
+     * FUNCTION     : Get a family person from database.
+     * QUERY        : SELECT * FROM humo_family WHERE fam_id=:fam_id
+     * RETURNS      : a single family.
+     */
+    public function get_family_with_id(int $fam_id)
+    {
+        try {
+            $sql = $this->get_family_base_qry();
+            $sql .= " WHERE f.fam_id=:fam_id";
+
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute([
+                ':fam_id' => $fam_id
             ]);
             $family = $stmt->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
@@ -609,7 +695,11 @@ class DbFunctions
     public function get_event(int|null $event_id)
     {
         try {
-            $sql = "SELECT * FROM humo_events WHERE event_id=:event_id";
+            $sql = "SELECT e.*, l.location_location AS event_place
+                FROM humo_events e
+                LEFT JOIN humo_location l ON e.place_id = l.location_id
+                WHERE e.event_id=:event_id";
+
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':event_id' => $event_id
@@ -657,19 +747,38 @@ class DbFunctions
     public function get_events_connect(string $event_connect_kind, string $event_connect_id, string $event_kind)
     {
         try {
-            $sql = "SELECT * FROM humo_events
-                WHERE event_tree_id=:event_tree_id 
-                AND event_connect_kind=:event_connect_kind 
-                AND event_connect_id=:event_connect_id 
-                AND event_kind=:event_kind 
-                ORDER BY event_order";
+            if ($event_kind === 'all') {
+                $sql = "SELECT e.*, l.location_location AS event_place
+                    FROM humo_events e
+                    LEFT JOIN humo_location l ON e.place_id = l.location_id
+                    WHERE e.event_tree_id=:event_tree_id 
+                    AND e.event_connect_kind=:event_connect_kind 
+                    AND e.event_connect_id=:event_connect_id 
+                    ORDER BY e.event_order";
+                $params = [
+                    ':event_tree_id' => $this->tree_id,
+                    ':event_connect_kind' => $event_connect_kind,
+                    ':event_connect_id' => $event_connect_id
+                ];
+            } else {
+                $sql = "SELECT e.*, l.location_location AS event_place
+                    FROM humo_events e
+                    LEFT JOIN humo_location l ON e.place_id = l.location_id
+                    WHERE e.event_tree_id=:event_tree_id 
+                    AND e.event_connect_kind=:event_connect_kind 
+                    AND e.event_connect_id=:event_connect_id 
+                    AND e.event_kind=:event_kind 
+                    ORDER BY e.event_order";
+                $params = [
+                    ':event_tree_id' => $this->tree_id,
+                    ':event_connect_kind' => $event_connect_kind,
+                    ':event_connect_id' => $event_connect_id,
+                    ':event_kind' => $event_kind
+                ];
+            }
+
             $stmt = $this->dbh->prepare($sql);
-            $stmt->execute([
-                ':event_tree_id' => $this->tree_id,
-                ':event_connect_kind' => $event_connect_kind,
-                ':event_connect_id' => $event_connect_id,
-                ':event_kind' => $event_kind
-            ]);
+            $stmt->execute($params);
             $events = $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
             echo $e->getMessage() . "<br/>";
@@ -859,7 +968,6 @@ class DbFunctions
      */
     public function generate_gedcomnr(int $tree_id, string $item): string
     {
-        $qryDb = false;
         $new_gedcomnumber = 0;
         try {
             // *** Command preg_replace \D removes all non-digit characters (including spaces etc.) ***

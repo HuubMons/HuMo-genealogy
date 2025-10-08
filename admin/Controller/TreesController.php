@@ -92,13 +92,31 @@ class TreesController
             $tree_texts = $tree_textModel->get_tree_texts($this->admin_config['dbh'], $trees['tree_id'], $trees['language']);
             $trees = array_merge($trees, $tree_texts);
         } elseif ($trees['menu_tab'] == 'tree_merge') {
-            $treeMergeModel = new TreeMergeModel();
-            $trees['relatives_merge'] = $treeMergeModel->get_relatives_merge($this->admin_config['dbh'], $trees['tree_id']);
-            $treeMergeModel->update_settings($this->admin_config['db_functions']); // *** Store and reset tree merge settings ***
+            $treeMergeModel = new TreeMergeModel($this->admin_config);
+
+            $trees['relatives_merge'] = $treeMergeModel->get_relatives_merge();
+            $treeMergeModel->update_settings(); // *** Store and reset tree merge settings ***
 
             $trees['show_settings'] = $treeMergeModel->show_settings_page();
 
             $trees['show_manual'] = $treeMergeModel->show_manual_page();
+
+            // *** Process compare and merge actions ***
+            if (isset($_POST['duplicate_compare'])) {
+                $trees2 = $treeMergeModel->duplicateCompare();
+                $trees = array_merge($trees, $trees2);
+            } elseif (isset($_POST['relatives'])) {
+                $trees2 = $treeMergeModel->relativesCompare();
+                $trees = array_merge($trees, $trees2);
+            } elseif (isset($_POST['merge'])) {
+                $trees2 = $treeMergeModel->merge();
+                $trees = array_merge($trees, $trees2);
+            } elseif (isset($_POST['duplicate'])) {
+                $trees['count_duplicates'] = $treeMergeModel->mergeDuplicate();
+            } elseif (isset($_POST['auto_merge'])) {
+                $trees2 = $treeMergeModel->mergeAutomatically();
+                $trees = array_merge($trees, $trees2);
+            }
         }
 
         return $trees;
