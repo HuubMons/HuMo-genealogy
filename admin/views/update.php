@@ -59,7 +59,22 @@
                     $dbh->query("UPDATE humo_settings SET setting_value=" . $version_number . " WHERE setting_variable='update_status'");
                     ?>
 
-                    <div class="mt-2"><a class="btn btn-warning" href="index.php?page=update&proceed=1"><?= __('Reload for next update') ?></a></div>
+                    <div class="mt-2">
+                        <a 
+                            class="btn btn-warning" 
+                            href="index.php?page=update&proceed=1" 
+                            id="reload-update-btn"
+                            onclick="this.disabled=true; this.innerText='<?= __('Processing...') ?>';"
+                        ><?= __('Reload for next update') ?></a>
+                    </div>
+
+                    <script>
+                        // Optionally, prevent double click by disabling the button after click
+                        document.getElementById('reload-update-btn').addEventListener('click', function(e) {
+                            this.disabled = true;
+                            this.innerText = '<?= __('Processing...') ?>';
+                        });
+                    </script>
 
                 </td>
             </tr>
