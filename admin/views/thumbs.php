@@ -667,7 +667,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             ':prefix' => $resultDb->photocat_prefix,
                             ':language' => $language_tree
                         ]);
-                        if ($check_lang->rowCount() != 0) {
+                        if ($check_lang_stmt->rowCount() != 0) {
                             // this language already has a name for this category - update it
                             $update_stmt = $dbh->prepare("UPDATE humo_photocat SET photocat_name = :cat_name WHERE photocat_prefix = :cat_prefix AND photocat_language = :cat_language");
                             $update_stmt->execute([
