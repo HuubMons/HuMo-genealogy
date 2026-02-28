@@ -2616,10 +2616,16 @@ class GedcomImport
                 source_repo_gedcomnr = :source_repo_gedcomnr,
                 source_new_user_id = :source_new_user_id,
                 source_changed_user_id = :source_changed_user_id,
-                source_new_datetime = :source_new_datetime" . $this->changed_datetime('source_changed_datetime', $this->source["changed_date"][$i], $this->source["changed_time"][$i]);
+                source_new_datetime = :source_new_datetime,
+                source_changed_datetime = :source_changed_datetime";
             $stmt = $this->dbh->prepare($sql);
 
             for ($i = 1; $i <= $this->nrsource; $i++) {
+                $changed_datetime = '';
+                if (!empty($this->source["changed_date"][$i])) {
+                    $changed_datetime = date('Y-m-d H:i:s', strtotime($this->source["changed_date"][$i] . ' ' . $this->source["changed_time"][$i]));
+                }
+                
                 $stmt->execute([
                     ':source_tree_id' => $this->tree_id,
                     ':source_gedcomnr' => $this->source["source_gedcomnr"][$i],
@@ -2642,6 +2648,7 @@ class GedcomImport
                     ':source_new_user_id' => $this->source["new_user_id"],
                     ':source_changed_user_id' => $this->source["changed_user_id"],
                     ':source_new_datetime' => date('Y-m-d H:i:s', strtotime($this->source["new_date"][$i] . ' ' . $this->source["new_time"][$i])),
+                    ':source_changed_datetime' => $changed_datetime ?: null,
                 ]);
             }
             //$source_id=$this->dbh->lastInsertId();
