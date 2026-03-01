@@ -296,8 +296,6 @@ class ShowMedia
     //search for a thumbnail or mime type placeholder and returns the image tag
     public function print_thumbnail($folder, $file, $maxw = 0, $maxh = 120, $css = '', $attrib = ''): string
     {
-        global $humo_option;
-
         $mediaPath = new MediaPath();
         $resizePicture = new ResizePicture();
 
@@ -339,12 +337,16 @@ class ShowMedia
         $thumb_url =  $this->thumbnail_exists($folder, $file);
         // *** found thumbnail ***
         if (!empty($thumb_url)) {
-            // there are problems with these relative paths - when called from lvl +1 (showMedia) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path so i quick fix this by deciding dir and prefix dependant on calling file
+            // 01-03-2026: This code doesn't work for media path: media/tst/
+            /*
+            // There are problems with these relative paths - when called from lvl +1 (showMedia) its ok, when called from lvl +2 (editorEvent.php, thumbs.php) it gives bad directory argument for give_media_path
+            // So i quick fix this by deciding dir and prefix dependant on calling file
             $backtrace = debug_backtrace();
             if (isset($backtrace[0]['file']) && isset($backtrace[0]['line'])) {
                 $calling_file = basename($backtrace[0]['file']);
                 // echo "<br>Function was called by:" . $calling_file;
             }
+
             if ($calling_file === 'editorEvent.php' || $calling_file === 'thumbs.php' || $calling_file === 'editor_media_select.php') {
                 $folder_for_give_media_path = substr($folder, 3);
                 //$prefix = '../';
@@ -353,12 +355,15 @@ class ShowMedia
                 //$prefix = '';
             }
 
-            // I modified thumbnail_exist function to serve also only file in swcond mode with its logic because i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
+            // I modified thumbnail_exist function to serve also only file in second mode with its logic because i have not enough knowledge for new/old paths/files format - so i copy the logic to be consistent
             $mode = 'onlyfile';
             $fileName = $this->thumbnail_exists($folder, $file, $mode);
 
             $src_path = $mediaPath->give_media_path($folder_for_give_media_path, $fileName);
             return '<img src="' . $prefix . $src_path . '"' . $img_style . $img_class . '>';
+            */
+
+            return '<img src="' . $thumb_url . '"' . $img_style . $img_class . '>';
         }
 
         // No thumbnail found, create a new one, first check if and where org_file exist
