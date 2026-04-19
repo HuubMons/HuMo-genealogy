@@ -2232,6 +2232,12 @@ elseif ($trees['step'] == '4') {
                 $media_items = '!' . $sourceDb->source_text;
                 $first = strpos($media_items, '#');
                 if ($first) {
+                    // *** Added april 2026: get person ID from GEDCOM number ***
+                    $person_stmt = $dbh->prepare("SELECT pers_id FROM humo_persons WHERE pers_gedcomnumber = :gedcom AND pers_tree_id = :tree_id LIMIT 1");
+                    $person_stmt->execute([':gedcom' => $connectDb->connect_connect_id, ':tree_id' => $trees['tree_id']]);
+                    $person_row = $person_stmt->fetch(PDO::FETCH_ASSOC);
+                    $person_id = $person_row ? $person_row['pers_id'] : null;
+
                     $media_items = substr($media_items, $first + 1);
                     $second = strpos($media_items, '#');
                     $media_items = substr($media_items, 0, $second);
@@ -2240,7 +2246,8 @@ elseif ($trees['step'] == '4') {
                     $count_media = count($media_items_array);
                     for ($i = 0; $i < $count_media; $i++) {
                         $event_sql = "UPDATE humo_events SET
-                            event_connect_id='" . $connectDb->connect_connect_id . "'
+                            event_connect_id='" . $connectDb->connect_connect_id . "',
+                            person_id='" . $person_id . "'
                             WHERE event_id='" . substr($media_items_array[$i], 5) . "'";
                         $dbh->query($event_sql);
                     }
