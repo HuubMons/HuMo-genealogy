@@ -866,8 +866,9 @@ class DescendantModel extends FamilyModel
             // if vertical
             $par = $genarray[$i]["par"];
             $tempx = $genarray[$i]["posx"];
-            //if (isset($genarray[$i]["lst"]))
-            $genarray[$i]["posx"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"]) / 2;
+            if (isset($genarray[$i]["fst"]) && isset($genarray[$i]["lst"])) {
+                $genarray[$i]["posx"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"]) / 2;
+            }
 
             if ($genarray[$i]["gen"] != 0) {
                 $q = $i;
