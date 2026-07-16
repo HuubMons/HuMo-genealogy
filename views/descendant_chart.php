@@ -253,7 +253,7 @@ for ($w = 0; $w < count($genarray); $w++) {
 
     $sexe_colour = '';
     $backgr_col = "#FFFFFF";
-    if ($genarray[$w]["sex"] == "v") {
+    if (isset($genarray[$w]["sex"]) && $genarray[$w]["sex"] == "v") {
         $sexe_colour = ' box_woman';
         //$backgr_col = "#FBDEC0";     //"#f8bdf1";
     } else {
@@ -270,7 +270,7 @@ for ($w = 0; $w < count($genarray); $w++) {
     //echo '<div style="position:absolute; background-color:'.$bkcolor.';height:'.$data["vsize"].'px; width:'.$data["hsize"].'px; border:1px brown solid; left:'.$xvalue.'px; top:'.$yvalue.'px">';
 
     $bkgr = "";
-    if (($data["dna"] == "ydnamark" || $data["dna"] == "mtdnamark" || $data["dna"] == "ydna" || $data["dna"] == "mtdna") && $genarray[$w]["dna"] == 1) {
+    if (isset($data["dna"]) && ($data["dna"] == "ydnamark" || $data["dna"] == "mtdnamark" || $data["dna"] == "ydna" || $data["dna"] == "mtdna") && $genarray[$w]["dna"] == 1) {
         $bkgr = "border:3px solid #999999;background-color:" . $backgr_col . ";";
         if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"] == $data["base_person_gednr"]) {
             // base person
@@ -279,7 +279,7 @@ for ($w = 0; $w < count($genarray); $w++) {
     } else {
         $bkgr = "border:1px solid #8C8C8C;background-color:" . $backgr_col . ";";
     }
-    if ($genarray[$w]["gen"] == 0 && $hourglass === true) {
+    if (isset($genarray[$w]["gen"]) && $genarray[$w]["gen"] == 0 && $hourglass === true) {
         $bkgr = "background-color:" . $backgr_col . ";";
     }
     ?>
@@ -372,7 +372,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                         $replacement_text .= $genarray[$w]["nam"];
                     } elseif ($data["size"] == 40) {
                         $replacement_text .= '<span class="wordwrap" style="font-size:75%">' . $genarray[$w]["short"] . '</span>';
-                    } elseif ($data["size"] >= 25 && $data["size"] < 40) {
+                    } elseif (isset($genarray[$w]["init"]) && $data["size"] >= 25 && $data["size"] < 40) {
                         $replacement_text .= $genarray[$w]["init"];
                     }
                 }
@@ -389,11 +389,11 @@ for ($w = 0; $w < count($genarray); $w++) {
             // *** POP-UP box ***
             $extra_popup_text = '';
 
-            if ($genarray[$w]["2nd"] == 1) {
+            if (isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] == 1) {
                 $extra_popup_text .= $genarray[$w]["huw"] . "<br>";
             }
 
-            if ($genarray[$w]["non"] != 1) {
+            if (isset($genarray[$w]["non"]) && $genarray[$w]["non"] != 1) {
                 if (isset($genarray[$w]["spgednr"]) && $genarray[$w]["spgednr"]) {
                     $woman = $db_functions->get_person($genarray[$w]["spgednr"]);
                     $woman_privacy = $personPrivacy->get_privacy($woman);
@@ -417,11 +417,11 @@ for ($w = 0; $w < count($genarray); $w++) {
                         $extra_popup_text .= __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
                     } else {
                         if ($woman->pers_birth_date || $woman->pers_birth_place) {
-                            $extra_popup_text .= ' '.__('born') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
+                            $extra_popup_text .= ' ' . __('born') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
                         }
 
                         if ($woman->pers_death_date || $woman->pers_death_place) {
-                            $extra_popup_text .= ' '.__('died') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
+                            $extra_popup_text .= ' ' . __('died') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
                         }
                     }
                 } else {
@@ -441,6 +441,7 @@ for ($w = 0; $w < count($genarray); $w++) {
         </div>
 
     <?php
+    // *** Vertical ***
     if ($data["direction"] == 0) {
         // if vertical draw dotted line from first marriage to following marriages
         if (isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] == 1) {
@@ -458,19 +459,19 @@ for ($w = 0; $w < count($genarray); $w++) {
         }
 
         // draw line to parent
-        if ($genarray[$w]["gen"] != 0 && $genarray[$w]["2nd"] != 1) {
+        if (isset($genarray[$w]["gen"]) && $genarray[$w]["gen"] != 0 && isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] != 1) {
             $startx = $genarray[$w]["posx"] + ($data["hsize"] / 2);
             $starty = $genarray[$w]["posy"] - ($data["vdist"] / 2);
             echo '<div class="chart_line" style="position:absolute; height:' . ($data["vdist"] / 2) . 'px;width:1px;left:' . $startx . 'px;top:' . $starty . 'px"></div>';
         }
 
         // draw horizontal line from 1st child in fam to last child in fam
-        if ($genarray[$w]["gen"] != 0) {
+        if (isset($genarray[$w]["gen"]) && $genarray[$w]["gen"] != 0) {
             $parent = $genarray[$w]["par"];
-            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) {
+            if (isset($genarray[$w]["chd"]) && $genarray[$w]["chd"] == $genarray[$parent]["nrc"]) {
                 // last child in fam
                 $z = $w;
-                while ($genarray[$z]["2nd"] == 1) {
+                while (isset($genarray[$z]["2nd"]) && $genarray[$z]["2nd"] == 1) {
                     //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
                     $z--;
                 }
@@ -480,9 +481,9 @@ for ($w = 0; $w < count($genarray); $w++) {
                 echo '<div class="chart_line" style="position:absolute; height:1px; width:' . $width . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
             }
         }
-    } // end if vertical
-
+    }
     else {
+        // *** Horizontal ***
         // if horizontal draw dotted line from first marriage to following marriages
         if (isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] == 1) {
             $starty = $genarray[$w - 1]["posy"] + $data["vsize"] + 2;
@@ -499,19 +500,19 @@ for ($w = 0; $w < count($genarray); $w++) {
         }
 
         // draw line to parent
-        if ($genarray[$w]["gen"] != 0 && $genarray[$w]["2nd"] != 1) {
+        if (isset($genarray[$w]["gen"]) && $genarray[$w]["gen"] != 0 && isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] != 1) {
             $starty = $genarray[$w]["posy"] + ($data["vsize"] / 2);
             $startx = $genarray[$w]["posx"] - ($data["hdist"] / 2);
             echo '<div class="chart_line" style="position:absolute; width:' . ($data["hdist"] / 2) . 'px; height:1px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
         }
 
         // draw vertical line from 1st child in fam to last child in fam
-        if ($genarray[$w]["gen"] != 0) {
+        if (isset($genarray[$w]["gen"]) && $genarray[$w]["gen"] != 0) {
             $parent = $genarray[$w]["par"];
-            if ($genarray[$w]["chd"] == $genarray[$parent]["nrc"]) {
+            if (isset($genarray[$w]["chd"]) && $genarray[$w]["chd"] == $genarray[$parent]["nrc"]) {
                 // last child in fam
                 $z = $w;
-                while ($genarray[$z]["2nd"] == 1) {
+                while (isset($genarray[$z]["2nd"]) && $genarray[$z]["2nd"] == 1) {
                     //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
                     $z--;
                 }
@@ -521,7 +522,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                 echo '<div class="chart_line" style="position:absolute; width:1px; height:' . $height . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
             }
         }
-    } // end if horizontal
+    }
 }
     ?>
 

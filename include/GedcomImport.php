@@ -2625,7 +2625,7 @@ class GedcomImport
                 if (!empty($this->source["changed_date"][$i])) {
                     $changed_datetime = date('Y-m-d H:i:s', strtotime($this->source["changed_date"][$i] . ' ' . $this->source["changed_time"][$i]));
                 }
-                
+
                 $stmt->execute([
                     ':source_tree_id' => $this->tree_id,
                     ':source_gedcomnr' => $this->source["source_gedcomnr"][$i],
@@ -4445,7 +4445,7 @@ class GedcomImport
                         ':partner_order' => $partner_order
                     ]);
                 } catch (PDOException $e) {
-                    echo 'Error save relation_persons: ' . $e->getMessage().'<br>';
+                    echo 'Error save relation_persons: ' . $e->getMessage() . '<br>';
                 }
             }
 
