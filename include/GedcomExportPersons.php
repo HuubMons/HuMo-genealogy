@@ -134,20 +134,46 @@ class GedcomExportPersons extends GedcomExportFunctions
     {
         // Build full GEDCOM name value: Firstname /Prefix Lastname/
         $nameSurname = '';
-        if ($person->pers_prefix) {
-            $nameSurname .= trim(str_replace('_', ' ', $person->pers_prefix));
+        $firstname = trim($person->pers_firstname ?? '');
+        $prefix = $person->pers_prefix ? trim(str_replace('_', ' ', $person->pers_prefix)) : '';
+        $surname = trim($person->pers_lastname ?? '');
+
+        // *** Prefix ***
+        if ($prefix) {
+            $nameSurname .= $prefix;
             if ($person->pers_lastname) {
                 $nameSurname .= ' ';
             }
         }
-        $nameSurname .= trim($person->pers_lastname ?? '');
-        $firstname = trim($person->pers_firstname ?? '');
+
+        // *** Surname ***
+        $nameSurname .= $surname;
+
+        // *** Firstname ***
         $fullName = $firstname;
         if ($fullName !== '') {
             $fullName .= ' ';
         }
+
+        // *** Add slashes around surname part, even if empty, because GEDCOM standard requires this. If surname is empty, there will be two slashes after each other. ***
         $fullName .= '/' . $nameSurname . '/';
+
         $this->writeLine(1, 'NAME', $fullName);
+
+        /*
+        // Preparations for GIVN, SPFX and SURN.
+        // Not enabled yet because Belgian doesn't use SPFX. The prefix is part of the surname. If needed, it's probably better to add a new GEDCOM Export option.
+
+        if ($firstname !== '') {
+            $this->writeLine(2, 'GIVN', $firstname);
+        }
+        if ($prefix !== '') {
+            $this->writeLine(2, 'SPFX', $prefix);
+        }
+        if ($surname !== '') {
+            $this->writeLine(2, 'SURN', $surname);
+        }
+        */
 
         // PMB if 'minimal' option selected don't export this
         if ($_POST['export_type'] == 'normal') {

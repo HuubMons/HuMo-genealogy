@@ -399,6 +399,8 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="starts_with" <?php if ($selection['part_spouse_firstname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
                             <input type="text" class="form-control form-control-sm" name="spouse_firstname" value="<?= $safeTextShow->safe_text_show($selection['spouse_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
+
+                            <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="<?= __('Also searches for special names like nickname, alias, birth name, soldier name, etc.'); ?>">?</button>
                         </div>
                     </div>
 
@@ -767,7 +769,11 @@ $selected_place = '';
                     }
                 }
                 if ($selection['spouse_firstname']) {
-                    $spouse_qry .= " AND pers_firstname " . $buildCondition->build($selection['spouse_firstname'], $selection['part_spouse_firstname']);
+                    //$spouse_qry .= " AND pers_firstname " . $buildCondition->build($selection['spouse_firstname'], $selection['part_spouse_firstname']);
+                    $spouse_qry .= " AND (pers_firstname " . $buildCondition->build($selection['spouse_firstname'], $selection['part_spouse_firstname']);
+
+                    // *** Also search for the name of the spouse in the events table (callname etc.) ***
+                    $spouse_qry .= " OR EXISTS (SELECT 1 FROM humo_events WHERE event_tree_id = pers_tree_id AND event_connect_id = pers_gedcomnumber AND event_kind='name' AND event_event " . $buildCondition->build($selection['spouse_firstname'], $selection['part_spouse_firstname']) . "))";
                 }
                 $spouse_result = $dbh->query($spouse_qry);
 

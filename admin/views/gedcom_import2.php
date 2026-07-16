@@ -44,6 +44,7 @@ function removeTreeRecords($dbh, $table, $tree_field, $tree_id, $limit = 2500, $
 
 removeTreeRecords($dbh, 'humo_relations_persons', 'tree_id', $trees['tree_id'], $limit, '', false);
 
+// *** Geneanet GEDCOM: don't remove events with pictures if the option is set to save pictures ***
 removeTreeRecords(
     $dbh,
     'humo_events',

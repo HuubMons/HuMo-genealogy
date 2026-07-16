@@ -404,7 +404,6 @@ class DescendantModel extends FamilyModel
                                         $genarray[$arraynr]["dna"] = $dna == "ydnamark" || $dna == "ydna" || $dna == "mtdnamark" || $dna == "mtdna" ? 1 : "no";
                                     }
                                 }
-                                //$family_nr++;
                             } else {
                                 // *** Show standard marriage text and name in 2nd, 3rd, etc. marriage ***
                                 if ($descendant_loop == 0) {
@@ -546,10 +545,10 @@ class DescendantModel extends FamilyModel
                                         $descendant_family_id2[] = $childRelationFirst->relation_gedcomnumber;
                                     }
 
-                                    if (count($childRelations)>0){
-                                        $k=0;
-                                        foreach ($childRelations as $childRelation){
-                                            if ($k==0){
+                                    if (count($childRelations) > 0) {
+                                        $k = 0;
+                                        foreach ($childRelations as $childRelation) {
+                                            if ($k == 0) {
                                                 $k++;
                                                 continue; // first family is already processed
                                             }
@@ -857,17 +856,25 @@ class DescendantModel extends FamilyModel
 
     /**
      * 2nd Part: RECURSIVE FUNCTION TO MOVE PART OF THE CHART WHEN NEW ITEMS ARE ADDED
+     * 
+     * Move parent box and all children in the same generation to the right or down, depending on direction
      */
     function move($i, $genarray)
     {
+        // July 2026: Added check for $genarray being an array and $i being a valid key to prevent errors when calling move() recursively.
+        if (!is_array($genarray) || !array_key_exists($i, $genarray) || !isset($genarray[$i])) {
+            return $genarray;
+        }
+
         $direction = $this->getDirection();
 
         if ($direction == 0) {
             // if vertical
             $par = $genarray[$i]["par"];
             $tempx = $genarray[$i]["posx"];
-            //if (isset($genarray[$i]["lst"]))
-            $genarray[$i]["posx"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"]) / 2;
+            if (isset($genarray[$i]["fst"]) && isset($genarray[$i]["lst"])) {
+                $genarray[$i]["posx"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"]) / 2;
+            }
 
             if ($genarray[$i]["gen"] != 0) {
                 $q = $i;
@@ -885,7 +892,7 @@ class DescendantModel extends FamilyModel
 
             $n = $i + 1;
             while ($genarray[$n]["gen"] == $genarray[$n - 1]["gen"]) {
-                //		while(isset($genarray[$n]["gen"]) AND $genarray[$n]["gen"] == $genarray[$n-1]["gen"]) {
+                //while(isset($genarray[$n]["gen"]) AND $genarray[$n]["gen"] == $genarray[$n-1]["gen"]) {
                 if (isset($genarray[$n]["fst"]) && isset($genarray[$n]["lst"])) {
                     $tempx = $genarray[$n]["posx"];
                     $genarray[$n]["posx"] = ($genarray[$n]["fst"] + $genarray[$n]["lst"]) / 2;
