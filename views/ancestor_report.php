@@ -128,7 +128,15 @@ while (isset($ancestor_array2[0])) {
             }
             if ($listednr == '') {
                 //if not listed yet, add person to array
-                $listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
+                //$listed_array[$ancestor_number[$i]] = $ancestor_array[$i];
+
+                // *** Check if ancestor_number is float or bigger than PHP_INT_MAX, to prevent "Array key is not a valid string or integer" error ***
+                $ancestor_number_value = $ancestor_number[$i];
+                $ancestor_number_key = is_float($ancestor_number_value) || $ancestor_number_value > PHP_INT_MAX
+                    ? (string) $ancestor_number_value
+                    : (int) $ancestor_number_value;
+
+                $listed_array[$ancestor_number_key] = $ancestor_array[$i];
             }
 
             if ($ancestor_array[$i] != '0') {
