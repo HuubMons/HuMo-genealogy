@@ -3,8 +3,6 @@ layout: page
 title: Support
 ---
 
-## Support
-
 - [Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)  
   Use the issue tracker to report bugs, broken behavior, or other problems.
 
