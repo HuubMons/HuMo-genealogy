@@ -3,8 +3,6 @@ layout: page
 title: Features
 ---
 
-# Features
-
 ## Genealogy website features
 
 HuMo-genealogy is built to support a complete online family tree website.

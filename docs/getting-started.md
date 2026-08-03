@@ -3,8 +3,6 @@ layout: page
 title: Getting started
 ---
 
-# Getting started
-
 ## 1. Prepare your data
 
 Use another genealogy tool to export your family tree as GEDCOM, or start from an existing GEDCOM file.
