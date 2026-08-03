@@ -1,9 +1,7 @@
 ---
 layout: home
-title: HuMo-genealogy
+title: HuMo-genealogy (since 1999)
 ---
-
-# HuMo-genealogy (since 1999)
 
 ![HuMo-genealogy screenshot](assets/HuMo-gen_family_page-edited.png)
 
@@ -52,8 +50,7 @@ It was created to give people full control over their genealogical data, while k
 - [Official project site](https://humo-gen.com/wp/)
 - [Forum](https://humo-gen.com/genforum2)
 
-
-## Notes
+## About me
 
 I started this program in 1999, because I didn’t like the HTML output of the existing programs. I also had some problems with missing professions and texts.
 
