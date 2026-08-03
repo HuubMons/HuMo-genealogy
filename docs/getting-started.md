@@ -10,6 +10,7 @@ Use another genealogy tool to export your family tree as GEDCOM, or start from a
 ## 2. Install the software
 
 Follow the installation instructions in the main project repository and the project documentation.
+[Manual](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
 
 The application is primarily a PHP-based genealogical website and requires a working web environment with database support.
 

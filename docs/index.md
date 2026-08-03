@@ -3,6 +3,10 @@ layout: home
 title: HuMo-genealogy
 ---
 
+# HuMo-genealogy (since 1999)
+
+![HuMo-genealogy screenshot](assets/HuMo-gen_family_page-edited.png)
+
 HuMo-genealogy is free genealogy software designed to help you publish and maintain a family tree on your own website.
 
 It was created to give people full control over their genealogical data, while keeping the result simple to share with relatives and visitors.
@@ -33,13 +37,24 @@ It was created to give people full control over their genealogical data, while k
 
 ## Project links
 
-- [Official project site](https://humo-gen.com/wp/)
-- [Download](https://humo-gen.com/wp/humo-genealogy-download/)
+- [Official project site](https://huubmons.github.io/HuMo-genealogy/)
+
 - [Demo](https://humo-gen.com/wp/humo-genealogy-demo/)
-- [Manual](https://humo-gen.com/wp/humo-genealogy-manual/)
-- [Forum](https://humo-gen.com/genforum2)
+  The demo is offline at the moment.
+
+- [Download](https://github.com/HuubMons/HuMo-genealogy)
+
+- [Manual](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
+
 - [GitHub repository](https://github.com/HuubMons/HuMo-genealogy)
+
+
+- [Official project site](https://humo-gen.com/wp/)
+- [Forum](https://humo-gen.com/genforum2)
+
 
 ## Notes
 
-This documentation site is intended as a static project overview and developer documentation. The full genealogical application is still a PHP-based project and is not hosted directly on GitHub Pages.
+I started this program in 1999, because I didn’t like the HTML output of the existing programs. I also had some problems with missing professions and texts.
+
+HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delphi), and since juli 2005 available as opensource PHP version. Several users are now active in developing HuMo-genealogy!
