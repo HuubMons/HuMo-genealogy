@@ -1,0 +1,17 @@
+title: HuMo-genealogy
+email: info@humo-gen.com
+description: >-
+  HuMo-genealogy is free genealogical software for creating and publishing a family tree on your own website.
+baseurl: "/HuMo-genealogy"
+url: "https://huubmons.github.io"
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+header_pages:
+  - index.md
+  - features.md
+  - getting-started.md
+
+markdown: kramdown
