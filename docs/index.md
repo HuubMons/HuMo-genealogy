@@ -3,8 +3,6 @@ layout: home
 title: HuMo-genealogy
 ---
 
-# HuMo-genealogy
-
 HuMo-genealogy is free genealogy software designed to help you publish and maintain a family tree on your own website.
 
 It was created to give people full control over their genealogical data, while keeping the result simple to share with relatives and visitors.
