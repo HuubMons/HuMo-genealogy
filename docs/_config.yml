@@ -10,7 +10,7 @@ plugins:
 
 header_pages:
   - index.md
-  - features.md
   - getting-started.md
+  - support.md
 
 markdown: kramdown
