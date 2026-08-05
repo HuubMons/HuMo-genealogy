@@ -6,7 +6,9 @@
 > Download the current version: [github.com/HuubMons/HuMo-genealogy/releases](https://github.com/HuubMons/HuMo-genealogy/releases).
 >
 
-![HuMo-genealogy screenshot](docs/assets/HuMo-genealogy_main_page.png)
+## Screenshot
+
+![HuMo-genealogy screenshot](docs/assets/HuMo-genealogy_home.png)
 
 ## Links
 
