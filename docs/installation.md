@@ -8,7 +8,8 @@ HuMo-genealogy is a web-based genealogy program. HuMo-genealogy can be installed
 
 Quick installation guide (extended guide can be found in this manual):
 1) Download HuMo-gen zip file
-    Sourceforge: https://sourceforge.net/projects/humo-gen/files
+    Github: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
+    Sourceforge: [sourceforge.net/projects/humo-gen/files](https://sourceforge.net/projects/humo-gen/files)
 2) Unpack HuMo-gen zip package
 3) Upload HuMo-gen files to your provider using FTP, we recommend using a sub folder like: humo-gen or genealogy
 4) Open your browser and go to: www.yourwebsite/humo-gen
@@ -42,7 +43,9 @@ Default usernames and passwords in older versions (older than HuMo-genealogy 4.6
 Installation options
 
 The basic steps for installation are as follows:
-1) Download HuMo-genealogy (Sourceforge: https://sourceforge.net/projects/humo-gen/files)
+1) Download HuMo-genealogy
+    Github: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
+    Sourceforge: [sourceforge.net/projects/humo-gen/files](https://sourceforge.net/projects/humo-gen/files)
 2) Unzip the package in a new folder that you may name HuMo-genealogy or genealogy or any other name you fancy (in this manual we will use HuMo-genealogy for the folder name. If you choose another name change the paths below accordingly).
 
 3a) If you install with a webhost, copy the folder you just created with its contents to the www folder of your server (sometimes called public_html). Now open your browser, go to: www.your_website.com/humo-gen/admin and follow instructions.
@@ -62,7 +65,7 @@ With some American hosting providers (such as Bluehost.com) the values for DATAB
 
 With some providers it's needed to change the .htacces file to activate the newest PHP version:
 
-For provider Hosting2go, add this line to the .htaccess file (see: http://www.hosting2go.nl/php5info):
+For provider Hosting2go, add this line to the .htaccess file. See: [hosting2go.nl/php5info](http://www.hosting2go.nl/php5info)
 `AddHandler x-httpd-php5 .php`
 
 For provider STRATO, add this line to the .htaccess file:

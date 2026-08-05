@@ -2,18 +2,22 @@
 layout: page
 title: Manual
 ---
-![HuMo-genealogy screenshot](assets/HuMo-genealogy_main_page.png)
+## Screenshot
+
+![HuMo-genealogy screenshot](assets/HuMo-genealogy_home.png)
 
 
 
 Manual for the HuMo-genealogy freeware web-based genealogical program.
 
-HuMo-genealogy software/ forum/ download links
 HuMo-genealogy website: humo-gen.com
 
-HuMo-genealogy DOWNLOAD: sourceforge.net/projects/humo-gen
+HuMo-genealogy DOWNLOAD:
+    Github: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
+    Sourceforge: [sourceforge.net/projects/humo-gen/files](https://sourceforge.net/projects/humo-gen/files)
+
 HuMo-genealogy FORUM: www.humo-gen.com/genforum
-HuMo-genealogy websites (examples): https://humo-gen.com/genforum/viewforum.php?f=12
+
 HuMo-genealogy demo website: humo-gen.com including demo of sources, addresses and pictures.
 
 
