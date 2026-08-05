@@ -51,8 +51,7 @@ HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delph
     Github: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
     Sourceforge: [sourceforge.net/projects/humo-gen/files](https://sourceforge.net/projects/humo-gen/files)
 
-- Documentation
-  [Manual](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
+- [Documentation]([Documentation | HuMo-genealogy](https://huubmons.github.io/HuMo-genealogy/documentation.html))
 
 - [Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)  
   Use the issue tracker to report bugs, broken behavior, or other problems.

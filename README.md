@@ -1,10 +1,10 @@
 # HuMo-genealogy
 
->
-> **Free & open‑source web‑based genealogy software**.
->
-> Download the current version: [github.com/HuubMons/HuMo-genealogy/releases](https://github.com/HuubMons/HuMo-genealogy/releases).
->
+
+**Free & open‑source web‑based genealogy software**.
+
+Download the current version: [github.com/HuubMons/HuMo-genealogy/releases](https://github.com/HuubMons/HuMo-genealogy/releases).
+
 
 ## Screenshot
 

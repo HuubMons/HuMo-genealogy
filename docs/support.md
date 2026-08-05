@@ -9,4 +9,5 @@ title: Support
 - [Requests and remarks](https://github.com/HuubMons/HuMo-genealogy/discussions)  
   Use the discussion forum for questions, suggestions, and general feedback about the project.
 
-- [Manual](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
+- [Documentation]([Documentation | HuMo-genealogy](https://huubmons.github.io/HuMo-genealogy/documentation.html))
+

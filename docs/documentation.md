@@ -6,10 +6,10 @@ title: Documentation
 
 ## 1. Install the software
 
-Follow the installation instructions in the main project repository and the project documentation.
-[Manual](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
+Follow the installation instructions in the project documentation.
+[Installation manual]([Installation | HuMo-genealogy](https://huubmons.github.io/HuMo-genealogy/installation.html))
 
-The application is primarily a PHP-based genealogical website and requires a working web environment with database support.
+The application is primarily a PHP-based genealogical website and requires a working web environment with MySQL database support.
 
 ## 2. Import your tree
 
@@ -20,27 +20,27 @@ Or import a GEDCOM file into HuMo-genealogy and verify the data after loading.
 
 Set language, privacy options, media options and design choices to match your project.
 
-## 4. Publish it online
+## 4. Done!
 
-Deploy the site on a standard PHP hosting environment or local development environment, then publish your family tree.
+Your genealogical tree is available at the website (or local host).
 
 
+# Documentation
 
-Manual for the HuMo-genealogy freeware web-based genealogical program.
+## Installation & Update
 
-HuMo-genealogy website: humo-gen.com
+[Installation](installation.md) Installation guide
+[Start HuMo-genealogy](start_humo-genealogy) More information about first start of HuMo-genealogy.
 
-HuMo-genealogy DOWNLOAD:
-    Github: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
-    Sourceforge: [sourceforge.net/projects/humo-gen/files](https://sourceforge.net/projects/humo-gen/files)
+[Update](update) Update guide
+
+
+- [Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)  
+
+# Project links
+
+HuMo-genealogy DOWNLOAD: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
 
 HuMo-genealogy FORUM: www.humo-gen.com/genforum
 
-HuMo-genealogy demo website: [Demo website](https://humo-gen.com/humo-gen)
-
-
-[Installation](installation.md) Quick installation guide and New installation.
-
-[Update](update) Update HuMo-genealogy software
-
-
+HuMo-genealogy DEMO website: [Demo website](https://humo-gen.com/humo-gen)
