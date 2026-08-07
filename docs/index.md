@@ -4,11 +4,11 @@ title: Home
 ---
 ## Screenshots
 
-![HuMo-genealogy screenshot](Hobby/HuMo-genealogy/Github%20Docs/assets/HuMo-genealogy_home.png)
+![HuMo-genealogy screenshot](assets/HuMo-genealogy_home.png)
 
 
 
-![HuMo-genealogy screenshot](HuMo-gen_family_page.png)
+![HuMo-genealogy screenshot](assets/HuMo-gen_family_page.png)
 
 
 HuMo-genealogy is free genealogy software designed to help you publish and maintain a family tree on your own website.
@@ -47,13 +47,11 @@ HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delph
 
 - [Demo website](https://humo-gen.com/humo-gen/)
 
-- Download:
-    Github: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
-    Sourceforge: [sourceforge.net/projects/humo-gen/files](https://sourceforge.net/projects/humo-gen/files)
+- Download: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
 
 - [Documentation](documentation.md)
 
-- [Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)  
+- [Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)
   Use the issue tracker to report bugs, broken behavior, or other problems.
 
 - [Requests and remarks](https://github.com/HuubMons/HuMo-genealogy/discussions)  
