@@ -16,7 +16,7 @@ localhost/humo-gen/admin
 or: localhost:8080/humo-gen/admin
 
 You will see this screen:
-![HuMo-genealogy screenshot](admin_start.png)
+![HuMo-genealogy screenshot](assets/admin_start.png)
 
 
 Add these settings: Database host, Database username, Database password, Database name. (Examples for a webhost environment and PC setup are given next to the entry fields).
@@ -29,12 +29,12 @@ With some American hosting providers (such as Bluehost.com) the values for DATAB
 
 Click "Save". If the database connection is successful, you will see this screen:
 
-![HuMo-genealogy screenshot](admin_database.png)
+![HuMo-genealogy screenshot](assets/admin_database.png)
 ## Installation of database tables
 
 You will see this screen:
 
-![HuMo-genealogy screenshot](admin_install_tables.png)
+![HuMo-genealogy screenshot](assets/admin_install_tables.png)
 
 Add your administrator username and password in this screen. If you don't do this, the username will be "admin" and password will be "humogen".
 
@@ -42,12 +42,12 @@ It's possible to change the username and password later.
 
 Now click "install" and "yes".
 
-![HuMo-genealogy screenshot](admin_install_tables2.png)
+![HuMo-genealogy screenshot](assets/admin_install_tables2.png)
 
 Click "Main menu". You have to log in using your administrator username and password.
 
 
-![HuMo-genealogy screenshot](admin_start2.png)
+![HuMo-genealogy screenshot](assets/admin_start2.png)
 
 Now it's possible to start your family tree by entering data, or import a GEDCOM file from your genealogical program.
 
