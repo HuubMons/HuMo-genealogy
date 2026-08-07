@@ -12,7 +12,16 @@ Download the current version: [github.com/HuubMons/HuMo-genealogy/releases](http
 
 ## Links
 
-- [Website](https://humo-gen.com)
+- [Website](https://huubmons.github.io/HuMo-genealogy/)
+
 - [Demo website](https://humo-gen.com/humo-gen/)
-- [Forum](https://humo-gen.com/genforum/)
-- [Documentation](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
+
+- [Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)  
+  Use the issue tracker to report bugs, broken behavior, or other problems.
+
+- [Requests and remarks](https://github.com/HuubMons/HuMo-genealogy/discussions)  
+  Use the discussion forum for questions, suggestions, and general feedback about the project.
+
+- [Documentation](https://huubmons.github.io/HuMo-genealogy/documentation.html)
+
+- [Old PDF documentation](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
