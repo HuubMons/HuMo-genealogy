@@ -6,8 +6,7 @@ title: Documentation
 
 ## 1. Install the software
 
-Follow the installation instructions in the project documentation.
-[Installation manual]([Installation | HuMo-genealogy](https://huubmons.github.io/HuMo-genealogy/installation.html))
+Follow the installation instructions in the [Installation manual]([Installation | HuMo-genealogy](installation.md))
 
 The application is primarily a PHP-based genealogical website and requires a working web environment with MySQL database support.
 
@@ -30,12 +29,11 @@ Your genealogical tree is available at the website (or local host).
 ## Installation & Update
 
 [Installation](installation.md) Installation guide
-[Start HuMo-genealogy](start_humo-genealogy) More information about first start of HuMo-genealogy.
 
-[Update](update) Update guide
+[Start HuMo-genealogy](start_humo-genealogy.md) More information about first start of HuMo-genealogy.
 
+[Update](update.md) Update guide
 
-- [Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)  
 
 # Project links
 
@@ -44,3 +42,5 @@ HuMo-genealogy DOWNLOAD: [github.com/HuubMons/HuMo-genealogy/releases](https:..g
 HuMo-genealogy FORUM: www.humo-gen.com/genforum
 
 HuMo-genealogy DEMO website: [Demo website](https://humo-gen.com/humo-gen)
+
+[Report bugs and issues](https://github.com/HuubMons/HuMo-genealogy/issues)
