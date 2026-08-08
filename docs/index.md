@@ -2,14 +2,15 @@
 layout: home
 title: Home
 ---
-## Screenshots
+## Screenshot home page
 
 ![HuMo-genealogy screenshot](assets/HuMo-genealogy_home.png)
 
-
+## Screenshot family page
 
 ![HuMo-genealogy screenshot](assets/HuMo-gen_family_page.png)
 
+## About HuMo-genealogy
 
 HuMo-genealogy is free genealogy software designed to help you publish and maintain a family tree on your own website.
 
@@ -24,7 +25,6 @@ HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delph
 - Lets you build a family website with your own layout and content
 - Gives you control over visibility and user access
 - Supports multiple languages and optional picture, source and place information
-
 ## Main features
 
 - Import GEDCOM files from major genealogy programs
@@ -33,7 +33,6 @@ HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delph
 - Multiple languages, including Dutch, English and German
 - Customizable website layout through themes and CSS
 - Optional image and media support
-
 ## Typical workflow
 
 1. Export your family data from a genealogy program as GEDCOM.
@@ -47,7 +46,7 @@ HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delph
 
 - [Demo website](https://humo-gen.com/humo-gen/)
 
-- Download: [github.com/HuubMons/HuMo-genealogy/releases](https:..github.com/HuubMons/HuMo-genealogy/releases)
+- Download: [github.com/HuubMons/HuMo-genealogy/releases](https://github.com/HuubMons/HuMo-genealogy/releases)
 
 - [Documentation](documentation.md)
 
