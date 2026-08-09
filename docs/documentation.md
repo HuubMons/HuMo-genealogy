@@ -2,34 +2,34 @@
 layout: page
 title: Documentation
 ---
-# Getting started
 
-## 1. Install the software
-
-Follow the installation instructions in the [Installation manual](installation.md)
-
-The application is primarily a PHP-based genealogical website and requires a working web environment with MySQL database support.
-
-## 2. Import your tree
-
-Start a new family tree in HuMo-genealogy using the editor.
-Or import a GEDCOM file into HuMo-genealogy and verify the data after loading.
-
-## 3. Configure the website
-
-Set language, privacy options, media options and design choices to match your project.
-
-## 4. Done!
-
-Your genealogical tree is available at the website (or local host).
-
-
-# Documentation
-
-## Installation & Update
-
-[Installation](installation.md) Installation guide
-
-[Start HuMo-genealogy](start_humo-genealogy.md) More information about first start of HuMo-genealogy.
-
-[Update](update.md) Update guide
+==Remark: this new documentation is under construction in aug. 2026.==
+#### Getting started
+* [Quick installation guide](quick_installation_guide.md) Installation guide
+* [Installation](full_installation_guide.md) Installation guide
+#### Special installation options
+- todo: Install HuMo-genealogy in Xampp.
+  Check: [Old PDF documentation](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
+- todo: Install HuMo-genealogy in Docker.
+  Check: https://humo-gen.com/genforum2/viewtopic.php?t=3250
+#### Start the program
+* [Start HuMo-genealogy](start_humo-genealogy.md) More information about first start of HuMo-genealogy.
+#### Update the program
+* [Update](update.md) Update guide
+#### Documentation
+* [Usernames and passwords](usernames_passwords.md) Default usernames and passwords. Reset admin password.
+* [Users and usergroups](users_and_usergroups.md)
+* [Themes](themes.md)
+* todo: World map
+* todo: Privacy filter
+* [Gendex](gendex.md) Special index for genealogical websites.
+* [Mail form](mailform.md)
+* todo: Languages
+* todo: Timelines
+* todo: Cookies
+* todo: PHPMyAdmin
+###### Editor
+* [Editor](editor.md) Edit families and persons
+* todo: Pictures/ media
+#### Trouble shooting
+* [Trouble shooting](trouble_shooting.md) Solve problems.
