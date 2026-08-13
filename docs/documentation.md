@@ -2,9 +2,6 @@
 layout: page
 title: Documentation
 ---
-
-==Remark: this new documentation site is under construction in aug. 2026.==
-
 ## Getting started
 - [Quick installation guide](quick_installation_guide.md) Installation guide
 - [Installation](full_installation_guide.md) Installation guide
