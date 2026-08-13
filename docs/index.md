@@ -25,6 +25,7 @@ HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delph
 - Lets you build a family website with your own layout and content
 - Gives you control over visibility and user access
 - Supports multiple languages and optional picture, source and place information
+
 ## Main features
 
 - Import GEDCOM files from major genealogy programs
@@ -33,6 +34,7 @@ HuMo-genealogy is developed since December 1999 (first in Quick Basic, and Delph
 - Multiple languages, including Dutch, English and German
 - Customizable website layout through themes and CSS
 - Optional image and media support
+
 ## Typical workflow
 
 1. Export your family data from a genealogy program as GEDCOM.
