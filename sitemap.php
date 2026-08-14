@@ -34,6 +34,13 @@ require __DIR__ . '/vendor/autoload.php';
 
 include_once(__DIR__ . "/include/db_login.php");
 
+// *** Bot detection and blocking ***
+$botDetector = new \Genealogy\Include\BotDetector();
+if ($botDetector->isBot()) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 // *** Needed for privacy filter ***
 $generalSettings = new \Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
