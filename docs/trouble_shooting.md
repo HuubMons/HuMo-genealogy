@@ -6,6 +6,16 @@ title: Trouble shooting
 If possible, use a recent version of PHP. 
 Most providers have an upgrade procedure to a newer PHP version (also use a recent version of MySQL).
 
+#### Reset admin password
+Best way to reset the admin password at this moment if password is lost:  
+
+* Open PHPMyAdmin  
+* Open table humo_users  
+* Go to the admin user line (or the user name with admin rights)  
+* If there is a field "user_password_salted", empty this field.  
+* Change user_password into: 712697cdade1e78580bf26e564a891f5  
+
+This will reset the password to the default password: humogen
 
 #### Security/ login problems
 For security, HuMo-genealogy blocks login access if someone tries to login unsuccessfully more than 20 times. A text "Access to website is blocked." will be shown.
@@ -13,6 +23,23 @@ To solve this issue, temporarily change the $check_fails variable to a higher va
 ```
 if ($check_fails > 20) {
 ```
+
+#### Access to website is blocked
+There is a security item in HuMo-genealogy. If there was a wrong login from a IP address 10x, then this IP address will be blocked. Removal of history or cookies won't help, this is a HuMo-genealogy security item.  
+  
+There are 2 possibilities to solve this:
+
+1) To change number of logins fails, open file include/db_functions.php and find this line:
+
+```
+if ($check_fails > 10) $allowed=false;
+```
+
+Just change 10 into 20 or something like that!  
+  
+2) Wrong logins can be found in table: humo_user_log 
+
+The problem will be solved is this table is made empty.
 
 #### Style/  theme/ layout problems
 If there are (CSS) style problems: just reload the HuMo-genealogy page using `[CTRL]-F5`. This will completely reload the webpage and CSS files.
@@ -37,23 +64,6 @@ From the HuMo-genealogy manual:
 * Don't use accent characters (é and è for exampe) in filenames and folder names.  
 Also see: [https://www.mtu.edu/umc/services/websit ... ers-avoid/](https://www.mtu.edu/umc/services/websites/writing/characters-avoid/)
 
-#### Access to website is blocked
-There is a security item in HuMo-genealogy. If there was a wrong login from a IP address 10x, then this IP address will be blocked. Removal of history or cookies won't help, this is a HuMo-genealogy security item.  
-  
-There are 2 possibilities to solve this:
-
-1) To change number of logins fails, open file include/db_functions.php and find this line:
-
-```
-if ($check_fails > 10) $allowed=false;
-```
-
-Just change 10 into 20 or something like that!  
-  
-2) Wrong logins can be found in table: humo_user_log  
-
-The problem will be solved is this table is made empty.
-
 #### Large family tree  
 If there is a large family tree (several thousands of persons) it's possible the screen freezes for a moment. The cache (memory) is then filled with data. If cache would be disabled the page would be slow every time.
 
@@ -68,7 +78,6 @@ Go to admin and remove (part of) the old statistics.
 
 #### Wrong characters
 If special characters like é, ö etc. don't show properly, try another export of the GEDCOM file. If you use ANSEL, try exporting to UTF-8 or ANSI
-
 
 #### GEDCOM import
 If a GEDCOM file stucks, also try the setting "Show all numbers when processing GEDCOM (useful when a time-out occurs!)". You will see a long list of GEDCOM items numbers, but now it's possible to see if GEDCOM reading stops at the same item every time (contact the HuMo-genealogy programmer team).
