@@ -30,35 +30,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-session_start();
-// *** Regenerate session id regularly to prevent session hacking ***
-//session_regenerate_id();
-
-// DISABLED because the SECURED PAGE message was shown regularly.
-// *** Prevent Session hijacking ***
-//if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $visitor_ip){
-//  // *** Remove login session if IP address is changed ***
-//  echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
-//  session_unset();
-//  session_destroy();
-//  die();
-//}
-
 $page = 'index';
-
-// *** Autoload composer classes ***
-require __DIR__ . '/../vendor/autoload.php';
-
-// TODO refactor/ move to model
-// *** Only logoff admin ***
-if (isset($_GET['log_off'])) {
-    unset($_SESSION['user_name_admin']);
-    unset($_SESSION['user_id_admin']);
-    unset($_SESSION['group_id_admin']);
-}
-
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
-include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
+
+require(__DIR__ . '/../app/bootstrap.php');
 
 $safeTextDb = new Genealogy\Include\SafeTextDb();
 $showTreeText = new Genealogy\Include\ShowTreeText();
@@ -75,19 +50,6 @@ $mediaPath = new Genealogy\Include\MediaPath();
 
 $getVisitorIP = new Genealogy\Include\GetVisitorIP();
 $visitor_ip = $getVisitorIP->visitorIP();
-
-
-
-// *** Added dec. 2024 ***
-// Files are prepared, not used yet.
-//$controllerObj = new Main_adminController();
-//$main_admin = $controllerObj->detail();
-
-//$check_tables = $main_admin['check_table'];
-//$page = $main_admin['page'];
-//$popup = $main_admin['popup'];
-
-
 
 // *** Only load settings if database and table exists ***
 $main_admin['show_menu'] = false;
