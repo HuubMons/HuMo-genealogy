@@ -4,13 +4,18 @@ namespace Genealogy\Include;
 
 class ValidateGedcomnumber
 {
-    function validate($gedcomnumber)
+    public function validate($gedcomnumber): bool
     {
-        //$pattern = '/^^[a-z,A-Z][0-9]{1,}$/';
-        $pattern = '/^[a-zA-Z][0-9]{1,}$/';
-        if ($gedcomnumber) {
-            return (bool)preg_match($pattern, $gedcomnumber);
+        if (!is_string($gedcomnumber) && !is_int($gedcomnumber)) {
+            return false;
         }
-        return false;
+
+        $gedcomnumber = trim((string)$gedcomnumber);
+        if ($gedcomnumber === '') {
+            return false;
+        }
+
+        $pattern = '/^[a-zA-Z][0-9]{1,}$/';
+        return (bool) preg_match($pattern, $gedcomnumber);
     }
 }

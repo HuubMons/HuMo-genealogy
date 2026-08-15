@@ -8,6 +8,7 @@ namespace Genealogy\App\Model;
 
 use Genealogy\App\Model\BaseModel;
 use Genealogy\Include\ProcessLinks;
+use Genealogy\Include\ValidateGedcomnumber;
 
 class FamilyModel extends BaseModel
 {
@@ -16,20 +17,41 @@ class FamilyModel extends BaseModel
         parent::__construct($config);
     }
 
+    private function sanitizeGedcomNumber($value, string $default): string
+    {
+        if (!is_string($value) && !is_int($value) && !is_null($value)) {
+            return $default;
+        }
+
+        $value = trim((string) $value);
+        if ($value === '') {
+            return $default;
+        }
+
+        $validator = new ValidateGedcomnumber();
+        if (!$validator->validate($value)) {
+            return $default;
+        }
+
+        return $value;
+    }
+
     public function getFamilyId(): string
     {
         $family_id = 'F1'; // *** standard: show first family ***
         if (isset($_GET["id"])) {
-            $family_id = $_GET["id"];
+            $family_id = $this->sanitizeGedcomNumber($_GET["id"], 'F1');
         }
         if (isset($_POST["id"])) {
-            $family_id = $_POST["id"];
+            $family_id = $this->sanitizeGedcomNumber($_POST["id"], 'F1');
         }
 
         // *** A favourite ID is used ***
         if (isset($_POST["humo_favorite_id"])) {
             $favorite_array_id = explode("|", $_POST["humo_favorite_id"]);
-            $family_id = $favorite_array_id[0];
+            if (isset($favorite_array_id[0])) {
+                $family_id = $this->sanitizeGedcomNumber($favorite_array_id[0], 'F1');
+            }
         }
 
         return $family_id;
@@ -39,16 +61,18 @@ class FamilyModel extends BaseModel
     {
         $main_person = ''; // *** Mainperson of a family ***
         if (isset($_GET["main_person"])) {
-            $main_person = $_GET["main_person"];
+            $main_person = $this->sanitizeGedcomNumber($_GET["main_person"], '');
         }
         if (isset($_POST["main_person"])) {
-            $main_person = $_POST["main_person"];
+            $main_person = $this->sanitizeGedcomNumber($_POST["main_person"], '');
         }
 
         // *** A favourite ID is used ***
         if (isset($_POST["humo_favorite_id"])) {
             $favorite_array_id = explode("|", $_POST["humo_favorite_id"]);
-            $main_person = $favorite_array_id[1];
+            if (isset($favorite_array_id[1])) {
+                $main_person = $this->sanitizeGedcomNumber($favorite_array_id[1], '');
+            }
         }
 
         return $main_person;
