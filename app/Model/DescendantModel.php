@@ -663,7 +663,7 @@ class DescendantModel extends FamilyModel
             $counter = count($genarray);  // flags the need to move parent box. 1 means: call move() function
 
             for ($i = 0; $i < $counter; $i++) {
-                if (!isset($genarray[$i])) {
+                if (!isset($genarray[$i]["gen"])) {
                     break;
                 }
 
@@ -768,7 +768,7 @@ class DescendantModel extends FamilyModel
             $counter = count($genarray);  // flags the need to move parent box. 1 means: call move() function
 
             for ($i = 0; $i < $counter; $i++) {
-                if (!isset($genarray[$i])) {
+                if (!isset($genarray[$i]["gen"])) {
                     break;
                 }
 
