@@ -336,23 +336,20 @@ if ($error_page) {
     //    header("HTTP/1.1 429 Too Many Requests");
     //}
 ?>
-
     <!DOCTYPE html>
     <html lang="en">
 
     <head>
-        <!-- Bootstrap: rescale pages for mobile devices -->
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
         <title><?= $error_page; ?></title>
     </head>
 
     <body>
-        <div class="row mt-5"></div>
-
         <div class="row mt-5">
             <div class="col-md-3"></div>
             <div class="col bg-primary-subtle border border-primary-subtle rounded-3 p-4">

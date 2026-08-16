@@ -211,17 +211,25 @@ if ($page == 'family') {
 ?>
 
 <!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<!DOCTYPE html>
 <html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
-    <!-- Bootstrap: rescale standard HuMo-genealogy pages for mobile devices -->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Remark: title is changed using javascript in family.php -->
-    <title><?= $index['main_admin']; ?></title>
 
     <?php if ($humo_option["searchengine"] == "j") { ?>
         <?= $humo_option["robots_option"]; ?>
@@ -231,17 +239,11 @@ if ($page == 'family') {
         <base href="<?= $base_href; ?>">
     <?php } ?>
 
-    <!-- Bootstrap added in dec. 2023 -->
+    <link rel="icon" href="<?= $faviconLink; ?>" type="image/x-icon">
     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Default CSS settings -->
     <link href="css/gedcom.css" rel="stylesheet" type="text/css">
 
-    <!-- TODO check print version -->
-    <link href="css/print.css" rel="stylesheet" type="text/css" media="print">
-
-    <link rel="icon" href="<?= $faviconLink; ?>" type="image/x-icon">
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <?php
     /**
@@ -269,7 +271,7 @@ if ($page == 'family') {
         <script src="assets/jqueryui/jquery-ui.min.js"></script>
     <?php } ?>
 
-    <!-- Get cookie for theme selection -->
+    <!-- Get cookie for theme selection @deprecated use user param or default app param -->
     <script>
         function getCookie(NameOfCookie) {
             if (document.cookie.length > 0) {
@@ -296,20 +298,20 @@ if ($page == 'family') {
     // *** Photo lightbox effect using GLightbox ***
     // *** Remark: there is also a glightbox script footer of this layout.php script, otherwise GLightbox doesn't work ***
     ?>
+
     <link rel="stylesheet" href="assets/glightbox/css/glightbox.min.css">
     <script src="assets/glightbox/js/glightbox.min.js"></script>
-
-    <!-- CSS changes for mobile devices -->
-    <link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">
 
     <?php if ($page == 'family') { ?>
         <link rel="canonical" href="<?= $canonical_path; ?>">
     <?php } ?>
 
-    <!-- Extra items in header added by admin -->
-    <?php if ($humo_option["text_header"]) { ?>
-        <?= $humo_option["text_header"]; ?>
-    <?php } ?>
+    <?php
+    /** @deprecated the best way to do errors */
+    if ($humo_option["text_header"]) echo $humo_option["text_header"];
+    ?>
+
+    <title><?= $index['main_admin']; ?></title>
 </head>
 
 <body>
