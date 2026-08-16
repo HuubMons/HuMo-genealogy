@@ -341,18 +341,15 @@ if ($error_page) {
     <html lang="en">
 
     <head>
-        <!-- Bootstrap: rescale pages for mobile devices -->
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        <!-- <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
 
         <title><?= $error_page; ?></title>
+
     </head>
 
     <body>
-        <div class="row mt-5"></div>
-
         <div class="row mt-5">
             <div class="col-md-3"></div>
             <div class="col bg-primary-subtle border border-primary-subtle rounded-3 p-4">

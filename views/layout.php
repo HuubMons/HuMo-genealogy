@@ -69,25 +69,6 @@ if (isset($_POST['favorite_remove'])) {
     }
 }
 
-// TODO this is probably disabled allready.
-// *** Cookie for "show descendant chart below fanchart"
-// Set default ("0" is OFF, "1" is ON):
-/*
-$showdesc = "0";
-if (isset($_POST['show_desc'])) {
-    if ($_POST['show_desc'] == "1") {
-        $showdesc = "1";
-        $_SESSION['save_show_desc'] = "1";
-        setcookie("humogen_showdesc", "1", time() + 60 * 60 * 24 * 365); // set cookie to "1"
-    } else {
-        $showdesc = "0";
-        $_SESSION['save_show_desc'] = "0";
-        setcookie("humogen_showdesc", "0", time() + 60 * 60 * 24 * 365); // set cookie to "0"
-        // we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
-    }
-}
-*/
-
 // ----------- RTL by Dr Maleki ------------------
 $html_text = '';
 if ($language["dir"] == "rtl") {
@@ -211,49 +192,21 @@ if ($page == 'family') {
 ?>
 
 <!DOCTYPE html>
-
 <html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
-    <!-- Bootstrap: rescale standard HuMo-genealogy pages for mobile devices -->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Remark: title is changed using javascript in family.php -->
-    <title><?= $index['main_admin']; ?></title>
+    <?php if ($humo_option["searchengine"] == "j") echo $humo_option["robots_option"]; ?>
 
-    <?php if ($humo_option["searchengine"] == "j") { ?>
-        <?= $humo_option["robots_option"]; ?>
-    <?php } ?>
-
-    <?php if ($base_href) { ?>
-        <base href="<?= $base_href; ?>">
-    <?php } ?>
-
-    <!-- Bootstrap added in dec. 2023 -->
+    <link rel="shortcut icon" href="<?= $faviconLink; ?>" type="image/x-icon">
     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/humo/css/gedcom.css" rel="stylesheet" type="text/css">
+
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Default CSS settings -->
-    <link href="css/gedcom.css" rel="stylesheet" type="text/css">
-
-    <!-- TODO check print version -->
-    <link href="css/print.css" rel="stylesheet" type="text/css" media="print">
-
-    <link rel="icon" href="<?= $faviconLink; ?>" type="image/x-icon">
-
     <?php
-    /**
-     * Use these lines to show a background picture for EACH FAMILY TREE
-     */
-    /*
-    echo '<style type="text/css">';
-    $picture= "pictures/" . $tree_id . ".jpg";
-    echo " body { background-image: url($picture);}";
-    echo '</style>';
-    */
-
     // if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
     // *** Needed for zoomslider ***
     // *** Needed for autocomplete in list script ***
@@ -264,12 +217,16 @@ if ($page == 'family') {
         || strpos($_SERVER['REQUEST_URI'], "list") !== false
     ) {
     ?>
-        <script src="assets/jquery/jquery.min.js"></script>
         <link rel="stylesheet" href="assets/jqueryui/jquery-ui.min.css">
+
+        <script src="assets/jquery/jquery.min.js"></script>
         <script src="assets/jqueryui/jquery-ui.min.js"></script>
     <?php } ?>
 
-    <!-- Get cookie for theme selection -->
+    <!-- 
+        Get cookie for theme selection 
+        @deprecated stop using cookies for something can be loaded directly: use user param insteed
+     -->
     <script>
         function getCookie(NameOfCookie) {
             if (document.cookie.length > 0) {
@@ -299,17 +256,17 @@ if ($page == 'family') {
     <link rel="stylesheet" href="assets/glightbox/css/glightbox.min.css">
     <script src="assets/glightbox/js/glightbox.min.js"></script>
 
-    <!-- CSS changes for mobile devices -->
-    <link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">
-
     <?php if ($page == 'family') { ?>
         <link rel="canonical" href="<?= $canonical_path; ?>">
     <?php } ?>
 
-    <!-- Extra items in header added by admin -->
-    <?php if ($humo_option["text_header"]) { ?>
-        <?= $humo_option["text_header"]; ?>
-    <?php } ?>
+    <?php
+    /** @deprecated  Extra items in header added by admin, The best way to do errors do not use anymore */
+    if ($humo_option["text_header"]) echo $humo_option["text_header"];
+    ?>
+
+    <title><?= $index['main_admin']; ?></title>
+
 </head>
 
 <body>

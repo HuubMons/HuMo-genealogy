@@ -3,7 +3,7 @@
 body {
     background-color: white;
     color: black;
-    background-image: url('../images/background.gif');
+    background-image: url('/assets/humo/img/backgroud.gif');
     background-repeat: no-repeat;
     font: 15px Verdana, tahoma, arial, sans-serif;
 
@@ -797,4 +797,128 @@ footer {
 
 #footer {
     text-align: right;
+}
+
+@media (max-width: 640px) {
+    /* TODO: check these items, and remove mobile */
+
+    #content {
+        /* up, right, down */
+        padding: 5px 5px 5px 2px;
+    }
+
+    #rtlcontent {
+        /* up, right, down */
+        padding: 5px 5px 5px 2px;
+    }
+
+    table.small {
+        width: 100%;
+    }
+
+    table.standard {
+        width: 100%;
+    }
+}
+
+@media print {
+    /* TODO: check all items. Probably remove */
+
+    body {
+        background-color: white;
+        background-image: none;
+    }
+
+    #content {
+        display: block;
+        height: auto;
+        top: 7px;
+        max-height: auto;
+        overflow: visible;
+        padding-left: 10px;
+        position: static;
+        float: none;
+        z-index: 3;
+    }
+
+    .button {
+        display: none;
+    }
+
+    A:link {
+        text-decoration: none;
+        color: black;
+    }
+
+    A:visited {
+        text-decoration: none;
+        color: black;
+    }
+
+    A:active {
+        text-decoration: none;
+        color: black;
+    }
+
+    A:hover {
+        text-decoration: none;
+        color: black;
+    }
+
+    table.ancestor_sheet {
+        width: 100%;
+        line-height: 1.1;
+        text-align: center;
+        font-family: "Verdana";
+        background-color: #FFFFFF;
+        border-collapse: separate;
+        border-width: 1px;
+        border-spacing: 1px;
+        border-style: solid;
+        border-color: #000000;
+    }
+
+    table.ancestor_sheet td {
+        width: 12.5%;
+        vertical-align: top;
+        border-width: 1px;
+        border-style: solid;
+        border-color: #000000;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .kw-small {
+        font-size: 10px;
+    }
+
+    .kw-medium {
+        font-size: 12px;
+    }
+
+    .kw-bigger {
+        font-size: 14px;
+    }
+
+    .kw-big {
+        font-size: 16px;
+    }
+
+    table.ancestor_sheet th {
+        font-size: 120%;
+        border-style: solid;
+        border-color: #000000;
+        color: #000000;
+    }
+
+    .ancestor_legend {
+        font-size: 10px;
+        text-align: center;
+    }
+
+    table.ancestor_sheet td.ancestor_devider {
+        font-size: 15%;
+        padding-top: 1px;
+        padding-bottom: 1px;
+    }
 }

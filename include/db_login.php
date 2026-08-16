@@ -1,11 +1,10 @@
 <?php
 // *** To make HuMo-genealogy work, fill these lines properly! ***
 // *** Om HuMo-genealogy werkend te krijgen onderstaande regels GOED invullen! ***
-define("DATABASE_HOST",     'mysql');
+define("DATABASE_HOST",     'localhost');
 define("DATABASE_USERNAME", 'root');
 define("DATABASE_PASSWORD", '');
 define("DATABASE_NAME",     'humo-gen');
-
 
 /** 
  * Check if PDO driver is available 
@@ -51,13 +50,17 @@ try {
     $dsn = 'mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_NAME . ';charset=utf8';
     $dbh = new \PDO($dsn, DATABASE_USERNAME, DATABASE_PASSWORD);
 
+    if (isset($_ENV['APP_ENV']) && 'dev' === $_ENV['APP_ENV']) {
+        $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    }
+
     /** @todo improve genealogical dates in database to remove those 2 lines. */
     $dbh->query("SET SESSION sql_mode=(SELECT REPLACE(REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE',''),'NO_ZERO_IN_DATE',''));");
     $dbh->query("SET SESSION sql_mode=(SELECT REPLACE(REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY',''),'NO_ZERO_IN_DATE',''));");
 
     $database_check = 1;
 
-} catch (PDOException $e) {
+} catch (\PDOException $e) {
 
     unset($database_check);
 

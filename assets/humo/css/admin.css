@@ -2,7 +2,7 @@
 
 body.humo {
     background-color: white;
-    background-image: url('style_admin/background.gif');
+    background-image: url('/assets/humo/img/admin_background.gif');
     background-repeat: no-repeat;
 
     font: 15px Verdana, tahoma, arial, sans-serif;
@@ -152,4 +152,50 @@ table.standard {
 .ui-menu-item-wrapper.ui-state-active {
     background: #007bff !important;
     color: #fff !important;
+}
+
+
+@media print {
+    /* TODO: check these items. Probably remove */
+
+    body {
+        background-color: white;
+        background-image: none;
+    }
+
+    .button {
+        display: none;
+    }
+
+    div#humo_top {
+        display: none;
+    }
+
+    img {
+        display: none;
+    }
+
+    span.noprint {
+        display: none;
+    }
+
+    A:link {
+        text-decoration: none;
+        color: black;
+    }
+
+    A:visited {
+        text-decoration: none;
+        color: black;
+    }
+
+    A:active {
+        text-decoration: none;
+        color: black;
+    }
+
+    A:hover {
+        text-decoration: none;
+        color: black;
+    }
 }
