@@ -28,26 +28,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//session_cache_limiter('private, must-revalidate'); //tb edit
-session_start();
-// *** Regenerate session id regularly to prevent session hacking ***
-// TODO: if needed, only use this after user login.
-//session_regenerate_id();
-
-// *** Autoload composer classes ***
-require __DIR__ . '/vendor/autoload.php';
-
-// TODO move to model script (should be processed before setttings_user).
-if (isset($_GET['log_off'])) {
-    unset($_SESSION['user_name']);
-    unset($_SESSION['user_id']);
-    unset($_SESSION['user_group_id']);
-    unset($_SESSION['tree_prefix']);
-    session_destroy();
-}
-
-// TODO refactor/ check scripts for autoload.
-include_once(__DIR__ . "/include/db_login.php"); // Connect to database
+require(__DIR__ . '/app/bootstrap.php');
 
 $safeTextDb = new Genealogy\Include\SafeTextDb();
 
@@ -58,46 +39,6 @@ $userSettings = new Genealogy\Include\UserSettings();
 $user = $userSettings->get_user_settings($dbh);
 
 $showTreeText = new Genealogy\Include\ShowTreeText();
-
-
-/*
-// *** TEST use Symfony Translation component (to replace very old gettext.php script) ***
-// TODO Check code. Slows down website.
-$language_cls = new Genealogy\Languages\LanguageCls();
-$language_file = $language_cls->get_languages();
-$selected_language = $language_cls->get_selected_language($humo_option);
-$language = $language_cls->get_language_data($selected_language);
-
-$translator = new Symfony\Component\Translation\Translator($selected_language);
-$translator->addLoader('mo', new Symfony\Component\Translation\Loader\MoFileLoader());
-$mofile = __DIR__ . '/languages/' . $selected_language . '/' . $selected_language . '.mo';
-$translator->addResource('mo', $mofile, $selected_language);
-$GLOBALS['translator'] = $translator;
-function __($text)
-{
-    //global $translator;
-    //return $translator->trans($text);
-    return $GLOBALS['translator']->trans($text);
-}
-*/
-
-/*
-// TEST: using gettext/gettext.
-// TODO: check code. Code doesnt work.
-$language_cls = new Genealogy\Languages\LanguageCls();
-$language_file = $language_cls->get_languages();
-$selected_language = $language_cls->get_selected_language($humo_option);
-$language = $language_cls->get_language_data($selected_language);
-// Set your language code and path
-$mofile = __DIR__ . "/languages/$selected_language/$selected_language.mo";
-// Load translations from the .mo file
-$translations = Gettext\Translations::fromMoFile($mofile);
-// Create and register the translator globally
-$translator = new Gettext\Translator();
-$translator->loadTranslations($translations);
-$translator->register(); // This enables __(), _n(), etc.
-*/
-
 
 // *** Added dec. 2024 ***
 $controllerObj = new Genealogy\App\Controller\IndexController();
