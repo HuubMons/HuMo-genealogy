@@ -19,7 +19,7 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) { ?>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
-        <title>Humo Genealogy | Error</title>
+        <title>Humo-genealogy | Error</title>
     </head>
 
     <body>
@@ -35,8 +35,7 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) { ?>
         </p>
         <p>
             If it\'s not possible to use PDO, you have to downgrade to HuMo-genealogy 4.9.4!<br>
-            1) Download HuMo-genealogy 4.9.4 at: <a href="https://sourceforge.net/projects/humo-gen/files">Sourceforge</a><br>
-            2) Follow <a href="https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/">HuMo-gen installation</a> instructions.
+            Download HuMo-genealogy 4.9.4 at: <a href="https://sourceforge.net/projects/humo-gen/files">Sourceforge</a>
         </p>
     </body>
 
@@ -69,7 +68,7 @@ try {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
-            <title>Humo Genealogy | Error</title>
+            <title>Humo-genealogy | Error</title>
         </head>
 
         <body>
