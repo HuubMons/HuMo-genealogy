@@ -702,9 +702,25 @@ class ListModel extends BaseModel
             //$this->queryParams[':pers_prefix'] = $this->selection['pers_prefix'];
 
             if ($this->selection['pers_firstname']) {
-                $this->query .= $and . "(pers_firstname " . $buildCondition->build($this->selection['pers_firstname'], $this->selection['part_firstname']);
-                //$this->query .= " OR (event_kind='name' AND event_event " . $buildCondition->build($this->selection['pers_firstname'], $this->selection['part_firstname']) . ') )';
-                $this->query .= " OR (events.event_kind='name' AND events.event_event " . $buildCondition->build($this->selection['pers_firstname'], $this->selection['part_firstname']) . ') )';
+                //$this->query .= $and . "(pers_firstname " . $buildCondition->build($this->selection['pers_firstname'], $this->selection['part_firstname']);
+                //$this->query .= " OR (events.event_kind='name' AND events.event_event " . $buildCondition->build($this->selection['pers_firstname'], $this->selection['part_firstname']) . ') )';
+
+                // *** Less heavy query ***
+                $firstnameCondition = $buildCondition->build(
+                    $this->selection['pers_firstname'],
+                    $this->selection['part_firstname']
+                );
+
+                $this->query .= $and . "(
+                    pers_firstname " . $firstnameCondition . "
+                    OR pers_id IN (
+                        SELECT person_id
+                        FROM humo_events
+                        WHERE event_kind = 'name'
+                        AND event_tree_id = " . (int)$this->tree_id . "
+                        AND event_event " . $firstnameCondition . "
+                    )
+                )";
 
                 $and = " AND ";
                 $add_event_qry = true;
