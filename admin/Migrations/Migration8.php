@@ -18,7 +18,7 @@ class Migration8
     {
         // Implement the migration logic here.
 
-        $sql = "ALTER TABLE humo_settings ADD setting_tree_id smallint(5), ADD setting_order smallint(5)";
+        $sql = "ALTER TABLE humo_settings ADD setting_tree_id smallint, ADD setting_order smallint";
         $this->dbh->query($sql);
 
         // *** Add ordering numbers by extra links in settings table ***
@@ -32,9 +32,9 @@ class Migration8
 
         // *** New table for persons ***
         $tbldbqry = "CREATE TABLE humo_persons (
-        pers_id mediumint(7) unsigned NOT NULL auto_increment,
+        pers_id mediumint unsigned NOT NULL auto_increment,
         pers_gedcomnumber varchar(20) CHARACTER SET utf8,
-        pers_tree_id mediumint(7),
+        pers_tree_id mediumint,
         pers_tree_prefix varchar(10) CHARACTER SET utf8,
         pers_famc varchar(50) CHARACTER SET utf8,
         pers_fams varchar(150) CHARACTER SET utf8,
@@ -85,8 +85,8 @@ class Migration8
 
         // *** New table for families ***
         $tbldbqry = "CREATE TABLE humo_families (
-        fam_id mediumint(7) unsigned NOT NULL auto_increment,
-        fam_tree_id mediumint(7),
+        fam_id mediumint unsigned NOT NULL auto_increment,
+        fam_tree_id mediumint,
         fam_gedcomnumber varchar(20) CHARACTER SET utf8,
         fam_man varchar(20) CHARACTER SET utf8,
         fam_man_age varchar(15) CHARACTER SET utf8,
@@ -117,10 +117,10 @@ class Migration8
     fam_div_text text CHARACTER SET utf8,
     fam_div_authority text CHARACTER SET utf8,
         fam_text text CHARACTER SET utf8,
-        fam_alive int(1),
+        fam_alive int,
         fam_cal_date varchar(35) CHARACTER SET utf8,
         fam_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
-        fam_counter mediumint(7),
+        fam_counter mediumint,
         fam_new_date varchar(35) CHARACTER SET utf8,
         fam_new_time varchar(25) CHARACTER SET utf8,
         fam_changed_date varchar(35) CHARACTER SET utf8,
@@ -136,17 +136,16 @@ class Migration8
 
         // *** New table for unprocessed tags ***
         $sql = "CREATE TABLE humo_unprocessed_tags (
-        tag_id mediumint(6) unsigned NOT NULL auto_increment,
-        tag_pers_id mediumint(6),
-        tag_rel_id mediumint(6),
-        tag_event_id mediumint(6),
-        tag_source_id mediumint(6),
-        tag_connect_id mediumint(6),
-        tag_repo_id mediumint(6),
-        tag_place_id mediumint(6),
-        tag_address_id mediumint(6),
-        tag_text_id mediumint(6),
-        tag_tree_id smallint(5),
+        tag_id mediumint unsigned NOT NULL auto_increment,
+        tag_pers_id mediumint,
+        tag_rel_id mediumint,
+        tag_event_id mediumint,
+        tag_source_id mediumint,
+        tag_connect_id mediumint,
+        tag_repo_id mediumint,
+        tag_address_id mediumint,
+        tag_text_id mediumint,
+        tag_tree_id smallint,
         tag_tag text CHARACTER SET utf8,
         PRIMARY KEY (tag_id),
         KEY (tag_tree_id),
@@ -171,8 +170,8 @@ class Migration8
         $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_repositories'");
         if (!$temp->rowCount()) {
             $tbldbqry = "CREATE TABLE humo_repositories (
-            repo_id mediumint(6) unsigned NOT NULL auto_increment,
-            repo_tree_id smallint(5),
+            repo_id mediumint unsigned NOT NULL auto_increment,
+            repo_tree_id smallint,
             repo_gedcomnr varchar(20) CHARACTER SET utf8,
             repo_name text CHARACTER SET utf8,
             repo_address text CHARACTER SET utf8,
@@ -197,7 +196,7 @@ class Migration8
         } else {
             // *** Remove source column from repository table ***
             $qry = "ALTER TABLE humo_repositories DROP repo_source,
-            ADD repo_tree_id smallint(5) AFTER repo_id,
+            ADD repo_tree_id smallint AFTER repo_id,
             ADD KEY(`repo_tree_id`);";
             $sql_get = $this->dbh->query($qry);
 
@@ -210,11 +209,11 @@ class Migration8
         $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_sources'");
         if (!$temp->rowCount()) {
             $tbldbqry = "CREATE TABLE humo_sources (
-            source_id mediumint(6) unsigned NOT NULL auto_increment,
-            source_tree_id smallint(5),
+            source_id mediumint unsigned NOT NULL auto_increment,
+            source_tree_id smallint,
             source_status varchar(10) CHARACTER SET utf8,
             source_gedcomnr varchar(20) CHARACTER SET utf8,
-            source_order mediumint(6),
+            source_order mediumint,
             source_title text CHARACTER SET utf8,
             source_abbr varchar(50) CHARACTER SET utf8,
             source_date varchar(35) CHARACTER SET utf8,
@@ -244,7 +243,7 @@ class Migration8
         } else {
             // *** Add primary key ***
             $sql = "ALTER TABLE humo_sources ADD PRIMARY KEY(`source_id`),
-            ADD source_tree_id smallint(5) AFTER source_id,
+            ADD source_tree_id smallint AFTER source_id,
             ADD KEY(`source_tree_id`);";
             $this->dbh->query($sql);
 
@@ -260,8 +259,8 @@ class Migration8
         $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_texts'");
         if (!$temp->rowCount()) {
             $tbldbqry = "CREATE TABLE humo_texts (
-            text_id mediumint(6) unsigned NOT NULL auto_increment,
-            text_tree_id smallint(5),
+            text_id mediumint unsigned NOT NULL auto_increment,
+            text_tree_id smallint,
             text_gedcomnr varchar(20) CHARACTER SET utf8,
             text_text text CHARACTER SET utf8,
             text_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
@@ -277,7 +276,7 @@ class Migration8
         } else {
             // *** Add primary key ***
             $qry = "ALTER TABLE humo_texts ADD PRIMARY KEY(`text_id`),
-            ADD text_tree_id smallint(5) AFTER text_id,
+            ADD text_tree_id smallint AFTER text_id,
             ADD KEY(`text_tree_id`)";
             $sql_get = $this->dbh->query($qry);
 
@@ -294,9 +293,9 @@ class Migration8
         $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_connections'");
         if (!$temp->rowCount()) {
             $tbldbqry = "CREATE TABLE humo_connections (
-            connect_id mediumint(6) unsigned NOT NULL auto_increment,
-            connect_tree_id smallint(5),
-            connect_order mediumint(6),
+            connect_id mediumint unsigned NOT NULL auto_increment,
+            connect_tree_id smallint,
+            connect_order mediumint,
             connect_kind varchar(25) CHARACTER SET utf8,
             connect_sub_kind varchar(30) CHARACTER SET utf8,
             connect_connect_id varchar(20) CHARACTER SET utf8,
@@ -321,7 +320,7 @@ class Migration8
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->dbh->query($tbldbqry);
         } else {
-            $sql = "ALTER TABLE humo_connections ADD connect_tree_id smallint(5) AFTER connect_id, ADD KEY(`connect_tree_id`)";
+            $sql = "ALTER TABLE humo_connections ADD connect_tree_id smallint AFTER connect_id, ADD KEY(`connect_tree_id`)";
             $this->dbh->query($sql);
 
             // *** Add repo_tree_id value in table ***
@@ -336,10 +335,10 @@ class Migration8
         $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_addresses'");
         if (!$temp->rowCount()) {
             $tbldbqry = "CREATE TABLE humo_addresses(
-            address_id mediumint(6) unsigned NOT NULL auto_increment,
-            address_tree_id smallint(5),
+            address_id mediumint unsigned NOT NULL auto_increment,
+            address_tree_id smallint,
             address_gedcomnr varchar(20) CHARACTER SET utf8,
-            address_order mediumint(6),
+            address_order mediumint,
             address_person_id varchar(20) CHARACTER SET utf8,
             address_family_id varchar(20) CHARACTER SET utf8,
             address_address text CHARACTER SET utf8,
@@ -360,7 +359,7 @@ class Migration8
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->dbh->query($tbldbqry);
         } else {
-            $sql = "ALTER TABLE humo_addresses ADD address_tree_id smallint(5) AFTER address_id, ADD KEY(`address_tree_id`)";
+            $sql = "ALTER TABLE humo_addresses ADD address_tree_id smallint AFTER address_id, ADD KEY(`address_tree_id`)";
             $this->dbh->query($sql);
 
             // *** Add key ***
@@ -379,10 +378,10 @@ class Migration8
         $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_events'");
         if (!$temp->rowCount()) {
             $tbldbqry = "CREATE TABLE humo_events (
-            event_id mediumint(6) unsigned NOT NULL auto_increment,
-            event_tree_id smallint(5),
+            event_id mediumint unsigned NOT NULL auto_increment,
+            event_tree_id smallint,
             event_gedcomnr varchar(20) CHARACTER SET utf8,
-            event_order mediumint(6),
+            event_order mediumint,
             event_person_id varchar(20) CHARACTER SET utf8,
             event_pers_age varchar(15) CHARACTER SET utf8,
             event_family_id varchar(20) CHARACTER SET utf8,
@@ -407,7 +406,7 @@ class Migration8
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->dbh->query($tbldbqry);
         } else {
-            $sql = "ALTER TABLE humo_events ADD event_tree_id smallint(5) AFTER event_id,
+            $sql = "ALTER TABLE humo_events ADD event_tree_id smallint AFTER event_id,
             ADD event_pers_age varchar(15) CHARACTER SET utf8 AFTER event_person_id,
             ADD KEY(`event_tree_id`)";
             $this->dbh->query($sql);

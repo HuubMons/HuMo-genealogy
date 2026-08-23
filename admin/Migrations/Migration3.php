@@ -23,9 +23,9 @@ class Migration3
         }
         print __('creating humo_cms_menu...') . '<br>';
         $this->dbh->query("CREATE TABLE humo_cms_menu (
-            menu_id int(10) NOT NULL AUTO_INCREMENT,
-            menu_parent_id int(10) NOT NULL DEFAULT '0',
-            menu_order int(5) NOT NULL DEFAULT '0',
+            menu_id int NOT NULL AUTO_INCREMENT,
+            menu_parent_id int NOT NULL DEFAULT '0',
+            menu_order int NOT NULL DEFAULT '0',
             menu_name varchar(25) CHARACTER SET utf8 DEFAULT '',
             PRIMARY KEY (`menu_id`)
             ) DEFAULT CHARSET=utf8");
@@ -37,11 +37,11 @@ class Migration3
         }
         print __('creating humo_cms_pages...') . '<br>';
         $this->dbh->query("CREATE TABLE humo_cms_pages (
-            page_id int(10) NOT NULL AUTO_INCREMENT,
+            page_id int NOT NULL AUTO_INCREMENT,
             page_status varchar(1) CHARACTER SET utf8 DEFAULT '',
-            page_menu_id int(10) NOT NULL DEFAULT '0',
-            page_order int(10) NOT NULL DEFAULT '0',
-            page_counter int(10) NOT NULL DEFAULT '0',
+            page_menu_id int NOT NULL DEFAULT '0',
+            page_order int NOT NULL DEFAULT '0',
+            page_counter int NOT NULL DEFAULT '0',
             page_date datetime,
             page_edit_date datetime,
             page_title varchar(50) CHARACTER SET utf8 DEFAULT '',

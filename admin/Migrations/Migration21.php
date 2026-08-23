@@ -44,7 +44,7 @@ class Migration21
                 person_id INT UNSIGNED NOT NULL,
                 person_gedcomnumber VARCHAR(30) DEFAULT NULL,
                 person_age VARCHAR(15) CHARACTER SET utf8,
-                tree_id SMALLINT(5) NOT NULL,
+                tree_id SMALLINT NOT NULL,
                 relation_type VARCHAR(20) DEFAULT NULL,
                 relation_order TINYINT UNSIGNED DEFAULT NULL,
                 partner_order TINYINT UNSIGNED DEFAULT 1,

@@ -114,7 +114,7 @@ class Migration10
         $this->dbh->query($sql);
 
         // *** Update user_log table ***
-        $sql = "ALTER TABLE humo_user_log ADD log_id mediumint(6) unsigned NOT NULL auto_increment FIRST, ADD PRIMARY KEY (`log_id`),
+        $sql = "ALTER TABLE humo_user_log ADD log_id mediumint unsigned NOT NULL auto_increment FIRST, ADD PRIMARY KEY (`log_id`),
         ADD log_status varchar(10) CHARACTER SET utf8 DEFAULT '' AFTER log_user_admin";
         $this->dbh->query($sql);
 

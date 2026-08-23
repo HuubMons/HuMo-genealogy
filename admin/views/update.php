@@ -185,12 +185,12 @@
          *
          * EXAMPLES:
          * *** Combination of ALTER and ADD in one query ***
-         * ALTER TABLE humo_persons CHANGE pers_id pers_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+         * ALTER TABLE humo_persons CHANGE pers_id pers_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
          * ADD pers_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER pers_quality
          *
          * *** Change multiple lines in 1 query ***
          * $sql='ALTER TABLE humo_settings
-         * CHANGE id setting_id smallint(5) unsigned NOT NULL auto_increment,
+         * CHANGE id setting_id smallint unsigned NOT NULL auto_increment,
          * CHANGE variabele setting_variable varchar(50) CHARACTER SET utf8,
          * CHANGE waarde setting_value text CHARACTER SET utf8';
          *

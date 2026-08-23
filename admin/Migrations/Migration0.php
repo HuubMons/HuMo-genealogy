@@ -40,8 +40,8 @@ class Migration0
         } else {
             echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
             $this->dbh->query("CREATE TABLE humo_tree_texts (
-                treetext_id smallint(5) unsigned NOT NULL auto_increment,
-                treetext_tree_id smallint(5),
+                treetext_id smallint unsigned NOT NULL auto_increment,
+                treetext_tree_id smallint,
                 treetext_language varchar(100) CHARACTER SET utf8,
                 treetext_name varchar(100) CHARACTER SET utf8,
                 treetext_mainmenu_text text CHARACTER SET utf8,
@@ -93,8 +93,8 @@ class Migration0
             $this->dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_tree_texts
-                CHANGE tekst_id treetext_id smallint(5) unsigned NOT NULL auto_increment,
-                CHANGE stamboom_id treetext_tree_id smallint(5),
+                CHANGE tekst_id treetext_id smallint unsigned NOT NULL auto_increment,
+                CHANGE stamboom_id treetext_tree_id smallint,
                 CHANGE taal treetext_language varchar(100) CHARACTER SET utf8,
                 CHANGE stamboom_naam treetext_name varchar(100) CHARACTER SET utf8,
                 CHANGE hoofdmenu_tekst treetext_mainmenu_text text CHARACTER SET utf8,
@@ -151,7 +151,7 @@ class Migration0
         } else {
             echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
             $this->dbh->query("CREATE TABLE humo_stat_date (
-            stat_id int(10) NOT NULL auto_increment,
+            stat_id int NOT NULL auto_increment,
             stat_easy_id varchar(100) CHARACTER SET utf8,
             stat_ip_address varchar(20) CHARACTER SET utf8,
             stat_user_agent varchar(255) CHARACTER SET utf8,
@@ -189,7 +189,7 @@ class Migration0
             $update_Db = $this->dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_stat_date
-            CHANGE id stat_id int(10) NOT NULL auto_increment,
+            CHANGE id stat_id int NOT NULL auto_increment,
             CHANGE samengesteld_id stat_easy_id varchar(100) CHARACTER SET utf8,
             CHANGE ip_adres stat_ip_address varchar(20) CHARACTER SET utf8,
             CHANGE stamboom_id stat_tree_id varchar(5) CHARACTER SET utf8,
@@ -250,7 +250,7 @@ class Migration0
             $this->dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_settings
-            CHANGE id setting_id smallint(5) unsigned NOT NULL auto_increment,
+            CHANGE id setting_id smallint unsigned NOT NULL auto_increment,
             CHANGE variabele setting_variable varchar(50) CHARACTER SET utf8,
             CHANGE waarde setting_value text CHARACTER SET utf8';
             $this->dbh->query($sql);
@@ -299,8 +299,8 @@ class Migration0
             $this->dbh->query($sql);
 
             $sql = 'ALTER TABLE humo_trees
-            CHANGE id tree_id smallint(5) unsigned NOT NULL auto_increment,
-            CHANGE volgorde tree_order smallint(5),
+            CHANGE id tree_id smallint unsigned NOT NULL auto_increment,
+            CHANGE volgorde tree_order smallint,
             CHANGE voorvoegsel tree_prefix varchar(10) CHARACTER SET utf8,
             CHANGE datum tree_date varchar(20) CHARACTER SET utf8,
             CHANGE personen tree_persons varchar(10) CHARACTER SET utf8,
@@ -414,7 +414,7 @@ class Migration0
             echo '<tr><td>Check table humo_users</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
 
             $sql = 'ALTER TABLE humo_users
-            CHANGE id user_id smallint(5) NOT NULL auto_increment,
+            CHANGE id user_id smallint NOT NULL auto_increment,
             CHANGE username user_name varchar(25) CHARACTER SET utf8,
             CHANGE paswoord user_password varchar(50) CHARACTER SET utf8,
             CHANGE groeps_id user_group_id varchar(1) CHARACTER SET utf8';
@@ -442,7 +442,7 @@ class Migration0
         } else {
             echo '<tr><td>Check table humo_groups</td><td style="background-color:#00FF00">' . __('AUTOMATIC UPDATE PROCESS STARTED!') . '<br>';
             $sql = 'ALTER TABLE humo_groups
-            CHANGE id group_id smallint(5) unsigned NOT NULL auto_increment,
+            CHANGE id group_id smallint unsigned NOT NULL auto_increment,
             CHANGE groepsnaam group_name varchar(25) CHARACTER SET utf8,
             CHANGE privacy group_privacy varchar(1) CHARACTER SET utf8,
             CHANGE plaatsen group_menu_places varchar(1) CHARACTER SET utf8,
@@ -616,8 +616,8 @@ class Migration0
                 $this->dbh->query($sql);
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'person
-                CHANGE id pers_id	mediumint(6) unsigned NOT NULL auto_increment,
-                CHANGE gedcomnummer pers_gedcomnumber	varchar(20) CHARACTER SET utf8,
+                CHANGE id pers_id mediumint unsigned NOT NULL auto_increment,
+                CHANGE gedcomnummer pers_gedcomnumber varchar(20) CHARACTER SET utf8,
                 CHANGE famc pers_famc varchar(50) CHARACTER SET utf8,
                 CHANGE fams pers_fams varchar(150) CHARACTER SET utf8,
                 CHANGE indexnr pers_indexnr varchar(20) CHARACTER SET utf8,
@@ -663,7 +663,7 @@ class Migration0
                 $this->dbh->query($sql);
 
                 $sql = 'ALTER TABLE ' . $updateDb->tree_prefix . 'family
-                CHANGE id fam_id mediumint(6) unsigned NOT NULL auto_increment,
+                CHANGE id fam_id mediumint unsigned NOT NULL auto_increment,
                 CHANGE gedcomnummer fam_gedcomnumber varchar(20) CHARACTER SET utf8,
                 CHANGE man fam_man varchar(20) CHARACTER SET utf8,
                 CHANGE vrouw fam_woman varchar(20) CHARACTER SET utf8,
@@ -696,8 +696,8 @@ class Migration0
                 CHANGE scheidingstekst fam_div_text text CHARACTER SET utf8,
                 CHANGE scheidingsbron fam_div_source text CHARACTER SET utf8,
                 CHANGE huwtekst fam_text text CHARACTER SET utf8,
-                CHANGE levend fam_alive int(1),
-                CHANGE teller fam_counter mediumint(8)';
+                CHANGE levend fam_alive int,
+                CHANGE teller fam_counter mediumint';
                 $this->dbh->query($sql);
                 //$update.=$sql.'<br>';
 

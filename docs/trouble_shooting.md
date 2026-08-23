@@ -109,30 +109,30 @@ If you have one or multiple very large family trees, and you are using the gedco
 **Before using these queries, do back-up your database!**
 
 ```
-ALTER TABLE humo_persons CHANGE pers_id pers_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_pers_id tag_pers_id BIGINT(20) UNSIGNED NULL DEFAULT NULL  
+ALTER TABLE humo_persons CHANGE pers_id pers_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_pers_id tag_pers_id BIGINT UNSIGNED NULL DEFAULT NULL  
   
-ALTER TABLE humo_families CHANGE fam_id fam_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_rel_id tag_rel_id BIGINT(20) UNSIGNED NULL DEFAULT NULL;  
+ALTER TABLE humo_families CHANGE fam_id fam_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_rel_id tag_rel_id BIGINT UNSIGNED NULL DEFAULT NULL;  
   
-ALTER TABLE humo_addresses CHANGE address_id address_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_address_id tag_address_id BIGINT(20) UNSIGNED NULL DEFAULT NULL;  
+ALTER TABLE humo_addresses CHANGE address_id address_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_address_id tag_address_id BIGINT UNSIGNED NULL DEFAULT NULL;  
   
-ALTER TABLE humo_connections CHANGE connect_id connect_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_connect_id tag_connect_id BIGINT(20) UNSIGNED NULL DEFAULT NULL;  
+ALTER TABLE humo_connections CHANGE connect_id connect_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_connect_id tag_connect_id BIGINT UNSIGNED NULL DEFAULT NULL;  
   
-ALTER TABLE humo_events CHANGE event_id event_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_event_id tag_event_id BIGINT(20) UNSIGNED NULL DEFAULT NULL;  
+ALTER TABLE humo_events CHANGE event_id event_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_event_id tag_event_id BIGINT UNSIGNED NULL DEFAULT NULL;  
   
-ALTER TABLE humo_location CHANGE location_id location_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_place_id tag_place_id BIGINT(20) UNSIGNED NULL DEFAULT NULL;  
+ALTER TABLE humo_location CHANGE location_id location_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_place_id tag_place_id BIGINT UNSIGNED NULL DEFAULT NULL;  
   
-ALTER TABLE humo_sources CHANGE source_id source_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_source_id tag_source_id BIGINT(20) UNSIGNED NULL DEFAULT NULL;  
+ALTER TABLE humo_sources CHANGE source_id source_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_source_id tag_source_id BIGINT UNSIGNED NULL DEFAULT NULL;  
   
-ALTER TABLE humo_texts CHANGE text_id text_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;  
-ALTER TABLE humo_unprocessed_tags CHANGE tag_text_id tag_text_id BIGINT(20) UNSIGNED NULL DEFAULT NULL;  
+ALTER TABLE humo_texts CHANGE text_id text_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;  
+ALTER TABLE humo_unprocessed_tags CHANGE tag_text_id tag_text_id BIGINT UNSIGNED NULL DEFAULT NULL;  
   
-ALTER TABLE humo_unprocessed_tags CHANGE tag_id tag_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE humo_unprocessed_tags CHANGE tag_id tag_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT;
 ```
 
