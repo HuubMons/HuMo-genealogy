@@ -41,7 +41,7 @@ class Migration2
             // *** Generate new table ***
             print '<br>' . __('creating repositories...') . '<br>';
             $this->dbh->query("CREATE TABLE " . $updateDb->tree_prefix . "repositories (
-                repo_id mediumint(6) unsigned NOT NULL auto_increment,
+                repo_id mediumint unsigned NOT NULL auto_increment,
                 repo_gedcomnr varchar(20) CHARACTER SET utf8,
                 repo_name text CHARACTER SET utf8,
                 repo_address text CHARACTER SET utf8,
@@ -68,8 +68,8 @@ class Migration2
             // *** Generate new table ***
             print ' ' . __('creating connections...');
             $this->dbh->query("CREATE TABLE " . $updateDb->tree_prefix . "connections (
-                connect_id mediumint(6) unsigned NOT NULL auto_increment,
-                connect_order mediumint(6),
+                connect_id mediumint unsigned NOT NULL auto_increment,
+                connect_order mediumint,
                 connect_kind varchar(25) CHARACTER SET utf8,
                 connect_sub_kind varchar(30) CHARACTER SET utf8,
                 connect_connect_id varchar(20) CHARACTER SET utf8,

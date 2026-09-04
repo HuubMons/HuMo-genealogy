@@ -35,14 +35,14 @@ class Migration16
             $this->dbh->query($sql);
             $sql = "ALTER TABLE humo_user_notes CHANGE note_time note_new_time varchar(25) CHARACTER SET utf8;";
             $this->dbh->query($sql);
-            $sql = "ALTER TABLE humo_user_notes CHANGE note_user_id note_new_user_id smallint(5);";
+            $sql = "ALTER TABLE humo_user_notes CHANGE note_user_id note_new_user_id smallint;";
             $this->dbh->query($sql);
 
             $sql = "ALTER TABLE humo_user_notes ADD note_changed_date varchar(20) CHARACTER SET utf8 AFTER note_new_user_id;";
             $this->dbh->query($sql);
             $sql = "ALTER TABLE humo_user_notes ADD note_changed_time varchar(25) CHARACTER SET utf8 AFTER note_changed_date;";
             $this->dbh->query($sql);
-            $sql = "ALTER TABLE humo_user_notes ADD note_changed_user_id smallint(5) AFTER note_changed_time;";
+            $sql = "ALTER TABLE humo_user_notes ADD note_changed_user_id smallint AFTER note_changed_time;";
             $this->dbh->query($sql);
 
             $sql = "ALTER TABLE humo_user_notes ADD note_priority varchar(15) CHARACTER SET utf8 AFTER note_status;";
@@ -52,7 +52,7 @@ class Migration16
             $this->dbh->query($sql);
 
             // *** Add note_order ***
-            $sql = "ALTER TABLE humo_user_notes ADD note_order smallint(5) AFTER note_id;";
+            $sql = "ALTER TABLE humo_user_notes ADD note_order smallint AFTER note_id;";
             $this->dbh->query($sql);
 
             // *** Add note_connect_kind = person/ family/ source/ repository ***
@@ -143,7 +143,7 @@ class Migration16
         $temp = $this->dbh->query("SHOW TABLES LIKE 'humo_stat_country'");
         if (!$temp->rowCount()) {
             $qry = "CREATE TABLE humo_stat_country (
-                stat_country_id INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                stat_country_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 stat_country_ip_address varchar(40) DEFAULT NULL,
                 stat_country_code VARCHAR(10) CHARACTER SET utf8
             )";

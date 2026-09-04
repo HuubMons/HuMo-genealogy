@@ -28,14 +28,14 @@ class Migration7
         $this->dbh->query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom_program varchar (100)");
 
         // *** Bug in table, change user_group_id ***
-        $this->dbh->query("ALTER TABLE humo_users CHANGE user_group_id user_group_id smallint(5)");
+        $this->dbh->query("ALTER TABLE humo_users CHANGE user_group_id user_group_id smallint");
 
         // *** Add new table, for user notes ***
         $this->dbh->query("CREATE TABLE humo_user_notes (
-            note_id smallint(5) unsigned NOT NULL auto_increment,
+            note_id smallint unsigned NOT NULL auto_increment,
             note_date varchar(20) CHARACTER SET utf8,
             note_time varchar(25) CHARACTER SET utf8,
-            note_user_id smallint(5),
+            note_user_id smallint,
             note_note text CHARACTER SET utf8,
             note_status varchar(10) CHARACTER SET utf8,
             note_tree_prefix varchar(25) CHARACTER SET utf8,

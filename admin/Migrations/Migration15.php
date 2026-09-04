@@ -27,7 +27,7 @@ class Migration15
             $this->dbh->query($sql_put);
         }
         // *** Update humo_settings (needed larger ID, because of bug in scripts) ***
-        $sql_put = "ALTER TABLE humo_settings CHANGE setting_id setting_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
+        $sql_put = "ALTER TABLE humo_settings CHANGE setting_id setting_id INT UNSIGNED NOT NULL AUTO_INCREMENT";
         $this->dbh->query($sql_put);
 
         // *** Add 2FA in user table ***

@@ -572,7 +572,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
             $albumtbl = "CREATE TABLE humo_photocat (
                 photocat_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                photocat_order MEDIUMINT(6),
+                photocat_order MEDIUMINT,
                 photocat_prefix VARCHAR(30) CHARACTER SET utf8,
                 photocat_language VARCHAR(10) CHARACTER SET utf8,
                 photocat_name VARCHAR(50) CHARACTER SET utf8
