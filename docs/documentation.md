@@ -7,8 +7,8 @@ title: Documentation
 - [Installation](full_installation_guide.md) Installation guide
 
 ## Special installation options
-- todo: Install HuMo-genealogy in Xampp. Check: [Old PDF documentation](https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/)
-- todo: Install HuMo-genealogy in Docker. Check: [Forum topic](https://humo-gen.com/genforum2/viewtopic.php?t=3250)
+- todo: Install HuMo-genealogy in Xampp.
+- todo: Install HuMo-genealogy in Docker.
 
 ## Start the program
 - [Start HuMo-genealogy](start_humo-genealogy.md) More information about first start of HuMo-genealogy.
