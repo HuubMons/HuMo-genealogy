@@ -4,6 +4,7 @@
  * Sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
+
 // *** Show number of persons and pages ***
 $item = 0;
 if (isset($_GET['item'])) {
@@ -83,8 +84,8 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
             <div class="col-2">
                 <select id="part_place_name" name="part_place_name" aria-label="<?= __('Find place'); ?>" class="form-select form-select-sm">
                     <option value="contains"><?= __('Contains'); ?></option>
-                    <option value="equals" <?php if ($data["part_place_name"] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
-                    <option value="starts_with" <?php if ($data["part_place_name"] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
+                    <option value="equals" <?= $data["part_place_name"] == 'equals' ? 'selected' : ''; ?>><?= __('Equals'); ?></option>
+                    <option value="starts_with" <?= $data["part_place_name"] == 'starts_with' ? 'selected' : ''; ?>><?= __('Starts with'); ?></option>
                 </select>
             </div>
 

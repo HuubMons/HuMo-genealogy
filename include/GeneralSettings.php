@@ -35,9 +35,36 @@ class GeneralSettings
         //$humo_option["version_date"]='2012-11-30';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 
-        // *** Database updates (can be moved to database update script later) ***
+        // *** Database updates (will be moved to a Migration update script later) ***
         // ..............................
 
+        // *** Add indexes to tables humo_events and humo_relations_persons for better performance ***
+        $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_relation_kind_place'")->fetch(PDO::FETCH_ASSOC);
+        if (!$indexExists) {
+            $dbh->exec("
+                ALTER TABLE humo_events
+                ADD INDEX idx_relation_kind_place
+                (relation_id, event_kind, place_id);
+            ");
+        }
+
+        $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_kind_relation_place'")->fetch(PDO::FETCH_ASSOC);
+        if (!$indexExists) {
+            $dbh->exec("
+                ALTER TABLE humo_events
+                ADD INDEX idx_kind_relation_place
+                (event_kind, relation_id, place_id);
+            ");
+        }
+
+        $indexExists = $dbh->query("SHOW INDEX FROM humo_relations_persons WHERE Key_name = 'idx_relation_type_order'")->fetch(PDO::FETCH_ASSOC);
+        if (!$indexExists) {
+            $dbh->exec("
+                ALTER TABLE humo_relations_persons
+                ADD INDEX idx_relation_type_order
+                (relation_id, relation_type, partner_order);
+            ");
+        }
 
         // *** If needed: translate setting_variabele into setting variable ***
         $update_setting_qry = $dbh->query("SELECT * FROM humo_settings");
