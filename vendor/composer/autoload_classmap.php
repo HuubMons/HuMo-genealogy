@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Genealogy\\Include\\ActiveUsers' => $baseDir . '/include/ActiveUsers.php',
     'Genealogy\\Include\\AncestorBox' => $baseDir . '/include/AncestorBox.php',
     'Genealogy\\Include\\AncestorLabel' => $baseDir . '/include/AncestorLabel.php',
     'Genealogy\\Include\\Ancestors' => $baseDir . '/include/Ancestors.php',
@@ -23,6 +24,10 @@ return array(
     'Genealogy\\Include\\Editor_cls' => $baseDir . '/include/Editor_cls.php',
     'Genealogy\\Include\\EventManager' => $baseDir . '/include/EventManager.php',
     'Genealogy\\Include\\GedcomExport' => $baseDir . '/include/GedcomExport.php',
+    'Genealogy\\Include\\GedcomExportFamilies' => $baseDir . '/include/GedcomExportFamilies.php',
+    'Genealogy\\Include\\GedcomExportFunctions' => $baseDir . '/include/GedcomExportFunctions.php',
+    'Genealogy\\Include\\GedcomExportPersons' => $baseDir . '/include/GedcomExportPersons.php',
+    'Genealogy\\Include\\GedcomExportSources' => $baseDir . '/include/GedcomExportSources.php',
     'Genealogy\\Include\\GedcomImport' => $baseDir . '/include/GedcomImport.php',
     'Genealogy\\Include\\GeneralSettings' => $baseDir . '/include/GeneralSettings.php',
     'Genealogy\\Include\\GetVisitorIP' => $baseDir . '/include/GetVisitorIP.php',

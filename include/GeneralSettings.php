@@ -38,7 +38,7 @@ class GeneralSettings
         // *** Database updates (will be moved to a Migration update script later) ***
         // ..............................
 
-        // *** Add indexes to tables humo_events and humo_relations_persons for better performance ***
+        // *** Sept. 2026: add indexes to tables humo_events and humo_relations_persons for better performance ***
         $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_relation_kind_place'")->fetch(PDO::FETCH_ASSOC);
         if (!$indexExists) {
             $dbh->exec("
@@ -65,6 +65,17 @@ class GeneralSettings
                 (relation_id, relation_type, partner_order);
             ");
         }
+
+        // *** Sept. 2026: create table humo_active_visitors for counting active visitors. Needed to block bots ***
+        $dbh->exec("
+            CREATE TABLE IF NOT EXISTS humo_active_visitors (
+                visitor_ip VARCHAR(45) NOT NULL,
+                last_activity INT UNSIGNED NOT NULL,
+                user_agent VARCHAR(255) NOT NULL,
+                PRIMARY KEY (visitor_ip),
+                INDEX (last_activity)
+            );
+        ");
 
         // *** If needed: translate setting_variabele into setting variable ***
         $update_setting_qry = $dbh->query("SELECT * FROM humo_settings");
@@ -435,6 +446,29 @@ class GeneralSettings
         if (!isset($humo_option["debug_show_deprecated"])) {
             $humo_option["debug_show_deprecated"] = 'n';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='debug_show_deprecated', setting_value='n'");
+        }
+
+        // *** Limit visitors per time frame ***
+        if (!isset($humo_option["max_visitors"])) {
+            $humo_option["max_visitors"] = 50;
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors', setting_value='50'");
+        }
+        if (!isset($humo_option["max_visitors_seconds"])) {
+            $humo_option["max_visitors_seconds"] = 600;
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors_seconds', setting_value='600'");
+        }
+        if (!isset($humo_option["max_visitors_email_address"])) {
+            $humo_option["max_visitors_email_address"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors_email_address', setting_value=''");
+        }
+        if (!isset($humo_option["max_visitors_action"])) {
+            $humo_option["max_visitors_action"] = 'close_pages';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors_action', setting_value='close_pages'");
+        }
+
+        if (!isset($humo_option["website_status"])) {
+            $humo_option["website_status"] = 'active';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='website_status', setting_value='active'");
         }
 
         if (!isset($humo_option["hide_languages"])) {

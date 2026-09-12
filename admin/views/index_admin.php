@@ -383,6 +383,27 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
                 <a href="index.php?page=thumbs"><?= __('Picture settings'); ?></a>
             </div>
         </div>
+
+        <?php
+        // TODO: use the original code from script ActiveUsers.php.
+        $active_users = 0;
+        $stmt = $dbh->prepare("SELECT COUNT(*) AS active_users FROM humo_active_visitors");
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result) {
+            $active_users = (int)$result['active_users'];
+        }
+        ?>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Active users'); ?>
+            </div>
+
+            <div class="col-md-8">
+                <?= $active_users; ?>
+            </div>
+        </div>
+
     <?php } ?>
 
     <?php if ($index['install_status'] == true) { ?>

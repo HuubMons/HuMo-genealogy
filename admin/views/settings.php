@@ -184,8 +184,77 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <div class="col-md-auto">
                 <?= __('This shows all deprecation messages when debug is on'); ?>
             </div>
-        </div>        
+        </div>
     </div>
+
+    <!-- Visitor settings -->
+    <div class="genealogy_search p-2 my-2">
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <h4><?= __('Website visitor settings'); ?></h4>
+            </div>
+            <div class="col-md-4">
+                <input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <b><?= __('These settings control how the website handles the number of bots and visitors limits.'); ?></b>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Maximum number of visitors'); ?>
+            </div>
+            <div class="col-md-auto">
+                <input type="number" name="max_visitors" value="<?= $humo_option["max_visitors"]; ?>" size="5" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-auto">
+                <?php printf(__('Default: %d visitors.'), 50); ?>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Number of seconds (to measure number of visitors)'); ?>
+            </div>
+            <div class="col-md-auto">
+                <input type="number" name="max_visitors_seconds" value="<?= $humo_option["max_visitors_seconds"]; ?>" size="5" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-auto">
+                <?php printf(__('Default: %1$d seconds = %2$d minutes.'), 600, 10); ?>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Mail address used to send notice to administrator'); ?>
+            </div>
+            <div class="col-md-auto">
+                <input type="email" name="max_visitors_email_address" value="<?= $humo_option["max_visitors_email_address"]; ?>" size="40" class="form-control form-control-sm">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('When maximum number of visitors is reached'); ?>
+            </div>
+            <div class="col-md-auto">
+                <div class="form-check">
+                    <input type="radio" name="max_visitors_action" value="close_pages" id="max_visitors_action_pages" class="form-check-input" <?= $humo_option["max_visitors_action"] == 'close_pages' ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="max_visitors_action_pages"><?= __('Temporarily close pages like ascendant and descendant pages.'); ?></label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" name="max_visitors_action" value="close_website" id="max_visitors_action_website" class="form-check-input" <?= $humo_option["max_visitors_action"] == 'close_website' ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="max_visitors_action_website"><?= __('Temporarily close the entire website and show a closing message.'); ?></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="genealogy_search p-2 my-2">
         <div class="row mb-2">
@@ -872,7 +941,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <div class="col-md-8">
                 <div class="form-check">
                     <input type="radio" value="ip_api_geoplugin_old" name="ip_api" id="ip_api_geoplugin_old" class="form-check-input" disabled>
-                    <label class="form-check-label" for="ip_api_geoplugin_old"><?= __('Use geoplugin.com.'); ?> <?= __('Oct. 2025: this option is no longer available.');?></label>
+                    <label class="form-check-label" for="ip_api_geoplugin_old"><?= __('Use geoplugin.com.'); ?> <?= __('Oct. 2025: this option is no longer available.'); ?></label>
                 </div>
             </div>
         </div>

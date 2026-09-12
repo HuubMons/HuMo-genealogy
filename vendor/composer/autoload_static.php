@@ -45,6 +45,7 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Genealogy\\Include\\ActiveUsers' => __DIR__ . '/../..' . '/include/ActiveUsers.php',
         'Genealogy\\Include\\AncestorBox' => __DIR__ . '/../..' . '/include/AncestorBox.php',
         'Genealogy\\Include\\AncestorLabel' => __DIR__ . '/../..' . '/include/AncestorLabel.php',
         'Genealogy\\Include\\Ancestors' => __DIR__ . '/../..' . '/include/Ancestors.php',
@@ -61,6 +62,10 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
         'Genealogy\\Include\\Editor_cls' => __DIR__ . '/../..' . '/include/Editor_cls.php',
         'Genealogy\\Include\\EventManager' => __DIR__ . '/../..' . '/include/EventManager.php',
         'Genealogy\\Include\\GedcomExport' => __DIR__ . '/../..' . '/include/GedcomExport.php',
+        'Genealogy\\Include\\GedcomExportFamilies' => __DIR__ . '/../..' . '/include/GedcomExportFamilies.php',
+        'Genealogy\\Include\\GedcomExportFunctions' => __DIR__ . '/../..' . '/include/GedcomExportFunctions.php',
+        'Genealogy\\Include\\GedcomExportPersons' => __DIR__ . '/../..' . '/include/GedcomExportPersons.php',
+        'Genealogy\\Include\\GedcomExportSources' => __DIR__ . '/../..' . '/include/GedcomExportSources.php',
         'Genealogy\\Include\\GedcomImport' => __DIR__ . '/../..' . '/include/GedcomImport.php',
         'Genealogy\\Include\\GeneralSettings' => __DIR__ . '/../..' . '/include/GeneralSettings.php',
         'Genealogy\\Include\\GetVisitorIP' => __DIR__ . '/../..' . '/include/GetVisitorIP.php',
