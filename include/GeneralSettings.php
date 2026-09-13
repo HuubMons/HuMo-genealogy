@@ -471,6 +471,11 @@ class GeneralSettings
             $dbh->query("INSERT INTO humo_settings SET setting_variable='website_status', setting_value='active'");
         }
 
+        if (!isset($humo_option["visitor_website_limited"])) {
+            $humo_option["visitor_website_limited"] = 'y';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='visitor_website_limited', setting_value='y'");
+        }
+
         if (!isset($humo_option["hide_languages"])) {
             $humo_option["hide_languages"] = '';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='hide_languages', setting_value=''");

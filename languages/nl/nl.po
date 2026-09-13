@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-12 13:01+0200\n"
-"PO-Revision-Date: 2026-09-12 18:35+0200\n"
+"POT-Creation-Date: 2026-09-13 14:07+0200\n"
+"PO-Revision-Date: 2026-09-13 14:12+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -346,15 +346,15 @@ msgstr ""
 #: admin/views/install.php:167 admin/views/maps_locations.php:149
 #: admin/views/notes.php:88 admin/views/settings.php:150
 #: admin/views/settings.php:165 admin/views/settings.php:180
-#: admin/views/settings.php:275 admin/views/settings.php:298
-#: admin/views/settings.php:313 admin/views/settings.php:355
-#: admin/views/settings.php:367 admin/views/settings.php:382
-#: admin/views/settings.php:419 admin/views/settings.php:893
-#: admin/views/settings_homepage.php:369 admin/views/thumbs.php:184
-#: admin/views/thumbs.php:197 admin/views/thumbs.php:210
-#: admin/views/thumbs.php:221 admin/views/thumbs.php:238
-#: admin/views/thumbs.php:533 admin/views/thumbs.php:916
-#: admin/views/tree_merge_settings.php:42
+#: admin/views/settings.php:264 admin/views/settings.php:292
+#: admin/views/settings.php:315 admin/views/settings.php:330
+#: admin/views/settings.php:372 admin/views/settings.php:384
+#: admin/views/settings.php:399 admin/views/settings.php:436
+#: admin/views/settings.php:910 admin/views/settings_homepage.php:369
+#: admin/views/thumbs.php:184 admin/views/thumbs.php:197
+#: admin/views/thumbs.php:210 admin/views/thumbs.php:221
+#: admin/views/thumbs.php:238 admin/views/thumbs.php:533
+#: admin/views/thumbs.php:916 admin/views/tree_merge_settings.php:42
 #: admin/views/tree_merge_settings.php:55
 #: admin/views/tree_merge_settings.php:68
 #: admin/views/tree_merge_settings.php:85 admin/views/trees.php:29
@@ -376,15 +376,15 @@ msgstr "Ja"
 #: admin/views/install.php:168 admin/views/maps_locations.php:150
 #: admin/views/notes.php:89 admin/views/settings.php:151
 #: admin/views/settings.php:166 admin/views/settings.php:181
-#: admin/views/settings.php:276 admin/views/settings.php:299
-#: admin/views/settings.php:314 admin/views/settings.php:356
-#: admin/views/settings.php:368 admin/views/settings.php:383
-#: admin/views/settings.php:420 admin/views/settings.php:894
-#: admin/views/settings_homepage.php:370 admin/views/thumbs.php:184
-#: admin/views/thumbs.php:197 admin/views/thumbs.php:210
-#: admin/views/thumbs.php:221 admin/views/thumbs.php:237
-#: admin/views/thumbs.php:532 admin/views/thumbs.php:917
-#: admin/views/tree_merge_settings.php:43
+#: admin/views/settings.php:265 admin/views/settings.php:293
+#: admin/views/settings.php:316 admin/views/settings.php:331
+#: admin/views/settings.php:373 admin/views/settings.php:385
+#: admin/views/settings.php:400 admin/views/settings.php:437
+#: admin/views/settings.php:911 admin/views/settings_homepage.php:370
+#: admin/views/thumbs.php:184 admin/views/thumbs.php:197
+#: admin/views/thumbs.php:210 admin/views/thumbs.php:221
+#: admin/views/thumbs.php:237 admin/views/thumbs.php:532
+#: admin/views/thumbs.php:917 admin/views/tree_merge_settings.php:43
 #: admin/views/tree_merge_settings.php:56
 #: admin/views/tree_merge_settings.php:69
 #: admin/views/tree_merge_settings.php:86 admin/views/trees.php:30
@@ -987,7 +987,7 @@ msgstr "3. Upload humo-gen_update.zip:"
 
 #: admin/update/install_update.php:606 admin/views/backup.php:131
 #: admin/views/gedcom_import.php:64 admin/views/settings.php:102
-#: admin/views/settings.php:741 include/EditorEvent.php:1269
+#: admin/views/settings.php:758 include/EditorEvent.php:1269
 msgid "Upload"
 msgstr "Upload"
 
@@ -1719,11 +1719,11 @@ msgstr "CMS Instellingen"
 #: admin/views/groups.php:658 admin/views/groups.php:709
 #: admin/views/groups.php:799 admin/views/log.php:98
 #: admin/views/maps_settings.php:68 admin/views/settings.php:36
-#: admin/views/settings.php:197 admin/views/settings.php:265
-#: admin/views/settings.php:327 admin/views/settings.php:448
-#: admin/views/settings.php:589 admin/views/settings.php:721
-#: admin/views/settings.php:798 admin/views/settings.php:833
-#: admin/views/settings.php:883 admin/views/settings.php:918
+#: admin/views/settings.php:197 admin/views/settings.php:282
+#: admin/views/settings.php:344 admin/views/settings.php:465
+#: admin/views/settings.php:606 admin/views/settings.php:738
+#: admin/views/settings.php:815 admin/views/settings.php:850
+#: admin/views/settings.php:900 admin/views/settings.php:935
 #: admin/views/settings_homepage.php:32 admin/views/settings_homepage.php:271
 #: admin/views/settings_homepage.php:355 admin/views/settings_special.php:55
 #: admin/views/thumbs.php:79 admin/views/tree_data.php:65
@@ -4680,8 +4680,8 @@ msgstr ""
 "geokeo.com</a> en maak een account aan om de API-sleutel te krijgen."
 
 #: admin/views/maps_worldmap.php:97 admin/views/maps_worldmap.php:132
-#: admin/views/settings.php:962 admin/views/settings.php:983
-#: admin/views/settings.php:1005
+#: admin/views/settings.php:979 admin/views/settings.php:1000
+#: admin/views/settings.php:1022
 msgid "API key"
 msgstr "API sleutel"
 
@@ -4891,16 +4891,12 @@ msgstr ""
 "Dit laat meldingen zien van alle verouderde code, wanneer debug aan staat"
 
 #: admin/views/settings.php:194
-msgid "Website visitor settings"
-msgstr "Instellingen voor websitebezoekers"
+msgid "Website visitor limits"
+msgstr "Bezoekerslimieten voor de website"
 
 #: admin/views/settings.php:204
-msgid ""
-"These settings control how the website handles the number of bots and "
-"visitors limits."
-msgstr ""
-"Deze instellingen bepalen hoe de website omgaat met het aantal bots en de "
-"bezoekerslimieten."
+msgid "Use these settings to control visitors limits."
+msgstr "Gebruik deze instellingen om het aantal bezoekers te beperken."
 
 #: admin/views/settings.php:210
 msgid "Maximum number of visitors"
@@ -4936,27 +4932,39 @@ msgstr "Tijdelijk o.a. de voorouder en afstammelingen bladzijden sluiten."
 msgid "Temporarily close the entire website and show a closing message."
 msgstr "Tijdelijk de hele website sluiten en een afsluitbericht weergegeven."
 
-#: admin/views/settings.php:262
+#: admin/views/settings.php:260
+msgid "Only show basic genealogical pages for visitors"
+msgstr "Alleen basis genealogie pagina’s weergeven voor bezoekers"
+
+#: admin/views/settings.php:269
+msgid ""
+"This option will hide ancestor, descendant and other report pages for "
+"visitors."
+msgstr ""
+"Met deze optie worden voorouders-, afstamming- en andere rapporten verborgen "
+"voor bezoekers."
+
+#: admin/views/settings.php:279
 msgid "Search engine settings"
 msgstr "Instellingen zoekmachine"
 
-#: admin/views/settings.php:280
+#: admin/views/settings.php:297
 msgid "ATTENTION: the Apache module \"mod_rewrite\" has to be installed!"
 msgstr "LET OP: De apache module \"mod_rewrite\" moet geinstalleerd zijn!"
 
-#: admin/views/settings.php:286
+#: admin/views/settings.php:303
 msgid "Improve indexing of search engines (like Google)"
 msgstr "Zoekmachines (o.a. Google) beter laten indexeren"
 
-#: admin/views/settings.php:288
+#: admin/views/settings.php:305
 msgid "becomes:"
 msgstr "wordt:"
 
-#: admin/views/settings.php:294 admin/views/settings.php:309
+#: admin/views/settings.php:311 admin/views/settings.php:326
 msgid "Stop search engines"
 msgstr "Zoekmachines tegenhouden"
 
-#: admin/views/settings.php:316
+#: admin/views/settings.php:333
 msgid ""
 "Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS "
 "pages"
@@ -4964,66 +4972,66 @@ msgstr ""
 "Zoekmachines:<br>Verberg stamboom (niet indexeren)<br>Toon homepage en CMS "
 "bladzijden"
 
-#: admin/views/settings.php:324
+#: admin/views/settings.php:341
 msgid "Contact & registration form settings"
 msgstr "Instellingen contact & registratie formulier"
 
-#: admin/views/settings.php:333
+#: admin/views/settings.php:350
 msgid "Block spam question"
 msgstr "Blokkeer spam vraag"
 
-#: admin/views/settings.php:342
+#: admin/views/settings.php:359
 msgid "Block spam answer"
 msgstr "Blokkeer spam antwoord"
 
-#: admin/views/settings.php:351
+#: admin/views/settings.php:368
 msgid "Mail form: use spam question"
 msgstr "Mail formulier: gebruik spam vraag"
 
-#: admin/views/settings.php:363
+#: admin/views/settings.php:380
 msgid "Mail form: use newsletter question"
 msgstr "Contact formulier: gebruik nieuwsbrief vraag"
 
-#: admin/views/settings.php:372
+#: admin/views/settings.php:389
 msgid "Adds the question: \"Receive newsletter: yes/ no\" to the mailform."
 msgstr ""
 "Voeg de vraag: \"Ontvang nieuwsbrief: ja/nee\" toe aan het contact formulier."
 
-#: admin/views/settings.php:378
+#: admin/views/settings.php:395
 msgid "Visitors can register"
 msgstr "Bezoekers kunnen registreren"
 
-#: admin/views/settings.php:388
+#: admin/views/settings.php:405
 msgid "Default user-group for new users:"
 msgstr "Standaard gebruiksgroep voor nieuwe gebruikers:"
 
-#: admin/views/settings.php:402
+#: admin/views/settings.php:419
 msgid "Registration form: e-mail address"
 msgstr "Registratie formulier: e-mailadres"
 
-#: admin/views/settings.php:408
+#: admin/views/settings.php:425
 msgid "Send registration form to this e-mail address."
 msgstr "Stuur registratie formulier naar dit e-mailadres."
 
-#: admin/views/settings.php:414
+#: admin/views/settings.php:431
 msgid "Visitor registration: use spam question"
 msgstr "Registratie formulier: gebruik spam vraag"
 
-#: admin/views/settings.php:428
+#: admin/views/settings.php:445
 msgid "Password forgotten e-mail address"
 msgstr "Wachtwoord vergeten e-mail adres"
 
-#: admin/views/settings.php:437
+#: admin/views/settings.php:454
 msgid "To enable password forgotten option: set a sender e-mail address."
 msgstr ""
 "Als u de optie wachtwoord vergeten wilt inschakelen: stel een e-mailadres "
 "van de afzender in."
 
-#: admin/views/settings.php:445 admin/views/settings.php:453
+#: admin/views/settings.php:462 admin/views/settings.php:470
 msgid "Email Settings"
 msgstr "E-mail Instellingen"
 
-#: admin/views/settings.php:454
+#: admin/views/settings.php:471
 msgid ""
 "TIP: mail will work without changing these parameters at most hosting "
 "providers."
@@ -5031,31 +5039,31 @@ msgstr ""
 "TIP: bij de meeste hosting providers zal de e-mail werken zonder wijzigingen "
 "van onderstaande instellingen."
 
-#: admin/views/settings.php:459
+#: admin/views/settings.php:476
 msgid "Mail: sender"
 msgstr "Mail: afzender"
 
-#: admin/views/settings.php:465 admin/views/settings.php:498
+#: admin/views/settings.php:482 admin/views/settings.php:515
 msgid "Gmail: [email_address]@gmail.com"
 msgstr "Gmail: [email_address]@gmail.com"
 
-#: admin/views/settings.php:469
+#: admin/views/settings.php:486
 msgid "If filled in: will be used as mail sender."
 msgstr "Indien ingevuld: wordt gebruikt als afzender van e-mail."
 
-#: admin/views/settings.php:474
+#: admin/views/settings.php:491
 msgid "Mail: configuration"
 msgstr "Mail: configuratie"
 
-#: admin/views/settings.php:478
+#: admin/views/settings.php:495
 msgid "auto"
 msgstr "automatisch"
 
-#: admin/views/settings.php:479
+#: admin/views/settings.php:496
 msgid "manual"
 msgstr "handmatig"
 
-#: admin/views/settings.php:486
+#: admin/views/settings.php:503
 msgid ""
 "Setting: \"auto\" = use settings below.<br>Setting: \"manual\" = change "
 "settings in /include/mail.php"
@@ -5063,245 +5071,245 @@ msgstr ""
 "Instelling: \"automatisch\" = gebruik onderstaande instellingen."
 "<br>Instelling: \"handmatig\" = wijzig instellingen in /include/mail.php"
 
-#: admin/views/settings.php:492
+#: admin/views/settings.php:509
 msgid "Mail: username"
 msgstr "Mail: gebruikersnaam"
 
-#: admin/views/settings.php:504
+#: admin/views/settings.php:521
 msgid "Mail: password"
 msgstr "Mail: wachtwoord"
 
-#: admin/views/settings.php:513
+#: admin/views/settings.php:530
 msgid "SMTP: mail server"
 msgstr "SMTP: mail server"
 
-#: admin/views/settings.php:519
+#: admin/views/settings.php:536
 msgid "Gmail: smtp.gmail.com"
 msgstr "Gmail: smtp.gmail.com"
 
-#: admin/views/settings.php:525
+#: admin/views/settings.php:542
 msgid "SMTP: port"
 msgstr "SMTP: poort"
 
-#: admin/views/settings.php:535
+#: admin/views/settings.php:552
 msgid "Gmail: 587"
 msgstr "Gmail: 587"
 
-#: admin/views/settings.php:541
+#: admin/views/settings.php:558
 msgid "SMTP: authentication"
 msgstr "SMTP: authentication"
 
-#: admin/views/settings.php:545
+#: admin/views/settings.php:562
 msgid "true"
 msgstr "true"
 
-#: admin/views/settings.php:546
+#: admin/views/settings.php:563
 msgid "false"
 msgstr "false"
 
-#: admin/views/settings.php:550
+#: admin/views/settings.php:567
 msgid "Gmail: true"
 msgstr "Gmail: true"
 
-#: admin/views/settings.php:556
+#: admin/views/settings.php:573
 msgid "SMTP: encryption type"
 msgstr "SMTP: encryption type"
 
-#: admin/views/settings.php:565
+#: admin/views/settings.php:582
 msgid "Gmail: TLS"
 msgstr "Gmail: TLS"
 
-#: admin/views/settings.php:571
+#: admin/views/settings.php:588
 msgid "SMTP: debugging"
 msgstr "SMTP: debugging"
 
-#: admin/views/settings.php:575
+#: admin/views/settings.php:592
 msgid "Off"
 msgstr "Uit"
 
-#: admin/views/settings.php:576
+#: admin/views/settings.php:593
 msgid "Client"
 msgstr "Client"
 
-#: admin/views/settings.php:577
+#: admin/views/settings.php:594
 msgid "Client and Server"
 msgstr "Client en Server"
 
-#: admin/views/settings.php:586
+#: admin/views/settings.php:603
 msgid "International settings"
 msgstr "Instellingen internationaal"
 
-#: admin/views/settings.php:595
+#: admin/views/settings.php:612
 msgid "Timezone"
 msgstr "Tijdzone"
 
-#: admin/views/settings.php:608
+#: admin/views/settings.php:625
 msgid "Minimum characters in search box"
 msgstr "Minimaal aantal karakters in zoek vak"
 
-#: admin/views/settings.php:614
+#: admin/views/settings.php:631
 msgid ""
 "Minimum characters in search boxes (standard value=3. For Chinese set to 1)."
 msgstr ""
 "Minimaal aantal karakters in zoek vak (standaard waarde=3, voor chinees "
 "zetten op 1)."
 
-#: admin/views/settings.php:620 views/fanchart.php:632
+#: admin/views/settings.php:637 views/fanchart.php:632
 msgid "Date display"
 msgstr "Datum weergave"
 
-#: admin/views/settings.php:624
+#: admin/views/settings.php:641
 msgid "Europe/Global - 5 Jan 1787"
 msgstr "Europe/Global - 5 Jan 1787"
 
-#: admin/views/settings.php:625
+#: admin/views/settings.php:642
 msgid "USA - Jan 5, 1787"
 msgstr "USA - Jan 5, 1787"
 
-#: admin/views/settings.php:626
+#: admin/views/settings.php:643
 msgid "China - 1787-01-05"
 msgstr "China - 1787-01-05"
 
-#: admin/views/settings.php:633
+#: admin/views/settings.php:650
 msgid "Order of names in reports"
 msgstr "Naam volgorde in rapporten"
 
-#: admin/views/settings.php:637
+#: admin/views/settings.php:654
 msgid "Western"
 msgstr "Westers"
 
-#: admin/views/settings.php:638
+#: admin/views/settings.php:655
 msgid "Chinese"
 msgstr "Chinees"
 
-#: admin/views/settings.php:638
+#: admin/views/settings.php:655
 msgid "Hungarian"
 msgstr "Hongaars"
 
-#: admin/views/settings.php:645
+#: admin/views/settings.php:662
 msgid "Western - reports: John Smith, lists: Smith, John."
 msgstr "Western - rapporten: John Smith, lijsten: Smith, John."
 
-#: admin/views/settings.php:646
+#: admin/views/settings.php:663
 msgid "Chinese 中文 - reports and lists: 刘 理想"
 msgstr "Chinees 中文 - rapporten en lijsten: 刘 理想"
 
-#: admin/views/settings.php:647
+#: admin/views/settings.php:664
 msgid "Hungarian - reports and lists: Smith John"
 msgstr "Hongaars - rapporten en lijsten: Smith John"
 
-#: admin/views/settings.php:654
+#: admin/views/settings.php:671
 msgid "Default timeline file (per language)"
 msgstr "Standaard tijdlijn bestand (per taal)"
 
-#: admin/views/settings.php:660 admin/views/thumbs.php:812
+#: admin/views/settings.php:677 admin/views/thumbs.php:812
 #: admin/views/tree_admin.php:22 admin/views/tree_text.php:22
 msgid "Default"
 msgstr "Standaard"
 
-#: admin/views/settings.php:707
+#: admin/views/settings.php:724
 msgid ""
 "First select language, then select the default timeline for that language."
 msgstr "Selecteer eerst taal en vervolgens de standaardtijdlijn voor die taal."
 
-#: admin/views/settings.php:718
+#: admin/views/settings.php:735
 msgid "Settings Main Menu"
 msgstr "Instellingen hoofdmenu"
 
-#: admin/views/settings.php:727
+#: admin/views/settings.php:744
 msgid "Website name"
 msgstr "Website naam"
 
-#: admin/views/settings.php:736
+#: admin/views/settings.php:753
 msgid "Use logo image instead of text"
 msgstr "Gebruik logo afbeelding in plaats van tekst"
 
-#: admin/views/settings.php:748
+#: admin/views/settings.php:765
 #, php-format
 msgid "Upload logo image. Recommended size: 165 x 25 px. Picture max: %1$d MB."
 msgstr ""
 "Upload logo afbeelding. Aanbevolen grootte: 165 x 25 px. Afbeelding max: "
 "%1$d MB."
 
-#: admin/views/settings.php:754
+#: admin/views/settings.php:771
 msgid "Link homepage"
 msgstr "Link homepage"
 
-#: admin/views/settings.php:761 admin/views/settings.php:781
+#: admin/views/settings.php:778 admin/views/settings.php:798
 msgid "(link to this site including http://)"
 msgstr "(link naar deze site inclusief http://)"
 
-#: admin/views/settings.php:766 admin/views/settings_homepage.php:378
+#: admin/views/settings.php:783 admin/views/settings_homepage.php:378
 #: admin/views/settings_homepage.php:386 admin/views/settings_homepage.php:394
 #: admin/views/settings_homepage.php:402
 msgid "Link description"
 msgstr "Link omschrijving"
 
-#: admin/views/settings.php:775
+#: admin/views/settings.php:792
 msgid "Link for birthdays RSS"
 msgstr "Link voor verjaardagen RSS"
 
-#: admin/views/settings.php:787
+#: admin/views/settings.php:804
 msgid "This option can be turned on or off in the user groups."
 msgstr "Deze optie wordt aan- of uitgezet bij de gebruikersgroepen."
 
-#: admin/views/settings.php:795
+#: admin/views/settings.php:812
 msgid "Settings family page"
 msgstr "Instellingen gezinsscherm"
 
-#: admin/views/settings.php:804
+#: admin/views/settings.php:821
 msgid "Number of generations in descendant report"
 msgstr "Aantal generaties bij parenteel"
 
-#: admin/views/settings.php:810
+#: admin/views/settings.php:827
 msgid "Show number of generation in descendant report (standard value=4)."
 msgstr "Aantal generaties van parenteel weergeven (standaard waarde=4)."
 
-#: admin/views/settings.php:816
+#: admin/views/settings.php:833
 msgid "Number of persons in search results"
 msgstr "Aantal personen in de zoekresultaten"
 
-#: admin/views/settings.php:822
+#: admin/views/settings.php:839
 msgid "Show number of persons in search results (standard value=30)."
 msgstr "Aantal personen weergeven bij zoekresultaten (standaard waarde=30)."
 
-#: admin/views/settings.php:830 admin/views/settings.php:839
+#: admin/views/settings.php:847 admin/views/settings.php:856
 msgid "Watermark text in PDF file"
 msgstr "Watermerk tekst in PDF uitvoer"
 
-#: admin/views/settings.php:845
+#: admin/views/settings.php:862
 msgid "Watermark text (clear to remove watermark)"
 msgstr "Watermerk tekst (wissen om watermerk te verwijderen)"
 
-#: admin/views/settings.php:851
+#: admin/views/settings.php:868
 msgid "Watermark RGB text color"
 msgstr "Watermerk RGB tekst kleur"
 
-#: admin/views/settings.php:872
+#: admin/views/settings.php:889
 msgid "Default values: R = 224, G = 224, B = 224."
 msgstr "Standaardwaarden: R = 224, G = 224, B = 224."
 
-#: admin/views/settings.php:880
+#: admin/views/settings.php:897
 msgid "Display for One Name Study web sites"
 msgstr "Weergave voor één naam studie websites"
 
-#: admin/views/settings.php:889
+#: admin/views/settings.php:906
 msgid "One Name Study display"
 msgstr "Één naam studie weergave"
 
-#: admin/views/settings.php:898
+#: admin/views/settings.php:915
 msgid "Only use this option if you're doing a \"One Name Study\" project."
 msgstr "Gebruik deze optie alleen als je een \"One Name Study\" project doet."
 
-#: admin/views/settings.php:904
+#: admin/views/settings.php:921
 msgid "Enter the One Name of this site"
 msgstr "Naam voor de één naam website"
 
-#: admin/views/settings.php:915 admin/views/statistics_general.php:168
+#: admin/views/settings.php:932 admin/views/statistics_general.php:168
 msgid "Settings for country statistics"
 msgstr "Instellingen voor landenstatistieken"
 
-#: admin/views/settings.php:925
+#: admin/views/settings.php:942
 msgid ""
 "These are external services. It's recommended to check reliability of the "
 "services before use."
@@ -5309,39 +5317,39 @@ msgstr ""
 "Dit zijn externe services. Het wordt aanbevolen om de betrouwbaarheid van de "
 "services te controleren voor gebruik."
 
-#: admin/views/settings.php:930 admin/views/settings.php:934
+#: admin/views/settings.php:947 admin/views/settings.php:951
 msgid "Disable collection of country statistics."
 msgstr "Landenstatistieken uitschakelen."
 
-#: admin/views/settings.php:940
+#: admin/views/settings.php:957
 msgid "GeoPlugin: without license."
 msgstr "GeoPlugin: zonder licentie."
 
-#: admin/views/settings.php:944 admin/views/settings.php:956
+#: admin/views/settings.php:961 admin/views/settings.php:973
 msgid "Use geoplugin.com."
 msgstr "Gebruik geoplugin.com."
 
-#: admin/views/settings.php:944
+#: admin/views/settings.php:961
 msgid "Oct. 2025: this option is no longer available."
 msgstr "Okt. 2025: deze optie is niet langer beschikbaar."
 
-#: admin/views/settings.php:950
+#: admin/views/settings.php:967
 msgid "GeoPlugin: free license = max. 10 requests a day allowed."
 msgstr "GeoPlugin: gratis licentie = max. 10 aanvragen per dag toegestaan."
 
-#: admin/views/settings.php:971
+#: admin/views/settings.php:988
 msgid "ip-api: free license = max. 45 requests an hour allowed."
 msgstr "ip-api: gratis licentie = max. 45 aanvragen per uur toegestaan."
 
-#: admin/views/settings.php:977
+#: admin/views/settings.php:994
 msgid "Use ip-api.com."
 msgstr "Gebruik ip-api.com."
 
-#: admin/views/settings.php:993
+#: admin/views/settings.php:1010
 msgid "FreeIPAPI: free license = max. 60 requests a minute allowed."
 msgstr "FreeIPAPI: gratis licentie = max. 60 aanvragen per minuut toegestaan."
 
-#: admin/views/settings.php:999
+#: admin/views/settings.php:1016
 msgid "Use FreeIPAPI.com."
 msgstr "Gebruik FreeIPAPI.com."
 
@@ -11206,6 +11214,13 @@ msgstr "Selecteer een thema"
 #: views/user_settings.php:128 views/user_settings.php:131
 msgid "Standard-colours"
 msgstr "Standaard-kleuren"
+
+#~ msgid ""
+#~ "These settings control how the website handles the number of bots and "
+#~ "visitors limits."
+#~ msgstr ""
+#~ "Deze instellingen bepalen hoe de website omgaat met het aantal bots en de "
+#~ "bezoekerslimieten."
 
 #~ msgid "Close pages"
 #~ msgstr "Sluit bladzijden"

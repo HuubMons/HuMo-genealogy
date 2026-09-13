@@ -56,6 +56,7 @@ class AdminSettingsModel extends AdminBaseModel
             $this->db_functions->update_settings('max_visitors_seconds', $_POST["max_visitors_seconds"]);
             $this->db_functions->update_settings('max_visitors_email_address', $_POST["max_visitors_email_address"]);
             $this->db_functions->update_settings('max_visitors_action', $_POST["max_visitors_action"]);
+            $this->db_functions->update_settings('visitor_website_limited', $_POST["visitor_website_limited"]);
 
             $this->db_functions->update_settings('database_name', $_POST["database_name"]);
             $this->db_functions->update_settings('homepage', $_POST["homepage"]);

@@ -187,11 +187,11 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         </div>
     </div>
 
-    <!-- Visitor settings -->
+    <!-- Visitor limit settings -->
     <div class="genealogy_search p-2 my-2">
         <div class="row mb-2">
             <div class="col-md-4">
-                <h4><?= __('Website visitor settings'); ?></h4>
+                <h4><?= __('Website visitor limits'); ?></h4>
             </div>
             <div class="col-md-4">
                 <input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success">
@@ -201,7 +201,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
         <div class="row mb-2">
             <div class="col-md-4"></div>
             <div class="col-md-8">
-                <b><?= __('These settings control how the website handles the number of bots and visitors limits.'); ?></b>
+                <b><?= __('Use these settings to control visitors limits.'); ?></b>
             </div>
         </div>
 
@@ -251,6 +251,21 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <input type="radio" name="max_visitors_action" value="close_website" id="max_visitors_action_website" class="form-check-input" <?= $humo_option["max_visitors_action"] == 'close_website' ? 'checked' : ''; ?>>
                     <label class="form-check-label" for="max_visitors_action_website"><?= __('Temporarily close the entire website and show a closing message.'); ?></label>
                 </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Only show basic genealogical pages for visitors'); ?>
+            </div>
+            <div class="col-md-auto">
+                <select size="1" name="visitor_website_limited" class="form-select form-select-sm">
+                    <option value="y"><?= __('Yes'); ?></option>
+                    <option value="n" <?php if ($humo_option["visitor_website_limited"] != 'y') echo ' selected'; ?>><?= __('No'); ?></option>
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <?= __('This option will hide ancestor, descendant and other report pages for visitors.'); ?>
             </div>
         </div>
     </div>

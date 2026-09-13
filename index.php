@@ -103,10 +103,6 @@ $translator->register(); // This enables __(), _n(), etc.
 $controllerObj = new Genealogy\App\Controller\IndexController();
 $index = $controllerObj->detail($dbh, $humo_option, $user);
 
-// *** Check for too many active users ***
-$website_limited = false;
-//Use: if ($index['website_limited'] == 'limited') $website_limited = true;
-
 // TODO dec. 2024 for now: use old variable names.
 $db_functions = $index['db_functions'];
 $language_file = $index['language_file']; // Array including all languages files.
@@ -179,6 +175,43 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 // *** To be used to show links in several pages ***
 $processLinks = new Genealogy\Include\ProcessLinks($uri_path);
 
+// *** Check for too many active users ***
+$limitedPages = [
+    'ancestor_report',
+    'ancestor_report_pdf',
+    'ancestor_report_rtf',
+    'ancestor_chart',
+    'ancestor_sheet_pdf',
+    'ancestor_sheet',
+    'anniversary',
+    'descendant_chart',
+    'hourglass',
+    'list_places_families',
+    'outline_report_pdf',
+    'outline_report',
+    'timeline',
+];
+
+$humo_option['website_limited'] = 'n';
+
+$website_limited = false;
+$website_limited = in_array($index['page'], $limitedPages, true) && $index['website_limited'] == 'y';
+if ($index['website_limited'] == 'y') {
+    // *** Variable to remove links from popup etc. ***
+    $humo_option['website_limited'] = 'y';
+}
+
+// *** Sept. 2026: set limited website visitors to the website if needed ***
+$visitor_website_limited = false;
+if (!isset($_SESSION['user_id']) && $humo_option['visitor_website_limited'] == 'y') {
+    // *** Variable to remove links from popup etc. ***
+    $humo_option['website_limited'] = 'y';
+}
+if (!isset($_SESSION['user_id']) && $humo_option['visitor_website_limited'] == 'y' && in_array($index['page'], $limitedPages, true)) {
+    $visitor_website_limited = true;
+}
+
+
 /**
  * General config array. May 2025: added baseModel.php.
  * 
@@ -194,6 +227,11 @@ $processLinks = new Genealogy\Include\ProcessLinks($uri_path);
  */
 include_once(__DIR__ . "/include/config.php");
 
+
+// *** Load controller and $data if needed ***
+if ($website_limited || $visitor_website_limited) {
+    // Website = limited. Controller and data will be skipped.
+}
 if ($index['page'] == 'address') {
     $controllerObj = new Genealogy\App\Controller\AddressController($config);
     $data = $controllerObj->detail();
@@ -201,49 +239,34 @@ if ($index['page'] == 'address') {
     $controllerObj = new Genealogy\App\Controller\AddressesController($config);
     $data = $controllerObj->list();
 } elseif ($index['page'] == 'ancestor_report') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\AncestorReportController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_report_pdf') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\AncestorReportPdfController($config);
     $data = $controllerObj->list($id);
     include_once(__DIR__ . "/views/ancestor_report_pdf.php");
     exit; // Skip layout.php
 } elseif ($index['page'] == 'ancestor_report_rtf') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\AncestorReportController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_chart') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\AncestorChartController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'ancestor_sheet_pdf') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     //$controllerObj = new Genealogy\App\Controller\AncestorSheetController($config);
     //$data = $controllerObj->list($id);
     include_once(__DIR__ . "/views/ancestor_sheet_pdf.php");
     exit; // Skip layout.php
 } elseif ($index['page'] == 'ancestor_sheet') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\AncestorSheetController($config);
     $data = $controllerObj->list($id);
 } elseif ($index['page'] == 'anniversary') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\AnniversaryController();
     $data = $controllerObj->anniversary();
 } elseif ($index['page'] == 'chat_genealogy_api') {
     //$controllerObj = new Genealogy\App\Controller\ChatGenealogyController($config);
     //$chatData = $controllerObj->process();
 
-    //include_once(__DIR__ . "/views/chat_genealogy_api.php");
     include_once(__DIR__ . "/include/chat_genealogy_api.php");
 
     exit; // Skip layout.php
@@ -257,8 +280,6 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'cookies') {
     //
 } elseif ($index['page'] == 'descendant_chart') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\DescendantChartController($config);
     $data = $controllerObj->getFamily();
 } elseif ($index['page'] == 'family_pdf') {
@@ -280,8 +301,6 @@ if ($index['page'] == 'address') {
 } elseif ($index['page'] == 'help') {
     //
 } elseif ($index['page'] == 'hourglass') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\HourglassController($config);
     $data = $controllerObj->getHourglass();
 } elseif ($index['page'] == 'latest_changes') {
@@ -291,8 +310,6 @@ if ($index['page'] == 'address') {
     $controllerObj = new Genealogy\App\Controller\ListController($config);
     $list = $controllerObj->list_names();
 } elseif ($index['page'] == 'list_places_families') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\ListPlacesFamiliesController($config);
     $data = $controllerObj->list_places_names();
 } elseif ($index['page'] == 'list_names') {
@@ -323,15 +340,11 @@ if ($index['page'] == 'address') {
     $controllerObj = new Genealogy\App\Controller\ResetPasswordController($config);
     $resetpassword = $controllerObj->detail();
 } elseif ($index['page'] == 'outline_report_pdf') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     //$controllerObj = new Genealogy\App\Controller\OutlineReportController($config);
     //$data = $controllerObj->getOutlineReport();
     include_once(__DIR__ . "/views/outline_report_pdf.php");
     exit; // Skip layout.php
 } elseif ($index['page'] == 'outline_report') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\OutlineReportController($config);
     $data = $controllerObj->getOutlineReport();
 } elseif ($index['page'] == 'user_settings') {
@@ -359,8 +372,6 @@ if ($index['page'] == 'address') {
     }
     $data = $controllerObj->source($id);
 } elseif ($index['page'] == 'timeline') {
-    if ($index['website_limited'] == 'y') $website_limited = true;
-
     $controllerObj = new Genealogy\App\Controller\TimelineController($config);
     // *** url_rewrite is disabled ***
     if (isset($_GET["id"])) {
@@ -455,6 +466,35 @@ if ($error_page) {
 
 <?php
     exit();
+}
+
+if ($visitor_website_limited) {
+    // *** Show message: no access to the page ***
+?>
+    <html>
+
+    <head>
+        <title>No access</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger mt-5" role="alert">
+                        <h4 class="alert-heading">No access</h4>
+                        <p>You do not have access to this page.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    </html>
+<?php
+    exit;
 }
 
 

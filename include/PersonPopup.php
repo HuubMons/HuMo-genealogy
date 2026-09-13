@@ -69,7 +69,7 @@ class PersonPopup
             // *** Descendants (only show a descendant_report icon if there are children) ***
             $relations = $db_functions->get_relations($personDb->pers_id);
             $check_children = false;
-            if ($user['group_gen_protection'] == 'n' && count($relations) > 0) {
+            if ($humo_option['website_limited'] == 'n' && $user['group_gen_protection'] == 'n' && count($relations) > 0) {
                 foreach ($relations as $relation) {
                     if (!empty($relation->relation_id)) {
                         $children = $db_functions->get_children($relation->relation_id);
@@ -87,7 +87,7 @@ class PersonPopup
                 }
             }
 
-            if ($user['group_gen_protection'] == 'n' && $personDb->parent_relation_id != '') {
+            if ($humo_option['website_limited'] == 'n' && $user['group_gen_protection'] == 'n' && $personDb->parent_relation_id != '') {
                 // == Ancestor report: link & icons by Klaas de Winkel ==
                 $vars['id'] = $personDb->pers_gedcomnumber;
                 $path_tmp = $processLinks->get_link($uri_path, 'ancestor_report', $personDb->pers_tree_id, false, $vars);
@@ -95,7 +95,7 @@ class PersonPopup
             }
 
             // check for timeline folder and tml files
-            if (!$privacy) {
+            if ($humo_option['website_limited'] == 'n' && !$privacy) {
                 $tmldates = 0;
                 if (
                     $personDb->pers_birth_date || $personDb->pers_bapt_date || $personDb->pers_death_date || $personDb->pers_buried_date || $relation_gedcomnumber
@@ -109,13 +109,13 @@ class PersonPopup
                 }
             }
 
-            if ($user["group_relcalc"] == 'j') {
+            if ($humo_option['website_limited'] == 'n' && $user["group_relcalc"] == 'j') {
                 $relpath = $processLinks->get_link($uri_path, 'relations', $personDb->pers_tree_id, true);
                 $popover_content .= '<li><a class="dropdown-item" href="' . $relpath . 'pers_id=' . $personDb->pers_id . '" rel="nofollow"><img src="images/relcalc.gif" border="0" alt="' . __('Relationship calculator') . '"> ' . __('Relationship calculator') . '</a></li>';
             }
 
             // DNA charts
-            if ($user['group_gen_protection'] == 'n' && ($personDb->parent_relation_id != "" || ($relation_gedcomnumber != "" && $check_children))) {
+            if ($humo_option['website_limited'] == 'n' && $user['group_gen_protection'] == 'n' && ($personDb->parent_relation_id != "" || ($relation_gedcomnumber != "" && $check_children))) {
                 if ($personDb->pers_sexe == "M") $charttype = "ydna";
                 else $charttype = "mtdna";
                 if ($humo_option["url_rewrite"] == 'j') {
@@ -126,7 +126,7 @@ class PersonPopup
                 $popover_content .= '<li><a class="dropdown-item" href="' . $path_tmp . '" rel="nofollow"><img src="images/dna.png" border="0" alt="' . __('DNA Charts') . '"> ' . __('DNA Charts') . '</a></li>';
             }
 
-            if ($user['group_gen_protection'] == 'n' && $personDb->parent_relation_id != '' && $relation_gedcomnumber != '' && $check_children) {
+            if ($humo_option['website_limited'] == 'n' && $user['group_gen_protection'] == 'n' && $personDb->parent_relation_id != '' && $relation_gedcomnumber != '' && $check_children) {
                 // hourglass only if there is at least one generation of ancestors and of children.
                 $vars['pers_family'] = $pers_family;
                 $path_tmp = $processLinks->get_link($uri_path, 'hourglass', $personDb->pers_tree_id, true, $vars);

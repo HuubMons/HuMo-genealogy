@@ -48,7 +48,7 @@ class IndexController
         $active_users = $getActiveUsers->GetActiveUsers($dbh);
 
         // TEST:
-        //$humo_option["max_visitors"] = 0;
+        // $humo_option["max_visitors"] = 0;
 
         $sendVisitorLimitMail = function (string $subject) use ($humo_option, $active_users): void {
             //$from = $humo_option['email_sender'] ?? '';
