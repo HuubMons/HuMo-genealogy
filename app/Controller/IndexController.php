@@ -142,6 +142,7 @@ class IndexController
             $sendVisitorLimitMail('Website temporarily closed due to too many active users');
         }
 
+        // TODO move to view script.
         if ($close_website) {
 ?>
             <html>

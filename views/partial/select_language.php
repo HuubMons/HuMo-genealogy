@@ -7,8 +7,10 @@
 function show_country_flags($selected_language, $path, $variable, $language_path)
 {
     global $humo_option, $language, $language_file;
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
+    $selectedLanguageName = $HtmlEscaper->escHtmlDecoded($language["name"]);
 ?>
-    <a class="nav-link dropdown-toggle" href="index.php?option=com_humo-gen" data-bs-toggle="dropdown"><img src="<?= $path . 'languages/' . $selected_language; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>"></a>
+    <a class="nav-link dropdown-toggle" href="index.php?option=com_humo-gen" data-bs-toggle="dropdown"><img src="<?= $HtmlEscaper->escHtml((string) ($path . 'languages/' . $selected_language . '/flag.gif')); ?>" title="<?= $selectedLanguageName; ?>" alt="<?= $selectedLanguageName; ?>"></a>
 
     <ul class="dropdown-menu genealogy_menu">
         <?php
@@ -24,11 +26,15 @@ function show_country_flags($selected_language, $path, $variable, $language_path
             // *** Get language name ***
             if ($language_file[$i] != $selected_language and !in_array($language_file[$i], $hide_languages_array)) {
                 include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
+                $languageName = $HtmlEscaper->escHtmlDecoded($language["name"]);
+                $languageCode = rawurlencode((string) $language_file[$i]);
+                $flagPath = $HtmlEscaper->escHtml((string) ($path . 'languages/' . $language_file[$i] . '/flag.gif'));
+                $languageUrl = $HtmlEscaper->escHtml((string) ($language_path . $variable . '=' . $languageCode));
         ?>
                 <li>
-                    <a class="dropdown-item" href="<?= $language_path . $variable . '=' . $language_file[$i]; ?>">
-                        <img src="<?= $path . 'languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;">
-                        <?= $language["name"]; ?>
+                    <a class="dropdown-item" href="<?= $languageUrl; ?>">
+                        <img src="<?= $flagPath; ?>" title="<?= $languageName; ?>" alt="<?= $languageName; ?>" style="border:none;">
+                        <?= $languageName; ?>
                     </a>
                 </li>
         <?php

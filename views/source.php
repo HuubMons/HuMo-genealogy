@@ -15,6 +15,7 @@ $personName = new \Genealogy\Include\PersonName();
 $processText = new \Genealogy\Include\ProcessText();
 $datePlace = new \Genealogy\Include\DatePlace();
 $languageDate = new \Genealogy\Include\LanguageDate;
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
 
 <h1><?= __('Source'); ?></h1>
@@ -112,19 +113,19 @@ if (!isset($data["sourceDb"]->source_id)) {
         <tr>
             <td>
                 <h3><?= __('Repository'); ?></h3>
-                <b><?= __('Title'); ?>:</b> <?= $repoDb->repo_name; ?><br>
-                <b><?= __('Zip code'); ?>:</b> <?= $repoDb->repo_zip; ?><br>
-                <b><?= __('Address'); ?>:</b> <?= $repoDb->repo_address; ?><br>
+                <b><?= __('Title'); ?>:</b> <?= $HtmlEscaper->escHtml((string) $repoDb->repo_name); ?><br>
+                <b><?= __('Zip code'); ?>:</b> <?= $HtmlEscaper->escHtml((string) $repoDb->repo_zip); ?><br>
+                <b><?= __('Address'); ?>:</b> <?= $HtmlEscaper->escHtml((string) $repoDb->repo_address); ?><br>
 
                 <!-- TODO translate date -->
                 <?php if ($repoDb->repo_date) { ?>
-                    <b><?= __('Date'); ?>:</b> <?= $repoDb->repo_date; ?><br>
+                    <b><?= __('Date'); ?>:</b> <?= $HtmlEscaper->escHtml((string) $repoDb->repo_date); ?><br>
                 <?php } ?>
 
                 <?php if ($repoDb->repo_place) { ?>
-                    <b><?= __('Place'); ?>:</b> <?= $repoDb->repo_place; ?><br>
+                    <b><?= __('Place'); ?>:</b> <?= $HtmlEscaper->escHtml((string) $repoDb->repo_place); ?><br>
                 <?php } ?>
-                <?= nl2br($repoDb->repo_text); ?>
+                <?= nl2br($HtmlEscaper->escHtml((string) $repoDb->repo_text)); ?>
             </td>
         </tr>
     <?php } ?>
@@ -173,9 +174,9 @@ if (!isset($data["sourceDb"]->source_id)) {
                             $url = $personLink->get_person_link($personDb);
 
                             echo __('Source for:');
-                            echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            echo ' <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                             if ($event_Db->event_event) {
-                                echo ' [' . $event_Db->event_event . ']';
+                                echo ' [' . $HtmlEscaper->escHtml((string) $event_Db->event_event) . ']';
                             }
                         }
                     }
@@ -194,7 +195,7 @@ if (!isset($data["sourceDb"]->source_id)) {
                         $url = $personLink->get_person_link($personDb);
 
                         echo __('Source by address (person):');
-                        echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                        echo ' <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                     } else {
                         $personDb = $db_functions->get_person($connectDb->connect_connect_id);
 
@@ -202,7 +203,7 @@ if (!isset($data["sourceDb"]->source_id)) {
                         $url = $personLink->get_person_link($personDb);
                         $privacy = $personPrivacy->get_privacy($personDb);
                         $name = $personName->get_person_name($personDb, $privacy);
-                        echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                        echo ' <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                     }
                 }
 
@@ -248,7 +249,7 @@ if (!isset($data["sourceDb"]->source_id)) {
 
                                 $privacy = $personPrivacy->get_privacy($personDb);
                                 $name = $personName->get_person_name($personDb, $privacy);
-                                echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                                echo ' <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                             }
 
                             if ($familyDb->partner2_id) {
@@ -257,11 +258,11 @@ if (!isset($data["sourceDb"]->source_id)) {
                                 $url = $personLink->get_person_link($personDb);
                                 $privacy = $personPrivacy->get_privacy($personDb);
                                 $name = $personName->get_person_name($personDb, $privacy);
-                                echo ' &amp; <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                                echo ' &amp; <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                             }
 
                             if ($event_Db->event_event) {
-                                echo ' [' . $event_Db->event_event . ']';
+                                echo ' [' . $HtmlEscaper->escHtml((string) $event_Db->event_event) . ']';
                             }
                         }
                     }
@@ -282,7 +283,7 @@ if (!isset($data["sourceDb"]->source_id)) {
                             $url = $personLink->get_person_link($personDb);
                             $privacy = $personPrivacy->get_privacy($personDb);
                             $name = $personName->get_person_name($personDb, $privacy);
-                            echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            echo ' <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                         }
 
                         if ($familyDb->partner2_id) {
@@ -291,7 +292,7 @@ if (!isset($data["sourceDb"]->source_id)) {
                             $url = $personLink->get_person_link($personDb);
                             $privacy = $personPrivacy->get_privacy($personDb);
                             $name = $personName->get_person_name($personDb, $privacy);
-                            echo ' &amp; <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            echo ' &amp; <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                         }
                     } else {
                         $familyDb = $db_functions->get_family($connectDb->connect_connect_id);
@@ -302,7 +303,7 @@ if (!isset($data["sourceDb"]->source_id)) {
                             $url = $personLink->get_person_link($personDb);
                             $privacy = $personPrivacy->get_privacy($personDb);
                             $name = $personName->get_person_name($personDb, $privacy);
-                            echo ' <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            echo ' <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                         }
 
                         if ($familyDb->partner2_id) {
@@ -311,7 +312,7 @@ if (!isset($data["sourceDb"]->source_id)) {
                             $url = $personLink->get_person_link($personDb);
                             $privacy = $personPrivacy->get_privacy($personDb);
                             $name = $personName->get_person_name($personDb, $privacy);
-                            echo ' &amp; <a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                            echo ' &amp; <a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                         }
                     }
                 }
@@ -330,27 +331,27 @@ if (!isset($data["sourceDb"]->source_id)) {
                     }
 
                     if ($humo_option["url_rewrite"] == "j") {
-                        $url = 'address/' . $tree_id . '/' . $addressDb->address_gedcomnr;
+                        $url = 'address/' . rawurlencode((string) $tree_id) . '/' . rawurlencode((string) $addressDb->address_gedcomnr);
                     } else {
-                        $url = 'index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
+                        $url = 'index.php?page=address&amp;tree_id=' . rawurlencode((string) $tree_id) . '&amp;id=' . rawurlencode((string) $addressDb->address_gedcomnr);
                     }
             ?>
                     <?= __('Source for address:'); ?>
-                    <a href="<?= $url; ?>"><?= $text; ?></a>
+                    <a href="<?= $HtmlEscaper->escHtml((string) $url); ?>"><?= $HtmlEscaper->escHtml((string) $text); ?></a>
             <?php
                 }
 
                 // *** Extra source connect information by every source ***
                 if ($connectDb->connect_date || $connectDb->connect_place) {
-                    echo ' ' . $datePlace->date_place($connectDb->connect_date, $connectDb->connect_place);
+                    echo ' ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($connectDb->connect_date, $connectDb->connect_place));
                 }
                 // *** Source role ***
                 if ($connectDb->connect_role) {
-                    echo ', <b>' . __('role') . '</b>: ' . $connectDb->connect_role;
+                    echo ', <b>' . __('role') . '</b>: ' . $HtmlEscaper->escHtml((string) $connectDb->connect_role);
                 }
                 // *** Source page ***
                 if ($connectDb->connect_page) {
-                    echo ', <b>' . __('page') . '</b>: ' . $connectDb->connect_page;
+                    echo ', <b>' . __('page') . '</b>: ' . $HtmlEscaper->escHtml((string) $connectDb->connect_page);
                 }
                 echo '<br>';
             }

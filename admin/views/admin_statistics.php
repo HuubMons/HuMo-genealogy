@@ -48,7 +48,7 @@ if (!defined('ADMIN_PAGE')) {
 // *** calender($month, $year, true/false); ***
 function calender($month, $year, $thismonth)
 {
-    global $dbh, $statistics;
+    global $dbh, $statistics, $HtmlEscaper;
 
     if ($month == '1') {
         $calender_head = __('January');
@@ -91,7 +91,7 @@ function calender($month, $year, $thismonth)
     <table class="table">
         <thead class="table-primary">
             <tr>
-                <th colspan="8"><?= $calender_head . ' ' . $year; ?></th>
+                <th colspan="8"><?= $HtmlEscaper->escHtml($calender_head . ' ' . $year); ?></th>
             </tr>
 
             <tr>
@@ -113,7 +113,7 @@ function calender($month, $year, $thismonth)
         ?>
 
         <tr>
-            <th><?= $week_number; ?></th>
+            <th><?= $HtmlEscaper->escHtml((string) $week_number); ?></th>
 
             <?php
             // If neccesary skip days at start of month
@@ -159,7 +159,7 @@ function calender($month, $year, $thismonth)
                 }
             ?>
 
-                <td <?= $date === $present_day ? 'class="table-secondary"' : ''; ?>><?= $day; ?> <b><?= $nr_statistics; ?></b></td>
+                <td <?= $date === $present_day ? 'class="table-secondary"' : ''; ?>><?= $HtmlEscaper->escHtml((string) $day); ?> <b><?= $HtmlEscaper->escHtml((string) $nr_statistics); ?></b></td>
 
                 <?php
                 $day++;
@@ -169,7 +169,7 @@ function calender($month, $year, $thismonth)
                         $week = mktime(0, 0, 0, $month, $day, $year);
                         $week_number = date("W", $week);
                         echo "</tr>\n";
-                        echo "<tr><th>$week_number</th>";
+                        echo '<tr><th>' . $HtmlEscaper->escHtml((string) $week_number) . '</th>';
                         $row++;
                         $field = 1;
                     }
@@ -184,7 +184,7 @@ function calender($month, $year, $thismonth)
             // Add end month spacers
             if ((8 - $field) >= "1") {
                 ?>
-                <td colspan="<?= (8 - $field); ?>"><br></td>
+                <td colspan="<?= $HtmlEscaper->escHtml((string) (8 - $field)); ?>"><br></td>
             <?php } ?>
         </tr>
 
@@ -214,9 +214,9 @@ function calender($month, $year, $thismonth)
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx1 = document.getElementById('myChartVisitors');
-        var label = <?php echo json_encode($graph_label); ?>;
-        var labels = <?php echo json_encode($graph_labels); ?>;
-        var graph_data = <?php echo json_encode($graph_data); ?>;
+        var label = <?php echo json_encode($graph_label, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+        var labels = <?php echo json_encode($graph_labels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+        var graph_data = <?php echo json_encode($graph_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
         new Chart(ctx1, {
             type: 'bar',
@@ -337,9 +337,9 @@ function year_graphics($month, $year)
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx2 = document.getElementById('myChartFamilies');
-        var label = <?php echo json_encode($graph_label); ?>;
-        var labels = <?php echo json_encode($graph_labels); ?>;
-        var graph_data = <?php echo json_encode($graph_data); ?>;
+        var label = <?php echo json_encode($graph_label, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+        var labels = <?php echo json_encode($graph_labels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+        var graph_data = <?php echo json_encode($graph_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
         new Chart(ctx2, {
             type: 'bar',

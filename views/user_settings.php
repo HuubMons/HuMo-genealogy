@@ -6,17 +6,8 @@
 
 use Genealogy\Include\BotDetector;
 
-// TODO use function to get link
-if ($humo_option["url_rewrite"] == "j") {
-    $action = 'user_settings';
-    $action2 = 'user_settings?';
-} else {
-    $action = 'index.php?page=user_settings';
-    $action2 = 'index.php?page=user_settings&amp;';
-}
-//$action = $processLinks->get_link($uri_path, 'user_settings');
-//$action2 = $processLinks->get_link($uri_path, 'user_settings',true);
-
+$processLinks = new \Genealogy\Include\ProcessLinks();
+$action = $processLinks->get_link($uri_path, 'user_settings', null, true);
 
 if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y') {
 ?>
@@ -24,14 +15,14 @@ if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y
     <h1 class="my-4"><?= __('User settings'); ?></h1>
 
     <!-- TODO use bootstrap message box. -->
-    <?php if ($data["result_message"]) echo '<h3 class="center">' . $data["result_message"] . '</h3>'; ?>
+    <?= ($data["result_message"]) ? '<h3 class="center">' . $HtmlEscaper->escHtml((string) $data["result_message"]) . '</h3>' : ''; ?>
 
-    <form action="<?= $action; ?>" method="post">
+    <form action="<?= $HtmlEscaper->escHtml($action); ?>" method="post">
         <div class="container me-1">
             <div class="mb-2 row">
                 <label for="mail_sender" class="col-sm-3 col-form-label"><?= __('E-mail address'); ?></label>
                 <div class="col-sm-5">
-                    <input type="email" id="register_mail" class="form-control" name="register_mail" placeholder="<?= __('E-mail address'); ?>" value="<?= $data["user"]->user_mail; ?>">
+                    <input type="email" id="register_mail" class="form-control" name="register_mail" placeholder="<?= __('E-mail address'); ?>" value="<?= $HtmlEscaper->escHtml((string) $data["user"]->user_mail); ?>">
                 </div>
             </div>
 
@@ -53,7 +44,7 @@ if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y
                 <div class="row">
                     <label for="2fa" class="col-sm-3 col-form-label"><?= __('Two factor authentication (2FA)'); ?></label>
                     <div class="col-sm-5">
-                        <a href="<?= $action2; ?>2fa=1"><?= __('Two factor authentication (2FA)'); ?></a>
+                        <a href="<?= $HtmlEscaper->escHtml($action . '2fa=1'); ?>"><?= __('Two factor authentication (2FA)'); ?></a>
                     </div>
                 </div>
 
@@ -68,7 +59,7 @@ if (isset($data["user"]->user_name) && $user['group_menu_change_password'] == 'y
 
                             <?php printf(__('1) Install a 2FA app, and add %s in the app using this QR code:'), 'HuMo-genealogy'); ?>
                             <br>
-                            <img style="text-align: center;" class="img-fluid" src="<?= $data["qrCodeUrl"]; ?>" alt="Verify this Google Authenticator"><br><br>
+                            <img style="text-align: center;" class="img-fluid" src="<?= $HtmlEscaper->escHtml((string) $data["qrCodeUrl"]); ?>" alt="Verify this Google Authenticator"><br><br>
 
                             <?= __('2) Use 2FA code from app and enable 2FA login:'); ?><br>
                             <input type="text" class="form-control my-2" id="2fa_code" name="2fa_code" placeholder="<?= __('2FA code from app'); ?>" size="30" style="background-color:#FFFFFF">
@@ -117,15 +108,15 @@ if ($show_theme_select == true) {
 ?>
     <h1 class="my-4"><?= __('Select a theme'); ?></h1>
 
-    <form action="<?= $action; ?>" class="center mb-3">
+    <form action="<?= $HtmlEscaper->escHtml($action); ?>" class="center mb-3">
         <div class="row me-1">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
                 <select id="theme_select" name="switchcontrol" class="form-select form-select-sm" aria-label="<?= __('Select a theme'); ?>" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">
                     <?php
                     if (isset($humo_option['default_skin'])) {
-                        echo '<option value="' . $humo_option['default_skin'] . '" selected="selected">' . __('Select a theme') . ':</option>';
-                        echo '<option value="' . $humo_option['default_skin'] . '">' . __('Standard-colours') . '</option>';
+                        echo '<option value="' . $HtmlEscaper->escHtml($humo_option['default_skin']) . '" selected="selected">' . __('Select a theme') . ':</option>';
+                        echo '<option value="' . $HtmlEscaper->escHtml($humo_option['default_skin']) . '">' . __('Standard-colours') . '</option>';
                     } else {
                         echo '<option value="none" selected="selected">' . __('Select a theme') . ':</option>';
                         echo '<option value="none">' . __('Standard-colours') . '</option>';
@@ -137,7 +128,7 @@ if ($show_theme_select == true) {
                         $theme = $theme_folder[$i];
                         $theme = str_replace(".css", "", $theme);
                         if (!in_array($theme, $hide_themes_array)) {
-                            echo '<option value="' . $theme . '">' . $theme . '</option>';
+                            echo '<option value="' . $HtmlEscaper->escHtml($theme) . '">' . $HtmlEscaper->escHtml($theme) . '</option>';
                         }
                     }
                     ?>
@@ -160,7 +151,7 @@ if ($show_theme_select == true) {
             ?>
                     <div class="col-lg-4 col-md-6">
                         <?php /* <input type="image" name="submit" value="submit" class="w-100 shadow-1-strong rounded mb-4 border border-dark" alt="theme" src="styles/<?= $theme; ?>.png" onclick="chooseStyle('<?= $theme; ?>', 365)"> */ ?>
-                        <input type="image" name="submit" value="submit" class="img-thumbnail" alt="theme" src="styles/<?= $theme; ?>.png" onclick="chooseStyle('<?= $theme; ?>', 365)">
+                        <input type="image" name="submit" value="submit" class="img-thumbnail" alt="theme" src="styles/<?= $HtmlEscaper->escHtml($theme); ?>.png" onclick="chooseStyle(<?= json_encode($theme, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>, 365)">
                     </div>
             <?php
                 }

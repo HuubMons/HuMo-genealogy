@@ -5,6 +5,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber;
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper;
 
 $place_item = 'connect_man';
 $form = 'form2';
@@ -110,11 +111,17 @@ $search_man_id = '';
 if (isset($_POST['search_man_id']) && $validateGedcomnumber->validate($_POST['search_man_id'])) {
     $search_man_id = $_POST['search_man_id'];
 }
+
+$formAction = 'index.php?page=editor_person_select'
+    . '&person_item=' . rawurlencode((string)$_GET['person_item'])
+    . '&person=' . rawurlencode((string)$_GET['person'])
+    . (isset($_GET['event_row']) ? '&event_row=' . rawurlencode((string)$_GET['event_row']) : '')
+    . '&tree_id=' . rawurlencode((string)$tree_id);
 ?>
-<form method="POST" action="index.php?page=editor_person_select&amp;person_item=<?= $_GET['person_item']; ?>&amp;person=<?= $_GET['person']; ?><?= isset($_GET['event_row']) ? '&amp;event_row=' . $_GET['event_row'] : ''; ?>&amp;tree_id=<?= $tree_id; ?>" style="display : inline;">
+<form method="POST" action="<?= $HtmlEscaper->escHtml($formAction); ?>" style="display : inline;">
     <div class="row mb-2">
         <div class="col-4">
-            <input type="text" name="search_quicksearch_man" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch_man; ?>" size="15" class="form-control form-control-sm">
+            <input type="text" name="search_quicksearch_man" placeholder="<?= __('Name'); ?>" value="<?= $HtmlEscaper->escHtml($search_quicksearch_man); ?>" size="15" class="form-control form-control-sm">
         </div>
 
         <div class="col-auto">
@@ -122,7 +129,7 @@ if (isset($_POST['search_man_id']) && $validateGedcomnumber->validate($_POST['se
         </div>
 
         <div class="col-auto">
-            <input type="text" name="search_man_id" value="<?= $search_man_id; ?>" size="5" class="form-control form-control-sm">
+            <input type="text" name="search_man_id" value="<?= $HtmlEscaper->escHtml($search_man_id); ?>" size="5" class="form-control form-control-sm">
         </div>
 
         <div class="col-auto">

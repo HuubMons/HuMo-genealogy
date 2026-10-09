@@ -3,7 +3,7 @@
 namespace Genealogy\App\Model;
 
 use Genealogy\Include\SafeTextDb;
-use Genealogy\Include\SafeTextShow;
+use Genealogy\Include\HtmlEscaper;
 use Genealogy\Include\ProcessLinks;
 use Genealogy\App\Model\BaseModel;
 use PDO;
@@ -11,13 +11,13 @@ use PDO;
 class AddressesModel extends BaseModel
 {
     private $count_addresses, $all_addresses, $item, $selectsort, $sort_desc, $adr_place, $adr_address;
-    private $safeTextShow;
+    private $HtmlEscaper;
 
     public function __construct($config)
     {
         parent::__construct($config);
 
-        $this->safeTextShow = new SafeTextShow();
+        $this->HtmlEscaper = new HtmlEscaper();
     }
 
     public function getAddressAuthorised(): string
@@ -242,7 +242,7 @@ class AddressesModel extends BaseModel
                 $place_sort_reverse = '0';
             }
         }
-        return 'adr_place=' . $this->safeTextShow->safe_text_show($this->adr_place) . '&adr_address=' . $this->safeTextShow->safe_text_show($this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
+        return 'adr_place=' . $this->HtmlEscaper->escHtml($this->adr_place) . '&adr_address=' . $this->HtmlEscaper->escHtml($this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
     }
 
     public function getPlaceImage(): string
@@ -263,7 +263,7 @@ class AddressesModel extends BaseModel
                 $address_sort_reverse = '0';
             }
         }
-        return 'adr_place=' . $this->safeTextShow->safe_text_show($this->adr_place) . '&adr_address=' . $this->safeTextShow->safe_text_show($this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
+        return 'adr_place=' . $this->HtmlEscaper->escHtml($this->adr_place) . '&adr_address=' . $this->HtmlEscaper->escHtml($this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
     }
 
     public function getAddressImage(): string

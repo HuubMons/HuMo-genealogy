@@ -11,7 +11,6 @@ if ($user['group_menu_login'] != 'j') {
 }
 
 
-
 // TODO: process text in variable.
 if (isset($_POST['password']) && $_POST['password'] != '' && !$resetpassword['message_password']) {
     // *** Update the new password now (and use salted password) ***
@@ -40,9 +39,7 @@ if (isset($_POST['password']) && $_POST['password'] != '' && !$resetpassword['me
 }
 
 
-
 $path_reset_password = $processLinks->get_link($uri_path, 'reset_password');
-
 
 
 // *** Problem in link from mail ***
@@ -60,10 +57,10 @@ if (isset($_POST['forgotpw']) || $resetpassword['check_input_msg']) {
     <h1 class="my-4"><?= __('Password retrieval'); ?></h1>
 
     <?php if ($resetpassword['check_input_msg']) { ?>
-        <div class="alert alert-warning me-2" role="alert"><?= $resetpassword['check_input_msg']; ?></div>
+        <div class="alert alert-warning me-2" role="alert"><?= $HtmlEscaper->escHtml((string) $resetpassword['check_input_msg']); ?></div>
     <?php } ?>
 
-    <form name="pw_email_form" method="post" action="<?= $path_reset_password; ?>">
+    <form name="pw_email_form" method="post" action="<?= $HtmlEscaper->escHtml((string) $path_reset_password); ?>">
         <div class="container">
             <div class="row mb-2">
                 <div class="col-md-2"></div>
@@ -82,7 +79,7 @@ if (isset($_POST['forgotpw']) || $resetpassword['check_input_msg']) {
                         <?= __('Please answer the block-spam-question:'); ?>
                     </div>
                     <div class="col-md-4">
-                        <?= $humo_option["block_spam_question"]; ?><br>
+                        <?= $HtmlEscaper->escHtml((string) $humo_option["block_spam_question"]); ?><br>
                         <input type="text" name="register_block_spam" size="80" class="form-control">
                     </div>
                 </div>
@@ -148,19 +145,20 @@ elseif (isset($_POST['user_mail']) && !$resetpassword['check_input_msg']) {
     // *** Get mail for password retrieval ***
     $mail_address = $humo_option["password_retrieval"];
 
-    $mail_message = __('This is in response to your request for password reset at ') . $resetpassword['site_url'];
-
+    $reset_url = $resetpassword['site_url'];
     if ($humo_option["url_rewrite"] == "j") {
-        $resetpassword['site_url'] .='?';
+        $reset_url .= '?';
+    } else {
+        $reset_url .= '&';
     }
-    else{
-        $resetpassword['site_url'] .='&amp;';
-    }
-    $resetpassword['site_url'] .= "ak=$key&userid=$row->user_id";
+    $reset_url .= "ak=" . rawurlencode($key) . "&userid=" . (int) $row->user_id;
 
-    $mail_message .= '<br>' . __('Username') . ":" . $row->user_name . '<br>';
+    $safe_reset_url = $HtmlEscaper->escHtml($reset_url);
+    $safe_user_name = $HtmlEscaper->escHtml((string) $row->user_name);
+    $mail_message = __('This is in response to your request for password reset at ') . $safe_reset_url;
+    $mail_message .= '<br>' . __('Username') . ":" . $safe_user_name . '<br>';
     $mail_message .= __('To reset your password, please visit this link or copy and paste this link in your browser window ') . ":";
-    $mail_message .= '<br><br><a href="' . $resetpassword['site_url'] . '">' . $resetpassword['site_url'] . '</a><br>';
+    $mail_message .= '<br><br><a href="' . $safe_reset_url . '">' . $safe_reset_url . '</a><br>';
 
     // *** Set the reply address ***
     $mail->AddReplyTo($mail_address, $mail_address);
@@ -199,12 +197,12 @@ elseif ((isset($_GET['ak']) && $_GET['ak'] != '') || $resetpassword['message_pas
     <h1 class="my-4"><?= __('New Password'); ?></h1>
 
     <?php if ($resetpassword['message_password']) { ?>
-        <div class="alert alert-danger me-2" role="alert"><?= $resetpassword['message_password']; ?></div>
+        <div class="alert alert-danger me-2" role="alert"><?= $HtmlEscaper->escHtml((string) $resetpassword['message_password']); ?></div>
     <?php } ?>
 
-    <form action="<?= $path_reset_password; ?>" method="post">
-        <input type="hidden" name="ak" value="<?= $resetpassword['activation_key']; ?>">
-        <input type="hidden" name="userid" value="<?= $resetpassword['userid']; ?>">
+    <form action="<?= $HtmlEscaper->escHtml((string) $path_reset_password); ?>" method="post">
+        <input type="hidden" name="ak" value="<?= $HtmlEscaper->escHtml((string) $resetpassword['activation_key']); ?>">
+        <input type="hidden" name="userid" value="<?= $HtmlEscaper->escHtml((string) $resetpassword['userid']); ?>">
 
         <div class="container">
             <div class="row mb-2">

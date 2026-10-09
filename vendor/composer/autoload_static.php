@@ -87,7 +87,7 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
         'Genealogy\\Include\\ProcessText' => __DIR__ . '/../..' . '/include/ProcessText.php',
         'Genealogy\\Include\\ResizePicture' => __DIR__ . '/../..' . '/include/ResizePicture.php',
         'Genealogy\\Include\\SafeTextDb' => __DIR__ . '/../..' . '/include/SafeTextDb.php',
-        'Genealogy\\Include\\SafeTextShow' => __DIR__ . '/../..' . '/include/SafeTextShow.php',
+        'Genealogy\\Include\\HtmlEscaper' => __DIR__ . '/../..' . '/include/HtmlEscaper.php',
         'Genealogy\\Include\\SelectTree' => __DIR__ . '/../..' . '/include/SelectTree.php',
         'Genealogy\\Include\\SetTimezone' => __DIR__ . '/../..' . '/include/SetTimezone.php',
         'Genealogy\\Include\\ShowAddresses' => __DIR__ . '/../..' . '/include/ShowAddresses.php',

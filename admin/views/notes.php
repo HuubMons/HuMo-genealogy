@@ -5,6 +5,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $languageDate = new \Genealogy\Include\LanguageDate();
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 $tree_result = $dbh->query($tree_sql);
@@ -38,8 +39,8 @@ $tree_result = $dbh->query($tree_sql);
                         $note_result = $dbh->query($note_qry);
                         $num_rows = $note_result->rowCount();
                     ?>
-                        <option value="<?= $treeDb->tree_id; ?>" <?= $selected; ?>>
-                            <?= $treetext['name']; ?> [<?= $num_rows; ?>]
+                        <option value="<?= $HtmlEscaper->escHtml($treeDb->tree_id); ?>" <?= $selected; ?>>
+                            <?= $HtmlEscaper->escHtml($treetext['name']); ?> [<?= (int)$num_rows; ?>]
                         </option>
                     <?php
                     }
@@ -83,8 +84,8 @@ $tree_result = $dbh->query($tree_sql);
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this note?'); ?></strong>
         <form method="post" action="index.php?page=notes" style="display : inline;">
-            <input type="hidden" name="tree" value="<?= $tree_id; ?>">
-            <input type="hidden" name="note_id" value="<?= $_POST['note_id']; ?>">
+            <input type="hidden" name="tree" value="<?= $HtmlEscaper->escHtml($tree_id); ?>">
+            <input type="hidden" name="note_id" value="<?= $HtmlEscaper->escHtml($_POST['note_id']); ?>">
             <input type="submit" name="note_remove" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
@@ -150,8 +151,8 @@ if (isset($note_tree_id)) {
     ?>
 
         <form method="POST" action="index.php?page=notes">
-            <input type="hidden" name="tree" value="<?= $tree_id; ?>">
-            <input type="hidden" name="note_id" value="<?= $noteDb->note_id; ?>">
+            <input type="hidden" name="tree" value="<?= $HtmlEscaper->escHtml($tree_id); ?>">
+            <input type="hidden" name="note_id" value="<?= $HtmlEscaper->escHtml($noteDb->note_id); ?>">
 
             <div class="p-2 m-2 genealogy_search">
                 <div class="row mb-2">
@@ -170,16 +171,16 @@ if (isset($note_tree_id)) {
                             $find_parent1Db = $db_functions->get_family($noteDb->note_connect_id);
                             if ($find_parent1Db->partner1_gedcomnumber != "") {
                         ?>
-                                <a href="index.php?page=editor&amp;tree_id=<?= $tree_id; ?>&amp;menu_tab=marriage&amp;person=<?= $find_parent1Db->partner1_gedcomnumber; ?>&amp;marriage_nr=<?= $noteDb->note_connect_id; ?>">
-                                    <b><?= $noteDb->note_connect_id; ?> <?= $noteDb->note_names; ?></b>
+                                <a href="<?= $HtmlEscaper->escHtml('index.php?page=editor&tree_id=' . $tree_id . '&menu_tab=marriage&person=' . $find_parent1Db->partner1_gedcomnumber . '&marriage_nr=' . $noteDb->note_connect_id); ?>">
+                                    <b><?= $HtmlEscaper->escHtml($noteDb->note_connect_id); ?> <?= $HtmlEscaper->escHtml($noteDb->note_names); ?></b>
                                 </a><br>
                             <?php
                             }
                         } else {
                             // *** Editor note by person ***
                             ?>
-                            <a href="index.php?page=editor&amp;tree_id=<?= $tree_id; ?>&amp;menu_tab=person&amp;person=<?= $noteDb->note_connect_id; ?>">
-                                <b><?= $noteDb->note_connect_id; ?> <?= $noteDb->note_names; ?></b>
+                            <a href="<?= $HtmlEscaper->escHtml('index.php?page=editor&tree_id=' . $tree_id . '&menu_tab=person&person=' . $noteDb->note_connect_id); ?>">
+                                <b><?= $HtmlEscaper->escHtml($noteDb->note_connect_id); ?> <?= $HtmlEscaper->escHtml($noteDb->note_names); ?></b>
                             </a><br>
                         <?php } ?>
                     </div>
@@ -208,7 +209,7 @@ if (isset($note_tree_id)) {
                             <?= __('Priority'); ?>
                         </div>
                         <div class="col-md-7">
-                            <?= __($noteDb->note_priority); ?>
+                            <?= $HtmlEscaper->escHtml(__($noteDb->note_priority)); ?>
                         </div>
                     </div>
 
@@ -217,7 +218,7 @@ if (isset($note_tree_id)) {
                             <?= __('Status'); ?>
                         </div>
                         <div class="col-md-7">
-                            <?= __($noteDb->note_status); ?>
+                            <?= $HtmlEscaper->escHtml(__($noteDb->note_status)); ?>
                         </div>
                     </div>
                 <?php } ?>
@@ -227,7 +228,7 @@ if (isset($note_tree_id)) {
                         <?= __('Added by'); ?>
                     </div>
                     <div class="col-md-7">
-                        <b><?= $user_name; ?></b> <?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>
+                        <b><?= $HtmlEscaper->escHtml($user_name); ?></b> <?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>
                     </div>
                 </div>
 
@@ -236,7 +237,7 @@ if (isset($note_tree_id)) {
                         <?= ucfirst(__('text')); ?>
                     </div>
                     <div class="col-md-7">
-                        <?= nl2br($noteDb->note_note); ?>
+                        <?= nl2br($HtmlEscaper->escHtml($noteDb->note_note)); ?>
                     </div>
                 </div>
 

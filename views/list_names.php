@@ -5,7 +5,7 @@
         $vars['last_name'] = $alphabet;
         $link = $processLinks->get_link($uri_path, 'list_names', $tree_id, false, $vars);
     ?>
-        <a href="<?= $link; ?>"><?= $alphabet; ?></a>
+        <a href="<?= $link; ?>"><?= $HtmlEscaper->escHtml($alphabet); ?></a>
     <?php
     }
 
@@ -17,13 +17,10 @@
 
 <!-- Show options line -->
 <?php
-if ($humo_option["url_rewrite"] == "j") {
-    $url = $uri_path . 'list_names/' . $tree_id . '/' . $list_names["last_name"];
-} else {
-    $url = 'index.php?page=list_names&amp;tree_id=' . $tree_id . '&amp;last_name=' . $list_names["last_name"];
-}
+$vars['last_name'] = $list_names["last_name"];
+$url = $processLinks->get_link($uri_path, 'list_names', $tree_id, false, $vars);
 ?>
-<form method="POST" action="<?= $url; ?>" style="display:inline;" id="frqnames">
+<form method="POST" action="<?= $HtmlEscaper->escHtml($url); ?>" style="display:inline;" id="frqnames">
     <div class="row mb-3 me-1 mt-3">
         <div class="col-sm-3"></div>
         <div class="col-sm-3">
@@ -83,8 +80,15 @@ $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
                 ?>
                     <td class="namelst">
                         <?php if (isset($list_names['link_name'][$nr])) { ?>
-                            <a href="<?= $path_tmp; ?>pers_lastname=<?= $list_names['link_name'][$nr]; ?>&amp;part_lastname=equals">
-                                <?= $list_names['show_name'][$nr]; ?>
+                            <?php
+                            $personLink = html_entity_decode(
+                                $path_tmp . 'pers_lastname=' . $list_names['link_name'][$nr] . '&part_lastname=equals',
+                                ENT_QUOTES,
+                                'UTF-8'
+                            );
+                            ?>
+                            <a href="<?= $HtmlEscaper->escHtml($personLink); ?>">
+                                <?= $HtmlEscaper->escHtml($list_names['show_name'][$nr]); ?>
                             </a>
                         <?php } else { ?>
                             -

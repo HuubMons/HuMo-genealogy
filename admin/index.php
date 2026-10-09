@@ -63,6 +63,7 @@ include_once(__DIR__ . "/../include/db_login.php"); // *** Database login ***
 $safeTextDb = new Genealogy\Include\SafeTextDb();
 $showTreeText = new Genealogy\Include\ShowTreeText();
 $selectTree = new Genealogy\Include\SelectTree();
+$htmlEscaper = new \Genealogy\Include\HtmlEscaper;
 
 if (isset($dbh)) {
     $db_functions = new Genealogy\Include\DbFunctions($dbh);
@@ -367,14 +368,14 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 
 // *** Use your own favicon.ico in media folder ***
 if (file_exists('../media/favicon.ico')) {
-    $favicon = '<link href="../' . $mediaPath->give_media_path("media/", "favicon.ico") . '" rel="shortcut icon" type="image/x-icon">';
+    $favicon = '<link href="' . $htmlEscaper->escHtml('../' . $mediaPath->give_media_path("media/", "favicon.ico")) . '" rel="shortcut icon" type="image/x-icon">';
 } else {
     $favicon = '<link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">';
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $selected_language; ?>" <?= $language["dir"] == "rtl" ? 'dir="rtl"' : ''; ?>>
+<html lang="<?= $htmlEscaper->escHtml((string) $selected_language); ?>" <?= $language["dir"] == "rtl" ? 'dir="rtl"' : ''; ?>>
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -422,7 +423,7 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
 
     // *** Added May 2021: For multiple marriages ***
     if (substr($_GET['connect_sub_kind'], 0, 3) === 'fam') {
-        $page_link .= '&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber']; // Don't use &amp;
+        $page_link .= '&marriage_nr=' . rawurlencode((string) $_SESSION['admin_fam_gedcomnumber']); // Don't use &amp;
     }
 
     if (isset($_GET['event_person']) && $_GET['event_person'] == '1') {
@@ -432,12 +433,13 @@ if (isset($_GET['page']) && $_GET['page'] == 'close_popup') {
     //	$page_link='editor&event_family=1#event_family_link'; // Don't use &amp;
     // *** Added May 2021: For multiple marriages ***
     if (isset($_GET['event_family']) && $_GET['event_family'] == '1') {
-        $page_link = 'editor&event_family=1&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber'] . '#event_family_link'; // Don't use &amp;
+        $page_link = 'editor&event_family=1&marriage_nr=' . rawurlencode((string) $_SESSION['admin_fam_gedcomnumber']) . '#event_family_link'; // Don't use &amp;
     }
 
+    $redirect_base = 'index.php?page=' . $page_link;
     echo '<script>';
     echo 'function redirect_to(where, closewin){
-            opener.location= \'index.php?page=' . $page_link . '\' + where;
+            opener.location= ' . json_encode($redirect_base, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ' + where;
             if (closewin == 1){ self.close(); }
         }';
     echo '</script>';
@@ -477,15 +479,15 @@ if ($popup == false) {
         $check_tree_id = '';
         // *** admin_tree_id must be numeric ***
         if (isset($_SESSION['admin_tree_id']) && is_numeric($_SESSION['admin_tree_id'])) {
-            $check_tree_id = $_SESSION['admin_tree_id'];
+            $check_tree_id = (int) $_SESSION['admin_tree_id'];
         }
         // *** tree_id must be numeric ***
         if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
-            $check_tree_id = $_POST['tree_id'];
+            $check_tree_id = (int) $_POST['tree_id'];
         }
         // *** tree_id must be numeric ***
         if (isset($_GET['tree_id']) && is_numeric($_GET['tree_id'])) {
-            $check_tree_id = $_GET['tree_id'];
+            $check_tree_id = (int) $_GET['tree_id'];
         }
 
         // *** Check editor permissions ***

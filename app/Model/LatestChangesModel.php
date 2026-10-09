@@ -6,7 +6,6 @@ use Genealogy\App\Model\BaseModel;
 use Genealogy\Include\PersonLink;
 use Genealogy\Include\PersonPrivacy;
 use Genealogy\Include\PersonName;
-use Genealogy\Include\PersonPopup;
 use Genealogy\Include\LanguageDate;
 use PDO;
 
@@ -17,7 +16,6 @@ class LatestChangesModel extends BaseModel
         $personLink = new PersonLink;
         $personPrivacy = new PersonPrivacy();
         $personName = new PersonName();
-        $personPopup = new PersonPopup();
         $languageDate = new LanguageDate;
 
         // *** EXAMPLE of a UNION querie ***
@@ -77,11 +75,11 @@ class LatestChangesModel extends BaseModel
             // *** Get person from database to have all fields (not only those selected in the query) ***
             $person = $this->db_functions->get_person_with_id($person2->pers_id);
             if ($person->pers_sexe == "M") {
-                $pers_sexe = '<img src="images/man.gif" alt="man">';
+                $pers_sexe = 'man';
             } elseif ($person->pers_sexe == "F") {
-                $pers_sexe = '<img src="images/woman.gif" alt="woman">';
+                $pers_sexe = 'woman';
             } else {
-                $pers_sexe = '<img src="images/unknown.gif" alt="unknown">';
+                $pers_sexe = 'unknown';
             }
 
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -90,7 +88,11 @@ class LatestChangesModel extends BaseModel
             $privacy = $personPrivacy->get_privacy($person);
             $name = $personName->get_person_name($person, $privacy);
 
-            $changes['show_person'][$i] = $personPopup->person_popup_menu($person, $privacy) . $pers_sexe . '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+            $changes['show_person'][$i] = [
+                'sex_icon' => $pers_sexe,
+                'url' => $url,
+                'name' => $name["standard_name"],
+            ];
             $changes['changed_date'][$i] = $languageDate->show_datetime($person->pers_changed_datetime);
             $changes['new_date'][$i] = $languageDate->show_datetime($person->pers_new_datetime);
 
@@ -99,7 +101,11 @@ class LatestChangesModel extends BaseModel
 
         // *** In some cases there are no results (probably when GEDCOM is imported long time ago without editing) ***
         if (!isset($changes['show_person'])) {
-            $changes['show_person'][] = '';
+            $changes['show_person'][] = [
+                'sex_icon' => '',
+                'url' => '',
+                'name' => '',
+            ];
             $changes['changed_date'][] = '';
             $changes['new_date'][] = '';
         }

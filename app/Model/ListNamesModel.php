@@ -52,6 +52,7 @@ class ListNamesModel extends BaseModel
 
     public function get_last_name($last_name): string
     {
+        // TODO will be removed if queries are rebuild to PDO prepared statements
         $safeTextDb = new SafeTextDb();
 
         if (!isset($last_name)) {

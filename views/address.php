@@ -1,7 +1,7 @@
 <?php
 // *** Check user authority ***
 if ($data["authorised"] != '') {
-    echo $data["authorised"];
+    echo $HtmlEscaper->escHtml((string) $data["authorised"]);
     exit();
 }
 
@@ -14,22 +14,22 @@ $showSourcesFootnotes = new Genealogy\Include\ShowSourcesFootnotes();
             <h2><?= __('Address'); ?></h2>
 
             <?php if ($data["address"]->address_address) { ?>
-                <b><?= __('Street'); ?>:</b> <?= $data["address"]->address_address; ?><br>
+                <b><?= __('Street'); ?>:</b> <?= $HtmlEscaper->escHtml($data["address"]->address_address); ?><br>
             <?php
             }
             if ($data["address"]->address_zip) {
             ?>
-                <b><?= __('Zip code'); ?>:</b> <?= $data["address"]->address_zip; ?><br>
+                <b><?= __('Zip code'); ?>:</b> <?= $HtmlEscaper->escHtml($data["address"]->address_zip); ?><br>
             <?php
             }
             if ($data["address"]->address_place) {
             ?>
-                <b><?= __('Place'); ?>:</b> <?= $data["address"]->address_place; ?><br>
+                <b><?= __('Place'); ?>:</b> <?= $HtmlEscaper->escHtml($data["address"]->address_place); ?><br>
             <?php
             }
             if ($data["address"]->address_phone) {
             ?>
-                <b><?= __('Phone'); ?>:</b> <?= $data["address"]->address_phone; ?><br>
+                <b><?= __('Phone'); ?>:</b> <?= $HtmlEscaper->escHtml($data["address"]->address_phone); ?><br>
             <?php
             } ?>
         </td>
@@ -38,7 +38,7 @@ $showSourcesFootnotes = new Genealogy\Include\ShowSourcesFootnotes();
     <?php if ($data["address"]->address_text) { ?>
         <tr>
             <td>
-                <?= nl2br($data["address"]->address_text); ?>
+                <?= nl2br($HtmlEscaper->escHtml($data["address"]->address_text)); ?>
             </td>
         </tr>
     <?php } ?>

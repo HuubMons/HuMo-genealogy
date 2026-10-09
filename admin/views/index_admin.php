@@ -400,7 +400,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             </div>
 
             <div class="col-md-8">
-                <?= $active_users; ?>
+                <?= $active_users; ?> <a href="index.php?page=settings"><?= __('Website visitor limits'); ?></a>
             </div>
         </div>
 

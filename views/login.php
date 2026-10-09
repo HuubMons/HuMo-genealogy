@@ -22,7 +22,7 @@ $path_reset_password = $processLinks->get_link($uri_path, 'reset_password');
         </div>
     <?php } ?>
 
-    <form action="<?= $path_login; ?>" method="post">
+    <form action="<?= $HtmlEscaper->escHtml((string) $path_login); ?>" method="post">
         <div class="mb-2 row">
             <label for="username" class="col-sm-3 col-form-label"><?= __('Username or e-mail address'); ?></label>
             <div class="col-sm-5">
@@ -55,7 +55,7 @@ $path_reset_password = $processLinks->get_link($uri_path, 'reset_password');
     <!-- Only use password retrieval option if sender mail is set in admin settings and is a valid mail address -->
     <?php if ($humo_option["password_retrieval"] && filter_var($humo_option["password_retrieval"], FILTER_VALIDATE_EMAIL)) { ?>
         <div class="center">
-            <form name="forget_form" method="post" action="<?= $path_reset_password; ?>">
+            <form name="forget_form" method="post" action="<?= $HtmlEscaper->escHtml((string) $path_reset_password); ?>">
                 <input type="hidden" name="forgotpw" value="1">
                 <input type="submit" name="Submit" value="<?= __('Forgot password'); ?>" class="btn btn-secondary">
             </form>

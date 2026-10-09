@@ -5,6 +5,7 @@
  */
 
 $popup_style = '';
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 //if ($popup == true){
 //  $popup_style = ' style="top:0px;"';
 //}
@@ -49,10 +50,10 @@ if ($popup == false) {
 
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item <?= $page == 'admin' ? 'active' : ''; ?>" href="index.php?page=admin"><?= __('Administration'); ?> - <?= __('Main menu'); ?></a></li>
-                        <li><a class="dropdown-item" href="<?= $menu_path_website; ?>"><?= __('Website'); ?></a></li>
+                        <li><a class="dropdown-item" href="<?= $HtmlEscaper->escHtml($menu_path_website); ?>"><?= __('Website'); ?></a></li>
 
                         <?php if (isset($_SESSION["user_name_admin"])) {; ?>
-                            <li><a class="dropdown-item" href="<?= $menu_path_logoff ?>"><?= __('Logoff'); ?></a></li>
+                            <li><a class="dropdown-item" href="<?= $HtmlEscaper->escHtml($menu_path_logoff); ?>"><?= __('Logoff'); ?></a></li>
                         <?php } ?>
                     </ul>
                 </li>

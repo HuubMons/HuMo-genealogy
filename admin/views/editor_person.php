@@ -1856,9 +1856,9 @@ Don't use this link, witness and other buttons won't work anymore
                 <tr class="row62" style="display:none;">
                     <td></td>
                     <td colspan="2">
-                        <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>)<br>
-                        <b><?= $noteDb->note_names; ?></b><br>
-                        <textarea readonly rows="1" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea>
+                        <?= __('Added by'); ?> <b><?= $HtmlEscaper->escHtml($user_name); ?></b> (<?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>)<br>
+                        <b><?= $HtmlEscaper->escHtml($noteDb->note_names); ?></b><br>
+                        <textarea readonly rows="1" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml($editor_cls->text_show($noteDb->note_note)); ?></textarea>
                     </td>
                 </tr>
         <?php

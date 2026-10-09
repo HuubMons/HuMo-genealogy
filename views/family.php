@@ -13,7 +13,6 @@ $screen_mode = '';
 $last_visited = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $_SESSION['save_last_visitid'] = $last_visited;
 
-$botDetector = new Genealogy\Include\BotDetector();
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $personName_extended = new \Genealogy\Include\PersonNameExtended();
@@ -60,7 +59,7 @@ if (!$data["family_id"]) {
 
     <table class="table">
         <!-- Show person topline (top text, settings, favourite) -->
-        <?php include __DIR__ . '/family_top_line.php'; ?>
+        <?php include __DIR__ . '/partial/family_top_line.php'; ?>
         <tr>
             <td colspan="4">
                 <!--  Show person data -->
@@ -113,7 +112,7 @@ else {
         if ($data["descendant_report"] == true) {
             // *** Show links to other charts at top of page ***
             if ($descendant_loop == 0) {
-                echo $data["descendant_header"];
+                include __DIR__ . '/partial/descendant_header.php';
             }
 
             echo '<h2 class="standard_header">' . ucfirst(__('generation ')) . $data["number_roman"][$descendant_loop + 1] . '</h2>';
@@ -336,7 +335,7 @@ else {
                 <table class="table">
                     <?php
                     // *** Show family top line (family top text, settings, favourite) ***
-                    include __DIR__ . '/family_top_line.php';
+                    include __DIR__ . '/partial/family_top_line.php';
 
                     echo '<tr><td colspan="4">';
 
@@ -366,7 +365,7 @@ else {
                                     $name["index_name"] = html_entity_decode($name["index_name"]);
                                 ?>
                                     <script>
-                                        document.title = '<?= __("Family Page"); ?>: <?= $name["index_name"]; ?>';
+                                        document.title = <?= json_encode(__('Family Page') . ': ' . $name["index_name"], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
                                     </script>
                                 <?php
                                 }
@@ -498,7 +497,7 @@ else {
                         ?>
 
                             <div class="children">
-                                <div class="child_nr" id="person_<?= $childDb->pers_gedcomnumber; ?>"><?= $child->relation_order; ?>.</div>
+                                <div class="child_nr" id="person_<?= $HtmlEscaper->escHtml((string) $childDb->pers_gedcomnumber); ?>"><?= $HtmlEscaper->escHtml((string) $child->relation_order); ?>.</div>
                                 <?php
                                 echo $personName_extended->name_extended($childDb, $child_privacy, "child");
 
@@ -531,7 +530,7 @@ else {
                                     $descendant_main_person2[] = $childDb->pers_gedcomnumber;
                                     $search_nr = array_search($child_family[0], $check_double);
                                     echo '<b><i>, ' . __('follows') . ': </i></b>';
-                                    echo '<a href="' . str_replace("&", "&amp;", $_SERVER['REQUEST_URI']) . '#' . $follows_array[$search_nr] . '">' . $follows_array[$search_nr] . '</a>';
+                                    echo '<a href="' . $HtmlEscaper->escHtml($_SERVER['REQUEST_URI'] . '#' . $follows_array[$search_nr]) . '">' . $HtmlEscaper->escHtml($follows_array[$search_nr]) . '</a>';
                                 } else {
                                     echo $personData->person_data($childDb, $child_privacy, "child", $id);
                                 }
@@ -861,7 +860,7 @@ else {
                             <script src="assets/leaflet/leaflet.js"></script>
                         <?php } ?>
                         <!-- Show openstreetmap by every family -->
-                        <div id="<?= $map; ?>" style="height: 400px;" class="container-md"></div><br>
+                        <div id="<?= $HtmlEscaper->escHtml($map); ?>" style="height: 400px;" class="container-md"></div><br>
 
                         <?php
                         // *** Map using fitbound (all markers visible) ***
@@ -872,7 +871,7 @@ else {
                         // *** Add all markers from array ***
                         for ($i = 1; $i < count($location_array); $i++) {
                             if ($i > 1) echo ',';
-                            echo 'L.marker([' . $lat_array[$i] . ', ' . $lon_array[$i] . ']) .bindPopup(\'' . $text_array[$i] . '\')';
+                            echo 'L.marker([' . (float) $lat_array[$i] . ', ' . (float) $lon_array[$i] . ']).bindPopup(' . json_encode($text_array[$i], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ')';
                             echo "\n";
                         }
 
@@ -970,9 +969,9 @@ else {
                             $show_google_map = true;
 
                             if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-                                echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '" . $text_array[$i] . "', 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|" . $api_key . "');\n");
+                                echo 'addMarker(' . (int) $family_nr . ',' . (float) $lat_array[$i] . ',' . (float) $lon_array[$i] . ',' . json_encode($text_array[$i], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ',' . json_encode('https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|' . $api_key, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ");\n";
                             } else {
-                                echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '" . $text_array[$i] . "', 'http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|" . $api_key . "');\n");
+                                echo 'addMarker(' . (int) $family_nr . ',' . (float) $lat_array[$i] . ',' . (float) $lon_array[$i] . ',' . json_encode($text_array[$i], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ',' . json_encode('http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|' . $api_key, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ");\n";
                             }
                         }
 
@@ -1021,7 +1020,7 @@ if ($user['group_citation_generation'] == 'y') {
     // *** Link to family page ***
     $vars['pers_family'] = $data["family_id"];
     $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
-    $link .= "main_person=" . $data["main_person"];
+    $link .= "main_person=" . rawurlencode((string) $data["main_person"]);
     if ($humo_option["url_rewrite"] != "j") {
         $link = 'http://' . $_SERVER['SERVER_NAME'] . $link;
     }
@@ -1029,14 +1028,14 @@ if ($user['group_citation_generation'] == 'y') {
     <br><b><?= __('Citation for:') . ' ' . __('Family Page'); ?></b><br>
     <span class="citation">
         <!-- Names -->
-        "<?= __('Family Page'); ?>: <?= $name1['name']; ?> <?= (isset($name2['name']) && $name2['name']) ? '&amp; ' . $name2['name'] : ''; ?>"
+        "<?= __('Family Page'); ?>: <?= $HtmlEscaper->escHtml($name1['name']); ?> <?= (isset($name2['name']) && $name2['name']) ? '&amp; ' . $HtmlEscaper->escHtml($name2['name']) : ''; ?>"
 
-        HuMo-genealogy - <?= $humo_option["database_name"]; ?> (<?= $link; ?> : <?= __('accessed'); ?> <?= date("d F Y"); ?>)
+        HuMo-genealogy - <?= $HtmlEscaper->escHtml($humo_option["database_name"]); ?> (<?= $HtmlEscaper->escHtml($link); ?> : <?= __('accessed'); ?> <?= date("d F Y"); ?>)
 
         <?php
         // *** Name and GEDCOM number of main person ***
         if ($parent1Db) {
-            echo ' ' . $name1['name'] . ' #' . $parent1Db->pers_gedcomnumber;
+            echo ' ' . $HtmlEscaper->escHtml($name1['name']) . ' #' . $HtmlEscaper->escHtml((string) $parent1Db->pers_gedcomnumber);
 
             // *** Birth or baptise date ***
             if (isset($family_privacy) && !$family_privacy) {
@@ -1068,7 +1067,7 @@ if ($data["descendant_report"] == false) {
         <table align="center" class="table w-50">
             <tr class="table-primary humo_user_notes">
                 <th>
-                    <?php if ($num_rows) echo '<a href="#humo_user_notes"></a> '; ?>
+                    <?= $num_rows ? '<a href="#humo_user_notes"></a> ' : ''; ?>
                     <?= __('User notes'); ?>
                 </th>
                 <th colspan="2">
@@ -1088,10 +1087,10 @@ if ($data["descendant_report"] == false) {
             ?>
                 <tr>
                     <td valign="top">
-                        <?= $languageDate->show_datetime($noteDb->note_new_datetime) . ' ' . $user_name; ?><br>
+                        <?= $HtmlEscaper->escHtml($languageDate->show_datetime($noteDb->note_new_datetime) . ' ' . $user_name); ?><br>
                     </td>
                     <td>
-                        <?= nl2br($noteDb->note_note); ?>
+                        <?= nl2br($HtmlEscaper->escHtml($noteDb->note_note)); ?>
                     </td>
                 </tr>
             <?php } ?>
@@ -1142,12 +1141,12 @@ if ($data["descendant_report"] == false) {
             $register_message .= __('New user note') . "<br>\n";
             $register_message .= __('Name') . ':' . $userDb->user_name . "<br>\n";
             //$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
-            $register_message .= $_POST['user_note'] . "<br>\n";
+            $register_message .= $HtmlEscaper->escHtml((string) $_POST['user_note']) . "<br>\n";
 
             $vars['pers_family'] = $data["family_id"];
             $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
-            $link .= "main_person=" . $data["main_person"];
-            $register_message .= __('User note by family') . ': <a href="' . $link . '">' . $name["standard_name"] . '</a>';
+            $link .= "main_person=" . rawurlencode((string) $data["main_person"]);
+            $register_message .= __('User note by family') . ': <a href="' . $HtmlEscaper->escHtml($link) . '">' . $HtmlEscaper->escHtml($name["standard_name"]) . '</a>';
 
             //$humo_option = $this->humo_option; // Used in mail.php
             include_once(__DIR__ . '/../include/mail.php');
@@ -1194,25 +1193,25 @@ if ($data["descendant_report"] == false) {
                 }
             </script>
 
-            <form method="POST" action="<?= $start_url; ?>#add_info" style="display : inline;">
-                <input type="hidden" name="id" value="<?= $data["family_id"]; ?>">
-                <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
+            <form method="POST" action="<?= $HtmlEscaper->escHtml($start_url); ?>#add_info" style="display : inline;">
+                <input type="hidden" name="id" value="<?= $HtmlEscaper->escHtml((string) $data["family_id"]); ?>">
+                <input type="hidden" name="main_person" value="<?= $HtmlEscaper->escHtml((string) $data["main_person"]); ?>">
                 <table align="center" class="table w-50">
                     <tr id="add_info" class="table-primary">
                         <th colspan="2">
-                            <a href="<?= $start_url; ?>#add_info" onclick="hideShow(1);"><span id="hideshowlink1">[+]</span></a>
+                            <a href="<?= $HtmlEscaper->escHtml($start_url); ?>#add_info" onclick="hideShow(1);"><span id="hideshowlink1">[+]</span></a>
                             <?= ' ' . __('Add information or remarks'); ?>
                         </th>
                     </tr>
 
                     <tr style="display:none;" id="row1" name="row1">
                         <td><?= __('Person'); ?></td>
-                        <td><?= $name["standard_name"]; ?></td>
+                        <td><?= $HtmlEscaper->escHtml($name["standard_name"]); ?></td>
                     </tr>
 
                     <tr style="display:none;" id="row1" name="row1">
                         <td><?= __('Name'); ?></td>
-                        <td><?= $userDb->user_name; ?></td>
+                        <td><?= $HtmlEscaper->escHtml($userDb->user_name); ?></td>
                     </tr>
 
                     <?php if ($userDb->user_mail == '') { ?>
@@ -1230,7 +1229,7 @@ if ($data["descendant_report"] == false) {
                     ?>
                     <tr style="display:none;" id="row1" name="row1">
                         <td><?= __('Text'); ?></td>
-                        <td><textarea name="user_note" rows="5" cols="40" class="form-control form-control-sm"><?= $register_text; ?></textarea></td>
+                        <td><textarea name="user_note" rows="5" cols="40" class="form-control form-control-sm"><?= $HtmlEscaper->escHtml($register_text); ?></textarea></td>
                     </tr>
 
                     <tr style="display:none;" id="row1" name="row1">

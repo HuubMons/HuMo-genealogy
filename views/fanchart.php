@@ -18,7 +18,7 @@
  */
 
 // *** Tab menu: ancestors ***
-echo $data['ancestor_header'];
+include __DIR__ . '/partial/ancestor_header.php';
 
 $maxgens = 7;
 
@@ -179,6 +179,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName = new \Genealogy\Include\PersonName();
     $languageDate = new \Genealogy\Include\LanguageDate();
+    $htmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     // check for GD 2.x library
     /*
@@ -478,7 +479,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                 $personLink = new \Genealogy\Include\PersonLink();
                 $url = $personLink->get_person_link($personLinkDb);
 
-                $imagemap .= "\" href=\"" . $url . "\"";
+                $imagemap .= "\" href=\"" . $htmlEscaper->escHtml($url) . "\"";
 
                 // *** Add first spouse to base person's tooltip ***
                 $spousename = '';
@@ -510,7 +511,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
                 }
 
                 // *** Use str_replace to avoid double quotes in pid and spouse name (used for nicknames) ***
-                $imagemap .= " alt=\"" . str_replace('"', "'", $pid) . "\" title=\"" . str_replace('"', "'", $pid) . $spousename . "\">";
+                $imagemap .= " alt=\"" . $htmlEscaper->escHtml($pid) . "\" title=\"" . $htmlEscaper->escHtml($pid . $spousename) . "\">";
             }
             $deg1 -= $angle;
             $deg2 -= $angle;
@@ -536,7 +537,7 @@ function print_fan_chart($data, $fanw = 840, $fandeg = 270): void
     unset($_SESSION['image_data']);
     $_SESSION['image_data'] = $image_data;
 
-    echo "<img src=\"include/fanchart/fanimage.php\" width=\"$fanw\" height=\"$fanh\" border=\"0\" alt=\"$image_title\" title=\"$image_title\" usemap=\"#fanmap\">";
+    echo '<img src="include/fanchart/fanimage.php" width="' . (int) $fanw . '" height="' . (int) $fanh . '" border="0" alt="' . $htmlEscaper->escHtml($image_title) . '" title="' . $htmlEscaper->escHtml($image_title) . '" usemap="#fanmap">';
 
     echo "</p>\n";
     ImageDestroy($image);
@@ -598,7 +599,7 @@ $path_tmp = $processLinks->get_link($uri_path, 'fanchart', $tree_id, false, $var
 ?>
 
 <!-- Menu -->
-<form name="people" method="post" action="<?= $path_tmp; ?>" style="display:inline;">
+<form name="people" method="post" action="<?= $htmlEscaper->escHtml($path_tmp); ?>" style="display:inline;">
     <div class="row genealogy_search mt-1 ms-1 d-print-none">
         <div class="col">
             <!-- Fan style -->
@@ -640,7 +641,7 @@ $path_tmp = $processLinks->get_link($uri_path, 'fanchart', $tree_id, false, $var
             <!-- Fan width in percentages -->
             <?= __('Fan width:'); ?><br>
             <div class="input-group mb-3">
-                <input type="text" size="3" name="fan_width" value="<?= $menu_fan; ?>" class="form-control form-control-sm"> <b></b>
+                <input type="text" size="3" name="fan_width" value="<?= $htmlEscaper->escHtml((string) $menu_fan); ?>" class="form-control form-control-sm"> <b></b>
                 <span class="input-group-text">%</span>
             </div>
             <div style="font-size:10px;"><?= __('"auto" for automatic resizing for best display, or value between 50-300'); ?></div>

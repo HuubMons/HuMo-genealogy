@@ -14,7 +14,7 @@ if (isset($_POST['send_mail']) && $register["register_allowed"] == true) {
         $register["show_form"] = true;
     ?>
         <div class="alert alert-info" role="alert">
-            <?= $register["error"]; ?>
+            <?= $HtmlEscaper->escHtml((string) $register["error"]); ?>
         </div>
     <?php
     }
@@ -53,39 +53,39 @@ if ($register["show_form"]) {
         <?php } ?>
 
         <div class="container">
-            <form action="<?= $path; ?>" method="post">
+            <form action="<?= $HtmlEscaper->escHtml((string) $path); ?>" method="post">
                 <div class="mb-2 row">
                     <label for="name" class="col-sm-3 col-form-label"><?= __('Name'); ?></label>
                     <div class="col-sm-5">
-                        <input type="text" id="name" class="form-control" name="register_name" value="<?= $register["name"]; ?>">
+                        <input type="text" id="name" class="form-control" name="register_name" value="<?= $HtmlEscaper->escHtml((string) $register["name"]); ?>">
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="mail_sender" class="col-sm-3 col-form-label"><?= __('E-mail address'); ?></label>
                     <div class="col-sm-5">
-                        <input type="email" id="register_mail" class="form-control" name="register_mail" value="<?= $register["mail"]; ?>">
+                        <input type="email" id="register_mail" class="form-control" name="register_mail" value="<?= $HtmlEscaper->escHtml((string) $register["mail"]); ?>">
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="register_password" class="col-sm-3 col-form-label"><?= __('Password'); ?></label>
                     <div class="col-sm-5">
-                        <input type="password" id="register_password" class="form-control" name="register_password" pattern=".{6,}" required title="<?= __('6 characters minimum'); ?>">
+                            <input type="password" id="register_password" class="form-control" name="register_password" pattern=".{6,}" required title="<?= $HtmlEscaper->escHtml(__('6 characters minimum')); ?>">
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="register_repeat_password" class="col-sm-3 col-form-label"><?= __('Repeat password'); ?></label>
                     <div class="col-sm-5">
-                        <input type="password" id="register_repeat_password" class="form-control" name="register_repeat_password" pattern=".{6,}" required title="<?= __('6 characters minimum'); ?>">
+                            <input type="password" id="register_repeat_password" class="form-control" name="register_repeat_password" pattern=".{6,}" required title="<?= $HtmlEscaper->escHtml(__('6 characters minimum')); ?>">
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="register_text" class="col-sm-3 col-form-label"><?= __('Message'); ?></label>
                     <div class="col-sm-5">
-                        <textarea id="register_text" class="form-control" name="register_text" style="height:200px"><?= $register["text"]; ?></textarea>
+                        <textarea id="register_text" class="form-control" name="register_text" style="height:200px"><?= $HtmlEscaper->escHtml((string) $register["text"]); ?></textarea>
                     </div>
                 </div>
 
@@ -93,7 +93,7 @@ if ($register["show_form"]) {
                     <div class="mb-2 row">
                         <label for="register_block_spam" class="col-sm-3 col-form-label"><?= __('Please answer the block-spam-question:'); ?></label>
                         <div class="col-sm-5">
-                            <?= $humo_option["block_spam_question"]; ?>
+                            <?= $HtmlEscaper->escHtml((string) $humo_option["block_spam_question"]); ?>
                             <input type="text" id="register_block_spam" class="form-control" name="register_block_spam">
                         </div>
                     </div>

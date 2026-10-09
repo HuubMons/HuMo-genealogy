@@ -23,7 +23,7 @@ if (isset($_GET['note_add'])) {
 <tr>
     <td><a name="editor_notes"></a><?= __('Editor notes'); ?></td>
     <td colspan="2">
-        <a href="index.php?page=editor&amp;note_add=<?= $note_connect_kind . $anchor; ?>">[<?= __('Add'); ?>]</a>
+        <a href="<?= $HtmlEscaper->escHtml('index.php?page=editor&note_add=' . $note_connect_kind . $anchor); ?>">[<?= __('Add'); ?>]</a>
         <?php
         if ($num_rows) {
             printf(__('There are %d editor notes.'), $num_rows);
@@ -38,27 +38,27 @@ if (isset($_GET['note_add'])) {
     <tr>
         <td>
             <!-- Link to remove note -->
-            <a href="index.php?page=editor&amp;note_drop=<?= $noteDb->note_id; ?>">
+            <a href="<?= $HtmlEscaper->escHtml('index.php?page=editor&note_drop=' . $noteDb->note_id); ?>">
                 <img src="images/button_drop.png" border="0" alt="down">
             </a>
         </td>
         <td colspan="2">
-            <input type="hidden" name="note_id[<?= $noteDb->note_id; ?>]" value="<?= $noteDb->note_id; ?>">
-            <input type="hidden" name="note_connect_kind[<?= $noteDb->note_id; ?>]" value="<?= $note_connect_kind; ?>">
+            <input type="hidden" name="note_id[<?= $HtmlEscaper->escHtml($noteDb->note_id); ?>]" value="<?= $HtmlEscaper->escHtml($noteDb->note_id); ?>">
+            <input type="hidden" name="note_connect_kind[<?= $HtmlEscaper->escHtml($noteDb->note_id); ?>]" value="<?= $HtmlEscaper->escHtml($note_connect_kind); ?>">
 
             <?php $user_name = $db_functions->get_user_name($noteDb->note_new_user_id); ?>
-            <?= __('Added by'); ?> <b><?= $user_name; ?></b> (<?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>)<br>
+            <?= __('Added by'); ?> <b><?= $HtmlEscaper->escHtml($user_name); ?></b> (<?= $languageDate->show_datetime($noteDb->note_new_datetime); ?>)<br>
 
             <?php
             if ($noteDb->note_changed_user_id) {
                 $user_name = $db_functions->get_user_name($noteDb->note_changed_user_id);
             ?>
-                <?= __('Changed by'); ?> <b><?= $user_name; ?></b> (<?= $languageDate->show_datetime($noteDb->note_changed_datetime); ?>)<br>
+                <?= __('Changed by'); ?> <b><?= $HtmlEscaper->escHtml($user_name); ?></b> (<?= $languageDate->show_datetime($noteDb->note_changed_datetime); ?>)<br>
             <?php } ?>
 
-            <b><?= $noteDb->note_names; ?></b><br>
+            <b><?= $HtmlEscaper->escHtml($noteDb->note_names); ?></b><br>
 
-            <textarea rows="1" name="note_note[<?= $noteDb->note_id; ?>]" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($noteDb->note_note); ?></textarea><br>
+            <textarea rows="1" name="note_note[<?= $HtmlEscaper->escHtml($noteDb->note_id); ?>]" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml($editor_cls->text_show($noteDb->note_note)); ?></textarea><br>
 
             <div class="row">
                 <div class="col-md-auto mt-1">

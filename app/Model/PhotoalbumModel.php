@@ -15,36 +15,34 @@ class PhotoalbumModel extends BaseModel
         $show_pictures = 8; // *** Default value ***
         // Remark: setcookie is done in header.
         if (isset($_COOKIE["humogenphotos"]) && is_numeric($_COOKIE["humogenphotos"])) {
-            $show_pictures = $_COOKIE["humogenphotos"];
+            $show_pictures = (int) $_COOKIE["humogenphotos"];
         } elseif (isset($_SESSION['save_show_pictures']) && is_numeric($_SESSION['save_show_pictures'])) {
-            $show_pictures = $_SESSION['save_show_pictures'];
+            $show_pictures = (int) $_SESSION['save_show_pictures'];
         }
         if (isset($_POST['show_pictures']) && is_numeric($_POST['show_pictures'])) {
-            $show_pictures = $_POST['show_pictures'];
+            $show_pictures = (int) $_POST['show_pictures'];
             $_SESSION['save_show_pictures'] = $show_pictures;
         }
         if (isset($_GET['show_pictures']) && is_numeric($_GET['show_pictures'])) {
-            $show_pictures = $_GET['show_pictures'];
+            $show_pictures = (int) $_GET['show_pictures'];
             $_SESSION['save_show_pictures'] = $show_pictures;
         }
-        return $show_pictures;
+        return max(1, min(800, $show_pictures));
     }
 
     public function get_search_media(): string
     {
-        $safeTextDb = new SafeTextDb();
-
         // *** Photo search ***
         $search_media = '';
         if (isset($_SESSION['save_search_media'])) {
-            $search_media = $_SESSION['save_search_media'];
+            $search_media = (string) $_SESSION['save_search_media'];
         }
         if (isset($_POST['search_media'])) {
-            $search_media = $safeTextDb->safe_text_db($_POST['search_media']);
+            $search_media = trim((string) $_POST['search_media']);
             $_SESSION['save_search_media'] = $search_media;
         }
         if (isset($_GET['search_media'])) {
-            $search_media = $safeTextDb->safe_text_db($_GET['search_media']);
+            $search_media = trim((string) $_GET['search_media']);
             $_SESSION['save_search_media'] = $search_media;
         }
         return $search_media;
@@ -100,7 +98,7 @@ class PhotoalbumModel extends BaseModel
     public function get_chosen_tab($category): string
     {
         $chosen_tab = 'none';
-        if (isset($_SESSION['save_chosen_tab'])) {
+        if (isset($_SESSION['save_chosen_tab']) && ($category === null || in_array($_SESSION['save_chosen_tab'], $category, true) || $_SESSION['save_chosen_tab'] === 'none')) {
             $chosen_tab = $_SESSION['save_chosen_tab'];
         }
         if (isset($_GET['select_category'])) {
@@ -166,7 +164,8 @@ class PhotoalbumModel extends BaseModel
 
             // *** Use search field (search for person) to show pictures ***
             if ($search_media) {
-                $quicksearch = str_replace(" ", "%", $search_media);
+                $safeTextDb = new SafeTextDb();
+                $quicksearch = str_replace(" ", "%", $safeTextDb->safe_text_db($search_media));
                 $querie = "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
                     WHERE pers_tree_id='" . $this->tree_id . "' AND pers_id='" . $picqryDb->person_id . "'
                     AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
@@ -256,11 +255,11 @@ class PhotoalbumModel extends BaseModel
 
         $item = 0;
         if (isset($_GET['item'])) {
-            $item = $_GET['item'];
+            $item = max(0, (int) $_GET['item']);
         }
         $start = 0;
         if (isset($_GET["start"])) {
-            $start = $_GET["start"];
+            $start = max(0, (int) $_GET["start"]);
         }
 
         // At this moment this line is only used to prevent VS code error.
@@ -272,7 +271,7 @@ class PhotoalbumModel extends BaseModel
         if ($start > 1) {
             $start2 = $start - 20;
             $calculated = ($start - 2) * $photoalbum['show_pictures'];
-            $data["previous_link"] = $albumpath . "start=" . $start2 . "&amp;item=" . $calculated;
+            $data["previous_link"] = $albumpath . "start=" . $start2 . "&item=" . $calculated;
         }
         if ($start <= 0) {
             $start = 1;
@@ -291,7 +290,7 @@ class PhotoalbumModel extends BaseModel
                 } else {
                     $data["page_status"][$i] = '';
                 }
-                $data["page_link"][$i] = $albumpath . "start=" . $start . "&amp;item=" . $calculated;
+                $data["page_link"][$i] = $albumpath . "start=" . $start . "&item=" . $calculated;
             }
         }
 
@@ -301,7 +300,7 @@ class PhotoalbumModel extends BaseModel
         $calculated = ($i - 1) * $photoalbum['show_pictures'];
         if ($calculated < $nr_pictures) {
             $data["page_nr"][] = $i;
-            $data["next_link"] = $albumpath . "start=" . $i . "&amp;item=" . $calculated;
+            $data["next_link"] = $albumpath . "start=" . $i . "&item=" . $calculated;
         } else {
             $data["next_status"] = 'disabled';
         }

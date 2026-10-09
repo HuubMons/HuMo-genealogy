@@ -450,8 +450,8 @@ class GeneralSettings
 
         // *** Limit visitors per time frame ***
         if (!isset($humo_option["max_visitors"])) {
-            $humo_option["max_visitors"] = 50;
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors', setting_value='50'");
+            $humo_option["max_visitors"] = 200;
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors', setting_value='200'");
         }
         if (!isset($humo_option["max_visitors_seconds"])) {
             $humo_option["max_visitors_seconds"] = 600;
@@ -472,8 +472,8 @@ class GeneralSettings
         }
 
         if (!isset($humo_option["visitor_website_limited"])) {
-            $humo_option["visitor_website_limited"] = 'y';
-            $dbh->query("INSERT INTO humo_settings SET setting_variable='visitor_website_limited', setting_value='y'");
+            $humo_option["visitor_website_limited"] = 'n';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='visitor_website_limited', setting_value='n'");
         }
 
         if (!isset($humo_option["hide_languages"])) {

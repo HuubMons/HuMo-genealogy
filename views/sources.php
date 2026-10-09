@@ -6,27 +6,26 @@ if ($user['group_sources'] != 'j') {
 }
 
 $path = $processLinks->get_link($uri_path, 'sources', $tree_id, true);
-$url_order = $path . 'start=1&amp;item=0';
+$url_order = $path . 'start=1&item=0';
 if ($data["source_search"] != '') {
-    $url_order .=  '&amp;source_search=' . $data["source_search"];
+    $url_order .= '&source_search=' . rawurlencode((string) $data["source_search"]);
 }
 
 $path_form = $processLinks->get_link($uri_path, 'sources', $tree_id);
 
 $datePlace = new \Genealogy\Include\DatePlace();
-$safeTextShow = new \Genealogy\Include\SafeTextShow();
 ?>
 
 <h1><?= __('Sources'); ?></h1>
 
-<form method="post" action="<?= $path_form; ?>">
+<form method="post" action="<?= $HtmlEscaper->escHtml($path_form); ?>">
     <div class="container">
         <div class="row mb-2">
             <div class="col-sm-4"></div>
 
             <div class="col-sm-4">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control form-control-sm" name="source_search" value="<?= $safeTextShow->safe_text_show($data["source_search"]); ?>" size="20">
+                    <input type="text" class="form-control form-control-sm" name="source_search" value="<?= $HtmlEscaper->escHtml($data["source_search"]); ?>" size="20">
                     <button type="submit" class="btn btn-success btn-sm"><?= __('Search'); ?></button>
                 </div>
             </div>
@@ -53,7 +52,7 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
             }
             ?>
             <th>
-                <a href="<?= $url_order; ?>&amp;order_sources=title&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "title" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Title'); ?>
+                <a href="<?= $HtmlEscaper->escHtml($url_order . '&order_sources=title&sort_desc=' . (int) $sort_reverse); ?>" <?= $data["order_sources"] == "title" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Title'); ?>
                     <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                 </a>
             </th>
@@ -70,7 +69,7 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
             }
             ?>
             <th>
-                <a href="<?= $url_order; ?>&amp;order_sources=date&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "date" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Date'); ?>
+                <a href="<?= $HtmlEscaper->escHtml($url_order . '&order_sources=date&sort_desc=' . (int) $sort_reverse); ?>" <?= $data["order_sources"] == "date" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Date'); ?>
                     <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                 </a>
             </th>
@@ -87,7 +86,7 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
             }
             ?>
             <th>
-                <a href="<?= $url_order; ?>&amp;order_sources=place&amp;sort_desc=<?= $sort_reverse; ?>" <?= $data["order_sources"] == "place" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Place'); ?>
+                <a href="<?= $HtmlEscaper->escHtml($url_order . '&order_sources=place&sort_desc=' . (int) $sort_reverse); ?>" <?= $data["order_sources"] == "place" ? 'style="background-color:#ffffa0"' : ''; ?>><?= __('Place'); ?>
                     <img src="images/button3<?= $img; ?>.png" alt="<?= __('Sort'); ?>" title="<?= __('Sort'); ?>">
                 </a>
             </th>
@@ -98,9 +97,9 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
         <?php
         // TODO use function
         if ($humo_option["url_rewrite"] == "j") {
-            $url = $uri_path . 'source/' . $tree_id . '/' . $sourceDb->source_gedcomnr;
+            $url = $uri_path . 'source/' . rawurlencode((string) $tree_id) . '/' . rawurlencode((string) $sourceDb->source_gedcomnr);
         } else {
-            $url = $uri_path . 'index.php?page=source&amp;tree_id=' . $tree_id . '&amp;id=' . $sourceDb->source_gedcomnr;
+            $url = $uri_path . 'index.php?page=source&tree_id=' . rawurlencode((string) $tree_id) . '&id=' . rawurlencode((string) $sourceDb->source_gedcomnr);
         }
         //$vars['source_gedcomnr'] = $sourceDb->source_gedcomnr;
         //$sourcestring = $processLinks->get_link('../', 'source', $tree_id, false, $vars);
@@ -108,14 +107,14 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
 
         <tr>
             <td>
-                <a href="<?= $url; ?>">
+                <a href="<?= $HtmlEscaper->escHtml($url); ?>">
                     <?php
                     // *** Aldfaer sources don't have a title! ***
                     if ($sourceDb->source_title) {
-                        echo $sourceDb->source_title;
+                        echo $HtmlEscaper->escHtml($sourceDb->source_title);
                     } else {
                         if ($sourceDb->source_text) {
-                            echo substr($sourceDb->source_text, 0, 40);
+                            echo $HtmlEscaper->escHtml(substr($sourceDb->source_text, 0, 40));
                             if (strlen($sourceDb->source_text) > 40) echo '...';
                         } else {
                             // *** No title, no text. Could be an empty source ***
@@ -125,8 +124,8 @@ $safeTextShow = new \Genealogy\Include\SafeTextShow();
                     ?>
                 </a>
             </td>
-            <td><?= $datePlace->date_place($sourceDb->source_date, ''); ?></td>
-            <td><?= $sourceDb->source_place; ?></td>
+            <td><?= $HtmlEscaper->escHtmlDecoded($datePlace->date_place($sourceDb->source_date, '')); ?></td>
+            <td><?= $HtmlEscaper->escHtml($sourceDb->source_place); ?></td>
         </tr>
     <?php } ?>
 </table>

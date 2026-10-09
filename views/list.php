@@ -19,7 +19,6 @@ $personPrivacy = new Genealogy\Include\PersonPrivacy;
 $personName = new Genealogy\Include\PersonName;
 $personPopup = new Genealogy\Include\PersonPopup;
 $datePlace = new  Genealogy\Include\DatePlace;
-$safeTextShow = new Genealogy\Include\SafeTextShow;
 $buildCondition = new Genealogy\Include\BuildCondition;
 $showTreeText = new Genealogy\Include\ShowTreeText;
 $totallyFilterPerson = new Genealogy\Include\TotallyFilterPerson;
@@ -28,7 +27,7 @@ $totallyFilterPerson = new Genealogy\Include\TotallyFilterPerson;
 if ($list["index_list"] == 'places') {
 ?>
     <!--  Search places -->
-    <form method="post" action="<?= $list_var; ?>">
+    <form method="post" action="<?= $HtmlEscaper->escHtml($list_var); ?>">
         <input type="hidden" name="index_list" value="places">
 
         <div class="p-2 me-sm-2 genealogy_search">
@@ -64,7 +63,7 @@ if ($list["index_list"] == 'places') {
                 <div class="col-2">
                     <div class="form-check">
                         <input type="Checkbox" name="select_death" value="1" <?= $list["select_death"] == '1' ? 'checked' : ''; ?> class="form-check-input">
-                        <span class="place_index_selected" style="float:none;"><?= __('&#134;'); ?></span>
+                        <span class="place_index_selected" style="float:none;"><?= $HtmlEscaper->escHtmlDecoded(__('&#134;')); ?></span>
                         <?= __('death pl.'); ?>
                     </div>
                 </div>
@@ -101,7 +100,7 @@ if ($list["index_list"] == 'places') {
                 </div>
 
                 <div class="col-3">
-                    <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($list["place_name"]); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
+                    <input type="text" name="place_name" value="<?= $HtmlEscaper->escHtml($list["place_name"]); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
                 </div>
 
                 <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -118,7 +117,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
 ?>
     <!-- Standard and advanced search box -->
     <br>
-    <form method="post" action="<?= $list_var; ?>">
+    <form method="post" action="<?= $HtmlEscaper->escHtml($list_var); ?>">
         <div class="py-2 me-sm-3 genealogy_search">
 
             <!-- Standard search box -->
@@ -150,7 +149,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                             $min_chars = " " . $humo_option['min_search_chars'] . " ";
                         }
                         ?>
-                        <input type="text" class="form-control form-control-sm" name="quicksearch" value="<?= $list["quicksearch"]; ?>" placeholder="<?= __('Name'); ?>" size="30" <?= $pattern; ?> title="<?= __('Minimum:') . $min_chars . __('characters'); ?>">
+                        <input type="text" class="form-control form-control-sm" name="quicksearch" value="<?= $HtmlEscaper->escHtml($list["quicksearch"]); ?>" placeholder="<?= __('Name'); ?>" size="30" <?= $pattern; ?> title="<?= __('Minimum:') . $min_chars . __('characters'); ?>">
                     </div>
 
                     <?php if ($num_rows2 > 1 && $humo_option['one_name_study'] == 'n') { ?>
@@ -168,7 +167,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     <input type="submit" class="col-sm-1 btn btn-sm btn-success" name="send_mail" value="<?= __('Search'); ?>">
 
                     <div class="col-sm-2">
-                        <a href="<?= $list_var2; ?>adv_search=1&index_list=search"><?= __('Advanced search'); ?></a>
+                        <a href="<?= $HtmlEscaper->escHtml($list_var2); ?>adv_search=1&index_list=search"><?= __('Advanced search'); ?></a>
                     </div>
                 </div>
             <?php } ?>
@@ -185,7 +184,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_firstname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_firstname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="pers_firstname" value="<?= $safeTextShow->safe_text_show($selection['pers_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="pers_firstname" value="<?= $HtmlEscaper->escHtml($selection['pers_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
 
                             <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="<?= __('Also searches for special names like nickname, alias, birth name, soldier name, etc.'); ?>">?</button>
                         </div>
@@ -206,7 +205,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                     <!-- Optional search for prefix -->
                                     <input type="checkbox" class="form-check-input mt-0" name="use_pers_prefix" value="" <?= $selection['use_pers_prefix'] == 'USED' ? 'checked' : ''; ?>>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= $safeTextShow->safe_text_show($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
+                                <input type="text" class="form-control form-control-sm" name="pers_prefix" value="<?= $HtmlEscaper->escHtml($pers_prefix); ?>" size="8" placeholder="<?= ucfirst(__('prefix')); ?>">
                             </div>
                         </div>
 
@@ -219,13 +218,13 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                     <option value="equals" <?php if ($selection['part_lastname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                     <option value="starts_with" <?php if ($selection['part_lastname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                                 </select>
-                                <input type="text" class="form-control form-control-sm" name="pers_lastname" value="<?= $safeTextShow->safe_text_show($selection['pers_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
+                                <input type="text" class="form-control form-control-sm" name="pers_lastname" value="<?= $HtmlEscaper->escHtml($selection['pers_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
                             </div>
                         </div>
                     <?php } else { ?>
                         <?= __('Last name'); ?>:
-                        <span style="text-align:center; font-weight:bold"><?= $humo_option['one_name_thename']; ?></span>
-                        <input type="hidden" name="pers_lastname" value="<?= $humo_option['one_name_thename']; ?>">
+                        <span style="text-align:center; font-weight:bold"><?= $HtmlEscaper->escHtml($humo_option['one_name_thename']); ?></span>
+                        <input type="hidden" name="pers_lastname" value="<?= $HtmlEscaper->escHtml($humo_option['one_name_thename']); ?>">
                         <input type="hidden" name="part_lastname" value="equals">
                     <?php } ?>
 
@@ -238,7 +237,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="contains" <?php if ($selection['part_gednr'] == 'contains') echo ' selected'; ?>><?= __('Contains'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_gednr'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="gednr" value="<?= $safeTextShow->safe_text_show($selection['gednr']); ?>" size="15" placeholder="<?= ucfirst(__('gedcomnumber (ID)')); ?>">
+                            <input type="text" class="form-control form-control-sm" name="gednr" value="<?= $HtmlEscaper->escHtml($selection['gednr']); ?>" size="15" placeholder="<?= ucfirst(__('gedcomnumber (ID)')); ?>">
                         </div>
                     </div>
                 </div>
@@ -247,8 +246,8 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                     <div class="col-sm-3 <?= $selection['birth_year'] || $selection['birth_year_end'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('born')) . '/ ' . ucfirst(__('baptised')); ?>:
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-sm" name="birth_year" value="<?= $safeTextShow->safe_text_show($selection['birth_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
-                            <input type="text" class="form-control form-control-sm" name="birth_year_end" value="<?= $safeTextShow->safe_text_show($selection['birth_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="birth_year" value="<?= $HtmlEscaper->escHtml($selection['birth_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="birth_year_end" value="<?= $HtmlEscaper->escHtml($selection['birth_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
                         </div>
                     </div>
 
@@ -260,15 +259,15 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_birth_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_birth_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="place-autocomplete form-control form-control-sm" name="birth_place" value="<?= $safeTextShow->safe_text_show($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="birth_place" value="<?= $HtmlEscaper->escHtml($selection['birth_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
                     <div class="col-sm-2 <?= $selection['death_year'] || $selection['death_year_end'] ? ' bg-primary-subtle' : ''; ?>">
                         <?= ucfirst(__('died')) . '/ ' . ucfirst(__('buried')); ?>:
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-sm" name="death_year" value="<?= $safeTextShow->safe_text_show($selection['death_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
-                            <input type="text" class="form-control form-control-sm" name="death_year_end" value="<?= $safeTextShow->safe_text_show($selection['death_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="death_year" value="<?= $HtmlEscaper->escHtml($selection['death_year']); ?>" size="4" placeholder="<?= __('Date'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="death_year_end" value="<?= $HtmlEscaper->escHtml($selection['death_year_end']); ?>" size="4" placeholder="<?= __('Date untill'); ?>">
                         </div>
                     </div>
 
@@ -280,7 +279,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_death_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_death_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="place-autocomplete form-control form-control-sm" name="death_place" value="<?= $safeTextShow->safe_text_show($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="death_place" value="<?= $HtmlEscaper->escHtml($selection['death_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
                 </div>
@@ -306,7 +305,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 echo '<option value="equals" <?php if ($selection['part_text'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_text'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="text" value="<?= $safeTextShow->safe_text_show($selection['text']); ?>" size="15" placeholder="<?= __('Text'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="text" value="<?= $HtmlEscaper->escHtml($selection['text']); ?>" size="15" placeholder="<?= __('Text'); ?>">
                         </div>
                     </div>
 
@@ -319,7 +318,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_profession'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_profession'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="pers_profession" value="<?= $safeTextShow->safe_text_show($selection['pers_profession']); ?>" size="15" placeholder="<?= __('Profession'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="pers_profession" value="<?= $HtmlEscaper->escHtml($selection['pers_profession']); ?>" size="15" placeholder="<?= __('Profession'); ?>">
                         </div>
                     </div>
 
@@ -332,7 +331,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_own_code'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_own_code'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="own_code" value="<?= $safeTextShow->safe_text_show($selection['own_code']); ?>" size="15" placeholder="<?= __('Own code'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="own_code" value="<?= $HtmlEscaper->escHtml($selection['own_code']); ?>" size="15" placeholder="<?= __('Own code'); ?>">
                         </div>
                     </div>
                 </div>
@@ -357,7 +356,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_place'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_place'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="place-autocomplete form-control form-control-sm" name="pers_place" value="<?= $safeTextShow->safe_text_show($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
+                            <input type="text" class="place-autocomplete form-control form-control-sm" name="pers_place" value="<?= $HtmlEscaper->escHtml($selection['pers_place']); ?>" size="15" placeholder="<?= __('Place'); ?>">
                         </div>
                     </div>
 
@@ -370,7 +369,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_zip_code'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_zip_code'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="zip_code" value="<?= $safeTextShow->safe_text_show($selection['zip_code']); ?>" size="15" placeholder="<?= __('Zip code'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="zip_code" value="<?= $HtmlEscaper->escHtml($selection['zip_code']); ?>" size="15" placeholder="<?= __('Zip code'); ?>">
                         </div>
                     </div>
 
@@ -386,7 +385,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_witness'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_witness'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="witness" value="<?= $safeTextShow->safe_text_show($selection['witness']); ?>" size="15" placeholder="<?= ucfirst(__('witness')); ?>">
+                            <input type="text" class="form-control form-control-sm" name="witness" value="<?= $HtmlEscaper->escHtml($selection['witness']); ?>" size="15" placeholder="<?= ucfirst(__('witness')); ?>">
                         </div>
                     </div>
 
@@ -398,7 +397,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_spouse_firstname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_spouse_firstname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="spouse_firstname" value="<?= $safeTextShow->safe_text_show($selection['spouse_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="spouse_firstname" value="<?= $HtmlEscaper->escHtml($selection['spouse_firstname']); ?>" size="15" placeholder="<?= __('First name'); ?>">
 
                             <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="<?= __('Also searches for special names like nickname, alias, birth name, soldier name, etc.'); ?>">?</button>
                         </div>
@@ -412,7 +411,7 @@ if ($list["index_list"] == 'standard' || $list["index_list"] == 'search' || $lis
                                 <option value="equals" <?php if ($selection['part_spouse_lastname'] == 'equals') echo ' selected'; ?>><?= __('Equals'); ?></option>
                                 <option value="starts_with" <?php if ($selection['part_spouse_lastname'] == 'starts_with') echo ' selected'; ?>><?= __('Starts with'); ?></option>
                             </select>
-                            <input type="text" class="form-control form-control-sm" name="spouse_lastname" value="<?= $safeTextShow->safe_text_show($selection['spouse_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
+                            <input type="text" class="form-control form-control-sm" name="spouse_lastname" value="<?= $HtmlEscaper->escHtml($selection['spouse_lastname']); ?>" size="15" placeholder="<?= __('Last name'); ?>">
                         </div>
                     </div>
 
@@ -482,7 +481,7 @@ if ($list["person_result"]->rowCount() > 0) {
     if ($start > 1) {
         $start2 = $start - 20;
         $calculated = ($start - 2) * $list["nr_persons"];
-        $data["previous_link"] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $start2 . "&amp;item=" . $calculated;
+        $data["previous_link"] = $uri_path_string . "index_list=" . $list["index_list"] . "&start=" . $start2 . "&item=" . $calculated;
     }
     if ($start <= 0) {
         $start = 1;
@@ -501,7 +500,7 @@ if ($list["person_result"]->rowCount() > 0) {
             } else {
                 $data["page_status"][$i] = '';
             }
-            $data["page_link"][$i] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $start . "&amp;item=" . $calculated;
+            $data["page_link"][$i] = $uri_path_string . "index_list=" . $list["index_list"] . "&start=" . $start . "&item=" . $calculated;
         }
     }
 
@@ -510,7 +509,7 @@ if ($list["person_result"]->rowCount() > 0) {
     $data["next_status"] = '';
     $calculated = ($i - 1) * $list["nr_persons"];
     if ($calculated < $list["count_persons"]) {
-        $data["next_link"] = $uri_path_string . "index_list=" . $list["index_list"] . "&amp;start=" . $i . "&amp;item=" . $calculated;
+        $data["next_link"] = $uri_path_string . "index_list=" . $list["index_list"] . "&start=" . $i . "&item=" . $calculated;
     } else {
         $data["next_status"] = 'disabled';
     }
@@ -542,14 +541,14 @@ if ($list["person_result"]->rowCount() > 0) {
     // *** Button: normal or expanded list ***
     $button_line = "item=" . $list["item"];   // the ? or & is already included in the $uri_path_string created above
     if (isset($_GET['start'])) {
-        $button_line .= "&amp;start=" . $_GET['start'];
+        $button_line .= "&start=" . (int) $_GET['start'];
     } else {
-        $button_line .= "&amp;start=1";
+        $button_line .= "&start=1";
     }
-    $button_line .=  "&amp;index_list=" . $list["index_list"];
+    $button_line .=  "&index_list=" . $list["index_list"];
     ?>
 
-    <form method="POST" action="<?= $uri_path_string . $button_line; ?>" style="display : inline;">
+    <form method="POST" action="<?= $HtmlEscaper->escHtml($uri_path_string . $button_line); ?>" style="display : inline;">
         <?php
         if ($list_expanded == true) {
             echo '<input type="hidden" name="list_expanded" value="0">';
@@ -837,7 +836,7 @@ $selected_place = '';
                         // *** Show extra columns before a person in index places ***
                         if ($list["index_list"] == 'places') {
                             if ($selected_place != $personDb->place_order) {
-                                echo '<td colspan="7"><b>' . $directionMarkers->dirmark2 . $personDb->place_order . '</b></td></tr><tr>';
+                                echo '<td colspan="7"><b>' . $directionMarkers->dirmark2 . $HtmlEscaper->escHtml($personDb->place_order) . '</b></td></tr><tr>';
                                 //$list["show_place"] = $personDb->place_order;
                             } else {
                                 //$list["show_place"] = '';
@@ -890,7 +889,7 @@ $selected_place = '';
 
                                 if ($list["select_death"] == '1') {
                                     if ($selected_place == $personDb->pers_death_place) {
-                                        echo '<span class="place_index place_index_selected">' . __('&#134;') . '</span>';
+                                        echo '<span class="place_index place_index_selected">' . $HtmlEscaper->escHtmlDecoded(__('&#134;')) . '</span>';
                                     } else {
                                         echo '<span class="place_index">&nbsp;</span>';
                                     }
@@ -944,7 +943,7 @@ $selected_place = '';
                             if ($personDb->pers_own_code != '' and is_file("images/" . $personDb->pers_own_code . ".gif")) {
                                 if ($personDb->pers_own_code != 'foto') {
                                     // *** Remove photo.gif icon, new method is used to show photo icon ***
-                                    echo  $directionMarkers->dirmark1 . '<img src="images/' . $personDb->pers_own_code . '.gif" alt="' . $personDb->pers_own_code . '">&nbsp;';
+                                    echo $directionMarkers->dirmark1 . '<img src="images/' . $HtmlEscaper->escHtml($personDb->pers_own_code) . '.gif" alt="' . $HtmlEscaper->escHtml($personDb->pers_own_code) . '">&nbsp;';
                                 }
                             }
 
@@ -977,7 +976,7 @@ $selected_place = '';
                             if (isset($relations)) {
                                 $direct_link = '#person_' . $personDb->pers_gedcomnumber;
                             }
-                            echo ' <a href="' . $start_url . $direct_link . '">' . trim($index_name) . '</a>';
+                            echo ' <a href="' . $HtmlEscaper->escHtml($start_url . $direct_link) . '">' . trim($index_name) . '</a>';
 
                             //*** Show spouse/ partner ***
                             if ($list_expanded == true && isset($relations)) {
@@ -1033,10 +1032,10 @@ $selected_place = '';
                             <?php
                             $info = '';
                             if ($personDb->pers_bapt_date) {
-                                $info = __('~') . ' ' . $datePlace->date_place($personDb->pers_bapt_date, '');
+                                $info = $HtmlEscaper->escHtmlDecoded(__('~')) . ' ' . $HtmlEscaper->escHtmlDecoded($datePlace->date_place($personDb->pers_bapt_date, ''));
                             }
                             if ($personDb->pers_birth_date) {
-                                $info = __('*') . ' ' . $datePlace->date_place($personDb->pers_birth_date, '');
+                                $info = $HtmlEscaper->escHtmlDecoded(__('*')) . ' ' . $HtmlEscaper->escHtmlDecoded($datePlace->date_place($personDb->pers_birth_date, ''));
                             }
                             if ($privacy && $info) {
                                 $info =  __('PRIVACY FILTER');
@@ -1049,10 +1048,10 @@ $selected_place = '';
                             <?php
                             $info = '';
                             if ($personDb->pers_bapt_place) {
-                                $info = __('~') . ' ' . $personDb->pers_bapt_place;
+                                $info = __('~') . ' ' . $HtmlEscaper->escHtml($personDb->pers_bapt_place);
                             }
                             if ($personDb->pers_birth_place) {
-                                $info = __('*') . ' ' . $personDb->pers_birth_place;
+                                $info = __('*') . ' ' . $HtmlEscaper->escHtml($personDb->pers_birth_place);
                             }
                             if ($privacy && $info) {
                                 $info =  __('PRIVACY FILTER');
@@ -1065,10 +1064,10 @@ $selected_place = '';
                             <?php
                             $info = '';
                             if ($personDb->pers_buried_date) {
-                                $info = __('[]') . ' ' . $datePlace->date_place($personDb->pers_buried_date, '');
+                                $info = $HtmlEscaper->escHtmlDecoded(__('[]')) . ' ' . $HtmlEscaper->escHtmlDecoded($datePlace->date_place($personDb->pers_buried_date, ''));
                             }
                             if ($personDb->pers_death_date) {
-                                $info = __('&#134;') . ' ' . $datePlace->date_place($personDb->pers_death_date, '');
+                                $info = $HtmlEscaper->escHtmlDecoded(__('&#134;')) . ' ' . $HtmlEscaper->escHtmlDecoded($datePlace->date_place($personDb->pers_death_date, ''));
                             }
                             if ($privacy && $info) {
                                 $info =  __('PRIVACY FILTER');
@@ -1081,10 +1080,10 @@ $selected_place = '';
                             <?php
                             $info = '';
                             if ($personDb->pers_buried_place) {
-                                $info = __('[]') . ' ' . $personDb->pers_buried_place;
+                                $info = $HtmlEscaper->escHtmlDecoded(__('[]')) . ' ' . $HtmlEscaper->escHtml($personDb->pers_buried_place);
                             }
                             if ($personDb->pers_death_place) {
-                                $info = __('&#134;') . ' ' . $personDb->pers_death_place;
+                                $info = $HtmlEscaper->escHtmlDecoded(__('&#134;')) . ' ' . $HtmlEscaper->escHtml($personDb->pers_death_place);
                             }
                             if ($privacy && $info) {
                                 $info =  __('PRIVACY FILTER');
@@ -1100,7 +1099,7 @@ $selected_place = '';
                         ?>
                             <td>
                                 <i>
-                                    <font size="-1"><?= $treetext['name']; ?></font>
+                                    <font size="-1"><?= $HtmlEscaper->escHtml($treetext['name']); ?></font>
                                 </i>
                             </td>
                         <?php } ?>

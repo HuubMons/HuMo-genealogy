@@ -7,6 +7,7 @@
 
 // TODO create seperate controller script.
 // Allready prepared controller. But can't use it yet because of tree_index and mainindex.
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 $mainindex = new \Genealogy\App\Model\TreeIndexModel($config);
 $tree_index["items"] = $mainindex->show_tree_index();
 
@@ -53,7 +54,7 @@ if (!$left || !$right) {
                         <div class="col-12">
                             <!-- <div class="mb-3 bg-light p-2 border"> -->
                             <div class="mb-3 p-2 border genealogy_box">
-                                <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $tree_index["items"][$i]['header'] . '</strong></h5>'; ?>
+                                <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $HtmlEscaper->escHtml((string) $tree_index["items"][$i]['header']) . '</strong></h5>'; ?>
                                 <?= $tree_index["items"][$i]['item']; ?>
                             </div>
                         </div>
@@ -72,7 +73,7 @@ if (!$left || !$right) {
                     <div class="col-12">
                         <!-- <div class="mb-3 bg-light p-2 border  text-center"> -->
                         <div class="mb-3 p-2 border text-center genealogy_box">
-                            <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $tree_index["items"][$i]['header'] . '</strong></h5>'; ?>
+                            <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $HtmlEscaper->escHtml((string) $tree_index["items"][$i]['header']) . '</strong></h5>'; ?>
                             <?= $tree_index["items"][$i]['item']; ?>
                         </div>
                     </div>
@@ -90,7 +91,7 @@ if (!$left || !$right) {
                         <div class="col-12">
                             <!-- <div class="mb-3 bg-light p-2 border"> -->
                             <div class="mb-3 p-2 border genealogy_box">
-                                <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $tree_index["items"][$i]['header'] . '</strong></h5>'; ?>
+                                <?php if ($tree_index["items"][$i]['header']) echo '<h5 class="text-center m-2"><strong>' . $HtmlEscaper->escHtml((string) $tree_index["items"][$i]['header']) . '</strong></h5>'; ?>
                                 <?= $tree_index["items"][$i]['item']; ?>
                             </div>
                         </div>

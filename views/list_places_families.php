@@ -8,17 +8,16 @@
 // *** Show number of persons and pages ***
 $item = 0;
 if (isset($_GET['item'])) {
-    $item = $_GET['item'];
+    $item = filter_var($_GET['item'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0;
 }
 $start = 0;
 if (isset($_GET["start"])) {
-    $start = $_GET["start"];
+    $start = filter_var($_GET["start"], FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0;
 }
 $nr_persons = $humo_option['show_persons'];
 $person_result = $dbh->query($data["query"] . " LIMIT " . $item . "," . $nr_persons);
 
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
-$safeTextShow = new \Genealogy\Include\SafeTextShow();
 
 
 //TODO use COUNT
@@ -38,13 +37,13 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
 ?>
 
 <!-- Search places -->
-<form method="post" action="<?= $link; ?>">
+<form method="post" action="<?= $HtmlEscaper->escHtml($link); ?>">
     <div class="p-2 me-sm-2 genealogy_search">
         <div class="row mb-2">
             <div class="col-2">
                 <div class="form-check">
                     <input type="Checkbox" name="select_marriage_notice" value="1" <?= $data["select_marriage_notice"] == '1' ? 'checked' : ''; ?> class="form-check-input">
-                    <span class="place_index_selected" style="float:none;"><?= __('&infin;'); ?></span>
+                    <span class="place_index_selected" style="float:none;"><?= $HtmlEscaper->escHtmlDecoded(__('&infin;')); ?></span>
                     <?= __('Marriage notice'); ?></span>
                 </div>
             </div>
@@ -90,7 +89,7 @@ $link = $processLinks->get_link($uri_path, 'list_places_families', $tree_id);
             </div>
 
             <div class="col-3">
-                <input type="text" name="place_name" value="<?= $safeTextShow->safe_text_show($data["place_name"]); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
+                <input type="text" name="place_name" value="<?= $HtmlEscaper->escHtml($data["place_name"]); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
             </div>
 
             <input type="submit" value="<?= __('Search'); ?>" name="B1" class="col-sm-1 btn btn-sm btn-success">
@@ -112,7 +111,7 @@ if ($person_result->rowCount() == 0) {
     if ($start > 1) {
         $start2 = $start - 20;
         $calculated = ($start - 2) * $nr_persons;
-        $data["previous_link"] = $uri_path_string . "start=" . $start2 . "&amp;item=" . $calculated;
+        $data["previous_link"] = $uri_path_string . "start=" . $start2 . "&item=" . $calculated;
     }
     if ($start <= 0) {
         $start = 1;
@@ -131,7 +130,7 @@ if ($person_result->rowCount() == 0) {
             } else {
                 $data["page_status"][$i] = '';
             }
-            $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&amp;item=" . $calculated;
+            $data["page_link"][$i] = $uri_path_string . "start=" . $start . "&item=" . $calculated;
         }
     }
 
@@ -140,7 +139,7 @@ if ($person_result->rowCount() == 0) {
     $data["next_status"] = '';
     $calculated = ($i - 1) * $nr_persons;
     if ($calculated < $count_persons) {
-        $data["next_link"] = $uri_path_string . "start=" . $i . "&amp;item=" . $calculated;
+        $data["next_link"] = $uri_path_string . "start=" . $i . "&item=" . $calculated;
     } else {
         $data["next_status"] = 'disabled';
     }
@@ -165,13 +164,13 @@ if ($person_result->rowCount() == 0) {
     // *** Button: normal or expanded list ***
     $button_line = "item=" . $item;
     if (isset($_GET['start'])) {
-        $button_line .= "&amp;start=" . $_GET['start'];
+        $button_line .= "&start=" . $start;
     } else {
         $button_line .= "&amp;start=1";
     }
     ?>
 
-    <form method="POST" action="<?= $uri_path_string . $button_line; ?>" style="display : inline;">
+    <form method="POST" action="<?= $HtmlEscaper->escHtml($uri_path_string . $button_line); ?>" style="display : inline;">
         <?php if ($list_expanded == true) { ?>
             <input type="hidden" name="list_expanded" value="0">
             <input type="submit" name="submit" value="<?= __('Concise view'); ?>" class="btn btn-sm btn-secondary">
@@ -240,7 +239,7 @@ $selected_place = '';
 </table><br>
 
 <?php if ($privcount) { ?>
-    <?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
+    <?= $HtmlEscaper->escHtml((string) $privcount) . __(' persons are not shown due to privacy settings'); ?><br>
 <?php } ?>
 
 <?php include __DIR__ . '/partial/pagination.php'; ?>
@@ -256,6 +255,14 @@ function show_person($familyDb)
     $personName = new \Genealogy\Include\PersonName();
     $personPopup = new \Genealogy\Include\PersonPopup();
     $datePlace = new \Genealogy\Include\DatePlace();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
+    $escapeText = static function ($text): string {
+        return htmlspecialchars(
+            html_entity_decode((string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+            ENT_NOQUOTES | ENT_SUBSTITUTE,
+            'UTF-8'
+        );
+    };
 
     $selected_person1 = $familyDb->partner1_id ? $familyDb->partner1_id : $familyDb->partner2_id;
     $personDb = $db_functions->get_person_with_id($selected_person1);
@@ -278,7 +285,7 @@ function show_person($familyDb)
     // *** Show extra colums before a person in index places ***
     if ($selected_place != $familyDb->place_order) { ?>
         <tr>
-            <td colspan="7"><b><?= $directionMarkers->dirmark2 . $familyDb->place_order; ?></b></td>
+            <td colspan="7"><b><?= $directionMarkers->dirmark2 . $HtmlEscaper->escHtml((string) $familyDb->place_order); ?></b></td>
         </tr>
     <?php } ?>
     <?php $selected_place = $familyDb->place_order; ?>
@@ -287,7 +294,7 @@ function show_person($familyDb)
             <?php
             if ($data["select_marriage_notice"] == '1') {
                 if ($selected_place == $familyDb->fam_marr_notice_place) {
-                    echo '<span class="place_index place_index_selected">' . __('&infin;') . '</span>';
+                    echo '<span class="place_index place_index_selected">' . $HtmlEscaper->escHtmlDecoded(__('&infin;')) . '</span>';
                 } else {
                     echo '<span class="place_index">&nbsp;</span>';
                 }
@@ -341,7 +348,7 @@ function show_person($familyDb)
             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
             $personLink = new \Genealogy\Include\PersonLink();
             $start_url = $personLink->get_person_link($personDb);
-            echo ' <a href="' . $start_url . '">' . rtrim($index_name) . '</a>';
+            echo ' <a href="' . $HtmlEscaper->escHtml($start_url) . '">' . $escapeText(rtrim(strip_tags($index_name))) . '</a>';
 
             //*** Show spouse/ partner ***
             $relations = $db_functions->get_relations($personDb->pers_id);
@@ -394,7 +401,7 @@ function show_person($familyDb)
                             echo ' ' . ($x + 1) . __('th');
                         }
                     }
-                    echo ' ' . $relation_short . ' ' . rtrim($name["standard_name"]);
+                    echo ' ' . $escapeText($relation_short) . ' ' . $escapeText(rtrim($name["standard_name"]));
                     if (isset($partnerDb->pers_id) && $partnerDb->pers_id != $familyDb->partner2_id) {
                         echo '</span>';
                     }
@@ -416,7 +423,7 @@ function show_person($familyDb)
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');
             } else {
-                echo $info;
+                echo $HtmlEscaper->escHtmlDecoded($info);
             }
             ?>
         </td>
@@ -433,7 +440,7 @@ function show_person($familyDb)
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');
             } else {
-                echo $info;
+                echo $HtmlEscaper->escHtmlDecoded($info);
             }
             ?>
         </td>
@@ -450,7 +457,7 @@ function show_person($familyDb)
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');
             } else {
-                echo $info;
+                echo $HtmlEscaper->escHtmlDecoded($info);
             }
             ?>
         </td>
@@ -467,7 +474,7 @@ function show_person($familyDb)
             if ($privacy && $info) {
                 echo ' ' . __('PRIVACY FILTER');
             } else {
-                echo $info;
+                echo $HtmlEscaper->escHtmlDecoded($info);
             }
             ?>
         </td>

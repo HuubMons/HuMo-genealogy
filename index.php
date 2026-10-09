@@ -116,6 +116,8 @@ $selectedFamilyTree = $db_functions->get_tree($index['tree_id']);
 // *** New routing script sept. 2023. Search route, return match or not found ***
 $page = $index['page'];
 
+// *** Check if this is used for GEDCOM number validation. If so, validate it. ***
+//$validateGedcomnumber = new Genealogy\Include\ValidateGedcomnumber();
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 } elseif (isset($_POST['id'])) {

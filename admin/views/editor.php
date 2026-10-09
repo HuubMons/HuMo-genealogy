@@ -57,7 +57,7 @@ $person_found = true;
         <div class="row mb-2">
             <div class="col-md-3">
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <div class="input-group input-group-sm">
                         <label for="favourites" class="input-group-text"><img src="../images/favorite_blue.png" alt="<?= __('Favourites'); ?>" title="<?= __('Favourites'); ?>">&nbsp;</label>
 
@@ -65,7 +65,7 @@ $person_found = true;
                             <option value=""><?= __('Favourites list'); ?></option>
                             <?php while ($favDb = $editor['favorites']->fetch(PDO::FETCH_OBJ)) { ?>
                                 <?php $favoDb = $db_functions->get_person_with_id($favDb->pers_id); ?>
-                                <option value="<?= $favDb->setting_value; ?>"><?= $editor_cls->show_selected_person($favoDb); ?></option>
+                                <option value="<?= $HtmlEscaper->escHtml((string) $favDb->setting_value); ?>"><?= $editor_cls->show_selected_person($favoDb); ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -74,7 +74,7 @@ $person_found = true;
 
             <div class="col-md-3">
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                         <option value=""><?= __('Latest changes'); ?></option>
                         <?php
@@ -90,7 +90,7 @@ $person_found = true;
                                         $pers_user = ' [' . __('Changed by') . ': ' . $db_functions->get_user_name($person2->pers_changed_user_id) . ']';
                                     }
                         ?>
-                                    <option value="<?= $person2->pers_gedcomnumber; ?>"><?= $editor_cls->show_selected_person($person2) . $pers_user; ?></option>
+                                    <option value="<?= $HtmlEscaper->escHtml((string) $person2->pers_gedcomnumber); ?>"><?= $editor_cls->show_selected_person($person2) . $pers_user; ?></option>
                         <?php
                                 }
                             }
@@ -112,11 +112,11 @@ $person_found = true;
 
             <div class="col-md-auto">
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <div class="input-group">
                         <!-- Search persons firstname/ lastname -->
                         <label for="search_name" class="col-auto col-form-label col-form-label-sm"><?= __('Person'); ?>:&nbsp;</label>
-                        <input type="text" name="search_quicksearch" id="search_name" class="form-control form-control-sm" placeholder="<?= __('Name'); ?>" value="<?= $editor['search_name']; ?>" size="15">
+                        <input type="text" name="search_quicksearch" id="search_name" class="form-control form-control-sm" placeholder="<?= __('Name'); ?>" value="<?= $HtmlEscaper->escHtml((string) $editor['search_name']); ?>" size="15">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
                     </div>
                 </form>
@@ -216,7 +216,7 @@ $person_found = true;
                                         $selected = ' selected';
                                     }
 
-                                    echo '<option value="' . $person2->pers_gedcomnumber . '"' . $selected . '>' .
+                                    echo '<option value="' . $HtmlEscaper->escHtml((string) $person2->pers_gedcomnumber) . '"' . $selected . '>' .
                                         $editor_cls->show_selected_person($person2) . '</option>';
                                 }
                                 ?>
@@ -249,10 +249,10 @@ $person_found = true;
             <div class="col-auto">
                 <!-- Search person GEDCOM number -->
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <div class="input-group input-group-sm">
                         <label for="search_id" class="col-md-auto col-form-label col-form-label-sm"><?= __('or ID:'); ?>&nbsp;</label>
-                        <input type="text" id="search_id" name="search_id" class="form-control form-control-sm" value="<?= $editor['search_id']; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
+                        <input type="text" id="search_id" name="search_id" class="form-control form-control-sm" value="<?= $HtmlEscaper->escHtml((string) $editor['search_id']); ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
                     </div>
                 </form>
@@ -299,8 +299,8 @@ if (isset($_GET['child_disconnect_id'])) {
     <div class="alert alert-danger">
         <?= __('Are you sure you want to disconnect this child?'); ?>
         <form method="post" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;">
-            <input type="hidden" name="family_id" value="<?= $_GET['family_id']; ?>">
-            <input type="hidden" name="child_disconnect_id2" value="<?= $_GET['child_disconnect_id']; ?>">
+            <input type="hidden" name="family_id" value="<?= $HtmlEscaper->escHtml((string) $_GET['family_id']); ?>">
+            <input type="hidden" name="child_disconnect_id2" value="<?= $HtmlEscaper->escHtml((string) $_GET['child_disconnect_id']); ?>">
             <input type="submit" name="child_disconnecting" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
@@ -648,8 +648,8 @@ if ($check_person) {
 
                 $vars['pers_family'] = $pers_family;
                 $link = $processLinks->get_link('../', 'family', $tree_id, true, $vars);
-                $link .= "main_person=" . $person->pers_gedcomnumber;
-                echo " <a href=\"#\" onClick=\"window.open('" . $link . "', '','width=800,height=500')\"><b>[" . __('Preview') . ']</b></a>';
+                $link .= "main_person=" . rawurlencode((string) $person->pers_gedcomnumber);
+                echo ' <a href="#" data-preview-url="' . $HtmlEscaper->escHtml($link) . '" onClick="window.open(this.dataset.previewUrl, \'\', \'width=800,height=500\'); return false;"><b>[' . __('Preview') . ']</b></a>';
             }
             ?>
 
@@ -1122,6 +1122,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
     global $db_functions, $page;
 
     $datePlace = new \Genealogy\Include\DatePlace();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     if ($gedcomnumber) {
         $personDb = $db_functions->get_person($gedcomnumber);
@@ -1137,10 +1138,10 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
         }
 
         if ($show_link == true) {
-            $text = '<a href="index.php?page=' . $page . '&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id .
-                '&amp;person=' . $personDb->pers_gedcomnumber . '">' . $name . '</a>' . "\n";
+            $text = '<a href="index.php?page=' . $HtmlEscaper->escHtml((string) $page) . '&amp;menu_tab=person&amp;tree_id=' . $HtmlEscaper->escHtml((string) $personDb->pers_tree_id) .
+                '&amp;person=' . $HtmlEscaper->escHtml((string) $personDb->pers_gedcomnumber) . '">' . $HtmlEscaper->escHtml($name) . '</a>' . "\n";
         } else {
-            $text = $name . "\n";
+            $text = $HtmlEscaper->escHtml($name) . "\n";
         }
     } else {
         $text = __('N.N.');
@@ -1167,6 +1168,7 @@ function show_person_with_id($person_id, $gedcom_date = false, $show_link = true
     global $db_functions, $page;
 
     $datePlace = new \Genealogy\Include\DatePlace();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     if ($person_id) {
         $personDb = $db_functions->get_person_with_id($person_id);
@@ -1182,10 +1184,10 @@ function show_person_with_id($person_id, $gedcom_date = false, $show_link = true
         }
 
         if ($show_link == true) {
-            $text = '<a href="index.php?page=' . $page . '&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id .
-                '&amp;person=' . $personDb->pers_gedcomnumber . '">' . $name . '</a>' . "\n";
+            $text = '<a href="index.php?page=' . $HtmlEscaper->escHtml((string) $page) . '&amp;menu_tab=person&amp;tree_id=' . $HtmlEscaper->escHtml((string) $personDb->pers_tree_id) .
+                '&amp;person=' . $HtmlEscaper->escHtml((string) $personDb->pers_gedcomnumber) . '">' . $HtmlEscaper->escHtml($name) . '</a>' . "\n";
         } else {
-            $text = $name . "\n";
+            $text = $HtmlEscaper->escHtml($name) . "\n";
         }
     } else {
         $text = __('N.N.');

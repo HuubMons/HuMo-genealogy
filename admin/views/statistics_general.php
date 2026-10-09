@@ -4,6 +4,8 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
+
 $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
 ( SELECT stat_tree_id, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date GROUP BY stat_tree_id )
  as humo_stat_date2 ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id ORDER BY tree_order desc");
@@ -30,11 +32,11 @@ $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
                         // *** Show family tree name ***
                         $treetext = $showTreeText->show_tree_text($familyDb->tree_id, $selected_language);
                     ?>
-                        <td><?= $treetext['name']; ?></td>
+                        <td><?= $HtmlEscaper->escHtml($treetext['name']); ?></td>
                     <?php } else { ?>
                         <td><b><?= __('FAMILY TREE ERASED'); ?></b></td>
                     <?php } ?>
-                    <td><?= $familyDb->count_lines; ?></td>
+                    <td><?= $HtmlEscaper->escHtml((string) $familyDb->count_lines); ?></td>
 
                     <?php
                     // *** Total number of unique visitors ***
@@ -52,7 +54,7 @@ $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
                         $count_visitors = $stat->rowCount();
                     }
                     ?>
-                    <td><?= $count_visitors; ?></td>
+                    <td><?= $HtmlEscaper->escHtml((string) $count_visitors); ?></td>
                 </tr>
             <?php } ?>
         </table>
@@ -78,7 +80,7 @@ $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
             ?>
             <tr>
                 <td><?= __('Total number of unique visitors:'); ?></td>
-                <td><?= $count_visitors; ?></td>
+                <td><?= $HtmlEscaper->escHtml((string) $count_visitors); ?></td>
             </tr>
 
             <?php
@@ -90,7 +92,7 @@ $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
             ?>
             <tr>
                 <td><?= __('Total number of visited families:'); ?></td>
-                <td><?= $total; ?></td>
+                <td><?= $HtmlEscaper->escHtml((string) $total); ?></td>
             </tr>
 
             <?php
@@ -104,7 +106,7 @@ $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
             ?>
             <tr>
                 <td><?= __('Total number of families in the last hour:'); ?></td>
-                <td><?= $total; ?></td>
+                <td><?= $HtmlEscaper->escHtml((string) $total); ?></td>
             </tr>
         </table>
     </div>
@@ -145,16 +147,16 @@ if ($temp->rowCount()) {
                 ?>
                     <tr>
                         <td>
-                            <img src="<?= $flag; ?>" width="30" height="15" alt="<?= $country_code; ?>" title="<?= $country_code; ?>">&nbsp;
+                            <img src="<?= $HtmlEscaper->escHtml($flag); ?>" width="30" height="15" alt="<?= $HtmlEscaper->escHtml($country_code); ?>" title="<?= $HtmlEscaper->escHtml($country_code); ?>">&nbsp;
                             <?php
                             if ($country_code != __('Unknown') && $country_code && isset($countries[$country_code][1])) {
-                                echo $countries[$country_code][1] . '&nbsp;(' . $country_code . ')';
+                                echo $HtmlEscaper->escHtml($countries[$country_code][1]) . '&nbsp;(' . $HtmlEscaper->escHtml($country_code) . ')';
                             } else {
-                                echo $country_code;
+                                echo $HtmlEscaper->escHtml($country_code);
                             }
                             ?>
                         </td>
-                        <td><?= $statDb->count_country_code; ?></td>
+                        <td><?= $HtmlEscaper->escHtml((string) $statDb->count_country_code); ?></td>
                     </tr>
                 <?php } ?>
             </table>
@@ -250,6 +252,7 @@ function statistics_line($familyDb)
     $personName = new \Genealogy\Include\PersonName();
     $showTreeText = new \Genealogy\Include\ShowTreeText();
     $processLinks = new \Genealogy\Include\ProcessLinks();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     $tree_id = $familyDb->tree_id;
     if (isset($tree_id) && $tree_id) {
@@ -258,16 +261,16 @@ function statistics_line($familyDb)
 ?>
     <tr>
         <?php if (isset($familyDb->count_lines)) { ?>
-            <td><?= $familyDb->count_lines; ?></td>
+            <td><?= $HtmlEscaper->escHtml((string) $familyDb->count_lines); ?></td>
         <?php
         }
 
         $treetext = $showTreeText->show_tree_text($familyDb->tree_id, $selected_language);
         ?>
-        <td><?= $treetext['name']; ?></td>
+        <td><?= $HtmlEscaper->escHtml($treetext['name']); ?></td>
 
         <?php if (!isset($familyDb->count_lines)) { ?>
-            <td><?= $familyDb->stat_date_stat; ?></td>
+            <td><?= $HtmlEscaper->escHtml((string) $familyDb->stat_date_stat); ?></td>
         <?php
         }
 
@@ -284,7 +287,7 @@ function statistics_line($familyDb)
             if ($check == true) {
                 $vars['pers_family'] = $familyDb->stat_gedcom_fam;
                 $link = $processLinks->get_link('../', 'family', $familyDb->tree_id, false, $vars);
-                echo '<a href="' . $link . '">' . __('Family') . ': </a>';
+                echo '<a href="' . $HtmlEscaper->escHtml($link) . '">' . __('Family') . ': </a>';
 
                 //*** Man ***
                 $personDb = $db_functions->get_person($familyDb->stat_gedcom_man);
@@ -294,7 +297,7 @@ function statistics_line($familyDb)
                 } else {
                     $privacy = $personPrivacy->get_privacy($personDb);
                     $name = $personName->get_person_name($personDb, $privacy);
-                    echo $name["standard_name"];
+                    echo $HtmlEscaper->escHtml($name["standard_name"]);
                 }
 
                 echo " &amp; ";
@@ -306,7 +309,7 @@ function statistics_line($familyDb)
                 } else {
                     $privacy = $personPrivacy->get_privacy($personDb);
                     $name = $personName->get_person_name($personDb, $privacy);
-                    echo $name["standard_name"];
+                    echo $HtmlEscaper->escHtml($name["standard_name"]);
                 }
             } else {
                 echo '<b>' . __('FAMILY NOT FOUND IN FAMILY TREE') . '</b>';

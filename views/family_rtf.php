@@ -93,6 +93,7 @@ $personData = new \Genealogy\Include\PersonData;
 $processText = new \Genealogy\Include\ProcessText;
 $showSources = new \Genealogy\Include\ShowSources;
 $totallyFilterPerson = new \Genealogy\Include\TotallyFilterPerson;
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
@@ -471,17 +472,17 @@ $rtf->save($file_name);
 
 $vars['pers_family'] = $data["family_id"];
 $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
-$link .= "main_person=" . $data["main_person"];
+$link .= "main_person=" . rawurlencode((string) $data["main_person"]);
 ?>
-<br><br><a href="<?= $download_link; ?>"><?= __('Download RTF report.'); ?></a>
-<br><br><?= __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.'); ?>
+<br><br><a href="<?= $HtmlEscaper->escHtml($download_link); ?>"><?= $HtmlEscaper->escHtml(__('Download RTF report.')); ?></a>
+<br><br><?= $HtmlEscaper->escHtml(__('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.')); ?>
 <br><br>
-<form method="POST" action="<?= $link; ?>" style="display : inline;">
+<form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display : inline;">
     <input type="hidden" name="screen_mode" value="">
     <?php if ($data["descendant_report"] == true) { ?>
-        <input type="hidden" name="descendant_report" value="<?= $data["descendant_report"]; ?>">
+        <input type="hidden" name="descendant_report" value="<?= $HtmlEscaper->escHtml((string) $data["descendant_report"]); ?>">
     <?php } ?>
-    <input type="Submit" name="submit" value="<?= __('Back'); ?>" class="btn btn-sm btn-primary">
+    <input type="Submit" name="submit" value="<?= $HtmlEscaper->escHtml(__('Back')); ?>" class="btn btn-sm btn-primary">
 </form>
 
 <?php

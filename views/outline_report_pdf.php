@@ -12,7 +12,7 @@ $screen_mode = 'PDF';
 // *** Added in nov 2023. TODO check variable, could be added in route.  ***
 $tree_id = 0;
 if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
-    $tree_id = $_POST['tree_id'];
+    $tree_id = (int) $_POST['tree_id'];
 }
 
 // TODO create seperate controller script.
@@ -33,26 +33,26 @@ $db_functions->check_person($data["main_person"]);
 
 $show_details = false;
 if (isset($_GET["show_details"])) {
-    $show_details = $_GET["show_details"];
+    $show_details = $_GET["show_details"] === '1';
 }
 if (isset($_POST["show_details"])) {
-    $show_details = $_POST["show_details"];
+    $show_details = $_POST["show_details"] === '1';
 }
 
 $show_date = true;
 if (isset($_GET["show_date"])) {
-    $show_date = $_GET["show_date"];
+    $show_date = $_GET["show_date"] === '1';
 }
 if (isset($_POST["show_date"])) {
-    $show_date = $_POST["show_date"];
+    $show_date = $_POST["show_date"] === '1';
 }
 
 $dates_behind_names = true;
 if (isset($_GET["dates_behind_names"])) {
-    $dates_behind_names = $_GET["dates_behind_names"];
+    $dates_behind_names = $_GET["dates_behind_names"] === '1';
 }
 if (isset($_POST["dates_behind_names"])) {
-    $dates_behind_names = $_POST["dates_behind_names"];
+    $dates_behind_names = $_POST["dates_behind_names"] === '1';
 }
 
 /**
@@ -60,10 +60,10 @@ if (isset($_POST["dates_behind_names"])) {
  */
 $nr_generations = ($humo_option["descendant_generations"] - 1);
 if (isset($_GET["nr_generations"])) {
-    $nr_generations = $_GET["nr_generations"];
+    $nr_generations = max(1, min(50, (int) $_GET["nr_generations"]));
 }
 if (isset($_POST["nr_generations"])) {
-    $nr_generations = $_POST["nr_generations"];
+    $nr_generations = max(1, min(50, (int) $_POST["nr_generations"]));
 }
 
 //initialize pdf generation
@@ -82,6 +82,7 @@ require_once __DIR__ . '/../include/tfpdf/tFPDFextend.php';
 $pdf = new tFPDFextend();
 
 $title = $pdf->pdf_convert(__('Outline report') . __(' of ') . $pdf->pdf_convert($name["standard_name"]));
+$download_filename = preg_replace('/[\x00-\x1F\x7F\/:*?"<>|]+/', '_', $title) . '.pdf';
 $pdf->SetTitle($title, true);
 $pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 if (isset($_POST["screen_mode"]) and $_POST["screen_mode"] == "PDF-L") {
@@ -320,4 +321,4 @@ function outline($outline_family_id, $outline_main_person, $generation_number, $
 // ******* Start function here - recursive if started ******
 outline($data["family_id"], $data["main_person"], $generation_number, $nr_generations);
 
-$pdf->Output($title . ".pdf", "I");
+$pdf->Output($download_filename, "I");

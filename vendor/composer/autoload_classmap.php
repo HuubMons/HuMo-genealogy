@@ -49,7 +49,7 @@ return array(
     'Genealogy\\Include\\ProcessText' => $baseDir . '/include/ProcessText.php',
     'Genealogy\\Include\\ResizePicture' => $baseDir . '/include/ResizePicture.php',
     'Genealogy\\Include\\SafeTextDb' => $baseDir . '/include/SafeTextDb.php',
-    'Genealogy\\Include\\SafeTextShow' => $baseDir . '/include/SafeTextShow.php',
+    'Genealogy\\Include\\HtmlEscaper' => $baseDir . '/include/HtmlEscaper.php',
     'Genealogy\\Include\\SelectTree' => $baseDir . '/include/SelectTree.php',
     'Genealogy\\Include\\SetTimezone' => $baseDir . '/include/SetTimezone.php',
     'Genealogy\\Include\\ShowAddresses' => $baseDir . '/include/ShowAddresses.php',

@@ -11,6 +11,70 @@ $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $personPopup = new \Genealogy\Include\PersonPopup();
 $datePlace = new \Genealogy\Include\DatePlace();
+$htmlEscaper = new \Genealogy\Include\HtmlEscaper();
+$cssNumber = fn($value): string => $htmlEscaper->escHtml((string) (float) $value);
+// *** Show allowed HTML elements in the popup ***
+$sanitizePopupHtml = static function ($html) use ($htmlEscaper): string {
+    $previousErrorSetting = libxml_use_internal_errors(true);
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $document->loadHTML('<?xml encoding="UTF-8"><div>' . (string) $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
+    libxml_use_internal_errors($previousErrorSetting);
+
+    $container = $document->getElementsByTagName('div')->item(0);
+    if (!$container) {
+        return $htmlEscaper->escHtmlDecoded(strip_tags((string) $html));
+    }
+
+    $renderNode = static function ($node) use (&$renderNode, $htmlEscaper): string {
+        if ($node instanceof DOMText) {
+            return $htmlEscaper->escHtml($node->nodeValue);
+        }
+        if (!$node instanceof DOMElement) {
+            return '';
+        }
+
+        $tag = strtolower($node->tagName);
+        if (in_array($tag, ['script', 'style'], true)) {
+            return '';
+        }
+        if ($tag === 'br') {
+            return '<br>';
+        }
+
+        $content = '';
+        foreach ($node->childNodes as $child) {
+            $content .= $renderNode($child);
+        }
+
+        if (in_array($tag, ['b', 'strong', 'i', 'em'], true)) {
+            return '<' . $tag . '>' . $content . '</' . $tag . '>';
+        }
+        if ($tag === 'span') {
+            $allowedClasses = ['divorse', 'event', 'religion'];
+            $class = $node->getAttribute('class');
+            if (in_array($class, $allowedClasses, true)) {
+                return '<span class="' . $htmlEscaper->escHtml($class) . '">' . $content . '</span>';
+            }
+            return $content;
+        }
+        if ($tag === 'a') {
+            $href = $node->getAttribute('href');
+            $scheme = strtolower((string) parse_url($href, PHP_URL_SCHEME));
+            if ($href !== '' && ($scheme === '' || in_array($scheme, ['http', 'https'], true))) {
+                return '<a href="' . $htmlEscaper->escHtml($href) . '" rel="nofollow noopener noreferrer">' . $content . '</a>';
+            }
+        }
+
+        return $content;
+    };
+
+    $sanitizedHtml = '';
+    foreach ($container->childNodes as $child) {
+        $sanitizedHtml .= $renderNode($child);
+    }
+    return $sanitizedHtml;
+};
 
 if (!isset($hourglass)) {
     $hourglass = false;
@@ -41,81 +105,27 @@ if ($hourglass === false) {
     $divlen += 200;
     $divhi += 300;
 
-    if ($humo_option["url_rewrite"] == 'j') {
-        $path = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
-        $path2 = 'descendant_chart/' . $tree_id . '/' . $data["family_id"] . '?';
-    } else {
-        $path = 'index.php?page=descendant_chart&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"] . '&amp;';
-        // Don't use &amp; for javascript.
-        $path2 = 'index.php?page=descendant_chart&tree_id=' . $tree_id . '&id=' . $data["family_id"] . '&';
-    }
+    $processLinks = new \Genealogy\Include\ProcessLinks();
+    $vars['id'] = $data['family_id'];
+    $path = $processLinks->get_link($uri_path, 'descendant_chart', $tree_id, true, $vars);
 
     $dna_params = "";
     if ($data["dna"] != "none") {
-        //$dna_params = '
-        //	bn: "'.$data["base_person_name"].'",
-        //	bs: "'.$data["base_person_sexe"].'",
-        //	bf: "'.$data["base_person_famc"].'",
-        //	bg: "'.$data["base_person_gednr"].'",';
         $dna_params = '&bn=' . $data["base_person_name"] . '&bs=' . $data["base_person_sexe"] . '&bf=' . $data["base_person_famc"] . '&bg=' . $data["base_person_gednr"];
     }
+    ?>
 
-    // *** 20-08-2022: renewed jQuery and jQueryUI scripts ***
-    echo '
-    <script>
-    $(function() {
-        $( "#slider" ).slider({
-            value: ' . (($data["size"] / 5) - 1) . ',
-            min: 0,
-            max: 9,
-            step: 1,
-            slide: function( event, ui ) {
-                $( "#amount" ).val(ui.value+1);
-            }
-        });
-        $( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
-
-        // *** Only reload page if value is changed ***
-        startPos = $("#slider").slider("value");
-        $("#slider").on("slidestop", function(event, ui) {
-            endPos = ui.value;
-            if (startPos != endPos) {
-                window.location.href = "' . $path2 . 'main_person=' . $data["main_person"] .
-        '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] .
-        '&direction=' . $data["direction"] . '&dnachart=' . $data["dna"] . $dna_params . '";
-                }
-            startPos = endPos;
-        });
-    });
-    </script>';
-
-    // the width and length of following div are set with $divlen en $divhi in java function "showimg" 
-    // (at bottom of this file) used to print chart.
-?>
+    <div id="descendant-chart-print-config"
+        data-width="<?= $htmlEscaper->escHtml((string) $divlen); ?>"
+        data-height="<?= $htmlEscaper->escHtml((string) $divhi); ?>"
+        data-instructions="<?= $htmlEscaper->escHtml(__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')); ?>"
+        data-plotter-instructions="<?= $htmlEscaper->escHtml(__('If you have a plotter you can use its software to print the image on one large sheet.')); ?>"
+        data-posterazor-label="PosteRazor"
+        data-posterazor-url="http://posterazor.sourceforge.net/index.php?page=download&amp;lang=english">
+    </div>
+    <script src="assets/js/descendant_chart_print.js"></script>
     <div id="png">
-
-        <?= $data["descendant_header"]; ?>
-
-        <?php
-        if ($data["direction"] == 0) {
-            //vertical
-            $latter = count($genarray) - 1;
-            $the_height = $genarray[$latter]["posy"] + 130;
-        } else {
-            $hgt = 0;
-            for ($e = 0; $e < count($genarray); $e++) {
-                if ($genarray[$e]["posy"] > $hgt) {
-                    $hgt = $genarray[$e]["posy"];
-                }
-            }
-            $the_height = $hgt + 130;
-        }
-
-        //echo '<style type="text/css">';
-        //echo '#doublescroll { position:relative; width:auto; height:' . $the_height . 'px; overflow: auto; overflow-y: hidden;z-index:10; }';
-        //echo '</style>';
-        //echo '<div id="doublescroll" class="wrapper" style="direction:' . $directionMarkers->rtlmarker . ';">';
-        ?>
+        <?php include __DIR__ . '/partial/descendant_header.php'; ?>
 
         <div class="p-2 me-sm-2 genealogy_search" id="menubox">
             <!-- <div class="p-2 me-sm-2 genealogy_search d-print-none"> -->
@@ -125,11 +135,14 @@ if ($hourglass === false) {
                     <h4>
                         <?php
                         if ($data["dna"] == "none") {
-                            echo __('Descendant chart') . __(' of ') . $genarray[0]["nam"];
+                            $rootPersonDb = $db_functions->get_person($genarray[0]["gednr"]);
+                            $rootPrivacy = $personPrivacy->get_privacy($rootPersonDb);
+                            $rootName = $personName->get_person_name($rootPersonDb, $rootPrivacy);
+                            echo $htmlEscaper->escHtml(__('Descendant chart') . __(' of ')) . $htmlEscaper->escHtmlDecoded($rootName["standard_name"]) . $rootName["colour_mark"];
                         } elseif ($data["dna"] == "ydna" || $data["dna"] == "ydnamark") {
-                            echo __('Same Y-DNA as ') . $data["base_person_name"];
+                            echo $htmlEscaper->escHtml(__('Same Y-DNA as ')) . $htmlEscaper->escHtmlDecoded($data["base_person_name"]);
                         } elseif ($data["dna"] == "mtdna" || $data["dna"] == "mtdnamark") {
-                            echo __('Same mtDNA as ') . $data["base_person_name"];
+                            echo $htmlEscaper->escHtml(__('Same mtDNA as ')) . $htmlEscaper->escHtmlDecoded($data["base_person_name"]);
                         }
                         ?>
                     </h4>
@@ -139,28 +152,28 @@ if ($hourglass === false) {
             <div class="row">
 
                 <div class="col-md-auto">
-                    <form method="POST" name="desc_form" action="<?= $path . 'chosensize=' . $data["size"]; ?>" style="display : inline;">
-                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                        <input type="hidden" name="main_person" value="<?= $data["main_person"]; ?>">
-                        <input type="hidden" name="chosengen" value="<?= $data["chosengen"]; ?>">
+                    <form method="POST" name="desc_form" action="<?= $htmlEscaper->escHtml($path . 'chosensize=' . $data["size"]); ?>" style="display : inline;">
+                        <input type="hidden" name="tree_id" value="<?= $htmlEscaper->escHtml((string) $tree_id); ?>">
+                        <input type="hidden" name="main_person" value="<?= $htmlEscaper->escHtml($data["main_person"]); ?>">
+                        <input type="hidden" name="chosengen" value="<?= $htmlEscaper->escHtml((string) $data["chosengen"]); ?>">
                         <?php if ($data["dna"] != "none") { ?>
-                            <input type="hidden" name="dnachart" value="<?= $data["dna"]; ?>">
-                            <input type="hidden" name="bf" value="<?= $data["base_person_famc"]; ?>">
-                            <input type="hidden" name="bs" value="<?= $data["base_person_sexe"]; ?>">
-                            <input type="hidden" name="bn" value="<?= $data["base_person_name"]; ?>">
-                            <input type="hidden" name="bg" value="<?= $data["base_person_gednr"]; ?>">
+                            <input type="hidden" name="dnachart" value="<?= $htmlEscaper->escHtml($data["dna"]); ?>">
+                            <input type="hidden" name="bf" value="<?= $htmlEscaper->escHtml($data["base_person_famc"]); ?>">
+                            <input type="hidden" name="bs" value="<?= $htmlEscaper->escHtml($data["base_person_sexe"]); ?>">
+                            <input type="hidden" name="bn" value="<?= $htmlEscaper->escHtml($data["base_person_name"]); ?>">
+                            <input type="hidden" name="bg" value="<?= $htmlEscaper->escHtml($data["base_person_gednr"]); ?>">
                         <?php } ?>
                         <input id="dirval" type="hidden" name="direction" value=""> <!-- will be filled in next lines -->
                         <?php if ($data["direction"] == "1") { ?>
-                            <input type="button" name="dummy" value="<?= __('vertical'); ?>" onClick='document.desc_form.direction.value="0";document.desc_form.submit();' class="btn btn-sm btn-secondary">
+                            <input type="button" name="dummy" value="<?= $htmlEscaper->escHtml(__('vertical')); ?>" onClick='document.desc_form.direction.value="0";document.desc_form.submit();' class="btn btn-sm btn-secondary">
                         <?php } else { ?>
-                            <input type="button" name="dummy" value="<?= __('horizontal'); ?>" onClick='document.desc_form.direction.value="1";document.desc_form.submit();' class="btn btn-sm btn-secondary">
+                            <input type="button" name="dummy" value="<?= $htmlEscaper->escHtml(__('horizontal')); ?>" onClick='document.desc_form.direction.value="1";document.desc_form.submit();' class="btn btn-sm btn-secondary">
                         <?php } ?>
                     </form>
                 </div>
 
                 <div class="col-md-auto">
-                    <input type="button" id="imgbutton" value="<?= __('Print'); ?>" onClick="showimg();" class="btn btn-sm btn-secondary">
+                    <input type="button" id="imgbutton" value="<?= $htmlEscaper->escHtml(__('Print')); ?>" onClick="showimg();" class="btn btn-sm btn-secondary">
                 </div>
 
                 <?php if ($data["dna"] != "none") { ?>
@@ -171,12 +184,12 @@ if ($hourglass === false) {
                     <div class="col-md-auto">
                         <select name="dnachart" onChange="window.location=this.value" class="form-select form-select-sm">
                             <?php if ($data["base_person_sexe"] == "M") { ?>
-                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=ydna&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "ydna" ? 'selected' : ''; ?>>
-                                    <?= __('Y-DNA Carriers only'); ?>
+                                <option value="<?= $htmlEscaper->escHtml($path . 'main_person=' . $data["main_person"] . '&direction=' . $data["direction"] . '&dnachart=ydna&chosensize=' . $data["size"] . '&chosengen=' . $data["chosengen"]); ?>" <?= $data["dna"] == "ydna" ? 'selected' : ''; ?>>
+                                    <?= $htmlEscaper->escHtml(__('Y-DNA Carriers only')); ?>
                                 </option>
 
-                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=ydnamark&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "ydnamark" ? 'selected' : ''; ?>>
-                                    <?= __('Y-DNA Mark carriers'); ?>
+                                <option value="<?= $htmlEscaper->escHtml($path . 'main_person=' . $data["main_person"] . '&direction=' . $data["direction"] . '&dnachart=ydnamark&chosensize=' . $data["size"] . '&chosengen=' . $data["chosengen"]); ?>" <?= $data["dna"] == "ydnamark" ? 'selected' : ''; ?>>
+                                    <?= $htmlEscaper->escHtml(__('Y-DNA Mark carriers')); ?>
                                 </option>
                             <?php
                             }
@@ -184,12 +197,12 @@ if ($hourglass === false) {
                             // if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
                             if ($data["base_person_sexe"] == "F" or ($data["base_person_sexe"] == "M" and isset($data["base_person_famc"]) and $data["base_person_famc"] != "")) {
                             ?>
-                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=mtdna&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "mtdna" ? 'selected' : ''; ?>>
-                                    <?= __('mtDNA Carriers only'); ?>
+                                <option value="<?= $htmlEscaper->escHtml($path . 'main_person=' . $data["main_person"] . '&direction=' . $data["direction"] . '&dnachart=mtdna&chosensize=' . $data["size"] . '&chosengen=' . $data["chosengen"]); ?>" <?= $data["dna"] == "mtdna" ? 'selected' : ''; ?>>
+                                    <?= $htmlEscaper->escHtml(__('mtDNA Carriers only')); ?>
                                 </option>
 
-                                <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?>&amp;dnachart=mtdnamark&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $data["chosengen"]; ?>" <?= $data["dna"] == "mtdnamark" ? 'selected' : ''; ?>>
-                                    <?= __('mtDNA Mark carriers'); ?>
+                                <option value="<?= $htmlEscaper->escHtml($path . 'main_person=' . $data["main_person"] . '&direction=' . $data["direction"] . '&dnachart=mtdnamark&chosensize=' . $data["size"] . '&chosengen=' . $data["chosengen"]); ?>" <?= $data["dna"] == "mtdnamark" ? 'selected' : ''; ?>>
+                                    <?= $htmlEscaper->escHtml(__('mtDNA Mark carriers')); ?>
                                 </option>
                             <?php } ?>
                         </select>
@@ -197,47 +210,75 @@ if ($hourglass === false) {
                 <?php } ?>
 
                 <div class="col-md-auto">
-                    <?= __('Nr. generations'); ?>:
+                    <?= $htmlEscaper->escHtml(__('Nr. generations')); ?>:
                 </div>
 
                 <div class="col-md-auto">
                     <select name="chosengen" onChange="window.location=this.value" class="form-select form-select-sm">
                         <?php for ($i = 2; $i <= 15; $i++) { ?>
-                            <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?><?= $data["dna"] != 'none' ? '&amp;dnachart=' . $data["dna"] : ''; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=<?= $i; ?>" <?= $i == $data["chosengen"] ? 'selected' : ''; ?>>
+                            <option value="<?= $htmlEscaper->escHtml($path . 'main_person=' . $data["main_person"] . '&direction=' . $data["direction"] . ($data["dna"] != 'none' ? '&dnachart=' . $data["dna"] : '') . '&chosensize=' . $data["size"] . '&chosengen=' . $i); ?>" <?= $i == $data["chosengen"] ? 'selected' : ''; ?>>
                                 <?= $i; ?>
                             </option>
                         <?php } ?>
 
                         <!-- Option "All" for all generations -->
-                        <option value="<?= $path; ?>main_person=<?= $data["main_person"]; ?>&amp;direction=<?= $data["direction"]; ?><?= $data["dna"] != 'none' ? '&amp;dnachart=' . $data["dna"] : ''; ?>&amp;chosensize=<?= $data["size"]; ?>&amp;chosengen=All" <?= $data["chosengen"] == "All" ? 'selected' : ''; ?>>
-                            <?= __('All'); ?>
+                        <option value="<?= $htmlEscaper->escHtml($path . 'main_person=' . $data["main_person"] . '&direction=' . $data["direction"] . ($data["dna"] != 'none' ? '&dnachart=' . $data["dna"] : '') . '&chosensize=' . $data["size"] . '&chosengen=All'); ?>" <?= $data["chosengen"] == "All" ? 'selected' : ''; ?>>
+                            <?= $htmlEscaper->escHtml(__('All')); ?>
                         </option>
                     </select>
                 </div>
 
                 <div class="col-md-auto">
-                    <label for="amount"><?= __('Zoom level:'); ?></label>
+                    <label for="amount"><?= $htmlEscaper->escHtml(__('Zoom level:')); ?></label>
                     <input type="text" id="amount" disabled="disabled" style="width:25px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">
                 </div>
 
                 <div class="col-md-auto">
-                    <div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>
+                    <div id="slider"
+                        data-slider-value="<?= $htmlEscaper->escHtml((string) (($data['size'] / 5) - 1)); ?>"
+                        data-url-base="<?= $htmlEscaper->escHtml($path); ?>"
+                        data-main-person="<?= $htmlEscaper->escHtml($data['main_person']); ?>"
+                        data-chosen-generations="<?= $htmlEscaper->escHtml($data['chosengen']); ?>"
+                        data-direction="<?= $htmlEscaper->escHtml($data['direction']); ?>"
+                        data-dna="<?= $htmlEscaper->escHtml($data['dna']); ?>"
+                        data-base-person-name="<?= $htmlEscaper->escHtml($data['base_person_name']); ?>"
+                        data-base-person-sexe="<?= $htmlEscaper->escHtml($data['base_person_sexe']); ?>"
+                        data-base-person-famc="<?= $htmlEscaper->escHtml($data['base_person_famc']); ?>"
+                        data-base-person-gednr="<?= $htmlEscaper->escHtml($data['base_person_gednr']); ?>"
+                        style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>
+                    <script src="assets/js/descendant_chart_slider.js"></script>
                 </div>
 
             </div>
         </div>
+
+        <?php
+        if ($data["direction"] == 0) {
+            $lastPerson = count($genarray) - 1;
+            $the_height = $genarray[$lastPerson]["posy"] + 130;
+        } else {
+            $highestPosition = 0;
+            foreach ($genarray as $person) {
+                if ($person["posy"] > $highestPosition) {
+                    $highestPosition = $person["posy"];
+                }
+            }
+            $the_height = $highestPosition + 130;
+        }
+        ?>
 
         <!-- TODO check div. It's too wide (is set in doublescroll script). Doublescroll isn't in use anymore. -->
         <style type="text/css">
             #doublescroll {
                 position: relative;
                 width: auto;
-                height: <?= $the_height; ?>px;
+                height: <?= $htmlEscaper->escHtml((string) (float) $the_height); ?>px;
                 z-index: 10;
             }
         </style>
     <?php
-    echo '<div id="doublescroll" class="wrapper" style="direction:' . $directionMarkers->rtlmarker . ';">';
+    $direction = in_array($directionMarkers->rtlmarker, ['ltr', 'rtl'], true) ? $directionMarkers->rtlmarker : 'ltr';
+    echo '<div id="doublescroll" class="wrapper" style="direction:' . $direction . ';">';
 
     // Test bootstrap container
     //echo '<div class="container-xxl overflow-auto">';
@@ -262,9 +303,13 @@ for ($w = 0; $w < count($genarray); $w++) {
     }
 
     // *** Start person class and calculate privacy ***
+    $man = null;
+    $man_privacy = false;
+    $manName = null;
     if (isset($genarray[$w]["gednr"]) && $genarray[$w]["gednr"]) {
         $man = $db_functions->get_person($genarray[$w]["gednr"]);
         $man_privacy = $personPrivacy->get_privacy($man);
+        $manName = $personName->get_person_name($man, $man_privacy);
     }
 
     //echo '<div style="position:absolute; background-color:'.$bkcolor.';height:'.$data["vsize"].'px; width:'.$data["hsize"].'px; border:1px brown solid; left:'.$xvalue.'px; top:'.$yvalue.'px">';
@@ -284,7 +329,7 @@ for ($w = 0; $w < count($genarray); $w++) {
     }
     ?>
 
-        <div class="ancestorName<?= $sexe_colour; ?>" style="<?= $bkgr; ?>position:absolute; height:<?= $data["vsize"]; ?>px; width:<?= $data["hsize"]; ?>px; left:<?= $xvalue; ?>px; top:<?= $yvalue; ?>px;">
+        <div class="ancestorName<?= $sexe_colour; ?>" style="<?= $htmlEscaper->escHtml($bkgr); ?>position:absolute; height:<?= $htmlEscaper->escHtml((string) (float) $data["vsize"]); ?>px; width:<?= $htmlEscaper->escHtml((string) (float) $data["hsize"]); ?>px; left:<?= $htmlEscaper->escHtml((string) (float) $xvalue); ?>px; top:<?= $htmlEscaper->escHtml((string) (float) $yvalue); ?>px;">
             <?php
             $replacement_text = '';
             if ($data["size"] >= 25) {
@@ -309,30 +354,30 @@ for ($w = 0; $w < count($genarray); $w++) {
 
                         //$replacement_text.= '<strong>'.$genarray[$w]["nam"].'</strong>';
                         //$replacement_text.= '<span class="anc_box_name">'.$genarray[$w]["nam"].'</span>';
-                        $replacement_text .= '<span class="anc_box_name">' . $genarray[$w]["nam"] . '</span>';
+                        $replacement_text .= '<span class="anc_box_name">' . $htmlEscaper->escHtmlDecoded($manName["standard_name"]) . $manName["colour_mark"] . '</span>';
                         if ($man_privacy) {
                             $replacement_text .= '<br>' . __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
                         } else {
                             //if ($man->pers_birth_date OR $man->pers_birth_place){
                             if ($man->pers_birth_date) {
                                 //$replacement_text.= '<br>'.__('*').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_birth_date,$man->pers_birth_place);
-                                $replacement_text .= '<br>' . __('*') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_birth_date, '');
+                                $replacement_text .= '<br>' . $htmlEscaper->escHtml(__('*')) . $directionMarkers->dirmark1 . ' ' . $htmlEscaper->escHtmlDecoded($datePlace->date_place($man->pers_birth_date, ''));
                             }
                             //elseif ($man->pers_bapt_date OR $man->pers_bapt_place){
                             elseif ($man->pers_bapt_date) {
                                 //$replacement_text.= '<br>'.__('~').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_bapt_date,$man->pers_bapt_place);
-                                $replacement_text .= '<br>' . __('~') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_bapt_date, '');
+                                $replacement_text .= '<br>' . $htmlEscaper->escHtml(__('~')) . $directionMarkers->dirmark1 . ' ' . $htmlEscaper->escHtmlDecoded($datePlace->date_place($man->pers_bapt_date, ''));
                             }
 
                             //if ($man->pers_death_date OR $man->pers_death_place){
                             if ($man->pers_death_date) {
                                 //$replacement_text.= '<br>'.__('&#134;').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_death_date,$man->pers_death_place);
-                                $replacement_text .= '<br>' . __('&#134;') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_death_date, '');
+                                $replacement_text .= '<br>' . $htmlEscaper->escHtml(__('&#134;')) . $directionMarkers->dirmark1 . ' ' . $htmlEscaper->escHtmlDecoded($datePlace->date_place($man->pers_death_date, ''));
                             }
                             //elseif ($man->pers_buried_date OR $man->pers_buried_place){
                             elseif ($man->pers_buried_date) {
                                 //$replacement_text.= '<br>'.__('[]').$directionMarkers->dirmark1.' '.$datePlace->date_place($man->pers_buried_date,$man->pers_buried_place);
-                                $replacement_text .= '<br>' . __('[]') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($man->pers_buried_date, '');
+                                $replacement_text .= '<br>' . $htmlEscaper->escHtml(__('[]')) . $directionMarkers->dirmark1 . ' ' . $htmlEscaper->escHtmlDecoded($datePlace->date_place($man->pers_buried_date, ''));
                             }
 
                             if ($genarray[$w]["non"] == 0) {
@@ -344,36 +389,36 @@ for ($w = 0; $w < count($genarray); $w++) {
                                 //$replacement_text.= '<br>'.__('X').$directionMarkers->dirmark1.' '.$datePlace->date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
 
                                 if ($ownfam->fam_marr_date || $ownfam->fam_marr_place) {
-                                    $replacement_text .= '<br>' . __('X');
+                                    $replacement_text .= '<br>' . $htmlEscaper->escHtml(__('X'));
                                 } else {
                                     // *** Relation ***
-                                    $replacement_text .= '<br>' . __('&amp;');
+                                    $replacement_text .= '<br>' . $htmlEscaper->escHtml(__('&amp;'));
                                 }
 
                                 if ($ownfam->fam_marr_date) {
-                                    $replacement_text .= $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($ownfam->fam_marr_date, '') . ' ';
+                                    $replacement_text .= $directionMarkers->dirmark1 . ' ' . $htmlEscaper->escHtmlDecoded($datePlace->date_place($ownfam->fam_marr_date, '')) . ' ';
                                 }
 
                                 // *** Jan. 2022: Show spouse ***
                                 if (isset($genarray[$w]["sps"]) && $genarray[$w]["sps"] != '') {
                                     if ($ownfam->fam_marr_date || $ownfam->fam_marr_place) {
                                         //$replacement_text.= "&nbsp;".__(' to: ')."<br>";
-                                        $replacement_text .= __(' to: ') . '<br>';
+                                        $replacement_text .= $htmlEscaper->escHtml(__(' to: ')) . '<br>';
                                     } else {
                                         // *** Don't show 'to: ' for relations.
                                         $replacement_text .= ' ';
                                     }
-                                    $replacement_text .= '<i>' . $genarray[$w]["sps"] . '</i>';
+                                    $replacement_text .= '<i>' . $htmlEscaper->escHtmlDecoded($genarray[$w]["sps"]) . '</i>';
                                 }
                                 //}
                             }
                         }
                     } elseif ($data["size"] == 45) {
-                        $replacement_text .= $genarray[$w]["nam"];
+                        $replacement_text .= $htmlEscaper->escHtmlDecoded($manName["standard_name"]) . $manName["colour_mark"];
                     } elseif ($data["size"] == 40) {
-                        $replacement_text .= '<span class="wordwrap" style="font-size:75%">' . $genarray[$w]["short"] . '</span>';
+                        $replacement_text .= '<span class="wordwrap" style="font-size:75%">' . $htmlEscaper->escHtmlDecoded($genarray[$w]["short"]) . '</span>';
                     } elseif (isset($genarray[$w]["init"]) && $data["size"] >= 25 && $data["size"] < 40) {
-                        $replacement_text .= $genarray[$w]["init"];
+                        $replacement_text .= $htmlEscaper->escHtmlDecoded($genarray[$w]["init"]);
                     }
                 }
             } else {
@@ -390,7 +435,7 @@ for ($w = 0; $w < count($genarray); $w++) {
             $extra_popup_text = '';
 
             if (isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] == 1) {
-                $extra_popup_text .= $genarray[$w]["huw"] . "<br>";
+                $extra_popup_text .= $sanitizePopupHtml($genarray[$w]["huw"]) . "<br>";
             }
 
             if (isset($genarray[$w]["non"]) && $genarray[$w]["non"] != 1) {
@@ -400,32 +445,33 @@ for ($w = 0; $w < count($genarray); $w++) {
                 }
 
                 // *** Marriage data ***
-                $extra_popup_text .= '<br>' . $genarray[$w]["htx"] . "<br>";
+                $extra_popup_text .= '<br>' . $sanitizePopupHtml($genarray[$w]["htx"]) . "<br>";
                 if (isset($woman)) {
                     $name = $personName->get_person_name($woman, $woman_privacy);
+                    $safeWomanName = $htmlEscaper->escHtmlDecoded($name["standard_name"]);
                     if (isset($genarray[$w]["spfams"]) && isset($genarray[$w]["spgednr"]) && isset($genarray[$w]["sps"])) {
                         // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                         $personLink = new \Genealogy\Include\PersonLink();
                         $url = $personLink->get_person_link($woman);
 
-                        $extra_popup_text .= '<a href="' . $url . '">' . '<strong>' . $name["standard_name"] . '</strong></a>';
+                        $extra_popup_text .= '<a href="' . $htmlEscaper->escHtml($url) . '">' . '<strong>' . $safeWomanName . '</strong></a>';
                     } else {
-                        $extra_popup_text .= $name["standard_name"];
+                        $extra_popup_text .= $safeWomanName;
                     }
 
                     if ($woman_privacy) {
                         $extra_popup_text .= __(' PRIVACY FILTER') . '<br>';  //Tekst privacy weergeven
                     } else {
                         if ($woman->pers_birth_date || $woman->pers_birth_place) {
-                            $extra_popup_text .= ' ' . __('born') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place) . '<br>';
+                            $extra_popup_text .= ' ' . $htmlEscaper->escHtml(__('born')) . $directionMarkers->dirmark1 . ' ' . $htmlEscaper->escHtmlDecoded($datePlace->date_place($woman->pers_birth_date, $woman->pers_birth_place)) . '<br>';
                         }
 
                         if ($woman->pers_death_date || $woman->pers_death_place) {
-                            $extra_popup_text .= ' ' . __('died') . $directionMarkers->dirmark1 . ' ' . $datePlace->date_place($woman->pers_death_date, $woman->pers_death_place) . '<br>';
+                            $extra_popup_text .= ' ' . $htmlEscaper->escHtml(__('died')) . $directionMarkers->dirmark1 . ' ' . $htmlEscaper->escHtmlDecoded($datePlace->date_place($woman->pers_death_date, $woman->pers_death_place)) . '<br>';
                         }
                     }
                 } else {
-                    $extra_popup_text .= __('N.N.');
+                    $extra_popup_text .= $htmlEscaper->escHtml(__('N.N.'));
                 }
             }
 
@@ -448,21 +494,21 @@ for ($w = 0; $w < count($genarray); $w++) {
             $startx = $genarray[$w - 1]["posx"] + $data["hsize"] + 2;
             $starty = $genarray[$w - 1]["posy"] + ($data["vsize"] / 2);
             $width = ($genarray[$w]["posx"]) - ($genarray[$w - 1]["posx"] + $data["hsize"]) - 2;
-            echo  '<div style="position:absolute;border:1px blue dashed;height:2px;width:' . $width . 'px;left:' . $startx . 'px;top:' . $starty . 'px"></div>';
+            echo '<div style="position:absolute;border:1px blue dashed;height:2px;width:' . $cssNumber($width) . 'px;left:' . $cssNumber($startx) . 'px;top:' . $cssNumber($starty) . 'px"></div>';
         }
 
         // draw line to children
         if ($genarray[$w]["nrc"] != 0) {
             $startx = $genarray[$w]["posx"] + ($data["hsize"] / 2);
             $starty = $genarray[$w]["posy"] + $data["vsize"] + 2;
-            echo  '<div class="chart_line" style="position:absolute; height:' . (($data["vdist"] / 2) - 2) . 'px; width:1px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+            echo '<div class="chart_line" style="position:absolute; height:' . $cssNumber(($data["vdist"] / 2) - 2) . 'px; width:1px; left:' . $cssNumber($startx) . 'px; top:' . $cssNumber($starty) . 'px"></div>';
         }
 
         // draw line to parent
         if (isset($genarray[$w]["gen"]) && $genarray[$w]["gen"] != 0 && isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] != 1) {
             $startx = $genarray[$w]["posx"] + ($data["hsize"] / 2);
             $starty = $genarray[$w]["posy"] - ($data["vdist"] / 2);
-            echo '<div class="chart_line" style="position:absolute; height:' . ($data["vdist"] / 2) . 'px;width:1px;left:' . $startx . 'px;top:' . $starty . 'px"></div>';
+            echo '<div class="chart_line" style="position:absolute; height:' . $cssNumber($data["vdist"] / 2) . 'px;width:1px;left:' . $cssNumber($startx) . 'px;top:' . $cssNumber($starty) . 'px"></div>';
         }
 
         // draw horizontal line from 1st child in fam to last child in fam
@@ -478,7 +524,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                 $startx = $genarray[$parent]["fst"] + ($data["hsize"] / 2);
                 $starty = $genarray[$z]["posy"] - ($data["vdist"] / 2);
                 $width = $genarray[$z]["posx"] - $genarray[$parent]["fst"];
-                echo '<div class="chart_line" style="position:absolute; height:1px; width:' . $width . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+                echo '<div class="chart_line" style="position:absolute; height:1px; width:' . $cssNumber($width) . 'px; left:' . $cssNumber($startx) . 'px; top:' . $cssNumber($starty) . 'px"></div>';
             }
         }
     }
@@ -489,21 +535,21 @@ for ($w = 0; $w < count($genarray); $w++) {
             $starty = $genarray[$w - 1]["posy"] + $data["vsize"] + 2;
             $startx = $genarray[$w - 1]["posx"] + ($data["hsize"] / 2);
             $height = ($genarray[$w]["posy"]) - ($genarray[$w - 1]["posy"] + $data["vsize"]) - 2;
-            echo  '<div style="position:absolute;border:1px blue dashed;height:' . $height . 'px; width:3px; left:' . $startx . 'px;top:' . $starty . 'px"></div>';
+            echo '<div style="position:absolute;border:1px blue dashed;height:' . $cssNumber($height) . 'px; width:3px; left:' . $cssNumber($startx) . 'px;top:' . $cssNumber($starty) . 'px"></div>';
         }
 
         // draw line to children
         if ($genarray[$w]["nrc"] != 0) {
             $starty = $genarray[$w]["posy"] + ($data["vsize"] / 2);
             $startx = $genarray[$w]["posx"] + $data["hsize"] + 3;
-            echo '<div class="chart_line" style="position:absolute; height:1px; width:' . (($data["hdist"] / 2) - 2) . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+            echo '<div class="chart_line" style="position:absolute; height:1px; width:' . $cssNumber(($data["hdist"] / 2) - 2) . 'px; left:' . $cssNumber($startx) . 'px; top:' . $cssNumber($starty) . 'px"></div>';
         }
 
         // draw line to parent
         if (isset($genarray[$w]["gen"]) && $genarray[$w]["gen"] != 0 && isset($genarray[$w]["2nd"]) && $genarray[$w]["2nd"] != 1) {
             $starty = $genarray[$w]["posy"] + ($data["vsize"] / 2);
             $startx = $genarray[$w]["posx"] - ($data["hdist"] / 2);
-            echo '<div class="chart_line" style="position:absolute; width:' . ($data["hdist"] / 2) . 'px; height:1px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+            echo '<div class="chart_line" style="position:absolute; width:' . $cssNumber($data["hdist"] / 2) . 'px; height:1px; left:' . $cssNumber($startx) . 'px; top:' . $cssNumber($starty) . 'px"></div>';
         }
 
         // draw vertical line from 1st child in fam to last child in fam
@@ -519,7 +565,7 @@ for ($w = 0; $w < count($genarray); $w++) {
                 $starty = $genarray[$parent]["fst"] + ($data["vsize"] / 2);
                 $startx = $genarray[$z]["posx"] - ($data["hdist"] / 2);
                 $height = $genarray[$z]["posy"] - $genarray[$parent]["fst"];
-                echo '<div class="chart_line" style="position:absolute; width:1px; height:' . $height . 'px; left:' . $startx . 'px; top:' . $starty . 'px"></div>';
+                echo '<div class="chart_line" style="position:absolute; width:1px; height:' . $cssNumber($height) . 'px; left:' . $cssNumber($startx) . 'px; top:' . $cssNumber($starty) . 'px"></div>';
             }
         }
     }
@@ -527,72 +573,3 @@ for ($w = 0; $w < count($genarray); $w++) {
     ?>
 
     </div> <!-- png -->
-    <!-- </div> --> <!-- doublescroll -->
-
-    <?php
-    // YB:
-    // before creating the image (for printing the chart) we want to hide unnecessary items such as the help link, the menu box etc
-    // we also have to set the width and height of the "png" div (this can't be set before because then the double scrollbars won't work
-    // after generating the image, all those items are returned to their previous state....
-    // *** 19-08-2022: script updated by Huub ***
-    if ($hourglass === false) {
-        echo "<script>
-        function showimg() {
-            //document.getElementById('helppopup').style.visibility = 'hidden';
-            document.getElementById('menubox').style.visibility = 'hidden';
-            document.getElementById('imgbutton').style.visibility = 'hidden';
-            document.getElementById('nav-tab').style.visibility = 'hidden';
-            document.getElementById('png').style.width = '" . $divlen . "px';
-            document.getElementById('png').style.height= '" . $divhi . "px';
-
-            // *** Change ancestorName class, DO NOT USE A _ CHARACTER IN CLASS NAME ***
-            const el = document.querySelectorAll('.ancestorName');
-            el.forEach((elItem) => {
-                //elItem.style.setProperty('border-radius', 'none', 'important');
-                elItem.style.setProperty('box-shadow', 'none', 'important');
-            });
-
-            html2canvas(document.querySelector('#png')).then(canvas => {
-                var img = canvas.toDataURL();
-
-                // *** Show image at the same page ***
-                //document.body.appendChild(canvas);
-
-                //document.getElementById('helppopup').style.visibility = 'visible';
-                document.getElementById('menubox').style.visibility = 'visible';
-                document.getElementById('imgbutton').style.visibility = 'visible';
-                document.getElementById('png').style.width = 'auto';
-                document.getElementById('png').style.height= 'auto';
-
-                var newWin = window.open();
-                newWin.document.open();
-                newWin.document.write('<!DOCTYPE html><head></head><body>" . __('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ') . "<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>" . __('If you have a plotter you can use its software to print the image on one large sheet.') . "<br><br><img src=\"' + img + '\"></body></html>');
-                newWin.document.close();
-            });
-        }
-        </script>";
-    }
-    ?>
-
-    <!--
-    <script>
-        function DoubleScroll(element) {
-            var scrollbar = document.createElement('div');
-            scrollbar.appendChild(document.createElement('div'));
-            scrollbar.style.overflow = 'auto';
-            scrollbar.style.overflowY = 'hidden';
-            scrollbar.firstChild.style.width = element.scrollWidth + 'px';
-            scrollbar.firstChild.style.paddingTop = '1px';
-            scrollbar.firstChild.style.height = '20px';
-            scrollbar.firstChild.appendChild(document.createTextNode('\xA0'));
-            scrollbar.onscroll = function() {
-                element.scrollLeft = scrollbar.scrollLeft;
-            };
-            element.onscroll = function() {
-                scrollbar.scrollLeft = element.scrollLeft;
-            };
-            element.parentNode.insertBefore(scrollbar, element);
-        }
-        DoubleScroll(document.getElementById('doublescroll'));
-    </script>
--->

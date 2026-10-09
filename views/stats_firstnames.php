@@ -1,9 +1,10 @@
 <?php
 // TODO use MVC model
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 $maxnames = 30;
-if (isset($_POST['freqfirstnames'])) {
-    $maxnames = $_POST['freqfirstnames'];
+if (isset($_POST['freqfirstnames']) && in_array((int)$_POST['freqfirstnames'], [30, 50, 75, 100, 200, 300, 100000], true)) {
+    $maxnames = (int)$_POST['freqfirstnames'];
 }
 
 $m_first_names = array();
@@ -64,6 +65,8 @@ uksort(
 );
 
 $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
+$path_tmp_url = html_entity_decode($path_tmp, ENT_QUOTES, 'UTF-8');
+$form_action = $processLinks->get_link($uri_path, 'statistics', $tree_id, true) . 'menu_tab=stats_firstnames';
 
 count($m_first_names) < count($f_first_names) ? $most = count($f_first_names) : $most = count($m_first_names);
 if ($most > $maxnames) {
@@ -72,10 +75,12 @@ if ($most > $maxnames) {
 $row = round($most / 2);
 $m_keys = array_keys($m_first_names);
 $f_keys = array_keys($f_first_names);
+$m_baseperc = $m_first_names ? (int)reset($m_first_names) : 0;
+$f_baseperc = $f_first_names ? (int)reset($f_first_names) : 0;
 ?>
 
 <div style="text-align:center" class="my-3">
-    <form method="POST" action="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?> " id="frqfirnames">
+    <form method="POST" action="<?= $HtmlEscaper->escHtml($form_action); ?>" id="frqfirnames">
         <div class="mb-2 row me-1">
             <div class="col-sm-2"></div>
 
@@ -124,56 +129,60 @@ $f_keys = array_keys($f_first_names);
             <!-- male 1st name -->
             <td class="m_namelst">
                 <?php if (isset($m_keys[$i]) && isset($m_first_names[$m_keys[$i]])) { ?>
-                    <a href="<?= $path_tmp; ?>sexe=M&amp;pers_firstname=<?= $m_keys[$i]; ?>&amp;part_firstname=contains"><?= $m_keys[$i]; ?></a>
+                    <?php $personLink = $path_tmp_url . 'sexe=M&pers_firstname=' . rawurlencode((string)$m_keys[$i]) . '&part_firstname=contains'; ?>
+                    <a href="<?= $HtmlEscaper->escHtml($personLink); ?>"><?= $HtmlEscaper->escHtml($m_keys[$i]); ?></a>
                 <?php } ?>
             </td>
 
             <!-- male 1st nr -->
             <td class="m_namenr" style="text-align:center;border-right-width:3px">
                 <?php if (isset($m_keys[$i]) && isset($m_first_names[$m_keys[$i]])) { ?>
-                    <?= $m_first_names[$m_keys[$i]]; ?>
+                    <?= (int)$m_first_names[$m_keys[$i]]; ?>
                 <?php } ?>
             </td>
 
             <!-- male 2nd name -->
             <td class="m_namelst">
                 <?php if (isset($m_keys[$i + $row]) && isset($m_first_names[$m_keys[$i + $row]])) { ?>
-                    <a href="<?= $path_tmp; ?>sexe=M&amp;pers_firstname=<?= $m_keys[$i + $row]; ?>&amp;part_firstname=contains"><?= $m_keys[$i + $row]; ?></a>
+                    <?php $personLink = $path_tmp_url . 'sexe=M&pers_firstname=' . rawurlencode((string)$m_keys[$i + $row]) . '&part_firstname=contains'; ?>
+                    <a href="<?= $HtmlEscaper->escHtml($personLink); ?>"><?= $HtmlEscaper->escHtml($m_keys[$i + $row]); ?></a>
                 <?php } ?>
             </td>
 
             <!-- male 2nd nr -->
             <td class="m_namenr" style="text-align:center;border-right-width:6px">
                 <?php if (isset($m_keys[$i + $row]) && isset($m_first_names[$m_keys[$i + $row]])) { ?>
-                    <?= $m_first_names[$m_keys[$i + $row]]; ?>
+                    <?= (int)$m_first_names[$m_keys[$i + $row]]; ?>
                 <?php } ?>
             </td>
 
             <!-- female 1st name -->
             <td class="f_namelst">
                 <?php if (isset($f_keys[$i]) && isset($f_first_names[$f_keys[$i]])) { ?>
-                    <a href="<?= $path_tmp; ?>sexe=F&amp;pers_firstname=<?= $f_keys[$i]; ?>&amp;part_firstname=contains"><?= $f_keys[$i]; ?></a>
+                    <?php $personLink = $path_tmp_url . 'sexe=F&pers_firstname=' . rawurlencode((string)$f_keys[$i]) . '&part_firstname=contains'; ?>
+                    <a href="<?= $HtmlEscaper->escHtml($personLink); ?>"><?= $HtmlEscaper->escHtml($f_keys[$i]); ?></a>
                 <?php } ?>
             </td>
 
             <!-- female 1st nr -->
             <td class="f_namenr" style="text-align:center;border-right-width:3px">
                 <?php if (isset($f_keys[$i]) && isset($f_first_names[$f_keys[$i]])) { ?>
-                    <?= $f_first_names[$f_keys[$i]]; ?>
+                    <?= (int)$f_first_names[$f_keys[$i]]; ?>
                 <?php } ?>
             </td>
 
             <!-- female 2nd name -->
             <td class="f_namelst">
                 <?php if (isset($f_keys[$i + $row]) && isset($f_first_names[$f_keys[$i + $row]])) { ?>
-                    <a href="<?= $path_tmp; ?>sexe=F&amp;pers_firstname=<?= $f_keys[$i + $row]; ?>&amp;part_firstname=contains"><?= $f_keys[$i + $row]; ?></a>
+                    <?php $personLink = $path_tmp_url . 'sexe=F&pers_firstname=' . rawurlencode((string)$f_keys[$i + $row]) . '&part_firstname=contains'; ?>
+                    <a href="<?= $HtmlEscaper->escHtml($personLink); ?>"><?= $HtmlEscaper->escHtml($f_keys[$i + $row]); ?></a>
                 <?php } ?>
             </td>
 
             <!-- female 2nd nr -->
             <td class="f_namenr" style="text-align:center;border-right-width:1px">
                 <?php if (isset($f_keys[$i + $row]) && isset($f_first_names[$f_keys[$i + $row]])) { ?>
-                    <?= $f_first_names[$f_keys[$i + $row]]; ?>
+                    <?= (int)$f_first_names[$f_keys[$i + $row]]; ?>
                 <?php } ?>
             </td>
         </tr>
@@ -182,7 +191,7 @@ $f_keys = array_keys($f_first_names);
 
 <!-- Show lightgray bars -->
 <script>
-    var m_baseperc = <?= reset($m_first_names); ?>;
-    var f_baseperc = <?= reset($f_first_names); ?>;
+    var m_baseperc = <?= $m_baseperc; ?>;
+    var f_baseperc = <?= $f_baseperc; ?>;
 </script>
 <script src="assets/js/stats_firstnames.js"></script>

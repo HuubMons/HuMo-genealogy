@@ -10,7 +10,7 @@ use Genealogy\Include\PersonLink;
 use Genealogy\Include\PersonName;
 use Genealogy\Include\PersonPrivacy;
 use Genealogy\Include\ProcessLinks;
-use Genealogy\Include\SafeTextShow;
+use Genealogy\Include\HtmlEscaper;
 use Genealogy\Include\ShowTreeDate;
 use Genealogy\Include\ShowTreeText;
 use PDO;
@@ -532,7 +532,7 @@ class TreeIndexModel extends BaseModel
     // *** Search field ***
     public function search_box(): string
     {
-        $safeTextShow = new SafeTextShow();
+        $HtmlEscaper = new HtmlEscaper();
 
         $text = '';
 
@@ -589,7 +589,7 @@ class TreeIndexModel extends BaseModel
         $quicksearch = '';
         if (isset($_POST['quicksearch'])) {
             //$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
-            $quicksearch = $safeTextShow->safe_text_show($_POST['quicksearch']);
+            $quicksearch = $HtmlEscaper->escHtml($_POST['quicksearch']);
             $_SESSION["save_quicksearch"] = $quicksearch;
         }
         if (isset($_SESSION["save_quicksearch"])) {

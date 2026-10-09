@@ -20,6 +20,7 @@ if (isset($tree_id) && $tree_id) {
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $showTreeDate = new \Genealogy\Include\ShowTreeDate();
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
 
 <h2><?= __('Family statistics (numbers since last GEDCOM update)'); ?></h2>
@@ -33,12 +34,12 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
 
         if ($familytree->tree_id == $tree_id) {
     ?>
-            <b><?= $treetext['name']; ?></b>
+            <b><?= $HtmlEscaper->escHtml($treetext['name']); ?></b>
         <?php } else { ?>
-            <a href="index.php?page=statistics&amp;&amp;tab=statistics_families&amp;tree_id=<?= $familytree->tree_id; ?>"><?= $treetext['name']; ?></a>
+            <a href="index.php?page=statistics&amp;&amp;tab=statistics_families&amp;tree_id=<?= $HtmlEscaper->escHtml((string) $familytree->tree_id); ?>"><?= $HtmlEscaper->escHtml($treetext['name']); ?></a>
         <?php } ?>
         <font size=-1>
-            (<?= $tree_date; ?>: <?= $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= $familytree->tree_families; ?> <?= __('families'); ?>)
+            (<?= $HtmlEscaper->escHtml($tree_date); ?>: <?= $HtmlEscaper->escHtml((string) $familytree->tree_persons); ?> <?= __('persons'); ?>, <?= $HtmlEscaper->escHtml((string) $familytree->tree_families); ?> <?= __('families'); ?>)
         </font><br>
 <?php
     }
@@ -67,7 +68,7 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     $link = $processLinks->get_link('../', 'family', $familyDb->fam_tree_id, false, $vars);
 ?>
 
-    <?= $familyDb->fam_counter; ?> <a href="<?= $link; ?>"><?= __('Family'); ?>:</a>
+    <?= $HtmlEscaper->escHtml((string) $familyDb->fam_counter); ?> <a href="<?= $HtmlEscaper->escHtml($link); ?>"><?= __('Family'); ?>:</a>
 
 <?php
     // *** Man ***
@@ -77,7 +78,7 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     } else {
         $privacy = $personPrivacy->get_privacy($personDb);
         $name = $personName->get_person_name($personDb, $privacy);
-        echo $name["standard_name"];
+        echo $HtmlEscaper->escHtml($name["standard_name"]);
     }
 
     echo ' &amp; ';
@@ -89,7 +90,7 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     } else {
         $privacy = $personPrivacy->get_privacy($personDb);
         $name = $personName->get_person_name($personDb, $privacy);
-        echo $name["standard_name"];
+        echo $HtmlEscaper->escHtml($name["standard_name"]);
     }
     echo '<br>';
 }

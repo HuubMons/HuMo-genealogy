@@ -15,7 +15,7 @@ if (isset($_SESSION['admin_tree_id'])) {
 
     echo "Data Submitted succesfully";
 
-    echo '<br>' . $_GET['event_gedcom_add'] . ' ' . $_GET['event_event_name'] . '!';
+    //echo '<br>' . $_GET['event_gedcom_add'] . ' ' . $_GET['event_event_name'] . '!';
 
     //TEST
     /*

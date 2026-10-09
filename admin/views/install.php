@@ -631,6 +631,8 @@ if (isset($_POST['install_tables2'])) {
             KEY (event_kind),
             KEY (person_id),
             KEY (relation_id),
+            KEY idx_relation_kind_place (relation_id, event_kind, place_id),
+            KEY idx_kind_relation_place (event_kind, relation_id, place_id),
             KEY (place_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
@@ -673,7 +675,8 @@ if (isset($_POST['install_tables2'])) {
                 INDEX idx_relation_gedcomnumber (relation_gedcomnumber),
                 INDEX idx_person_id (person_id),
                 INDEX idx_person_gedcomnumber (person_gedcomnumber),
-                INDEX idx_relation_type (relation_type)
+                INDEX idx_relation_type (relation_type),
+                INDEX idx_relation_type_order (relation_id, relation_type, partner_order)
             );
         ");
 

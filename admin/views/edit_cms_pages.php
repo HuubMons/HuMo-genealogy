@@ -10,13 +10,13 @@ if (!defined('ADMIN_PAGE')) {
 
 <ul class="nav nav-tabs pt-2">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($edit_cms_pages['menu_tab'] === 'pages') echo 'active'; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=pages"><?= __('Pages'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $edit_cms_pages['menu_tab'] === 'pages' ? 'active' : ''; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=pages"><?= __('Pages'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($edit_cms_pages['menu_tab'] === 'menu') echo 'active'; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=menu"><?= __('Menu'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $edit_cms_pages['menu_tab'] === 'menu' ? 'active' : ''; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=menu"><?= __('Menu'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($edit_cms_pages['menu_tab'] === 'settings')  echo 'active'; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=settings"><?= __('CMS settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $edit_cms_pages['menu_tab'] === 'settings' ? 'active' : ''; ?>" href="index.php?page=edit_cms_pages&amp;cms_tab=settings"><?= __('CMS settings'); ?></a>
     </li>
 </ul>
 

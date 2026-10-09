@@ -19,6 +19,7 @@
  */
 
 $ancestorBox = new \Genealogy\Include\AncestorBox();
+$htmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 $genarray = $data["genarray"];
 $hourglass = true;
@@ -81,7 +82,7 @@ $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
 
 $vars['pers_family'] = $data["family_id"];
 $path_tmp = $processLinks->get_link($uri_path, 'hourglass', $tree_id, true, $vars);
-$path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
+$path_tmp .= "main_person=" . rawurlencode((string) $data["main_person"]) . '&amp;screen_mode=HOUR';
 ?>
 
 <h1 class="standard_header" style="margin:auto; text-align: center;">
@@ -100,7 +101,7 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
             <?php
             // min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
             // *** Don't use &amp; in link in javascript ***
-            $path_tmp = str_replace('&amp;', '&', $path_tmp);
+            $path_tmp_js = str_replace('&amp;', '&', $path_tmp);
 
             echo '<script>
             $(function() {
@@ -120,7 +121,7 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
                 $("#slider").on("slidestop", function(event, ui) {
                     endPos = ui.value;
                     if (startPos != endPos) {
-                        window.location.href = "' . $path_tmp . '&chosensize="+((endPos+1)*5)+"&chosengen=' . $data["chosengen"] . '&chosengenanc=' . $data["chosengenanc"] . '&direction=' . $data["direction"] . '";
+                        window.location.href = ' . json_encode($path_tmp_js, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ' + "&chosensize=" + ((endPos+1)*5) + "&chosengen=" + ' . (int) $data["chosengen"] . ' + "&chosengenanc=" + ' . (int) $data["chosengenanc"] . ' + "&direction=" + ' . (int) $data["direction"] . ';
                     }
                     startPos = endPos;
                 });
@@ -134,7 +135,12 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
         </div>
 
         <div class="col-md-auto">
-            <?= __('Hourglass chart') . __(' of ') . '<b>' . $genarray[0]["nam"] . '</b>'; ?>
+            <?php
+            $hourglassRootPerson = $db_functions->get_person($genarray[0]["gednr"]);
+            $hourglassRootPrivacy = (new \Genealogy\Include\PersonPrivacy())->get_privacy($hourglassRootPerson);
+            $hourglassRootName = (new \Genealogy\Include\PersonName())->get_person_name($hourglassRootPerson, $hourglassRootPrivacy);
+            ?>
+            <?= $htmlEscaper->escHtml(__('Hourglass chart') . __(' of ')); ?><b><?= $htmlEscaper->escHtmlDecoded($hourglassRootName["standard_name"]); ?><?= $hourglassRootName["colour_mark"]; ?></b>
         </div>
     </div>
 
@@ -146,8 +152,9 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
             <select name="chosengenanc" onChange="window.location=this.value" class="form-select form-select-sm">
                 <?php
                 for ($i = 2; $i <= 12; $i++) {
-                    echo '<option value="' . $path_tmp . '&amp;direction=' . $data["direction"] . '&amp;chosensize=' .
-                        $data["size"] . '&amp;chosengen=' . $data["chosengen"] . '&amp;chosengenanc=' . $i . '"';
+                    $optionUrl = $path_tmp . '&amp;direction=' . (int) $data["direction"] . '&amp;chosensize=' .
+                        (int) $data["size"] . '&amp;chosengen=' . (int) $data["chosengen"] . '&amp;chosengenanc=' . $i;
+                    echo '<option value="' . $htmlEscaper->escHtml($optionUrl) . '"';
                     if ($i == $data["chosengenanc"]) {
                         echo "selected=\"selected\" ";
                     }
@@ -166,8 +173,9 @@ $path_tmp .= "main_person=" . $data["main_person"] . '&amp;screen_mode=HOUR';
             <select name="chosengen" onChange="window.location=this.value" class="form-select form-select-sm">
                 <?php
                 for ($i = 2; $i <= 15; $i++) {
-                    echo '<option value="' . $path_tmp . '&amp;direction=' . $data["direction"] . '&amp;chosensize=' .
-                        $data["size"] . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . $data["chosengenanc"] . '"';
+                    $optionUrl = $path_tmp . '&amp;direction=' . (int) $data["direction"] . '&amp;chosensize=' .
+                        (int) $data["size"] . '&amp;chosengen=' . $i . '&amp;chosengenanc=' . (int) $data["chosengenanc"];
+                    echo '<option value="' . $htmlEscaper->escHtml($optionUrl) . '"';
                     if ($i == $data["chosengen"]) {
                         echo "selected=\"selected\" ";
                     }

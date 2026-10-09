@@ -62,6 +62,7 @@ $personName = new \Genealogy\Include\PersonName();
 $personName_extended = new \Genealogy\Include\PersonNameExtended();
 $personData = new \Genealogy\Include\PersonData();
 $ancestorLabel = new \Genealogy\Include\AncestorLabel();
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 $privacy = $personPrivacy->get_privacy($persDb);
 $name = $personName->get_person_name($persDb, $privacy);
@@ -325,11 +326,11 @@ $vars['id'] = $data["main_person"];
 $link = $processLinks->get_link($uri_path, 'ancestor_report', $tree_id, false, $vars);
 ?>
 
-<br><br><a href="<?= $file_name; ?>"><?= __('Download RTF report.'); ?></a>
+<br><br><a href="<?= $HtmlEscaper->escHtml($file_name); ?>"><?= __('Download RTF report.'); ?></a>
 <br><br><?= __('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.'); ?>
 
 <br><br>
-<form method="POST" action="<?= $link; ?>" style="display : inline;">
+<form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display : inline;">
     <input type="hidden" name="screen_mode" value="">
     <input type="Submit" name="submit" value="<?= __('Back'); ?>" class="btn btn-sm btn-success">
 </form>

@@ -102,7 +102,7 @@ if (isset($screen_mode) && ($screen_mode == "STAR" || $screen_mode == "STARSIZE"
 $botDetector = new Genealogy\Include\BotDetector();
 $mediaPath = new Genealogy\Include\MediaPath();
 $showTreeText = new Genealogy\Include\ShowTreeText();
-$safeTextShow = new Genealogy\Include\SafeTextShow();
+$HtmlEscaper = new Genealogy\Include\HtmlEscaper();
 
 function getActiveTopMenu(string $page = 'home')
 {
@@ -169,7 +169,7 @@ if ($menu) {
     }
 
     // *** Show logo or name of website ***
-    $logo = $humo_option["database_name"];
+    $logo = $HtmlEscaper->escHtml((string) $humo_option["database_name"]);
     if (is_file('media/logo.png')) {
         $logo = '<img src="' . $mediaPath->give_media_path('media/', 'logo.png') . '">';
     } elseif (is_file('media/logo.jpg')) {
@@ -205,14 +205,14 @@ if ($page == 'family') {
         } else {
             $canonical_path = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['PHP_SELF'], 0, $position);
         }
-        $canonical_path = $canonical_path . '/index.php?page=family&amp;tree_id=' . $tree_id . '&amp;id=' . $data["family_id"];
+        $canonical_path = $canonical_path . '/index.php?page=family&tree_id=' . $tree_id . '&id=' . $data["family_id"];
     }
 }
 ?>
 
 <!DOCTYPE html>
 
-<html lang="<?= $selected_language; ?>" <?= $html_text; ?>>
+<html lang="<?= $HtmlEscaper->escHtml((string) $selected_language); ?>" <?= $html_text; ?>>
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -221,14 +221,14 @@ if ($page == 'family') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Remark: title is changed using javascript in family.php -->
-    <title><?= $index['main_admin']; ?></title>
+    <title><?= $HtmlEscaper->escHtml((string) $index['main_admin']); ?></title>
 
     <?php if ($humo_option["searchengine"] == "j") { ?>
-        <?= $humo_option["robots_option"]; ?>
+        <?= $HtmlEscaper->escHtml((string) $humo_option["robots_option"]); ?>
     <?php } ?>
 
     <?php if ($base_href) { ?>
-        <base href="<?= $base_href; ?>">
+        <base href="<?= $HtmlEscaper->escHtml((string) $base_href); ?>">
     <?php } ?>
 
     <!-- Bootstrap added in dec. 2023 -->
@@ -241,7 +241,7 @@ if ($page == 'family') {
     <!-- TODO check print version -->
     <link href="css/print.css" rel="stylesheet" type="text/css" media="print">
 
-    <link rel="icon" href="<?= $faviconLink; ?>" type="image/x-icon">
+    <link rel="icon" href="<?= $HtmlEscaper->escHtml((string) $faviconLink); ?>" type="image/x-icon">
 
     <?php
     /**
@@ -303,7 +303,7 @@ if ($page == 'family') {
     <link rel="stylesheet" media="(max-width: 640px)" href="css/gedcom_mobile.css">
 
     <?php if ($page == 'family') { ?>
-        <link rel="canonical" href="<?= $canonical_path; ?>">
+        <link rel="canonical" href="<?= $HtmlEscaper->escHtml((string) $canonical_path); ?>">
     <?php } ?>
 
     <!-- Extra items in header added by admin -->
@@ -321,7 +321,7 @@ if ($page == 'family') {
                     <div class="col-md-4">
                         <span id="top_website_name">
                             <!-- *** Show logo or name of website *** -->
-                            &nbsp;<a href="<?= $humo_option["homepage"]; ?>"><?= $logo; ?></a>
+                            &nbsp;<a href="<?= $HtmlEscaper->escHtml((string) $humo_option["homepage"]); ?>"><?= $logo; ?></a>
                         </span>
                         &nbsp;&nbsp;
                     </div>
@@ -339,7 +339,7 @@ if ($page == 'family') {
                             $link = $processLinks->get_link($uri_path, 'tree_index');
                     ?>
                             <div class="col-md-3">
-                                <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                                <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display : inline;">
                                     <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
                                         <option value=""><?= __('Select a family tree:'); ?></option>
                                         <?php
@@ -357,7 +357,7 @@ if ($page == 'family') {
                                                     $selected = ' selected';
                                                 }
                                                 $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
-                                                echo '<option value="' . $tree_searchDb->tree_id . '"' . $selected . '>' . $treetext['name'] . '</option>';
+                                                echo '<option value="' . $HtmlEscaper->escHtml((string) $tree_searchDb->tree_id) . '"' . $selected . '>' . $HtmlEscaper->escHtml($treetext['name']) . '</option>';
                                                 $count++;
                                             }
                                         }
@@ -377,27 +377,28 @@ if ($page == 'family') {
 
                         $quicksearch = '';
                         if (isset($_POST['quicksearch'])) {
-                            $quicksearch = $safeTextShow->safe_text_show($_POST['quicksearch']);
+                            $quicksearch = (string) $_POST['quicksearch'];
                             $_SESSION["save_quicksearch"] = $quicksearch;
                         }
                         if (isset($_SESSION["save_quicksearch"])) {
                             $quicksearch = $_SESSION["save_quicksearch"];
                         }
-                        if ($humo_option['min_search_chars'] == 1) {
+                        $minSearchChars = (int) $humo_option['min_search_chars'];
+                        if ($minSearchChars == 1) {
                             $pattern = "";
                             $min_chars = " 1 ";
                         } else {
-                            $pattern = 'pattern=".{' . $humo_option['min_search_chars'] . ',}"';
-                            $min_chars = " " . $humo_option['min_search_chars'] . " ";
+                            $pattern = 'pattern=".{'. $minSearchChars . ',}"';
+                            $min_chars = " " . $minSearchChars . " ";
                         }
                     ?>
 
                         <div class="col-md-2">
-                            <form method="post" action="<?= $menu_path; ?>">
+                            <form method="post" action="<?= $HtmlEscaper->escHtml($menu_path); ?>">
                                 <input type="hidden" name="index_list" value="quicksearch">
                                 <input type="hidden" name="search_database" value="tree_selected">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control form-control-sm" name="quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $quicksearch; ?>" size="10" <?= $pattern; ?> title="<?= __('Minimum:') . $min_chars . __('characters'); ?>">
+                                    <input type="text" class="form-control form-control-sm" name="quicksearch" placeholder="<?= __('Name'); ?>" value="<?= $HtmlEscaper->escHtml((string) $quicksearch); ?>" size="10" <?= $pattern; ?> title="<?= $HtmlEscaper->escHtml(__('Minimum:') . $min_chars . __('characters')); ?>">
                                     <button type="submit" class="btn btn-success btn-sm"><?= __('Search'); ?></button>
                                 </div>
                             </form>
@@ -408,10 +409,10 @@ if ($page == 'family') {
                             <?php
                             // *** Link for extended search form ***
                             $menu_path = $processLinks->get_link($uri_path, 'list', $tree_id, true);
-                            $menu_path .= 'adv_search=1&amp;index_list=search';
+                            $menu_path .= 'adv_search=1&index_list=search';
                             ?>
 
-                            <form method="post" action="<?= $menu_path; ?>">
+                            <form method="post" action="<?= $HtmlEscaper->escHtml($menu_path); ?>">
                                 <button type="submit" class="btn btn-light btn-sm"><img src="images/advanced-search.jpg" width="17" alt="<?= __('Advanced search'); ?>"></button>
                             </form>
                         </div>
@@ -428,7 +429,7 @@ if ($page == 'family') {
                     ?>
                         <div class="col-md-2">
 
-                            <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                            <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display : inline;">
                                 <?php /*
                                 <img src="images/favorite_blue.png" alt="<?= __('Favourites'); ?>">
                                 */ ?>
@@ -449,7 +450,7 @@ if ($page == 'family') {
                                                     if ($test_favorite) {
                                                         $privacy = $personPrivacy->get_privacy($test_favorite);
                                                         $name = $personName->get_person_name($test_favorite, $privacy);
-                                                        echo '<option value="' . $favorite_array2['1'] . '|' . $favorite_array2['2'] . '">' . $name['name'] . ' [' . $favorite_array2['2'] . ']</option>';
+                                                        echo '<option value="' . $HtmlEscaper->escHtml($favorite_array2['1'] . '|' . $favorite_array2['2']) . '">' . $HtmlEscaper->escHtml($name['name']) . ' [' . $HtmlEscaper->escHtml($favorite_array2['2']) . ']</option>';
                                                     }
                                                 }
                                             }
@@ -487,7 +488,7 @@ if ($page == 'family') {
             if ($humo_option["url_rewrite"] == "j") {
                 $menu_path_names = 'list_names/' . $tree_id . '/';
             } else {
-                $menu_path_names = 'index.php?page=list_names&amp;tree_id=' . $tree_id;
+                $menu_path_names = 'index.php?page=list_names&tree_id=' . $tree_id;
             }
             // Doesn't work yet. An extra / is added at end of link.
             //$menu_path_names = $processLinks->get_link($uri_path, 'list_names',$tree_id);
@@ -503,12 +504,18 @@ if ($page == 'family') {
             $menu_path_latest_changes = $processLinks->get_link($uri_path, 'latest_changes', $tree_id);
             $menu_path_tree_index = $processLinks->get_link($uri_path, 'tree_index', $tree_id);
             $menu_path_places_persons = $processLinks->get_link($uri_path, 'list', $tree_id, true);
-            $menu_path_places_persons .= 'index_list=places&amp;reset=1';
+            $menu_path_places_persons .= 'index_list=places&reset=1';
             $menu_path_list_places_families = $processLinks->get_link($uri_path, 'list_places_families', $tree_id, true);
             $menu_path_list_places_families .= 'reset=1';
             $menu_path_photoalbum = $processLinks->get_link($uri_path, 'photoalbum', $tree_id);
             $menu_path_sources = $processLinks->get_link($uri_path, 'sources', $tree_id);
             $menu_path_addresses = $processLinks->get_link($uri_path, 'addresses', $tree_id);
+
+            foreach (['menu_path_home', 'menu_path_login', 'menu_path_logoff', 'menu_path_help', 'menu_path_register', 'menu_path_cms', 'menu_path_chat', 'menu_path_cookies', 'menu_path_persons', 'menu_path_names', 'menu_path_user_settings', 'menu_path_admin', 'menu_path_anniversary', 'menu_path_statistics', 'menu_path_calculator', 'menu_path_map', 'menu_path_contact', 'menu_path_latest_changes', 'menu_path_tree_index', 'menu_path_places_persons', 'menu_path_list_places_families', 'menu_path_photoalbum', 'menu_path_sources', 'menu_path_addresses'] as $menuPathVariable) {
+                if (isset($$menuPathVariable)) {
+                    $$menuPathVariable = $HtmlEscaper->escHtml((string) $$menuPathVariable);
+                }
+            }
             ?>
 
         </div> <!-- End of top_menu -->
@@ -694,7 +701,7 @@ if ($page == 'family') {
                                 <?php if ($user['group_menu_login'] == 'j' && $user["user_name"]) {; ?>
                                     <li>
                                         <a class="dropdown-item" href="<?= $menu_path_logoff; ?>"><?= __('Logoff'); ?>
-                                            <span style="color:#0101DF; font-weight:bold;">[<?= ucfirst($_SESSION["user_name"]); ?>]</span>
+                                                <span style="color:#0101DF; font-weight:bold;">[<?= $HtmlEscaper->escHtml(ucfirst((string) $_SESSION["user_name"])); ?>]</span>
                                         </a>
                                     </li>
                                 <?php } ?>
@@ -871,7 +878,7 @@ if ($page == 'family') {
                     <?php
                     $url = $humo_option["url_rewrite"] == "j" ? $uri_path . 'cookies' : 'index.php?page=cookies';
                     if (!$botDetector->isBot()) {
-                        printf(__('European law: %s cookie information'), '<a href="' . $url . '">HuMo-genealogy');
+                        printf(__('European law: %s cookie information'), '<a href="' . $HtmlEscaper->escHtml($url) . '">HuMo-genealogy');
                         echo '</a>';
                     }
                     ?>

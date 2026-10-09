@@ -1,7 +1,7 @@
 <?php
 // *** Check user authority ***
 if ($data["authorised"] != '') {
-    echo $data["authorised"];
+    echo $HtmlEscaper->escHtml((string) $data["authorised"]);
     exit();
 }
 
@@ -12,18 +12,18 @@ $path = $processLinks->get_link($uri_path, 'addresses', $tree_id, true);
 <h1 style="text-align:center;"><?= __('Addresses'); ?></h1>
 
 <div>
-    <form method="POST" action="<?= $path_form; ?>">
-        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+    <form method="POST" action="<?= $HtmlEscaper->escHtml($path_form); ?>">
+        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
         <div class="container">
             <div class="mb-2 row">
                 <div class="col-sm-3"></div>
 
                 <div class="col-sm-2">
-                    <input type="text" class="form-control form-control-sm" name="adr_place" size="15" placeholder="<?= __('City'); ?>" value="<?= $data["adr_place"]; ?>">
+                    <input type="text" class="form-control form-control-sm" name="adr_place" size="15" placeholder="<?= __('City'); ?>" value="<?= $HtmlEscaper->escHtml($data["adr_place"]); ?>">
                 </div>
 
                 <div class="col-sm-2">
-                    <input type="text" class="form-control form-control-sm" name="adr_address" size="15" placeholder="<?= __('Street'); ?>" value="<?= $data["adr_address"]; ?>">
+                    <input type="text" class="form-control form-control-sm" name="adr_address" size="15" placeholder="<?= __('Street'); ?>" value="<?= $HtmlEscaper->escHtml($data["adr_address"]); ?>">
                 </div>
 
                 <input type="submit" class="col-sm-2 btn btn-sm btn-success" value="<?= __('Search'); ?>" name="search_addresses">
@@ -38,8 +38,8 @@ $path = $processLinks->get_link($uri_path, 'addresses', $tree_id, true);
     <table class="table">
         <thead class="table-primary">
             <tr>
-                <th><a href="<?= $path; ?><?= $data["place_link"]; ?>" <?php if ($data["select_sort"] == 'sort_place') echo ' style="background-color:#ffffa0"'; ?>><?= __('City'); ?> <img src="<?= $data["place_image"]; ?>" alt="<?= __('City'); ?>" title="<?= __('City'); ?>"></a></th>
-                <th><a href="<?= $path; ?><?= $data["address_link"]; ?>" <?php if ($data["select_sort"] == 'sort_address') echo ' style="background-color:#ffffa0"'; ?>><?= __('Street'); ?> <img src="<?= $data["address_image"]; ?>" alt="<?= __('Street'); ?>" title="<?= __('Street'); ?>"></a></th>
+                <th><a href="<?= $HtmlEscaper->escHtml($path . $data["place_link"]); ?>" <?php if ($data["select_sort"] == 'sort_place') echo ' style="background-color:#ffffa0"'; ?>><?= __('City'); ?> <img src="<?= $HtmlEscaper->escHtml($data["place_image"]); ?>" alt="<?= __('City'); ?>" title="<?= __('City'); ?>"></a></th>
+                <th><a href="<?= $HtmlEscaper->escHtml($path . $data["address_link"]); ?>" <?php if ($data["select_sort"] == 'sort_address') echo ' style="background-color:#ffffa0"'; ?>><?= __('Street'); ?> <img src="<?= $HtmlEscaper->escHtml($data["address_image"]); ?>" alt="<?= __('Street'); ?>" title="<?= __('Street'); ?>"></a></th>
                 <th><?= __('Text'); ?></th>
             </tr>
         </thead>
@@ -47,7 +47,7 @@ $path = $processLinks->get_link($uri_path, 'addresses', $tree_id, true);
         <?php foreach ($data["addresses"] as $addressDb) { ?>
             <tr>
                 <td style="padding-left:5px;padding-right:5px">
-                    <?php if ($addressDb->address_place != '') echo $addressDb->address_place; ?>
+                    <?php if ($addressDb->address_place != '') echo $HtmlEscaper->escHtml($addressDb->address_place); ?>
                 </td>
 
                 <td style="padding-left:5px;padding-right:5px">
@@ -55,16 +55,18 @@ $path = $processLinks->get_link($uri_path, 'addresses', $tree_id, true);
                     if ($addressDb->address_address != '') {
                         // TODO use function to get link.
                         if ($humo_option["url_rewrite"] == "j") {
-                            echo '<a href="address/' . $tree_id . '/' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                            $addressUrl = 'address/' . rawurlencode((string) $tree_id) . '/' . rawurlencode((string) $addressDb->address_gedcomnr);
+                            echo '<a href="' . $HtmlEscaper->escHtml($addressUrl) . '">' . $HtmlEscaper->escHtml($addressDb->address_address) . '</a>';
                         } else {
-                            echo '<a href="index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr . '">' . $addressDb->address_address . '</a>';
+                            $addressUrl = 'index.php?page=address&tree_id=' . rawurlencode((string) $tree_id) . '&id=' . rawurlencode((string) $addressDb->address_gedcomnr);
+                            echo '<a href="' . $HtmlEscaper->escHtml($addressUrl) . '">' . $HtmlEscaper->escHtml($addressDb->address_address) . '</a>';
                         }
                     }
                     ?>
                 </td>
 
                 <td>
-                    <?= substr($addressDb->address_text, 0, 40); ?>
+                    <?= $HtmlEscaper->escHtml(substr($addressDb->address_text, 0, 40)); ?>
                     <?php if (strlen($addressDb->address_text) > 40) echo '...'; ?>
                 </td>
             </tr>

@@ -92,7 +92,7 @@ class AncestorModel extends FamilyModel
         return $data;
     }
 
-    function getAncestorHeader($name, $main_person): string
+    function getAncestorHeader($name, $main_person): array
     {
         $processLinks = new ProcessLinks();
 
@@ -112,7 +112,7 @@ class AncestorModel extends FamilyModel
         if ($this->humo_option["url_rewrite"] == 'j') {
             $path = 'ancestor_chart/' . $this->tree_id . '/' . $main_person;
         } else {
-            $path = 'index.php?page=ancestor_chart?tree_id=' . $this->tree_id . '&amp;id=' . $main_person;
+            $path = 'index.php?page=ancestor_chart&tree_id=' . $this->tree_id . '&id=' . $main_person;
         }
         $data['header_link'][] = $path;
         $data['header_active'][] = $name == 'Ancestor chart' ? 'active' : '';
@@ -121,7 +121,7 @@ class AncestorModel extends FamilyModel
         if ($this->humo_option["url_rewrite"] == 'j') {
             $path = 'ancestor_sheet/' . $this->tree_id . '/' . $main_person;
         } else {
-            $path = 'index.php?page=ancestor_sheet&amp;tree_id=' . $this->tree_id . '&amp;id=' . $main_person;
+            $path = 'index.php?page=ancestor_sheet&tree_id=' . $this->tree_id . '&id=' . $main_person;
         }
         $data['header_link'][] = $path;
         $data['header_active'][] = $name == 'Ancestor sheet' ? 'active' : '';
@@ -135,28 +135,6 @@ class AncestorModel extends FamilyModel
         $data['header_active'][] = $name == 'Fanchart' ? 'active' : '';
         $data['header_text'][] = __('Fanchart');
 
-        // TODO Move to view (is used multiple times)?
-        // *** Tab menu ***
-        $text = '
-        <h1>' . __('Ancestors') . '</h1>
-        <ul class="nav nav-tabs d-print-none">
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][0] . '" href="' . $data['header_link'][0] . '" rel="nofollow">' . $data['header_text'][0] . '</a>
-            </li>
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][1] . '" href="' . $data['header_link'][1] . '" rel="nofollow">' . $data['header_text'][1] . '</a>
-            </li>
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][2] . '" href="' . $data['header_link'][2] . '" rel="nofollow">' . $data['header_text'][2] . '</a>
-            </li>
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][3] . '" href="' . $data['header_link'][3] . '" rel="nofollow">' . $data['header_text'][3] . '</a>
-            </li>
-        </ul>
-        <!-- Align content to the left -->
-        <!-- <div style="float: left; background-color:white; height:500px; padding:10px;"> -->
-        <div style="float: left; background-color:white; padding:10px;">';
-
-        return $text;
+        return $data;
     }
 }
