@@ -39,31 +39,55 @@ class GeneralSettings
         // ..............................
 
         // *** Sept. 2026: add indexes to tables humo_events and humo_relations_persons for better performance ***
-        $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_relation_kind_place'")->fetch(PDO::FETCH_ASSOC);
-        if (!$indexExists) {
-            $dbh->exec("
-                ALTER TABLE humo_events
-                ADD INDEX idx_relation_kind_place
-                (relation_id, event_kind, place_id);
-            ");
+        // *** Oct. 2026: Don't remove this script here. Otherwise update could fail ***
+        $eventsTableExists = $dbh->query("SHOW TABLES LIKE 'humo_events'")->fetchColumn();
+        if ($eventsTableExists) {
+            $eventColumns = [];
+            $columnQry = $dbh->query('SHOW COLUMNS FROM humo_events');
+            while ($columnDb = $columnQry->fetch(PDO::FETCH_ASSOC)) {
+                $eventColumns[$columnDb['Field']] = true;
+            }
+
+            if (isset($eventColumns['relation_id'], $eventColumns['event_kind'], $eventColumns['place_id'])) {
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_relation_kind_place'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_events
+                        ADD INDEX idx_relation_kind_place
+                        (relation_id, event_kind, place_id);
+                    ");
+                }
+
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_kind_relation_place'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_events
+                        ADD INDEX idx_kind_relation_place
+                        (event_kind, relation_id, place_id);
+                    ");
+                }
+            }
         }
 
-        $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_kind_relation_place'")->fetch(PDO::FETCH_ASSOC);
-        if (!$indexExists) {
-            $dbh->exec("
-                ALTER TABLE humo_events
-                ADD INDEX idx_kind_relation_place
-                (event_kind, relation_id, place_id);
-            ");
-        }
+        // *** Oct. 2026: Don't remove this script here. Otherwise update could fail ***
+        $relationsTableExists = $dbh->query("SHOW TABLES LIKE 'humo_relations_persons'")->fetchColumn();
+        if ($relationsTableExists) {
+            $relationColumns = [];
+            $columnQry = $dbh->query('SHOW COLUMNS FROM humo_relations_persons');
+            while ($columnDb = $columnQry->fetch(PDO::FETCH_ASSOC)) {
+                $relationColumns[$columnDb['Field']] = true;
+            }
 
-        $indexExists = $dbh->query("SHOW INDEX FROM humo_relations_persons WHERE Key_name = 'idx_relation_type_order'")->fetch(PDO::FETCH_ASSOC);
-        if (!$indexExists) {
-            $dbh->exec("
-                ALTER TABLE humo_relations_persons
-                ADD INDEX idx_relation_type_order
-                (relation_id, relation_type, partner_order);
-            ");
+            if (isset($relationColumns['relation_id'], $relationColumns['relation_type'], $relationColumns['partner_order'])) {
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_relations_persons WHERE Key_name = 'idx_relation_type_order'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_relations_persons
+                        ADD INDEX idx_relation_type_order
+                        (relation_id, relation_type, partner_order);
+                    ");
+                }
+            }
         }
 
         // *** Sept. 2026: create table humo_active_visitors for counting active visitors. Needed to block bots ***
