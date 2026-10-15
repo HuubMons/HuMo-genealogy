@@ -20,6 +20,7 @@ class Editor_cls
     {
         // *** Process BEF, ABT, AFT and BET in an easier pulldown menu ***
         global $field_date, $humo_option;
+        $htmlEscaper = new HtmlEscaper();
         $style = '';
 
         // *** Prevent error in PHP 8.1.1 ***
@@ -75,11 +76,11 @@ class Editor_cls
         $style = '';
         if (substr($process_date, -1) === '!') {
             $process_date = substr($process_date, 0, -1);
-            $style = '; background-color:red"';
+            $style = '; background-color:red';
         }
 ?>
         <div class="input-group">
-            <select size="1" id="<?= $process_name . '_prefix' . $multiple_rows; ?>" name="<?= $process_name . '_prefix' . $multiple_rows; ?>" class="form-select form-select-sm">
+            <select size="1" id="<?= $htmlEscaper->escHtml((string) $process_name . '_prefix' . $multiple_rows); ?>" name="<?= $htmlEscaper->escHtml((string) $process_name . '_prefix' . $multiple_rows); ?>" class="form-select form-select-sm">
                 <option value="">=</option>
                 <option value="BEF " <?= substr($process_date, 0, 4) === 'BEF ' ? 'selected' : ''; ?>><?= __('before'); ?></option>
                 <option value="ABT " <?= substr($process_date, 0, 4) === 'ABT ' ? 'selected' : ''; ?>><?= __('&#177;'); ?></option>
@@ -91,7 +92,7 @@ class Editor_cls
                 <option value="CAL " <?= substr($process_date, 0, 4) === 'CAL ' ? 'selected' : ''; ?>><?= __('calculated'); ?></option>
             </select>
 
-            <input type="text" name="<?= $process_name . $multiple_rows; ?>" style="direction:ltr<?= $style; ?>" value="<?= $text_value; ?>" size="<?= $field_date; ?>" class="form-control form-control-sm">
+            <input type="text" name="<?= $htmlEscaper->escHtml((string) $process_name . $multiple_rows); ?>" style="direction:ltr<?= $htmlEscaper->escHtml($style); ?>" value="<?= $htmlEscaper->escHtml((string) $text_value); ?>" size="<?= (int) $field_date; ?>" class="form-control form-control-sm">
         </div>
 
         <?php
@@ -99,7 +100,7 @@ class Editor_cls
         if ($humo_option['admin_hebnight'] == "y" && $hebnight != 'n') {
         ?>
             <span style="white-space: nowrap">
-                <input type="checkbox" id="<?= $hebvar; ?>" value="y" name="<?= $hebvar; ?>" <?= $hebnight == 'y' ? 'checked' : ''; ?> class="form-check-input"> <label for="<?= $hebvar; ?>"><?= __('After nightfall'); ?></label>
+                <input type="checkbox" id="<?= $htmlEscaper->escHtml((string) $hebvar); ?>" value="y" name="<?= $htmlEscaper->escHtml((string) $hebvar); ?>" <?= $hebnight == 'y' ? 'checked' : ''; ?> class="form-check-input"> <label for="<?= $htmlEscaper->escHtml((string) $hebvar); ?>"><?= __('After nightfall'); ?></label>
             </span>
 <?php
         }

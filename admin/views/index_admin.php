@@ -23,7 +23,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             </div>
 
             <div class="col-md-auto">
-                <?= $humo_option["version"]; ?>
+                <?= $HtmlEscaper->escHtml((string) $humo_option["version"]); ?>
                 <a href="index.php?page=extensions"><?php printf(__('%s extensions'), 'HuMo-genealogy'); ?></a>
             </div>
         </div>
@@ -38,11 +38,11 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
         <div class="col-md-8">
             <?php if ($index['php_version'] < 8) { ?>
                 <div class="alert alert-danger" role="alert">
-                    <?= phpversion(); ?>
+                    <?= $HtmlEscaper->escHtml((string) phpversion()); ?>
                     <?= __('It is recommended to update PHP!'); ?>
                 </div>
             <?php } else { ?>
-                <?= phpversion(); ?>
+                <?= $HtmlEscaper->escHtml((string) phpversion()); ?>
             <?php } ?>
         </div>
     </div>
@@ -57,11 +57,11 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             <div class="col-md-8">
                 <?php if ($index['mysql_version'] < 8) { ?>
                     <div class="alert alert-danger" role="alert">
-                        <?= $index['mysql_version_full']; ?>
+                        <?= $HtmlEscaper->escHtml((string) $index['mysql_version_full']); ?>
                         <?= __('It is recommended to update MySQL!'); ?>
                     </div>
                 <?php } else { ?>
-                    <?= $index['mysql_version_full']; ?>
+                    <?= $HtmlEscaper->escHtml((string) $index['mysql_version_full']); ?>
                 <?php } ?>
             </div>
         </div>
@@ -76,7 +76,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             </div>
             <div class="col-md-8">
                 <?= __('OK'); ?>
-                <font size=-1>(<?= __('Database name'); ?>: <?= DATABASE_NAME; ?>)</font>
+                <font size=-1>(<?= __('Database name'); ?>: <?= $HtmlEscaper->escHtml((string) DATABASE_NAME); ?>)</font>
             </div>
 
         <?php } else { ?>
@@ -96,21 +96,21 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
 
                         <tr>
                             <td><?= __('Database host'); ?></td>
-                            <td><input type="text" name="db_host" value="<?= $index['db_host']; ?>" class="form-control" size="15"></td>
+                            <td><input type="text" name="db_host" value="<?= $HtmlEscaper->escHtml((string) $index['db_host']); ?>" class="form-control" size="15"></td>
                             <td>localhost</td>
                             <td>localhost</td>
                         </tr>
 
                         <tr>
                             <td><?= __('Database username'); ?></td>
-                            <td><input type="text" name="db_username" value="<?= $index['db_username']; ?>" class="form-control" size="15"></td>
+                            <td><input type="text" name="db_username" value="<?= $HtmlEscaper->escHtml((string) $index['db_username']); ?>" class="form-control" size="15"></td>
                             <td>database_username</td>
                             <td>root</td>
                         </tr>
 
                         <tr>
                             <td><?= __('Database password'); ?></td>
-                            <td><input type="text" name="db_password" value="<?= $index['db_password']; ?>" class="form-control" size="15"></td>
+                            <td><input type="text" name="db_password" value="<?= $HtmlEscaper->escHtml((string) $index['db_password']); ?>" class="form-control" size="15"></td>
                             <td>database_password</td>
                             <td><br></td>
                         </tr>
@@ -118,7 +118,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
                         <tr>
                             <td><?= __('Database name'); ?></td>
                             <td>
-                                <input type="text" name="db_name" value="<?= $index['db_name']; ?>" class="form-control" size="15">
+                                <input type="text" name="db_name" value="<?= $HtmlEscaper->escHtml((string) $index['db_name']); ?>" class="form-control" size="15">
                             </td>
                             <td>database_name</td>
                             <td>humo-gen</td>
@@ -237,7 +237,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             </div>
 
             <div class="col-md-auto">
-                <?= $size; ?>
+                <?= $HtmlEscaper->escHtml((string) $size); ?>
                 <a href="index.php?page=statistics"><?= __('If needed remove old statistics.'); ?></a>
             </div>
         </div>
@@ -361,7 +361,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             <div class="col-md-8">
                 <?php if (isset($backup_files[0])) { ?>
                     <!-- 2023_02_23_09_56_humo-genealogy_backup.sql.zip -->
-                    <?= __('Last database backup') . ': ' . substr($backup_files[0], 8, 2) . '-' . substr($backup_files[0], 5, 2) . '-' . substr($backup_files[0], 0, 4) . '.'; ?>
+                    <?= $HtmlEscaper->escHtml(__('Last database backup') . ': ' . substr($backup_files[0], 8, 2) . '-' . substr($backup_files[0], 5, 2) . '-' . substr($backup_files[0], 0, 4) . '.'); ?>
                     <a href="index.php?page=backup"><?= __('Database backup'); ?></a>
                 <?php } else { ?>
                     <div class="alert alert-danger" role="alert">
@@ -400,7 +400,7 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
             </div>
 
             <div class="col-md-8">
-                <?= $active_users; ?> <a href="index.php?page=settings"><?= __('Website visitor limits'); ?></a>
+                <?= (int) $active_users; ?> <a href="index.php?page=settings"><?= __('Website visitor limits'); ?></a>
             </div>
         </div>
 
@@ -541,29 +541,29 @@ $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
 
                 <div class="row mb-2">
                     <div class="col-md-4">
-                        <?= __('Status tree'); ?> <?= $tree_counter; ?>
+                            <?= __('Status tree'); ?> <?= (int) $tree_counter; ?>
                     </div>
 
                     <div class="col-md-8">
 
                         <?php if ($familytree->tree_persons > 0) { ?>
-                            <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree&amp;tree_id=<?= $familytree->tree_id; ?>"><?= $treetext['name']; ?></a>
-                            <?= $directionMarkers->dirmark1; ?> <font size=-1>(<?= $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= $familytree->tree_families; ?> <?= __('families'); ?>)</font>
+                            <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree&amp;tree_id=<?= rawurlencode((string) $familytree->tree_id); ?>"><?= $HtmlEscaper->escHtml((string) $treetext['name']); ?></a>
+                            <?= $directionMarkers->dirmark1; ?> <font size=-1>(<?= (int) $familytree->tree_persons; ?> <?= __('persons'); ?>, <?= (int) $familytree->tree_families; ?> <?= __('families'); ?>)</font>
                         <?php } else { ?>
                             <div class="alert alert-danger" role="alert">
-                                <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree"><?= $treetext['name']; ?></a>
+                                <?= $directionMarkers->dirmark1; ?><a href="index.php?page=tree"><?= $HtmlEscaper->escHtml((string) $treetext['name']); ?></a>
                                 <b><?= __('This tree does not yet contain any data or has not been imported properly!'); ?></b><br>
 
                                 <!-- Read GEDCOM file -->
                                 <form method="post" action="index.php?page=tree" style="display : inline;">
-                                    <input type="hidden" name="tree_id" value="<?= $familytree->tree_id; ?>">
+                                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $familytree->tree_id); ?>">
                                     <input type="submit" name="step1" class="btn btn-sm btn-success" value="<?= __('Import Gedcom file'); ?>">
                                 </form>
 
                                 <!-- Editor -->
                                 <?= __('or'); ?>
                                 <form method="post" action="index.php?page=editor" style="display : inline;">
-                                    <input type="hidden" name="tree_id" value="<?= $familytree->tree_id; ?>">
+                                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $familytree->tree_id); ?>">
                                     <input type="submit" name="submit" class="btn btn-sm btn-success" value="<?= __('Editor'); ?>">
                                 </form>
                             </div>

@@ -85,7 +85,7 @@ if (isset($backup_files)) {
                             <h3><?= __('Download backup file'); ?></h3>
                             <?= __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.'); ?><br>
                             <?php if (isset($backup_files[0])) { ?>
-                                <a href="backup_files/<?= $backup_files[0]; ?>"><?= $backup_files[0]; ?></a><br>
+                                <a href="backup_files/<?= rawurlencode((string) $backup_files[0]); ?>"><?= $HtmlEscaper->escHtml((string) $backup_files[0]); ?></a><br>
                             <?php } ?>
                         </div>
                     <?php } ?>
@@ -138,8 +138,9 @@ if (isset($backup_files)) {
 
                     if ($backup_count > 0) {
                         if (isset($_POST['restore_server'])) {
-                            $restore_file = 'backup_files/' . $_POST['select_file'];
-                            if (is_file($restore_file)) {
+                            $selected_file = isset($_POST['select_file']) && is_string($_POST['select_file']) ? $_POST['select_file'] : '';
+                            if (in_array($selected_file, $backup_files, true) && is_file('backup_files/' . $selected_file)) {
+                                $restore_file = 'backup_files/' . $selected_file;
                                 // *** restore from backup on server made by HuMo-genealogy backup ***
                         ?>
                                 <br><span style="color:red"><?= __('Starting to restore database. This may take some time. Please wait...'); ?></span><br>
@@ -157,7 +158,7 @@ if (isset($backup_files)) {
                                 <div class="col-md-6">
                                     <select size="1" style="margin-top:4px;" name="select_file" aria-label="<?= __('Restore database from backup file'); ?>" class="form-select form-select-sm">
                                         <?php for ($i = 0; $i < $backup_count; $i++) { ?>
-                                            <option value="<?= $backup_files[$i]; ?>"><?= $backup_files[$i]; ?>
+                                            <option value="<?= $HtmlEscaper->escHtml((string) $backup_files[$i]); ?>"><?= $HtmlEscaper->escHtml((string) $backup_files[$i]); ?>
                                                 <?= $i == 0 ? ' * ' . __('Most recent backup!') . ' *' : ''; ?>
                                             </option>
                                         <?php } ?>
@@ -182,6 +183,8 @@ if (isset($backup_files)) {
 // *** Backup function ***
 function backup_tables($dbh)
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
+
     // ob_start(); // Doesn't work. Progress bar will not be shown.
 
     $tables = array();
@@ -244,10 +247,10 @@ function backup_tables($dbh)
         // *** Skip tables names that contains a space in it ***
         if (strpos($table, ' ')) {
             // *** Show progress ***
-            echo '&gt; <b>' . __('Skipped backup of table:') . '</b> ' . $table . '<br>';
+            echo '&gt; <b>' . $HtmlEscaper->escHtml(__('Skipped backup of table:')) . '</b> ' . $HtmlEscaper->escHtml((string) $table) . '<br>';
         } else {
             // *** Show progress ***
-            echo '&gt; ' . $table . '<br>';
+            echo '&gt; ' . $HtmlEscaper->escHtml((string) $table) . '<br>';
 
             // *** The next line could cost a lot of memory. ***
             // Maybe change into:
@@ -373,6 +376,8 @@ function order_tables_by_dependencies($tables)
 // *** Restore function ***
 function restore_tables($filename, $dbh)
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
+
     $original_name = $filename;
     // Temporary variable, used to store current query
     $templine = '';
@@ -440,7 +445,7 @@ function restore_tables($filename, $dbh)
                 try {
                     $dbh->query($templine);
                 } catch (PDOException $e) {
-                    print('Error performing query \'<strong>' . $templine . '\': ' . $e->getMessage() . '<br><br>');
+                    print('Error performing query \'<strong>' . $HtmlEscaper->escHtml($templine) . '</strong>: ' . $HtmlEscaper->escHtml($e->getMessage()) . '<br><br>');
                 }
                 $templine = '';
             }
@@ -448,7 +453,7 @@ function restore_tables($filename, $dbh)
             // *** Update processed lines ***
             echo '<script>';
             $percent = $line_nr;
-            echo 'document.getElementById("information").innerHTML="' . $line_nr . '";';
+            echo 'document.getElementById("information").innerHTML="' . (int) $line_nr . '";';
             $line_nr++;
             echo '</script>';
 
@@ -480,7 +485,7 @@ function restore_tables($filename, $dbh)
             echo "file could not be unzipped<br>";
         }
         if (!is_file($filename)) {
-            echo "file " . $filename . " does not exist";
+            echo 'file ' . $HtmlEscaper->escHtml((string) $filename) . ' does not exist';
         }
         if (is_file($filename) && substr($filename, -4) !== ".sql") {
             echo "This is not a valid back up file (no .sql extension)";

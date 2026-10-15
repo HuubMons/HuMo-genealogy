@@ -32,6 +32,7 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+//$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
 
 <?php if ($trees['step'] == '1') { ?>
@@ -46,16 +47,16 @@ if (!defined('ADMIN_PAGE')) {
         <div class="row mb-12">
             <div class="col-md-auto">
                 <?php if ($trees['upload_success']) { ?>
-                    <div class="alert alert-success" role="alert"><b><?= $trees['upload_success']; ?></b></div>
+                    <div class="alert alert-success" role="alert"><b><?= $HtmlEscaper->escHtml((string) $trees['upload_success']); ?></b></div>
                 <?php } ?>
 
                 <?php if ($trees['upload_failed']) { ?>
-                    <div class="alert alert-danger" role="alert"><b><?= $trees['upload_failed']; ?></b></div>
+                    <div class="alert alert-danger" role="alert"><b><?= $HtmlEscaper->escHtml((string) $trees['upload_failed']); ?></b></div>
                 <?php } ?>
 
                 <!-- Upload form -->
                 <form name='uploadform' enctype='multipart/form-data' action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
-                    <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
                     <input type="hidden" name="upload" value="Upload">
                     <div class="row mt-2">
                         <div class="col-md-8">
@@ -79,20 +80,20 @@ if (!defined('ADMIN_PAGE')) {
                     <div class="alert alert-warning" role="alert">
                         <?= __('Are you sure to remove GEDCOM files?'); ?>
                         <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
-                            <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                            <input type="hidden" name="remove_gedcom_files2" value="<?= $_POST['remove_gedcom_files']; ?>">
+                            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+                            <input type="hidden" name="remove_gedcom_files2" value="<?= $HtmlEscaper->escHtml((string) $_POST['remove_gedcom_files']); ?>">
                             <input type="submit" name="remove_confirm" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
                             <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
                         </form>
                     </div>
                 <?php } elseif (isset($_POST['remove_gedcom_files2']) && isset($_POST['remove_confirm'])) { ?>
                     <?php for ($i = 0; $i < count($trees['removed_filenames']); $i++) { ?>
-                        <?= $trees['removed_filenames'][$i]; ?> <?= __('GEDCOM file is REMOVED.'); ?><br>
+                        <?= $HtmlEscaper->escHtml((string) $trees['removed_filenames'][$i]); ?> <?= __('GEDCOM file is REMOVED.'); ?><br>
                     <?php } ?>
                 <?php } else { ?>
                     <?= __('If needed remove GEDCOM files (except test GEDCOM file):'); ?>
                     <form name="remove_gedcomfiles" action="index.php?page=tree&amp;menu_admin=tree_gedcom" method="post">
-                        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+                        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
                         <div class="row mt-2">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -133,7 +134,7 @@ if (!defined('ADMIN_PAGE')) {
     $treegedDb = $result->fetch();
     ?>
     <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
-        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
 
         <div class="p-3 mt-3 me-sm-2 genealogy_search">
 
@@ -147,7 +148,7 @@ if (!defined('ADMIN_PAGE')) {
                     <select size="1" name="gedcom_file" class="form-select form-select-sm">
                         <?php for ($i = 0; $i < count($filenames); $i++) { ?>
                             <!-- if this was last GEDCOM file that was used for this tree - select it -->
-                            <option value="<?= $filenames[$i]; ?>" <?= $filenames[$i] == $treegedDb['tree_gedcom'] ? 'selected' : ''; ?>><?= $filenames[$i]; ?></option>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $filenames[$i]); ?>" <?= $filenames[$i] == $treegedDb['tree_gedcom'] ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml((string) $filenames[$i]); ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -291,11 +292,11 @@ if (!defined('ADMIN_PAGE')) {
                             ?>
                             <div class="row mb-2">
                                 <div class="col-md-1">
-                                    <input type="text" name="time_out" value="<?= $time_out; ?>" size="2" class="form-control form-control-sm">
+                                    <input type="text" name="time_out" value="<?= (int) $time_out; ?>" size="2" class="form-control form-control-sm">
                                 </div>
                                 <div class="col-md-7">
                                     <?= __('seconds. Controlled time-out, the GEDCOM script will restart and continue.<br>Use this if the server has a time-out setting (set less seconds then server time-out).<br>0 = disable controlled time-out.'); ?>
-                                    <?php printf(__('Your server time-out setting is: %s seconds.'), $max_time); ?>
+                                    <?php printf(__('Your server time-out setting is: %s seconds.'), $HtmlEscaper->escHtml((string) $max_time)); ?>
                                 </div>
                             </div>
                         </div>
@@ -320,7 +321,7 @@ if (!defined('ADMIN_PAGE')) {
                 <div class="form-check">
                     <input type="radio" value="no" name="add_tree" onchange="document.getElementById('step2').disabled = !this.checked;" class="form-check-input">
                     <label class="form-check-label" for="flexRadioDefault1">
-                        <?php printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $tree_text2, $nr_persons); ?>
+                        <?php printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $HtmlEscaper->escHtml((string) $tree_text2), (int) $nr_persons); ?>
                     </label>
                 </div>
 
@@ -357,8 +358,8 @@ elseif ($trees['step'] == '2') {
 
         <!-- Time out button -->
         <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
-            <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-            <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
+            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+            <input type="hidden" name="gedcom_file" value="<?= $HtmlEscaper->escHtml((string) $_POST['gedcom_file']); ?>">
             <input type="hidden" name="add_tree" value="no">
             <input type="hidden" name="step" value="2">
 
@@ -381,7 +382,7 @@ elseif ($trees['step'] == '2') {
             <?php } ?>
 
             <?php if (isset($_POST['time_out']) && is_numeric($_POST['time_out'])) { ?>
-                <input type="hidden" name="time_out" value="<?= $_POST['time_out']; ?>">
+                <input type="hidden" name="time_out" value="<?= (int) $_POST['time_out']; ?>">
             <?php } ?>
 
             <?= __('ONLY use in case of a time-out, to continue click:'); ?>
@@ -577,9 +578,9 @@ elseif ($trees['step'] == '2') {
 
     <br><br>
     <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
-        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-        <input type="hidden" name="gedcom_accent" value="<?= $accent; ?>">
-        <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
+        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+        <input type="hidden" name="gedcom_accent" value="<?= $HtmlEscaper->escHtml((string) $accent); ?>">
+        <input type="hidden" name="gedcom_file" value="<?= $HtmlEscaper->escHtml((string) $_POST['gedcom_file']); ?>">
         <?php if (isset($_POST['check_processed'])) { ?>
             <input type="hidden" name="check_processed" value="1">
         <?php } ?>
@@ -590,7 +591,7 @@ elseif ($trees['step'] == '2') {
             <input type="hidden" name="debug_mode" value="1">
         <?php } ?>
         <?php if (isset($_POST['time_out']) && is_numeric($_POST['time_out'])) { ?>
-            <input type="hidden" name="time_out" value="<?= $_POST['time_out']; ?>">
+            <input type="hidden" name="time_out" value="<?= (int) $_POST['time_out']; ?>">
         <?php } ?>
 
         <?php if (isset($_POST['add_tree']) && $_POST['add_tree'] == 'yes') { ?>
@@ -606,7 +607,7 @@ elseif ($trees['step'] == '2') {
     <?php if (isset($_POST['add_tree']) && $_POST['add_tree'] == 'yes') { ?>
         <br><br>
         <form method="post" style="display:inline" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
-            <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
             <input type="submit" name="back" value="<?= __('Cancel'); ?>" class="btn btn-sm btn-secondary">
         </form>
     <?php } ?>
@@ -706,9 +707,9 @@ elseif ($trees['step'] == '3') {
     if ($_POST['time_out'] == '0') {
     ?>
         <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
-            <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
             <input type="hidden" name="timeout_restart" value="1">
-            <input type="hidden" name="gedcom_accent" value="<?= $_POST['gedcom_accent']; ?>">
+            <input type="hidden" name="gedcom_accent" value="<?= $HtmlEscaper->escHtml((string) $_POST['gedcom_accent']); ?>">
 
             <?php if (isset($_POST['check_processed'])) { ?>
                 <input type="hidden" name="check_processed" value="1">
@@ -800,17 +801,16 @@ elseif ($trees['step'] == '3') {
         }
         ?>
         <script>
-            //document.getElementById("progress").innerHTML="<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>";
-            document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $total; ?> <?= __('lines processed'); ?> (<?= $perc; ?>%)";
+            document.getElementById("information").textContent = <?= json_encode((string) $i . ' / ' . $total . ' ' . __('lines processed') . ' (' . $perc . '%)', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         </script>
 
         <!-- Apr. 2024 New bootstrap bar -->
         <!-- $('.progress').css('width', count + "%"); -->
         <script>
             var bar = document.querySelector(".progress-bar");
-            bar.style.width = <?= $perc; ?> + "%";
+            bar.style.width = <?= json_encode((float) $perc); ?> + "%";
             //bar.style.width = `${perc}%`;
-            bar.innerText = <?= $perc; ?> + "%";
+            bar.innerText = <?= json_encode((float) $perc); ?> + "%";
         </script>
 
         <?php
@@ -1097,9 +1097,9 @@ elseif ($trees['step'] == '3') {
                 $_SESSION['save_gen_program'] = $gen_program;
                 $gedcomImport->set_gen_program($gen_program);
 
-                echo '<br><br>' . __('GEDCOM file') . ': <b>' . $gen_program . '</b>, ';
+                echo '<br><br>' . __('GEDCOM file') . ': <b>' . $HtmlEscaper->escHtml((string) $gen_program) . '</b>, ';
 
-                printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
+                printf(__('this is an <b>%s</b> file'), $HtmlEscaper->escHtml((string) $_POST['gedcom_accent']));
                 echo '<br>';
 
                 // Save tree <-> GEDCOM connection - write GEDCOM to "tree_gedcom" in relevant tree
@@ -1144,15 +1144,12 @@ elseif ($trees['step'] == '3') {
                 //ob_start(); // if used: statusbar doesn't work
         ?>
                 <script>
-                    //document.getElementById("progress").innerHTML = "<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>";
-                    document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $total; ?> <?= __('lines processed'); ?>";
-                </script>
+                    document.getElementById("information").textContent = <?= json_encode((string) $i . ' / ' . $total . ' ' . __('lines processed') . ' (' . $perc . '%)', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
-                <!-- Apr. 2024 New bootstrap bar -->
-                <script>
+                    // Apr .2024 New bootstrap bar
                     var bar = document.querySelector(".progress-bar");
-                    bar.style.width = <?= $perc; ?> + "%";
-                    bar.innerText = <?= $perc; ?> + "%";
+                    bar.style.width = <?= json_encode((float) $perc); ?> + "%";
+                    bar.innerText = <?= json_encode((float) $perc); ?> + "%";
                 </script>
 
             <?php
@@ -1189,8 +1186,8 @@ elseif ($trees['step'] == '3') {
                 // *** Restart after controlled time-out. ***
             ?>
                 <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
-                    <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-                    <input type="hidden" name="gedcom_accent" value="<?= $_POST['gedcom_accent']; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+                    <input type="hidden" name="gedcom_accent" value="<?= $HtmlEscaper->escHtml((string) $_POST['gedcom_accent']); ?>">
                     <?php
                     if (isset($_POST['check_processed'])) {
                         echo '<input type="hidden" name="check_processed" value="1">';
@@ -1202,8 +1199,8 @@ elseif ($trees['step'] == '3') {
                         echo '<input type="hidden" name="debug_mode" value="1">';
                     }
                     ?>
-                    <input type="hidden" name="gedcom_file" value="<?= $_POST['gedcom_file']; ?>">
-                    <input type="hidden" name="time_out" value="<?= $time_out; ?>">
+                    <input type="hidden" name="gedcom_file" value="<?= $HtmlEscaper->escHtml((string) $_POST['gedcom_file']); ?>">
+                    <input type="hidden" name="time_out" value="<?= (int) $time_out; ?>">
                     <input type="hidden" name="step" value="3">
                     <b><?= __('Controlled time-out to continue reading of GEDCOM file, click:'); ?></b> <input type="submit" name="submit" value="<?= __('Step'); ?> 3" class="btn btn-sm btn-success"><br>
                     <?php printf(' <b>' . __('Or wait %s seconds for automatic continuation. Some browsers will give a reload message...') . '</b>', '5'); ?>
@@ -1211,9 +1208,7 @@ elseif ($trees['step'] == '3') {
 
                 <!-- Automatic reload after 5 seconds -->
                 <script>
-                    setTimeout(function() {
-                        location.reload(true);
-                    }, 5000);
+                    setTimeout(window.location.reload.bind(window, true), 5000);
                 </script>
         <?php
                 exit();
@@ -1292,7 +1287,7 @@ elseif ($trees['step'] == '3') {
                 ?>
                         <tr>
                             <td><?= ($i + 1); ?></td>
-                            <td><?= $not_processed[$i]; ?></td>
+                            <td><?= $HtmlEscaper->escHtml((string) $not_processed[$i]); ?></td>
                         </tr>
                     <?php
                     }
@@ -1311,7 +1306,7 @@ elseif ($trees['step'] == '3') {
         //ob_start(); // if used: statusbar doesn't work
     ?>
         <script>
-            document.getElementById("information").innerHTML = "<?= $total; ?> / <?= $total; ?> <?= __('lines processed'); ?>";
+            document.getElementById("information").textContent = <?= json_encode((string) $total . ' / ' . $total . ' ' . __('lines processed'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         </script>
 
         <!-- Apr. 2024 New bootstrap bar -->
@@ -1328,9 +1323,9 @@ elseif ($trees['step'] == '3') {
     ?>
     <br>
     <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
-        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-        <input type="hidden" name="gen_program" value="<?= $gen_program; ?>">
-        <input type="hidden" name="gen_program_version" value="<?= $gen_program_version; ?>">
+        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+        <input type="hidden" name="gen_program" value="<?= $HtmlEscaper->escHtml((string) $gen_program); ?>">
+        <input type="hidden" name="gen_program_version" value="<?= $HtmlEscaper->escHtml((string) $gen_program_version); ?>">
         <input type="hidden" name="step" value="4">
         <input type="submit" name="submit" value="<?= __('Step'); ?> 4" class="btn btn-sm btn-success">
     </form>
@@ -1351,9 +1346,9 @@ elseif ($trees['step'] == '4') {
 
     <!-- To proceed if a (30 seconds) timeout has occured -->
     <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom">
-        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-        <input type="hidden" name="gen_program" value="<?= $_POST['gen_program']; ?>">
-        <input type="hidden" name="gen_program_version" value="<?= $_POST['gen_program_version']; ?>">
+        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+        <input type="hidden" name="gen_program" value="<?= $HtmlEscaper->escHtml((string) $_POST['gen_program']); ?>">
+        <input type="hidden" name="gen_program_version" value="<?= $HtmlEscaper->escHtml((string) $_POST['gen_program_version']); ?>">
         <input type="hidden" name="step" value="4">
         <br><?= __('ONLY use in case of a time-out, to continue click:'); ?> <input type="submit" name="submit" value="<?= __('Step'); ?> 4" class="btn btn-sm btn-secondary">
     </form><br>
@@ -1548,15 +1543,15 @@ elseif ($trees['step'] == '4') {
                 $percent = "0.5%"; // show at least some green
             }
             echo '<script>';
-            echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $perc . '%).";';
+            echo 'document.getElementById("information").textContent=' . json_encode((string) $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $perc . '%).', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
             echo '</script>';
     ?>
 
             <!-- Apr. 2024 New bootstrap bar -->
             <script>
                 var bar = document.querySelector(".progress-bar");
-                bar.style.width = <?= $perc; ?> + "%";
-                bar.innerText = <?= $perc; ?> + "%";
+                bar.style.width = <?= json_encode((float) $perc); ?> + "%";
+                bar.innerText = <?= json_encode((float) $perc); ?> + "%";
             </script>
             <?php
 
@@ -1737,14 +1732,14 @@ elseif ($trees['step'] == '4') {
             ?>
                     <script>
                         //document.getElementById("progress").innerHTML = "<div style=\"width:<?= $percent; ?>;background-color:#00CC00;\">&nbsp;</div>"; 
-                        document.getElementById("information").innerHTML = "<?= $i; ?> / <?= $nr_records; ?> <?= __('lines processed'); ?> <?= __('persons'); ?>";
+                        document.getElementById("information").textContent = <?= json_encode((string) $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' ' . __('persons'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
                     </script>
 
                     <!-- Apr. 2024 New bootstrap bar -->
                     <script>
                         var bar = document.querySelector(".progress-bar");
-                        bar.style.width = <?= $perc; ?> + "%";
-                        bar.innerText = <?= $perc; ?> + "%";
+                        bar.style.width = <?= json_encode((float) $perc); ?> + "%";
+                        bar.innerText = <?= json_encode((float) $perc); ?> + "%";
                     </script>
 
                 <?php
@@ -1942,15 +1937,15 @@ elseif ($trees['step'] == '4') {
 
                     echo '<script>';
                     //echo 'document.getElementById("progress").innerHTML="<div style=\"width:' . $percent . ';background-color:#00CC00;\">&nbsp;</div>";';
-                    echo 'document.getElementById("information").innerHTML="' . $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ')' . ' ' . __('families') . '";';
+                    echo 'document.getElementById("information").textContent=' . json_encode((string) $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ') ' . __('families'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
                     echo '</script>';
 
                 ?>
                     <!-- Apr. 2024 New bootstrap bar -->
                     <script>
                         var bar = document.querySelector(".progress-bar");
-                        bar.style.width = <?= $perc; ?> + "%";
-                        bar.innerText = <?= $perc; ?> + "%";
+                        bar.style.width = <?= json_encode((float) $perc); ?> + "%";
+                        bar.innerText = <?= json_encode((float) $perc); ?> + "%";
                     </script>
         <?php
 
@@ -1985,7 +1980,7 @@ elseif ($trees['step'] == '4') {
         //ob_start(); // if used: statusbar doesn't work
         ?>
         <script>
-            document.getElementById("information").innerHTML = "<?= $nr_records; ?> / <?= $nr_records; ?> <?= __('lines processed'); ?>";
+            document.getElementById("information").textContent = <?= json_encode((string) $nr_records . ' / ' . $nr_records . ' ' . __('lines processed'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         </script>
     <?php
         ob_flush();

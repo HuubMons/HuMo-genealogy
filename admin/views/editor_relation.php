@@ -14,6 +14,7 @@ if (!defined('ADMIN_PAGE')) {
 
 $datePlace = new \Genealogy\Include\DatePlace();
 $languageDate = new \Genealogy\Include\LanguageDate;
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 $eventManager = new \Genealogy\Include\EventManager($dbh);
 $orderChildren = new \Genealogy\Include\OrderChildren();
@@ -130,7 +131,7 @@ if ($person->pers_sexe == 'M') {
         $fam_count = count($relation_gedcomnumber);
         if ($fam_count > 0) {
     ?>
-            <ul id="sortable<?= $i; ?>" class="sortable-relations sortable-pages list-group ui-sortable" data-family-id="<?= isset($familyDb->fam_id) ? $familyDb->fam_id : ''; ?>">
+            <ul id="sortable<?= (int) $i; ?>" class="sortable-relations sortable-pages list-group ui-sortable" data-family-id="<?= $HtmlEscaper->escHtml((string) ($familyDb->fam_id ?? '')); ?>">
 
                 <?php
                 for ($i = 0; $i < $fam_count; $i++) {
@@ -157,23 +158,23 @@ if ($person->pers_sexe == 'M') {
                     }
                 ?>
 
-                    <li class="list-group-item <?= $line_selected; ?>">
+                    <li class="list-group-item <?= $HtmlEscaper->escHtml($line_selected); ?>">
                         <div class="row mb-2">
                             <div class="col-1">
-                                <span style="cursor:move;" id="<?= $id[$i]; ?>" class="relation-handle" data-child-index="<?= $i; ?>">
+                                <span style="cursor:move;" id="<?= $HtmlEscaper->escHtml((string) $id[$i]); ?>" class="relation-handle" data-child-index="<?= (int) $i; ?>">
                                     <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                                 </span>
 
-                                <span id="relationnum<?= $id[$i]; ?>">
-                                    <?= ($i + 1); ?>
+                                <span id="relationnum<?= $HtmlEscaper->escHtml((string) $id[$i]); ?>">
+                                    <?= (int) ($i + 1); ?>
                                 </span>
                             </div>
 
                             <div class="col-2">
                                 <?php if ($fam_count > 1) { ?>
                                     <form method="POST" action="index.php?page=editor&amp;menu_tab=marriage">
-                                        <input type="hidden" name="marriage_nr" value="<?= $relationDb->fam_gedcomnumber; ?>">
-                                        <input type="submit" name="dummy3" value="<?= __('Family'); ?>" class="btn btn-sm <?= $button_selected; ?>">
+                                        <input type="hidden" name="marriage_nr" value="<?= $HtmlEscaper->escHtml((string) $relationDb->fam_gedcomnumber); ?>">
+                                        <input type="submit" name="dummy3" value="<?= $HtmlEscaper->escHtml(__('Family')); ?>" class="btn btn-sm <?= $HtmlEscaper->escHtml($button_selected); ?>">
                                     </form>
                                 <?php } else { ?>
                                     <?= __('Family'); ?>
@@ -184,7 +185,7 @@ if ($person->pers_sexe == 'M') {
                                 <b><?= show_person_with_id($relationDb->partner1_id) . ' ' . __('and') . ' ' . show_person_with_id($relationDb->partner2_id); ?></b>
                                 <?php
                                 if ($relationDb->fam_marr_date) {
-                                    echo ' X ' . $datePlace->date_place($relationDb->fam_marr_date, '');
+                                    echo ' X ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($relationDb->fam_marr_date, ''));
                                 }
                                 ?>
                             </div>
@@ -261,13 +262,13 @@ if ($person->pers_sexe == 'M') {
     <div class="row mb-2">
         <div class="col-md-3"><b><?= __('Add relation'); ?></b></div>
         <div class="col-md-9">
-            <a href="#" onclick="hideShow(<?= $hideshow; ?>);"><img src="images/family_connect.gif" alt="<?= __('Add relation'); ?>" title="<?= __('Add relation'); ?>"> <?= __('Add new relation to this person'); ?></a>
+            <a href="#" onclick="hideShow(<?= (int) $hideshow; ?>);"><img src="images/family_connect.gif" alt="<?= $HtmlEscaper->escHtml(__('Add relation')); ?>" title="<?= $HtmlEscaper->escHtml(__('Add relation')); ?>"> <?= __('Add new relation to this person'); ?></a>
             (<?= trim(show_person($person->pers_gedcomnumber, false, false)); ?>)
         </div>
     </div>
 </div>
 
-<div style="display:none;" class="row<?= $hideshow; ?> p-3 m-2 genealogy_search">
+<div style="display:none;" class="row<?= (int) $hideshow; ?> p-3 m-2 genealogy_search">
     <?= add_person('partner', $new_partner_sexe); ?><br><br>
     <form method="POST" style="display: inline;" action="index.php?page=editor&amp;menu_tab=marriage#marriage" name="form4" id="form4">
         <div class="row mb-2">
@@ -281,7 +282,7 @@ if ($person->pers_sexe == 'M') {
             <div class="col-md-6">
                 <div class="input-group">
                     <input type="text" name="relation_add2" value="" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" required class="form-control form-control-sm">
-                    <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src=" ../images/search.png" alt="<?= __('Search'); ?>"></a>
+                    <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id=<?= rawurlencode((string) $tree_id); ?>","",<?= json_encode((string) $field_popup, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>)'><img src=" ../images/search.png" alt="<?= $HtmlEscaper->escHtml(__('Search')); ?>"></a>
                 </div>
             </div>
             <div class="col-md-1">
@@ -301,69 +302,69 @@ if ($person->pers_sexe == 'M') {
     <form method="POST" action="index.php" style="display : inline;" enctype="multipart/form-data" name="form2" id="form2">
         <input type="hidden" name="page" value="editor">
 
-        <input type="hidden" name="connect_man_old" value="<?= $man_gedcomnumber; ?>">
-        <input type="hidden" name="connect_woman_old" value="<?= $woman_gedcomnumber; ?>">
+        <input type="hidden" name="connect_man_old" value="<?= $HtmlEscaper->escHtml((string) $man_gedcomnumber); ?>">
+        <input type="hidden" name="connect_woman_old" value="<?= $HtmlEscaper->escHtml((string) $woman_gedcomnumber); ?>">
 
         <?php if (isset($marriage)) { ?>
-            <input type="hidden" name="marriage_nr" value="<?= $marriage; ?>">
+            <input type="hidden" name="marriage_nr" value="<?= $HtmlEscaper->escHtml((string) $marriage); ?>">
 
             <!-- $marriage is empty by single persons -->
-            <input type="hidden" name="marriage" value="<?= $marriage; ?>">
+            <input type="hidden" name="marriage" value="<?= $HtmlEscaper->escHtml((string) $marriage); ?>">
         <?php } ?>
 
         <!-- Event IDs needed to check if event is changed -->
         <?php if (isset($check_family_eventsDb->fam_relation_event_id)) { ?>
-            <input type="hidden" name="fam_relation_event_id" value="<?= $check_family_eventsDb->fam_relation_event_id; ?>">
+            <input type="hidden" name="fam_relation_event_id" value="<?= $HtmlEscaper->escHtml((string) $check_family_eventsDb->fam_relation_event_id); ?>">
 
-            <input type="hidden" name="fam_relation_date_previous" value="<?= $fam_relation_date; ?>">
-            <input type="hidden" name="fam_relation_place_previous" value="<?= $fam_relation_place; ?>">
-            <input type="hidden" name="fam_relation_text_previous" value="<?= $fam_relation_text; ?>">
-            <input type="hidden" name="fam_relation_end_date_previous" value="<?= $fam_relation_end_date; ?>">
+            <input type="hidden" name="fam_relation_date_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_relation_date); ?>">
+            <input type="hidden" name="fam_relation_place_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_relation_place); ?>">
+            <input type="hidden" name="fam_relation_text_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_relation_text); ?>">
+            <input type="hidden" name="fam_relation_end_date_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_relation_end_date); ?>">
         <?php } ?>
 
         <?php if (isset($check_family_eventsDb->fam_marr_notice_event_id)) { ?>
-            <input type="hidden" name="fam_marr_notice_event_id" value="<?= $check_family_eventsDb->fam_marr_notice_event_id; ?>">
+            <input type="hidden" name="fam_marr_notice_event_id" value="<?= $HtmlEscaper->escHtml((string) $check_family_eventsDb->fam_marr_notice_event_id); ?>">
 
-            <input type="hidden" name="fam_marr_notice_date_previous" value="<?= $fam_marr_notice_date; ?>">
+            <input type="hidden" name="fam_marr_notice_date_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_notice_date); ?>">
             <input type="hidden" name="fam_marr_notice_date_hebnight_previous" value="<?= $fam_marr_notice_date_hebnight == 'y' ? 'y' : 'n'; ?>">
-            <input type="hidden" name="fam_marr_notice_place_previous" value="<?= $fam_marr_notice_place; ?>">
-            <input type="hidden" name="fam_marr_notice_text_previous" value="<?= $fam_marr_notice_text; ?>">
+            <input type="hidden" name="fam_marr_notice_place_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_notice_place); ?>">
+            <input type="hidden" name="fam_marr_notice_text_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_notice_text); ?>">
         <?php } ?>
 
         <?php if (isset($check_family_eventsDb->fam_marr_event_id)) { ?>
-            <input type="hidden" name="fam_marr_event_id" value="<?= $check_family_eventsDb->fam_marr_event_id; ?>">
+            <input type="hidden" name="fam_marr_event_id" value="<?= $HtmlEscaper->escHtml((string) $check_family_eventsDb->fam_marr_event_id); ?>">
 
-            <input type="hidden" name="fam_marr_date_previous" value="<?= $fam_marr_date; ?>">
+            <input type="hidden" name="fam_marr_date_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_date); ?>">
             <input type="hidden" name="fam_marr_date_hebnight_previous" value="<?= $fam_marr_date_hebnight == 'y' ? 'y' : 'n'; ?>">
-            <input type="hidden" name="fam_marr_place_previous" value="<?= $fam_marr_place; ?>">
-            <input type="hidden" name="fam_marr_text_previous" value="<?= $fam_marr_text; ?>">
+            <input type="hidden" name="fam_marr_place_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_place); ?>">
+            <input type="hidden" name="fam_marr_text_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_text); ?>">
         <?php } ?>
 
         <?php if (isset($check_family_eventsDb->fam_marr_church_notice_event_id)) { ?>
-            <input type="hidden" name="fam_marr_church_notice_event_id" value="<?= $check_family_eventsDb->fam_marr_church_notice_event_id; ?>">
+            <input type="hidden" name="fam_marr_church_notice_event_id" value="<?= $HtmlEscaper->escHtml((string) $check_family_eventsDb->fam_marr_church_notice_event_id); ?>">
 
-            <input type="hidden" name="fam_marr_church_notice_date_previous" value="<?= $fam_marr_church_notice_date; ?>">
+            <input type="hidden" name="fam_marr_church_notice_date_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_notice_date); ?>">
             <input type="hidden" name="fam_marr_church_notice_date_hebnight_previous" value="<?= $fam_marr_church_notice_date_hebnight == 'y' ? 'y' : 'n'; ?>">
-            <input type="hidden" name="fam_marr_church_notice_place_previous" value="<?= $fam_marr_church_notice_place; ?>">
-            <input type="hidden" name="fam_marr_church_notice_text_previous" value="<?= $fam_marr_church_notice_text; ?>">
+            <input type="hidden" name="fam_marr_church_notice_place_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_notice_place); ?>">
+            <input type="hidden" name="fam_marr_church_notice_text_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_notice_text); ?>">
         <?php } ?>
 
         <?php if (isset($check_family_eventsDb->fam_marr_church_event_id)) { ?>
-            <input type="hidden" name="fam_marr_church_event_id" value="<?= $check_family_eventsDb->fam_marr_church_event_id; ?>">
+            <input type="hidden" name="fam_marr_church_event_id" value="<?= $HtmlEscaper->escHtml((string) $check_family_eventsDb->fam_marr_church_event_id); ?>">
 
-            <input type="hidden" name="fam_marr_church_date_previous" value="<?= $fam_marr_church_date; ?>">
+            <input type="hidden" name="fam_marr_church_date_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_date); ?>">
             <input type="hidden" name="fam_marr_church_date_hebnight_previous" value="<?= $fam_marr_church_date_hebnight == 'y' ? 'y' : 'n'; ?>">
-            <input type="hidden" name="fam_marr_church_place_previous" value="<?= $fam_marr_church_place; ?>">
-            <input type="hidden" name="fam_marr_church_text_previous" value="<?= $fam_marr_church_text; ?>">
+            <input type="hidden" name="fam_marr_church_place_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_place); ?>">
+            <input type="hidden" name="fam_marr_church_text_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_text); ?>">
         <?php } ?>
         <?php if (isset($check_family_eventsDb->fam_div_event_id)) { ?>
-            <input type="hidden" name="fam_div_event_id" value="<?= $check_family_eventsDb->fam_div_event_id; ?>">
+            <input type="hidden" name="fam_div_event_id" value="<?= $HtmlEscaper->escHtml((string) $check_family_eventsDb->fam_div_event_id); ?>">
 
-            <input type="hidden" name="fam_div_date_previous" value="<?= $fam_div_date; ?>">
+            <input type="hidden" name="fam_div_date_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_div_date); ?>">
             <input type="hidden" name="fam_div_date_hebnight_previous" value="<?= $fam_div_date_hebnight == 'y' ? 'y' : 'n'; ?>">
-            <input type="hidden" name="fam_div_place_previous" value="<?= $fam_div_place; ?>">
-            <input type="hidden" name="fam_div_text_previous" value="<?= $fam_div_text; ?>">
-            <input type="hidden" name="fam_div_authority_previous" value="<?= $fam_div_authority; ?>">
+            <input type="hidden" name="fam_div_place_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_div_place); ?>">
+            <input type="hidden" name="fam_div_text_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_div_text); ?>">
+            <input type="hidden" name="fam_div_authority_previous" value="<?= $HtmlEscaper->escHtml((string) $fam_div_authority); ?>">
         <?php } ?>
 
         <?php
@@ -383,7 +384,7 @@ if ($person->pers_sexe == 'M') {
                     <strong><?= __('If you continue, ALL children will be disconnected automatically!'); ?></strong><br>
                 <?php } ?>
                 <?= __('Are you sure to remove this mariage?'); ?>
-                <input type="hidden" name="fam_remove3" value="<?= $fam_remove; ?>">
+                <input type="hidden" name="fam_remove3" value="<?= $HtmlEscaper->escHtml((string) $fam_remove); ?>">
                 <input type="submit" name="fam_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
                 <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
             </div>
@@ -409,22 +410,22 @@ if ($person->pers_sexe == 'M') {
                         // *** Person added by user ***
                         $content = __('Added by') . ' ';
                         if ($familyDb->fam_new_user_id || $familyDb->fam_new_datetime) {
-                            $content .= $db_functions->get_user_name($familyDb->fam_new_user_id) . ' ' . $languageDate->show_datetime($familyDb->fam_new_datetime);
+                            $content .= $HtmlEscaper->escHtml((string) $db_functions->get_user_name($familyDb->fam_new_user_id)) . ' ' . $HtmlEscaper->escHtml((string) $languageDate->show_datetime($familyDb->fam_new_datetime));
                         }
                         // *** Person changed by user ***
                         if ($familyDb->fam_changed_user_id || $familyDb->fam_changed_datetime) {
                             $content .=  '<br>' . __('Changed by') . ' ';
-                            $content .= $db_functions->get_user_name($familyDb->fam_changed_user_id) . ' ' . $languageDate->show_datetime($familyDb->fam_changed_datetime);
+                            $content .= $HtmlEscaper->escHtml((string) $db_functions->get_user_name($familyDb->fam_changed_user_id)) . ' ' . $HtmlEscaper->escHtml((string) $languageDate->show_datetime($familyDb->fam_changed_datetime));
                         }
                         ?>
                         <button type="button" class="btn btn-sm btn-info"
                             data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-wide" data-bs-html="true"
-                            data-bs-content="<?= $content; ?>">
+                            data-bs-content="<?= $HtmlEscaper->escHtml($content); ?>">
                             <?= __('Info'); ?>
                         </button>
 
 
-                        [<?= $fam_gedcomnumber; ?>] <?= show_person($man_gedcomnumber); ?> <?= __('and'); ?> <?= show_person($woman_gedcomnumber); ?>
+                        [<?= $HtmlEscaper->escHtml((string) $fam_gedcomnumber); ?>] <?= show_person($man_gedcomnumber); ?> <?= __('and'); ?> <?= show_person($woman_gedcomnumber); ?>
                     </th>
                 </tr>
             </thead>
@@ -444,15 +445,15 @@ if ($person->pers_sexe == 'M') {
                             <?= __('Select person 1'); ?>
                         </div>
                         <div class="col-md-2">
-                            <input type="text" name="connect_man" value="<?= $man_gedcomnumber; ?>" size="5" class="form-control form-control-sm">
+                            <input type="text" name="connect_man" value="<?= $HtmlEscaper->escHtml((string) $man_gedcomnumber); ?>" size="5" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-auto">
-                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person_item=man&person=<?= $man_gedcomnumber; ?>&tree_id=<?= $tree_id; ?>","","width=500,height=500,top=100,left=100,scrollbars=yes")'>
+                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person_item=man&person=<?= rawurlencode((string) $man_gedcomnumber); ?>&tree_id=<?= rawurlencode((string) $tree_id); ?>","","width=500,height=500,top=100,left=100,scrollbars=yes")'>
                                 <img src="../images/search.png" alt="<?= __('Search'); ?>">
                             </a>
                         </div>
                         <div class="col-md-auto">
-                            <b><?= $editor_cls->show_selected_person($person1); ?></b>
+                            <b><?= $HtmlEscaper->escHtmlDecoded((string) $editor_cls->show_selected_person($person1)); ?></b>
                         </div>
                     </div>
 
@@ -463,15 +464,15 @@ if ($person->pers_sexe == 'M') {
                             <?= __('Select person 2'); ?>
                         </div>
                         <div class="col-md-2">
-                            <input type="text" name="connect_woman" value="<?= $woman_gedcomnumber; ?>" size="5" class="form-control form-control-sm">
+                            <input type="text" name="connect_woman" value="<?= $HtmlEscaper->escHtml((string) $woman_gedcomnumber); ?>" size="5" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-auto">
-                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person_item=woman&person=<?= $woman_gedcomnumber; ?>&tree_id=<?= $tree_id; ?>","","width=500,height=500,top=100,left=100,scrollbars=yes")'>
+                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person_item=woman&person=<?= rawurlencode((string) $woman_gedcomnumber); ?>&tree_id=<?= rawurlencode((string) $tree_id); ?>","","width=500,height=500,top=100,left=100,scrollbars=yes")'>
                                 <img src="../images/search.png" alt="<?= __('Search'); ?>">
                             </a>
                         </div>
                         <div class="col-md-auto">
-                            <b><?= $editor_cls->show_selected_person($person2); ?></b>
+                            <b><?= $HtmlEscaper->escHtmlDecoded((string) $editor_cls->show_selected_person($person2)); ?></b>
                         </div>
                     </div>
                 </td>
@@ -493,7 +494,7 @@ if ($person->pers_sexe == 'M') {
 
                 <td colspan="2">
                     <?php
-                    $hideshow_text = hideshow_date_place($fam_relation_date, $fam_relation_place);
+                    $hideshow_text = hideshow_date_place($fam_relation_date, $HtmlEscaper->escHtml((string) $fam_relation_place));
                     if ($fam_relation_end_date) {
                         if ($hideshow_text) {
                             $hideshow_text .= '.';
@@ -518,7 +519,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_relation_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_relation_place" id="fam_relation_place" value="<?= htmlspecialchars($fam_relation_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
+                                    <input type="text" name="fam_relation_place" id="fam_relation_place" value="<?= $HtmlEscaper->escHtml((string) $fam_relation_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="<?= (int) $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -541,7 +542,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="fam_relation_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" name="fam_relation_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_relation_text; ?></textarea>
+                                <textarea rows="1" name="fam_relation_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $fam_relation_text); ?></textarea>
                             </div>
                         </div>
 
@@ -575,7 +576,7 @@ if ($person->pers_sexe == 'M') {
 
                 <td colspan="2">
                     <?php
-                    $hideshow_text = hideshow_date_place($fam_marr_notice_date, $fam_marr_notice_place);
+                    $hideshow_text = hideshow_date_place($fam_marr_notice_date, $HtmlEscaper->escHtml((string) $fam_marr_notice_place));
                     if ($marriage) {
                         $check_sources_text = check_sources('family', 'fam_marr_notice_source', $marriage);
                         $hideshow_text .= $check_sources_text;
@@ -594,7 +595,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_notice_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_notice_place" id="fam_marr_notice_place" value="<?= htmlspecialchars($fam_marr_notice_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
+                                    <input type="text" name="fam_marr_notice_place" id="fam_marr_notice_place" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_notice_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="<?= (int) $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -609,7 +610,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="fam_marr_notice_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" name="fam_marr_notice_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_notice_text; ?></textarea>
+                                <textarea rows="1" name="fam_marr_notice_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $fam_marr_notice_text); ?></textarea>
                             </div>
                         </div>
 
@@ -650,7 +651,7 @@ if ($person->pers_sexe == 'M') {
                         $hideshow_text .= '<span style="background-color:#FFAA80">' . __('Marriage/ Related') . '</span>';
                     }
 
-                    $dateplace = $datePlace->date_place($fam_marr_date, $fam_marr_place);
+                    $dateplace = $datePlace->date_place($fam_marr_date, $HtmlEscaper->escHtml((string) $fam_marr_place));
                     if ($dateplace) {
                         if ($hideshow_text) {
                             $hideshow_text .= ', ';
@@ -662,7 +663,7 @@ if ($person->pers_sexe == 'M') {
                         //if ($hideshow_text){
                         //  $hideshow_text.='.';
                         //}
-                        $hideshow_text .= ' [' . $fam_marr_authority . ']';
+                        $hideshow_text .= ' [' . $HtmlEscaper->escHtml((string) $fam_marr_authority) . ']';
                     }
 
                     if ($marriage) {
@@ -687,7 +688,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_place" id="fam_marr_place" value="<?= htmlspecialchars($fam_marr_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
+                                    <input type="text" name="fam_marr_place" id="fam_marr_place" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="<?= (int) $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -697,7 +698,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="partner1_age" class="col-md-3 col-form-label"><?= __('Age person 1'); ?></label>
                             <div class="col-md-3">
                                 <div class="input-group">
-                                    <input type="text" name="partner1_age" value="<?= $partner1_age; ?>" size="3" class="form-control form-control-sm">
+                                    <input type="text" name="partner1_age" value="<?= $HtmlEscaper->escHtml((string) $partner1_age); ?>" size="3" class="form-control form-control-sm">
 
                                     <!-- Help popover -->
                                     <button type="button" class="btn btn-sm btn-secondary"
@@ -713,7 +714,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="partner2_age" class="col-md-3 col-form-label"><?= __('Age person 2'); ?></label>
                             <div class="col-md-3">
-                                <input type="text" name="partner2_age" value="<?= $partner2_age; ?>" size="3" class="form-control form-control-sm">
+                                <input type="text" name="partner2_age" value="<?= $HtmlEscaper->escHtml((string) $partner2_age); ?>" size="3" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -745,7 +746,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="fam_marr_authority" class="col-md-3 col-form-label"><?= __('Registrar'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="fam_marr_authority" value="<?= $fam_marr_authority; ?>" size="60" class="form-control form-control-sm">
+                                <input type="text" name="fam_marr_authority" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_authority); ?>" size="60" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -759,7 +760,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="fam_marr_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" name="fam_marr_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_text; ?></textarea>
+                                <textarea rows="1" name="fam_marr_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $fam_marr_text); ?></textarea>
                             </div>
                         </div>
 
@@ -799,7 +800,7 @@ if ($person->pers_sexe == 'M') {
 
                 <td colspan="2">
                     <?php
-                    $hideshow_text = hideshow_date_place($fam_marr_church_notice_date, $fam_marr_church_notice_place);
+                    $hideshow_text = hideshow_date_place($fam_marr_church_notice_date, $HtmlEscaper->escHtml((string) $fam_marr_church_notice_place));
 
                     if ($marriage) {
                         $check_sources_text = check_sources('family', 'fam_marr_church_notice_source', $marriage);
@@ -821,7 +822,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_church_notice_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_church_notice_place" id="fam_marr_church_notice_place" value="<?= htmlspecialchars($fam_marr_church_notice_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
+                                    <input type="text" name="fam_marr_church_notice_place" id="fam_marr_church_notice_place" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_notice_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="<?= (int) $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -836,7 +837,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="fam_marr_church_notice_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" name="fam_marr_church_notice_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_church_notice_text; ?></textarea>
+                                <textarea rows="1" name="fam_marr_church_notice_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $fam_marr_church_notice_text); ?></textarea>
                             </div>
                         </div>
 
@@ -872,7 +873,7 @@ if ($person->pers_sexe == 'M') {
 
                 <td colspan="2">
                     <?php
-                    $hideshow_text = hideshow_date_place($fam_marr_church_date, $fam_marr_church_place);
+                    $hideshow_text = hideshow_date_place($fam_marr_church_date, $HtmlEscaper->escHtml((string) $fam_marr_church_place));
 
                     if ($marriage) {
                         $check_sources_text = check_sources('family', 'fam_marr_church_source', $marriage);
@@ -896,7 +897,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_marr_church_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_marr_church_place" id="fam_marr_church_place" value="<?= htmlspecialchars($fam_marr_church_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
+                                    <input type="text" name="fam_marr_church_place" id="fam_marr_church_place" value="<?= $HtmlEscaper->escHtml((string) $fam_marr_church_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="<?= (int) $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -911,7 +912,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="fam_marr_church_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" name="fam_marr_church_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_marr_church_text; ?></textarea>
+                                <textarea rows="1" name="fam_marr_church_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $fam_marr_church_text); ?></textarea>
                             </div>
                         </div>
 
@@ -944,7 +945,7 @@ if ($person->pers_sexe == 'M') {
                     <div class="row mb-2">
                         <!-- <label for="fam_marr_authority" class="col-md-3 col-form-label"><?= __('Religion'); ?></label> -->
                         <div class="col-md-7">
-                            <input type="text" name="fam_religion" value="<?= htmlspecialchars($fam_religion); ?>" size="60" class="form-control form-control-sm">
+                            <input type="text" name="fam_religion" value="<?= $HtmlEscaper->escHtml((string) $fam_religion); ?>" size="60" class="form-control form-control-sm">
                         </div>
                     </div>
                 </td>
@@ -966,11 +967,11 @@ if ($person->pers_sexe == 'M') {
 
                 <td colspan="2">
                     <?php
-                    $hideshow_text = hideshow_date_place($fam_div_date, $fam_div_place);
+                    $hideshow_text = hideshow_date_place($fam_div_date, $HtmlEscaper->escHtml((string) $fam_div_place));
 
                     if ($fam_div_authority) {
                         //if ($hideshow_text) $hideshow_text.='.';
-                        $hideshow_text .= ' [' . $fam_div_authority . ']';
+                        $hideshow_text .= ' [' . $HtmlEscaper->escHtml((string) $fam_div_authority) . ']';
                     }
 
                     if ($marriage) {
@@ -993,7 +994,7 @@ if ($person->pers_sexe == 'M') {
                             <label for="fam_div_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    <input type="text" name="fam_div_place" id="fam_div_place" value="<?= htmlspecialchars($fam_div_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
+                                    <input type="text" name="fam_div_place" id="fam_div_place" value="<?= $HtmlEscaper->escHtml((string) $fam_div_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="<?= (int) $field_place; ?>" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -1001,7 +1002,7 @@ if ($person->pers_sexe == 'M') {
                         <?php
                         $text = '';
                         if ($fam_div_authority) {
-                            $text = htmlspecialchars($fam_div_authority);
+                            $text = $HtmlEscaper->escHtml((string) $fam_div_authority);
                         }
                         ?>
                         <div class="row mb-2">
@@ -1025,7 +1026,7 @@ if ($person->pers_sexe == 'M') {
                         <div class="row mb-2">
                             <label for="fam_div_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="1" name="fam_div_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $fam_div_text; ?></textarea>
+                                <textarea rows="1" name="fam_div_text" <?= $field_text_selected; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $fam_div_text); ?></textarea>
                             </div>
                         </div>
 
@@ -1065,7 +1066,7 @@ if ($person->pers_sexe == 'M') {
                     <div class="row mb-2">
                         <!-- <label for="fam_relation_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label> -->
                         <div class="col-md-12">
-                            <textarea rows="1" name="fam_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $fam_text; ?></textarea>
+                            <textarea rows="1" name="fam_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $fam_text); ?></textarea>
                         </div>
                     </div>
 
@@ -1177,7 +1178,7 @@ if ($person->pers_sexe == 'M') {
                 </tr>
                 <tr style="display:none;" class="row110">
                     <td></td>
-                    <td colspan="2"><?= $tagDb->tag_tag; ?></td>
+                    <td colspan="2"><?= nl2br($HtmlEscaper->escHtml(str_replace('<br>', "\n", (string) $tagDb->tag_tag))); ?></td>
                 </tr>
             <?php
             }
@@ -1220,7 +1221,7 @@ if ($person->pers_sexe == 'M') {
             <h3><?= __('Children'); ?></h3>
 
             <?= __('Use this icon to order children (drag and drop)'); ?>: <img src="images/drag-icon.gif" border="0" alt="<?= __('Drag to change order'); ?>" title="<?= __('Drag to change order'); ?>"><br>
-            <?= __('Or automatically order children:'); ?> <a href="index.php?page=<?= $page; ?>&amp;menu_tab=marriage&amp;marriage_nr=<?= $marriage; ?>&amp;order_children=1#children">
+            <?= __('Or automatically order children:'); ?> <a href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;menu_tab=marriage&amp;marriage_nr=<?= rawurlencode((string) $marriage); ?>&amp;order_children=1#children">
                 <?= __('Automatic order children'); ?>
             </a>
 
@@ -1232,25 +1233,25 @@ if ($person->pers_sexe == 'M') {
                 </div>
             <?php } ?>
 
-            <ul id="sortable<?= $i; ?>" class="sortable-children sortable-pages list-group ui-sortable" data-family-id="<?= $familyDb->fam_id; ?>">
+            <ul id="sortable<?= (int) $i; ?>" class="sortable-children sortable-pages list-group ui-sortable" data-family-id="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_id); ?>">
                 <?php foreach ($children as $child) { ?>
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-md-1">
-                                <span style="cursor:move;" id="<?= $child->id; ?>" class="child-handle" data-child-index="<?= $j; ?>">
+                                <span style="cursor:move;" id="<?= $HtmlEscaper->escHtml((string) $child->id); ?>" class="child-handle" data-child-index="<?= (int) $j; ?>">
                                     <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                                 </span>
                             </div>
 
                             <div class="col-md-1">
-                                <a href="index.php?page=<?= $page; ?>&amp;family_id=<?= $familyDb->fam_id; ?>&amp;child_disconnect_id=<?= $child->id; ?>">
+                                <a href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;family_id=<?= rawurlencode((string) $familyDb->fam_id); ?>&amp;child_disconnect_id=<?= rawurlencode((string) $child->id); ?>">
                                     <img src="images/person_disconnect.gif" border="0" title="<?= __('Disconnect child'); ?>" alt="<?= __('Disconnect child'); ?>">
                                 </a>
                             </div>
 
                             <div class="col-md-10">
-                                <span id="chldnum<?= $child->id; ?>">
-                                    <?= ($child->relation_order); ?>
+                                <span id="chldnum<?= $HtmlEscaper->escHtml((string) $child->id); ?>">
+                                    <?= (int) $child->relation_order; ?>
                                 </span>
                                 <?= show_person_with_id($child->person_id, true); ?>
                             </div>
@@ -1266,38 +1267,38 @@ if ($person->pers_sexe == 'M') {
             <div class="row mb-2">
                 <div class="col-md-3"><b><?= __('Add child'); ?></b></div>
                 <div class="col-md-7">
-                    <a href="#add_child" onclick="hideShow(<?= $hideshow; ?>);"><b><?= __('Add child'); ?></b></a>
+                    <a href="#add_child" onclick="hideShow(<?= (int) $hideshow; ?>);"><b><?= __('Add child'); ?></b></a>
                 </div>
             </div>
         </div>
 
         <!-- <div class="p-3 m-2 genealogy_search"> -->
-        <div style="display:none;" class="row<?= $hideshow; ?> p-3 m-2 genealogy_search">
+        <div style="display:none;" class="row<?= (int) $hideshow; ?> p-3 m-2 genealogy_search">
             <?= add_person('child', ''); ?><br>
 
             <!-- Search existing person as child -->
             <form method="POST" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;" name="form7" id="form7">
                 <!-- Event IDs needed to check if event is changed -->
                 <?php if (isset($familyDb->fam_relation_event_id)) { ?>
-                    <input type="hidden" name="fam_relation_event_id" value="<?= $familyDb->fam_relation_event_id; ?>">
+                    <input type="hidden" name="fam_relation_event_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_relation_event_id); ?>">
                 <?php } ?>
                 <?php if (isset($familyDb->fam_marr_event_id)) { ?>
-                    <input type="hidden" name="fam_marr_event_id" value="<?= $familyDb->fam_marr_event_id; ?>">
+                    <input type="hidden" name="fam_marr_event_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_marr_event_id); ?>">
                 <?php } ?>
                 <?php if (isset($familyDb->fam_div_event_id)) { ?>
-                    <input type="hidden" name="fam_div_event_id" value="<?= $familyDb->fam_div_event_id; ?>">
+                    <input type="hidden" name="fam_div_event_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_div_event_id); ?>">
                 <?php } ?>
                 <?php if (isset($familyDb->fam_marr_church_event_id)) { ?>
-                    <input type="hidden" name="fam_marr_church_event_id" value="<?= $familyDb->fam_marr_church_event_id; ?>">
+                    <input type="hidden" name="fam_marr_church_event_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_marr_church_event_id); ?>">
                 <?php } ?>
                 <?php if (isset($familyDb->fam_marr_church_notice_event_id)) { ?>
-                    <input type="hidden" name="fam_marr_church_notice_event_id" value="<?= $familyDb->fam_marr_church_notice_event_id; ?>">
+                    <input type="hidden" name="fam_marr_church_notice_event_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_marr_church_notice_event_id); ?>">
                 <?php } ?>
                 <?php if (isset($familyDb->fam_marr_notice_event_id)) { ?>
-                    <input type="hidden" name="fam_marr_notice_event_id" value="<?= $familyDb->fam_marr_notice_event_id; ?>">
+                    <input type="hidden" name="fam_marr_notice_event_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_marr_notice_event_id); ?>">
                 <?php } ?>
 
-                <input type="hidden" name="family_id" value="<?= $familyDb->fam_gedcomnumber; ?>">
+                <input type="hidden" name="family_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_gedcomnumber); ?>">
 
                 <div class="row mb-2">
                     <div class="col-md-3"></div>
@@ -1310,7 +1311,7 @@ if ($person->pers_sexe == 'M') {
                     <div class="col-md-6">
                         <div class="input-group">
                             <input type="text" name="child_connect2" value="" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>" required class="form-control form-control-sm">
-                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id=<?= $tree_id; ?>","","<?= $field_popup; ?>")'><img src="../images/search.png" alt="<?= __('Search'); ?>"></a>
+                            <a href="#" onClick='window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id=<?= rawurlencode((string) $tree_id); ?>","",<?= json_encode((string) $field_popup, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>)'><img src="../images/search.png" alt="<?= $HtmlEscaper->escHtml(__('Search')); ?>"></a>
                         </div>
                     </div>
                     <div class="col-md-1">
@@ -1333,6 +1334,7 @@ if ($person->pers_sexe == 'M') {
 function add_person($person_kind, $pers_sexe)
 {
     global $page, $editor_cls, $field_place, $field_date, $familyDb, $marriage, $db_functions, $field_popup;
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     $pers_prefix = '';
     $pers_lastname = '';
@@ -1348,8 +1350,8 @@ function add_person($person_kind, $pers_sexe)
         // *** Get default prefix and lastname ***
         if ($familyDb->partner1_id) {
             $personDb = $db_functions->get_person_with_id($familyDb->partner1_id);
-            $pers_prefix = $personDb->pers_prefix;
-            $pers_lastname = $personDb->pers_lastname;
+            $pers_prefix = $HtmlEscaper->escHtml((string) $personDb->pers_prefix);
+            $pers_lastname = $HtmlEscaper->escHtml((string) $personDb->pers_lastname);
         }
     }
     ?>
@@ -1358,8 +1360,8 @@ function add_person($person_kind, $pers_sexe)
         <?php if ($person_kind != 'partner') { ?>
             <input type="hidden" name="child_connect" value="1">
             <!-- TODO check code. Both variables show the same value -->
-            <input type="hidden" name="family_id" value="<?= $familyDb->fam_gedcomnumber; ?>">
-            <input type="hidden" name="marriage_nr" value="<?= $marriage; ?>">
+            <input type="hidden" name="family_id" value="<?= $HtmlEscaper->escHtml((string) $familyDb->fam_gedcomnumber); ?>">
+            <input type="hidden" name="marriage_nr" value="<?= $HtmlEscaper->escHtml((string) $marriage); ?>">
         <?php } ?>
         <input type="hidden" name="pers_name_text" value="">
         <input type="hidden" name="pers_birth_text" value="">

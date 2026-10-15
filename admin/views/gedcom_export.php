@@ -33,6 +33,7 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+//$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 @set_time_limit(3000);
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 ?>
@@ -73,8 +74,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
     <?= __('GEDCOM file is generated'); ?><br>
 
     <form method="POST" action="include/gedcom_download.php?page=export" target="_blank">
-        <input type="hidden" name="file_name" value="<?= $export['path'] . $export['file_name']; ?>">
-        <input type="hidden" name="file_name_short" value="<?= $export['file_name']; ?>">
+        <input type="hidden" name="file_name" value="<?= $HtmlEscaper->escHtml((string) $export['path'] . $export['file_name']); ?>">
+        <input type="hidden" name="file_name_short" value="<?= $HtmlEscaper->escHtml((string) $export['file_name']); ?>">
         <input type="submit" name="something" value="<?= __('Download GEDCOM file'); ?>" class="btn btn-sm btn-success">
     </form><br>
 <?php } ?>
@@ -100,9 +101,10 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <select <?= $export["part_tree"] == 'part' ? ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ' : ''; ?> size="1" name="tree_id" class="form-select form-select-sm">
                     <?php
                     while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-                        $treetext = $showTreeText->show_tree_text($treeDb->tree_id, $selected_language);
+                        $treeId = (int) $treeDb->tree_id;
+                        $treetext = $showTreeText->show_tree_text($treeId, $selected_language);
                     ?>
-                        <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $treetext['name']; ?></option>
+                        <option value="<?= $treeId; ?>" <?= $treeId == $tree_id ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml((string) $treetext['name']); ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -148,7 +150,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <div class="col-md-4"><?= __('Choose person'); ?></div>
                 <div class="col-md-4">
                     <!-- Search persons firstname/ lastname -->
-                    <input type="text" name="search_quicksearch" value="<?= $search_quicksearch; ?>" placeholder="<?= __('Name'); ?>" size="15" class="form-control form-control-sm">
+                    <input type="text" name="search_quicksearch" value="<?= $HtmlEscaper->escHtml((string) $search_quicksearch); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Name')); ?>" size="15" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -156,7 +158,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
                     <?= __('GEDCOM number (ID)'); ?><br>
-                    <input type="text" name="search_id" value="<?= $search_id; ?>" size="8" class="form-control form-control-sm">
+                    <input type="text" name="search_id" value="<?= $HtmlEscaper->escHtml((string) $search_id); ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -199,8 +201,8 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
 
                     <select size="1" name="person" class="form-select form-select-sm">
                         <?php while ($person = $person_result->fetch(PDO::FETCH_OBJ)) { ?>
-                            <option value="<?= $person->pers_gedcomnumber; ?>" <?= (isset($pers_gedcomnumber) && $person->pers_gedcomnumber == $pers_gedcomnumber) ? 'selected' : ''; ?>>
-                                <?= $person->pers_lastname; ?>, <?= $person->pers_firstname . ' ' . strtolower(str_replace("_", " ", $person->pers_prefix)); ?> [<?= $person->pers_gedcomnumber; ?>]
+                            <option value="<?= $HtmlEscaper->escHtml((string) $person->pers_gedcomnumber); ?>" <?= (isset($pers_gedcomnumber) && $person->pers_gedcomnumber == $pers_gedcomnumber) ? 'selected' : ''; ?>>
+                                <?= $HtmlEscaper->escHtml((string) $person->pers_lastname); ?>, <?= $HtmlEscaper->escHtml((string) $person->pers_firstname . ' ' . strtolower(str_replace("_", " ", (string) $person->pers_prefix))); ?> [<?= $HtmlEscaper->escHtml((string) $person->pers_gedcomnumber); ?>]
                             </option>
                         <?php } ?>
                     </select>
@@ -277,21 +279,21 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
         <div class="row mb-2">
             <div class="col-md-4"><?= __('Name'); ?></div>
             <div class="col-md-4">
-                <input type="text" name="gedcom_submit_name" value="<?= $export['submit_name']; ?>" size="35" class="form-control form-control-sm">
+                <input type="text" name="gedcom_submit_name" value="<?= $HtmlEscaper->escHtml((string) $export['submit_name']); ?>" size="35" class="form-control form-control-sm">
             </div>
         </div>
 
         <div class="row mb-2">
             <div class="col-md-4"><?= __('Address'); ?></div>
             <div class="col-md-4">
-                <input type="text" name="gedcom_submit_address" value="<?= $export['submit_address']; ?>" size="35" class="form-control form-control-sm">
+                <input type="text" name="gedcom_submit_address" value="<?= $HtmlEscaper->escHtml((string) $export['submit_address']); ?>" size="35" class="form-control form-control-sm">
             </div>
         </div>
 
         <div class="row mb-2">
             <div class="col-md-4"><?= __('Country'); ?></div>
             <div class="col-md-4">
-                <input type="text" name="gedcom_submit_country" value="<?= $export['submit_country']; ?>" size="35" class="form-control form-control-sm">
+                <input type="text" name="gedcom_submit_country" value="<?= $HtmlEscaper->escHtml((string) $export['submit_country']); ?>" size="35" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -299,7 +301,7 @@ if (isset($tree_id) and isset($_POST['submit_button'])) {
             <div class="col-md-4"><?= __('E-mail'); ?></div>
             <div class="col-md-4">
                 <!-- Using HTML5 mail validation -->
-                <input type="email" name="gedcom_submit_mail" value="<?= $export['submit_mail']; ?>" size="35" class="form-control form-control-sm">
+                <input type="email" name="gedcom_submit_mail" value="<?= $HtmlEscaper->escHtml((string) $export['submit_mail']); ?>" size="35" class="form-control form-control-sm">
             </div>
         </div>
     </div>

@@ -9,6 +9,7 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+//$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 // TODO move code to model script (including functions at end of this script)
 $hide_languages_array = explode(";", $humo_option["hide_languages"]);
@@ -156,7 +157,7 @@ if ($_SESSION['present_page'] > 0) {
 ?>
 
 <form method="POST" action="" name="saveform" style="display : inline;">
-    <input type="hidden" name="editor_language" value="<?= $language_editor['language']; ?>">
+    <input type="hidden" name="editor_language" value="<?= $HtmlEscaper->escHtml((string) $language_editor['language']); ?>">
     <h1 class="center"><?= __('Language editor'); ?></h1>
 
     <div style="margin:10px;padding:3px">
@@ -165,7 +166,7 @@ if ($_SESSION['present_page'] > 0) {
     </div>
 
     <?php if ($language_editor['message']) { ?>
-        <div class="alert alert-success"><?= $language_editor['message']; ?></div>
+        <div class="alert alert-success"><?= nl2br($HtmlEscaper->escHtml(str_replace('<br>', "\n", (string) $language_editor['message']))); ?></div>
     <?php } ?>
 
     <!-- <div class="row p-2 mb-3 mx-sm-1 genealogy_search"> -->
@@ -174,7 +175,7 @@ if ($_SESSION['present_page'] > 0) {
         <div class="col-auto">
             <div class="dropdown">
                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="<?= '../languages/' . $language_editor['language']; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>"> <?= $language["name"]; ?>
+                    <img src="../languages/<?= rawurlencode((string) $language_editor['language']); ?>/flag.gif" title="<?= $HtmlEscaper->escHtml((string) $language['name']); ?>" alt="<?= $HtmlEscaper->escHtml((string) $language['name']); ?>"> <?= $HtmlEscaper->escHtml((string) $language['name']); ?>
                 </button>
                 <ul class="dropdown-menu">
                     <?php
@@ -184,9 +185,9 @@ if ($_SESSION['present_page'] > 0) {
                             include(__DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php');
                     ?>
                             <li>
-                                <a class="dropdown-item" href="../admin/index.php?page=language_editor&amp;editor_language=<?= $language_file[$i]; ?>">
-                                    <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;">
-                                    <?= $language["name"]; ?>
+                                <a class="dropdown-item" href="../admin/index.php?page=language_editor&amp;editor_language=<?= rawurlencode((string) $language_file[$i]); ?>">
+                                    <img src="../languages/<?= rawurlencode((string) $language_file[$i]); ?>/flag.gif" title="<?= $HtmlEscaper->escHtml((string) $language['name']); ?>" alt="<?= $HtmlEscaper->escHtml((string) $language['name']); ?>" style="border:none;">
+                                    <?= $HtmlEscaper->escHtml((string) $language['name']); ?>
                                 </a>
                             </li>
                         <?php } ?>
@@ -200,15 +201,15 @@ if ($_SESSION['present_page'] > 0) {
             <nav aria-label="Page navigation example">
                 <ul class="pagination mb-0">
                     <li class="page-item">
-                        <a class="page-link" href="index.php?page=language_editor<?= $previous; ?>&amp;editor_language=<?= $language_editor['language']; ?>" aria-label="Previous">
+                        <a class="page-link" href="index.php?page=language_editor<?= $previous; ?>&amp;editor_language=<?= rawurlencode((string) $language_editor['language']); ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li class="page-item disabled">
-                        <a class="page-link" href="#"><?= $_SESSION['present_page'] + 1; ?></a>
+                        <a class="page-link" href="#"><?= (int) $_SESSION['present_page'] + 1; ?></a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="index.php?page=language_editor<?= $next; ?>&amp;editor_language=<?= $language_editor['language']; ?>" aria-label="Next">
+                        <a class="page-link" href="index.php?page=language_editor<?= $next; ?>&amp;editor_language=<?= rawurlencode((string) $language_editor['language']); ?>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -242,7 +243,7 @@ if ($_SESSION['present_page'] > 0) {
                     $langsearchtext = $_SESSION['langsearchtext'];
                 }
                 ?>
-                <input type="text" style="width:200px;" name="langsearchtext" class="form-control form-control-sm" value="<?= $langsearchtext; ?>">
+                    <input type="text" style="width:200px;" name="langsearchtext" class="form-control form-control-sm" value="<?= $HtmlEscaper->escHtml((string) $langsearchtext); ?>">
                 <input type="submit" name="langsearch" class="btn btn-sm btn-success" value="<?= __('Search'); ?>">
             </div>
         </div>
@@ -290,11 +291,10 @@ if ($_SESSION['present_page'] > 0) {
 
             <td><?= msgid_display($value["msgid"]); ?></td>
 
-            <td><input type="checkbox" value="fuzzie" name="fuz<?= $value["nr"]; ?>" class="form-check-input" <?= $fuzz ? 'checked' : ''; ?>></td>
+            <td><input type="checkbox" value="fuzzie" name="fuz<?= (int) $value["nr"]; ?>" class="form-check-input" <?= $fuzz ? 'checked' : ''; ?>></td>
 
             <td style="vertical-align:top">
-                <!-- <label for="txt_id<?= $key; ?>" class="form-label">Label</label> -->
-                <textarea name="txt_name<?= $key; ?>" rows="<?= $rows; ?>" class="form-control <?= $color ? 'bg-warning' : ''; ?>" id="txt_id<?= $key; ?>"><?= msgstr_display($value["msgstr"]) ?></textarea>
+                <textarea name="txt_name<?= (int) $key; ?>" rows="<?= (int) $rows; ?>" class="form-control <?= $color ? 'bg-warning' : ''; ?>" id="txt_id<?= (int) $key; ?>"><?= msgstr_display($value["msgstr"]) ?></textarea>
             </td>
         </tr>
     <?php } ?>
@@ -306,7 +306,7 @@ if ($_SESSION['present_page'] > 0) {
                 <th></th>
                 <th style="width:48.5%"><?= __('Template'); ?></th>
                 <th style="width:4%"><?= __('Fuzzy'); ?></th>
-                <th style="width:47.5%"><?= __('Translation into') . ' ' . $language["name"]; ?></th>
+                <th style="width:47.5%"><?= $HtmlEscaper->escHtml(__('Translation into') . ' ' . (string) $language['name']); ?></th>
             </tr>
         </thead>
 
@@ -334,7 +334,6 @@ if ($_SESSION['present_page'] > 0) {
                 if ($loop_count > $_SESSION['maxlines']) {
                     break;
                 }
-
                 $mytext = isset($value["note"]) ? notes($value["note"]) : "";
                 show_line($mytext, $value, $key, true);
                 $found = true;
@@ -408,7 +407,9 @@ if ($_SESSION['present_page'] > 0) {
 //**** SOME FORMAT FUNCTIONS ****
 function notes($input)
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
     // formats the po notes for the reference/notes popup
+    $input = $HtmlEscaper->escHtml((string) $input);
     $output = "<u>References/Notes</u>:<br>" . str_replace(array("# ", "#: ", "#~ "), array("", "&#187; ", ""), $input);
     return $output;
 }

@@ -33,7 +33,7 @@ if (!defined('ADMIN_PAGE')) {
                 <?= __('Are you sure you want to remove this page?'); ?>
                 <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="edit_cms_pages" value="cms_page">
-                    <input type="hidden" name="page_id" value="<?= $_GET['page_remove']; ?>">
+                    <input type="hidden" name="page_id" value="<?= $HtmlEscaper->escHtml((string) $_GET['page_remove']); ?>">
                     <input type="submit" name="page_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
                     <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
                 </form>
@@ -55,7 +55,7 @@ Please disconnect the pages from this menu first.'); ?>
                 <?= __('Are you sure you want to remove this menu?'); ?>
                 <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="cms_tab" value="menu">
-                    <input type="hidden" name="menu_id" value="<?= $_GET['menu_remove']; ?>">
+                    <input type="hidden" name="menu_id" value="<?= $HtmlEscaper->escHtml((string) $_GET['menu_remove']); ?>">
                     <input type="submit" name="menu_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
                     <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
                 </form>
@@ -67,26 +67,26 @@ Please disconnect the pages from this menu first.'); ?>
         <div class="row">
             <div class="col-md-3">
                 <?php foreach ($edit_cms_pages['menu_id'] as $menu_id) { ?>
-                    <b><?= $edit_cms_pages['menu_name'][$menu_id]; ?></b><br>
+                    <b><?= $HtmlEscaper->escHtml((string) $edit_cms_pages['menu_name'][$menu_id]); ?></b><br>
 
                     <!-- Show pages -->
-                    <ul id="sortable_pages<?= $menu_id; ?>" class="sortable-pages list-group" data-menu-id="<?= $menu_id; ?>">
+                    <ul id="sortable_pages<?= $HtmlEscaper->escHtml((string) $menu_id); ?>" class="sortable-pages list-group" data-menu-id="<?= $HtmlEscaper->escHtml((string) $menu_id); ?>">
                         <?php foreach ($edit_cms_pages['menu_page_id'][$menu_id] as $page_id) { ?>
                             <li class="list-group-item">
-                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $page_id; ?>&amp;page_remove=<?= $page_id; ?>" class="me-2">
+                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $HtmlEscaper->escHtml((string) $page_id); ?>&amp;page_remove=<?= $HtmlEscaper->escHtml((string) $page_id); ?>" class="me-2">
                                     <img src="images/button_drop.png" alt="<?= __('Remove page'); ?>" border="0">
                                 </a>
 
                                 <?php if ($edit_cms_pages['menu_nr_pages'][$menu_id] > 1) { ?>
-                                    <span style="cursor:move;" id="<?= $page_id; ?>" class="handle me-2">
+                                    <span style="cursor:move;" id="<?= $HtmlEscaper->escHtml((string) $page_id); ?>" class="handle me-2">
                                         <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                                     </span>
                                 <?php } else { ?>
                                     <span class="me-2">&nbsp;&nbsp;&nbsp;</span>
                                 <?php } ?>
 
-                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $page_id; ?>">
-                                    <?= $edit_cms_pages['menu_page_title'][$menu_id][$page_id]; ?><br>
+                                <a href="index.php?page=edit_cms_pages&amp;select_page=<?= $HtmlEscaper->escHtml((string) $page_id); ?>">
+                                    <?= $HtmlEscaper->escHtml((string) $edit_cms_pages['menu_page_title'][$menu_id][$page_id]); ?><br>
                                 </a>
                             </li>
                         <?php } ?>
@@ -111,9 +111,9 @@ Please disconnect the pages from this menu first.'); ?>
                     $path_tmp = 'http://' . $_SERVER['SERVER_NAME'] . substr($_SERVER['REQUEST_URI'], 0, $position);
                 ?>
                     <?= __('This page can be accessed using this link: '); ?><br>
-                    <b><?= $path_tmp; ?>/index.php?page=cms_pages&amp;select_page=<?= $edit_cms_pages['page_id']; ?>&amp;menu=1</b><br>
+                    <b><?= $HtmlEscaper->escHtml($path_tmp); ?>/index.php?page=cms_pages&amp;select_page=<?= $HtmlEscaper->escHtml((string) $edit_cms_pages['page_id']); ?>&amp;menu=1</b><br>
                     <?php if ($humo_option["url_rewrite"] == "j") { ?>
-                        <?= __('or'); ?>: <b><?= $path_tmp; ?>/cms_pages/<?= $edit_cms_pages['page_id']; ?>?menu=1</b><br>
+                        <?= __('or'); ?>: <b><?= $HtmlEscaper->escHtml($path_tmp); ?>/cms_pages/<?= $HtmlEscaper->escHtml((string) $edit_cms_pages['page_id']); ?>?menu=1</b><br>
                 <?php
                     }
                 }
@@ -122,12 +122,12 @@ Please disconnect the pages from this menu first.'); ?>
                 <!-- TODO improve processing of variables -->
                 <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                     <input type="hidden" name="cms_pages" value="cms_page">
-                    <input type="hidden" name="page_id" value="<?= $edit_cms_pages['page_id']; ?>">
-                    <input type="hidden" name="page_menu_id_old" value="<?= $edit_cms_pages['page_menu_id']; ?>">
+                    <input type="hidden" name="page_id" value="<?= $HtmlEscaper->escHtml((string) $edit_cms_pages['page_id']); ?>">
+                    <input type="hidden" name="page_menu_id_old" value="<?= $HtmlEscaper->escHtml((string) $edit_cms_pages['page_menu_id']); ?>">
 
                     <div class="row my-2">
                         <div class="col-md-auto">
-                            <input type="text" name="page_title" value="<?= $edit_cms_pages['page_title']; ?>" size="25" class="form-control form-control-sm">
+                            <input type="text" name="page_title" value="<?= $HtmlEscaper->escHtml((string) $edit_cms_pages['page_title']); ?>" size="25" class="form-control form-control-sm">
                         </div>
 
                         <div class="col-md-auto">
@@ -139,8 +139,8 @@ Please disconnect the pages from this menu first.'); ?>
                                 $qry = $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
                                 while ($menuDb = $qry->fetch(PDO::FETCH_OBJ)) {
                                 ?>
-                                    <option value="<?= $menuDb->menu_id; ?>" <?= $menuDb->menu_id == $edit_cms_pages['page_menu_id'] ? 'selected' : ''; ?>>
-                                        <?= $menuDb->menu_name; ?>
+                                    <option value="<?= $HtmlEscaper->escHtml((string) $menuDb->menu_id); ?>" <?= $menuDb->menu_id == $edit_cms_pages['page_menu_id'] ? 'selected' : ''; ?>>
+                                        <?= $HtmlEscaper->escHtml((string) $menuDb->menu_name); ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -159,11 +159,11 @@ Please disconnect the pages from this menu first.'); ?>
                         </div>
 
                         <div class="col-md-auto">
-                            <?= __('Visitors counter'); ?>: <?= $edit_cms_pages['page_counter']; ?>
+                            <?= __('Visitors counter'); ?>: <?= $HtmlEscaper->escHtml((string) $edit_cms_pages['page_counter']); ?>
                         </div>
                     </div>
 
-                    <textarea id="editor" name="page_text"><?= $edit_cms_pages['page_text']; ?></textarea>
+                    <textarea id="editor" name="page_text"><?= $HtmlEscaper->escHtml((string) $edit_cms_pages['page_text']); ?></textarea>
                 </form>
             </div>
         </div>
@@ -193,23 +193,23 @@ Please disconnect the pages from this menu first.'); ?>
                 <li class="list-group-item">
                     <form method="post" action="index.php?page=edit_cms_pages" style="display : inline;">
                         <input type="hidden" name="cms_tab" value="menu">
-                        <input type="hidden" name="menu_id" value="<?= $cms_pagesDb->menu_id; ?>">
+                        <input type="hidden" name="menu_id" value="<?= $HtmlEscaper->escHtml((string) $cms_pagesDb->menu_id); ?>">
 
                         <div class="row">
                             <div class="col-auto">
-                                <a href="index.php?page=<?= $page; ?>&amp;select_menu=<?= $cms_pagesDb->menu_id; ?>&amp;menu_remove=<?= $cms_pagesDb->menu_id; ?>" class="me-2">
+                                <a href="index.php?page=<?= $HtmlEscaper->escHtml((string) $page); ?>&amp;select_menu=<?= $HtmlEscaper->escHtml((string) $cms_pagesDb->menu_id); ?>&amp;menu_remove=<?= $HtmlEscaper->escHtml((string) $cms_pagesDb->menu_id); ?>" class="me-2">
                                     <img src="images/button_drop.png" alt="<?= __('Remove menu'); ?>" border="0">
                                 </a>
                             </div>
 
                             <div class="col-auto">
-                                <span style="cursor:move;" id="<?= $cms_pagesDb->menu_id; ?>" class="handle me-2">
+                                <span style="cursor:move;" id="<?= $HtmlEscaper->escHtml((string) $cms_pagesDb->menu_id); ?>" class="handle me-2">
                                     <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                                 </span>
                             </div>
 
                             <div class="col-auto">
-                                <input type="text" name="menu_name" value="<?= $cms_pagesDb->menu_name; ?>" size="50" class="form-control form-control-sm">
+                                <input type="text" name="menu_name" value="<?= $HtmlEscaper->escHtml((string) $cms_pagesDb->menu_name); ?>" size="50" class="form-control form-control-sm">
                             </div>
 
                             <div class="col-auto">
@@ -339,7 +339,7 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
 
                         <input type="radio" value="no" name="default_path" id="default_path" class="form-check-input" <?= $checked2; ?>>
                         <label class="form-check-label" for="default_path">
-                            <input type="text" name="cms_images_path" value="<?= $cms_images_path; ?>" size="25" class="form-control form-control-sm">
+                            <input type="text" name="cms_images_path" value="<?= $HtmlEscaper->escHtml((string) $cms_images_path); ?>" size="25" class="form-control form-control-sm">
                         </label>
                     </td>
                 </tr>
@@ -371,8 +371,8 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
                                 $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
                                 while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
                                 ?>
-                                    <option value="<?= $pageDb->page_id; ?>" <?= $pageDb->page_id == $main_page_cms_id ? 'selected' : ''; ?>>
-                                        <?= $pageDb->page_title; ?>
+                                    <option value="<?= $HtmlEscaper->escHtml((string) $pageDb->page_id); ?>" <?= $pageDb->page_id == $main_page_cms_id ? 'selected' : ''; ?>>
+                                        <?= $HtmlEscaper->escHtml((string) $pageDb->page_title); ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -403,16 +403,16 @@ To point to a folder outside (and parallel to) the humo-gen folder, use ../../..
 
                                     <tr>
                                         <td>
-                                            <img src="<?= '../languages/' . $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"> <?= $language["name"]; ?>
+                                            <img src="<?= '../languages/' . rawurlencode((string) $language_file[$i]); ?>/flag.gif" title="<?= $HtmlEscaper->escHtml((string) $language["name"]); ?>" alt="<?= $HtmlEscaper->escHtml((string) $language["name"]); ?>" style="border:none;"> <?= $HtmlEscaper->escHtml((string) $language["name"]); ?>
                                         </td>
                                         <td>
-                                            <select size="1" name="main_page_cms_id_<?= $language_file[$i]; ?>" class="form-select form-select-sm" aria-label="<?= __('Select main page'); ?>">
+                                            <select size="1" name="main_page_cms_id_<?= $HtmlEscaper->escHtml((string) $language_file[$i]); ?>" class="form-select form-select-sm" aria-label="<?= $HtmlEscaper->escHtml(__('Select main page')); ?>">
                                                 <option value=''>* <?= __('Standard main index'); ?> *</option>
                                                 <?php
                                                 $qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
                                                 while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) {
                                                 ?>
-                                                    <option value="<?= $pageDb->page_id; ?>" <?= $pageDb->page_id == $sel ? 'selected' : ''; ?>><?= $pageDb->page_title; ?></option>
+                                                    <option value="<?= $HtmlEscaper->escHtml((string) $pageDb->page_id); ?>" <?= $pageDb->page_id == $sel ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml((string) $pageDb->page_title); ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>

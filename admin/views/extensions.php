@@ -30,9 +30,9 @@ if (!defined('ADMIN_PAGE')) {
                 }
             ?>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" name="<?= $language_file[$i]; ?>" <?= $checked . $disabled; ?>>
+                    <input type="checkbox" class="form-check-input" name="<?= $HtmlEscaper->escHtml((string) $language_file[$i]); ?>" <?= $checked . $disabled; ?>>
                     <label class="form-check-label">
-                        <img src="../languages/<?= $language_file[$i]; ?>/flag.gif" title="<?= $language["name"]; ?>" alt="<?= $language["name"]; ?>" style="border:none;"> <?= $language["name"]; ?>
+                        <img src="../languages/<?= rawurlencode((string) $language_file[$i]); ?>/flag.gif" title="<?= $HtmlEscaper->escHtml((string) $language['name']); ?>" alt="<?= $HtmlEscaper->escHtml((string) $language['name']); ?>" style="border:none;"> <?= $HtmlEscaper->escHtml((string) $language['name']); ?>
                     </label>
                 </div>
             <?php } ?>
@@ -48,9 +48,9 @@ if (!defined('ADMIN_PAGE')) {
                 $theme = str_replace(".css", "", $extensions['theme_folders'][$i]);
             ?>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" name="<?= $theme; ?>" <?= !in_array($theme, $extensions['hide_themes']) ? 'checked' : ''; ?>>
+                    <input type="checkbox" class="form-check-input" name="<?= $HtmlEscaper->escHtml((string) $theme); ?>" <?= !in_array($theme, $extensions['hide_themes']) ? 'checked' : ''; ?>>
                     <label class="form-check-label">
-                        <?= $theme; ?>
+                        <?= $HtmlEscaper->escHtml((string) $theme); ?>
                     </label>
                 </div>
             <?php } ?>

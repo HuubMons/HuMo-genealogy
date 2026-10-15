@@ -26,8 +26,8 @@ if (isset($tree_id) && $tree_id) {
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this address and ALL address references?'); ?></strong>
         <form method="post" action="index.php?page=edit_addresses" style="display : inline;">
-            <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
-            <input type="hidden" name="address_gedcomnr" value="<?= $_POST['address_gedcomnr']; ?>">
+            <input type="hidden" name="address_id" value="<?= $HtmlEscaper->escHtml((string) $editAddress['address_id']); ?>">
+            <input type="hidden" name="address_gedcomnr" value="<?= $HtmlEscaper->escHtml((string) $_POST['address_gedcomnr']); ?>">
             <input type="submit" name="address_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="dummy7" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
@@ -48,10 +48,10 @@ if (isset($tree_id) && $tree_id) {
             </div>
 
             <div class="col-md-3">
-                <input type="text" name="address_search_gedcomnr" value="<?= $editAddress['search_gedcomnr']; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
+                <input type="text" name="address_search_gedcomnr" value="<?= $HtmlEscaper->escHtml((string) $editAddress['search_gedcomnr']); ?>" size="20" placeholder="<?= $HtmlEscaper->escHtml(__('gedcomnumber (ID)')); ?>" class="form-control form-control-sm">
             </div>
             <div class="col-md-4">
-                <input type="text" name="address_search" value="<?= $editAddress['search_text']; ?>" size="20" placeholder="<?= __('Address'); ?>" class="form-control form-control-sm">
+                <input type="text" name="address_search" value="<?= $HtmlEscaper->escHtml((string) $editAddress['search_text']); ?>" size="20" placeholder="<?= $HtmlEscaper->escHtml(__('Address')); ?>" class="form-control form-control-sm">
             </div>
             <div class="col-md-2">
                 <input type="submit" name="address_select" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
@@ -72,9 +72,8 @@ if (isset($tree_id) && $tree_id) {
                         <option value=""><?= __('No addresses found.'); ?></option>
                     <?php } else { ?>
                         <?php foreach ($editAddress['addresses_id'] as $address_id) { ?>
-                            <option value="<?= $address_id; ?>" <?= $editAddress['address_id'] == $address_id ? 'selected' : ''; ?>>
-                                <?= $editAddress['addresses_place'][$address_id]; ?>, <?= $editAddress['addresses_address'][$address_id] . $editAddress['addresses_text'][$address_id]; ?>
-                                [<?= $editAddress['addresses_gedcomnr'][$address_id]; ?>]
+                            <option value="<?= $HtmlEscaper->escHtml((string) $address_id); ?>" <?= $editAddress['address_id'] == $address_id ? 'selected' : ''; ?>>
+                                <?= $HtmlEscaper->escHtml((string) $editAddress['addresses_place'][$address_id] . ', ' . $editAddress['addresses_address'][$address_id] . $editAddress['addresses_text'][$address_id] . ' [' . $editAddress['addresses_gedcomnr'][$address_id] . ']'); ?>
                             </option>
                         <?php } ?>
 
@@ -101,7 +100,7 @@ if ($editAddress['address_id']) {
     try {
         $addressDb = $address_qry2->fetch(PDO::FETCH_OBJ);
     } catch (PDOException $e) {
-        echo $die_message;
+        echo $HtmlEscaper->escHtml($die_message);
     }
 }
 
@@ -130,8 +129,8 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
 ?>
 
     <form method="POST" action="index.php?page=edit_addresses">
-        <input type="hidden" name="address_id" value="<?= $editAddress['address_id']; ?>">
-        <input type="hidden" name="address_gedcomnr" value="<?= $address_gedcomnr; ?>">
+        <input type="hidden" name="address_id" value="<?= $HtmlEscaper->escHtml((string) $editAddress['address_id']); ?>">
+        <input type="hidden" name="address_gedcomnr" value="<?= $HtmlEscaper->escHtml((string) $address_gedcomnr); ?>">
         <div class="p-2 my-md-2 genealogy_search container-md">
             <div class="row mb-2">
                 <div class="col-md-1"></div>
@@ -142,7 +141,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                     <?= __('Place'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="address_place" value="<?= htmlspecialchars($address_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="50" class="place-autocomplete form-control form-control-sm">
+                    <input type="text" name="address_place" value="<?= $HtmlEscaper->escHtml((string) $address_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="50" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
 
@@ -152,7 +151,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                     <?= __('Street'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="address_address" value="<?= htmlspecialchars($address_address); ?>" size="60" required class="form-control form-control-sm"></td>
+                    <input type="text" name="address_address" value="<?= $HtmlEscaper->escHtml((string) $address_address); ?>" size="60" required class="form-control form-control-sm"></td>
                 </div>
             </div>
 
@@ -162,7 +161,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                     <?= __('Zip code'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="address_zip" value="<?= $address_zip; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="address_zip" value="<?= $HtmlEscaper->escHtml((string) $address_zip); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -172,7 +171,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                     <?= __('Phone'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="address_phone" value="<?= $address_phone; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="address_phone" value="<?= $HtmlEscaper->escHtml((string) $address_phone); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -202,7 +201,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                                     <div class="modal-body">
                                         <!-- Show source by address -->
                                         <?php if (isset($addressDb->address_gedcomnr)) { ?>
-                                            <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="index.php?page=editor_sources&connect_kind=address&connect_sub_kind=address_source&connect_connect_id=<?= $addressDb->address_gedcomnr; ?>" style="width:750px;height:400px;"></iframe>
+                                            <iframe id="source_iframe" style="width:800px;height:800px;" title="source_iframe" src="<?= $HtmlEscaper->escHtml('index.php?page=editor_sources&connect_kind=address&connect_sub_kind=address_source&connect_connect_id=' . rawurlencode((string) $addressDb->address_gedcomnr)); ?>"></iframe>
                                         <?php }   ?>
                                     </div>
                                     <div class="modal-footer">
@@ -237,14 +236,14 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                         $style = '';
                         if ($source_error == '1') {
                             // *** No source connected, colour = orange ***
-                            $style = ' style="background-color:#FFAA80"';
+                            $style = 'background-color:#FFAA80';
                         }
                         if ($source_error == '2') {
                             // *** Source is empty, colour = yellow ***
-                            $style = ' style="background-color:#FFFF00"';
+                            $style = 'background-color:#FFFF00';
                         }
                         ?>
-                        <span <?= $style; ?>">[<?= $source_count; ?>]</span>
+                        <span style="<?= $HtmlEscaper->escHtml($style); ?>">[<?= $HtmlEscaper->escHtml((string) $source_count); ?>]</span>
 
                     </div>
                 </div>
@@ -256,7 +255,7 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
                     <?= __('Text'); ?>
                 </div>
                 <div class="col-md-4">
-                    <textarea rows="1" name="address_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editAddress['editor_cls']->text_show($address_text); ?></textarea>
+                    <textarea rows="1" name="address_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $editAddress['editor_cls']->text_show($address_text)); ?></textarea>
                 </div>
             </div>
 
@@ -291,13 +290,13 @@ if (isset($addressDb->address_id) || isset($_POST['add_address'])) {
     // *** Example of address in IFRAME ***
     if (!isset($_POST['add_address'])) {
         if ($humo_option["url_rewrite"] == "j") {
-            $url = '../address/' . $tree_id . '/' . $addressDb->address_gedcomnr;
+            $url = '../address/' . rawurlencode((string) $tree_id) . '/' . rawurlencode((string) $addressDb->address_gedcomnr);
         } else {
-            $url = '../index.php?page=address&amp;tree_id=' . $tree_id . '&amp;id=' . $addressDb->address_gedcomnr;
+            $url = '../index.php?page=address&tree_id=' . rawurlencode((string) $tree_id) . '&id=' . rawurlencode((string) $addressDb->address_gedcomnr);
         }
     ?>
         <br><?= __('Preview'); ?><br>
-        <iframe src="<?= $url; ?>" class="iframe">
+        <iframe src="<?= $HtmlEscaper->escHtml($url); ?>" class="iframe">
             <p>Your browser does not support iframes.</p>
         </iframe>
     <?php } ?>

@@ -29,10 +29,10 @@ if ($log['menu_tab'] == 'log_blacklist') {
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $log['menu_tab'] == 'log_users' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>"><?= __('Logfile users'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $log['menu_tab'] == 'log_users' ? 'active' : ''; ?>" href="index.php?page=<?= rawurlencode((string) $page); ?>"><?= __('Logfile users'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $log['menu_tab'] == 'log_blacklist' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_admin=log_blacklist"><?= __('IP Blacklist'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $log['menu_tab'] == 'log_blacklist' ? 'active' : ''; ?>" href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;menu_admin=log_blacklist"><?= __('IP Blacklist'); ?></a>
     </li>
 </ul>
 
@@ -51,11 +51,11 @@ if ($log['menu_tab'] == 'log_blacklist') {
             </thead>
             <?php while ($logbookDb = $logbook->fetch(PDO::FETCH_OBJ)) { ?>
                 <tr>
-                    <td class="text-nowrap"><?= $logbookDb->log_date; ?></td>
-                    <td><?= $logbookDb->log_username; ?></td>
-                    <td><?= $logbookDb->log_user_admin; ?></td>
-                    <td><?= $logbookDb->log_ip_address; ?></td>
-                    <td><?= $logbookDb->log_status; ?></td>
+                    <td class="text-nowrap"><?= $HtmlEscaper->escHtml((string) $logbookDb->log_date); ?></td>
+                    <td><?= $HtmlEscaper->escHtml((string) $logbookDb->log_username); ?></td>
+                    <td><?= $HtmlEscaper->escHtml((string) $logbookDb->log_user_admin); ?></td>
+                    <td><?= $HtmlEscaper->escHtml((string) $logbookDb->log_ip_address); ?></td>
+                    <td><?= $HtmlEscaper->escHtml((string) $logbookDb->log_status); ?></td>
                 </tr>
             <?php } ?>
         </table>
@@ -83,26 +83,26 @@ if ($log['menu_tab'] == 'log_blacklist') {
                 ?>
                         <tr>
                             <td>
-                                <input type="hidden" name="<?= $blacklist->setting_id; ?>id" value="<?= $blacklist->setting_id; ?>"><?= $blacklistCounter; ?>
+                                <input type="hidden" name="<?= (int) $blacklist->setting_id; ?>id" value="<?= (int) $blacklist->setting_id; ?>"><?= (int) $blacklistCounter; ?>
                                 <?php if ($blacklist->setting_order != '1') { ?>
-                                    <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=<?= $blacklist->setting_order; ?>&amp;id=<?= $blacklist->setting_id; ?>"><img src="images/arrow_up.gif" border="0" alt="up"></a>
+                                    <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;up=1&amp;link_order=<?= (int) $blacklist->setting_order; ?>&amp;id=<?= (int) $blacklist->setting_id; ?>"><img src="images/arrow_up.gif" border="0" alt="up"></a>
                                 <?php
                                 }
                                 if ($blacklist->setting_order != $count_links) {
                                 ?>
-                                    <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;down=1&amp;link_order=<?= $blacklist->setting_order; ?>&amp;id=<?= $blacklist->setting_id; ?>"><img src="images/arrow_down.gif" border="0" alt="down"></a>
+                                    <a href="index.php?page=log&amp;menu_admin=log_blacklist&amp;down=1&amp;link_order=<?= (int) $blacklist->setting_order; ?>&amp;id=<?= (int) $blacklist->setting_id; ?>"><img src="images/arrow_down.gif" border="0" alt="down"></a>
                                 <?php } ?>
                             </td>
-                            <td><input type="text" name="<?= $blacklist->setting_id; ?>own_code" value="<?= $blacklistItem[0]; ?>" size="5" class="form-control form-control-sm"></td>
-                            <td><input type="text" name="<?= $blacklist->setting_id; ?>link_text" value="<?= $blacklistItem[1]; ?>" size="20" class="form-control form-control-sm"></td>
+                            <td><input type="text" name="<?= (int) $blacklist->setting_id; ?>own_code" value="<?= $HtmlEscaper->escHtml((string) ($blacklistItem[0] ?? '')); ?>" size="5" class="form-control form-control-sm"></td>
+                            <td><input type="text" name="<?= (int) $blacklist->setting_id; ?>link_text" value="<?= $HtmlEscaper->escHtml((string) ($blacklistItem[1] ?? '')); ?>" size="20" class="form-control form-control-sm"></td>
                             <td><input type="submit" name="change_link" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></td>
-                            <td><input type="submit" name="<?= $blacklist->setting_id; ?>remove_link" value="<?= __('Remove'); ?>" class="btn btn-sm btn-warning"></td>
+                            <td><input type="submit" name="<?= (int) $blacklist->setting_id; ?>remove_link" value="<?= __('Remove'); ?>" class="btn btn-sm btn-warning"></td>
                         </tr>
                     <?php } ?>
 
                     <tr>
                         <td><br></td>
-                        <input type="hidden" name="link_order" value="<?= $new_number; ?>">
+                        <input type="hidden" name="link_order" value="<?= (int) $new_number; ?>">
                         <td><input type="text" name="own_code" placeholder="<?= __('IP Address'); ?>" size="45" class="form-control form-control-sm"></td>
                         <td><input type="text" name="link_text" placeholder="<?= __('Description'); ?>" size="30" class="form-control form-control-sm"></td>
                         <td><input type="submit" name="add_link" value="<?= __('Add'); ?>" class="btn btn-sm btn-success"></td>

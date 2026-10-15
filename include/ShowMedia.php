@@ -298,18 +298,20 @@ class ShowMedia
     {
         $mediaPath = new MediaPath();
         $resizePicture = new ResizePicture();
+        $htmlEscaper = new HtmlEscaper();
 
         // in current state this function is not displaying all formats of pictures that are allowed - for example it's not displaying webp
-        $img_style = ' style="';
+        $style = '';
         if ($maxw > 0 && $maxh > 0) {
-            $img_style .= 'width:auto; height:auto; max-width:' . $maxw . 'px; max-height:' . $maxh . 'px; ' . $css . '" ' . $attrib;
+            $style = 'width:auto; height:auto; max-width:' . (int) $maxw . 'px; max-height:' . (int) $maxh . 'px; ' . $css;
         } elseif ($maxw > 0) {
-            $img_style .= 'height:auto; max-width:' . $maxw . 'px; ' . $css . '" ' . $attrib;
+            $style = 'height:auto; max-width:' . (int) $maxw . 'px; ' . $css;
         } elseif ($maxh > 0) {
-            $img_style .= 'width:auto; max-height:' . $maxh . 'px; ' . $css . '" ' . $attrib;
+            $style = 'width:auto; max-height:' . (int) $maxh . 'px; ' . $css;
         } else {
-            $img_style .= 'width:auto; height:120px; ' . $css . '" ' . $attrib;
+            $style = 'width:auto; height:120px; ' . $css;
         }
+        $img_style = ' style="' . $htmlEscaper->escHtml($style) . '" ' . $attrib;
 
         // *** Photoalbum, use bootstrap cards ***
         $img_class = '';
@@ -331,7 +333,7 @@ class ShowMedia
                 $img_style = '';
                 $img_class = ' class="card-img-top img-fluid"';
             }
-            return '<img src="' . $prefix . 'images/thumb_missing-image.jpg" ' . $img_style . $img_class . ' title="' . $folder . $file . ' missing path/filename">';
+            return '<img src="' . $htmlEscaper->escHtml($prefix . 'images/thumb_missing-image.jpg') . '" ' . $img_style . $img_class . ' title="' . $htmlEscaper->escHtml((string) $folder . $file . ' missing path/filename') . '">';
         }
 
         $thumb_url =  $this->thumbnail_exists($folder, $file);
@@ -360,10 +362,10 @@ class ShowMedia
             $fileName = $this->thumbnail_exists($folder, $file, $mode);
 
             $src_path = $mediaPath->give_media_path($folder_for_give_media_path, $fileName);
-            return '<img src="' . $prefix . $src_path . '"' . $img_style . $img_class . '>';
+            return '<img src="' . $htmlEscaper->escHtml($prefix . $src_path) . '"' . $img_style . $img_class . '>';
             */
 
-            return '<img src="' . $thumb_url . '"' . $img_style . $img_class . '>';
+            return '<img src="' . $htmlEscaper->escHtml($thumb_url) . '"' . $img_style . $img_class . '>';
         }
 
         // No thumbnail found, create a new one, first check if and where org_file exist
@@ -372,7 +374,7 @@ class ShowMedia
             $folder .= substr($file, 0, 2) . '/';
         }
         if (!file_exists($folder . $file)) {
-            return '<img src="' . $prefix . 'images/thumb_missing-image.jpg" ' . $img_style . $img_class . ' title="' . $folder . $file . ' not found">';
+            return '<img src="' . $htmlEscaper->escHtml($prefix . 'images/thumb_missing-image.jpg') . '" ' . $img_style . $img_class . ' title="' . $htmlEscaper->escHtml((string) $folder . $file . ' not found') . '">';
         }
 
         // check for mime type and no_thumb file
@@ -385,7 +387,7 @@ class ShowMedia
             //if ($humo_option["thumbnail_auto_create"] == 'y' && $resizePicture->create_thumbnail($folder, $file)) {
             if ($resizePicture->create_thumbnail($folder, $file)) {
                 $src_path = $mediaPath->give_media_path($folder, 'thumb_' . $file . '.jpg');
-                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             }
         }
 
@@ -395,19 +397,19 @@ class ShowMedia
             case 'pdf':
                 return '<img src="' . $prefix . 'images/pdf.jpg"' . $img_class . ' alt="PDF">';
             case 'docx':
-                return '<img src="' . $prefix . 'images/msdoc.gif"' . $img_class . ' alt="DOCX">';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'doc':
-                return '<img src="' . $prefix . 'images/msdoc.gif"' . $img_class . ' alt="DOC">';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'wmv':
-                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="WMV">';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'avi':
-                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="AVI">';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'mp4':
-                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="MP4">';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'mpg':
-                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="MPG">';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'mov':
-                return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="MOV">';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'wma':
                 return '<img src="' . $prefix . 'images/video-file.png"' . $img_class . ' alt="WMA">';
             case 'wav':
@@ -421,7 +423,7 @@ class ShowMedia
             case 'ra':
                 return '<img src="' . $prefix . 'images/audio.gif"' . $img_class . ' alt="RA">';
             case 'jpg':
-                return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
+                return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
             case 'jpeg':
                 return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
             case 'png':
@@ -438,7 +440,7 @@ class ShowMedia
 
         // No thumbnail found, return the original file.
         $src_path = $mediaPath->give_media_path($folder, $file);
-        return '<img src="' . $src_path . '"' . $img_style . $img_class . '>';
+        return '<img src="' . $htmlEscaper->escHtml($src_path) . '"' . $img_style . $img_class . '>';
     }
 
     public function thumbnail_exists($folder, $file, $mode = 'both'): string

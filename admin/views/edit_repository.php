@@ -29,7 +29,7 @@ $repo_qry = $stmt;
     <div class="alert alert-danger">
         <strong><?= __('Really remove repository with all repository links?'); ?></strong>
         <form method="post" action="index.php?page=edit_repositories" style="display : inline;">
-            <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
+            <input type="hidden" name="repo_id" value="<?= $HtmlEscaper->escHtml((string) $editRepository['repo_id']); ?>">
             <input type="submit" name="repo_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="dummy6" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
@@ -59,8 +59,8 @@ $repo_qry = $stmt;
                 <select size="1" id="repo_id" name="repo_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <option value=""><?= __('Select repository'); ?></option>
                     <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
-                        <option value="<?= $repoDb->repo_id; ?>" <?= $editRepository['repo_id'] == $repoDb->repo_id ? 'selected' : ''; ?>>
-                            <?= $repoDb->repo_gedcomnr; ?>, <?= $repoDb->repo_name; ?> <?= $repoDb->repo_place; ?>
+                        <option value="<?= $HtmlEscaper->escHtml((string) $repoDb->repo_id); ?>" <?= $editRepository['repo_id'] == $repoDb->repo_id ? 'selected' : ''; ?>>
+                            <?= $HtmlEscaper->escHtml((string) $repoDb->repo_gedcomnr . ', ' . $repoDb->repo_name . ' ' . $repoDb->repo_place); ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -102,7 +102,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
         try {
             $repoDb = $repo_qry->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
-            echo $die_message;
+            echo $HtmlEscaper->escHtml($die_message);
         }
         $repo_name = $repoDb->repo_name;
         $repo_address = $repoDb->repo_address;
@@ -121,7 +121,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
 ?>
 
     <form method="POST" action="index.php?page=edit_repositories">
-        <input type="hidden" name="repo_id" value="<?= $editRepository['repo_id']; ?>">
+        <input type="hidden" name="repo_id" value="<?= $HtmlEscaper->escHtml((string) $editRepository['repo_id']); ?>">
         <div class="p-2 my-md-2 genealogy_search container-md">
             <div class="row mb-2">
                 <div class="col-md-1"></div>
@@ -129,7 +129,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Title'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_name" value="<?= htmlspecialchars($repo_name); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="repo_name" value="<?= $HtmlEscaper->escHtml((string) $repo_name); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -139,7 +139,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Address'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_address" value="<?= htmlspecialchars($repo_address); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="repo_address" value="<?= $HtmlEscaper->escHtml((string) $repo_address); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -149,7 +149,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Zip code'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_zip" value="<?= $repo_zip; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="repo_zip" value="<?= $HtmlEscaper->escHtml((string) $repo_zip); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -169,7 +169,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Place'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_place" value="<?= htmlspecialchars($repo_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="50" class="place-autocomplete form-control form-control-sm">
+                    <input type="text" name="repo_place" value="<?= $HtmlEscaper->escHtml((string) $repo_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="50" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
 
@@ -179,7 +179,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Phone'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_phone" value="<?= $repo_phone; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="repo_phone" value="<?= $HtmlEscaper->escHtml((string) $repo_phone); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -189,7 +189,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('Text'); ?>
                 </div>
                 <div class="col-md-4">
-                    <textarea rows="1" name="repo_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editRepository['editor_cls']->text_show($repo_text); ?></textarea>
+                    <textarea rows="1" name="repo_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $editRepository['editor_cls']->text_show($repo_text)); ?></textarea>
                 </div>
             </div>
 
@@ -199,7 +199,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('E-mail'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_mail" value="<?= $repo_mail; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="repo_mail" value="<?= $HtmlEscaper->escHtml((string) $repo_mail); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -209,7 +209,7 @@ if ($editRepository['repo_id'] || isset($_POST['add_repo'])) {
                     <?= __('URL/ Internet link'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" name="repo_url" value="<?= $repo_url; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="repo_url" value="<?= $HtmlEscaper->escHtml((string) $repo_url); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 

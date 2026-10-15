@@ -57,7 +57,7 @@ function calculate_correction($date, $correction)
 }
 ?>
 
-<h1 class="center"><?= __('Calculated birth date'); ?></h1>
+<h1 class="center"><?= $HtmlEscaper->escHtml(__('Calculated birth date')); ?></h1>
 
 <?= __('Calculated birth date is an estimated/ calculated date that is used for the privacy filter.<br>
 These calculated dates will be used for persons where all dates are missing (no birth, baptise, death or burial dates).<br>
@@ -66,16 +66,16 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
 <form method="POST" action="index.php?page=cal_date">
     <div class="row justify-content-center align-items-center me-1">
         <div class=" col-auto">
-            <?= __('Choose family tree'); ?>
+            <?= $HtmlEscaper->escHtml(__('Choose family tree')); ?>
         </div>
 
         <div class="col-auto">
-            <select size="1" name="tree_id" aria-label="<?= __('Choose family tree'); ?>" class="form-select form-select-sm">
+            <select size="1" name="tree_id" aria-label="<?= $HtmlEscaper->escHtml(__('Choose family tree')); ?>" class="form-select form-select-sm">
                 <?php
                 foreach ($tree_result as $treeDb) {
                     $treetext = $showTreeText->show_tree_text($treeDb->tree_id, $selected_language);
                 ?>
-                    <option value="<?= $treeDb->tree_id; ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $treetext['name']; ?></option>
+                    <option value="<?= $HtmlEscaper->escHtml((string) $treeDb->tree_id); ?>" <?= $treeDb->tree_id == $tree_id ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml((string) $treetext['name']); ?></option>
                 <?php } ?>
             </select>
         </div>
@@ -84,13 +84,13 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="recalculate" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
-                    <?= __('Recalculate all persons'); ?>
+                    <?= $HtmlEscaper->escHtml(__('Recalculate all persons')); ?>
                 </label>
             </div>
         </div>
 
         <div class="col-auto">
-            <input type="submit" name="submit_button" class="btn btn-sm btn-success" value="<?= __('Select'); ?>">
+            <input type="submit" name="submit_button" class="btn btn-sm btn-success" value="<?= $HtmlEscaper->escHtml(__('Select')); ?>">
         </div>
     </div>
 </form><br>
@@ -207,10 +207,10 @@ Calculation will be done using birth, baptise, death, burial and marriage dates 
                     }
                 ?>
 
-                    <span style="width:80px; display:inline-block;"><?= $person_db->pers_gedcomnumber; ?></span>
-                    <?= $person_db->pers_firstname; ?> <?= strtolower(str_replace("_", " ", $person_db->pers_prefix)); ?><?= $person_db->pers_lastname; ?> <?= $pers_cal_date; ?>
-                    <?= $used_item ? ' (<i>found ' . $used_item . '</i>) ' : ''; ?>
-                    <?= $pers_cal_date == '' ? '<b>' . __('No dates') . '</b>' : ''; ?><br>
+                    <span style="width:80px; display:inline-block;"><?= $HtmlEscaper->escHtml((string) $person_db->pers_gedcomnumber); ?></span>
+                    <?= $HtmlEscaper->escHtml((string) $person_db->pers_firstname); ?> <?= $HtmlEscaper->escHtml(strtolower(str_replace("_", " ", (string) $person_db->pers_prefix))); ?><?= $HtmlEscaper->escHtml((string) $person_db->pers_lastname); ?> <?= $HtmlEscaper->escHtml((string) $pers_cal_date); ?>
+                    <?= $used_item ? ' (<i>found ' . $HtmlEscaper->escHtml((string) $used_item) . '</i>) ' : ''; ?>
+                    <?= $pers_cal_date == '' ? '<b>' . $HtmlEscaper->escHtml(__('No dates')) . '</b>' : ''; ?><br>
                 <?php
                     $dbh->query("UPDATE humo_persons SET pers_cal_date='" . $pers_cal_date . "' WHERE pers_tree_id='" . $tree_id . "' AND pers_id='" . $person_db->pers_id . "'");
                 }
