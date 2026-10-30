@@ -25,20 +25,20 @@ echo '<br><br>';
 if (isset($_SESSION['dupl_arr_' . $trees['tree_id']])) {
 ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">
-        <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-        <input type="submit" style="min-width:150px" name="duplicate_compare" value="<?= __('Continue duplicate merge'); ?>" class="btn btn-sm btn-success">
+    <form method="post" action="index.php?page=tree&amp;menu_admin=<?= $HtmlEscaper->escHtml((string) $trees['menu_tab']); ?>" style="display : inline;">
+        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+        <input type="submit" style="min-width:150px" name="duplicate_compare" value="<?= $HtmlEscaper->escHtml(__('Continue duplicate merge')); ?>" class="btn btn-sm btn-success">
     </form><br><br>
 <?php } ?>
 
-<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">
-    <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-    <?= __('Find doubles only within this family name (optional)'); ?>:
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $HtmlEscaper->escHtml((string) $trees['menu_tab']); ?>" style="display : inline;">
+    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+    <?= $HtmlEscaper->escHtml(__('Find doubles only within this family name (optional)')); ?>:
     <input type="text" name="famname_search" class="form-control form-control-sm my-3 w-25">
-    <input type="submit" style="min-width:150px" name="duplicate" value="<?= __('Generate new duplicate merge'); ?>" class="btn btn-sm btn-success ms-2">
+    <input type="submit" style="min-width:150px" name="duplicate" value="<?= $HtmlEscaper->escHtml(__('Generate new duplicate merge')); ?>" class="btn btn-sm btn-success ms-2">
 </form>
 
-<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">
-    <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-    <input type="submit" value="<?= __('Back to main merge menu'); ?>" class="btn btn-sm btn-success ms-5">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $HtmlEscaper->escHtml((string) $trees['menu_tab']); ?>" style="display : inline;">
+    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
+    <input type="submit" value="<?= $HtmlEscaper->escHtml(__('Back to main merge menu')); ?>" class="btn btn-sm btn-success ms-5">
 </form>

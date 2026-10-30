@@ -14,16 +14,16 @@ $user = $dbh->query($usersql);
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to delete this user?'); ?></strong>
         <form method="post" action="index.php?page=users" style="display : inline;">
-            <input type="hidden" name="remove_user" value="<?= $_GET['remove_user']; ?>">
-            <input type="submit" name="remove_user2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
-            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
+            <input type="hidden" name="remove_user" value="<?= $htmlEscaper->escHtml(is_scalar($_GET['remove_user']) ? (string) $_GET['remove_user'] : ''); ?>">
+            <input type="submit" name="remove_user2" value="<?= $htmlEscaper->escHtml(__('Yes')); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="submit" value="<?= $htmlEscaper->escHtml(__('No')); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php } ?>
 
 <?php if ($edit_users['alert']) { ?>
     <div class="alert alert-warning">
-        <strong><?= $edit_users['alert']; ?></strong>
+        <strong><?= nl2br($htmlEscaper->escHtml(str_replace('<br>', "\n", $edit_users['alert']))); ?></strong>
     </div>
 <?php } ?>
 
@@ -52,17 +52,18 @@ $user = $dbh->query($usersql);
                 <th><?= __('User group'); ?></th>
                 <th><?= __('Extra settings'); ?></th>
                 <th><?= __('Statistics'); ?></th>
-                <th><input type="submit" name="change_user" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"></th>
+                <th> <input type="submit" name="change_user" value="<?= $htmlEscaper->escHtml(__('Change')); ?>" class="btn btn-sm btn-success"></th>
             </tr>
         </thead>
 
         <?php while ($userDb = $user->fetch(PDO::FETCH_OBJ)) { ?>
+            <?php $userId = (int) $userDb->user_id; ?>
             <tr>
                 <td>
-                    <input type="hidden" name="<?= $userDb->user_id; ?>user_id" value="<?= $userDb->user_id; ?>">
+                    <input type="hidden" name="<?= $userId; ?>user_id" value="<?= $userId; ?>">
 
                     <?php if ($userDb->user_name != 'gast' && $userDb->user_name != 'guest' && $userDb->user_id != '1') { ?>
-                        <a href="index.php?page=users&remove_user=<?= $userDb->user_id; ?>">
+                        <a href="index.php?page=users&amp;remove_user=<?= $userId; ?>">
                             <img src="images/button_drop.png" border="0" alt="remove person">
                         </a>
                     <?php } ?>
@@ -73,32 +74,32 @@ $user = $dbh->query($usersql);
                     // *** It's not allowed to change username "guest" (gast = backwards compatibility) ***
                     if ($userDb->user_name == 'gast' || $userDb->user_name == 'guest') {
                     ?>
-                        <input type="hidden" name="<?= $userDb->user_id; ?>username" value="<?= $userDb->user_name; ?>">
-                        <b><?= $userDb->user_name; ?></b>
+                        <input type="hidden" name="<?= $userId; ?>username" value="<?= $htmlEscaper->escHtml($userDb->user_name); ?>">
+                        <b><?= $htmlEscaper->escHtml($userDb->user_name); ?></b>
                     <?php } else { ?>
-                        <input type="text" name="<?= $userDb->user_id; ?>username" value="<?= $userDb->user_name; ?>" size="15" class="form-control form-control-sm">
+                        <input type="text" name="<?= $userId; ?>username" value="<?= $htmlEscaper->escHtml($userDb->user_name); ?>" size="15" class="form-control form-control-sm">
                     <?php } ?>
                 </td>
 
                 <?php
                 if ($userDb->user_name == 'gast' || $userDb->user_name == 'guest') { ?>
-                    <td><input type="hidden" name="<?= $userDb->user_id; ?>usermail" value=""><br></td>
+                    <td><input type="hidden" name="<?= $userId; ?>usermail" value=""><br></td>
                     <td><b><?= __('no need to log in'); ?></b></td>
                 <?php } else { ?>
-                    <td><input type="text" name="<?= $userDb->user_id; ?>usermail" value="<?= $userDb->user_mail; ?>" size="20" class="form-control form-control-sm"></td>
-                    <td><input type="password" name="<?= $userDb->user_id; ?>password" size="15" class="form-control form-control-sm"></td>
+                    <td><input type="text" name="<?= $userId; ?>usermail" value="<?= $htmlEscaper->escHtml($userDb->user_mail); ?>" size="20" class="form-control form-control-sm"></td>
+                    <td><input type="password" name="<?= $userId; ?>password" size="15" class="form-control form-control-sm"></td>
                 <?php } ?>
 
                 <!-- User groups. 1st user is always admin. -->
                 <?php if ($userDb->user_id == '1') { ?>
-                    <td><input type="hidden" name="<?= $userDb->user_id; ?>group_id" value="1"><b>admin</b></td>
+                    <td><input type="hidden" name="<?= $userId; ?>group_id" value="1"><b>admin</b></td>
                 <?php
                 } else {
                     $groupsql = "SELECT * FROM humo_groups";
                     $groupresult = $dbh->query($groupsql);
                 ?>
                     <td>
-                        <select size="1" name="<?= $userDb->user_id; ?>group_id" class="form-select form-select-sm">
+                        <select size="1" name="<?= $userId; ?>group_id" class="form-select form-select-sm">
                             <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
                                 <?php
                                 // *** Hide admin group for guest user ***
@@ -108,8 +109,8 @@ $user = $dbh->query($usersql);
                                 }
                                 if ($show_group_option) {
                                 ?>
-                                    <option value="<?= $groupDb->group_id; ?>" <?= $userDb->user_group_id == $groupDb->group_id ? 'selected' : ''; ?>>
-                                        <?= $groupDb->group_name; ?>
+                                    <option value="<?= $htmlEscaper->escHtml($groupDb->group_id); ?>" <?= $userDb->user_group_id == $groupDb->group_id ? 'selected' : ''; ?>>
+                                        <?= $htmlEscaper->escHtml($groupDb->group_name); ?>
                                     </option>
                                 <?php } ?>
                             <?php } ?>
@@ -124,8 +125,8 @@ $user = $dbh->query($usersql);
                 }
                 ?>
                 <td>
-                    <a href="#" onClick='window.open("index.php?page=editor_user_settings&user=<?= $userDb->user_id; ?>","","scrollbars=1,width=900,height=500,top=100,left=100")' ;>
-                        <img src=<?= $extra_icon; ?> alt="<?= __('Search'); ?>">
+                    <a href="#" onClick='window.open("index.php?page=editor_user_settings&amp;user=<?= $userId; ?>","","scrollbars=1,width=900,height=500,top=100,left=100")' ;>
+                        <img src="<?= $extra_icon; ?>" alt="<?= $htmlEscaper->escHtml(__('Search')); ?>">
                     </a>
                 </td>
 
@@ -142,7 +143,7 @@ $user = $dbh->query($usersql);
                 $logdateDb = $logdate->fetch(PDO::FETCH_OBJ);
 
                 if ($logbookDb->nr_login) {
-                    echo '<td>#' . $logbookDb->nr_login . ', ' . $logdateDb->log_date . '</td>';
+                    echo '<td>#' . $htmlEscaper->escHtml($logbookDb->nr_login) . ', ' . $htmlEscaper->escHtml($logdateDb->log_date) . '</td>';
                 } else {
                     echo '<td><br></td>';
                 }
@@ -158,8 +159,8 @@ $user = $dbh->query($usersql);
                     <?php
                     if (!$db_functions->check_visitor($log_ip_address)) {
                         echo 'Access to website is blocked.<br>';
-                        echo 'IP address: ' . $logdateDb->log_ip_address . '<br>';
-                        echo '<a href="index.php?page=users&unblock_ip_address=' . $logdateDb->log_ip_address . '">' . __('Unblock IP address') . '</a>';
+                        echo 'IP address: ' . $htmlEscaper->escHtml($logdateDb->log_ip_address) . '<br>';
+                        echo '<a href="index.php?page=users&amp;unblock_ip_address=' . $htmlEscaper->escHtml(rawurlencode($logdateDb->log_ip_address)) . '">' . __('Unblock IP address') . '</a>';
                     } else {
                         echo '<br>';
                     }
@@ -182,13 +183,13 @@ $user = $dbh->query($usersql);
                 <!-- Select group for new user, default=family group. -->
                 <select size="1" name="add_group_id" class="form-select form-select-sm">
                     <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
-                        <option value="<?= $groupDb->group_id; ?>" <?= $groupDb->group_id == '2' ? 'selected' : ''; ?>><?= $groupDb->group_name; ?></option>
+                        <option value="<?= $htmlEscaper->escHtml($groupDb->group_id); ?>" <?= $groupDb->group_id == '2' ? 'selected' : ''; ?>><?= $htmlEscaper->escHtml($groupDb->group_name); ?></option>
                     <?php } ?>
                 </select>
             </td>
             <td></td>
             <td></td>
-            <td><input type="submit" name="add_user" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary"></td>
+            <td><input type="submit" name="add_user" value="<?= $htmlEscaper->escHtml(__('Add')); ?>" class="btn btn-sm btn-primary"></td>
         </tr>
     </table>
 </form>

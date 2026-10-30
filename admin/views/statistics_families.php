@@ -20,7 +20,6 @@ if (isset($tree_id) && $tree_id) {
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $showTreeDate = new \Genealogy\Include\ShowTreeDate();
-$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
 
 <h2><?= __('Family statistics (numbers since last GEDCOM update)'); ?></h2>
@@ -78,7 +77,7 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     } else {
         $privacy = $personPrivacy->get_privacy($personDb);
         $name = $personName->get_person_name($personDb, $privacy);
-        echo $HtmlEscaper->escHtml($name["standard_name"]);
+        echo $HtmlEscaper->escHtmlDecoded((string) $name["standard_name"]);
     }
 
     echo ' &amp; ';
@@ -90,7 +89,7 @@ while ($familyDb = $family_qry->fetch(PDO::FETCH_OBJ)) {
     } else {
         $privacy = $personPrivacy->get_privacy($personDb);
         $name = $personName->get_person_name($personDb, $privacy);
-        echo $HtmlEscaper->escHtml($name["standard_name"]);
+        echo $HtmlEscaper->escHtmlDecoded((string) $name["standard_name"]);
     }
     echo '<br>';
 }

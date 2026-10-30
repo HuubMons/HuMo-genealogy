@@ -4,6 +4,11 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
+$treeCheckTab = $tree_check['tab'] ?? '';
+if (!is_string($treeCheckTab) || !in_array($treeCheckTab, ['check', 'consistency', 'invalid', 'integrity', 'changes'], true)) {
+    $treeCheckTab = 'check';
+}
+
 // *** Needed for tab "Check database integrity" ***
 $db_functions->set_tree_id($tree_id);
 ?>
@@ -23,24 +28,24 @@ $db_functions->set_tree_id($tree_id);
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tree_check['tab'] == 'check') echo 'active'; ?>" href="index.php?page=check&amp;tab=check"><?= __('Family tree data check'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $treeCheckTab === 'check' ? 'active' : ''; ?>" href="index.php?page=check&amp;tab=check"><?= __('Family tree data check'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tree_check['tab'] == 'consistency') echo 'active'; ?>" href="index.php?page=check&amp;tab=consistency"><?= __('Check consistency of dates'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $treeCheckTab === 'consistency' ? 'active' : ''; ?>" href="index.php?page=check&amp;tab=consistency"><?= __('Check consistency of dates'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tree_check['tab'] == 'invalid') echo 'active'; ?>" href="index.php?page=check&amp;tab=invalid"><?= __('Find invalid dates'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $treeCheckTab === 'invalid' ? 'active' : ''; ?>" href="index.php?page=check&amp;tab=invalid"><?= __('Find invalid dates'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tree_check['tab'] == 'integrity') echo 'active'; ?>" href="index.php?page=check&amp;tab=integrity"><?= __('Check database integrity'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $treeCheckTab === 'integrity' ? 'active' : ''; ?>" href="index.php?page=check&amp;tab=integrity"><?= __('Check database integrity'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($tree_check['tab'] == 'changes') echo 'active'; ?>" href="index.php?page=check&amp;tab=changes"><?= __('View latest changes'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $treeCheckTab === 'changes' ? 'active' : ''; ?>" href="index.php?page=check&amp;tab=changes"><?= __('View latest changes'); ?></a>
     </li>
 </ul>
 
 <div class="container-fluid bg-light pt-3">
-    <?php if ($tree_check['tab'] == 'check') { ?>
+    <?php if ($treeCheckTab === 'check') { ?>
         <b><?= __('Check consistency of dates'); ?></b><br>
         <?= __('With this option you can check the consistency of the dates in your database.'); ?><br>
         <?= __('For example: birth date after death date, marriage date at age 7, birth date 80 years after mother\'s birth date etc.'); ?><br><br>
@@ -60,13 +65,13 @@ $db_functions->set_tree_id($tree_id);
         <b><?= __('Latest changes'); ?></b><br>
         <?= __('Here you can view the latest changes that were made to data in your database.'); ?><br><br>
     <?php
-    } elseif ($tree_check['tab'] == 'changes') {
+    } elseif ($treeCheckTab === 'changes') {
         include(__DIR__ . '/tree_check_changes.php');
-    } elseif ($tree_check['tab'] == 'integrity') {
+    } elseif ($treeCheckTab === 'integrity') {
         include(__DIR__ . '/tree_check_integrity.php');
-    } elseif ($tree_check['tab'] == 'invalid') {
+    } elseif ($treeCheckTab === 'invalid') {
         include(__DIR__ . '/tree_check_invalid.php');
-    } elseif ($tree_check['tab'] == 'consistency') {
+    } elseif ($treeCheckTab === 'consistency') {
         include(__DIR__ . '/tree_check_consistency.php');
     }
     ?>

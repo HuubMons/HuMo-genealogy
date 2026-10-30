@@ -5,7 +5,6 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $languageDate = new \Genealogy\Include\LanguageDate();
-$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 $tree_result = $dbh->query($tree_sql);
@@ -26,7 +25,7 @@ $tree_result = $dbh->query($tree_sql);
                 <select size="1" id="tree_id" name="tree_id" class="form-select form-select-sm" onChange="this.form.submit();">
                     <?php
                     while ($treeDb = $tree_result->fetch(PDO::FETCH_OBJ)) {
-                        $treetext = $showTreeText ->show_tree_text($treeDb->tree_id, $selected_language);
+                        $treetext = $showTreeText->show_tree_text($treeDb->tree_id, $selected_language);
                         $selected = '';
                         if (isset($tree_id) && $treeDb->tree_id == $tree_id) {
                             $selected = ' selected';
@@ -125,22 +124,6 @@ if (isset($note_tree_id)) {
 ?>
 
     <?php
-    /*
-        echo '<tr class="humo_user_notes"><td>';
-            if ($num_rows)
-            {
-                echo '<a href="#humo_user_notes"></a> ';
-            }
-            echo __('Notes').'</td><td colspan="2">';
-            if ($num_rows)
-            {
-                printf(__('There are %d user added notes.'), $num_rows);
-            } else {
-                printf(__('There are %d user added notes.'), 0);
-            }
-        echo '</td></tr>';
-        */
-
     while ($noteDb = $note_result->fetch(PDO::FETCH_OBJ)) {
         $user_name = $db_functions->get_user_name($noteDb->note_new_user_id);
 

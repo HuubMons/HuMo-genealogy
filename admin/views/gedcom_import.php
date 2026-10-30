@@ -32,7 +32,6 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-//$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
 
 <?php if ($trees['step'] == '1') { ?>

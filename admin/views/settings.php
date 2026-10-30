@@ -4,8 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
-
 $folder = opendir('../styles/');
 while (false !== ($file = readdir($folder))) {
     if (substr($file, -4, 4) === '.css') {
@@ -117,7 +115,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Scripts in &lt;head&gt; section for all pages'); ?>
             </div>
             <div class="col-md-auto">
-                <textarea cols="80" rows="1" name="text_header" class="form-control form-control-sm"><?= htmlentities($humo_option["text_header"], ENT_NOQUOTES); ?></textarea>
+                <textarea cols="80" rows="1" name="text_header" class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $humo_option["text_header"]); ?></textarea>
             </div>
         </div>
         <div class="row mb-2">
@@ -132,7 +130,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Text in footer for all pages'); ?>
             </div>
             <div class="col-md-auto">
-                <textarea cols="80" rows="1" name="text_footer" class="form-control form-control-sm"><?= htmlentities($humo_option["text_footer"], ENT_NOQUOTES); ?></textarea>
+                <textarea cols="80" rows="1" name="text_footer" class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $humo_option["text_footer"]); ?></textarea>
             </div>
         </div>
         <div class="row mb-2">
@@ -317,7 +315,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 </select>
             </div>
             <div class="col-md-6">
-                <textarea cols="80" rows=1 name="robots_option" class="form-control form-control-sm"><?= htmlentities($humo_option["robots_option"], ENT_NOQUOTES); ?></textarea>
+                <textarea cols="80" rows=1 name="robots_option" class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $humo_option["robots_option"]); ?></textarea>
             </div>
         </div>
 
@@ -350,7 +348,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Block spam question'); ?>
             </div>
             <div class="col-md-8">
-                <input type="text" name="block_spam_question" value="<?= htmlentities($humo_option["block_spam_question"], ENT_NOQUOTES); ?>" class="form-control form-control-sm">
+                <input type="text" name="block_spam_question" value="<?= $HtmlEscaper->escHtml((string) $humo_option["block_spam_question"]); ?>" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -359,7 +357,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Block spam answer'); ?>
             </div>
             <div class="col-md-8">
-                <input type="text" name="block_spam_answer" value="<?= htmlentities($humo_option["block_spam_answer"], ENT_NOQUOTES); ?>" class="form-control form-control-sm">
+                <input type="text" name="block_spam_answer" value="<?= $HtmlEscaper->escHtml((string) $humo_option["block_spam_answer"]); ?>" class="form-control form-control-sm">
             </div>
         </div>
 

@@ -3,32 +3,38 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+$selectedMonth = (int) $statistics['month'];
+$selectedYear = (int) $statistics['year'];
+$firstYear = (int) $statistics['first_year'];
+$presentYear = (int) $statistics['present_year'];
+$presentMonth = (int) $statistics['present_month'];
 ?>
+
 <div class="mb-3">
     <form method="POST" action="index.php?page=statistics&amp;tab=date_statistics">
         <div class="row">
             <div class="col-md-auto">
                 <select size="1" name="month" class="form-select form-select-sm">
-                    <option value="1" <?php if ($statistics['month'] == '1') echo ' selected'; ?>><?= __('January'); ?></option>
-                    <option value="2" <?php if ($statistics['month'] == '2') echo ' selected'; ?>><?= __('February'); ?></option>
-                    <option value="3" <?php if ($statistics['month'] == '3') echo ' selected'; ?>><?= __('March'); ?></option>
-                    <option value="4" <?php if ($statistics['month'] == '4') echo ' selected'; ?>><?= __('April'); ?></option>
-                    <option value="5" <?php if ($statistics['month'] == '5') echo ' selected'; ?>><?= __('May'); ?></option>
-                    <option value="6" <?php if ($statistics['month'] == '6') echo ' selected'; ?>><?= __('June'); ?></option>
-                    <option value="7" <?php if ($statistics['month'] == '7') echo ' selected'; ?>><?= __('July'); ?></option>
-                    <option value="8" <?php if ($statistics['month'] == '8') echo ' selected'; ?>><?= __('August'); ?></option>
-                    <option value="9" <?php if ($statistics['month'] == '9') echo ' selected'; ?>><?= __('September'); ?></option>
-                    <option value="10" <?php if ($statistics['month'] == '10') echo ' selected'; ?>><?= __('October'); ?></option>
-                    <option value="11" <?php if ($statistics['month'] == '11') echo ' selected'; ?>><?= __('November'); ?></option>
-                    <option value="12" <?php if ($statistics['month'] == '12') echo ' selected'; ?>><?= __('December'); ?></option>
+                    <option value="1" <?= $selectedMonth === 1 ? 'selected' : ''; ?>><?= __('January'); ?></option>
+                    <option value="2" <?= $selectedMonth === 2 ? 'selected' : ''; ?>><?= __('February'); ?></option>
+                    <option value="3" <?= $selectedMonth === 3 ? 'selected' : ''; ?>><?= __('March'); ?></option>
+                    <option value="4" <?= $selectedMonth === 4 ? 'selected' : ''; ?>><?= __('April'); ?></option>
+                    <option value="5" <?= $selectedMonth === 5 ? 'selected' : ''; ?>><?= __('May'); ?></option>
+                    <option value="6" <?= $selectedMonth === 6 ? 'selected' : ''; ?>><?= __('June'); ?></option>
+                    <option value="7" <?= $selectedMonth === 7 ? 'selected' : ''; ?>><?= __('July'); ?></option>
+                    <option value="8" <?= $selectedMonth === 8 ? 'selected' : ''; ?>><?= __('August'); ?></option>
+                    <option value="9" <?= $selectedMonth === 9 ? 'selected' : ''; ?>><?= __('September'); ?></option>
+                    <option value="10" <?= $selectedMonth === 10 ? 'selected' : ''; ?>><?= __('October'); ?></option>
+                    <option value="11" <?= $selectedMonth === 11 ? 'selected' : ''; ?>><?= __('November'); ?></option>
+                    <option value="12" <?= $selectedMonth === 12 ? 'selected' : ''; ?>><?= __('December'); ?></option>
                 </select>
             </div>
 
             <div class="col-md-auto">
                 <!-- Select year -->
                 <select size="1" name="year" class="form-select form-select-sm">
-                    <?php for ($year_select = $statistics['first_year']; $year_select <= $statistics['present_year']; $year_select++) { ?>
-                        <option value="<?= $year_select; ?>" <?= $statistics['year'] == $year_select ? 'selected' : ''; ?>><?= $year_select; ?></option>
+                    <?php for ($yearSelect = $firstYear; $yearSelect <= $presentYear; $yearSelect++) { ?>
+                        <option value="<?= $yearSelect; ?>" <?= $selectedYear === $yearSelect ? 'selected' : ''; ?>><?= $yearSelect; ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -44,12 +50,12 @@ if (!defined('ADMIN_PAGE')) {
 
 <?php
 // Graphic present month
-if ($statistics['month'] == $statistics['present_month'] && $statistics['year'] == $statistics['present_year']) {
-    calender($statistics['month'], $statistics['year'], true);
+if ($selectedMonth === $presentMonth && $selectedYear === $presentYear) {
+    calender($selectedMonth, $selectedYear, true);
 } else {
-    calender($statistics['month'], $statistics['year'], false);
+    calender($selectedMonth, $selectedYear, false);
 }
 
 // Graphic year
 echo '<br>';
-year_graphics($statistics['month'], $statistics['year']);
+year_graphics($selectedMonth, $selectedYear);

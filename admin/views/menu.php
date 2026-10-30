@@ -4,11 +4,7 @@
  * Admin menu
  */
 
-$popup_style = '';
 $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
-//if ($popup == true){
-//  $popup_style = ' style="top:0px;"';
-//}
 
 if ($page != 'login' && $page != 'update') {
     if (isset($_GET['page'])) {
@@ -25,13 +21,6 @@ $menu_path_logoff = 'index.php?log_off=1';
 if ($popup == false) {
 ?>
     <!-- Bootstrap menu using hoover effect -->
-    <!-- Example from: https://bootstrap-menu.com/detail-basic-hover.html -->
-    <!-- <nav class="mt-5 navbar navbar-expand-lg bg-light border-bottom border-success"> -->
-    <!-- <nav class="mt-5 navbar navbar-expand-lg border-bottom border-success genealogy_menu" style="margin: 0 !important;"> -->
-    <!-- <nav class="mt-5 navbar navbar-expand-lg border-bottom border-dark-subtle genealogy_menu"> -->
-    <!-- <nav class="navbar navbar-expand-lg border-bottom border-dark-subtle genealogy_menu"> -->
-    <!-- <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;"> -->
-    <!-- <nav class="navbar navbar-expand-lg border-bottom border-dark-subtle" style="background: linear-gradient(rgb(244, 244, 255) 0%, rgb(219, 219, 219) 100%);"> -->
     <nav class="navbar navbar-expand-lg bg-light border-bottom border-dark-subtle">
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,9 +31,6 @@ if ($popup == false) {
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle <?= $page == 'admin' ? 'active' : ''; ?>" href="index.php?page=admin" data-bs-toggle="dropdown">
-                        <?php /*
-                        <img src="../images/menu_mobile.png" width="18" alt="<?= __('Administration'); ?>">
-                        */ ?>
                         <?= __('Home'); ?>
                     </a>
 
@@ -125,12 +111,7 @@ if ($popup == false) {
                 <!-- Select language using country flags -->
                 <li class="nav-item dropdown">
                     <?php include_once(__DIR__ . "/../../views/partial/select_language.php"); ?>
-                    <?php /*
-                    $language_path = $processLinks->get_link('', 'language', '', true);
-                    */
-                    ?>
-                    <?php $language_path = 'index.php?'; ?>
-                    <?= show_country_flags($selected_language, '../', 'language_choice', $language_path); ?>
+                    <?= show_country_flags($selected_language, '../', 'language_choice', 'index.php?'); ?>
                 </li>
 
                 <?php if ($main_admin['show_menu'] == true and $page != 'login') {; ?>
@@ -146,9 +127,7 @@ if ($popup == false) {
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo">
                 <?= __('Open Sidebar'); ?>
             </button>
-
         </div>
     </nav>
-
 <?php
 }

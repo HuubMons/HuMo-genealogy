@@ -5,6 +5,7 @@ namespace Genealogy\Admin\Models;
 use Genealogy\Admin\Models\AdminBaseModel;
 use Genealogy\Include\PersonLink;
 use Genealogy\Include\LanguageDate;
+use Genealogy\Include\HtmlEscaper;
 use PDO;
 
 class TreeCheckChangesModel extends AdminBaseModel
@@ -49,6 +50,7 @@ class TreeCheckChangesModel extends AdminBaseModel
     {
         $personLink = new PersonLink();
         $languageDate = new LanguageDate();
+        $htmlEscaper = new HtmlEscaper();
 
         $row = 0;
 
@@ -79,20 +81,20 @@ class TreeCheckChangesModel extends AdminBaseModel
                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                 $url = $personLink->get_person_link($person, '../');
 
-                $text = '<a href="' . $url . '">' . $person->pers_firstname . ' ' . $person->pers_prefix . $person->pers_lastname . '</a>';
+                $text = '<a href="' . $htmlEscaper->escHtml($url) . '">' . $htmlEscaper->escHtml($person->pers_firstname . ' ' . $person->pers_prefix . $person->pers_lastname) . '</a>';
                 $tree_check['changes'][$row][1] = $text;
 
                 $text = '';
                 if ($person->pers_changed_datetime) {
                     $user_name = $this->db_functions->get_user_name($person->pers_changed_user_id);
-                    $text .= $languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $user_name;
+                    $text .= $htmlEscaper->escHtml($languageDate->show_datetime($person->pers_changed_datetime) . ' ' . $user_name);
                 }
                 $tree_check['changes'][$row][2] = $text;
 
                 $text = '';
                 if ($person->pers_new_datetime != '1970-01-01 00:00:01') {
                     $user_name = $this->db_functions->get_user_name($person->pers_new_user_id);
-                    $text .= $languageDate->show_datetime($person->pers_new_datetime) . ' ' . $user_name;
+                    $text .= $htmlEscaper->escHtml($languageDate->show_datetime($person->pers_new_datetime) . ' ' . $user_name);
                 }
                 $tree_check['changes'][$row][3] = $text;
 
@@ -136,20 +138,20 @@ class TreeCheckChangesModel extends AdminBaseModel
                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                     $url = $personLink->get_person_link($person2, '../');
 
-                    $text = '<a href="' . $url . '">' . $person2->pers_firstname . ' ' . $person2->pers_prefix . $person2->pers_lastname . '</a>';
+                    $text = '<a href="' . $htmlEscaper->escHtml($url) . '">' . $htmlEscaper->escHtml($person2->pers_firstname . ' ' . $person2->pers_prefix . $person2->pers_lastname) . '</a>';
                     $tree_check['changes'][$row][1] = $text;
 
                     $text = '';
                     if ($person->fam_changed_datetime) {
                         $user_name = $this->db_functions->get_user_name($person->fam_changed_user_id);
-                        $text .= $languageDate->show_datetime($person->fam_changed_datetime) . ' ' . $user_name;
+                        $text .= $htmlEscaper->escHtml($languageDate->show_datetime($person->fam_changed_datetime) . ' ' . $user_name);
                     }
                     $tree_check['changes'][$row][2] = $text;
 
                     $text = '';
                     if ($person->fam_new_datetime != '1970-01-01 00:00:01') {
                         $user_name = $this->db_functions->get_user_name($person->fam_new_user_id);
-                        $text .= $languageDate->show_datetime($person->fam_new_datetime) . ' ' . $user_name;
+                        $text .= $htmlEscaper->escHtml($languageDate->show_datetime($person->fam_new_datetime) . ' ' . $user_name);
                     }
                     $tree_check['changes'][$row][3] = $text;
 

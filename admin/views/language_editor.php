@@ -9,7 +9,6 @@
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
-//$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 // TODO move code to model script (including functions at end of this script)
 $hide_languages_array = explode(";", $humo_option["hide_languages"]);

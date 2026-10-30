@@ -33,7 +33,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-//$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 @set_time_limit(3000);
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 ?>

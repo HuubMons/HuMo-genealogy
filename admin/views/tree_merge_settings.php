@@ -9,8 +9,8 @@ $generalSettings = new \Genealogy\Include\GeneralSettings();
 $humo_option = $generalSettings->get_humo_option($dbh);
 ?>
 
-<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" class="my-2">
-    <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= htmlspecialchars((string)$trees['menu_tab'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" class="my-2">
+    <input type="hidden" name="tree_id" value="<?= htmlspecialchars((string)$trees['tree_id'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
 
     <table class="table" style="width:1200px;">
         <tr class="table-primary">
@@ -24,7 +24,7 @@ $humo_option = $generalSettings->get_humo_option($dbh);
         <tr>
             <td><?= __('Max characters to match firstname:'); ?></td>
             <td width="100">
-                <input type="text" name="merge_chars" value="<?= $humo_option["merge_chars"]; ?>" size="1" class="form-control form-control-sm">
+                <input type="text" name="merge_chars" value="<?= htmlspecialchars((string)$humo_option["merge_chars"], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="1" class="form-control form-control-sm">
             </td>
             <td>
                 <?= __('In different trees, first names may be listed differently: Thomas Julian Booth, Thomas J. Booth, Thomas Booth etc. By default a match of the first 10 characters of the first name will be considered a match. You can change this to another value. Try and find the right balance: if you set a low number of chars you will get many unwanted possible matches. If you set it too high, you may miss possible matches as in the example names above.'); ?>

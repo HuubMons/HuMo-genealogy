@@ -22,8 +22,8 @@ if (!defined('ADMIN_PAGE')) {
                             $qry = $dbh->query("SELECT * FROM humo_users WHERE user_id='" . $select_editorDb->user . "'");
                             $editorDb = $qry->fetch(PDO::FETCH_OBJ);
                     ?>
-                            <option value="<?= $select_editorDb->user; ?>" <?= $select_editorDb->user == $tree_check['editor'] ? 'selected' : ''; ?>>
-                                <?= $editorDb->user_name; ?>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $select_editorDb->user); ?>" <?= $select_editorDb->user == $tree_check['editor'] ? 'selected' : ''; ?>>
+                                <?= $HtmlEscaper->escHtml((string) $editorDb->user_name); ?>
                             </option>
                     <?php
                         }

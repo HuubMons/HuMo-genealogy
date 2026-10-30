@@ -14,7 +14,6 @@ if (!defined('ADMIN_PAGE')) {
 
 $datePlace = new \Genealogy\Include\DatePlace();
 $languageDate = new \Genealogy\Include\LanguageDate;
-$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
 $eventManager = new \Genealogy\Include\EventManager($dbh);
 $orderChildren = new \Genealogy\Include\OrderChildren();

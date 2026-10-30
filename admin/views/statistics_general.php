@@ -4,8 +4,6 @@ if (!defined('ADMIN_PAGE')) {
     exit;
 }
 
-$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
-
 $family_qry = $dbh->query("SELECT * FROM humo_trees as humo_trees2 RIGHT JOIN
 ( SELECT stat_tree_id, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date GROUP BY stat_tree_id )
  as humo_stat_date2 ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id ORDER BY tree_order desc");
@@ -280,7 +278,6 @@ function statistics_line($familyDb)
         if ($checkDb && $checkDb->partner1_gedcomnumber == $familyDb->stat_gedcom_man && $checkDb->partner2_gedcomnumber == $familyDb->stat_gedcom_woman) {
             $check = true;
         }
-
         ?>
         <td>
             <?php
@@ -297,7 +294,7 @@ function statistics_line($familyDb)
                 } else {
                     $privacy = $personPrivacy->get_privacy($personDb);
                     $name = $personName->get_person_name($personDb, $privacy);
-                    echo $HtmlEscaper->escHtml($name["standard_name"]);
+                    echo $HtmlEscaper->escHtmlDecoded((string) $name["standard_name"]);
                 }
 
                 echo " &amp; ";
@@ -309,7 +306,7 @@ function statistics_line($familyDb)
                 } else {
                     $privacy = $personPrivacy->get_privacy($personDb);
                     $name = $personName->get_person_name($personDb, $privacy);
-                    echo $HtmlEscaper->escHtml($name["standard_name"]);
+                    echo $HtmlEscaper->escHtmlDecoded((string) $name["standard_name"]);
                 }
             } else {
                 echo '<b>' . __('FAMILY NOT FOUND IN FAMILY TREE') . '</b>';

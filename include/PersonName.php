@@ -97,9 +97,6 @@ class PersonName
                 $rufname_qry = $db_functions->get_events_connect('person', $personDb->pers_gedcomnumber, 'name');
                 foreach ($rufname_qry as $rufnameDb) {
                     if ($rufnameDb->event_gedcom == "_RUFN") {
-                        //$pers_firstname = str_ireplace($rufnameDb->event_event,'<u>'.$rufnameDb->event_event.'</u>',$pers_firstname);
-                        //$pers_firstname .= '&quot;'.$rufnameDb->event_event.'&quot;';
-
                         if ($pers_firstname) {
                             $pers_firstname .= ' ';
                         }
@@ -347,7 +344,6 @@ class PersonName
                 // *** Callname shown as "Huub" ***
                 if ($nickname and (!$privacy or ($privacy and $user['group_filter_name'] == 'j'))) {
                     if ($name_array["index_name"]) $name_array["index_name"] .= ' ';
-                    //$name_array["index_name"] .= '&quot;' . $nickname . '&quot;';
                     $name_array["index_name"] .= '"' . $nickname . '"';
                 }
                 $name_array["index_name"] .= $prefix2;
