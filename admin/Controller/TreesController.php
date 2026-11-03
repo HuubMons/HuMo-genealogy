@@ -38,7 +38,7 @@ class TreesController
             $trees['count_trees'] = $tree_adminModel->count_trees($this->admin_config['dbh']);
             $trees['collation'] = $tree_adminModel->get_collation($this->admin_config['dbh']);
 
-            $trees['language_path'] = 'index.php?page=tree&amp;tree_id=' . $trees['tree_id'] . '&amp;';
+            $trees['language_path'] = 'index.php?page=tree&tree_id=' . $trees['tree_id'] . '&';
         } elseif ($trees['menu_tab'] == 'tree_gedcom') {
             include_once(__DIR__ . "/../include/gedcom_asciihtml.php");
             include_once(__DIR__ . "/../include/gedcom_anselhtml.php");

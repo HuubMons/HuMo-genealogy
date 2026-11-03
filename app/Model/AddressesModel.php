@@ -3,7 +3,6 @@
 namespace Genealogy\App\Model;
 
 use Genealogy\Include\SafeTextDb;
-use Genealogy\Include\HtmlEscaper;
 use Genealogy\Include\ProcessLinks;
 use Genealogy\App\Model\BaseModel;
 use PDO;
@@ -11,22 +10,15 @@ use PDO;
 class AddressesModel extends BaseModel
 {
     private $count_addresses, $all_addresses, $item, $selectsort, $sort_desc, $adr_place, $adr_address;
-    private $HtmlEscaper;
 
     public function __construct($config)
     {
         parent::__construct($config);
-
-        $this->HtmlEscaper = new HtmlEscaper();
     }
 
-    public function getAddressAuthorised(): string
+    public function getAddressAuthorised(): bool
     {
-        $authorised = '';
-        if ($this->user['group_addresses'] != 'j') {
-            $authorised = __('You are not authorised to see this page.');
-        }
-        return $authorised;
+        return $this->user['group_addresses'] == 'j';
     }
 
     // *** Added feb 2025 ***
@@ -158,19 +150,19 @@ class AddressesModel extends BaseModel
         $link = '';
 
         if ($this->sort_desc != '') {
-            $link .=  '&amp;sort_desc=' . $this->sort_desc;
+            $link .=  '&sort_desc=' . $this->sort_desc;
         }
 
         if ($this->selectsort != '') {
-            $link .=  '&amp;sort=' . $this->selectsort;
+            $link .=  '&sort=' . $this->selectsort;
         }
 
         if ($this->adr_place != '') {
-            $link .=  '&amp;adr_place=' . $this->adr_place;
+            $link .=  '&adr_place=' . rawurlencode((string) $this->adr_place);
         }
 
         if ($this->adr_address != '') {
-            $link .=  '&amp;adr_address=' . $this->adr_address;
+            $link .=  '&adr_address=' . rawurlencode((string) $this->adr_address);
         }
 
         return $link;
@@ -192,7 +184,7 @@ class AddressesModel extends BaseModel
         if ($start > 1) {
             $start2 = $start - 20;
             $calculated = ($start - 2) * $this->count_addresses;
-            $data["previous_link"] .= $path . 'start=' . $start2 . '&amp;item=' . $calculated;
+            $data["previous_link"] .= $path . 'start=' . $start2 . '&item=' . $calculated;
             $data["previous_link"] .= $this->process_link();
         }
         if ($start <= 0) {
@@ -214,7 +206,7 @@ class AddressesModel extends BaseModel
                     $data["page_status"][$i] = '';
                 }
 
-                $data["page_link"][$i] =  $path . 'start=' . $start . '&amp;item=' . $calculated;
+                $data["page_link"][$i] =  $path . 'start=' . $start . '&item=' . $calculated;
                 $data["page_link"][$i] .= $this->process_link();
             }
         }
@@ -224,7 +216,7 @@ class AddressesModel extends BaseModel
         $data["next_status"] = '';
         $calculated = ($i - 1) * $this->count_addresses;
         if ($calculated < $this->all_addresses) {
-            $data["next_link"] .=  $path . 'start=' . $i . '&amp;item=' . $calculated;
+            $data["next_link"] .=  $path . 'start=' . $i . '&item=' . $calculated;
             $data["next_link"] .=  $this->process_link();
         } else {
             $data["next_status"] = 'disabled';
@@ -242,7 +234,7 @@ class AddressesModel extends BaseModel
                 $place_sort_reverse = '0';
             }
         }
-        return 'adr_place=' . $this->HtmlEscaper->escHtml($this->adr_place) . '&adr_address=' . $this->HtmlEscaper->escHtml($this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
+        return 'adr_place=' . rawurlencode((string) $this->adr_place) . '&adr_address=' . rawurlencode((string) $this->adr_address) . '&sort=sort_place&sort_desc=' . $place_sort_reverse;
     }
 
     public function getPlaceImage(): string
@@ -263,7 +255,7 @@ class AddressesModel extends BaseModel
                 $address_sort_reverse = '0';
             }
         }
-        return 'adr_place=' . $this->HtmlEscaper->escHtml($this->adr_place) . '&adr_address=' . $this->HtmlEscaper->escHtml($this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
+        return 'adr_place=' . rawurlencode((string) $this->adr_place) . '&adr_address=' . rawurlencode((string) $this->adr_address) . '&sort=sort_address&sort_desc=' . $address_sort_reverse;
     }
 
     public function getAddressImage(): string

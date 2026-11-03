@@ -816,7 +816,9 @@ elseif ($trees['step'] == '3') {
         // This is for the buffer achieve the minimum size in order to flush data
         echo str_repeat(' ', 1024 * 64);
         // Send output to browser immediately
-        ob_flush();
+        if (ob_get_level() > 0) {
+            ob_flush();
+        }
         flush();
 
         // determines the steps in percentages - regular: 2%
@@ -1151,12 +1153,14 @@ elseif ($trees['step'] == '3') {
                     bar.innerText = <?= json_encode((float) $perc); ?> + "%";
                 </script>
 
-            <?php
+                <?php
                 // TODO These items don't work properly. Probably because of the for loops.
                 // This is for the buffer achieve the minimum size in order to flush data
                 echo str_repeat(' ', 1024 * 64);
                 // Send output to browser immediately
-                ob_flush();
+                if (ob_get_level() > 0) {
+                    ob_flush();
+                }
                 flush();
             }
         }
@@ -1183,7 +1187,7 @@ elseif ($trees['step'] == '3') {
                 $_SESSION['save_start_timeout'] = time();
 
                 // *** Restart after controlled time-out. ***
-            ?>
+                ?>
                 <form method="post" action="index.php?page=tree&amp;menu_admin=tree_gedcom" style="display : inline">
                     <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>">
                     <input type="hidden" name="gedcom_accent" value="<?= $HtmlEscaper->escHtml((string) $_POST['gedcom_accent']); ?>">
@@ -1316,7 +1320,9 @@ elseif ($trees['step'] == '3') {
         </script>
 
     <?php
-        ob_flush();
+        if (ob_get_level() > 0) {
+            ob_flush();
+        }
         flush();
     }
     ?>
@@ -1557,7 +1563,9 @@ elseif ($trees['step'] == '4') {
             // This is for the buffer achieve the minimum size in order to flush data
             echo str_repeat(' ', 1024 * 64);
             // Send output to browser immediately
-            ob_flush();
+            if (ob_get_level() > 0) {
+                ob_flush();
+            }
             flush();
 
             $devider = 50; // determines the steps in percentages - regular: 2%
@@ -1741,12 +1749,14 @@ elseif ($trees['step'] == '4') {
                         bar.innerText = <?= json_encode((float) $perc); ?> + "%";
                     </script>
 
-                <?php
+                    <?php
                     // This is for the buffer achieve the minimum size in order to flush data
                     echo str_repeat(' ', 1024 * 64);
 
                     // Send output to browser immediately
-                    ob_flush();
+                    if (ob_get_level() > 0) {
+                        ob_flush();
+                    }
                     flush();
                 }
 
@@ -1910,7 +1920,9 @@ elseif ($trees['step'] == '4') {
                 $status = ' [' . __('families') . ' ' . ($total_texts - $total_processed_texts) . ']';
                 echo 'document.getElementById("information").innerHTML="' . $total . ' ' . __('lines processed') . $status . '";';
                 echo '</script>';
-                ob_flush();
+                if (ob_get_level() > 0) {
+                    ob_flush();
+                }
                 flush();
                 */
 
@@ -1939,7 +1951,7 @@ elseif ($trees['step'] == '4') {
                     echo 'document.getElementById("information").textContent=' . json_encode((string) $i . ' / ' . $nr_records . ' ' . __('lines processed') . ' (' . $percent . ') ' . __('families'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
                     echo '</script>';
 
-                ?>
+                    ?>
                     <!-- Apr. 2024 New bootstrap bar -->
                     <script>
                         var bar = document.querySelector(".progress-bar");
@@ -1952,7 +1964,9 @@ elseif ($trees['step'] == '4') {
                     echo str_repeat(' ', 1024 * 64);
 
                     // Send output to browser immediately
-                    ob_flush();
+                    if (ob_get_level() > 0) {
+                        ob_flush();
+                    }
                     flush();
                 }
                 //}
@@ -1982,7 +1996,9 @@ elseif ($trees['step'] == '4') {
             document.getElementById("information").textContent = <?= json_encode((string) $nr_records . ' / ' . $nr_records . ' ' . __('lines processed'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
         </script>
     <?php
-        ob_flush();
+        if (ob_get_level() > 0) {
+            ob_flush();
+        }
         flush();
     }
     ?>

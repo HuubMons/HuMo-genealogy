@@ -12,13 +12,9 @@ use Genealogy\Include\HtmlEscaper;
 
 class AddressModel extends BaseModel
 {
-    public function getAddressAuthorised(): string
+    public function getAddressAuthorised(): bool
     {
-        $authorised = '';
-        if ($this->user['group_addresses'] != 'j') {
-            $authorised = __('You are not authorised to see this page.');
-        }
-        return $authorised;
+        return $this->user['group_addresses'] == 'j';
     }
 
     public function getById($id): object
@@ -33,9 +29,84 @@ class AddressModel extends BaseModel
         $showSources = new ShowSources();
         $source_array = $showSources->show_sources2("address", "address_source", $id);
         if ($source_array) {
-            return $source_array['text'];
+            return $this->sanitizeAddressSourcesHtml((string) $source_array['text']);
         }
         return null;
+    }
+
+    private function sanitizeAddressSourcesHtml(string $html): string
+    {
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $previousErrorSetting = libxml_use_internal_errors(true);
+        try {
+            $loaded = $document->loadHTML(
+                '<?xml encoding="UTF-8"><div id="address-source-root">' . $html . '</div>'
+            );
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previousErrorSetting);
+        }
+
+        if (!$loaded) {
+            throw new \RuntimeException('Unable to sanitize address sources HTML.');
+        }
+
+        $root = $document->getElementById('address-source-root');
+        if (!$root) {
+            throw new \RuntimeException('Unable to find address sources HTML after parsing.');
+        }
+
+        $htmlEscaper = new HtmlEscaper();
+        $safeHtml = '';
+        foreach ($root->childNodes as $child) {
+            $safeHtml .= $this->sanitizeAddressSourceNode($child, $htmlEscaper);
+        }
+
+        return $safeHtml;
+    }
+
+    private function sanitizeAddressSourceNode(\DOMNode $node, HtmlEscaper $htmlEscaper): string
+    {
+        if ($node->nodeType === XML_TEXT_NODE) {
+            return $htmlEscaper->escHtml($node->nodeValue);
+        }
+
+        if (!$node instanceof \DOMElement) {
+            return '';
+        }
+
+        $tag = strtolower($node->nodeName);
+        if (in_array($tag, ['script', 'style', 'iframe', 'object', 'embed', 'svg', 'math', 'template'], true)) {
+            return '';
+        }
+
+        $children = '';
+        foreach ($node->childNodes as $child) {
+            $children .= $this->sanitizeAddressSourceNode($child, $htmlEscaper);
+        }
+
+        if (!in_array($tag, ['a', 'b', 'strong', 'i', 'em', 'br', 'small'], true)) {
+            return $children;
+        }
+        if ($tag === 'br') {
+            return '<br>';
+        }
+        if ($tag !== 'a') {
+            return '<' . $tag . '>' . $children . '</' . $tag . '>';
+        }
+
+        $href = trim($node->getAttribute('href'));
+        if (
+            $href === ''
+            || preg_match('/[\x00-\x20\x7f\\\\]/', $href)
+            || substr($href, 0, 2) === '//'
+            || parse_url($href, PHP_URL_SCHEME) !== null
+            || parse_url($href, PHP_URL_HOST) !== null
+        ) {
+            return $children;
+        }
+
+        return '<a href="' . $htmlEscaper->escHtml($href) . '">' . $children . '</a>';
     }
 
     public function getAddressConnectedPersons($id): string

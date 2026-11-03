@@ -678,7 +678,10 @@ if ($popup == false) {
         }
         //"user" => $user,
 
-        if ($page === 'install') {
+        if ($page === 'install' && !isset($dbh)) {
+            echo '<div class="alert alert-danger m-3">Database connection failed. Check the database name, user and password in the database login file (or the MYSQL_* environment variables), and make sure the (empty) database exists.<br>'
+                . 'De database is niet bereikbaar. Controleer de database naam, gebruiker en wachtwoord in het login bestand (of de MYSQL_* variabelen) en controleer of de (lege) database bestaat.</div>';
+        } elseif ($page === 'install') {
             // *** Don't use $admin_config because of new installation ***
             $controllerObj = new Genealogy\Admin\Controller\InstallController();
             $install = $controllerObj->detail($dbh);

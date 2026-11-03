@@ -222,7 +222,9 @@ function backup_tables($dbh)
     // This is for the buffer achieve the minimum size in order to flush data
     echo str_repeat(' ', 1024 * 64);
     // Send output to browser immediately
-    ob_flush();
+    if (ob_get_level() > 0) {
+        ob_flush();
+    }
     flush();
 
     // *** Cycle through ***
@@ -306,7 +308,9 @@ function backup_tables($dbh)
                     echo str_repeat(' ', 1024 * 64);
 
                     // Send output to browser immediately
-                    ob_flush();
+                    if (ob_get_level() > 0) {
+                        ob_flush();
+                    }
                     flush();
                 }
             }

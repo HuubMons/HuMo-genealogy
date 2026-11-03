@@ -1,7 +1,7 @@
 <?php
 // *** Check user authority ***
-if ($data["authorised"] != '') {
-    echo $data["authorised"];
+if (!$data["authorised"]) {
+    echo $HtmlEscaper->escHtml(__('You are not authorised to see this page.'));
     exit();
 }
 

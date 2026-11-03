@@ -7,12 +7,20 @@ if (!defined('ADMIN_PAGE')) {
 
 $limit = 2500;
 
+// ob_flush() gives a notice if no output buffer is active
+function flushOutput()
+{
+    if (ob_get_level() > 0) {
+        ob_flush();
+    }
+    flush();
+}
+
 function removeTreeRecords($dbh, $table, $tree_field, $tree_id, $limit = 2500, $extra_where = '', $optimize = true)
 {
     printf(__('Remove old family tree items from %s table...'), $table);
     echo ' ';
-    ob_flush();
-    flush();
+    flushOutput();
 
     $total = $dbh->query("SELECT COUNT(*) FROM $table WHERE $tree_field = '$tree_id' $extra_where");
     $nr_records = $total->fetchColumn();
@@ -24,8 +32,7 @@ function removeTreeRecords($dbh, $table, $tree_field, $tree_id, $limit = 2500, $
             $stmt->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
             $stmt->execute();
             echo '*';
-            ob_flush();
-            flush();
+            flushOutput();
         }
         // Final cleanup
         $sql = "DELETE FROM $table WHERE $tree_field = :tree_id $extra_where";
@@ -34,8 +41,7 @@ function removeTreeRecords($dbh, $table, $tree_field, $tree_id, $limit = 2500, $
         $stmt->execute();
         if ($optimize) {
             echo ' ' . __('Optimize table...');
-            ob_flush();
-            flush();
+            flushOutput();
             $dbh->query("OPTIMIZE TABLE $table");
         }
     }
