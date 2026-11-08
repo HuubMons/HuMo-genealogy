@@ -224,7 +224,7 @@ if ($page == 'family') {
     <title><?= $HtmlEscaper->escHtml((string) $index['main_admin']); ?></title>
 
     <?php if ($humo_option["searchengine"] == "j") { ?>
-        <?= $HtmlEscaper->escHtml((string) $humo_option["robots_option"]); ?>
+        <?= $humo_option["robots_option"]; ?>
     <?php } ?>
 
     <?php if ($base_href) { ?>
@@ -494,7 +494,8 @@ if ($page == 'family') {
             //$menu_path_names = $processLinks->get_link($uri_path, 'list_names',$tree_id);
 
             $menu_path_user_settings = $processLinks->get_link($uri_path, 'user_settings');
-            $menu_path_admin = 'admin/index.php';
+            // was without $uri_path, now added for correct path
+            $menu_path_admin = $uri_path . 'admin/index.php';
             $menu_path_anniversary = $processLinks->get_link($uri_path, 'anniversary');
             $menu_path_statistics = $processLinks->get_link($uri_path, 'statistics');
             $menu_path_calculator = $processLinks->get_link($uri_path, 'relations');
