@@ -8,27 +8,22 @@
  * April 2015, Huub: added tab menu, and Yossi's frequently firstnames and surnames pages.
  */
 
-if ($humo_option["url_rewrite"] == "j") {
-    $path = 'statistics';
-    $path2 = 'statistics?';
-} else {
-    $path = 'index.php?page=statistics';
-    $path2 = 'index.php?page=statistics&amp;';
-}
+$processLinks = new \Genealogy\Include\ProcessLinks();
+$path = $processLinks->get_link($uri_path, 'statistics', $tree_id, true);
 ?>
 
 <ul class="nav nav-tabs mt-1">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_tree' ? 'active' : ''; ?>" href="<?= $path2; ?>tree_id=<?= $tree_id; ?>"><?= __('Family tree'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_tree' ? 'active' : ''; ?>" href="<?= $HtmlEscaper->escHtml($path . 'menu_tab=stats_tree'); ?>"><?= $HtmlEscaper->escHtml(__('Family tree')); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_persons' ? 'active' : ''; ?>" href="<?= $path2; ?>menu_tab=stats_persons&amp;tree_id=<?= $tree_id; ?>"><?= __('Persons'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_persons' ? 'active' : ''; ?>" href="<?= $HtmlEscaper->escHtml($path . 'menu_tab=stats_persons'); ?>"><?= $HtmlEscaper->escHtml(__('Persons')); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_surnames' ? 'active' : ''; ?>" href="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of Surnames'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_surnames' ? 'active' : ''; ?>" href="<?= $HtmlEscaper->escHtml($path . 'menu_tab=stats_surnames'); ?>"><?= $HtmlEscaper->escHtml(__('Frequency of Surnames')); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_firstnames' ? 'active' : ''; ?>" href="<?= $path2; ?>menu_tab=stats_firstnames&amp;tree_id=<?= $tree_id; ?>"><?= __('Frequency of First Names'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $statistics["menu_tab"] == 'stats_firstnames' ? 'active' : ''; ?>" href="<?= $HtmlEscaper->escHtml($path . 'menu_tab=stats_firstnames'); ?>"><?= $HtmlEscaper->escHtml(__('Frequency of First Names')); ?></a>
     </li>
 </ul>
 

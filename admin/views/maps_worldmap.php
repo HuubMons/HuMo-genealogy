@@ -71,10 +71,10 @@ function get_host()
                     </li><br>
 
                     <li><?= __('Or: set restriction to <strong>"IP addresses"</strong> and enter your server IP.'); ?> <?= __('Not your computer\'s IP!'); ?><br>
-                        <?= __('Your server IP would seem to be:'); ?> <strong><?= $ip; ?></strong><br>
+                        <?= __('Your server IP would seem to be:'); ?> <strong><?= $HtmlEscaper->escHtml((string) $ip); ?></strong><br>
                         <?php
                         if (isset($ipv6[0]['ipv6'])) {
-                            echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:') . " <strong>" . $ipv6[0]['ipv6'] . "</strong><br>";
+                            echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:') . " <strong>" . $HtmlEscaper->escHtml((string) $ipv6[0]['ipv6']) . "</strong><br>";
                         }
                         ?>
                         <?= __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.'); ?><br>
@@ -97,32 +97,13 @@ function get_host()
                     <?= __('API key'); ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" id="api_1" name="api_1" value="<?= $maps['google_api1']; ?>" size="40" class="form-control form-control-sm">
+                    <input type="text" id="api_1" name="api_1" value="<?= $HtmlEscaper->escHtml((string) $maps['google_api1']); ?>" size="40" class="form-control form-control-sm">
                 </div>
                 <div class="col-md-2">
                     <input type="submit" value="<?= __('Save'); ?>" name="api_save" class="btn btn-sm btn-secondary">
                 </div>
             </div>
         </form>
-
-        <?php
-        /*
-        <form action="index.php?page=maps" method="post">
-            <div class="row mb-2">
-                <div class="col-md-4">
-                    <?= __('API key') . " 2 (restriction: <strong>IP addresses</strong>)"; ?>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" id="api_2" name="api_2" value="<?= $maps['google_api2']; ?>" size="40" class="form-control form-control-sm">
-                </div>
-                <div class="col-md-2">
-                    <input type="submit" value="<?= __('Save'); ?>" name="api2_save" class="btn btn-sm btn-secondary">
-                </div>
-            </div>
-        </form>
-        */
-        ?>
-
     <?php } ?>
 
     <?php if ($maps['use_world_map'] == 'OpenStreetMap') {; ?>
@@ -132,7 +113,7 @@ function get_host()
                     <?= __('API key') . '  Geokeo'; ?>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" id="api_geokeo" name="api_geokeo" value="<?= $maps['geokeo_api']; ?>" size="40" class="form-control form-control-sm">
+                    <input type="text" id="api_geokeo" name="api_geokeo" value="<?= $HtmlEscaper->escHtml((string) $maps['geokeo_api']); ?>" size="40" class="form-control form-control-sm">
                 </div>
                 <div class="col-md-2">
                     <input type="submit" value="<?= __('Save'); ?>" name="api_save" class="btn btn-sm btn-secondary">

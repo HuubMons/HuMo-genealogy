@@ -43,7 +43,7 @@ if ($count > 0) {
         <td colspan="2">
             <!-- create unique sortable id -->
             <?php $sortable_id = $connect_sub_kind . $connect_connect_id; ?>
-            <ul id="sortable_addresses<?= $sortable_id; ?>" class="sortable_addresses list-group" data-sortable-id="<?= $sortable_id; ?>">
+            <ul id="sortable_addresses<?= $HtmlEscaper->escHtml((string) $sortable_id); ?>" class="sortable_addresses list-group" data-sortable-id="<?= $HtmlEscaper->escHtml((string) $sortable_id); ?>">
                 <?php
                 while ($connectDb = $connect_qry->fetch(PDO::FETCH_OBJ)) {
                     $address_nr++;
@@ -77,6 +77,7 @@ if ($count > 0) {
                         if ($connectDb->connect_date) {
                             $address .= ', ' . hideshow_date_place($connectDb->connect_date, '');
                         }
+                        $address = $HtmlEscaper->escHtml((string) $address);
 
                         if ($connectDb->connect_id) {
                             if ($connect_kind == 'person') {
@@ -106,20 +107,20 @@ if ($count > 0) {
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-md-1">
-                                <input type="hidden" name="connect_change[<?= $key; ?>]" value="<?= $connectDb->connect_id; ?>">
-                                <input type="hidden" name="connect_connect_id[<?= $key; ?>]" value="<?= $connectDb->connect_connect_id; ?>">
-                                <input type="hidden" name="connect_kind[<?= $key; ?>]" value="<?= $connect_kind; ?>">
-                                <input type="hidden" name="connect_sub_kind[<?= $key; ?>]" value="<?= $connect_sub_kind; ?>">
-                                <input type="hidden" name="connect_page[<?= $key; ?>]" value="">
-                                <input type="hidden" name="connect_place[<?= $key; ?>]" value="">
+                                <input type="hidden" name="connect_change[<?= $HtmlEscaper->escHtml((string) $key); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>">
+                                <input type="hidden" name="connect_connect_id[<?= $HtmlEscaper->escHtml((string) $key); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_connect_id); ?>">
+                                <input type="hidden" name="connect_kind[<?= $HtmlEscaper->escHtml((string) $key); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connect_kind); ?>">
+                                <input type="hidden" name="connect_sub_kind[<?= $HtmlEscaper->escHtml((string) $key); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connect_sub_kind); ?>">
+                                <input type="hidden" name="connect_page[<?= $HtmlEscaper->escHtml((string) $key); ?>]" value="">
+                                <input type="hidden" name="connect_place[<?= $HtmlEscaper->escHtml((string) $key); ?>]" value="">
 
                                 <!-- Send old values, so changes of values can be detected -->
-                                <input type="hidden" name="connect_date_old[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_date; ?>">
-                                <input type="hidden" name="connect_role_old[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_role; ?>">
-                                <input type="hidden" name="connect_text_old[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_text; ?>">
+                                <input type="hidden" name="connect_date_old[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_date); ?>">
+                                <input type="hidden" name="connect_role_old[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_role); ?>">
+                                <input type="hidden" name="connect_text_old[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_text); ?>">
 
                                 <?php if ($count > 1) { ?>
-                                    <span style="cursor:move;" id="<?= $connectDb->connect_id; ?>" class="handle me-2">
+                                    <span style="cursor:move;" id="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>" class="handle me-2">
                                         <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                                     </span>
                                 <?php } else { ?>
@@ -127,7 +128,7 @@ if ($count > 0) {
                                 <?php } ?>
 
                                 <!-- Remove address -->
-                                <a href="index.php?page=<?= $page; ?>&amp;person_place_address=1&amp;connect_drop=<?= $connectDb->connect_id; ?>">
+                                <a href="index.php?page=<?= $HtmlEscaper->escHtml((string) $page); ?>&amp;person_place_address=1&amp;connect_drop=<?= rawurlencode((string) $connectDb->connect_id); ?>">
                                     <img src="images/button_drop.png" border="0" alt="drop">
                                 </a>
                             </div>
@@ -142,19 +143,19 @@ if ($count > 0) {
                                     </span>
 
                                     <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>"><br>
-                                        <input type="hidden" name="change_address_id[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_id; ?>">
+                                        <input type="hidden" name="change_address_id[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>">
 
                                         <!-- Send old values, so changes of values can be detected -->
-                                        <input type="hidden" name="address_shared_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_shared; ?>">
-                                        <input type="hidden" name="address_address_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_address; ?>">
-                                        <input type="hidden" name="address_place_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_place; ?>">
-                                        <input type="hidden" name="address_text_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_text; ?>">
-                                        <input type="hidden" name="address_phone_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_phone; ?>">
-                                        <input type="hidden" name="address_zip_old[<?= $address3Db->address_id; ?>]" value="<?= $address3Db->address_zip; ?>">
+                                        <input type="hidden" name="address_shared_old[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_shared); ?>">
+                                        <input type="hidden" name="address_address_old[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_address); ?>">
+                                        <input type="hidden" name="address_place_old[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_place); ?>">
+                                        <input type="hidden" name="address_text_old[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_text); ?>">
+                                        <input type="hidden" name="address_phone_old[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_phone); ?>">
+                                        <input type="hidden" name="address_zip_old[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_zip); ?>">
 
-                                        <input type="hidden" name="connect_item_id_old[<?= $address3Db->address_id; ?>]" value="<?= $connectDb->connect_item_id; ?>">
+                                        <input type="hidden" name="connect_item_id_old[<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_item_id); ?>">
 
-                                        <?= __('Address GEDCOM number:'); ?> <?= $address3Db->address_gedcomnr; ?>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <?= __('Address GEDCOM number:'); ?> <?= $HtmlEscaper->escHtml((string) $address3Db->address_gedcomnr); ?>&nbsp;&nbsp;&nbsp;&nbsp;
 
                                         <!-- Shared address, to connect address to multiple persons or relations -->
                                         <input type="checkbox" name="address_shared_<?= $address3Db->address_id; ?>" value="no_data" class="form-check-input" <?= $address3Db->address_shared ? 'checked' : ''; ?>> <?= __('Shared address'); ?><br>
@@ -168,7 +169,7 @@ if ($count > 0) {
                                             <label for="address_place" class="col-md-3 col-form-label"><?= __('Place'); ?></label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
-                                                    <input type="text" name="address_place_<?= $address3Db->address_id; ?>" id="address_place_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_place; ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $field_place; ?>" class="place-autocomplete form-control form-control-sm">
+                                                    <input type="text" name="address_place_<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>" id="address_place_<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="<?= $HtmlEscaper->escHtml((string) $field_place); ?>" class="place-autocomplete form-control form-control-sm">
                                                 </div>
                                             </div>
                                         </div>
@@ -196,7 +197,7 @@ if ($count > 0) {
                                         <div class="row mb-2">
                                             <label for="address_address" class="col-md-3 col-form-label"><?= __('Street'); ?></label>
                                             <div class="col-md-7">
-                                                <input type="text" name="address_address_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_address; ?>" class="form-control form-control-sm">
+                                                <input type="text" name="address_address_<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_address); ?>" class="form-control form-control-sm">
                                             </div>
                                         </div>
 
@@ -204,7 +205,7 @@ if ($count > 0) {
                                         <div class="row mb-2">
                                             <label for="address_zip" class="col-md-3 col-form-label"><?= __('Zip code'); ?></label>
                                             <div class="col-md-3">
-                                                <input type="text" name="address_zip_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_zip; ?>" class="form-control form-control-sm">
+                                                <input type="text" name="address_zip_<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_zip); ?>" class="form-control form-control-sm">
                                             </div>
                                         </div>
 
@@ -212,7 +213,7 @@ if ($count > 0) {
                                         <div class="row mb-2">
                                             <label for="address_phone" class="col-md-3 col-form-label"><?= __('Phone'); ?></label>
                                             <div class="col-md-3">
-                                                <input type="text" name="address_phone_<?= $address3Db->address_id; ?>" value="<?= $address3Db->address_phone; ?>" class="form-control form-control-sm">
+                                                <input type="text" name="address_phone_<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>" value="<?= $HtmlEscaper->escHtml((string) $address3Db->address_phone); ?>" class="form-control form-control-sm">
                                             </div>
                                         </div>
 
@@ -220,7 +221,7 @@ if ($count > 0) {
                                         <div class="row mb-2">
                                             <label for="address_text" class="col-md-3 col-form-label"><?= __('Text'); ?></label>
                                             <div class="col-md-7">
-                                                <textarea rows="1" name="address_text_<?= $address3Db->address_id; ?>" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address3Db->address_text); ?></textarea>
+                                                <textarea rows="1" name="address_text_<?= $HtmlEscaper->escHtml((string) $address3Db->address_id); ?>" <?= $HtmlEscaper->escHtml((string) $field_text); ?> class="form-control form-control-sm"><?= $editor_cls->text_show($address3Db->address_text); ?></textarea>
                                             </div>
                                         </div>
 
@@ -238,7 +239,7 @@ if ($count > 0) {
                                             <div class="row my-2">
                                                 <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Addressrole'); ?></label>
                                                 <div class="col-md-3">
-                                                    <input type="text" name="connect_role[<?= $key; ?>]" value="<?= $connect_role; ?>" size="6" class="form-control form-control-sm">
+                                                    <input type="text" name="connect_role[<?= $HtmlEscaper->escHtml((string) $key); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connect_role); ?>" size="6" class="form-control form-control-sm">
                                                 </div>
                                             </div>
 
@@ -246,7 +247,7 @@ if ($count > 0) {
                                             <div class="row mb-2">
                                                 <label for="pers_buried_place" class="col-md-3 col-form-label"><?= __('Extra text by address'); ?></label>
                                                 <div class="col-md-7">
-                                                    <textarea name="connect_text[<?= $connectDb->connect_id; ?>]" <?= $field_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($connectDb->connect_text); ?></textarea>
+                                                    <textarea name="connect_text[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" <?= $HtmlEscaper->escHtml((string) $field_text); ?> class="form-control form-control-sm"><?= $editor_cls->text_show($connectDb->connect_text); ?></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -303,7 +304,7 @@ if ($count > 0) {
                                         <?= __('Or: add new address'); ?>
                                     </div>
                                     <div class="col-md-auto mt-1">
-                                        <a href="index.php?page=<?= $page; ?><?= $connect_kind == 'person' ? '&amp;person_place_address=1' : '&amp;family_place_address=1'; ?>&amp;address_add2=1&amp;connect_id=<?= $connectDb->connect_id; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>&amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>#addresses">
+                                        <a href="index.php?page=<?= $HtmlEscaper->escHtml((string) $page); ?><?= $connect_kind == 'person' ? '&amp;person_place_address=1' : '&amp;family_place_address=1'; ?>&amp;address_add2=1&amp;connect_id=<?= rawurlencode((string) $connectDb->connect_id); ?>&amp;connect_kind=<?= rawurlencode((string) $connectDb->connect_kind); ?>&amp;connect_sub_kind=<?= rawurlencode((string) $connectDb->connect_sub_kind); ?>&amp;connect_connect_id=<?= rawurlencode((string) $connectDb->connect_connect_id); ?>#addresses">
                                             [<?= __('Add'); ?>]
                                         </a>
                                     </div>

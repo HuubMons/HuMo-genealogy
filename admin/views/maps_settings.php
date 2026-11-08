@@ -34,30 +34,35 @@ $tree_search_result = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='
                     <?php
                     // *** REMARK: only works if there are multiple places in location table ***
                     while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
-                        ${"slider_choice" . $tree_searchDb->tree_prefix} = "1560"; // default
-                        $query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_" . $tree_searchDb->tree_prefix . "' ";
-                        $result = $dbh->query($query);
+                        $sliderChoice = 1560;
+                        $settingVariable = 'gslider_' . $tree_searchDb->tree_prefix;
+                        $stmt = $dbh->prepare('SELECT setting_value FROM humo_settings WHERE setting_variable = :setting_variable');
+                        $stmt->execute([':setting_variable' => $settingVariable]);
+                        $sliderChoiceDb = $stmt->fetch(PDO::FETCH_OBJ);
                         $offset = "slider_choice_" . $tree_searchDb->tree_prefix;
-                        if ($result->rowCount() > 0) {
-                            $slider_choiceDb = $result->fetch(PDO::FETCH_OBJ);
-                            ${"slider_choice" . $tree_searchDb->tree_prefix} = $slider_choiceDb->setting_value;
-                            if (isset($_POST[$offset])) {
-                                $db_functions->update_settings('gslider_' . $tree_searchDb->tree_prefix, $_POST[$offset]);
-                                ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
+                        if ($sliderChoiceDb && is_numeric($sliderChoiceDb->setting_value)) {
+                            $sliderChoice = (int) $sliderChoiceDb->setting_value;
+                        }
+                        if (isset($_POST[$offset]) && is_numeric($_POST[$offset])) {
+                            $sliderChoice = (int) $_POST[$offset];
+                            if ($sliderChoiceDb) {
+                                $db_functions->update_settings($settingVariable, (string) $sliderChoice);
+                            } else {
+                                $insertStmt = $dbh->prepare('INSERT INTO humo_settings (setting_variable, setting_value) VALUES (:setting_variable, :setting_value)');
+                                $insertStmt->execute([
+                                    ':setting_variable' => $settingVariable,
+                                    ':setting_value' => (string) $sliderChoice
+                                ]);
                             }
-                        } elseif (isset($_POST[$offset])) {
-                            $sql = "INSERT INTO humo_settings SET setting_variable='gslider_" . $tree_searchDb->tree_prefix . "', setting_value='" . $_POST[$offset] . "'";
-                            $dbh->query($sql);
-                            ${"slider_choice" . $tree_searchDb->tree_prefix} = $_POST[$offset];
                         }
 
                         $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
-                        $interval = round((2010 - ${"slider_choice" . $tree_searchDb->tree_prefix}) / 9);
+                        $interval = round((2010 - $sliderChoice) / 9);
                     ?>
                         <tr>
-                            <td><?= $treetext['name']; ?></td>
+                            <td><?= $HtmlEscaper->escHtml((string) $treetext['name']); ?></td>
                             <td>
-                                <input style='text-align:center' type='text' name='<?= $offset; ?>' value='<?= ${"slider_choice" . $tree_searchDb->tree_prefix}; ?>' class='form-control form-control-sm'>
+                                <input style='text-align:center' type='text' name='<?= $HtmlEscaper->escHtml((string) $offset); ?>' value='<?= (int) $sliderChoice; ?>' class='form-control form-control-sm'>
                             </td>
                             <td style="text-align:center"><?= $interval; ?></td>
                         </tr>
@@ -82,36 +87,5 @@ $tree_search_result = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='
             </select>
         </div>
     </div>
-
-    <!-- TODO: isn't needed anymore? Can be selected at map -->
-    <?php
-    /*
-    <div class="row mb-2">
-        <div class="col-md-3"><?= __('Default map type'); ?></div>
-        <div class="col-md-5">
-            <select size="1" name="maptype_default" id="maptype_default" onChange="window.location='index.php?page=maps&menu=settings&maptype_default='+this.value;" class="form-select form-select-sm">
-                <option value="ROADMAP" <?= $maps['map_type'] == "ROADMAP" ? 'selected' : ''; ?>><?= __('Regular map (ROADMAP)'); ?></option>
-                <option value="HYBRID" <?= $maps['map_type'] == "HYBRID" ? 'selected' : ''; ?>><?= __('Satellite map with roads and places (HYBRID)'); ?></option>
-            </select>
-        </div>
-    </div>
-    */
-    ?>
-
-    <!-- No longer needed? Automatic zoom is used -->
-    <?php
-    /*
-    <div class="row mb-2">
-        <div class="col-md-3"><?= __('Default zoom'); ?></div>
-        <div class="col-md-1">
-            <select size="1" name="map_zoom_default" id="map_zoom_default" onChange="window.location='index.php?page=maps&menu=settings&map_zoom_default='+this.value;" class="form-select form-select-sm">
-                <?php for ($x = 1; $x < 15; $x++) { ?>
-                    <option value="<?= $x; ?>" <?= $maps['default_zoom'] == $x ? 'selected' : ''; ?>><?= $x; ?></option>
-                <?php } ?>
-            </select>
-        </div>
-    </div>
-    */
-    ?>
 
 </div>

@@ -24,7 +24,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
             <?php $popup_text = __('Click markers to show information about the location and see a list off all persons connected to the location.'); ?>
             <?php $popup_text = str_replace('"', "'", $popup_text); ?>
 
-            <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $HtmlEscaper->escHtml($popup_text); ?>">
                 <?= __('Help'); ?>
             </button>
         </div>
@@ -32,7 +32,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
 
     <div class="row mb-2">
         <div class="col-auto">
-            <form method="POST" action="<?= $link; ?>" style="display : inline;">
+            <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display : inline;">
                 <select size="1" name="tree_id" onChange="this.form.submit();" class="form-select form-select-sm">
                     <option value=""><?= __('Select a family tree:'); ?></option>
                     <?php
@@ -58,7 +58,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                             $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
                             $count++;
                     ?>
-                            <option value="<?= $tree_searchDb->tree_id; ?>" <?= $selected; ?>><?= $treetext['name']; ?></option>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $tree_searchDb->tree_id); ?>" <?= $selected; ?>><?= $HtmlEscaper->escHtml($treetext['name']); ?></option>
                     <?php
                         }
                     }
@@ -89,8 +89,8 @@ $datePlace = new \Genealogy\Include\DatePlace();
                         for ($i = 1; $i < count($maps['location']); $i++) {
                             //echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
                         ?>
-                            <option value="<?= $maps['latitude'][$i]; ?>,<?= $maps['longitude'][$i]; ?>">
-                                <?= $maps['location'][$i]; ?> #<?= $maps['location_text_count'][$i]; ?>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $maps['latitude'][$i] . ',' . $maps['longitude'][$i]); ?>">
+                                <?= $HtmlEscaper->escHtmlDecoded($maps['location'][$i]); ?> #<?= $HtmlEscaper->escHtml((string) $maps['location_text_count'][$i]); ?>
                             </option>
                         <?php } ?>
 
@@ -166,7 +166,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                 <?= __('Filter by specific family name(s)'); ?>
             </button>
 
-            <form method="POST" action="<?= $link; ?>">
+            <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>">
                 <?php
                 // Get family names based on birth events and linked locations
                 $fam_search = "
@@ -207,7 +207,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                                     }
                                     $last = substr($fam_searchDb->totalname, 0, $pos);
                                 ?>
-                                    <input type="checkbox" name="items[]" value="<?= $fam_searchDb->totalname; ?>" class="form-check-input"> <?= $last . $pref; ?><br>
+                                    <input type="checkbox" name="items[]" value="<?= $HtmlEscaper->escHtml($fam_searchDb->totalname); ?>" class="form-check-input"> <?= $HtmlEscaper->escHtml($last . $pref); ?><br>
                                 <?php } ?>
                             </div>
                             <div class="modal-footer">
@@ -227,7 +227,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                     <?= __('Filter by descendants'); ?>
                 </button>
 
-                <form method="POST" action="<?= $link; ?>">
+                <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>">
                     <div class="modal fade" id="descendantsModal" tabindex="-1" aria-labelledby="descendantsModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
                             <div class="modal-content">
@@ -303,8 +303,8 @@ $datePlace = new \Genealogy\Include\DatePlace();
                                                 $privacy = $personPrivacy->get_privacy($desc_searchDb);
                                                 $name = $personName->get_person_name($desc_searchDb, $privacy);
                                             ?>
-                                                <option value="<?= $link2; ?>persged=<?= $desc_searchDb->pers_gedcomnumber; ?>&amp;persfams=1">
-                                                    <?= $name["index_name"]; ?> [<?= $desc_searchDb->pers_gedcomnumber; ?>]
+                                                <option value="<?= $HtmlEscaper->escHtml($link2 . 'persged=' . rawurlencode((string) $desc_searchDb->pers_gedcomnumber) . '&persfams=1'); ?>">
+                                                                            <?= $HtmlEscaper->escHtmlDecoded($name["index_name"]); ?> [<?= $HtmlEscaper->escHtml((string) $desc_searchDb->pers_gedcomnumber); ?>]
                                                 </option>
                                             <?php } ?>
                                         </select>
@@ -331,7 +331,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                     <?= __('Filter by ancestors'); ?>
                 </button>
 
-                <form method="POST" action="<?= $link; ?>">
+                <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>">
                     <div class="modal fade" id="ancestorsModal" tabindex="-1" aria-labelledby="ancestorsModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable"> <!-- <div class="modal-dialog modal-xl"> -->
                             <div class="modal-content">
@@ -406,8 +406,8 @@ $datePlace = new \Genealogy\Include\DatePlace();
                                                 $privacy = $personPrivacy->get_privacy($anc_searchDb);
                                                 $name = $personName->get_person_name($anc_searchDb, $privacy);
                                             ?>
-                                                <option value="<?= $link2; ?>anc_persged=<?= $anc_searchDb->pers_gedcomnumber; ?>">
-                                                    <?= $name["index_name"]; ?> [<?= $anc_searchDb->pers_gedcomnumber; ?>]
+                                                <option value="<?= $HtmlEscaper->escHtml($link2 . 'anc_persged=' . rawurlencode((string) $anc_searchDb->pers_gedcomnumber)); ?>">
+                                                    <?= $HtmlEscaper->escHtmlDecoded($name["index_name"]); ?> [<?= $HtmlEscaper->escHtml((string) $anc_searchDb->pers_gedcomnumber); ?>]
                                                 </option>
                                             <?php } ?>
                                         </select>
@@ -448,8 +448,8 @@ $datePlace = new \Genealogy\Include\DatePlace();
                         foreach ($maps['locarray'] as $key => $value) {
                             if ($maps['locarray'][$key][13] > 0) {
                         ?>
-                                <option value="<?= $maps['locarray'][$key][14]; ?>,<?= $maps['locarray'][$key][1]; ?>,<?= $maps['locarray'][$key][2]; ?>">
-                                    <?= $maps['locarray'][$key][0]; ?> #<?= $maps['locarray'][$key][13]; ?>
+                                <option value="<?= $HtmlEscaper->escHtml((string) $maps['locarray'][$key][14] . ',' . $maps['locarray'][$key][1] . ',' . $maps['locarray'][$key][2]); ?>">
+                                    <?= $HtmlEscaper->escHtmlDecoded($maps['locarray'][$key][0]); ?> #<?= $HtmlEscaper->escHtml((string) $maps['locarray'][$key][13]); ?>
                                 </option>
 
                         <?php
@@ -474,7 +474,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                 <?php if ($maps['show_family_names']) { ?>
                     <div id="name_search">
                         <?= __('Mapping with specific name(s): '); ?>
-                        <?= $maps['show_family_names']; ?>. <a href="<?= $link; ?>"><?= __('Switch name filter off'); ?></a>
+                        <?= $HtmlEscaper->escHtml($maps['show_family_names']); ?>. <a href="<?= $HtmlEscaper->escHtml($link); ?>"><?= __('Switch name filter off'); ?></a>
                     </div>
                 <?php } ?>
 
@@ -482,9 +482,9 @@ $datePlace = new \Genealogy\Include\DatePlace();
                 <?php if (isset($_GET['persged']) && isset($_GET['persfams'])) { ?>
                     <div id="desc_search">
                         <?php if ($maps['desc_array'] != '') { ?>
-                            <?= __('Filter by descendants of: ') . trim($maps['desc_chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch descendant filter off'); ?></a>
+                            <?= __('Filter by descendants of: ') . $HtmlEscaper->escHtml(trim($maps['desc_chosen_name'])); ?>. <a href="<?= $HtmlEscaper->escHtml($link); ?>"><?= __('Switch descendant filter off'); ?></a>
                         <?php } else { ?>
-                            <?= __('No known birth places amongst descendants'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                            <?= __('No known birth places amongst descendants'); ?>. <a href="<?= $HtmlEscaper->escHtml($link); ?>"><?= __('Close'); ?></a>
                         <?php } ?>
                     </div>
                 <?php } ?>
@@ -493,9 +493,9 @@ $datePlace = new \Genealogy\Include\DatePlace();
                <?php if (isset($_GET['anc_persged'])) { ?>
                     <div id="anc_search">
                         <?php if ($maps['anc_array'] != '') { ?>
-                            <?= __('Filter by ancestors of: ') . trim($maps['chosen_name']); ?>. <a href="<?= $link; ?>"><?= __('Switch ancestor filter off'); ?></a>
+                            <?= __('Filter by ancestors of: ') . $HtmlEscaper->escHtml(trim($maps['chosen_name'])); ?>. <a href="<?= $HtmlEscaper->escHtml($link); ?>"><?= __('Switch ancestor filter off'); ?></a>
                         <?php } else { ?>
-                            <?= __('No known birth places amongst ancestors'); ?>. <a href="<?= $link; ?>"><?= __('Close'); ?></a>
+                            <?= __('No known birth places amongst ancestors'); ?>. <a href="<?= $HtmlEscaper->escHtml($link); ?>"><?= __('Close'); ?></a>
                         <?php } ?>
                     </div>
                 <?php } ?>
@@ -538,7 +538,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
     // *** Add all markers from array ***
     for ($i = 1; $i < count($maps['location']); $i++) {
         if ($i > 1) echo ',';
-        echo 'L.marker([' . $maps['latitude'][$i] . ', ' . $maps['longitude'][$i] . ']) .bindPopup(\'' . $maps['location_text'][$i] . '\')';
+        echo 'L.marker([' . (float) $maps['latitude'][$i] . ', ' . (float) $maps['longitude'][$i] . ']).bindPopup(' . json_encode($maps['location_text'][$i], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ')';
     }
 
     echo '];
@@ -584,9 +584,9 @@ $datePlace = new \Genealogy\Include\DatePlace();
         $api_key = '?key=' . $humo_option['google_api_key'] . '&callback=initMap&v=weekly&libraries=marker';
     }
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-        echo '<script src="https://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
+        echo '<script src="https://maps.googleapis.com/maps/api/js' . $HtmlEscaper->escHtml($api_key) . '"></script>';
     } else {
-        echo '<script src="http://maps.googleapis.com/maps/api/js' . $api_key . '"></script>';
+        echo '<script src="http://maps.googleapis.com/maps/api/js' . $HtmlEscaper->escHtml($api_key) . '"></script>';
     }
     //$maptype = "ROADMAP";
     //if (isset($humo_option['google_map_type'])) {
@@ -652,20 +652,13 @@ $datePlace = new \Genealogy\Include\DatePlace();
         echo 'var j = new Array();';
         foreach ($maps['locarray'] as $key => $value) {
             echo 'j[' . $nr . '] = new Array();';
-            echo 'j[' . $nr . '][0] = "' . $maps['locarray'][$key][0] . '";';
-            echo 'j[' . $nr . '][1] = "' . $maps['locarray'][$key][1] . '";';
-            echo 'j[' . $nr . '][2] = "' . $maps['locarray'][$key][2] . '";';
-            echo 'j[' . $nr . '][' . $maps['slider_min'] . '] = "' . $maps['locarray'][$key][3] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + $maps['slider_step']) . '] = "' . $maps['locarray'][$key][4] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (2 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][5] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (3 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][6] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (4 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][7] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (5 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][8] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (6 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][9] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (7 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][10] . '";';
-            echo 'j[' . $nr . '][' . ($maps['slider_min'] + (8 * $maps['slider_step'])) . '] = "' . $maps['locarray'][$key][11] . '";';
-            echo 'j[' . $nr . '][2000] = "' . $maps['locarray'][$key][12] . '";'; // called 2000 but contains up till today
-            echo 'j[' . $nr . '][3] = "' . $maps['locarray'][$key][13] . '";';
+            echo 'j[' . $nr . '][0] = ' . json_encode($maps['locarray'][$key][0], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
+            echo 'j[' . $nr . '][1] = ' . (float) $maps['locarray'][$key][1] . ';';
+            echo 'j[' . $nr . '][2] = ' . (float) $maps['locarray'][$key][2] . ';';
+            for ($mapIndex = 3; $mapIndex <= 13; $mapIndex++) {
+                echo 'j[' . $nr . '][' . (int) ($mapIndex == 13 ? 3 : $maps['slider_min'] + (($mapIndex - 3) * $maps['slider_step'])) . '] = ' . json_encode($maps['locarray'][$key][$mapIndex], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
+            }
+            echo 'j[' . $nr . '][2000] = ' . json_encode($maps['locarray'][$key][12], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';'; // called 2000 but contains up till today
             echo "\n";
             $nr++;
         }
@@ -678,7 +671,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
                 $javastring .= $value . "@";
             }
             $javastring = substr($javastring, 0, -1);  // Beck@Willems@Douglas@Smith
-            echo " namesearch = '" . $javastring . "'; ";
+            echo ' namesearch = ' . json_encode($javastring, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
         }
         ?>
 
@@ -830,14 +823,14 @@ $datePlace = new \Genealogy\Include\DatePlace();
 
                     <?php
                     // language variables
-                    echo 'var location ="' . __('Location: ') . '";';
+                    echo 'var location =' . json_encode(__('Location: '), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
                     if ($_SESSION['type_birth'] == 1) {
-                        echo 'var list ="' . __('For a list of persons born here until ') . '";';
+                        echo 'var list =' . json_encode(__('For a list of persons born here until '), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
                     } elseif ($_SESSION['type_death'] == 1) {
-                        echo 'var list ="' . __('For a list of all people that died here until ') . '";';
+                        echo 'var list =' . json_encode(__('For a list of all people that died here until '), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
                     }
-                    echo 'var click ="' . __(' click here') . '";';
-                    echo 'var readabout ="' . __('Read about this location in ') . '";';
+                    echo 'var click =' . json_encode(__(' click here'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
+                    echo 'var readabout =' . json_encode(__('Read about this location in '), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';';
 
                     if ($selected_language == "hu") {
                         echo 'var wikilang="hu";';
@@ -929,7 +922,7 @@ $datePlace = new \Genealogy\Include\DatePlace();
             d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
         })
         ({
-            key: "<?= $humo_option['google_api_key']; ?>",
+            key: "<?= $HtmlEscaper->escHtml((string) $humo_option['google_api_key']); ?>",
             v: "weekly"
         });
     </script>

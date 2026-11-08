@@ -22,12 +22,12 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
 <?php if (isset($_GET['remove_tree']) && is_numeric($_GET['remove_tree'])) { ?>
     <div class="alert alert-danger">
-        <b><?= __('Selected:'); ?> <?= $_GET['treetext_name']; ?></b>
+        <b><?= __('Selected:'); ?> <?= $HtmlEscaper->escHtml((string) ($_GET['treetext_name'] ?? '')); ?></b>
         <?= __('Are you sure you want to remove this tree <b>AND all its statistics</b>?'); ?>
         <form method="post" action="index.php?page=tree" style="display : inline;">
-            <input type="hidden" name="tree_id" value="<?= $_GET['remove_tree']; ?>">
-            <input type="submit" name="remove_tree2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
-            <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
+            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $_GET['remove_tree']); ?>">
+            <input type="submit" name="remove_tree2" value="<?= $HtmlEscaper->escHtml(__('Yes')); ?>" class="btn btn-sm btn-danger">
+            <input type="submit" name="submit" value="<?= $HtmlEscaper->escHtml(__('No')); ?>" class="btn btn-sm btn-success ms-3">
         </form>
     </div>
 <?php } ?>
@@ -46,22 +46,22 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
 <ul class="nav nav-tabs mt-1">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_main') echo 'active'; ?>" href="index.php?page=tree&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Family tree administration'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_main') echo 'active'; ?>" href="index.php?page=tree&amp;tree_id=<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>"><?= __('Family tree administration'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_data') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_data&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Family tree data'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_data') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_data&amp;tree_id=<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>"><?= __('Family tree data'); ?></a>
     </li>
     <li class="nav-item me-1">
         <?php /*
         <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_gedcom') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $trees['tree_id']; ?>&amp;tree_prefix=<?= $data2Db->tree_prefix; ?>"><?= __('Import Gedcom file'); ?></a>
         */ ?>
-        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_gedcom') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Import Gedcom file'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_gedcom') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_gedcom&amp;tree_id=<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>"><?= __('Import Gedcom file'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_text') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_text&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Family tree texts (per language)'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_text') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_text&amp;tree_id=<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>"><?= __('Family tree texts (per language)'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_merge') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_merge&amp;tree_id=<?= $trees['tree_id']; ?>"><?= __('Merge Data'); ?></a>
+        <a class="nav-link genealogy_nav-link <?php if ($trees['menu_tab'] == 'tree_merge') echo 'active'; ?>" href="index.php?page=tree&amp;menu_admin=tree_merge&amp;tree_id=<?= $HtmlEscaper->escHtml((string) $trees['tree_id']); ?>"><?= __('Merge Data'); ?></a>
     </li>
 </ul>
 

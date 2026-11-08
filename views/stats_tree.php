@@ -1,4 +1,5 @@
 <?php
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 $showTreeDate = new \Genealogy\Include\ShowTreeDate();
 ?>
 
@@ -16,7 +17,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
             <!-- Latest family tree update -->
             <tr>
                 <td><?= __('Latest update'); ?></td>
-                <td align="center"><i><?= $showTreeDate->show_tree_date($selectedFamilyTree->tree_date); ?></i></td>
+                <td align="center"><i><?= $HtmlEscaper->escHtmlDecoded($showTreeDate->show_tree_date($selectedFamilyTree->tree_date)); ?></i></td>
                 <td><br></td>
             </tr>
 
@@ -27,16 +28,16 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
             <!-- Nr. of families in family tree -->
             <tr>
                 <td><?= __('No. of families'); ?></td>
-                <td align="center"><i><?= $selectedFamilyTree->tree_families; ?></i></td>
+                <td align="center"><i><?= (int) $selectedFamilyTree->tree_families; ?></i></td>
                 <td><br></td>
             </tr>
 
             <tr>
                 <td><?= __('Most children in family'); ?></td>
-                <td align='center'><i><?= $statistics['nr_children']; ?></i></td>
+                <td align='center'><i><?= (int) $statistics['nr_children']; ?></i></td>
                 <td align="center">
                     <?php if ($statistics['nr_children'] != "0") { ?>
-                        <a href="<?= $statistics['url']; ?>"><i><b><?= $statistics['man']; ?> <?= __('and'); ?> <?= $statistics['woman']; ?></b></i></a>
+                        <a href="<?= $HtmlEscaper->escHtml((string) $statistics['url']); ?>"><i><b><?= $HtmlEscaper->escHtml((string) $statistics['man']); ?> <?= __('and'); ?> <?= $HtmlEscaper->escHtml((string) $statistics['woman']); ?></b></i></a>
                     <?php } ?>
                 </td>
             </tr>
@@ -44,7 +45,7 @@ $showTreeDate = new \Genealogy\Include\ShowTreeDate();
             <!-- Nr. of persons in family tree -->
             <tr>
                 <td><?= __('No. of persons'); ?></td>
-                <td align='center'><i><?= $selectedFamilyTree->tree_persons; ?></i></td>
+                <td align='center'><i><?= (int) $selectedFamilyTree->tree_persons; ?></i></td>
                 <td><br></td>
             </tr>
         </table>

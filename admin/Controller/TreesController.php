@@ -21,7 +21,7 @@ class TreesController
     {
         $treesModel = new TreesModel($this->admin_config);
 
-        $treesModel->set_tree_id();
+        $treesModel->set_selected_tree_id_from_request();
         $treesModel->update_tree();
         $trees['tree_id'] = $treesModel->get_tree_id();
         $trees['language'] = $treesModel->get_language($selected_language);
@@ -38,7 +38,7 @@ class TreesController
             $trees['count_trees'] = $tree_adminModel->count_trees($this->admin_config['dbh']);
             $trees['collation'] = $tree_adminModel->get_collation($this->admin_config['dbh']);
 
-            $trees['language_path'] = 'index.php?page=tree&amp;tree_id=' . $trees['tree_id'] . '&amp;';
+            $trees['language_path'] = 'index.php?page=tree&tree_id=' . $trees['tree_id'] . '&';
         } elseif ($trees['menu_tab'] == 'tree_gedcom') {
             include_once(__DIR__ . "/../include/gedcom_asciihtml.php");
             include_once(__DIR__ . "/../include/gedcom_anselhtml.php");

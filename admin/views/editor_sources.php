@@ -5,9 +5,9 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $phpself2 = 'index.php?page=editor_sources' .
-    '&connect_kind=' . $editSources['connect_kind'] .
-    '&connect_sub_kind=' . $editSources['connect_sub_kind'] .
-    '&connect_connect_id=' . $editSources['connect_connect_id'];
+    '&connect_kind=' . rawurlencode((string) $editSources['connect_kind']) .
+    '&connect_sub_kind=' . rawurlencode((string) $editSources['connect_sub_kind']) .
+    '&connect_connect_id=' . rawurlencode((string) $editSources['connect_connect_id']);
 $event_person = isset($_POST['event_person']) || isset($_GET['event_person']);
 $event_family = isset($_POST['event_family']) || isset($_GET['event_family']);
 if ($event_person) {
@@ -24,6 +24,7 @@ $editor['confirm'] = $editorModel->update_editor2();
 
 $languageDate = new \Genealogy\Include\LanguageDate();
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 $db_functions->set_tree_id($tree_id);
 
@@ -32,9 +33,9 @@ $connect_sql = $db_functions->get_connections_connect_id($editSources['connect_k
 $nr_sources = count($connect_sql);
 ?>
 
-<h3><?= __('Source'); ?> - <?= $editSources['source_header']; ?></h3>
+<h3><?= __('Source'); ?> - <?= $HtmlEscaper->escHtml((string) $editSources['source_header']); ?></h3>
 
-<form method="POST" action="<?= $phpself2; ?>" class="mt-3">
+<form method="POST" action="<?= $HtmlEscaper->escHtml($phpself2); ?>" class="mt-3">
     <input type="submit" name="submit" title="submit" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
 
     <!-- TODO check this. Allready added in $phpself2 link -->
@@ -46,32 +47,32 @@ $nr_sources = count($connect_sql);
     <?php } ?>
 
     <ul
-        id="sortable<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>"
+        id="sortable<?= $HtmlEscaper->escHtml((string) $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']); ?>"
         class="sortable"
-        data-handle="handle<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>"
+        data-handle="handle<?= $HtmlEscaper->escHtml((string) $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']); ?>"
         style="padding-left:0px;">
 
         <?php foreach ($connect_sql as $connectDb) { ?>
             <li class="genealogy_search my-2 p-2">
-                <span style="cursor:move;" id="<?= $connectDb->connect_id; ?>" class="handle<?= $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']; ?>">
+                <span style="cursor:move;" id="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>" class="handle<?= $HtmlEscaper->escHtml((string) $editSources['connect_kind'] . $editSources['connect_sub_kind'] . $editSources['connect_connect_id']); ?>">
                     <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                 </span>
 
-                <input type="hidden" name="connect_change[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_id; ?>">
-                <input type="hidden" name="connect_connect_id[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_connect_id; ?>">
+                <input type="hidden" name="connect_change[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>">
+                <input type="hidden" name="connect_connect_id[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_connect_id); ?>">
                 <?php if (isset($editSources['fam_gedcomnumber'])) { ?>
-                    <input type="hidden" name="marriage_nr[<?= $connectDb->connect_id; ?>]" value="<?= $editSources['fam_gedcomnumber']; ?>">
+                    <input type="hidden" name="marriage_nr[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $editSources['fam_gedcomnumber']); ?>">
                 <?php } ?>
-                <input type="hidden" name="connect_kind[<?= $connectDb->connect_id; ?>]" value="<?= $editSources['connect_kind']; ?>">
-                <input type="hidden" name="connect_sub_kind[<?= $connectDb->connect_id; ?>]" value="<?= $editSources['connect_sub_kind']; ?>">
-                <input type="hidden" name="connect_item_id[<?= $connectDb->connect_id; ?>]" value="">
+                <input type="hidden" name="connect_kind[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $editSources['connect_kind']); ?>">
+                <input type="hidden" name="connect_sub_kind[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $editSources['connect_sub_kind']); ?>">
+                <input type="hidden" name="connect_item_id[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="">
 
                 <?php
-                echo ' <a href="index.php?page=editor_sources&amp;connect_drop=' . $connectDb->connect_id;
+                echo ' <a href="index.php?page=editor_sources&amp;connect_drop=' . rawurlencode((string) $connectDb->connect_id);
                 // *** Needed for events **
-                echo '&amp;connect_kind=' . $editSources['connect_kind'];
-                echo '&amp;connect_sub_kind=' . $editSources['connect_sub_kind'];
-                echo '&amp;connect_connect_id=' . $editSources['connect_connect_id'];
+                echo '&amp;connect_kind=' . rawurlencode((string) $editSources['connect_kind']);
+                echo '&amp;connect_sub_kind=' . rawurlencode((string) $editSources['connect_sub_kind']);
+                echo '&amp;connect_connect_id=' . rawurlencode((string) $editSources['connect_connect_id']);
                 if ($event_person) {
                     echo '&amp;event_person=1';
                 }
@@ -79,7 +80,7 @@ $nr_sources = count($connect_sql);
                     echo '&amp;event_family=1';
                 }
                 if (isset($editSources['fam_gedcomnumber'])) {
-                    echo '&amp;marriage_nr=' . $editSources['fam_gedcomnumber'];
+                    echo '&amp;marriage_nr=' . rawurlencode((string) $editSources['fam_gedcomnumber']);
                 }
                 echo '"><img src="images/button_drop.png" border="0" alt="remove"></a>';
                 ?>
@@ -92,10 +93,10 @@ $nr_sources = count($connect_sql);
                     if (!$sourceDb->source_title && !$sourceDb->source_text) {
                         $display = '';
                     }
-                    $hideshow = '8' . $connectDb->connect_id;
-                    $text = '[' . $connectDb->connect_source_id . '] ';
+                    $hideshow = '8' . (int) $connectDb->connect_id;
+                    $text = '[' . $HtmlEscaper->escHtml((string) $connectDb->connect_source_id) . '] ';
                     if ($sourceDb->source_title) {
-                        $text .= htmlspecialchars($sourceDb->source_title);
+                        $text .= $HtmlEscaper->escHtml((string) $sourceDb->source_title);
                     } else {
                         $text .= ' [' . __('Source') . ']';
                     }
@@ -126,7 +127,7 @@ $nr_sources = count($connect_sql);
 
                     $field_extra_text = 'style="height: 20px; width:500px"';
                 ?>
-                    <span class="humo row<?= $hideshow; ?>" style="margin-left:0px;<?= $display; ?>">
+                    <span class="humo row<?= (int) $hideshow; ?>" style="margin-left:0px;<?= $HtmlEscaper->escHtml($display); ?>">
                         <div class="m-2 p-2" style="border: 2px solid #4a90e2">
                             <div class="row mb-1">
                                 <div class="col-md-12">
@@ -134,13 +135,13 @@ $nr_sources = count($connect_sql);
                                 </div>
                             </div>
 
-                            <input type="hidden" name="connect_source_id[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_source_id; ?>">
-                            <input type="hidden" name="source_id[<?= $connectDb->connect_id; ?>]" value="<?= $sourceDb->source_id; ?>">
+                            <input type="hidden" name="connect_source_id[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_source_id); ?>">
+                            <input type="hidden" name="source_id[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_id); ?>">
 
                             <div class="row mb-1">
                                 <label for="source_title" class="col-sm-3 col-form-label"><?= __('Status'); ?></label>
                                 <div class="col-md-7">
-                                    <select size="1" id="source_status" name="source_status[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
+                                    <select size="1" id="source_status" name="source_status[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" class="form-select form-select-sm">
                                         <option value="publish" <?= $sourceDb->source_status == 'publish' ? ' selected' : ''; ?>><?= __('publish'); ?></option>
                                         <option value="restricted" <?= $sourceDb->source_status == 'restricted' ? ' selected' : ''; ?>><?= __('restricted'); ?></option>
                                     </select>
@@ -151,14 +152,14 @@ $nr_sources = count($connect_sql);
                             <div class="row mb-1">
                                 <label for="source_title" class="col-sm-3 col-form-label"><?= __('Title'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_title[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_title); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_title[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_title); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
                             <div class="row mb-1">
                                 <label for="source_subj" class="col-sm-3 col-form-label"><?= __('Subject'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_subj[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_subj); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_subj[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_subj); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
@@ -172,14 +173,14 @@ $nr_sources = count($connect_sql);
                             <div class="row mb-1">
                                 <label for="source_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_place[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_place); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="15" class="place-autocomplete form-control form-control-sm">
+                                    <input type="text" name="source_place[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_place); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Start typing to search for a place.')); ?>" size="15" class="place-autocomplete form-control form-control-sm">
                                 </div>
                             </div>
 
                             <div class="row mb-1">
                                 <label for="source_publ" class="col-sm-3 col-form-label"><?= __('Publication'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_publ[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_publ); ?>" size="15" class="form-control form-control-sm">
+                                    <input type="text" name="source_publ[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_publ); ?>" size="15" class="form-control form-control-sm">
                                     <span style="font-size: 13px;">https://... <?= __('will be shown as a link.'); ?></span>
                                 </div>
                             </div>
@@ -187,39 +188,39 @@ $nr_sources = count($connect_sql);
                             <div class="row mb-1">
                                 <label for="source_own_code" class="col-sm-3 col-form-label"><?= __('Own code'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_refn[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_refn); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_refn[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_refn); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
                             <div class="row mb-1">
                                 <label for="source_auth" class="col-sm-3 col-form-label"><?= __('Author'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_auth[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_auth); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_auth[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_auth); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
                             <div class="row mb-1">
                                 <label for="source_item" class="col-sm-3 col-form-label"><?= __('Nr.'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_item[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_item); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_item[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_item); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
                             <div class="row mb-1">
                                 <label for="source_kind" class="col-sm-3 col-form-label"><?= __('Kind'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_kind[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_kind); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_kind[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_kind); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
                             <div class="row mb-1">
                                 <label for="source_place" class="col-sm-3 col-form-label"><?= __('Repository'); ?></label>
                                 <div class="col-md-7">
-                                    <select size="1" id="source_repo_gedcomnr" name="source_repo_gedcomnr[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
+                                    <select size="1" id="source_repo_gedcomnr" name="source_repo_gedcomnr[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" class="form-select form-select-sm">
                                         <option value=""></option>
                                         <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
-                                            <option value="<?= $repoDb->repo_gedcomnr; ?>" <?= $repoDb->repo_gedcomnr == $sourceDb->source_repo_gedcomnr ? ' selected' : ''; ?>>
-                                                <?= $repoDb->repo_gedcomnr; ?>, <?= $repoDb->repo_name; ?> <?= $repoDb->repo_place; ?></option>
+                                            <option value="<?= $HtmlEscaper->escHtml((string) $repoDb->repo_gedcomnr); ?>" <?= $repoDb->repo_gedcomnr == $sourceDb->source_repo_gedcomnr ? ' selected' : ''; ?>>
+                                                <?= $HtmlEscaper->escHtml((string) $repoDb->repo_gedcomnr); ?>, <?= $HtmlEscaper->escHtml((string) $repoDb->repo_name); ?> <?= $HtmlEscaper->escHtml((string) $repoDb->repo_place); ?></option>
                                         <?php } ?>
                                     </select>
                                     <!-- For new repository in new database... -->
@@ -234,14 +235,14 @@ $nr_sources = count($connect_sql);
                             <div class="row mb-1">
                                 <label for="source_repo_caln" class="col-sm-3 col-form-label"><?= __('Repository call number'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_repo_caln[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_repo_caln); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_repo_caln[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_repo_caln); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
                             <div class="row mb-1">
                                 <label for="source_repo_page" class="col-sm-3 col-form-label"><?= __('Repository page'); ?></label>
                                 <div class="col-md-7">
-                                    <input type="text" name="source_repo_page[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($sourceDb->source_repo_page); ?>" size="60" class="form-control form-control-sm">
+                                    <input type="text" name="source_repo_page[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_repo_page); ?>" size="60" class="form-control form-control-sm">
                                 </div>
                             </div>
 
@@ -250,7 +251,7 @@ $nr_sources = count($connect_sql);
                             <div class="row mb-1">
                                 <label for="source_text" class="col-sm-3 col-form-label"><?= __('Text'); ?></label>
                                 <div class="col-md-7">
-                                    <textarea rows="2" name="source_text[<?= $connectDb->connect_id; ?>]" <?= $field_text; ?> class=" form-control form-control-sm"><?= $editor_cls->text_show($sourceDb->source_text); ?></textarea>
+                                    <textarea rows="2" name="source_text[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" <?= $field_text; ?> class=" form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $editor_cls->text_show($sourceDb->source_text)); ?></textarea>
                                 </div>
                             </div>
 
@@ -261,7 +262,7 @@ $nr_sources = count($connect_sql);
                                 <div class="row mb-1">
                                     <div class="col-md-3"><?= __('Added by'); ?></div>
                                     <div class="col-md-7">
-                                        <?= $languageDate->show_datetime($sourceDb->source_new_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_new_user_id); ?>
+                                        <?= $HtmlEscaper->escHtml((string) $languageDate->show_datetime($sourceDb->source_new_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_new_user_id)); ?>
                                     </div>
                                 </div>
                             <?php
@@ -273,7 +274,7 @@ $nr_sources = count($connect_sql);
                                 <div class="row mb-1">
                                     <div class="col-md-3"><?= __('Changed by'); ?></div>
                                     <div class="col-md-7">
-                                        <?= $languageDate->show_datetime($sourceDb->source_changed_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_changed_user_id); ?>
+                                        <?= $HtmlEscaper->escHtml((string) $languageDate->show_datetime($sourceDb->source_changed_datetime) . ' ' . $db_functions->get_user_name($sourceDb->source_changed_user_id)); ?>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -291,7 +292,7 @@ $nr_sources = count($connect_sql);
                         <div class="row mb-1">
                             <label for="source_role" class="col-sm-3 col-form-label"><?= __('Sourcerole'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="connect_role[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($connect_role); ?>" size="6" class="form-control form-control-sm">
+                                <input type="text" name="connect_role[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connect_role); ?>" size="6" class="form-control form-control-sm">
                                 <span style="font-size:13px;"><?= __('e.g. Writer, Brother, Sister, Father.'); ?></span>
                             </div>
                         </div>
@@ -299,7 +300,7 @@ $nr_sources = count($connect_sql);
                         <div class="row mb-1">
                             <label for="source_page" class="col-sm-3 col-form-label"><?= __('Page'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="connect_page[<?= $connectDb->connect_id; ?>]" value="<?= $connectDb->connect_page; ?>" size="6" class="form-control form-control-sm">
+                                <input type="text" name="connect_page[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connectDb->connect_page); ?>" size="6" class="form-control form-control-sm">
                                 <span style="font-size:13px;"><?= __('Page in source.'); ?></span>
                             </div>
                         </div>
@@ -308,7 +309,7 @@ $nr_sources = count($connect_sql);
                         <div class="row mb-1">
                             <label for="source_quality" class="col-sm-3 col-form-label"><?= __('Quality'); ?></label>
                             <div class="col-md-7">
-                                <select size="1" id="source_quality" name="connect_quality[<?= $connectDb->connect_id; ?>]" class="form-select form-select-sm">
+                                <select size="1" id="source_quality" name="connect_quality[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" class="form-select form-select-sm">
                                     <option value=""><?= ucfirst(__('quality: default')); ?></option>
                                     <option value="0" <?php if ($connectDb->connect_quality == '0') echo ' selected'; ?>><?= ucfirst(__('quality: unreliable evidence or estimated data')); ?></option>
                                     <option value="1" <?php if ($connectDb->connect_quality == '1') echo ' selected'; ?>><?= ucfirst(__('quality: questionable reliability of evidence')); ?></option>
@@ -328,7 +329,7 @@ $nr_sources = count($connect_sql);
                         <div class="row mb-1">
                             <label for="connect_place" class="col-sm-3 col-form-label"><?= __('Place'); ?></label>
                             <div class="col-md-7">
-                                <input type="text" name="connect_place[<?= $connectDb->connect_id; ?>]" value="<?= htmlspecialchars($connect_place); ?>" size="15" class="form-control form-control-sm">
+                                <input type="text" name="connect_place[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="<?= $HtmlEscaper->escHtml((string) $connect_place); ?>" size="15" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -336,7 +337,7 @@ $nr_sources = count($connect_sql);
                         <div class="row mb-1">
                             <label for="connect_text" class="col-sm-3 col-form-label"><?= __('Extra text'); ?></label>
                             <div class="col-md-7">
-                                <textarea rows="2" name="connect_text[<?= $connectDb->connect_id; ?>]" <?= $field_extra_text; ?> class="form-control form-control-sm"><?= $editor_cls->text_show($connectDb->connect_text); ?></textarea>
+                                <textarea rows="2" name="connect_text[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" <?= $field_extra_text; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $editor_cls->text_show($connectDb->connect_text)); ?></textarea>
                             </div>
                         </div>
                     </span>
@@ -373,10 +374,10 @@ $nr_sources = count($connect_sql);
 
                     <div class="row mb-2">
                         <div class="col-md-4">
-                            <input type="text" name="source_search_gedcomnr" value="<?= $source_search_gedcomnr; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
+                            <input type="text" name="source_search_gedcomnr" value="<?= $HtmlEscaper->escHtml((string) $source_search_gedcomnr); ?>" size="20" placeholder="<?= $HtmlEscaper->escHtml(__('gedcomnumber (ID)')); ?>" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-5">
-                            <input type="text" name="source_search" value="<?= $source_search; ?>" size="20" placeholder="<?= __('text'); ?>" class="form-control form-control-sm">
+                            <input type="text" name="source_search" value="<?= $HtmlEscaper->escHtml((string) $source_search); ?>" size="20" placeholder="<?= $HtmlEscaper->escHtml(__('text')); ?>" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2">
                             <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
@@ -385,21 +386,21 @@ $nr_sources = count($connect_sql);
 
                     <div class="row mb-2">
                         <div class="col-md-10">
-                            <select size="1" name="connect_source_id[<?= $connectDb->connect_id; ?>]" aria-label="<?= __('Select existing source'); ?>" class="form-select form-select-sm">
+                            <select size="1" name="connect_source_id[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" aria-label="<?= $HtmlEscaper->escHtml(__('Select existing source')); ?>" class="form-select form-select-sm">
                                 <option value=""><?= __('Select existing source'); ?>:</option>
                                 <?php while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) { ?>
-                                    <option value="<?= $sourceDb->source_gedcomnr; ?>">
+                                    <option value="<?= $HtmlEscaper->escHtml((string) $sourceDb->source_gedcomnr); ?>">
                                         <?php
                                         if ($sourceDb->source_title) {
-                                            echo $sourceDb->source_title;
+                                            echo $HtmlEscaper->escHtml((string) $sourceDb->source_title);
                                         } else {
-                                            echo substr($sourceDb->source_text, 0, 40);
+                                            echo $HtmlEscaper->escHtml(substr((string) $sourceDb->source_text, 0, 40));
                                             if (strlen($sourceDb->source_text) > 40) {
                                                 echo '...';
                                             }
                                         }
                                         ?>
-                                        [<?= $sourceDb->source_gedcomnr; ?>]
+                                        [<?= $HtmlEscaper->escHtml((string) $sourceDb->source_gedcomnr); ?>]
                                     </option>
                                 <?php } ?>
                                 <option value="">*** <?= __('Results are limited, use search to find more sources.'); ?> ***</option>
@@ -412,9 +413,9 @@ $nr_sources = count($connect_sql);
 
                     <!-- Add new source -->
                     <br><?= __('Or:'); ?>
-                    <a href="index.php?page=editor_sources&amp;source_add2=1&amp;connect_id=<?= $connectDb->connect_id; ?>
-                        &amp;connect_order=<?= $connectDb->connect_order; ?>&amp;connect_kind=<?= $connectDb->connect_kind; ?>
-                        &amp;connect_sub_kind=<?= $connectDb->connect_sub_kind; ?>&amp;connect_connect_id=<?= $connectDb->connect_connect_id; ?>
+                    <a href="index.php?page=editor_sources&amp;source_add2=1&amp;connect_id=<?= rawurlencode((string) $connectDb->connect_id); ?>
+                        &amp;connect_order=<?= rawurlencode((string) $connectDb->connect_order); ?>&amp;connect_kind=<?= rawurlencode((string) $connectDb->connect_kind); ?>
+                        &amp;connect_sub_kind=<?= rawurlencode((string) $connectDb->connect_sub_kind); ?>&amp;connect_connect_id=<?= rawurlencode((string) $connectDb->connect_connect_id); ?>
                     <?php
                     if ($event_person) {
                         echo '&amp;event_person=1';
@@ -426,10 +427,10 @@ $nr_sources = count($connect_sql);
                         #addresses"><?= __('add new source'); ?>
                     </a>
 
-                    <input type="hidden" name="connect_role[<?= $connectDb->connect_id; ?>]" value="">
-                    <input type="hidden" name="connect_page[<?= $connectDb->connect_id; ?>]" value="">
-                    <input type="hidden" name="connect_quality[<?= $connectDb->connect_id; ?>]" value="">
-                    <input type="hidden" name="connect_text[<?= $connectDb->connect_id; ?>]" value="">
+                    <input type="hidden" name="connect_role[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="">
+                    <input type="hidden" name="connect_page[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="">
+                    <input type="hidden" name="connect_quality[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="">
+                    <input type="hidden" name="connect_text[<?= $HtmlEscaper->escHtml((string) $connectDb->connect_id); ?>]" value="">
                 <?php } ?>
             </li>
         <?php } ?>
@@ -438,7 +439,7 @@ $nr_sources = count($connect_sql);
 
 <!-- Add new source connection -->
 <?php if (!isset($_POST['connect_add'])) { ?>
-    <form method="POST" action="<?= $phpself2; ?>">
+    <form method="POST" action="<?= $HtmlEscaper->escHtml($phpself2); ?>">
         <!-- TODO check this. Allready added in $phpself2 link -->
         <?php if ($event_person) { ?>
             <input type="hidden" name="event_person" value="1">
@@ -447,11 +448,11 @@ $nr_sources = count($connect_sql);
             <input type="hidden" name="event_family" value="1">
         <?php } ?>
 
-        <input type="hidden" name="connect_kind" value="<?= $editSources['connect_kind']; ?>">
-        <input type="hidden" name="connect_sub_kind" value="<?= $editSources['connect_sub_kind']; ?>">
-        <input type="hidden" name="connect_connect_id" value="<?= $editSources['connect_connect_id']; ?>">
+        <input type="hidden" name="connect_kind" value="<?= $HtmlEscaper->escHtml((string) $editSources['connect_kind']); ?>">
+        <input type="hidden" name="connect_sub_kind" value="<?= $HtmlEscaper->escHtml((string) $editSources['connect_sub_kind']); ?>">
+        <input type="hidden" name="connect_connect_id" value="<?= $HtmlEscaper->escHtml((string) $editSources['connect_connect_id']); ?>">
         <?php if (isset($editSources['fam_gedcomnumber'])) { ?>
-            <input type="hidden" name="marriage_nr" value="<?= $editSources['fam_gedcomnumber']; ?>">
+            <input type="hidden" name="marriage_nr" value="<?= $HtmlEscaper->escHtml((string) $editSources['fam_gedcomnumber']); ?>">
         <?php } ?>
 
         <?php if ($nr_sources > 0) { ?>

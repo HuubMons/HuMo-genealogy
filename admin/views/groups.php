@@ -8,6 +8,7 @@ if (!defined('ADMIN_PAGE')) {
  * Automatic installation or update
  * Januari 2016: Older updates are moved to update and installation script (was already a long list...)!
  */
+
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
 while ($columnDb = $column_qry->fetch()) {
     $field_value = $columnDb['Field'];
@@ -50,9 +51,9 @@ if (isset($_POST['group_remove'])) {
             <!-- There are still users connected to this group -->
             <strong><?= __('It\'s not possible to delete this group: there is/ are'); ?> <?= $nr_users; ?> <?= __('user(s) connected to this group!'); ?></strong>
         <?php } else { ?>
-            <strong><?= __('Are you sure you want to remove the group:'); ?> "<?= $_POST['group_name']; ?>"?</strong>
+            <strong><?= __('Are you sure you want to remove the group:'); ?> "<?= $HtmlEscaper->escHtml((string) ($_POST['group_name'] ?? '')); ?>"?</strong>
             <form method="post" action="index.php?page=groups" style="display : inline;">
-                <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
+                <input type="hidden" name="group_id" value="<?= $HtmlEscaper->escHtml((string) $groups['group_id']); ?>">
                 <input type="submit" name="group_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
                 <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
             </form>
@@ -75,8 +76,8 @@ $groupresult = $dbh->query($groupsql);
 <b><?= __('Choose a user group: '); ?></b>
 <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
     <form method="POST" action="index.php?page=groups" style="display : inline;">
-        <input type="hidden" name="group_id" value="<?= $groupDb->group_id; ?>">
-        <input type="submit" name="submit" value="<?= $groupDb->group_name == '' ? 'NO NAME' : $groupDb->group_name; ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
+        <input type="hidden" name="group_id" value="<?= $HtmlEscaper->escHtml((string) $groupDb->group_id); ?>">
+        <input type="submit" name="submit" value="<?= $HtmlEscaper->escHtml((string) ($groupDb->group_name == '' ? 'NO NAME' : $groupDb->group_name)); ?>" <?= $groupDb->group_id == $groups['group_id'] ? 'class="btn btn-sm btn-primary"' : 'class="btn btn-sm btn-secondary"'; ?>>
     </form>
 <?php } ?>
 
@@ -93,7 +94,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
 ?>
 
 <form method="POST" action="index.php?page=groups">
-    <input type="hidden" name="group_id" value="<?= $groups['group_id']; ?>">
+    <input type="hidden" name="group_id" value="<?= $HtmlEscaper->escHtml((string) $groups['group_id']); ?>">
     <table class="table table-light">
         <thead class="table-primary">
             <tr>
@@ -109,7 +110,7 @@ $groupDb = $groupresult->fetch(PDO::FETCH_OBJ);
         <tr>
             <td><?= __('Group name'); ?></td>
             <td>
-                <input type="text" name="group_name" value="<?= $groupDb->group_name; ?>" size="15" class="form-control form-control-sm">
+                <input type="text" name="group_name" value="<?= $HtmlEscaper->escHtml((string) $groupDb->group_name); ?>" size="15" class="form-control form-control-sm">
             </td>
         </tr>
 
@@ -518,7 +519,7 @@ If possible, try to filter with that'); ?></i>
                         <?= __('Year'); ?>:
                     </div>
                     <div class="col-md-auto">
-                        <input type="text" name="group_alive_date" value="<?= $groupDb->group_alive_date; ?>" size="4" class="form-control form-control-sm">
+                        <input type="text" name="group_alive_date" value="<?= $HtmlEscaper->escHtml((string) $groupDb->group_alive_date); ?>" size="4" class="form-control form-control-sm">
                     </div>
                 </div>
             </td>
@@ -535,7 +536,7 @@ If possible, try to filter with that'); ?></i>
                         <?= __('Year'); ?>:
                     </div>
                     <div class="col-md-auto">
-                        <input type="text" name="group_death_date" value="<?= $groupDb->group_death_date; ?>" size="4" class="form-control form-control-sm">
+                        <input type="text" name="group_death_date" value="<?= $HtmlEscaper->escHtml((string) $groupDb->group_death_date); ?>" size="4" class="form-control form-control-sm">
                     </div>
                 </div>
             </td>
@@ -562,7 +563,7 @@ If possible, try to filter with that'); ?></i>
                         <?= __('Year'); ?>:
                     </div>
                     <div class="col-md-auto">
-                        <input type="text" name="group_filter_pers_show" value="<?= $groupDb->group_filter_pers_show; ?>" size="10" class="form-control form-control-sm">
+                        <input type="text" name="group_filter_pers_show" value="<?= $HtmlEscaper->escHtml((string) $groupDb->group_filter_pers_show); ?>" size="10" class="form-control form-control-sm">
                     </div>
                 </div>
             </td>
@@ -579,7 +580,7 @@ If possible, try to filter with that'); ?></i>
                         <?= __('Text'); ?>:
                     </div>
                     <div class="col-md-auto">
-                        <input type="text" name="group_filter_pers_hide" value="<?= $groupDb->group_filter_pers_hide; ?>" size="10" class="form-control form-control-sm">
+                        <input type="text" name="group_filter_pers_hide" value="<?= $HtmlEscaper->escHtml((string) $groupDb->group_filter_pers_hide); ?>" size="10" class="form-control form-control-sm">
                     </div>
                 </div>
             </td>
@@ -596,7 +597,7 @@ If possible, try to filter with that'); ?></i>
                         <?= __('Text'); ?>:
                     </div>
                     <div class="col-md-auto">
-                        <input type="text" name="group_pers_hide_totally" value="<?= $groupDb->group_pers_hide_totally; ?>" size="10" class="form-control form-control-sm">
+                        <input type="text" name="group_pers_hide_totally" value="<?= $HtmlEscaper->escHtml((string) $groupDb->group_pers_hide_totally); ?>" size="10" class="form-control form-control-sm">
                     </div>
                 </div>
             </td>
@@ -716,9 +717,9 @@ If possible, try to filter with that'); ?></i>
             $treetext_name = $treetext['name'];
         ?>
             <tr>
-                <td><?= $data3Db->tree_id; ?> <?= $treetext_name; ?></td>
+                <td><?= $HtmlEscaper->escHtml((string) $data3Db->tree_id); ?> <?= $HtmlEscaper->escHtml((string) $treetext_name); ?></td>
                 <!-- Show/ hide tree for user -->
-                <td><input type="checkbox" name="show_tree_<?= $data3Db->tree_id; ?>" class="form-check-input" <?= !in_array($data3Db->tree_id, $hide_tree_array) ? 'checked' : ''; ?>></td>
+                <td><input type="checkbox" name="show_tree_<?= (int) $data3Db->tree_id; ?>" class="form-check-input" <?= !in_array($data3Db->tree_id, $hide_tree_array) ? 'checked' : ''; ?>></td>
 
                 <td>
                     <?php
@@ -729,14 +730,14 @@ If possible, try to filter with that'); ?></i>
                     if ($groupDb->group_admin == 'j') {
                         $check = ' checked';
                         $disabled = ' disabled';
-                        echo '<input type="hidden" name="edit_tree_' . $data3Db->tree_id . '" value="1">';
+                        echo '<input type="hidden" name="edit_tree_' . (int) $data3Db->tree_id . '" value="1">';
                     }
                     // *** Guest group is not allowed to edit ***
                     if ($groupDb->group_id == '3') {
                         $disabled = ' disabled';
                     }
                     ?>
-                    <input type="checkbox" name="edit_tree_<?= $data3Db->tree_id; ?>" class="form-check-input" <?= $check . $disabled; ?>>
+                    <input type="checkbox" name="edit_tree_<?= (int) $data3Db->tree_id; ?>" class="form-check-input" <?= $check . $disabled; ?>>
                 </td>
             </tr>
         <?php } ?>
@@ -814,8 +815,8 @@ If possible, try to filter with that'); ?></i>
                 if (in_array($data3Db->photocat_id, $hide_photocat_array)) {
                     $check = '';
                 }
-                echo '<tr><td>' . $data3Db->photocat_prefix . '</td>';
-                echo '<td><input type="checkbox" name="show_photocat_' . $data3Db->photocat_id . '" class="form-check-input"' . $check . '></td></tr>';
+                echo '<tr><td>' . $HtmlEscaper->escHtml((string) $data3Db->photocat_prefix) . '</td>';
+                echo '<td><input type="checkbox" name="show_photocat_' . (int) $data3Db->photocat_id . '" class="form-check-input"' . $check . '></td></tr>';
             }
             */
 
@@ -829,8 +830,8 @@ If possible, try to filter with that'); ?></i>
                     $photocat_prefix_array[] = $data3Db->photocat_prefix;
         ?>
                     <tr>
-                        <td><?= $data3Db->photocat_prefix; ?></td>
-                        <td><input type="checkbox" name="show_photocat_<?= $data3Db->photocat_id; ?>" class="form-check-input" <?= in_array($data3Db->photocat_id, $hide_photocat_array) ? '' : 'checked'; ?>></td>
+                        <td><?= $HtmlEscaper->escHtml((string) $data3Db->photocat_prefix); ?></td>
+                        <td><input type="checkbox" name="show_photocat_<?= (int) $data3Db->photocat_id; ?>" class="form-check-input" <?= in_array($data3Db->photocat_id, $hide_photocat_array) ? '' : 'checked'; ?>></td>
                     </tr>
         <?php
                 }

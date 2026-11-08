@@ -20,6 +20,11 @@ class TreeMerge
         $this->trees = $trees;
     }
 
+    private function escapeHtml($value)
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
     /**
      * "show_pair" is the function that presents the data of two persons to be merged
      * with the possibility to determine what information is passed from left to right
@@ -47,7 +52,7 @@ class TreeMerge
                 $spouseDb = $db_functions->get_person($spouse_ged);
                 $privacy = $personPrivacy->get_privacy($spouseDb);
                 $name = $personName->get_person_name($spouseDb, $privacy);
-                $spouses1 .= $name["standard_name"] . '<br>';
+                $spouses1 .= $this->escapeHtml($name["standard_name"]) . '<br>';
 
                 $children = $db_functions->get_children($famDb->fam_id);
                 if ($children) {
@@ -55,7 +60,7 @@ class TreeMerge
                         $childDb = $db_functions->get_person_with_id($child->person_id);
                         $privacy = $personPrivacy->get_privacy($childDb);
                         $name = $personName->get_person_name($childDb, $privacy);
-                        $children1 .= $name["standard_name"] . '<br>';
+                        $children1 .= $this->escapeHtml($name["standard_name"]) . '<br>';
                     }
                 }
             }
@@ -71,12 +76,12 @@ class TreeMerge
             $fatherDb = $db_functions->get_person_with_id($parentsDb->partner1_id);
             $privacy = $personPrivacy->get_privacy($fatherDb);
             $name = $personName->get_person_name($fatherDb, $privacy);
-            $father1 .= $name["standard_name"] . '<br>';
+            $father1 .= $this->escapeHtml($name["standard_name"]) . '<br>';
 
             $motherDb = $db_functions->get_person_with_id($parentsDb->partner2_id);
             $privacy = $personPrivacy->get_privacy($motherDb);
             $name = $personName->get_person_name($motherDb, $privacy);
-            $mother1 .= $name["standard_name"] . '<br>';
+            $mother1 .= $this->escapeHtml($name["standard_name"]) . '<br>';
         }
 
         // get data for right person
@@ -93,7 +98,7 @@ class TreeMerge
                 $spouseDb = $db_functions->get_person($spouse_ged);
                 $privacy = $personPrivacy->get_privacy($spouseDb);
                 $name = $personName->get_person_name($spouseDb, $privacy);
-                $spouses2 .= $name["standard_name"] . '<br>';
+                $spouses2 .= $this->escapeHtml($name["standard_name"]) . '<br>';
 
                 $children = $db_functions->get_children($famDb->fam_id);
                 if ($children) {
@@ -101,7 +106,7 @@ class TreeMerge
                         $childDb = $db_functions->get_person_with_id($child->person_id);
                         $privacy = $personPrivacy->get_privacy($childDb);
                         $name = $personName->get_person_name($childDb, $privacy);
-                        $children2 .= $name["standard_name"] . '<br>';
+                        $children2 .= $this->escapeHtml($name["standard_name"]) . '<br>';
                     }
                 }
             }
@@ -117,12 +122,12 @@ class TreeMerge
             $fatherDb = $db_functions->get_person_with_id($parentsDb->partner1_id);
             $privacy = $personPrivacy->get_privacy($fatherDb);
             $name = $personName->get_person_name($fatherDb, $privacy);
-            $father2 .= $name["standard_name"] . '<br>';
+            $father2 .= $this->escapeHtml($name["standard_name"]) . '<br>';
 
             $motherDb = $db_functions->get_person_with_id($parentsDb->partner2_id);
             $privacy = $personPrivacy->get_privacy($motherDb);
             $name = $personName->get_person_name($motherDb, $privacy);
-            $mother2 .= $name["standard_name"] . '<br>';
+            $mother2 .= $this->escapeHtml($name["standard_name"]) . '<br>';
         }
 
         // *** Enhanced matchScore calculation ***
@@ -356,8 +361,8 @@ class TreeMerge
             </tr>
             <tr style="background-color:#e6e6e6">
                 <td style="font-weight:bold"><?= __('GEDCOM number (ID)'); ?></td>
-                <td><?= $leftDb->pers_gedcomnumber; ?></td>
-                <td><?= $rightDb->pers_gedcomnumber; ?></td>
+                <td><?= $this->escapeHtml($leftDb->pers_gedcomnumber); ?></td>
+                <td><?= $this->escapeHtml($rightDb->pers_gedcomnumber); ?></td>
             </tr>
 
             <?php
@@ -436,7 +441,7 @@ class TreeMerge
         if ($left_item || $right_item) {
         ?>
             <tr>
-                <td style="font-weight:bold"><?= ucfirst($title); ?>:</td>
+                <td style="font-weight:bold"><?= $this->escapeHtml(ucfirst($title)); ?>:</td>
 
                 <?php
                 if ($left_item) {
@@ -451,7 +456,7 @@ class TreeMerge
                     }
                 }
                 ?>
-                <td><input type="radio" name="<?= $name; ?>" value="1" class="form-check-input" <?= $left_item ? 'checked' : ''; ?>> <?= $left_item; ?></td>
+                <td><input type="radio" name="<?= $this->escapeHtml($name); ?>" value="1" class="form-check-input" <?= $left_item ? 'checked' : ''; ?>> <?= $this->escapeHtml($left_item); ?></td>
 
                 <?php
                 if ($name == 'crem' && $right_item == '1') {
@@ -464,7 +469,7 @@ class TreeMerge
                     $right_item = 'Yes';
                 }
                 ?>
-                <td><input type="radio" name="<?= $name; ?>" value="2" class="form-check-input" <?= !$left_item ? 'checked' : ''; ?>> <?= $right_item; ?></td>
+                <td><input type="radio" name="<?= $this->escapeHtml($name); ?>" value="2" class="form-check-input" <?= !$left_item ? 'checked' : ''; ?>> <?= $this->escapeHtml($right_item); ?></td>
             </tr>
         <?php
         }
@@ -478,7 +483,7 @@ class TreeMerge
         if ($right_item) {
         ?>
             <tr>
-                <td style="font-weight:bold"><?= $title; ?>:</td>
+                <td style="font-weight:bold"><?= $this->escapeHtml($title); ?>:</td>
 
                 <!-- Person 1 -->
                 <td>
@@ -495,7 +500,7 @@ class TreeMerge
                             $notetext = $left_item;
                         }
                     ?>
-                        <input type="checkbox" name="<?= $name; ?>_l" class="form-check-input" <?= $left_item ? 'checked' : ''; ?>>
+                        <input type="checkbox" name="<?= $this->escapeHtml($name); ?>_l" class="form-check-input" <?= $left_item ? 'checked' : ''; ?>>
 
                         <div class="dropdown dropend d-inline">
                             <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;"><?= $showtext; ?></button>
@@ -523,7 +528,7 @@ class TreeMerge
 
                 <!-- Person 2 -->
                 <td>
-                    <input type="checkbox" name="<?= $name; ?>_r" class="form-check-input" <?= !$left_item ? 'checked' : ''; ?>>
+                    <input type="checkbox" name="<?= $this->escapeHtml($name); ?>_r" class="form-check-input" <?= !$left_item ? 'checked' : ''; ?>>
 
                     <div class="dropdown dropend d-inline">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="--bs-btn-line-height: .5;"><?= $showtext; ?></button>
@@ -689,7 +694,7 @@ class TreeMerge
         if ($r_ev != '') {
         ?>
             <tr>
-                <td style="font-weight:bold"><?= $name_event; ?>:</td>
+                <td style="font-weight:bold"><?= $this->escapeHtml($name_event); ?>:</td>
 
                 <!-- Person 1 -->
                 <td style="vertical-align:top;">
@@ -709,11 +714,15 @@ class TreeMerge
                                 $familyTree = $familyTreeQry->fetch(PDO::FETCH_OBJ);
                                 $tree_pict_path = $familyTree->tree_pict_path;
                                 $dir = '../' . $tree_pict_path;
-                                $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
                             }
                     ?>
-                            <input type="hidden" name="l_event_shown_<?= $key; ?>" value="1">
-                            <input type="checkbox" name="l_event_checked_<?= $key; ?>" class="form-check-input" checked> <?= $value; ?><br>
+                            <input type="hidden" name="l_event_shown_<?= $this->escapeHtml($key); ?>" value="1">
+                            <input type="checkbox" name="l_event_checked_<?= $this->escapeHtml($key); ?>" class="form-check-input" checked>
+                            <?php if ($this_event == 'picture') { ?>
+                                <?= $this->escapeHtml($value); ?><br><img width="150px" src="<?= $this->escapeHtml($dir . $value); ?>"><br>
+                            <?php } else { ?>
+                                <?= $this->escapeHtml($value); ?><br>
+                            <?php } ?>
                     <?php
                         }
                     } else {
@@ -743,11 +752,15 @@ class TreeMerge
                                 $familyTree = $familyTreeQry->fetch(PDO::FETCH_OBJ);
                                 $tree_pict_path = $familyTree->tree_pict_path;
                                 $dir = '../' . $tree_pict_path;
-                                $value .= '<br><img width="150px" src="' . $dir . $value . '"><br>';
                             }
                     ?>
-                            <input type="hidden" name="r_event_shown_<?= $key; ?>" value="1">
-                            <input type="checkbox" name="r_event_checked_<?= $key; ?>" class="form-check-input" <?= $checked; ?>> <?= $value; ?><br>
+                            <input type="hidden" name="r_event_shown_<?= $this->escapeHtml($key); ?>" value="1">
+                            <input type="checkbox" name="r_event_checked_<?= $this->escapeHtml($key); ?>" class="form-check-input" <?= $checked; ?>>
+                            <?php if ($this_event == 'picture') { ?>
+                                <?= $this->escapeHtml($value); ?><br><img width="150px" src="<?= $this->escapeHtml($dir . $value); ?>"><br>
+                            <?php } else { ?>
+                                <?= $this->escapeHtml($value); ?><br>
+                            <?php } ?>
                     <?php
                         }
                     } else {
@@ -801,8 +814,8 @@ class TreeMerge
                                 $title = '';
                             }
                     ?>
-                            <input type="hidden" name="l_source_shown_<?= $left_sourcesDb->connect_id; ?>" value="1">
-                            <input type="checkbox" name="l_source_checked_<?= $left_sourcesDb->connect_id; ?>" class="form-check-input" checked> <?= $title; ?><br>
+                            <input type="hidden" name="l_source_shown_<?= $this->escapeHtml($left_sourcesDb->connect_id); ?>" value="1">
+                            <input type="checkbox" name="l_source_checked_<?= $this->escapeHtml($left_sourcesDb->connect_id); ?>" class="form-check-input" checked> <?= $this->escapeHtml($title); ?><br>
                     <?php
                         }
                     } else {
@@ -827,8 +840,8 @@ class TreeMerge
                             $title = '';
                         }
                     ?>
-                        <input type="hidden" name="r_source_shown_<?= $right_sourcesDb->connect_id; ?>" value="1">
-                        <input type="checkbox" name="r_source_checked_<?= $right_sourcesDb->connect_id; ?>" class="form-check-input" <?= $checked; ?>> <?= $title; ?><br>
+                        <input type="hidden" name="r_source_shown_<?= $this->escapeHtml($right_sourcesDb->connect_id); ?>" value="1">
+                        <input type="checkbox" name="r_source_checked_<?= $this->escapeHtml($right_sourcesDb->connect_id); ?>" class="form-check-input" <?= $checked; ?>> <?= $this->escapeHtml($title); ?><br>
                     <?php
                     }
                     ?>
@@ -877,8 +890,8 @@ class TreeMerge
                             $result = $l_address->fetch(PDO::FETCH_OBJ);
                             $title = $result->address_address . ' ' . $result->address_place;
                     ?>
-                            <input type="hidden" name="l_address_shown_<?= $left_addressesDb->connect_id; ?>" value="1">
-                            <input type="checkbox" name="l_address_checked_<?= $left_addressesDb->connect_id; ?>" class="form-check-input" checked> <?= $title; ?><br>
+                            <input type="hidden" name="l_address_shown_<?= $this->escapeHtml($left_addressesDb->connect_id); ?>" value="1">
+                            <input type="checkbox" name="l_address_checked_<?= $this->escapeHtml($left_addressesDb->connect_id); ?>" class="form-check-input" checked> <?= $this->escapeHtml($title); ?><br>
                     <?php
                         }
                     } else {
@@ -900,8 +913,8 @@ class TreeMerge
                         $result = $r_address->fetch(PDO::FETCH_OBJ);
                         $title = $result->address_address . ' ' . $result->address_place;
                     ?>
-                        <input type="hidden" name="r_address_shown_<?= $right_addressesDb->connect_id; ?>" value="1">
-                        <input type="checkbox" name="r_address_checked_<?= $right_addressesDb->connect_id; ?>" class="form-check-input" <?= $checked; ?>> <?= $title; ?><br>
+                        <input type="hidden" name="r_address_shown_<?= $this->escapeHtml($right_addressesDb->connect_id); ?>" value="1">
+                        <input type="checkbox" name="r_address_checked_<?= $this->escapeHtml($right_addressesDb->connect_id); ?>" class="form-check-input" <?= $checked; ?>> <?= $this->escapeHtml($title); ?><br>
                     <?php } ?>
                 </td>
             </tr>

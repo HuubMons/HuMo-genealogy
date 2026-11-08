@@ -92,7 +92,7 @@ foreach ($familytrees as $familytree) {
                 //$person_url = $uri_path . '/family/' . $familytree->tree_id . '/' . $personDb->fam_gedcomnumber . '/';
                 $person_url = $uri_path . '/family/' . $familytree->tree_id . '/' . $personDb->fam_gedcomnumber;
             } else {
-                $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $familytree->tree_id . '&amp;id=' . $personDb->fam_gedcomnumber;
+                $person_url = $uri_path . '/index.php?page=family&tree_id=' . (int) $familytree->tree_id . '&id=' . rawurlencode((string) $personDb->fam_gedcomnumber);
             }
 
             $loc[] = $person_url;
@@ -144,7 +144,7 @@ foreach ($familytrees as $familytree) {
                 if ($humo_option["url_rewrite"] == "j") {
                     $person_url = $uri_path . '/family/' . $familytree->tree_id . '/' . $pers_family . '?main_person=' . $personDb->pers_gedcomnumber;
                 } else {
-                    $person_url = $uri_path . '/index.php?page=family&amp;tree_id=' . $familytree->tree_id . '&amp;id=' . $pers_family . '&amp;main_person=' . $personDb->pers_gedcomnumber;
+                    $person_url = $uri_path . '/index.php?page=family&tree_id=' . (int) $familytree->tree_id . '&id=' . rawurlencode((string) $pers_family) . '&main_person=' . rawurlencode((string) $personDb->pers_gedcomnumber);
                 }
 
                 $loc[] = $person_url;
@@ -175,7 +175,7 @@ function generateSitemap($urls, $filename)
 
     foreach ($urls as $url) {
         $urlElement = $xml->addChild('url');
-        $urlElement->addChild('loc', htmlspecialchars($url));
+        $urlElement->addChild('loc', htmlspecialchars($url, ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8'));
         //$urlElement->addChild('lastmod', date('Y-m-d'));
         //$urlElement->addChild('changefreq', 'weekly');
         //$urlElement->addChild('priority', '0.8');
@@ -192,7 +192,7 @@ if ($filenumber > 0) {
     echo "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n";
     for ($i = 1; $i <= $filenumber; $i++) {
         echo "  <sitemap>\r\n";
-        echo '      <loc>' . $uri_path . '/sitemap' . $i . ".xml</loc>\r\n";
+        echo '      <loc>' . htmlspecialchars($uri_path . '/sitemap' . $i . '.xml', ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8') . "</loc>\r\n";
         echo "  </sitemap>\r\n";
     }
     echo '</sitemapindex>';
@@ -201,7 +201,7 @@ if ($filenumber > 0) {
     echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\r\n";
     foreach ($loc as $loc_value) {
         echo "  <url>\r\n";
-        echo '      <loc>' . $loc_value . "</loc>\r\n";
+        echo '      <loc>' . htmlspecialchars($loc_value, ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8') . "</loc>\r\n";
         echo "  </url>\r\n";
     }
     echo '</urlset>';

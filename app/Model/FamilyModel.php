@@ -252,7 +252,7 @@ class FamilyModel extends BaseModel
         return $descendant_report;
     }
 
-    function getDescendantHeader($name, $family_id, $main_person): string
+    function getDescendantHeader($name, $family_id, $main_person): array
     {
         $processLinks = new ProcessLinks();
 
@@ -262,7 +262,7 @@ class FamilyModel extends BaseModel
 
         $vars['pers_family'] = $family_id;
         $path_tmp = $processLinks->get_link($this->uri_path, 'family', $this->tree_id, true, $vars);
-        $path_tmp .= "main_person=" . $main_person . '&amp;descendant_report=1';
+        $path_tmp .= "main_person=" . $main_person . '&descendant_report=1';
         $data['header_link'][] = $path_tmp;
         $data['header_active'][] = $name == 'Descendant report' ? 'active' : '';
         $data['header_text'][] = __('Descendant report');
@@ -273,7 +273,7 @@ class FamilyModel extends BaseModel
             $link = 'descendant_chart/' . $this->tree_id . '/' . $family_id . '?main_person=' . $main_person;
             //$link = 'descendant_chart/' . $this->tree_id . '/' . $family_id . '/' . $main_person;
         } else {
-            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $this->tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person;
+            $link = 'index.php?page=descendant_chart&tree_id=' . $this->tree_id . '&id=' . $family_id . '&main_person=' . $main_person;
         }
         $data['header_link'][] = $link;
         $data['header_active'][] = $name == 'Descendant chart' ? 'active' : '';
@@ -281,43 +281,21 @@ class FamilyModel extends BaseModel
 
         // *** Added in july 2024 ***
         if ($this->humo_option["url_rewrite"] == 'j') {
-            $link = 'descendant_chart/' . $this->tree_id . '/' . $family_id . '?main_person=' . $main_person . '&amp;dnachart=mtdna';
+            $link = 'descendant_chart/' . $this->tree_id . '/' . $family_id . '?main_person=' . $main_person . '&dnachart=mtdna';
         } else {
-            $link = 'index.php?page=descendant_chart&amp;tree_id=' . $this->tree_id . '&amp;id=' . $family_id . '&amp;main_person=' . $main_person . '&amp;dnachart=mtdna';
+            $link = 'index.php?page=descendant_chart&tree_id=' . $this->tree_id . '&id=' . $family_id . '&main_person=' . $main_person . '&dnachart=mtdna';
         }
         $data['header_link'][] = $link;
         $data['header_active'][] = $name == 'DNA charts' ? 'active' : '';
         $data['header_text'][] = __('DNA Charts');
 
         $path_tmp = $processLinks->get_link($this->uri_path, 'outline_report', $this->tree_id, true);
-        $path_tmp .= 'id=' . $family_id . '&amp;main_person=' . $main_person;
+        $path_tmp .= 'id=' . $family_id . '&main_person=' . $main_person;
         $data['header_link'][] = $path_tmp;
         $data['header_active'][] = $name == 'Outline report' ? 'active' : '';
         $data['header_text'][] = __('Outline report');
 
-        // TODO Move to view? Is used in multiple views.
-        // *** Tab menu ***
-        $text = '
-        <h1>' . __('Descendants') . '</h1>
-        <ul class="nav nav-tabs d-print-none" id="nav-tab">
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][0] . '" href="' . $data['header_link'][0] . '" rel="nofollow">' . $data['header_text'][0] . '</a>
-            </li>
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][1] . '" href="' . $data['header_link'][1] . '" rel="nofollow">' . $data['header_text'][1] . '</a>
-            </li>
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][2] . '" href="' . $data['header_link'][2] . '" rel="nofollow">' . $data['header_text'][2] . '</a>
-            </li>
-            <li class="nav-item me-1">
-                <a class="nav-link genealogy_nav-link ' . $data['header_active'][3] . '" href="' . $data['header_link'][3] . '" rel="nofollow">' . $data['header_text'][3] . '</a>
-            </li>
-        </ul>
-        <!-- Align content to the left -->
-        <!-- <div style="float: left; background-color:white; height:500px; padding:10px;"> -->
-        <div style="float: left; background-color:white; padding:10px;">';
-
-        return $text;
+        return $data;
     }
 
     // *** Used in family script: show/ hide Google maps ***

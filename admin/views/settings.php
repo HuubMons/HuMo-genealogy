@@ -48,7 +48,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     for ($i = 0; $i < count($theme_folder); $i++) {
                         $theme = str_replace(".css", "", $theme_folder[$i]);
                     ?>
-                        <option value="<?= $theme; ?>" <?= $humo_option['default_skin'] == $theme ? 'selected' : ''; ?>><?= $theme; ?></option>
+                        <option value="<?= $HtmlEscaper->escHtml($theme); ?>" <?= $humo_option['default_skin'] == $theme ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml($theme); ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -64,7 +64,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     if ($langs) {
                         for ($i = 0; $i < count($langs); $i++) {
                     ?>
-                            <option value="<?= $langs[$i][1]; ?>" <?= $humo_option['default_language'] == $langs[$i][1] ? 'selected' : ''; ?>><?= $langs[$i][0]; ?></option>
+                            <option value="<?= $HtmlEscaper->escHtml($langs[$i][1]); ?>" <?= $humo_option['default_language'] == $langs[$i][1] ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml($langs[$i][0]); ?></option>
                     <?php
                         }
                     }
@@ -83,7 +83,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     if ($langs_admin) {
                         for ($i = 0; $i < count($langs_admin); $i++) {
                     ?>
-                            <option value="<?= $langs_admin[$i][1]; ?>" <?= $humo_option['default_language_admin'] == $langs_admin[$i][1] ? 'selected' : ''; ?>><?= $langs_admin[$i][0]; ?></option>
+                            <option value="<?= $HtmlEscaper->escHtml($langs_admin[$i][1]); ?>" <?= $humo_option['default_language_admin'] == $langs_admin[$i][1] ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml($langs_admin[$i][0]); ?></option>
                     <?php
                         }
                     }
@@ -115,7 +115,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Scripts in &lt;head&gt; section for all pages'); ?>
             </div>
             <div class="col-md-auto">
-                <textarea cols="80" rows="1" name="text_header" class="form-control form-control-sm"><?= htmlentities($humo_option["text_header"], ENT_NOQUOTES); ?></textarea>
+                <textarea cols="80" rows="1" name="text_header" class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $humo_option["text_header"]); ?></textarea>
             </div>
         </div>
         <div class="row mb-2">
@@ -130,7 +130,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Text in footer for all pages'); ?>
             </div>
             <div class="col-md-auto">
-                <textarea cols="80" rows="1" name="text_footer" class="form-control form-control-sm"><?= htmlentities($humo_option["text_footer"], ENT_NOQUOTES); ?></textarea>
+                <textarea cols="80" rows="1" name="text_footer" class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $humo_option["text_footer"]); ?></textarea>
             </div>
         </div>
         <div class="row mb-2">
@@ -184,8 +184,92 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <div class="col-md-auto">
                 <?= __('This shows all deprecation messages when debug is on'); ?>
             </div>
-        </div>        
+        </div>
     </div>
+
+    <!-- Visitor limit settings -->
+    <div class="genealogy_search p-2 my-2">
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <h4><?= __('Website visitor limits'); ?></h4>
+            </div>
+            <div class="col-md-4">
+                <input type="submit" name="save_option" value="<?= __('Change'); ?>" class="btn btn-sm btn-success">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <b><?= __('Use these settings to control visitors limits.'); ?></b>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Maximum number of visitors'); ?>
+            </div>
+            <div class="col-md-auto">
+                <input type="number" name="max_visitors" value="<?= $HtmlEscaper->escHtml($humo_option["max_visitors"]); ?>" size="5" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-auto">
+                <?php printf(__('Default: %d visitors.'), 200); ?>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Number of seconds (to measure number of visitors)'); ?>
+            </div>
+            <div class="col-md-auto">
+                <input type="number" name="max_visitors_seconds" value="<?= $HtmlEscaper->escHtml($humo_option["max_visitors_seconds"]); ?>" size="5" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-auto">
+                <?php printf(__('Default: %1$d seconds = %2$d minutes.'), 600, 10); ?>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Mail address used to send notice to administrator'); ?>
+            </div>
+            <div class="col-md-auto">
+                <input type="email" name="max_visitors_email_address" value="<?= $HtmlEscaper->escHtml($humo_option["max_visitors_email_address"]); ?>" size="40" class="form-control form-control-sm">
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('When maximum number of visitors is reached'); ?>
+            </div>
+            <div class="col-md-auto">
+                <div class="form-check">
+                    <input type="radio" name="max_visitors_action" value="close_pages" id="max_visitors_action_pages" class="form-check-input" <?= $humo_option["max_visitors_action"] == 'close_pages' ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="max_visitors_action_pages"><?= __('Temporarily close pages like ascendant and descendant pages.'); ?></label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" name="max_visitors_action" value="close_website" id="max_visitors_action_website" class="form-check-input" <?= $humo_option["max_visitors_action"] == 'close_website' ? 'checked' : ''; ?>>
+                    <label class="form-check-label" for="max_visitors_action_website"><?= __('Temporarily close the entire website and show a closing message.'); ?></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <?= __('Only show basic genealogical pages for visitors'); ?>
+            </div>
+            <div class="col-md-auto">
+                <select size="1" name="visitor_website_limited" class="form-select form-select-sm">
+                    <option value="y"><?= __('Yes'); ?></option>
+                    <option value="n" <?php if ($humo_option["visitor_website_limited"] != 'y') echo ' selected'; ?>><?= __('No'); ?></option>
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <?= __('This option will hide ancestor, descendant and other report pages for visitors.'); ?>
+            </div>
+        </div>
+    </div>
+
 
     <div class="genealogy_search p-2 my-2">
         <div class="row mb-2">
@@ -231,7 +315,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 </select>
             </div>
             <div class="col-md-6">
-                <textarea cols="80" rows=1 name="robots_option" class="form-control form-control-sm"><?= htmlentities($humo_option["robots_option"], ENT_NOQUOTES); ?></textarea>
+                <textarea cols="80" rows=1 name="robots_option" class="form-control form-control-sm"><?= $HtmlEscaper->escHtml((string) $humo_option["robots_option"]); ?></textarea>
             </div>
         </div>
 
@@ -264,7 +348,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Block spam question'); ?>
             </div>
             <div class="col-md-8">
-                <input type="text" name="block_spam_question" value="<?= htmlentities($humo_option["block_spam_question"], ENT_NOQUOTES); ?>" class="form-control form-control-sm">
+                <input type="text" name="block_spam_question" value="<?= $HtmlEscaper->escHtml((string) $humo_option["block_spam_question"]); ?>" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -273,7 +357,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Block spam answer'); ?>
             </div>
             <div class="col-md-8">
-                <input type="text" name="block_spam_answer" value="<?= htmlentities($humo_option["block_spam_answer"], ENT_NOQUOTES); ?>" class="form-control form-control-sm">
+                <input type="text" name="block_spam_answer" value="<?= $HtmlEscaper->escHtml((string) $humo_option["block_spam_answer"]); ?>" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -321,7 +405,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <div class="col-md-auto">
                 <select size="1" name="visitor_registration_group" class="form-select form-select-sm">
                     <?php while ($groupDb = $groupresult->fetch(PDO::FETCH_OBJ)) { ?>
-                        <option value="<?= $groupDb->group_id; ?>" <?= $humo_option["visitor_registration_group"] == $groupDb->group_id ? 'selected' : ''; ?>><?= $groupDb->group_name; ?></option>
+                        <option value="<?= $HtmlEscaper->escHtml($groupDb->group_id); ?>" <?= $humo_option["visitor_registration_group"] == $groupDb->group_id ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml($groupDb->group_name); ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -333,7 +417,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Registration form: e-mail address'); ?>
             </div>
             <div class="col-md-4">
-                <input type="email" name="general_email" value="<?= $humo_option["general_email"]; ?>" size="40" class="form-control form-control-sm">
+                <input type="email" name="general_email" value="<?= $HtmlEscaper->escHtml($humo_option["general_email"]); ?>" size="40" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Send registration form to this e-mail address.'); ?>
@@ -359,7 +443,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Password forgotten e-mail address'); ?>
             </div>
             <div class="col-md-4">
-                <input type="email" name="password_retrieval" value="<?= $humo_option["password_retrieval"]; ?>" size="40" placeholder="no-reply@your-website.com" class="form-control form-control-sm">
+                <input type="email" name="password_retrieval" value="<?= $HtmlEscaper->escHtml($humo_option["password_retrieval"]); ?>" size="40" placeholder="no-reply@your-website.com" class="form-control form-control-sm">
             </div>
         </div>
         <div class="row mb-2">
@@ -391,7 +475,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </div>
 
             <div class="col-md-4">
-                <input type="text" name="email_sender" value="<?= $humo_option["email_sender"]; ?>" size="32" class="form-control form-control-sm">
+                <input type="text" name="email_sender" value="<?= $HtmlEscaper->escHtml($humo_option["email_sender"]); ?>" size="32" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto"><?= __('Gmail: [email_address]@gmail.com'); ?></div>
         </div>
@@ -423,7 +507,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Mail: username'); ?>
             </div>
             <div class="col-md-4">
-                <input type="text" name="email_user" value="<?= $humo_option["email_user"]; ?>" size="32" class="form-control form-control-sm">
+                <input type="text" name="email_user" value="<?= $HtmlEscaper->escHtml($humo_option["email_user"]); ?>" size="32" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Gmail: [email_address]@gmail.com'); ?>
@@ -435,7 +519,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Mail: password'); ?>
             </div>
             <div class="col-md-4">
-                <input type="text" name="email_password" value="<?= $humo_option["email_password"]; ?>" size="32" class="form-control form-control-sm">
+                <input type="text" name="email_password" value="<?= $HtmlEscaper->escHtml($humo_option["email_password"]); ?>" size="32" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -444,7 +528,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('SMTP: mail server'); ?>
             </div>
             <div class="col-md-4">
-                <input type="text" name="smtp_server" value="<?= $humo_option["smtp_server"]; ?>" size="32" class="form-control form-control-sm">
+                <input type="text" name="smtp_server" value="<?= $HtmlEscaper->escHtml($humo_option["smtp_server"]); ?>" size="32" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Gmail: smtp.gmail.com'); ?>
@@ -528,7 +612,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <div class="col-md-auto">
                 <select size="1" name="timezone" class="form-select form-select-sm">
                     <?php foreach ($zones_array as $t) { ?>
-                        <option value="<?= $t['zone']; ?>" <?= $humo_option["timezone"] == $t['zone'] ? 'selected' : ''; ?>><?= $t['diff_from_GMT']; ?> - <?= $t['zone']; ?></option>
+                        <option value="<?= $HtmlEscaper->escHtml($t['zone']); ?>" <?= $humo_option["timezone"] == $t['zone'] ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml($t['diff_from_GMT']); ?> - <?= $HtmlEscaper->escHtml($t['zone']); ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -539,7 +623,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Minimum characters in search box'); ?>
             </div>
             <div class="col-md-1">
-                <input type="text" name="min_search_chars" value="<?= $humo_option["min_search_chars"]; ?>" size="4" class="form-control form-control-sm">
+                <input type="text" name="min_search_chars" value="<?= $HtmlEscaper->escHtml($humo_option["min_search_chars"]); ?>" size="4" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Minimum characters in search boxes (standard value=3. For Chinese set to 1).'); ?>
@@ -593,7 +677,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                         for ($i = 0; $i < count($langs); $i++) {
                             if (is_dir('../languages/' . $langs[$i][1] . '/timelines/')) {
                         ?>
-                                <option value="<?= $langs[$i][1]; ?>" <?= $settings['time_lang'] == $langs[$i][1] ? 'selected' : ''; ?>><?= $langs[$i][0]; ?></option>
+                                <option value="<?= $HtmlEscaper->escHtml($langs[$i][1]); ?>" <?= $settings['time_lang'] == $langs[$i][1] ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml($langs[$i][0]); ?></option>
                         <?php
                             }
                         }
@@ -629,7 +713,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                                 $select = ' selected';
                             }
                         ?>
-                            <option value="<?= $settings['time_lang']; ?>!<?= $timeline; ?>@" <?= $select; ?>><?= $timeline; ?></option>
+                            <option value="<?= $HtmlEscaper->escHtml($settings['time_lang'] . '!' . $timeline . '@'); ?>" <?= $select; ?>><?= $HtmlEscaper->escHtml($timeline); ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -658,7 +742,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Website name'); ?>
             </div>
             <div class="col-md-6">
-                <input type="text" name="database_name" value="<?= $humo_option["database_name"]; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="database_name" value="<?= $HtmlEscaper->escHtml($humo_option["database_name"]); ?>" size="40" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -686,7 +770,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             </div>
 
             <div class="col-md-4">
-                <input type="text" name="homepage" value="<?= $humo_option["homepage"]; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="homepage" value="<?= $HtmlEscaper->escHtml($humo_option["homepage"]); ?>" size="40" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <span style="white-space:nowrap;"><?= __('(link to this site including http://)'); ?></span>
@@ -697,7 +781,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Link description'); ?>
             </div>
             <div class="col-md-4">
-                <input type="text" name="homepage_description" value="<?= $humo_option["homepage_description"]; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="homepage_description" value="<?= $HtmlEscaper->escHtml($humo_option["homepage_description"]); ?>" size="40" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -706,7 +790,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Link for birthdays RSS'); ?>
             </div>
             <div class="col-md-4">
-                <input type="text" name="rss_link" value="<?= $humo_option["rss_link"]; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="rss_link" value="<?= $HtmlEscaper->escHtml($humo_option["rss_link"]); ?>" size="40" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('(link to this site including http://)'); ?>
@@ -735,7 +819,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Number of generations in descendant report'); ?>
             </div>
             <div class="col-md-1">
-                <input type="text" name="descendant_generations" value="<?= $humo_option["descendant_generations"]; ?>" size="4" class="form-control form-control-sm">
+                <input type="text" name="descendant_generations" value="<?= $HtmlEscaper->escHtml($humo_option["descendant_generations"]); ?>" size="4" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Show number of generation in descendant report (standard value=4).'); ?>
@@ -747,7 +831,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Number of persons in search results'); ?>
             </div>
             <div class="col-md-1">
-                <input type="text" name="show_persons" value="<?= $humo_option["show_persons"]; ?>" size="4" class="form-control form-control-sm">
+                <input type="text" name="show_persons" value="<?= $HtmlEscaper->escHtml($humo_option["show_persons"]); ?>" size="4" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Show number of persons in search results (standard value=30).'); ?>
@@ -770,7 +854,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Watermark text in PDF file'); ?>
             </div>
             <div class="col-md-4">
-                <input type="text" name="watermark_text" value="<?= $humo_option["watermark_text"]; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="watermark_text" value="<?= $HtmlEscaper->escHtml($humo_option["watermark_text"]); ?>" size="40" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Watermark text (clear to remove watermark)'); ?>
@@ -785,19 +869,19 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 R:
             </div>
             <div class="col-md-auto">
-                <input type="text" name="watermark_color_r" value="<?= $humo_option["watermark_color_r"]; ?>" size="4" class="form-control form-control-sm">
+                <input type="text" name="watermark_color_r" value="<?= $HtmlEscaper->escHtml($humo_option["watermark_color_r"]); ?>" size="4" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 G:
             </div>
             <div class="col-md-auto">
-                <input type="text" name="watermark_color_g" value="<?= $humo_option["watermark_color_g"]; ?>" size="4" class="form-control form-control-sm">
+                <input type="text" name="watermark_color_g" value="<?= $HtmlEscaper->escHtml($humo_option["watermark_color_g"]); ?>" size="4" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 B:
             </div>
             <div class="col-md-auto">
-                <input type="text" name="watermark_color_b" value="<?= $humo_option["watermark_color_b"]; ?>" size="4" class="form-control form-control-sm">
+                <input type="text" name="watermark_color_b" value="<?= $HtmlEscaper->escHtml($humo_option["watermark_color_b"]); ?>" size="4" class="form-control form-control-sm">
             </div>
             <div class="col-md-auto">
                 <?= __('Default values: R = 224, G = 224, B = 224.'); ?>
@@ -835,7 +919,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                 <?= __('Enter the One Name of this site'); ?>
             </div>
             <div class="col-md-6">
-                <input type="text" name="one_name_thename" value="<?= $humo_option["one_name_thename"]; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="one_name_thename" value="<?= $HtmlEscaper->escHtml($humo_option["one_name_thename"]); ?>" size="40" class="form-control form-control-sm">
             </div>
         </div>
     </div>
@@ -872,7 +956,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
             <div class="col-md-8">
                 <div class="form-check">
                     <input type="radio" value="ip_api_geoplugin_old" name="ip_api" id="ip_api_geoplugin_old" class="form-check-input" disabled>
-                    <label class="form-check-label" for="ip_api_geoplugin_old"><?= __('Use geoplugin.com.'); ?> <?= __('Oct. 2025: this option is no longer available.');?></label>
+                    <label class="form-check-label" for="ip_api_geoplugin_old"><?= __('Use geoplugin.com.'); ?> <?= __('Oct. 2025: this option is no longer available.'); ?></label>
                 </div>
             </div>
         </div>
@@ -891,7 +975,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-text"><?= __('API key'); ?></span>
-                            <input type="text" name="geoplugin_key" id="geoplugin_key" value="<?= $humo_option['geoplugin_key']; ?>" class="form-control form-control-sm">
+                            <input type="text" name="geoplugin_key" id="geoplugin_key" value="<?= $HtmlEscaper->escHtml($humo_option['geoplugin_key']); ?>" class="form-control form-control-sm">
                         </div>
                     </div>
                 </div>
@@ -934,7 +1018,7 @@ foreach (timezone_identifiers_list() as $key => $zone) {
                     <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-text"><?= __('API key'); ?></span>
-                            <input type="text" name="freeipapi_key" id="freeipapi_key" value="<?= $humo_option['freeipapi_key']; ?>" class="form-control form-control-sm" disabled>
+                            <input type="text" name="freeipapi_key" id="freeipapi_key" value="<?= $HtmlEscaper->escHtml($humo_option['freeipapi_key']); ?>" class="form-control form-control-sm" disabled>
                         </div>
                     </div>
                 </div>

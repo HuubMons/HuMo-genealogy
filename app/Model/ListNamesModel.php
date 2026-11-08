@@ -52,6 +52,7 @@ class ListNamesModel extends BaseModel
 
     public function get_last_name($last_name): string
     {
+        // TODO will be removed if queries are rebuild to PDO prepared statements
         $safeTextDb = new SafeTextDb();
 
         if (!isset($last_name)) {
@@ -161,9 +162,9 @@ class ListNamesModel extends BaseModel
                 // *** Replace & by | for URL ***
                 $link_name = str_replace("&", "|", $personDb->pers_lastname);
                 if ($personDb->pers_prefix) {
-                    $list_names['link_name'][] = $link_name . '&amp;pers_prefix=' . $personDb->pers_prefix;
+                    $list_names['link_name'][] = $link_name . '&pers_prefix=' . $personDb->pers_prefix;
                 } else {
-                    $list_names['link_name'][] = $link_name . '&amp;pers_prefix=EMPTY';
+                    $list_names['link_name'][] = $link_name . '&pers_prefix=EMPTY';
                 }
             }
 
@@ -203,7 +204,7 @@ class ListNamesModel extends BaseModel
             if ($this->humo_option["url_rewrite"] == "j") {
                 $uri_path_string = $this->uri_path . 'list_names/' . $this->tree_id . '/' . $list_names["last_name"] . '?';
             } else {
-                $uri_path_string = 'index.php?page=list_names&amp;last_name=' . $list_names["last_name"] . '&amp;';
+                $uri_path_string = 'index.php?page=list_names&last_name=' . $list_names["last_name"] . '&';
             }
 
             // "<="
@@ -212,7 +213,7 @@ class ListNamesModel extends BaseModel
             if ($list_names["start"] > 1) {
                 $list_names['show_pagination'] = true;
                 $calculated = ($list_names["start"] - 2) * $list_names['nr_persons'];
-                $list_names["previous_link"] = $uri_path_string . "start=" . ($list_names["start"] - 20) . "&amp;item=" . $calculated;
+                $list_names["previous_link"] = $uri_path_string . "start=" . ($list_names["start"] - 20) . "&item=" . $calculated;
             }
             if ($list_names["start"] <= 0) {
                 $list_names["start"] = 1;
@@ -232,7 +233,7 @@ class ListNamesModel extends BaseModel
                         $list_names['show_pagination'] = true;
                         $list_names["page_status"][$i] = '';
                     }
-                    $list_names["page_link"][$i] = $uri_path_string . "start=" . $list_names["start"] . "&amp;item=" . $calculated;
+                    $list_names["page_link"][$i] = $uri_path_string . "start=" . $list_names["start"] . "&item=" . $calculated;
                 }
             }
 
@@ -242,7 +243,7 @@ class ListNamesModel extends BaseModel
             $calculated = ($i - 1) * $list_names['nr_persons'];
             if ($calculated < $list_names['count_persons']) {
                 $list_names['show_pagination'] = true;
-                $list_names["next_link"] = $uri_path_string . "start=" . $i . "&amp;item=" . $calculated;
+                $list_names["next_link"] = $uri_path_string . "start=" . $i . "&item=" . $calculated;
             } else {
                 $list_names["next_status"] = 'disabled';
             }

@@ -141,10 +141,10 @@ class SourcesModel extends BaseModel
     {
         $link = '';
         if ($this->order_sources != '') {
-            $link .=  '&amp;order_sources=' . $this->order_sources . '&sort_desc=' . $this->sort_desc;
+            $link .=  '&order_sources=' . $this->order_sources . '&sort_desc=' . $this->sort_desc;
         }
         if ($this->source_search != '') {
-            $link .=  '&amp;source_search=' . $this->source_search;
+            $link .=  '&source_search=' . rawurlencode((string) $this->source_search);
         }
         return $link;
     }
@@ -165,7 +165,7 @@ class SourcesModel extends BaseModel
         if ($start > 1) {
             $start2 = $start - 20;
             $calculated = ($start - 2) * $this->count_sources;
-            $data["previous_link"] .= $path . 'start=' . $start2 . '&amp;item=' . $calculated;
+            $data["previous_link"] .= $path . 'start=' . $start2 . '&item=' . $calculated;
             $data["previous_link"] .=  $this->process_link();
         }
         if ($start <= 0) {
@@ -186,7 +186,7 @@ class SourcesModel extends BaseModel
                 } else {
                     $data["page_status"][$i] = '';
                 }
-                $data["page_link"][$i] =  $path . 'start=' . $start . '&amp;item=' . $calculated;
+                $data["page_link"][$i] =  $path . 'start=' . $start . '&item=' . $calculated;
                 $data["page_link"][$i] .=  $this->process_link();
             }
         }
@@ -196,7 +196,7 @@ class SourcesModel extends BaseModel
         $data["next_status"] = '';
         $calculated = ($i - 1) * $this->count_sources;
         if ($calculated < $this->all_sources->rowCount()) {
-            $data["next_link"] .=  $path . 'start=' . $i . '&amp;item=' . $calculated;
+            $data["next_link"] .=  $path . 'start=' . $i . '&item=' . $calculated;
             $data["next_link"] .=  $this->process_link();
         } else {
             $data["next_status"] = 'disabled';

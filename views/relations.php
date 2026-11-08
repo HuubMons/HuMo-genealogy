@@ -73,19 +73,18 @@
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $datePlace = new \Genealogy\Include\DatePlace();
-$safeTextShow = new \Genealogy\Include\SafeTextShow();
 
 $limit = 500; // *** Limit results ***
 ?>
 
-<form method="POST" action="<?= $relation['rel_path']; ?>" style="display : inline;">
+<form method="POST" action="<?= $HtmlEscaper->escHtml((string) $relation['rel_path']); ?>" style="display : inline;">
     <div class="p-2 me-sm-2 genealogy_search">
         <div class="row">
             <div class="col-md-auto"><br><b><?= __('Person') . ' 1'; ?></b></div>
             <div class="col-md-auto">
                 <?= __('Name'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_name" value="<?= $safeTextShow->safe_text_show($relation["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="text" name="search_name" value="<?= $HtmlEscaper->escHtml($relation["search_name1"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
                     <input type="submit" name="button_search_name1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -93,7 +92,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('or: ID'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_gednr" value="<?= $safeTextShow->safe_text_show($relation["search_gednr1"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="text" name="search_gednr" value="<?= $HtmlEscaper->escHtml($relation["search_gednr1"]); ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" name="button_search_id1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -183,8 +182,8 @@ $limit = 500; // *** Limit results ***
                                             }
                                         }
                                 ?>
-                                        <option value="<?= $searchDb->pers_gedcomnumber; ?>" <?= $selected; ?>>
-                                            <?= $name["index_name"] . $birth; ?> [<?= $searchDb->pers_gedcomnumber; ?>]
+                                        <option value="<?= $HtmlEscaper->escHtml((string) $searchDb->pers_gedcomnumber); ?>" <?= $selected; ?>>
+                                            <?= $HtmlEscaper->escHtmlDecoded((string) ($name["index_name"] . $birth)); ?> [<?= $HtmlEscaper->escHtml((string) $searchDb->pers_gedcomnumber); ?>]
                                         </option>
                                     <?php
                                     }
@@ -212,7 +211,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('Search'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_name2" value="<?= $safeTextShow->safe_text_show($relation["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
+                    <input type="text" name="search_name2" value="<?= $HtmlEscaper->escHtml($relation["search_name2"]); ?>" size="20" placeholder="<?= __('Name'); ?>" class="form-control form-control-sm">
                     <input type="submit" name="button_search_name2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -220,7 +219,7 @@ $limit = 500; // *** Limit results ***
             <div class="col-md-auto">
                 <?= __('or: ID'); ?>
                 <div class="input-group mb-3">
-                    <input type="text" name="search_gednr2" value="<?= $safeTextShow->safe_text_show($relation["search_gednr2"]); ?>" size="8" class="form-control form-control-sm">
+                    <input type="text" name="search_gednr2" value="<?= $HtmlEscaper->escHtml($relation["search_gednr2"]); ?>" size="8" class="form-control form-control-sm">
                     <input type="submit" name="button_search_id2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
                 </div>
             </div>
@@ -309,8 +308,8 @@ $limit = 500; // *** Limit results ***
                                             $selected = 'selected';
                                         }
                                 ?>
-                                        <option value="<?= $searchDb2->pers_gedcomnumber; ?>" <?= $selected; ?>>
-                                            <?= $name["index_name"] . $birth; ?> [<?= $searchDb2->pers_gedcomnumber; ?>]
+                                        <option value="<?= $HtmlEscaper->escHtml((string) $searchDb2->pers_gedcomnumber); ?>" <?= $selected; ?>>
+                                            <?= $HtmlEscaper->escHtmlDecoded((string) ($name["index_name"] . $birth)); ?> [<?= $HtmlEscaper->escHtml((string) $searchDb2->pers_gedcomnumber); ?>]
                                         </option>
                                     <?php
                                     }
@@ -364,7 +363,7 @@ Directions for use:<br>
 <li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>'); ?>
                 <?php $popup_text = str_replace('"', "'", $popup_text); ?>
 
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $HtmlEscaper->escHtml((string) $popup_text); ?>">
                     <?= __('Help'); ?>
                 </button>
             </div>
@@ -384,7 +383,7 @@ Directions for use:<br>
                 <td>
                     <?php if ($relation['show_extended_message']) { ?>
                         <div class="alert alert-secondary" role="alert">
-                            <strong><?= $relation['show_extended_message']; ?></strong>
+                            <strong><?= $HtmlEscaper->escHtml((string) $relation['show_extended_message']); ?></strong>
                         </div>
                     <?php
                     }
@@ -433,19 +432,19 @@ Directions for use:<br>
                             <!-- who -->
                             Kuka:
                         <?php } ?>
-                        &nbsp;&nbsp;<a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>"><?= $relation['name1']; ?></a>
+                        &nbsp;&nbsp;<a class="relsearch" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
                         <?php if ($selected_language == "fi") { ?>
                             <!-- to whom -->
                             &nbsp;&nbsp;Kenelle:
                         <?php } else { ?>
-                            <?= $relation['language_is'] . $relation['rel_text']; ?>
+                            <?= $HtmlEscaper->escHtml((string) ($relation['language_is'] . $relation['rel_text'])); ?>
                         <?php } ?>
-                        <a class="relsearch" href="<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>">
-                            <?= $relation['name2']; ?>
-                        </a><?= $relation['rel_text_nor_dan']; ?><br>
-                        <?= $relation['dutch_text']; ?>
+                        <a class="relsearch" href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>">
+                            <?= $HtmlEscaper->escHtml((string) $relation['name2']); ?>
+                        </a><?= $HtmlEscaper->escHtml((string) $relation['rel_text_nor_dan']); ?><br>
+                        <?= $HtmlEscaper->escHtml((string) $relation['dutch_text']); ?>
                         <?php if ($selected_language == "fi") { ?>
-                            Sukulaisuus tai muu suhde: <b><?= $relation['rel_text']; ?></b>
+                            Sukulaisuus tai muu suhde: <b><?= $HtmlEscaper->escHtml((string) $relation['rel_text']); ?></b>
                         <?php } ?>
                         <hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;">
                     <?php
@@ -550,15 +549,15 @@ Directions for use:<br>
                         ?>
 
                             <span>&nbsp;&nbsp;
-                                <a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>"><?= $relation['name1']; ?></a>
+                                <a class="relsearch" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
                                 <?= __('and'); ?>:
-                                <a class='relsearch' href='<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>'><?= $relation['name2']; ?></a>
+                                <a class='relsearch' href='<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>'><?= $HtmlEscaper->escHtml((string) $relation['name2']); ?></a>
                                 <?php if ($relation['sexe1'] == "M") { ?>
                                     <?= __('are both husbands of'); ?>
                                 <?php } else { ?>
                                     <?= __('are both wifes of'); ?>
                                 <?php } ?>
-                                <a href='<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayspouseX'][$relation['foundX_match']][0]; ?>'><?= $spousename; ?></a>
+                                <a href='<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayspouseX'][$relation['foundX_match']][0]); ?>'><?= $HtmlEscaper->escHtml((string) $spousename); ?></a>
                             </span><br>
 
                             <?php
@@ -629,12 +628,12 @@ Directions for use:<br>
                                 Kuka:
                                 <span>
                                     &nbsp;&nbsp;
-                                    <a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>">
-                                        <?= $relation['name1']; ?>
+                                    <a class="relsearch" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>">
+                                        <?= $HtmlEscaper->escHtml((string) $relation['name1']); ?>
                                     </a>
                                     &nbsp;&nbsp;Kenelle:
-                                    <a class='relsearch' href="<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>">
-                                        <?= $relation['name2']; ?>
+                                    <a class='relsearch' href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>">
+                                        <?= $HtmlEscaper->escHtml((string) $relation['name2']); ?>
                                     </a>
                                 </span><br>
                                 Sukulaisuus tai muu suhde:
@@ -643,34 +642,34 @@ Directions for use:<br>
                                     if ($spousetext2 != '' && $spousetext1 == '') {
                                 ?>
                                         <!-- X is relative of spouse of Y -->
-                                        (<a href="<?= $relation['link1']; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>"><?= $relation['name1']; ?></a>
-                                        - <?= $relation['spousenameY']; ?>):&nbsp;&nbsp;<?= $relation['rel_text']; ?><br>
-                                        <?= $relation['spousenameY']; ?>, <?= $finnish_spouse2; ?>
-                                        <a href="<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>"><?= $relation['name2']; ?></a>
+                                        (<a href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
+                                        - <?= $HtmlEscaper->escHtml((string) $relation['spousenameY']); ?>):&nbsp;&nbsp;<?= $HtmlEscaper->escHtml((string) $relation['rel_text']); ?><br>
+                                        <?= $HtmlEscaper->escHtml((string) $relation['spousenameY']); ?>, <?= $HtmlEscaper->escHtml((string) $finnish_spouse2); ?>
+                                        <a href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name2']); ?></a>
                                     <?php } elseif ($spousetext1 !== '' && $spousetext2 === '') { ?>
                                         <!-- X is spouse of relative of Y -->
-                                        (<?= $relation['spousenameX']; ?> - <a href="<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>"><?= $relation['name2']; ?></a>):&nbsp;&nbsp;<?= $relation['rel_text']; ?><br>
-                                        <?= $relation['spousenameX']; ?>, <?= $finnish_spouse1; ?>
-                                        <a href="<?= $relation['link1']; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>"><?= $relation['name1']; ?></a>
+                                        (<?= $HtmlEscaper->escHtml((string) $relation['spousenameX']); ?> - <a href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name2']); ?></a>):&nbsp;&nbsp;<?= $HtmlEscaper->escHtml((string) $relation['rel_text']); ?><br>
+                                        <?= $HtmlEscaper->escHtml((string) $relation['spousenameX']); ?>, <?= $HtmlEscaper->escHtml((string) $finnish_spouse1); ?>
+                                        <a href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
                                     <?php
                                     } else {
                                         // X is spouse of relative of spouse of Y
-                                        echo '(' . $relation['spousenameX'] . ' - ' . $relation['spousenameY'] . '):&nbsp;&nbsp;' . $relation['rel_text'] . '<br>';
-                                        echo $relation['spousenameX'] . ', ' . $finnish_spouse1 . ' ';
-                                        echo "<a href='" . $relation['link1'] . "main_person=" . $relation['rel_arrayX'][0][0] . "'>" . $relation['name1'] . "</a><br>";
-                                        echo $relation['spousenameY'] . ', ' . $finnish_spouse2 . ' ';
-                                        echo "<a href='" . $relation['link2'] . "main_person=" . $relation['rel_arrayY'][0][0] . "'>" . $relation['name2'] . "</a>";
+                                        echo '(' . $HtmlEscaper->escHtml((string) $relation['spousenameX']) . ' - ' . $HtmlEscaper->escHtml((string) $relation['spousenameY']) . '):&nbsp;&nbsp;' . $HtmlEscaper->escHtml((string) $relation['rel_text']) . '<br>';
+                                        echo $HtmlEscaper->escHtml((string) $relation['spousenameX']) . ', ' . $HtmlEscaper->escHtml((string) $finnish_spouse1) . ' ';
+                                        echo '<a href="' . $HtmlEscaper->escHtml((string) $relation['link1']) . 'main_person=' . $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]) . '">' . $HtmlEscaper->escHtml((string) $relation['name1']) . '</a><br>';
+                                        echo $HtmlEscaper->escHtml((string) $relation['spousenameY']) . ', ' . $HtmlEscaper->escHtml((string) $finnish_spouse2) . ' ';
+                                        echo '<a href="' . $HtmlEscaper->escHtml((string) $relation['link2']) . 'main_person=' . $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]) . '">' . $HtmlEscaper->escHtml((string) $relation['name2']) . '</a>';
                                     }
                                 } elseif ($relation['special_spouseX'] || $relation['special_spouseY']) {
                                     ?>
                                     <!-- brother-in-law/sister-in-law/father-in-law/mother-in-law -->
-                                    <b><?= $relation['rel_text']; ?></b><br>
+                                    <b><?= $HtmlEscaper->escHtml((string) $relation['rel_text']); ?></b><br>
                                 <?php
                                 } elseif ($relation['relation_type'] == 7) {
                                     if ($relmarriedX == 0 || $relmarriedY == 0) {
                                         echo '<b>' . __('partner') . '</b><br>';
                                     } else {
-                                        echo '<b>' . $finnish_spouse1 . '</b><br>';
+                                        echo '<b>' . $HtmlEscaper->escHtml((string) $finnish_spouse1) . '</b><br>';
                                     }
                                 }
                             } else {
@@ -705,10 +704,10 @@ Directions for use:<br>
 
                                 <span>
                                     &nbsp;&nbsp;
-                                    <a class="relsearch" href="<?= $relation['link1']; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>"><?= $relation['name1']; ?></a>
-                                    <?= $relation['language_is'] . $spousetext1 . $relation['rel_text'] . $relation['rel_text_nor_dan2'] . $spousetext2; ?>
-                                    <a class="relsearch" href="<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>"><?= $relation['name2']; ?></a>
-                                    <?= $relation['rel_text_nor_dan']; ?>
+                                    <a class="relsearch" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
+                                    <?= $HtmlEscaper->escHtml((string) ($relation['language_is'] . $spousetext1 . $relation['rel_text'] . $relation['rel_text_nor_dan2'] . $spousetext2)); ?>
+                                    <a class="relsearch" href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name2']); ?></a>
+                                    <?= $HtmlEscaper->escHtml((string) $relation['rel_text_nor_dan']); ?>
                                 </span><br>
                         <?php
                             }
@@ -766,6 +765,7 @@ function ext_calc_display_result($result, $db_functions, $relation)
 
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName = new \Genealogy\Include\PersonName();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     $map = array();    // array that will hold all data needed for the graphical display
     $tracks = explode(";", $result); // $tracks is array with each person in the trail
@@ -882,7 +882,7 @@ function ext_calc_display_result($result, $db_functions, $relation)
                 ?>
 
                             <td class="<?= $ancDb->pers_sexe ==  'M' ? 'extended_man' : 'extended_woman'; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" <?= $map[$x][2] == 2 ? 'colspan=2' : ''; ?>>
-                                <a href="<?= $url; ?>"><?= $name["name"]; ?></a>
+                                <a href="<?= $HtmlEscaper->escHtml((string) $url); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                             </td>
                         <?php
                         }
@@ -908,7 +908,7 @@ function ext_calc_display_result($result, $db_functions, $relation)
                 <tr>
                     <?php foreach ($next_line as $value) { ?>
                         <td style='padding:2px;color:black;width:10px;font-weight:bold;font-size:140%;text-align:center;'>
-                            <?= $value; ?>
+                            <?= $HtmlEscaper->escHtmlDecoded((string) $value); ?>
                         </td>
                     <?php } ?>
                 </tr>
@@ -929,6 +929,7 @@ function display_table($relation)
     $personPrivacy = new \Genealogy\Include\PersonPrivacy();
     $personName = new \Genealogy\Include\PersonName();
     $processLinks = new \Genealogy\Include\ProcessLinks();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     $vars['pers_family'] = $relation['famspouseX'];
     $linkSpouseX = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
@@ -993,13 +994,13 @@ function display_table($relation)
                 ?>
                     <tr>
                         <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $linkSpouseX; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>"><?= $name["name"]; ?></a>
+                            <a href="<?= $HtmlEscaper->escHtml((string) $linkSpouseX); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                         </td>
 
                         <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
 
                         <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>"><?= $relation['name1']; ?></a>
+                            <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['gednr1']); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
                         </td>
                     </tr>
 
@@ -1011,7 +1012,7 @@ function display_table($relation)
                 <?php } else { ?>
                     <tr>
                         <td class="<?= $persidDb->pers_sexe == "M" ?  "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['rel_arrayX'][0][0]; ?>"><?= $name["name"]; ?></a>
+                            <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayX'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                         </td>
                         <?php if (($relation['spouse'] == 1 && $relation['relation_type'] == 2) || ($relation['spouse'] == 2 && $relation['relation_type'] == 1)) { ?>
                             <td style="border:0px;">&nbsp;</td>
@@ -1045,7 +1046,7 @@ function display_table($relation)
                 ?>
                     <tr>
                         <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                            <a href="<?= $HtmlEscaper->escHtml((string) $link); ?>main_person=<?= $HtmlEscaper->escHtml((string) $persidDb->pers_gedcomnumber); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                         </td>
 
                         <?php if ($relation['spouse'] == 1 || $relation['spouse'] == 2 || $relation['spouse'] == 3) { ?>
@@ -1067,21 +1068,21 @@ function display_table($relation)
                         if ($relation['spouse'] == 1 && $relation['relation_type'] == 2 || $relation['spouse'] == 2 && $relation['relation_type'] == 1 || $relation['spouse'] == 3) {
                         ?>
                             <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                                <a href="<?= $linkSpouseY; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>"><?= $name["name"]; ?></a>
+                                <a href="<?= $HtmlEscaper->escHtml((string) $linkSpouseY); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                             </td>
 
                             <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
 
                             <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>">
-                                    <?= $relation['name2']; ?>
+                                <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['gednr2']); ?>">
+                                    <?= $HtmlEscaper->escHtml((string) $relation['name2']); ?>
                                 </a>
                             </td>
                         <?php } else { ?>
                             <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['rel_arrayY'][0][0]; ?>">
+                                <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['rel_arrayY'][0][0]); ?>">
                                     <!-- TODO check this, should be $name["name"]? -->
-                                    <?= $relation['name2']; ?>
+                                    <?= $HtmlEscaper->escHtml((string) $relation['name2']); ?>
                                 </a>
                             </td>
                             <?php if ($relation['spouse'] == 1 && $relation['relation_type'] == 1 || $relation['spouse'] == 2 && $relation['relation_type'] == 2) { ?>
@@ -1140,7 +1141,7 @@ function display_table($relation)
 
                 <!-- Show common grandparent at top (first line in table) -->
                 <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>" colspan="<?= $colspan; ?>">
-                    <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                    <a href="<?= $HtmlEscaper->escHtml((string) $link); ?>main_person=<?= $HtmlEscaper->escHtml((string) $persidDb->pers_gedcomnumber); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                 </td>
 
                 <?php if ($relation['spouse'] == 2 || $relation['spouse'] == 3) { ?>
@@ -1189,7 +1190,7 @@ function display_table($relation)
                         $link = $processLinks->get_link($uri_path, 'family', $tree_id, true, $vars);
                         ?>
                         <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                            <a href="<?= $HtmlEscaper->escHtml((string) $link); ?>main_person=<?= $HtmlEscaper->escHtml((string) $persidDb->pers_gedcomnumber); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                         </td>
 
                         <?php
@@ -1209,19 +1210,19 @@ function display_table($relation)
 
                         ?>
                             <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
-                                <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>"><?= $relation['name1']; ?></a>
+                                <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['gednr1']); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
                             </td>
 
                             <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
 
                             <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
-                                <a href="<?= $relation['fam_path'] . $fam; ?>&amp;main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                                <a href="<?= $HtmlEscaper->escHtml((string) ($relation['fam_path'] . $fam . '&main_person=' . $persidDb->pers_gedcomnumber)); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                             </td>
 
                         <?php } else { ?>
 
                             <td class="<?= $relation['sexe1'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px">
-                                <a class="search" href="<?= $relation['link1']; ?>main_person=<?= $relation['gednr1']; ?>"><?= $relation['name1']; ?></a>
+                                <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link1']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['gednr1']); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name1']); ?></a>
                             </td>
                         <?php
                         }
@@ -1253,7 +1254,7 @@ function display_table($relation)
                         <td style="border:0px;width:70px">&nbsp;</td>
 
                         <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;<?= $border; ?>">
-                            <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                            <a href="<?= $HtmlEscaper->escHtml((string) $link); ?>main_person=<?= $HtmlEscaper->escHtml((string) $persidDb->pers_gedcomnumber); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                         </td>
 
                         <?php if ($relation['spouse'] == 2 || $relation['spouse'] == 3) { ?>
@@ -1280,20 +1281,20 @@ function display_table($relation)
                             <td style="border:0px;width:70px">&nbsp;</td>
 
                             <td class="<?= $persidDb->pers_sexe == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
-                                <a href="<?= $link; ?>main_person=<?= $persidDb->pers_gedcomnumber; ?>"><?= $name["name"]; ?></a>
+                                <a href="<?= $HtmlEscaper->escHtml((string) $link); ?>main_person=<?= $HtmlEscaper->escHtml((string) $persidDb->pers_gedcomnumber); ?>"><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></a>
                             </td>
 
                             <td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>
 
                             <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>"><?= $relation['name2']; ?></a>
+                                <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['gednr2']); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name2']); ?></a>
                             </td>
 
                         <?php } else { ?>
                             <td style="border:0px;width:70px">&nbsp;</td>
 
                             <td class="<?= $relation['sexe2'] == "M" ? "extended_man" : "extended_woman"; ?>" style="width:200px;text-align:center;padding:2px;">
-                                <a class="search" href="<?= $relation['link2']; ?>main_person=<?= $relation['gednr2']; ?>"><?= $relation['name2']; ?></a>
+                                <a class="search" href="<?= $HtmlEscaper->escHtml((string) $relation['link2']); ?>main_person=<?= $HtmlEscaper->escHtml((string) $relation['gednr2']); ?>"><?= $HtmlEscaper->escHtml((string) $relation['name2']); ?></a>
                             </td>
                         <?php
                         }

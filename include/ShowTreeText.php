@@ -33,14 +33,7 @@ class ShowTreeText
         ]);
         $treeText = $datasql->fetch(PDO::FETCH_OBJ);
         if (isset($treeText->treetext_name)) {
-            $treetext_array['id'] = $treeText->treetext_id;
-            $treetext_array['name'] = $treeText->treetext_name;
-            $treetext_array['mainmenu_text'] = $treeText->treetext_mainmenu_text;
-            $treetext_array['mainmenu_source'] = $treeText->treetext_mainmenu_source;
-            $treetext_array['family_top'] = $treeText->treetext_family_top;
-            $treetext_array['family_footer'] = $treeText->treetext_family_footer;
-
-            return $treetext_array;
+            return $this->map_tree_text($treeText);
         }
 
         // *** No text found for selected language, use default tree text ***
@@ -55,14 +48,7 @@ class ShowTreeText
         ]);
         $treeText = $datasql->fetch(PDO::FETCH_OBJ);
         if (isset($treeText->treetext_name)) {
-            $treetext_array['id'] = $treeText->treetext_id;
-            $treetext_array['name'] = $treeText->treetext_name;
-            $treetext_array['mainmenu_text'] = $treeText->treetext_mainmenu_text;
-            $treetext_array['mainmenu_source'] = $treeText->treetext_mainmenu_source;
-            $treetext_array['family_top'] = $treeText->treetext_family_top;
-            $treetext_array['family_footer'] = $treeText->treetext_family_footer;
-
-            return $treetext_array;
+            return $this->map_tree_text($treeText);
         }
 
         // *** No texts found, final try to show some texts ***
@@ -77,17 +63,23 @@ class ShowTreeText
         ]);
         $treeText = $datasql->fetch(PDO::FETCH_OBJ);
         if (isset($treeText->treetext_name)) {
-            $treetext_array['id'] = $treeText->treetext_id;
-            $treetext_array['name'] = $treeText->treetext_name;
-            $treetext_array['mainmenu_text'] = $treeText->treetext_mainmenu_text;
-            $treetext_array['mainmenu_source'] = $treeText->treetext_mainmenu_source;
-            $treetext_array['family_top'] = $treeText->treetext_family_top;
-            $treetext_array['family_footer'] = $treeText->treetext_family_footer;
-
-            return $treetext_array;
+            return $this->map_tree_text($treeText);
         }
 
         // *** No texts found at all, return default values ***
         return $treetext_array;
+    }
+
+    private function map_tree_text(object $treeText): array
+    {
+        $sanitizer = new HtmlSanitizer();
+        return [
+            'id' => $treeText->treetext_id,
+            'name' => strip_tags((string) $treeText->treetext_name),
+            'mainmenu_text' => $sanitizer->sanitizeBasicHtml((string) $treeText->treetext_mainmenu_text),
+            'mainmenu_source' => $sanitizer->sanitizeBasicHtml((string) $treeText->treetext_mainmenu_source),
+            'family_top' => $sanitizer->sanitizeBasicHtml((string) $treeText->treetext_family_top),
+            'family_footer' => $sanitizer->sanitizeBasicHtml((string) $treeText->treetext_family_footer)
+        ];
     }
 }

@@ -4,11 +4,13 @@
  * June 2024: split into MVC files.
  */
 
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
+
 if (isset($_POST['send_mail']) && $mail_data["send_mail"] == true) {
     if (!$mail_data["mail_results"]->send()) {
 ?>
         <div class="alert alert-danger" role="alert">
-            <?= __('Sending e-mail failed!') . ' ' . $mail_data["mail_results"]->ErrorInfo; ?>
+            <?= __('Sending e-mail failed!') . ' ' . $HtmlEscaper->escHtml((string) $mail_data["mail_results"]->ErrorInfo); ?>
         </div>
     <?php } else { ?>
         <div class="alert alert-info" role="alert">
@@ -43,32 +45,32 @@ if (isset($_POST['send_mail']) && $mail_data["send_mail"] == true) {
         <?php } ?>
 
         <div class="container">
-            <form action="<?= $path; ?>" method="post">
+            <form action="<?= $HtmlEscaper->escHtml((string) $path); ?>" method="post">
                 <div class="mb-2 row">
                     <label for="name" class="col-sm-3 col-form-label"><?= __('Name'); ?></label>
                     <div class="col-sm-5">
-                        <input type="text" id="fname" class="form-control" name="mail_name" placeholder="<?= __('Name'); ?>" value="<?= $mail_data["name"]; ?>">
+                        <input type="text" id="fname" class="form-control" name="mail_name" placeholder="<?= __('Name'); ?>" value="<?= $HtmlEscaper->escHtml((string) $mail_data["name"]); ?>">
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="mail_sender" class="col-sm-3 col-form-label"><?= __('E-mail address'); ?></label>
                     <div class="col-sm-5">
-                        <input type="email" id="lname" class="form-control" name="mail_sender" placeholder="<?= __('E-mail address'); ?>" value="<?= $mail_data["sender"]; ?>" required>
+                        <input type="email" id="lname" class="form-control" name="mail_sender" placeholder="<?= __('E-mail address'); ?>" value="<?= $HtmlEscaper->escHtml((string) $mail_data["sender"]); ?>" required>
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="subject" class="col-sm-3 col-form-label"><?= __('Subject'); ?></label>
                     <div class="col-sm-5">
-                        <input type="text" id="lname" class="form-control" name="mail_subject" placeholder="<?= __('Subject'); ?>" value="<?= $mail_data["subject"]; ?>">
+                        <input type="text" id="lname" class="form-control" name="mail_subject" placeholder="<?= __('Subject'); ?>" value="<?= $HtmlEscaper->escHtml((string) $mail_data["subject"]); ?>">
                     </div>
                 </div>
 
                 <div class="mb-2 row">
                     <label for="message" class="col-sm-3 col-form-label"><?= __('Message'); ?></label>
                     <div class="col-sm-5">
-                        <textarea id="message" class="form-control" name="mail_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $mail_data["text"]; ?></textarea>
+                        <textarea id="message" class="form-control" name="mail_text" placeholder="<?= __('Message'); ?>" style="height:200px"><?= $HtmlEscaper->escHtml((string) $mail_data["text"]); ?></textarea>
                     </div>
                 </div>
 
@@ -86,7 +88,7 @@ if (isset($_POST['send_mail']) && $mail_data["send_mail"] == true) {
                     <div class="mb-2 row">
                         <label for="mail_block_spam" class="col-sm-3 col-form-label"><?= __('Please answer the block-spam-question:'); ?></label>
                         <div class="col-sm-5">
-                            <?= $humo_option["block_spam_question"]; ?>
+                            <?= $HtmlEscaper->escHtml((string) $humo_option["block_spam_question"]); ?>
                             <input type="text" id="lname" class="form-control" name="mail_block_spam">
                         </div>
                     </div>

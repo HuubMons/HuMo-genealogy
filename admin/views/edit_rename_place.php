@@ -16,13 +16,13 @@ if (!defined('ADMIN_PAGE')) {
     <div class="row">
         <div class="col-auto">
             <label for="count_places" class="col-form-label">
-                <?= $place['result']->rowCount(); ?> <?= __('Places'); ?>.
+                <?= (int) $place['result']->rowCount(); ?> <?= $HtmlEscaper->escHtml(__('Places')); ?>.
             </label>
         </div>
 
         <div class="col-auto">
             <label for="place_select" class="col-form-label">
-                <?= __('Select location'); ?>
+                <?= $HtmlEscaper->escHtml(__('Select location')); ?>
             </label>
         </div>
         <div class="col-3">
@@ -32,8 +32,8 @@ if (!defined('ADMIN_PAGE')) {
                     while ($person = $place['result']->fetch(PDO::FETCH_OBJ)) {
                         if ($person->place_edit != '') {
                     ?>
-                            <option value="<?= $person->place_edit; ?>" <?= $place['select'] == $person->place_edit ? ' selected' : ''; ?>>
-                                <?= $person->place_edit; ?>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $person->place_edit); ?>" <?= $place['select'] == $person->place_edit ? ' selected' : ''; ?>>
+                                <?= $HtmlEscaper->escHtml((string) $person->place_edit); ?>
                             </option>
                     <?php
                         }
@@ -43,37 +43,37 @@ if (!defined('ADMIN_PAGE')) {
             </form>
         </div>
 
-        <!--
+        <?php /*
         <div class="col-auto">
             <input type="submit" name="dummy8" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
         </div>
-        -->
+        */ ?>
     </div>
 </div>
 
 <!-- Change selected place -->
 <?php if ($place['select']) { ?>
     <form method="POST" action="index.php?page=edit_places" class="mt-4">
-        <input type="hidden" name="place_old" value="<?= $place['select']; ?>">
+        <input type="hidden" name="place_old" value="<?= $HtmlEscaper->escHtml((string) $place['select']); ?>">
 
         <div class="row mb-2">
             <div class="col-2"></div>
 
             <div class="col-2">
                 <label for="change_location" class="col-form-label">
-                    <?= __('Change location'); ?>:
+                    <?= $HtmlEscaper->escHtml(__('Change location')); ?>:
                 </label>
             </div>
 
             <div class="col-3">
-                <input type="text" name="place_new" value="<?= $place['select']; ?>" size="60" class="form-control form-control-sm">
+                <input type="text" name="place_new" value="<?= $HtmlEscaper->escHtml((string) $place['select']); ?>" size="60" class="form-control form-control-sm">
             </div>
         </div>
 
         <div class="row">
             <div class="col-4"></div>
             <div class="col-2">
-                <input type="submit" name="place_change" value="<?= __('Save'); ?>" class="btn btn-sm btn-success">
+                <input type="submit" name="place_change" value="<?= $HtmlEscaper->escHtml(__('Save')); ?>" class="btn btn-sm btn-success">
             </div>
         </div>
     </form>

@@ -27,13 +27,13 @@ if (isset($_GET['menu'])) {
 
 <ul class="nav nav-tabs">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu == 'worldmap') echo 'active'; ?>" href="index.php?page=<?= $page; ?>"><?= __('World map'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $menu == 'worldmap' ? 'active' : ''; ?>" href="index.php?page=<?= rawurlencode((string) $page); ?>"><?= __('World map'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu == 'locations') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu=locations"><?= __('Edit geolocation database'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $menu == 'locations' ? 'active' : ''; ?>" href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;menu=locations"><?= __('Edit geolocation database'); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?php if ($menu == 'settings') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu=settings"><?= __('Settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $menu == 'settings' ? 'active' : ''; ?>" href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;menu=settings"><?= __('Settings'); ?></a>
     </li>
 </ul>
 

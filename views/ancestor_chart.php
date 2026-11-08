@@ -6,7 +6,7 @@
  * Graphical part: better lay-out (colours) and pictures made by: Rene Janssen
  * Graphical part: improved lay-out by: Huub Mons.
  * Ancestor sheet, PDF export for ancestor report and ancestor sheet, image generation for chart made by: Yossi Beck.
- * July 2011 Huub: translated all variables to english by.
+ * July 2011 Huub: translated all variables to english.
  * July 2024 Huub: removed doublescroll and html2canvas. Just use browser to print and scroll.
  */
 
@@ -14,8 +14,6 @@ $ancestorBox = new \Genealogy\Include\AncestorBox();
 
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($data["main_person"]);
-
-echo $data["ancestor_header"];
 
 //Width of the chart. For 6 generations 1000px is right.
 //If we ever make the anc chart have optionally more generations, the width and length will have to be generated as in report_descendant
@@ -40,6 +38,8 @@ $column5_top = $top - 110;
 
 $column6_left = 740;
 $column6_top = $top - 20;
+
+include __DIR__ . '/partial/ancestor_header.php';
 ?>
 
 <div class="container-xl" style="height: 1000px; width:1000px;">

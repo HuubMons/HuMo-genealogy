@@ -8,16 +8,13 @@ use Genealogy\Include\PersonLink;
 use Genealogy\Include\ShowSources;
 use Genealogy\App\Model\BaseModel;
 use Genealogy\Include\DatePlace;
+use Genealogy\Include\HtmlEscaper;
 
 class AddressModel extends BaseModel
 {
-    public function getAddressAuthorised(): string
+    public function getAddressAuthorised(): bool
     {
-        $authorised = '';
-        if ($this->user['group_addresses'] != 'j') {
-            $authorised = __('You are not authorised to see this page.');
-        }
-        return $authorised;
+        return $this->user['group_addresses'] == 'j';
     }
 
     public function getById($id): object
@@ -32,9 +29,84 @@ class AddressModel extends BaseModel
         $showSources = new ShowSources();
         $source_array = $showSources->show_sources2("address", "address_source", $id);
         if ($source_array) {
-            return $source_array['text'];
+            return $this->sanitizeAddressSourcesHtml((string) $source_array['text']);
         }
         return null;
+    }
+
+    private function sanitizeAddressSourcesHtml(string $html): string
+    {
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $previousErrorSetting = libxml_use_internal_errors(true);
+        try {
+            $loaded = $document->loadHTML(
+                '<?xml encoding="UTF-8"><div id="address-source-root">' . $html . '</div>'
+            );
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previousErrorSetting);
+        }
+
+        if (!$loaded) {
+            throw new \RuntimeException('Unable to sanitize address sources HTML.');
+        }
+
+        $root = $document->getElementById('address-source-root');
+        if (!$root) {
+            throw new \RuntimeException('Unable to find address sources HTML after parsing.');
+        }
+
+        $htmlEscaper = new HtmlEscaper();
+        $safeHtml = '';
+        foreach ($root->childNodes as $child) {
+            $safeHtml .= $this->sanitizeAddressSourceNode($child, $htmlEscaper);
+        }
+
+        return $safeHtml;
+    }
+
+    private function sanitizeAddressSourceNode(\DOMNode $node, HtmlEscaper $htmlEscaper): string
+    {
+        if ($node->nodeType === XML_TEXT_NODE) {
+            return $htmlEscaper->escHtml($node->nodeValue);
+        }
+
+        if (!$node instanceof \DOMElement) {
+            return '';
+        }
+
+        $tag = strtolower($node->nodeName);
+        if (in_array($tag, ['script', 'style', 'iframe', 'object', 'embed', 'svg', 'math', 'template'], true)) {
+            return '';
+        }
+
+        $children = '';
+        foreach ($node->childNodes as $child) {
+            $children .= $this->sanitizeAddressSourceNode($child, $htmlEscaper);
+        }
+
+        if (!in_array($tag, ['a', 'b', 'strong', 'i', 'em', 'br', 'small'], true)) {
+            return $children;
+        }
+        if ($tag === 'br') {
+            return '<br>';
+        }
+        if ($tag !== 'a') {
+            return '<' . $tag . '>' . $children . '</' . $tag . '>';
+        }
+
+        $href = trim($node->getAttribute('href'));
+        if (
+            $href === ''
+            || preg_match('/[\x00-\x20\x7f\\\\]/', $href)
+            || substr($href, 0, 2) === '//'
+            || parse_url($href, PHP_URL_SCHEME) !== null
+            || parse_url($href, PHP_URL_HOST) !== null
+        ) {
+            return $children;
+        }
+
+        return '<a href="' . $htmlEscaper->escHtml($href) . '">' . $children . '</a>';
     }
 
     public function getAddressConnectedPersons($id): string
@@ -44,6 +116,7 @@ class AddressModel extends BaseModel
         $personName = new PersonName();
         $personLink = new PersonLink();
         $datePlace = new DatePlace();
+        $htmlEscaper = new HtmlEscaper();
 
         // *** Search address in connections table ***
         $event_qry = $this->db_functions->get_connections('person_address', $id);
@@ -62,15 +135,15 @@ class AddressModel extends BaseModel
 
                 //$text .= __('Address by person') . ': <a href="' . $url . '">' . $name["standard_name"] . '</a>';
 
-                $date = $datePlace->date_place($eventDb->connect_date, '');
+                $date = $htmlEscaper->escHtmlDecoded($datePlace->date_place($eventDb->connect_date, ''));
 
                 $text .= '<div class="row">';
-                $text .= '<div class="col-md-2">' . $date . '</div><div class="col-md-10"><a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                $text .= '<div class="col-md-2">' . $date . '</div><div class="col-md-10"><a href="' . $htmlEscaper->escHtml((string) $url) . '">' . $htmlEscaper->escHtml((string) $name["standard_name"]) . '</a>';
                 if ($eventDb->connect_role) {
-                    $text .= '; ' . $eventDb->connect_role;
+                    $text .= '; ' . $htmlEscaper->escHtml((string) $eventDb->connect_role);
                 }
                 if ($eventDb->connect_text) {
-                    $text .= '; ' . nl2br($eventDb->connect_text);
+                    $text .= '; ' . nl2br($htmlEscaper->escHtml((string) $eventDb->connect_text));
                 }
                 $text .= '</div></div>';
             }
@@ -88,7 +161,7 @@ class AddressModel extends BaseModel
             if ($relationDb->connect_connect_id) {
                 $relationData = $this->db_functions->get_family($relationDb->connect_connect_id);
                 if ($relationData) {
-                    $date = $datePlace->date_place($relationDb->connect_date, '');
+                    $date = $htmlEscaper->escHtmlDecoded($datePlace->date_place($relationDb->connect_date, ''));
                     
                     $text .= '<div class="row">';
                     $text .= '<div class="col-md-2">' . $date . '</div><div class="col-md-10">';
@@ -100,7 +173,7 @@ class AddressModel extends BaseModel
                             $privacy = $personPrivacy->get_privacy($manDb);
                             $manName = $personName->get_person_name($manDb, $privacy);
                             $manUrl = $personLink->get_person_link($manDb);
-                            $text .= '<a href="' . $manUrl . '">' . $manName["standard_name"] . '</a>';
+                            $text .= '<a href="' . $htmlEscaper->escHtml((string) $manUrl) . '">' . $htmlEscaper->escHtml((string) $manName["standard_name"]) . '</a>';
                         }
                     }
 
@@ -111,15 +184,15 @@ class AddressModel extends BaseModel
                             $privacy = $personPrivacy->get_privacy($womanDb);
                             $womanName = $personName->get_person_name($womanDb, $privacy);
                             $womanUrl = $personLink->get_person_link($womanDb);
-                            $text .= ' &amp; <a href="' . $womanUrl . '">' . $womanName["standard_name"] . '</a>';
+                            $text .= ' &amp; <a href="' . $htmlEscaper->escHtml((string) $womanUrl) . '">' . $htmlEscaper->escHtml((string) $womanName["standard_name"]) . '</a>';
                         }
                     }
 
                     if ($relationDb->connect_role) {
-                        $text .= '; ' . $relationDb->connect_role;
+                        $text .= '; ' . $htmlEscaper->escHtml((string) $relationDb->connect_role);
                     }
                     if ($relationDb->connect_text) {
-                        $text .= '; ' . nl2br($relationDb->connect_text);
+                        $text .= '; ' . nl2br($htmlEscaper->escHtml((string) $relationDb->connect_text));
                     }
                     $text .= '</div></div>';
                 }

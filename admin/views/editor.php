@@ -57,7 +57,7 @@ $person_found = true;
         <div class="row mb-2">
             <div class="col-md-3">
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <div class="input-group input-group-sm">
                         <label for="favourites" class="input-group-text"><img src="../images/favorite_blue.png" alt="<?= __('Favourites'); ?>" title="<?= __('Favourites'); ?>">&nbsp;</label>
 
@@ -65,7 +65,7 @@ $person_found = true;
                             <option value=""><?= __('Favourites list'); ?></option>
                             <?php while ($favDb = $editor['favorites']->fetch(PDO::FETCH_OBJ)) { ?>
                                 <?php $favoDb = $db_functions->get_person_with_id($favDb->pers_id); ?>
-                                <option value="<?= $favDb->setting_value; ?>"><?= $editor_cls->show_selected_person($favoDb); ?></option>
+                                <option value="<?= $HtmlEscaper->escHtml((string) $favDb->setting_value); ?>"><?= $HtmlEscaper->escHtmlDecoded((string) $editor_cls->show_selected_person($favoDb)); ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -74,7 +74,7 @@ $person_found = true;
 
             <div class="col-md-3">
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <select size="1" name="person" onChange="this.form.submit();" class="form-select form-select-sm">
                         <option value=""><?= __('Latest changes'); ?></option>
                         <?php
@@ -90,7 +90,7 @@ $person_found = true;
                                         $pers_user = ' [' . __('Changed by') . ': ' . $db_functions->get_user_name($person2->pers_changed_user_id) . ']';
                                     }
                         ?>
-                                    <option value="<?= $person2->pers_gedcomnumber; ?>"><?= $editor_cls->show_selected_person($person2) . $pers_user; ?></option>
+                                    <option value="<?= $HtmlEscaper->escHtml((string) $person2->pers_gedcomnumber); ?>"><?= $HtmlEscaper->escHtmlDecoded((string) $editor_cls->show_selected_person($person2) . $pers_user); ?></option>
                         <?php
                                 }
                             }
@@ -112,17 +112,16 @@ $person_found = true;
 
             <div class="col-md-auto">
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <div class="input-group">
                         <!-- Search persons firstname/ lastname -->
                         <label for="search_name" class="col-auto col-form-label col-form-label-sm"><?= __('Person'); ?>:&nbsp;</label>
-                        <input type="text" name="search_quicksearch" id="search_name" class="form-control form-control-sm" placeholder="<?= __('Name'); ?>" value="<?= $editor['search_name']; ?>" size="15">
+                        <input type="text" name="search_quicksearch" id="search_name" class="form-control form-control-sm" placeholder="<?= __('Name'); ?>" value="<?= $HtmlEscaper->escHtml((string) $editor['search_name']); ?>" size="15">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
                     </div>
                 </form>
             </div>
 
-            <!-- <div class="col-auto"> -->
             <?php
             unset($person_result);
             if ($editor['search_name'] != '') {
@@ -176,7 +175,6 @@ $person_found = true;
                 }
             }
             ?>
-            <!-- </div> -->
 
             <div class="col-md-3">
                 <?php
@@ -203,7 +201,7 @@ $person_found = true;
                     elseif ($nr_persons > 0) {
                 ?>
                         <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                             <select size="1" name="person" class="form-select form-select-sm bg-primary-subtle" onChange="this.form.submit();">
                                 <option value=""><?= __('Results'); ?></option>
                                 <?php
@@ -216,8 +214,8 @@ $person_found = true;
                                         $selected = ' selected';
                                     }
 
-                                    echo '<option value="' . $person2->pers_gedcomnumber . '"' . $selected . '>' .
-                                        $editor_cls->show_selected_person($person2) . '</option>';
+                                    echo '<option value="' . $HtmlEscaper->escHtml((string) $person2->pers_gedcomnumber) . '"' . $selected . '>' .
+                                        $HtmlEscaper->escHtmlDecoded((string) $editor_cls->show_selected_person($person2)) . '</option>';
                                 }
                                 ?>
                             </select>
@@ -249,10 +247,10 @@ $person_found = true;
             <div class="col-auto">
                 <!-- Search person GEDCOM number -->
                 <form method="POST" action="index.php?page=editor&amp;menu_tab=person" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
                     <div class="input-group input-group-sm">
                         <label for="search_id" class="col-md-auto col-form-label col-form-label-sm"><?= __('or ID:'); ?>&nbsp;</label>
-                        <input type="text" id="search_id" name="search_id" class="form-control form-control-sm" value="<?= $editor['search_id']; ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
+                        <input type="text" id="search_id" name="search_id" class="form-control form-control-sm" value="<?= $HtmlEscaper->escHtml((string) $editor['search_id']); ?>" size="17" placeholder="<?= __('GEDCOM number (ID)'); ?>">
                         <input type="submit" class="btn btn-sm btn-secondary" value="<?= __('Search'); ?>">
                     </div>
                 </form>
@@ -299,8 +297,8 @@ if (isset($_GET['child_disconnect_id'])) {
     <div class="alert alert-danger">
         <?= __('Are you sure you want to disconnect this child?'); ?>
         <form method="post" action="index.php?page=editor&amp;menu_tab=marriage" style="display : inline;">
-            <input type="hidden" name="family_id" value="<?= $_GET['family_id']; ?>">
-            <input type="hidden" name="child_disconnect_id2" value="<?= $_GET['child_disconnect_id']; ?>">
+            <input type="hidden" name="family_id" value="<?= $HtmlEscaper->escHtml((string) $_GET['family_id']); ?>">
+            <input type="hidden" name="child_disconnect_id2" value="<?= $HtmlEscaper->escHtml((string) $_GET['child_disconnect_id']); ?>">
             <input type="submit" name="child_disconnecting" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="submit" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
@@ -376,10 +374,10 @@ if ($check_person) {
 
     <ul class="nav nav-tabs mt-1">
         <li class="nav-item me-1">
-            <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'person') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=person"><?= __('Person'); ?></a>
+            <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'person') echo 'active'; ?>" href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;menu_tab=person"><?= __('Person'); ?></a>
         </li>
         <li class="nav-item me-1">
-            <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'marriage') echo 'active'; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=marriage"><?= __('Family'); ?></a>
+            <a class="nav-link genealogy_nav-link <?php if ($menu_tab == 'marriage') echo 'active'; ?>" href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;menu_tab=marriage"><?= __('Family'); ?></a>
         </li>
 
         <div class="pt-2 ms-3">
@@ -442,12 +440,12 @@ if ($check_person) {
             ?>
 
                     <!-- TODO use bootstrap pagination? -->
-                    <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $firstDb->pers_gedcomnumber; ?>" style="display : inline;">
+                    <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= rawurlencode((string) $tree_id); ?>&amp;person=<?= rawurlencode((string) $firstDb->pers_gedcomnumber); ?>" style="display : inline;">
                         <input type="submit" value="<<">
                     </form>
 
                     <?php if ($previousDb) { ?>
-                        <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $previousDb->pers_gedcomnumber; ?>" style="display : inline;">
+                        <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= rawurlencode((string) $tree_id); ?>&amp;person=<?= rawurlencode((string) $previousDb->pers_gedcomnumber); ?>" style="display : inline;">
                             <input type="submit" value="<">
                         </form>
                     <?php
@@ -494,7 +492,7 @@ if ($check_person) {
                 }
                 if ($nextDb) {
                 ?>
-                    <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $nextDb->pers_gedcomnumber; ?>" style="display : inline;">
+                    <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= rawurlencode((string) $tree_id); ?>&amp;person=<?= rawurlencode((string) $nextDb->pers_gedcomnumber); ?>" style="display : inline;">
                         <input type="submit" value=">">
                     </form>
                 <?php } else { ?>
@@ -514,7 +512,7 @@ if ($check_person) {
                     $lastDb = $last_result->fetch(PDO::FETCH_OBJ);
                     if (substr($lastDb->pers_gedcomnumber, 2) > substr($person->pers_gedcomnumber, 2)) {
                     ?>
-                        <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= $tree_id; ?>&amp;person=<?= $lastDb->pers_gedcomnumber; ?>" style="display : inline;">
+                        <form method="POST" action="index.php?page=editor&amp;menu_tab=person&amp;tree_id=<?= rawurlencode((string) $tree_id); ?>&amp;person=<?= rawurlencode((string) $lastDb->pers_gedcomnumber); ?>" style="display : inline;">
                             <input type="submit" value=">>">
                         </form>
                     <?php } else { ?>
@@ -552,7 +550,7 @@ if ($check_person) {
                                         ?>
 
                                                 <div class="my-3" style="border-top:solid 1px #0000FF; width:350px;">
-                                                    <a href="index.php?page=editor&amp;menu_tab=marriage&amp;marriage_nr=<?= $familyDb->fam_gedcomnumber; ?>"><b><?= $show_marr_status; ?></b></a>
+                                                    <a href="index.php?page=editor&amp;menu_tab=marriage&amp;marriage_nr=<?= rawurlencode((string) $familyDb->fam_gedcomnumber); ?>"><b><?= $HtmlEscaper->escHtml((string) $show_marr_status); ?></b></a>
                                                     <?php
                                                     echo __(' to: ');
 
@@ -566,7 +564,7 @@ if ($check_person) {
                                                     if (count($children) > 0) {
                                                         echo '<b>' . __('Children') . '</b><br>';
                                                         foreach ($children as $child) {
-                                                            echo $child->relation_order . '. ' . show_person_with_id($child->person_id) . '<br>';
+                                                            echo (int) $child->relation_order . '. ' . show_person_with_id($child->person_id) . '<br>';
                                                         }
                                                     }
                                                     ?>
@@ -608,7 +606,7 @@ if ($check_person) {
                                             if (count($children) > 0) {
                                                 echo '<b>' . __('Siblings') . '</b><br>';
                                                 foreach ($children as $child) {
-                                                    echo $child->relation_order . '. ';
+                                                    echo (int) $child->relation_order . '. ';
                                                     if ($child->person_id == $person->pers_id) {
                                                         // *** Don't show link ***
                                                         echo show_person_with_id($child->person_id, false, false) . '<br>';
@@ -648,13 +646,13 @@ if ($check_person) {
 
                 $vars['pers_family'] = $pers_family;
                 $link = $processLinks->get_link('../', 'family', $tree_id, true, $vars);
-                $link .= "main_person=" . $person->pers_gedcomnumber;
-                echo " <a href=\"#\" onClick=\"window.open('" . $link . "', '','width=800,height=500')\"><b>[" . __('Preview') . ']</b></a>';
+                $link .= "main_person=" . rawurlencode((string) $person->pers_gedcomnumber);
+                echo ' <a href="#" data-preview-url="' . $HtmlEscaper->escHtml($link) . '" onClick="window.open(this.dataset.previewUrl, \'\', \'width=800,height=500\'); return false;"><b>[' . __('Preview') . ']</b></a>';
             }
             ?>
 
             <!-- Add person -->
-            &nbsp;&nbsp;&nbsp;<a href="index.php?page=<?= $page; ?>&amp;add_person=1">
+            &nbsp;&nbsp;&nbsp;<a href="index.php?page=<?= rawurlencode((string) $page); ?>&amp;add_person=1">
                 <img src="images/person_connect.gif" border="0" title="<?= __('Add person'); ?>" alt="<?= __('Add person'); ?>"> <?= __('Add person'); ?></a>
 
             <!-- Help popup -->
@@ -903,12 +901,13 @@ if ($check_person) {
 function event_option($event_gedcom, $event)
 {
     $languageEventName = new \Genealogy\Include\LanguageEventName();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     $selected = '';
     if ($event_gedcom == $event) {
         $selected = ' selected';
     }
-    return '<option value="' . $event . '"' . $selected . '>' . $languageEventName->language_event($event) . '</option>';
+    return '<option value="' . $HtmlEscaper->escHtml((string) $event) . '"' . $selected . '>' . $HtmlEscaper->escHtml((string) $languageEventName->language_event($event)) . '</option>';
 }
 
 // *** New function mar. 2024 ***
@@ -962,8 +961,9 @@ function check_sources($connect_kind, $connect_sub_kind, $connect_connect_id)
 // *** Show link to sources (mar. 2024 version 3) ***
 function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
     // TODO improve this unique_id.
-    $unique_id = $connect_kind . $connect_sub_kind . $connect_connect_id;
+    $unique_id = $HtmlEscaper->escHtml((string) $connect_kind . $connect_sub_kind . $connect_connect_id);
 ?>
     <!-- Button trigger modal for sources -->
     <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#sourceModal<?= $unique_id; ?>">
@@ -982,16 +982,16 @@ function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id): vo
                     <?php
                     $url = 'index.php?page=editor_sources';
                     if ($connect_kind) {
-                        $url .= '&connect_kind=' . $connect_kind;
+                        $url .= '&connect_kind=' . rawurlencode((string) $connect_kind);
                     }
-                    $url .= '&connect_sub_kind=' . $connect_sub_kind;
+                    $url .= '&connect_sub_kind=' . rawurlencode((string) $connect_sub_kind);
                     if ($connect_connect_id) {
-                        $url .= '&connect_connect_id=' . $connect_connect_id;
+                        $url .= '&connect_connect_id=' . rawurlencode((string) $connect_connect_id);
                     }
                     ?>
                     <!-- TODO only load iframe if there are sources? Otherwise add link to add sources? -->
                     <!-- Mar. 2024: added lazy loading (only load iframe if iframe is opened) -->
-                    <iframe id="source_iframe" style="width:1000px;height:1000px;" title="source_iframe" src="<?= $url; ?>" loading="lazy"></iframe>
+                    <iframe id="source_iframe" style="width:1000px;height:1000px;" title="source_iframe" src="<?= $HtmlEscaper->escHtml($url); ?>" loading="lazy"></iframe>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><?= __('Close'); ?></button>
@@ -1006,21 +1006,23 @@ function source_link3($connect_kind, $connect_sub_kind, $connect_connect_id): vo
 // *** Person edit lines (in use for adding person/ parents/ children) ***
 function edit_firstname($name, $value): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3"><b><?= ucfirst(__('firstname')); ?></b></div>
-        <div class="col-md-7"><input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm"></div>
+        <div class="col-md-7"><input type="text" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="<?= $HtmlEscaper->escHtml((string) $value); ?>" size="35" class="form-control form-control-sm"></div>
     </div>
 <?php
 }
 
 function edit_prefix($name, $value): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3"><?= ucfirst(__('prefix')); ?></div>
         <div class="col-md-7">
-            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="10" class="form-control form-control-sm">
+            <input type="text" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="<?= $HtmlEscaper->escHtml((string) $value); ?>" size="10" class="form-control form-control-sm">
             <span style="font-size: 13px;"><?= __("For example: d\' or:  van_ (use _ for a space)"); ?></span>
         </div>
     </div>
@@ -1029,11 +1031,12 @@ function edit_prefix($name, $value): void
 
 function edit_lastname($name, $value): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3"><b><?= ucfirst(__('lastname')); ?></b></div>
         <div class="col-md-7">
-            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            <input type="text" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="<?= $HtmlEscaper->escHtml((string) $value); ?>" size="35" class="form-control form-control-sm">
         </div>
     </div>
 <?php
@@ -1041,11 +1044,12 @@ function edit_lastname($name, $value): void
 
 function edit_patronymic($name, $value): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3"><?= ucfirst(__('patronymic')); ?></div>
         <div class="col-md-7">
-            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            <input type="text" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="<?= $HtmlEscaper->escHtml((string) $value); ?>" size="35" class="form-control form-control-sm">
         </div>
     </div>
 <?php
@@ -1054,16 +1058,17 @@ function edit_patronymic($name, $value): void
 function edit_event_name($name_select, $name_text, $value): void
 {
     $editorEventSelection = new \Genealogy\Include\EditorEventSelection;
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3">
-            <select size="1" name="<?= $name_select; ?>" class="form-select form-select-sm">
+            <select size="1" name="<?= $HtmlEscaper->escHtml((string) $name_select); ?>" class="form-select form-select-sm">
                 <!-- Nickname, alias, adopted name, hebrew name, etc. -->
                 <?php $editorEventSelection->event_selection(''); ?>
             </select>
         </div>
         <div class="col-md-7">
-            <input type="text" name="<?= $name_text; ?>" placeholder="<?= __('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title'); ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            <input type="text" name="<?= $HtmlEscaper->escHtml((string) $name_text); ?>" placeholder="<?= $HtmlEscaper->escHtml(__('Nickname') . ' - ' . __('Prefix') . ' - ' . __('Suffix') . ' - ' . __('Title')); ?>" value="<?= $HtmlEscaper->escHtml((string) $value); ?>" size="35" class="form-control form-control-sm">
         </div>
     </div>
 <?php
@@ -1071,15 +1076,16 @@ function edit_event_name($name_select, $name_text, $value): void
 
 function edit_privacyfilter($name, $value): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3"><?= __('Privacy filter'); ?></div>
         <div class="col-md-7">
-            <input type="radio" name="<?= $name; ?>" value="alive" <?= $value ? 'checked' : '' ?> class="form-check-input" id="<?= $name; ?>">
-            <label class="form-check-label" for="<?= $name; ?>"><?= __('alive'); ?></label>
+            <input type="radio" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="alive" <?= $value ? 'checked' : '' ?> class="form-check-input" id="<?= $HtmlEscaper->escHtml((string) $name); ?>">
+            <label class="form-check-label" for="<?= $HtmlEscaper->escHtml((string) $name); ?>"><?= __('alive'); ?></label>
 
-            <input type="radio" name="<?= $name; ?>" value="deceased" class="form-check-input" id="<?= $name; ?>">
-            <label class="form-check-label" for="<?= $name; ?>"><?= __('deceased'); ?></label>
+            <input type="radio" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="deceased" class="form-check-input" id="<?= $HtmlEscaper->escHtml((string) $name); ?>">
+            <label class="form-check-label" for="<?= $HtmlEscaper->escHtml((string) $name); ?>"><?= __('deceased'); ?></label>
         </div>
     </div>
 <?php
@@ -1087,18 +1093,19 @@ function edit_privacyfilter($name, $value): void
 
 function edit_sexe($name, $checked): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3"><?= __('Sex'); ?></div>
         <div class="col-md-7">
-            <input type="radio" name="<?= $name; ?>" value="M" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'M' ? 'checked' : ''; ?>>
-            <label class="form-check-label" for="<?= $name; ?>"><?= __('male'); ?></label>
+            <input type="radio" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="M" class="form-check-input" id="<?= $HtmlEscaper->escHtml((string) $name); ?>" <?= $checked == 'M' ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="<?= $HtmlEscaper->escHtml((string) $name); ?>"><?= __('male'); ?></label>
 
-            <input type="radio" name="<?= $name; ?>" value="F" class="form-check-input" id="<?= $name; ?>" <?= $checked == 'F' ? 'checked' : ''; ?>>
-            <label class="form-check-label" for="<?= $name; ?>"><?= __('female'); ?></label>
+            <input type="radio" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="F" class="form-check-input" id="<?= $HtmlEscaper->escHtml((string) $name); ?>" <?= $checked == 'F' ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="<?= $HtmlEscaper->escHtml((string) $name); ?>"><?= __('female'); ?></label>
 
-            <input type="radio" name="<?= $name; ?>" value="" class="form-check-input" id="<?= $name; ?>" <?= $checked == '' ? 'checked' : ''; ?>>
-            <label class="form-check-label" for="<?= $name; ?>">?</label>
+            <input type="radio" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="" class="form-check-input" id="<?= $HtmlEscaper->escHtml((string) $name); ?>" <?= $checked == '' ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="<?= $HtmlEscaper->escHtml((string) $name); ?>">?</label>
         </div>
     </div>
 <?php
@@ -1106,11 +1113,12 @@ function edit_sexe($name, $checked): void
 
 function edit_profession($name, $value): void
 {
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 ?>
     <div class="row mb-2">
         <div class="col-md-3"><?= __('Profession'); ?></div>
         <div class="col-md-7">
-            <input type="text" name="<?= $name; ?>" value="<?= $value; ?>" size="35" class="form-control form-control-sm">
+            <input type="text" name="<?= $HtmlEscaper->escHtml((string) $name); ?>" value="<?= $HtmlEscaper->escHtml((string) $value); ?>" size="35" class="form-control form-control-sm">
         </div>
     </div>
 <?php
@@ -1122,6 +1130,7 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
     global $db_functions, $page;
 
     $datePlace = new \Genealogy\Include\DatePlace();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     if ($gedcomnumber) {
         $personDb = $db_functions->get_person($gedcomnumber);
@@ -1137,10 +1146,10 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
         }
 
         if ($show_link == true) {
-            $text = '<a href="index.php?page=' . $page . '&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id .
-                '&amp;person=' . $personDb->pers_gedcomnumber . '">' . $name . '</a>' . "\n";
+            $text = '<a href="index.php?page=' . $HtmlEscaper->escHtml((string) $page) . '&amp;menu_tab=person&amp;tree_id=' . $HtmlEscaper->escHtml((string) $personDb->pers_tree_id) .
+                '&amp;person=' . $HtmlEscaper->escHtml((string) $personDb->pers_gedcomnumber) . '">' . $HtmlEscaper->escHtml($name) . '</a>' . "\n";
         } else {
-            $text = $name . "\n";
+            $text = $HtmlEscaper->escHtml($name) . "\n";
         }
     } else {
         $text = __('N.N.');
@@ -1148,14 +1157,14 @@ function show_person($gedcomnumber, $gedcom_date = false, $show_link = true)
 
     if ($gedcom_date == true) {
         if ($personDb->pers_birth_date) {
-            $text .= ' * ' . $datePlace->date_place($personDb->pers_birth_date, '');
+            $text .= ' * ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_birth_date, ''));
         } elseif ($personDb->pers_bapt_date) {
-            $text .= ' ~ ' . $datePlace->date_place($personDb->pers_bapt_date, '');
+            $text .= ' ~ ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_bapt_date, ''));
         } elseif ($personDb->pers_death_date) {
-            $text .= ' &#134; ' . $datePlace->date_place($personDb->pers_death_date, '');
+            $text .= ' &#134; ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_death_date, ''));
             //$text.=' &dagger; '.$datePlace->date_place($personDb->pers_death_date,'');
         } elseif ($personDb->pers_buried_date) {
-            $text .= ' [] ' . $datePlace->date_place($personDb->pers_buried_date, '');
+            $text .= ' [] ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_buried_date, ''));
         }
     }
     return $text;
@@ -1167,6 +1176,7 @@ function show_person_with_id($person_id, $gedcom_date = false, $show_link = true
     global $db_functions, $page;
 
     $datePlace = new \Genealogy\Include\DatePlace();
+    $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
     if ($person_id) {
         $personDb = $db_functions->get_person_with_id($person_id);
@@ -1182,10 +1192,10 @@ function show_person_with_id($person_id, $gedcom_date = false, $show_link = true
         }
 
         if ($show_link == true) {
-            $text = '<a href="index.php?page=' . $page . '&amp;menu_tab=person&amp;tree_id=' . $personDb->pers_tree_id .
-                '&amp;person=' . $personDb->pers_gedcomnumber . '">' . $name . '</a>' . "\n";
+            $text = '<a href="index.php?page=' . $HtmlEscaper->escHtml((string) $page) . '&amp;menu_tab=person&amp;tree_id=' . $HtmlEscaper->escHtml((string) $personDb->pers_tree_id) .
+                '&amp;person=' . $HtmlEscaper->escHtml((string) $personDb->pers_gedcomnumber) . '">' . $HtmlEscaper->escHtml($name) . '</a>' . "\n";
         } else {
-            $text = $name . "\n";
+            $text = $HtmlEscaper->escHtml($name) . "\n";
         }
     } else {
         $text = __('N.N.');
@@ -1193,14 +1203,14 @@ function show_person_with_id($person_id, $gedcom_date = false, $show_link = true
 
     if ($gedcom_date == true) {
         if ($personDb->pers_birth_date) {
-            $text .= ' * ' . $datePlace->date_place($personDb->pers_birth_date, '');
+            $text .= ' * ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_birth_date, ''));
         } elseif ($personDb->pers_bapt_date) {
-            $text .= ' ~ ' . $datePlace->date_place($personDb->pers_bapt_date, '');
+            $text .= ' ~ ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_bapt_date, ''));
         } elseif ($personDb->pers_death_date) {
-            $text .= ' &#134; ' . $datePlace->date_place($personDb->pers_death_date, '');
+            $text .= ' &#134; ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_death_date, ''));
             //$text.=' &dagger; '.$datePlace->date_place($personDb->pers_death_date,'');
         } elseif ($personDb->pers_buried_date) {
-            $text .= ' [] ' . $datePlace->date_place($personDb->pers_buried_date, '');
+            $text .= ' [] ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($personDb->pers_buried_date, ''));
         }
     }
     return $text;

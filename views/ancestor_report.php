@@ -21,7 +21,8 @@ $showSourcesFootnotes = new Genealogy\Include\ShowSourcesFootnotes();
 $ancestorLabel = new Genealogy\Include\AncestorLabel();
 
 //echo '<h1 class="standard_header">'.__('Ancestor report').'</h1>';
-echo $data["ancestor_header"];
+
+include __DIR__ . '/partial/ancestor_header.php';
 
 $ancestor_array2[] = $data["main_person"];
 $ancestor_number2[] = 1;
@@ -48,12 +49,12 @@ while (isset($ancestor_array2[0])) {
 ?>
     <h2 class="standard_header">
         <?php if (isset($data["rom_nr"][$generation])) { ?>
-            <?= __('Generation') . ' ' . $data["rom_nr"][$generation]; ?>
+            <?= __('Generation') . ' ' . $HtmlEscaper->escHtml((string) $data["rom_nr"][$generation]); ?>
             <?php }
 
         $generationLabel = $ancestorLabel->getLabel($generation);
         if ($generationLabel) {
-            echo '(' . $generationLabel . ')';
+            echo '(' . $HtmlEscaper->escHtml($generationLabel) . ')';
         }
 
         if ($generation == 1) {
@@ -74,9 +75,9 @@ while (isset($ancestor_array2[0])) {
                 }
             ?>
 
-                <form method="POST" action="<?= $link; ?>" style="display : inline;">
-                    <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                    <input type="hidden" name="id" value="<?= $data["main_person"]; ?>">
+                <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display : inline;">
+                    <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
+                    <input type="hidden" name="id" value="<?= $HtmlEscaper->escHtml((string) $data["main_person"]); ?>">
                     <input type="hidden" name="screen_mode" value="PDF">
 
                     <!-- needed to check PDF M/F/? icons -->
@@ -94,7 +95,7 @@ while (isset($ancestor_array2[0])) {
                 $link = $processLinks->get_link($uri_path, 'ancestor_report_rtf', $tree_id, true, $vars);
                 $link .= 'show_sources=1';
             ?>
-                <form method="POST" action="<?= $link; ?>" style="display : inline;">
+                <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display : inline;">
                     <input type="hidden" name="screen_mode" value="RTF">
 
                     <!-- needed to check RTF M/F/? icons -->
@@ -156,7 +157,7 @@ while (isset($ancestor_array2[0])) {
         ?>
 
                 <tr>
-                    <td valign="top" width="80" nowrap><b><?= $ancestor_number[$i]; ?></b> (<?= floor($ancestor_number[$i] / 2); ?>)</td>
+                    <td valign="top" width="80" nowrap><b><?= $HtmlEscaper->escHtml((string) $ancestor_number[$i]); ?></b> (<?= $HtmlEscaper->escHtml((string) floor($ancestor_number[$i] / 2)); ?>)</td>
                     <td>
                         <!-- Show data man -->
                         <div class="parent1">
@@ -165,7 +166,7 @@ while (isset($ancestor_array2[0])) {
                             <?php if ($listednr == '') { ?>
                                 <?= $personData->person_data($person_manDb, $privacy_man, "standard", $ancestor_array[$i]); ?>
                             <?php } else { ?>
-                                <strong> (<?= __('Already listed above as number ') . $listednr; ?>) </strong>
+                                <strong> (<?= __('Already listed above as number ') . $HtmlEscaper->escHtml((string) $listednr); ?>) </strong>
                             <?php } ?>
                         </div>
                     </td>
@@ -229,7 +230,7 @@ while (isset($ancestor_array2[0])) {
                 ?>
 
                 <tr>
-                    <td valign="top" width="80" nowrap><b><?= $ancestor_number[$i]; ?></b> (<?= floor($ancestor_number[$i] / 2); ?>)</td>
+                    <td valign="top" width="80" nowrap><b><?= $HtmlEscaper->escHtml((string) $ancestor_number[$i]); ?></b> (<?= $HtmlEscaper->escHtml((string) floor($ancestor_number[$i] / 2)); ?>)</td>
                     <td>
                         <!-- Show person_data of man -->
                         <div class="parent1">

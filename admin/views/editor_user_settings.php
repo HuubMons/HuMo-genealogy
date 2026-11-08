@@ -1,10 +1,11 @@
 <?php
-// TODO: split into model & view files.
+// TODO: also use model file.
 
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')) {
     exit;
 }
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 // *** Update tree settings ***
 if (isset($_POST['user_change']) && isset($_POST["id"]) && is_numeric($_POST["id"])) {
@@ -44,8 +45,6 @@ if (isset($_POST['user_change']) && isset($_POST["id"]) && is_numeric($_POST["id
 <h1 align=center><?= __('Extra settings'); ?></h1>
 
 <h2 align="center"><?= __('Hide or show family trees per user.'); ?></h2>
-<?php //echo __('Editor').': '.__('If an .htpasswd file is used: add username in .htpasswd file.').'</td>'; 
-?>
 
 <?= __('These are settings PER USER, it\'s also possible to set these setting PER USER GROUP.'); ?>
 
@@ -66,7 +65,7 @@ if (is_numeric($user)) {
 ?>
 
     <form method="POST" action="index.php?page=editor_user_settings">
-        <input type="hidden" name="id" value="<?= $userDb->user_id; ?>">
+        <input type="hidden" name="id" value="<?= $HtmlEscaper->escHtml((string) $userDb->user_id); ?>">
         <table class="table">
             <thead class="table-primary">
                 <tr>
@@ -78,23 +77,24 @@ if (is_numeric($user)) {
             <?php
             $data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
             while ($data3Db = $data3sql->fetch(PDO::FETCH_OBJ)) {
-                $treetext = $showTreeText->show_tree_text($data3Db->tree_id, $selected_language);
+                $treeId = (int) $data3Db->tree_id;
+                $treetext = $showTreeText->show_tree_text($treeId, $selected_language);
                 $tree_text_name = $treetext['name'];
             ?>
                 <tr>
-                    <td><?= $tree_text_name; ?></td>
+                    <td><?= $HtmlEscaper->escHtml((string) $tree_text_name); ?></td>
 
                     <!-- Show/ hide tree for user -->
                     <td>
-                        <select size="1" name="show_tree_<?= $data3Db->tree_id; ?>" aria-label="<?= __('Extra settings'); ?>" class="form-select form-select-sm">
+                        <select size="1" name="show_tree_<?= $treeId; ?>" aria-label="<?= $HtmlEscaper->escHtml(__('Extra settings')); ?>" class="form-select form-select-sm">
                             <option value="user-group"><?= __('Use user-group setting'); ?></option>
-                            <option value="yes" <?= in_array('y' . $data3Db->tree_id, $hide_tree_array) ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
-                            <option value="no" <?= in_array($data3Db->tree_id, $hide_tree_array) ? 'selected' : ''; ?>><?= __('No'); ?></option>
+                            <option value="yes" <?= in_array('y' . $treeId, $hide_tree_array) ? 'selected' : ''; ?>><?= __('Yes'); ?></option>
+                            <option value="no" <?= in_array((string) $treeId, $hide_tree_array) ? 'selected' : ''; ?>><?= __('No'); ?></option>
                         </select>
                     </td>
 
                     <td>
-                        <input type="checkbox" name="edit_tree_<?= $data3Db->tree_id; ?>" class="form-check-input" <?= in_array($data3Db->tree_id, $edit_tree_array) || $userDb->user_id == '1' ? 'checked' : ''; ?> <?= $userDb->user_id == '1' || $userDb->user_id == '3' ? 'disabled' : ''; ?>>
+                        <input type="checkbox" name="edit_tree_<?= $treeId; ?>" class="form-check-input" <?= in_array((string) $treeId, $edit_tree_array) || $userDb->user_id == '1' ? 'checked' : ''; ?> <?= $userDb->user_id == '1' || $userDb->user_id == '3' ? 'disabled' : ''; ?>>
                     </td>
                 </tr>
             <?php } ?>

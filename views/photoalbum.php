@@ -11,12 +11,11 @@ $mediaPath = new \Genealogy\Include\MediaPath();
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $datePlace = new \Genealogy\Include\DatePlace();
-$safeTextShow = new \Genealogy\Include\SafeTextShow();
 
 // *** Show categories ***
 if ($photoalbum['show_categories']) {
     $photoalbum['category_enabled']['none'] = true; // *** Always show main category ***
-    $path = 'index.php?page=photoalbum&amp;tree_id=' . $tree_id . '&amp;';
+    $path = 'index.php?page=photoalbum&tree_id=' . $tree_id . '&';
     if ($humo_option["url_rewrite"] == "j") {
         $path = 'photoalbum/' . $tree_id . '?';
     }
@@ -27,7 +26,7 @@ if ($photoalbum['show_categories']) {
             if (isset($photoalbum['category_enabled'][$category]) && $photoalbum['category_enabled'][$category]) {
         ?>
                 <li class="nav-item me-1">
-                    <a class="nav-link genealogy_nav-link <?php if ($category == $photoalbum['chosen_tab']) echo 'active'; ?>" href="<?= $path; ?>select_category=<?= $category; ?>"><?= $photoalbum['category_name'][$category]; ?></a>
+                    <a class="nav-link genealogy_nav-link <?php if ($category == $photoalbum['chosen_tab']) echo 'active'; ?>" href="<?= $HtmlEscaper->escHtml($path . 'select_category=' . rawurlencode((string) $category)); ?>"><?= $HtmlEscaper->escHtml((string) $photoalbum['category_name'][$category]); ?></a>
                 </li>
         <?php
             }
@@ -55,7 +54,7 @@ $data["page_status"] = $photoalbum["page_status"];
 // TODO: refactor. Also added in model script.
 $item = 0;
 if (isset($_GET['item'])) {
-    $item = $_GET['item'];
+    $item = max(0, (int) $_GET['item']);
 }
 $albumpath = $processLinks->get_link($uri_path, 'photoalbum', $tree_id, true);
 
@@ -63,19 +62,19 @@ $albumpath = $processLinks->get_link($uri_path, 'photoalbum', $tree_id, true);
 //$menu_path_photoalbum = $processLinks->get_link($uri_path, 'photoalbum',$tree_id);
 $path = 'index.php?page=photoalbum?tree_id=' . $tree_id;
 if ($photoalbum['show_categories'] === true) {
-    $path .= '&amp;select_category=' . $photoalbum['chosen_tab'];
+    $path .= '&select_category=' . rawurlencode((string) $photoalbum['chosen_tab']);
 }
 
 if ($humo_option["url_rewrite"] == "j") {
     $path = 'photoalbum/' . $tree_id;
     if ($photoalbum['show_categories'] === true) {
-        $path .= '?select_category=' . $photoalbum['chosen_tab'];
+        $path .= '?select_category=' . rawurlencode((string) $photoalbum['chosen_tab']);
     }
 }
 ?>
 
 <div <?= $photoalbum['show_categories'] === true ? 'style="float: left; background-color:white; height:auto; width:98%;padding:5px;"' : ''; ?>>
-    <form method="post" action="<?= $path; ?>" style="display:inline">
+    <form method="post" action="<?= $HtmlEscaper->escHtml($path); ?>" style="display:inline">
         <div class="row mb-2">
             <div class="col-3"></div>
 
@@ -85,21 +84,21 @@ if ($humo_option["url_rewrite"] == "j") {
             <div class="col-auto">
                 <select name="show_pictures" id="show_pictures" aria-label="<?= __('Select number of photos per page'); ?>" onChange="window.location=this.value" class="form-select form-select-sm">
                     <?php for ($i = 4; $i <= 60; $i++) { ?>
-                        <option value="<?= $albumpath; ?>show_pictures=<?= $i; ?>&amp;start=0&amp;item=0&amp;select_category=<?= $photoalbum['chosen_tab']; ?>" <?= $i == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>
-                            <?= $i; ?>
+                        <option value="<?= $HtmlEscaper->escHtml($albumpath . 'show_pictures=' . $i . '&start=0&item=0&select_category=' . rawurlencode((string) $photoalbum['chosen_tab'])); ?>" <?= $i == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>
+                            <?= $HtmlEscaper->escHtml((string) $i); ?>
                         </option>
                     <?php } ?>
 
-                    <option value="<?= $albumpath; ?>show_pictures=100&amp;start=0&amp;item=0&amp;select_category=<?= $photoalbum['chosen_tab']; ?>" <?= 100 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>100</option>
-                    <option value="<?= $albumpath; ?>show_pictures=200&amp;start=0&amp;item=0&amp;select_category=<?= $photoalbum['chosen_tab']; ?>" <?= 200 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>200</option>
-                    <option value="<?= $albumpath; ?>show_pictures=400&amp;start=0&amp;item=0&amp;select_category=<?= $photoalbum['chosen_tab']; ?>" <?= 400 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>400</option>
-                    <option value="<?= $albumpath; ?>show_pictures=800&amp;start=0&amp;item=0&amp;select_category=<?= $photoalbum['chosen_tab']; ?>" <?= 800 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>800</option>
+                    <option value="<?= $HtmlEscaper->escHtml($albumpath . 'show_pictures=100&start=0&item=0&select_category=' . rawurlencode((string) $photoalbum['chosen_tab'])); ?>" <?= 100 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>100</option>
+                    <option value="<?= $HtmlEscaper->escHtml($albumpath . 'show_pictures=200&start=0&item=0&select_category=' . rawurlencode((string) $photoalbum['chosen_tab'])); ?>" <?= 200 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>200</option>
+                    <option value="<?= $HtmlEscaper->escHtml($albumpath . 'show_pictures=400&start=0&item=0&select_category=' . rawurlencode((string) $photoalbum['chosen_tab'])); ?>" <?= 400 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>400</option>
+                    <option value="<?= $HtmlEscaper->escHtml($albumpath . 'show_pictures=800&start=0&item=0&select_category=' . rawurlencode((string) $photoalbum['chosen_tab'])); ?>" <?= 800 == $photoalbum['show_pictures'] ? ' selected' : ''; ?>>800</option>
                 </select>
             </div>
 
             <!-- Search by photo name -->
             <div class="col-auto">
-                <input type="text" name="search_media" value="<?= $safeTextShow->safe_text_show($photoalbum['search_media']); ?>" size="20" class="form-control form-control-sm">
+                <input type="text" name="search_media" value="<?= $HtmlEscaper->escHtml($photoalbum['search_media']); ?>" size="20" class="form-control form-control-sm">
             </div>
             <div class="col-auto">
                 <input type="submit" value="<?= __('Search'); ?>" class="btn btn-sm btn-success">
@@ -147,24 +146,27 @@ if ($humo_option["url_rewrite"] == "j") {
                             // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                             $personLink = new \Genealogy\Include\PersonLink();
                             $url = $personLink->get_person_link($personDb);
-                            $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
-                            $picture_text2 .= $name["standard_name"];
+                            $safeName = $HtmlEscaper->escHtmlDecoded($name["standard_name"]);
+                            $picture_text .= '<a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $safeName . '</a><br>';
+                            $picture_text2 .= $safeName;
                         } else {
                             $found_privacy_items = true;
                         }
 
                         $dateplace = $datePlace->date_place($afbDb->event_date, $afbDb->event_place);
                         if ($afbDb->event_text || $dateplace) {
+                            $safeDateplace = $HtmlEscaper->escHtmlDecoded($dateplace);
+                            $safeEventText = $HtmlEscaper->escHtml((string) $afbDb->event_text);
                             if ($dateplace) {
-                                $picture_text .= $dateplace . ' ';
+                                $picture_text .= $safeDateplace . ' ';
                             }
-                            $picture_text .= $afbDb->event_text . '<br>';
+                            $picture_text .= $safeEventText . '<br>';
 
                             $picture_text2 .= '<br>';
                             if ($dateplace) {
-                                $picture_text2 .= $dateplace . ' ';
+                                $picture_text2 .= $safeDateplace . ' ';
                             }
-                            $picture_text2 .= $afbDb->event_text;
+                            $picture_text2 .= $safeEventText;
                         }
                     }
 
@@ -186,25 +188,28 @@ if ($humo_option["url_rewrite"] == "j") {
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                                 $personLink = new \Genealogy\Include\PersonLink();
                                 $url = $personLink->get_person_link($personDb);
+                                $safeName = $HtmlEscaper->escHtmlDecoded($name["standard_name"]);
                                 if ($picture_text !== '' && $picture_text !== '0') {
                                     $picture_text .= '<br>';
                                 }
-                                $picture_text .= '<a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
-                                $picture_text2 .= $name["standard_name"];
+                                $picture_text .= '<a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $safeName . '</a><br>';
+                                $picture_text2 .= $safeName;
                             }
 
                             $dateplace = $datePlace->date_place($pictureDb->event_date, $pictureDb->event_place);
                             if ($pictureDb->event_text || $dateplace) {
+                                $safeDateplace = $HtmlEscaper->escHtmlDecoded($dateplace);
+                                $safeEventText = $HtmlEscaper->escHtml((string) $pictureDb->event_text);
                                 if ($dateplace) {
-                                    $picture_text .= $dateplace . ' ';
+                                    $picture_text .= $safeDateplace . ' ';
                                 }
-                                $picture_text .= $pictureDb->event_text . '<br>';
+                                $picture_text .= $safeEventText . '<br>';
 
                                 $picture_text2 .= '<br>';
                                 if ($dateplace) {
-                                    $picture_text2 .= $dateplace . ' ';
+                                    $picture_text2 .= $safeDateplace . ' ';
                                 }
-                                $picture_text2 .= $pictureDb->event_text;
+                                $picture_text2 .= $safeEventText;
                             }
                         }
                     }
@@ -223,11 +228,11 @@ if ($humo_option["url_rewrite"] == "j") {
                         <!-- <div class="col-12 col-sm-6 col-md-4 col-lg-3"> -->
                         <div class="col-6 col-sm-6 col-md-3 col-lg-2">
                             <div class="card h-100 shadow-sm">
-                                <a href="<?= $href_path ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $picture_nr; ?>">
+                                <a href="<?= $HtmlEscaper->escHtml((string) $href_path) ?>" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc<?= $HtmlEscaper->escHtml((string) $picture_nr); ?>">
                                     <?= $picture ?>
                                 </a>
                                 <div class="card-body p-2">
-                                    <div class="glightbox-desc custom-desc<?= $picture_nr; ?> d-none"><?= $picture_text2; ?></div>
+                                    <div class="glightbox-desc custom-desc<?= $HtmlEscaper->escHtml((string) $picture_nr); ?> d-none"><?= $picture_text2; ?></div>
                                     <div class="card-text small"><?= $picture_text; ?></div>
                                 </div>
                             </div>

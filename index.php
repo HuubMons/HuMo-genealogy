@@ -116,6 +116,8 @@ $selectedFamilyTree = $db_functions->get_tree($index['tree_id']);
 // *** New routing script sept. 2023. Search route, return match or not found ***
 $page = $index['page'];
 
+// *** Check if this is used for GEDCOM number validation. If so, validate it. ***
+//$validateGedcomnumber = new Genealogy\Include\ValidateGedcomnumber();
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 } elseif (isset($_POST['id'])) {
@@ -175,6 +177,43 @@ if ($humo_option["url_rewrite"] == "j" && $index['tmp_path']) {
 // *** To be used to show links in several pages ***
 $processLinks = new Genealogy\Include\ProcessLinks($uri_path);
 
+// *** Check for too many active users ***
+$limitedPages = [
+    'ancestor_report',
+    'ancestor_report_pdf',
+    'ancestor_report_rtf',
+    'ancestor_chart',
+    'ancestor_sheet_pdf',
+    'ancestor_sheet',
+    'anniversary',
+    'descendant_chart',
+    'hourglass',
+    'list_places_families',
+    'outline_report_pdf',
+    'outline_report',
+    'timeline',
+];
+
+$humo_option['website_limited'] = 'n';
+
+$website_limited = false;
+$website_limited = in_array($index['page'], $limitedPages, true) && $index['website_limited'] == 'y';
+if ($index['website_limited'] == 'y') {
+    // *** Variable to remove links from popup etc. ***
+    $humo_option['website_limited'] = 'y';
+}
+
+// *** Sept. 2026: set limited website visitors to the website if needed ***
+$visitor_website_limited = false;
+if (!isset($_SESSION['user_id']) && $humo_option['visitor_website_limited'] == 'y') {
+    // *** Variable to remove links from popup etc. ***
+    $humo_option['website_limited'] = 'y';
+}
+if (!isset($_SESSION['user_id']) && $humo_option['visitor_website_limited'] == 'y' && in_array($index['page'], $limitedPages, true)) {
+    $visitor_website_limited = true;
+}
+
+
 /**
  * General config array. May 2025: added baseModel.php.
  * 
@@ -190,6 +229,11 @@ $processLinks = new Genealogy\Include\ProcessLinks($uri_path);
  */
 include_once(__DIR__ . "/include/config.php");
 
+
+// *** Load controller and $data if needed ***
+if ($website_limited || $visitor_website_limited) {
+    // Website = limited. Controller and data will be skipped.
+}
 if ($index['page'] == 'address') {
     $controllerObj = new Genealogy\App\Controller\AddressController($config);
     $data = $controllerObj->detail();
@@ -225,7 +269,6 @@ if ($index['page'] == 'address') {
     //$controllerObj = new Genealogy\App\Controller\ChatGenealogyController($config);
     //$chatData = $controllerObj->process();
 
-    //include_once(__DIR__ . "/views/chat_genealogy_api.php");
     include_once(__DIR__ . "/include/chat_genealogy_api.php");
 
     exit; // Skip layout.php
@@ -425,6 +468,65 @@ if ($error_page) {
 
 <?php
     exit();
+}
+
+if ($visitor_website_limited) {
+    // *** Show message: no access to the page ***
+?>
+    <html>
+
+    <head>
+        <title>No access</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger mt-5" role="alert">
+                        <h4 class="alert-heading">No access</h4>
+                        <p>You do not have access to this page.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    </html>
+<?php
+    exit;
+}
+
+
+if ($website_limited) {
+    // *** Show message: too many active users ***
+?>
+    <html>
+
+    <head>
+        <title>Too many active users WEBSITE LIMITED</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger mt-5" role="alert">
+                        <h4 class="alert-heading">Too many active users</h4>
+                        <p>At this moment there are too many active users at the website. Please try again later.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    </html>
+<?php
+    exit;
 }
 
 include_once(__DIR__ . "/views/layout.php");

@@ -19,30 +19,7 @@ if (isset($_POST['makedatabase'])) {
     $map_count_notfound = 0;
     $flag_stop = 0;
 }
-
-/*
-if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
-    $dbh->query("DELETE FROM humo_location WHERE location_id = " . $_POST['location_id']);
-}
-*/
 ?>
-
-<!-- Alert boxes -->
-<?php /*
-<form action="index.php?page=maps&amp;menu=locations" method="post">
-    <?php if (isset($_POST['loc_delete']) && (is_numeric($_POST['location_id']))) { ?>
-        <input type="hidden" name="location_id" value="<?= $_POST['location_id']; ?>">
-        <div class="alert alert-danger" role="alert">
-            <?php printf(__('Are your sure you want to delete location "%s"?'), str_replace("\'", "'", $safeTextDb->safe_text_db($_POST['location_location']))); ?>
-            <input type="submit" value="<?= __('Yes'); ?>" name="loc_delete2" class="btn btn-sm btn-danger">
-            <input type="submit" value="<?= __('No'); ?>" name="" class="btn btn-sm btn-primary">
-        </div>
-    <?php } ?>
-    <?php if (isset($_POST['loc_delete2'])) { ?>
-        <div class="alert alert-success" role="alert"><?= __('Location is deleted.'); ?></div>
-    <?php } ?>
-</form>
-*/ ?>
 
 <div class="p-3 m-2 genealogy_search container-md">
     <div class="row mb-1 p-2 bg-primary-subtle">
@@ -86,8 +63,8 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                     while ($tree_searchDb = $tree_search_result->fetch(PDO::FETCH_OBJ)) {
                         $treetext = $showTreeText->show_tree_text($tree_searchDb->tree_id, $selected_language);
                     ?>
-                        <option value="<?= $tree_searchDb->tree_id; ?>" <?= $tree_searchDb->tree_id == $maps['geo_tree_id'] ? 'selected' : ''; ?>>
-                            <?= $treetext['name']; ?>
+                        <option value="<?= $HtmlEscaper->escHtml((string) $tree_searchDb->tree_id); ?>" <?= $tree_searchDb->tree_id == $maps['geo_tree_id'] ? 'selected' : ''; ?>>
+                            <?= $HtmlEscaper->escHtml((string) $treetext['name']); ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -135,7 +112,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                 $tree_search_result2 = $dbh->query($tree_search_sql2);
                 $tree_searchDb2 = $tree_search_result2->fetch(PDO::FETCH_OBJ);
                 $treetext2 = $showTreeText->show_tree_text($tree_searchDb2->tree_id, $selected_language);
-                $one_tree = "<b>" . __('Family tree') . " " . $treetext2['name'] . ": </b>";
+                $one_tree = "<b>" . __('Family tree') . " " . $HtmlEscaper->escHtml((string) $treetext2['name']) . ": </b>";
             }
         ?>
             <div class="alert alert-warning" role="alert">
@@ -152,7 +129,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
 
                 <!-- Show list of locations to add to the database -->
                 <?php foreach ($add_locations as $val) { ?>
-                    <?= $val; ?><br>
+                    <?= $HtmlEscaper->escHtml((string) $val); ?><br>
                 <?php } ?>
 
             </div>
@@ -171,7 +148,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                 </form><br>
 
                 <?php foreach ($thistree_non_exist as $value) { ?>
-                    <?= $value; ?><br>
+                    <?= $HtmlEscaper->escHtml((string) $value); ?><br>
                 <?php } ?>
             </div>
     <?php
@@ -238,14 +215,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                 //    $api_key = $maps['google_api1'];
                 //}
 
-                //$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $loc . '&key=' . $api_key . '&callback=Function.prototype';
                 $jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $loc . '&key=' . $maps['google_api1'] . '&callback=Function.prototype';
-
-                //echo $api_key." - ".$api_key2."<br>";
-                //echo $jsonurl."<br>";
-                //$json = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key);
-                //echo $json;
-
                 $json = file_get_contents($jsonurl, 0, null, 0);
                 // file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.
                 // in that case try the PHP "curl" extension that is installed on most hosts (but we still check...)
@@ -302,8 +272,8 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                 } elseif ($json_output['status'] == "REQUEST_DENIED") {
         ?>
                     <div class="alert alert-danger" role="alert">
-                        <?= "Error type: " . $json_output['status']; ?><br>
-                        <?= "Error message: " . $json_output['error_message']; ?>
+                        <?= $HtmlEscaper->escHtml("Error type: " . (string) $json_output['status']); ?><br>
+                        <?= $HtmlEscaper->escHtml("Error message: " . (string) ($json_output['error_message'] ?? '')); ?>
                     </div>
             <?php
                     $flag_stop = 2;
@@ -317,7 +287,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
         if ($flag_stop == 0) {
             ?>
             <div class="alert alert-success" role="alert">
-                <?= $map_count_found . ' ' . __('locations were successfully mapped.'); ?>
+                <?= (int) $map_count_found . ' ' . __('locations were successfully mapped.'); ?>
             </div>
         <?php
             if ($map_notfound_array) {
@@ -325,7 +295,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                 printf(__('The following %d new locations were passed for query, but were not found. Please check their validity.'), $map_count_notfound);
                 echo '<br>';
                 foreach ($map_notfound_array as $value) {
-                    echo $value . "<br>";
+                    echo $HtmlEscaper->escHtml((string) $value) . "<br>";
                 }
             }
         } elseif ($flag_stop == 2) {
@@ -335,7 +305,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
             echo '<p style="color:red;font-size:120%"><b> ' . __('The process was interrupted because Google limits to maximum 2500 queries within one day (counting is reset at midnight PST, which is 08:00 AM GMT)') . '</b></p>';
             printf(__('In total %1$d out of %2$d new locations were passed for query to Google.'), $count_parsed, count($_SESSION['add_locations']));
             echo __('Tomorrow you can run this process again to add the locations that were not passed for geocoding today.');
-            echo '<p>' . $map_count_found . ' ' . __('locations were recognized by geocoding and have been saved in the database.') . '</p><br>';
+            echo '<p>' . (int) $map_count_found . ' ' . __('locations were recognized by geocoding and have been saved in the database.') . '</p><br>';
 
             if ($map_notfound_array) {
                 // some locations were not found by geocoding
@@ -343,7 +313,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                 printf(__('The following %d new locations were passed for query, but were not found. Please check their validity.'), $map_count_notfound);
                 echo '</b><br>';
                 foreach ($map_notfound_array as $value) {
-                    echo $value . "<br>";
+                    echo $HtmlEscaper->escHtml((string) $value) . "<br>";
                 }
             }
         }
@@ -390,43 +360,14 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
             // *** Google maps ***
             if ($maps['use_world_map'] == 'Google') {
                 // TODO check this...
+                $googleApiUrl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http') . '://maps.google.com/maps/api/js?key=' . rawurlencode((string) $maps['google_api1']) . '&callback=Function.prototype';
                 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-                    echo '<script src="https://maps.google.com/maps/api/js?key=' . $maps['google_api1'] . '&callback=Function.prototype"></script>';
+                    echo '<script src="' . $HtmlEscaper->escHtml($googleApiUrl) . '"></script>';
                 } else {
-                    echo '<script src="http://maps.google.com/maps/api/js?key=' . $maps['google_api1'] . '&callback=Function.prototype"></script>';
+                    echo '<script src="' . $HtmlEscaper->escHtml($googleApiUrl) . '"></script>';
                 }
             ?>
-                <script>
-                    /*
-                    function disableEnterKey(e) {
-                        // works for FF and Chrome
-                        var key;
-                        if (window.event) {
-                            key = window.event.keyCode;
-                        } else {
-                            key = e.which;
-                        }
-                        if (key == 13) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    }
-                    */
 
-                    /*
-                    function testForEnter()
-                    // works for IE
-                    {
-                        if (navigator.userAgent.indexOf("MSIE") != -1) {
-                            if (event.keyCode == 13) {
-                                event.cancelBubble = true;
-                                event.returnValue = false;
-                            }
-                        }
-                    }
-                    */
-                </script>
                 <script>
                     var geocoder;
                     var map;
@@ -435,7 +376,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                     function initialize() {
                         geocoder = new google.maps.Geocoder();
                         <?php
-                        echo 'var latlng = new google.maps.LatLng(' . $lat . ',' . $lng . ');';
+                        echo 'var latlng = new google.maps.LatLng(' . json_encode((float) $lat) . ',' . json_encode((float) $lng) . ');';
                         ?>
                         var myOptions = {
                             zoom: 12,
@@ -443,10 +384,6 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         }
                         map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-                        <?php
-                        echo 'document.getElementById("latbox").innerHtml = latlng.lat().toFixed(5);';
-                        echo 'document.getElementById("lngbox").innerHtml = latlng.lng().toFixed(5);';
-                        ?>
                         map.setCenter(latlng);
 
                         markers[0] = new google.maps.Marker({
@@ -473,8 +410,6 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                             'address': address
                         }, function(results, status) {
                             if (status == google.maps.GeocoderStatus.OK) {
-                                document.getElementById("latbox").innerHtml = results[0].geometry.location.lat().toFixed(5);
-                                document.getElementById("lngbox").innerHtml = results[0].geometry.location.lng().toFixed(5);
                                 document.getElementById("latbox").value = results[0].geometry.location.lat().toFixed(5);
                                 document.getElementById("lngbox").value = results[0].geometry.location.lng().toFixed(5);
                                 map.setCenter(results[0].geometry.location);
@@ -524,15 +459,15 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
 
                             // TODO remove this part. Just process the change.
                             $leave_bottom = true;
-                            echo '<span style="color:red;font-weight:bold;">Are you sure you want to change the lat/lng of </span><b>' . $_POST['location_location'] . '</b>';
-                            echo '<span style="color:red;font-weight:bold;"> and set them to those that belong to </span><b>' . $_POST['add_name'] . '?</b></span><br>';
+                            echo '<span style="color:red;font-weight:bold;">Are you sure you want to change the lat/lng of </span><b>' . $HtmlEscaper->escHtml((string) $_POST['location_location']) . '</b>';
+                            echo '<span style="color:red;font-weight:bold;"> and set them to those that belong to </span><b>' . $HtmlEscaper->escHtml((string) $_POST['add_name']) . '?</b></span><br>';
                     ?>
                             <form method="POST" name="check_change" action="index.php?page=maps&amp;menu=locations">
-                                <input type="hidden" name="location_lat" value="<?= $_POST['location_lat']; ?>">
-                                <input type="hidden" name="location_lng" value="<?= $_POST['location_lng']; ?>">
-                                <input type="hidden" name="add_name" value="<?= $_POST['add_name']; ?>">
-                                <input type="hidden" name="location_location" value="<?= $_POST['location_location']; ?>">
-                                <input type="hidden" name="location_id" value="<?= $_POST['location_id']; ?>">
+                                <input type="hidden" name="location_lat" value="<?= $HtmlEscaper->escHtml((string) $_POST['location_lat']); ?>">
+                                <input type="hidden" name="location_lng" value="<?= $HtmlEscaper->escHtml((string) $_POST['location_lng']); ?>">
+                                <input type="hidden" name="add_name" value="<?= $HtmlEscaper->escHtml((string) $_POST['add_name']); ?>">
+                                <input type="hidden" name="location_location" value="<?= $HtmlEscaper->escHtml((string) $_POST['location_location']); ?>">
+                                <input type="hidden" name="location_id" value="<?= $HtmlEscaper->escHtml((string) $_POST['location_id']); ?>">
                                 <input type="submit" name="yes_change" value="<?= __('YES'); ?>" class="btn btn-sm btn-secondary">
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <input type="submit" name="cancel_change" value="<?= __('Cancel'); ?>" class="btn btn-sm btn-secondary">
@@ -605,8 +540,8 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                                             $find_default = false;
                                         }
                                     ?>
-                                        <option value="<?= $loc_listDb->location_id; ?>" <?= $selected; ?>>
-                                            <?= $loc_listDb->location_location; ?>
+                                        <option value="<?= (int) $loc_listDb->location_id; ?>" <?= $selected; ?>>
+                                            <?= $HtmlEscaper->escHtml((string) $loc_listDb->location_location); ?>
                                         </option>
                                     <?php } ?>
                                 </select>
@@ -659,13 +594,12 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                     }
                     ?>
 
-
                     <form method="POST" name="delform" action="index.php?page=maps&amp;menu=locations">
-                        <input type="hidden" name="location_id" value="<?= $location_id; ?>">
-                        <input type="hidden" name="location_location" value="<?= $location_location; ?>">
+                        <input type="hidden" name="location_id" value="<?= (int) $location_id; ?>">
+                        <input type="hidden" name="location_location" value="<?= $HtmlEscaper->escHtml((string) $location_location); ?>">
                         <div class="row mb-2">
                             <div class="col-md-6">
-                                <input type="text" name="add_name" id="address" value="<?= $search_name; ?>" size="36" class="form-control form-control-sm">
+                                <input type="text" name="add_name" id="address" value="<?= $HtmlEscaper->escHtml((string) $search_name); ?>" size="36" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-auto">
                                 <input type="button" name="loc_search" value="<?= __('Search'); ?>" onclick="codeAddress();" class="btn btn-sm btn-secondary">
@@ -677,7 +611,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                                 <?= __('Latitude'); ?>
                             </div>
                             <div class="col-md-3">
-                                <input type="text" size="20" id="latbox" name="location_lat" value="<?= $search_lat; ?>" class="form-control form-control-sm">
+                                <input type="text" size="20" id="latbox" name="location_lat" value="<?= $HtmlEscaper->escHtml((string) $search_lat); ?>" class="form-control form-control-sm">
                             </div>
                         </div>
 
@@ -686,15 +620,13 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                                 <?= __('Longitude'); ?>
                             </div>
                             <div class="col-md-3">
-                                <input type="text" size="20" id="lngbox" name="location_lng" value="<?= $search_lng; ?>" class="form-control form-control-sm">
+                                <input type="text" size="20" id="lngbox" name="location_lng" value="<?= $HtmlEscaper->escHtml((string) $search_lng); ?>" class="form-control form-control-sm">
                             </div>
                         </div>
 
                         <?= __('You can also drag the marker.'); ?><br><br>
 
                         <input type="submit" name="loc_change" value="<?= __('Change this location'); ?>" class="btn btn-sm btn-secondary">&nbsp;
-                        <?php /* <input type="submit" name="loc_add" value="<?= __('Add this location'); ?>" class="btn btn-sm btn-secondary"> */ ?>
-                        <?php /* <input type="submit" name="loc_delete" value="<?= __('Delete this location'); ?>" class="btn btn-sm btn-danger"> */ ?>
                     </form>
                 </div>
 
@@ -714,7 +646,7 @@ if (isset($_POST['loc_delete2']) && is_numeric($_POST['location_id'])) {
                     <?php
                         // *** Map using fitbound (all markers visible) ***
                         echo '<script>
-                            var map = L.map("map").setView([' . $location_lat . ', ' . $location_lng . '], 15);
+                            var map = L.map("map").setView([' . json_encode((float) $location_lat) . ', ' . json_encode((float) $location_lng) . '], 15);
                             var markers = [';
 
                         echo '];

@@ -21,16 +21,16 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
 <ul class="nav nav-tabs mt-1">
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_settings' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>"><?= __('Picture settings'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_settings' ? 'active' : ''; ?>" href="index.php?page=<?= $HtmlEscaper->escHtml((string) $page); ?>"><?= $HtmlEscaper->escHtml(__('Picture settings')); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_thumbnails' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_thumbnails"><?= __('Create thumbnails'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_thumbnails' ? 'active' : ''; ?>" href="index.php?page=<?= $HtmlEscaper->escHtml((string) $page); ?>&amp;menu_tab=picture_thumbnails"><?= $HtmlEscaper->escHtml(__('Create thumbnails')); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_show' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_show"><?= __('Show thumbnails'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_show' ? 'active' : ''; ?>" href="index.php?page=<?= $HtmlEscaper->escHtml((string) $page); ?>&amp;menu_tab=picture_show"><?= $HtmlEscaper->escHtml(__('Show thumbnails')); ?></a>
     </li>
     <li class="nav-item me-1">
-        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_categories' ? 'active' : ''; ?>" href="index.php?page=<?= $page; ?>&amp;menu_tab=picture_categories"><?= __('Photo album categories'); ?></a>
+        <a class="nav-link genealogy_nav-link <?= $thumbs['menu_tab'] == 'picture_categories' ? 'active' : ''; ?>" href="index.php?page=<?= $HtmlEscaper->escHtml((string) $page); ?>&amp;menu_tab=picture_categories"><?= $HtmlEscaper->escHtml(__('Photo album categories')); ?></a>
     </li>
 </ul>
 
@@ -40,7 +40,7 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
             <div class="row mb-2">
                 <div class="col-md-4">
-                    <label for="tree" class="col-form-label"><?= __('Choose family tree'); ?></label>
+                    <label for="tree" class="col-form-label"><?= $HtmlEscaper->escHtml(__('Choose family tree')); ?></label>
                 </div>
 
                 <div class="col-md-7">
@@ -50,24 +50,24 @@ $data2Db = $stmt->fetch(PDO::FETCH_OBJ);
 
             <div class="row mb-2">
                 <div class="col-md-4">
-                    <label for="picture_path" class="col-form-label"><?= __('Path to the pictures'); ?></label>
+                    <label for="picture_path" class="col-form-label"><?= $HtmlEscaper->escHtml(__('Path to the pictures')); ?></label>
                 </div>
 
                 <!-- Set path to pictures -->
                 <div class="col-md-8">
-                    <form method="POST" action="index.php?page=thumbs&amp;menu_tab=<?= $thumbs['menu_tab']; ?>">
-                        <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
+                    <form method="POST" action="index.php?page=thumbs&amp;menu_tab=<?= $HtmlEscaper->escHtml((string) $thumbs['menu_tab']); ?>">
+                        <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
 
                         <div class="form-check">
                             <input type="radio" class="form-check-input" value="yes" name="default_path" id="default_path" <?= $thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
-                                <?= __('Use default picture path:'); ?> <b>media/</b>
+                                <?= $HtmlEscaper->escHtml(__('Use default picture path:')); ?> <b>media/</b>
                             </label>
                         </div>
                         <div class="form-check">
                             <input type="radio" class="form-check-input" value="no" name="default_path" id="default_path" <?= !$thumbs['default_path'] ? 'checked' : ''; ?>>
                             <label class="form-check-label" for="default_path">
-                                <input type="text" name="tree_pict_path" value="<?= $thumbs['own_pict_path']; ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
+                                <input type="text" name="tree_pict_path" value="<?= $HtmlEscaper->escHtml((string) $thumbs['own_pict_path']); ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
                             </label>
                         </div>
 
@@ -76,7 +76,7 @@ www.myhomepage.nl/humo-gen/ => folder for %s files.<br>
 www.myhomepage.nl/pictures/ => folder for pictures.<br>
 Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealogy'); ?><br><br>
 
-                        <input type="submit" name="change_tree_data" value="<?= __('Change'); ?>" class="btn btn-sm btn-success"><br>
+                        <input type="submit" name="change_tree_data" value="<?= $HtmlEscaper->escHtml(__('Change')); ?>" class="btn btn-sm btn-success"><br>
                     </form>
                 </div>
             </div>
@@ -85,6 +85,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             // *** Show subdirectories ***
             function get_media_files($first, $prefx, $path)
             {
+                global $HtmlEscaper;
                 $ignore = array('cms', 'slideshow', 'thumbs', '.', '..');
                 $dh = opendir($prefx . $path);
                 while (false !== ($filename = readdir($dh))) {
@@ -93,7 +94,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             echo ' ' . __('Subdirectories:');
                             $first = true;
                         }
-                        echo '<br>' . $path . $filename . '/';
+                        echo '<br>' . $HtmlEscaper->escHtml($path . $filename . '/');
                         get_media_files($first, $prefx, $path . $filename . '/');
                     }
                 }
@@ -102,18 +103,18 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             ?>
 
             <div class="row mb-2">
-                <div class="col-md-4"><?= __('Status of picture path'); ?></div>
+                <div class="col-md-4"><?= $HtmlEscaper->escHtml(__('Status of picture path')); ?></div>
 
                 <div class="col-md-7">
                     <?php if ($thumbs['tree_pict_path'] != '' && file_exists($prefx . $thumbs['tree_pict_path'])) { ?>
-                        <span class="bg-success-subtle"><?= __('Picture path exists.'); ?></span>
+                        <span class="bg-success-subtle"><?= $HtmlEscaper->escHtml(__('Picture path exists.')); ?></span>
 
                     <?php
                         // *** Show subdirectories ***
                         $first = false;
                         get_media_files($first, $prefx, $thumbs['tree_pict_path']);
                     } else {
-                        echo '<span class="bg-warning-subtle"><b>' . __('Picture path doesn\'t exist!') . '</b></span>';
+                        echo '<span class="bg-warning-subtle"><b>' . $HtmlEscaper->escHtml(__('Picture path doesn\'t exist!')) . '</b></span>';
                     }
                     ?>
                 </div>
@@ -125,12 +126,12 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                 $thumb_height = 120; // *** Standard thumb height ***
             ?>
                 <div class="row mb-2">
-                    <div class="col-md-4"><?= __('Create thumbnails'); ?></div>
+                    <div class="col-md-4"><?= $HtmlEscaper->escHtml(__('Create thumbnails')); ?></div>
 
                     <div class="col-md-7">
                         <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_thumbnails">
-                            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                            <input type="submit" name="thumbnail" value="<?= __('Create thumbnails'); ?>" class="btn btn-sm btn-success">
+                            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
+                            <input type="submit" name="thumbnail" value="<?= $HtmlEscaper->escHtml(__('Create thumbnails')); ?>" class="btn btn-sm btn-success">
                         </form>
                     </div>
                 </div>
@@ -139,13 +140,13 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             <!-- Show thumbnails -->
             <?php if ($thumbs['menu_tab'] == 'picture_show') { ?>
                 <div class="row mb-2">
-                    <div class="col-md-4"><?= __('Show thumbnails'); ?></div>
+                    <div class="col-md-4"><?= $HtmlEscaper->escHtml(__('Show thumbnails')); ?></div>
 
                     <div class="col-md-7">
                         <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_show">
-                            <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                            <input type="submit" name="change_filename" value="<?= __('Show thumbnails'); ?>" class="btn btn-sm btn-success">
-                            <?= ' ' . __('You can change filenames here.'); ?>
+                            <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
+                            <input type="submit" name="change_filename" value="<?= $HtmlEscaper->escHtml(__('Show thumbnails')); ?>" class="btn btn-sm btn-success">
+                            <?= ' ' . $HtmlEscaper->escHtml(__('You can change filenames here.')); ?>
                         </form>
                     </div>
                 </div>
@@ -251,7 +252,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     //function takes absolute directory path and relative path - we can change this variables names to be more clear
                     function checkMediaPrivacySupport($testDir, $path)
                     {
-                        global $htaccess_support;
+                        global $htaccess_support, $HtmlEscaper;
                         //some log arrays
                         $messages = [];
                         $errors = [];
@@ -337,9 +338,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                                 $response = @file_get_contents($testUrlJpg);
                                 if ($response == $jpgContent) {
-                                    $messages[] = ("❌ I could read '$testFileJpgPath' ('$testUrlJpg') which is wrong. Despite creating a .htaccess file that forbids reading the file, I can access it. You probably don't have a misconfigured <a href='https://httpd.apache.org/docs/2.4/mod/core.html#allowoverride' target='_new'>AllowOverride directive </a>in your Apache configuration files. In privacy mode media will be served and visible but anyone with link can display it.<br>");
+                                    $messages[] = "❌ I could read '" . $HtmlEscaper->escHtml($testFileJpgPath) . "' ('" . $HtmlEscaper->escHtml($testUrlJpg) . "') which is wrong. Despite creating a .htaccess file that forbids reading the file, I can access it. You probably don't have a misconfigured <a href='https://httpd.apache.org/docs/2.4/mod/core.html#allowoverride' target='_new'>AllowOverride directive </a>in your Apache configuration files. In privacy mode media will be served and visible but anyone with link can display it.<br>";
                                 } else {
-                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means test .htaccess protects files in this directory.'), $testFileJpgPath . ' (' . $testUrlJpg . ')') . '<br>';
+                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means test .htaccess protects files in this directory.'), $HtmlEscaper->escHtml($testFileJpgPath . ' (' . $testUrlJpg . ')')) . '<br>';
                                     $htaccess_ok = true;
                                 }
 
@@ -358,14 +359,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                         if (@file_put_contents($filePath, $htaccessContent) !== false) {
                                             $messages[] = '✅ <span style="color: green;">' . __('File .htaccess permanently modified in this directory protecting your files.') . '</span><br>';
                                         } else {
-                                            throw new Exception("❌ Check permissions. I couldn't modify .htaccess in '$testDir'.<br>");
+                                            throw new Exception("❌ Check permissions. I couldn't modify .htaccess in '" . $HtmlEscaper->escHtml($testDir) . "'.<br>");
                                         }
                                     } elseif ($_POST["media_privacy_mode"] === 'n') {
                                         $htaccessContent = '';
                                         if (@file_put_contents($filePath, $htaccessContent) !== false) {
-                                            $messages[] = "❌ <span style='color: red;'>File .htaccess permanently modified in '$testDir' allowing direct access to files for anyone.</span><br>";
+                                            $messages[] = "❌ <span style='color: red;'>File .htaccess permanently modified in '" . $HtmlEscaper->escHtml($testDir) . "' allowing direct access to files for anyone.</span><br>";
                                         } else {
-                                            throw new Exception("❌ Check permissions. I couldn't modify .htaccess in '$testDir'.<br>");
+                                            throw new Exception("❌ Check permissions. I couldn't modify .htaccess in '" . $HtmlEscaper->escHtml($testDir) . "'.<br>");
                                         }
                                     }
                                 }
@@ -373,9 +374,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 //for non under root and no htacces support we also check if we can get testfile
                                 $response = @file_get_contents($testUrlJpg);
                                 if ($response == $jpgContent) {
-                                    $messages[] = ("❌ <span style='color: red;'>I could read '$testFileJpgPath' ('$testUrlJpg'). In privacy mode media will be served and visible but anyone with link can display it.</span><br>");
+                                    $messages[] = "❌ <span style='color: red;'>I could read '" . $HtmlEscaper->escHtml($testFileJpgPath) . "' ('" . $HtmlEscaper->escHtml($testUrlJpg) . "'). In privacy mode media will be served and visible but anyone with link can display it.</span><br>";
                                 } else {
-                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means this directory is protected from direct access.'), $testFileJpgPath . ' (' . $testUrlJpg . ')') . '<br>';
+                                    $messages[] = '✅ ' . sprintf(__('Couldn\'t read %s which means this directory is protected from direct access.'), $HtmlEscaper->escHtml($testFileJpgPath . ' (' . $testUrlJpg . ')')) . '<br>';
                                     $htaccess_ok = true;
                                 }
                             }
@@ -389,7 +390,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             $headers = get_headers($testUrlDirIndex, 1);
                             // Check if the response is 200 OK or a directory listing
                             if (strpos($headers[0], '200 OK') !== false) {
-                                $msg = "❌ <span style='color: red;'>Directory index for '$testUrlDirIndex' is publicly accessible! Everyone can get the media files list and display them!";
+                                $msg = "❌ <span style='color: red;'>Directory index for '" . $HtmlEscaper->escHtml($testUrlDirIndex) . "' is publicly accessible! Everyone can get the media files list and display them!";
                                 $msg .= "You can disable acces to directory index by: ";
                                 if ($htaccess_ok) {
                                     $msg .= "enabling privacy mode on or ";
@@ -401,7 +402,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                 $msg .= "</span><br>";
                                 $messages[] = $msg;
                             } else {
-                                $messages[] = '✅ <span style="color: green;">' . sprintf(__('Directory index for "%s" is not publicly accessible or indexing is disabled.'), $testUrlDirIndex) . '</span><br>';
+                                $messages[] = '✅ <span style="color: green;">' . sprintf(__('Directory index for "%s" is not publicly accessible or indexing is disabled.'), $HtmlEscaper->escHtml($testUrlDirIndex)) . '</span><br>';
                             }
                             $messagesArr['status'] = true;
                         } catch (Exception $e) {
@@ -468,10 +469,10 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         $testDirectory = realpath(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $path);
                         $text .= '<h5>';
                         if ($testDirectory) {
-                            $text .= __('Check media path:') . ' <b>' . $testDirectory . '</b>';
+                            $text .= __('Check media path:') . ' <b>' . $HtmlEscaper->escHtml((string) $testDirectory) . '</b>';
                         } else {
                             //this else is only to give output when path not exists
-                            $text .= __('Check media path:') . ' <b>' . $path . '</b>';
+                            $text .= __('Check media path:') . ' <b>' . $HtmlEscaper->escHtml((string) $path) . '</b>';
                         }
                         $text .= '</h5>';
 
@@ -479,11 +480,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                         // we are giving trees names for paths too - if the same path is used in many trees names are agregated for path
                         foreach ($tree_names as $key2 => $value2) {
                             if ($key2 === $path) {
-                                $text .= implode(", ", array_slice($tree_names[$key2], 0, -1));
+                                $text .= implode(", ", array_map(
+                                    static fn($treeName): string => $HtmlEscaper->escHtml((string) $treeName),
+                                    array_slice($tree_names[$key2], 0, -1)
+                                ));
                                 if (count($tree_names[$key2]) > 1) {
                                     $text .= ', ';
                                 }
-                                $text .= end($tree_names[$key2]) . '<br>';
+                                $text .= $HtmlEscaper->escHtml((string) end($tree_names[$key2])) . '<br>';
                             }
                         }
                         $text .= '<br>';
@@ -753,7 +757,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
         <form method="post" action="index.php?page=thumbs" style="display : inline;">
             <input type="hidden" name="menu_tab" value="picture_categories">
-            <input type="hidden" name="language_tree" value="<?= $language_tree; ?>">
+            <input type="hidden" name="language_tree" value="<?= $HtmlEscaper->escHtml((string) $language_tree); ?>">
 
             <div class="p-3 m-2 genealogy_search">
 
@@ -860,26 +864,26 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                             <td>
                                 <div style="width:25px;" class="d-inline-block">
                                     <?php if ($catDb->photocat_prefix != 'none') { ?>
-                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=<?= $catDb->photocat_order; ?>&amp;cat_prefix=<?= $catDb->photocat_prefix; ?>&amp;cat_drop=1"><img src="images/button_drop.png" alt="<?= __('Delete Category'); ?>" title="<?= __('Delete Category'); ?>"></a>
+                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=<?= $HtmlEscaper->escHtml((string) $catDb->photocat_order); ?>&amp;cat_prefix=<?= $HtmlEscaper->escHtml((string) $catDb->photocat_prefix); ?>&amp;cat_drop=1"><img src="images/button_drop.png" alt="<?= $HtmlEscaper->escHtml(__('Delete Category')); ?>" title="<?= $HtmlEscaper->escHtml(__('Delete Category')); ?>"></a>
                                     <?php } ?>
                                 </div>
 
                                 <div style="width:20px;" class="d-inline-block">
                                     <?php if ($catDb->photocat_order != $minorder) { ?>
-                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=<?= $catDb->photocat_prefix; ?>&amp;cat_up=<?= $catDb->photocat_order; ?>"><img src="images/arrow_up.gif" alt="<?= __('Move Up'); ?>" title="<?= __('Move Up'); ?>"></a>
+                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=<?= $HtmlEscaper->escHtml((string) $catDb->photocat_prefix); ?>&amp;cat_up=<?= $HtmlEscaper->escHtml((string) $catDb->photocat_order); ?>"><img src="images/arrow_up.gif" alt="<?= $HtmlEscaper->escHtml(__('Move Up')); ?>" title="<?= $HtmlEscaper->escHtml(__('Move Up')); ?>"></a>
                                     <?php } ?>
                                 </div>
 
                                 <div style="width:20px;" class="d-inline-block">
                                     <?php if ($catDb->photocat_order != $maxorder) { ?>
-                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=<?= $catDb->photocat_prefix; ?>&amp;cat_down=<?= $catDb->photocat_order; ?>"><img src="images/arrow_down.gif" alt="<?= __('Move Down'); ?>" title="<?= __('Move Down'); ?>"></a>
+                                        <a href="index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_prefix=<?= $HtmlEscaper->escHtml((string) $catDb->photocat_prefix); ?>&amp;cat_down=<?= $HtmlEscaper->escHtml((string) $catDb->photocat_order); ?>"><img src="images/arrow_down.gif" alt="<?= $HtmlEscaper->escHtml(__('Move Down')); ?>" title="<?= $HtmlEscaper->escHtml(__('Move Down')); ?>"></a>
                                     <?php } ?>
                                 </div>
                             </td>
 
-                            <td style="white-space:nowrap;"><?= $prefname; ?></td>
+                            <td style="white-space:nowrap;"><?= $HtmlEscaper->escHtml((string) $prefname); ?></td>
 
-                            <td><input type="text" name="<?= $catDb->photocat_prefix; ?>" value="<?= $catname; ?>" size="30" class="form-control form-control-sm"></td>
+                            <td><input type="text" name="<?= $HtmlEscaper->escHtml((string) $catDb->photocat_prefix); ?>" value="<?= $HtmlEscaper->escHtml((string) $catname); ?>" size="30" class="form-control form-control-sm"></td>
                         </tr>
                     <?php
                     }
@@ -891,20 +895,20 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     ?>
                     <tr>
                         <td></td>
-                        <td style="white-space:nowrap;"><input type="text" name="new_cat_prefix" value="<?= $content; ?>" size="6" class="form-control form-control-sm">
+                        <td style="white-space:nowrap;"><input type="text" name="new_cat_prefix" value="<?= $HtmlEscaper->escHtml((string) $content); ?>" size="6" class="form-control form-control-sm">
                             <?php if (isset($warning_invalid_prefix)) { ?>
-                                <br><span style="color:red"><?= $warning_invalid_prefix; ?></span>
+                                <br><span style="color:red"><?= $HtmlEscaper->escHtml((string) $warning_invalid_prefix); ?></span>
                             <?php
                             }
                             if (isset($warning_exist_prefix)) {
                             ?>
-                                <br><span style="color:red"><?= $warning_exist_prefix; ?></span>
+                                <br><span style="color:red"><?= $HtmlEscaper->escHtml((string) $warning_exist_prefix); ?></span>
                             <?php } ?>
                         </td>
                         <td>
                             <input type="text" name="new_cat_name" value="" size="30" class="form-control form-control-sm">
                             <?php if (isset($warning_noname)) { ?>
-                                <br><span style="color:red"><?= $warning_noname; ?></span>
+                                <br><span style="color:red"><?= $HtmlEscaper->escHtml((string) $warning_noname); ?></span>
                             <?php } ?>
                         </td>
                     </tr>
@@ -912,14 +916,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                     <?php if (isset($_GET['cat_drop']) && $_GET['cat_drop'] == 1) { ?>
                         <tr>
                             <td colspan="3" style="color:red;font-weight:bold;font-size:120%">
-                                <?= __('Do you really want to delete category:'); ?>&nbsp;<?= $_GET['cat_prefix']; ?>&nbsp;?
-                                &nbsp;&nbsp;&nbsp;<input type="button" style="color:red;font-weight:bold" onclick="location.href='index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=<?= $_GET['cat_order']; ?>&amp;cat_prefix=<?= $_GET['cat_prefix']; ?>&amp;cat_drop2=1';" value="<?= __('Yes'); ?>">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" style="color:green;font-weight:bold" onclick="location.href='index.php?page=thumbs&amp;menu_tab=picture_categories';" value="<?= __('No'); ?>">
+                                <?= $HtmlEscaper->escHtml(__('Do you really want to delete category:')); ?>&nbsp;<?= $HtmlEscaper->escHtml((string) $_GET['cat_prefix']); ?>&nbsp;?
+                                &nbsp;&nbsp;&nbsp;<input type="button" style="color:red;font-weight:bold" onclick="location.href='index.php?page=thumbs&amp;menu_tab=picture_categories&amp;cat_order=<?= $HtmlEscaper->escHtml((string) $_GET['cat_order']); ?>&amp;cat_prefix=<?= $HtmlEscaper->escHtml((string) $_GET['cat_prefix']); ?>&amp;cat_drop2=1';" value="<?= $HtmlEscaper->escHtml(__('Yes')); ?>">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" style="color:green;font-weight:bold" onclick="location.href='index.php?page=thumbs&amp;menu_tab=picture_categories';" value="<?= $HtmlEscaper->escHtml(__('No')); ?>">
                             </td>
                         </tr>
                     <?php } ?>
                 </table><br>
-                <div style="margin-left:auto; margin-right:auto; text-align:center;"><input type="submit" name="save_cat" value="<?= __('Save changes'); ?>" class="btn btn-sm btn-success"></div>
+                <div style="margin-left:auto; margin-right:auto; text-align:center;"><input type="submit" name="save_cat" value="<?= $HtmlEscaper->escHtml(__('Save changes')); ?>" class="btn btn-sm btn-success"></div>
             </div>
 
         </form>
@@ -961,9 +965,9 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
         // rename and create new thumbnail       
         if (file_exists($picture_path_old . $_POST['filename_old'])) {
             rename($picture_path_old . $_POST['filename_old'], $picture_path_new . $_POST['filename']);
-            echo '<b>' . __('Changed filename:') . ' </b>' . $picture_path_old .  $_POST['filename_old'] . ' <b>' . __('into filename:') . '</b> ' . $picture_path_new .  $_POST['filename'] . '<br>';
+            echo '<b>' . $HtmlEscaper->escHtml(__('Changed filename:')) . ' </b>' . $HtmlEscaper->escHtml($picture_path_old . $_POST['filename_old']) . ' <b>' . $HtmlEscaper->escHtml(__('into filename:')) . '</b> ' . $HtmlEscaper->escHtml($picture_path_new . $_POST['filename']) . '<br>';
             if ($resizePicture->check_media_type($picture_path_new, $_POST['filename']) && $resizePicture->create_thumbnail($picture_path_new, $_POST['filename'])) {
-                echo '<b>' . __('Changed filename:') . ' ' . __('into filename:') . '</b> ' . $picture_path_new . 'thumb_' . $_POST['filename'] . '.jpg<br>';
+                echo '<b>' . $HtmlEscaper->escHtml(__('Changed filename:')) . ' ' . $HtmlEscaper->escHtml(__('into filename:')) . '</b> ' . $HtmlEscaper->escHtml($picture_path_new . 'thumb_' . $_POST['filename'] . '.jpg') . '<br>';
             }
         }
 
@@ -1009,7 +1013,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
             foreach ($array_picture_folder as $selected_picture_folder) {
         ?>
                 <br style="clear: both">
-                <h3><?= $selected_picture_folder; ?></h3>
+                <h3><?= $HtmlEscaper->escHtml((string) $selected_picture_folder); ?></h3>
                 <div class="container-fluid mt-2">
                     <div class="row g-3">
                         <?php
@@ -1058,7 +1062,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
 
                                     // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                                     $url = $personLink->get_person_link($personDb, '../');
-                                    $picture_text .= '<br><a href="' . $url . '">' . $name["standard_name"] . '</a><br>';
+                                    $picture_text .= '<br><a href="' . $HtmlEscaper->escHtml((string) $url) . '">' . $HtmlEscaper->escHtml((string) $name["standard_name"]) . '</a><br>';
                                 }
                         ?>
 
@@ -1068,14 +1072,14 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'), 'HuMo-genealo
                                         <?= $picture_text; ?>
                                         <?php if (isset($_POST['change_filename'])) { ?>
                                             <form method="POST" action="index.php?page=thumbs&amp;menu_tab=picture_show">
-                                                <input type="hidden" name="tree_id" value="<?= $tree_id; ?>">
-                                                <input type="hidden" name="picture_path" value="<?= $selected_picture_folder; ?>">
-                                                <input type="hidden" name="filename_old" value="<?= $filename; ?>">
-                                                <input type="text" name="filename" value="<?= $filename; ?>" size="20" class="form-control form-control-sm">
-                                                <input type="submit" name="change_filename" value="<?= __('Change filename'); ?>" class="btn btn-secondary btn-sm">
+                                                <input type="hidden" name="tree_id" value="<?= $HtmlEscaper->escHtml((string) $tree_id); ?>">
+                                                <input type="hidden" name="picture_path" value="<?= $HtmlEscaper->escHtml((string) $selected_picture_folder); ?>">
+                                                <input type="hidden" name="filename_old" value="<?= $HtmlEscaper->escHtml((string) $filename); ?>">
+                                                <input type="text" name="filename" value="<?= $HtmlEscaper->escHtml((string) $filename); ?>" size="20" class="form-control form-control-sm">
+                                                <input type="submit" name="change_filename" value="<?= $HtmlEscaper->escHtml(__('Change filename')); ?>" class="btn btn-secondary btn-sm">
                                             </form>
                                         <?php } else { ?>
-                                            <div class="card-text small"><?= $filename; ?></div>
+                                            <div class="card-text small"><?= $HtmlEscaper->escHtml((string) $filename); ?></div>
                                         <?php } ?>
                                     </div>
                                 </div>

@@ -10,18 +10,18 @@ if (!defined('ADMIN_PAGE')) {
         <div class="row">
             <div class="col-md-auto">
                 <select size="1" name="month" class="form-select form-select-sm">
-                    <option value="1" <?php if ($statistics['month'] == '1') echo ' selected'; ?>><?= __('January'); ?></option>
-                    <option value="2" <?php if ($statistics['month'] == '2') echo ' selected'; ?>><?= __('February'); ?></option>
-                    <option value="3" <?php if ($statistics['month'] == '3') echo ' selected'; ?>><?= __('March'); ?></option>
-                    <option value="4" <?php if ($statistics['month'] == '4') echo ' selected'; ?>><?= __('April'); ?></option>
-                    <option value="5" <?php if ($statistics['month'] == '5') echo ' selected'; ?>><?= __('May'); ?></option>
-                    <option value="6" <?php if ($statistics['month'] == '6') echo ' selected'; ?>><?= __('June'); ?></option>
-                    <option value="7" <?php if ($statistics['month'] == '7') echo ' selected'; ?>><?= __('July'); ?></option>
-                    <option value="8" <?php if ($statistics['month'] == '8') echo ' selected'; ?>><?= __('August'); ?></option>
-                    <option value="9" <?php if ($statistics['month'] == '9') echo ' selected'; ?>><?= __('September'); ?></option>
-                    <option value="10" <?php if ($statistics['month'] == '10') echo ' selected'; ?>><?= __('October'); ?></option>
-                    <option value="11" <?php if ($statistics['month'] == '11') echo ' selected'; ?>><?= __('November'); ?></option>
-                    <option value="12" <?php if ($statistics['month'] == '12') echo ' selected'; ?>><?= __('December'); ?></option>
+                    <option value="1" <?= $statistics['month'] == '1' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('January')); ?></option>
+                    <option value="2" <?= $statistics['month'] == '2' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('February')); ?></option>
+                    <option value="3" <?= $statistics['month'] == '3' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('March')); ?></option>
+                    <option value="4" <?= $statistics['month'] == '4' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('April')); ?></option>
+                    <option value="5" <?= $statistics['month'] == '5' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('May')); ?></option>
+                    <option value="6" <?= $statistics['month'] == '6' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('June')); ?></option>
+                    <option value="7" <?= $statistics['month'] == '7' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('July')); ?></option>
+                    <option value="8" <?= $statistics['month'] == '8' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('August')); ?></option>
+                    <option value="9" <?= $statistics['month'] == '9' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('September')); ?></option>
+                    <option value="10" <?= $statistics['month'] == '10' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('October')); ?></option>
+                    <option value="11" <?= $statistics['month'] == '11' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('November')); ?></option>
+                    <option value="12" <?= $statistics['month'] == '12' ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml(__('December')); ?></option>
                 </select>
             </div>
 
@@ -29,20 +29,20 @@ if (!defined('ADMIN_PAGE')) {
                 <!-- Selection of year -->
                 <select size="1" name="year" class="form-select form-select-sm">
                     <?php for ($year_select = $statistics['first_year']; $year_select <= $statistics['present_year']; $year_select++) { ?>
-                        <option value="<?= $year_select; ?>" <?= $statistics['year'] == $year_select ? 'selected' : ''; ?>>
-                            <?= $year_select; ?>
+                        <option value="<?= $HtmlEscaper->escHtml((string) $year_select); ?>" <?= $statistics['year'] == $year_select ? 'selected' : ''; ?>>
+                            <?= $HtmlEscaper->escHtml((string) $year_select); ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
 
             <div class="col-md-auto">
-                <input type="submit" name="submit" value="<?= __('Select'); ?>" class="btn btn-sm btn-success">
+                <input type="submit" name="submit" value="<?= $HtmlEscaper->escHtml(__('Select')); ?>" class="btn btn-sm btn-success">
             </div>
         </div>
     </form><br>
 
-    <b><?= __('Visitors'); ?></b>
+    <b><?= $HtmlEscaper->escHtml(__('Visitors')); ?></b>
 </div>
 
 <?php
@@ -58,7 +58,7 @@ echo '<br>';
 year_graphics($statistics['month'], $statistics['year']);
 ?>
 
-<br><b><?= __('User agent information'); ?></b><br>
+<br><b><?= $HtmlEscaper->escHtml(__('User agent information')); ?></b><br>
 <div class="container">
     <?php
     // *** Show user agent info (50 most used user agents) ***
@@ -68,16 +68,16 @@ year_graphics($statistics['month'], $statistics['year']);
     ?>
         <div class="row mt-2">
             <div class="col-1">
-                <b><?= $userAgent->count_lines; ?></b>
+                <b><?= $HtmlEscaper->escHtml((string) $userAgent->count_lines); ?></b>
             </div>
             <div class="col-11">
-                <?= $userAgent->stat_user_agent; ?>
+                <?= $HtmlEscaper->escHtml((string) $userAgent->stat_user_agent); ?>
             </div>
         </div>
     <?php } ?>
 </div>
 
-<br><b><?= __('Visitor IP addresses'); ?></b><br>
+<br><b><?= $HtmlEscaper->escHtml(__('Visitor IP addresses')); ?></b><br>
 <div class="container">
     <?php
     // *** Show user agent info (50 most used user agents) ***
@@ -88,10 +88,10 @@ year_graphics($statistics['month'], $statistics['year']);
     ?>
         <div class="row mt-2">
             <div class="col-1">
-                <b><?= $visitorIP->count_lines; ?></b>
+                <b><?= $HtmlEscaper->escHtml((string) $visitorIP->count_lines); ?></b>
             </div>
             <div class="col-11">
-                <?= $visitorIP->stat_ip_address; ?>
+                <?= $HtmlEscaper->escHtml((string) $visitorIP->stat_ip_address); ?>
             </div>
         </div>
     <?php } ?>

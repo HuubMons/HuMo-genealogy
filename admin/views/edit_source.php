@@ -77,8 +77,8 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
     <div class="alert alert-danger">
         <strong><?= __('Are you sure you want to remove this source and ALL source references?'); ?></strong>
         <form method="post" action="index.php?page=edit_sources" style="display : inline;">
-            <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
-            <input type="hidden" name="source_gedcomnr" value="<?= $_POST['source_gedcomnr']; ?>">
+            <input type="hidden" name="source_id" value="<?= $HtmlEscaper->escHtml((string) $editSource['source_id']); ?>">
+            <input type="hidden" name="source_gedcomnr" value="<?= $HtmlEscaper->escHtml((string) $_POST['source_gedcomnr']); ?>">
             <input type="submit" name="source_remove2" value="<?= __('Yes'); ?>" class="btn btn-sm btn-danger">
             <input type="submit" name="dummy5" value="<?= __('No'); ?>" class="btn btn-sm btn-success ms-3">
         </form>
@@ -93,10 +93,10 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
             </div>
 
             <div class="col-md-3">
-                <input type="text" name="source_search_gedcomnr" value="<?= $editSource['search_gedcomnr']; ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
+                <input type="text" name="source_search_gedcomnr" value="<?= $HtmlEscaper->escHtml((string) $editSource['search_gedcomnr']); ?>" size="20" placeholder="<?= __('gedcomnumber (ID)'); ?>" class="form-control form-control-sm">
             </div>
             <div class="col-md-4">
-                <input type="text" name="source_search" value="<?= $editSource['search_text']; ?>" size="20" placeholder="<?= __('Source'); ?>" class="form-control form-control-sm">
+                <input type="text" name="source_search" value="<?= $HtmlEscaper->escHtml((string) $editSource['search_text']); ?>" size="20" placeholder="<?= __('Source'); ?>" class="form-control form-control-sm">
             </div>
             <div class="col-md-2">
                 <input type="submit" name="source_select" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
@@ -121,7 +121,7 @@ function hideshow_date_place($hideshow_date, $hideshow_place)
                         <option value=""><?= __('No sources found.'); ?></option>
                     <?php } else { ?>
                         <?php foreach ($editSource['sources_id'] as $source_id) { ?>
-                            <option value="<?= $source_id; ?>" <?= $editSource['source_id'] == $source_id ? 'selected' : ''; ?>><?= $editSource['sources_text'][$source_id]; ?> [<?= $editSource['sources_gedcomnr'][$source_id] . $editSource['sources_restricted'][$source_id]; ?>]</option>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $source_id); ?>" <?= $editSource['source_id'] == $source_id ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml((string) $editSource['sources_text'][$source_id]); ?> [<?= $HtmlEscaper->escHtml((string) ($editSource['sources_gedcomnr'][$source_id] . $editSource['sources_restricted'][$source_id])); ?>]</option>
                         <?php } ?>
 
                         <?php if (count($editSource['sources_id']) == 200) { ?>
@@ -149,8 +149,8 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
     $repo_qry->execute();
 ?>
     <form method="POST" action="index.php?page=edit_sources" style="display : inline;" enctype="multipart/form-data" name="form3" id="form3">
-        <input type="hidden" name="source_id" value="<?= $editSource['source_id']; ?>">
-        <input type="hidden" name="source_gedcomnr" value="<?= $editSource['data']['gedcomnr']; ?>">
+        <input type="hidden" name="source_id" value="<?= $HtmlEscaper->escHtml((string) $editSource['source_id']); ?>">
+        <input type="hidden" name="source_gedcomnr" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['gedcomnr']); ?>">
 
         <div class="p-2 my-sm-2 genealogy_search container-md">
 
@@ -174,7 +174,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Title'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_title" value="<?= htmlspecialchars($editSource['data']['title']); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_title" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['title']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -182,7 +182,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Subject'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_subj" value="<?= htmlspecialchars($editSource['data']['subj']); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_subj" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['subj']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -198,7 +198,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Place'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_place" value="<?= htmlspecialchars($editSource['data']['place']); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="50" class="place-autocomplete form-control form-control-sm">
+                    <input type="text" name="source_place" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['place']); ?>" placeholder="<?= __('Start typing to search for a place.'); ?>" size="50" class="place-autocomplete form-control form-control-sm">
                 </div>
             </div>
 
@@ -206,7 +206,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Publication'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_publ" value="<?= htmlspecialchars($editSource['data']['publ']); ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_publ" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['publ']); ?>" size="60" class="form-control form-control-sm">
                     <span style="font-size: 13px;">https://... <?= __('will be shown as a link.'); ?></span>
                 </div>
             </div>
@@ -215,7 +215,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Own code'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_refn" value="<?= $editSource['data']['refn']; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_refn" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['refn']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -223,7 +223,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Author'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_auth" value="<?= $editSource['data']['auth']; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_auth" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['auth']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -231,7 +231,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Nr.'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_item" value="<?= $editSource['data']['item']; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_item" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['item']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -239,7 +239,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Kind'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_kind" value="<?= $editSource['data']['kind']; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_kind" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['kind']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -254,8 +254,8 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                     <select size="1" id="source_repo_gedcomnr" name="source_repo_gedcomnr" class="form-select form-select-sm">
                         <option value=""></option>
                         <?php while ($repoDb = $repo_qry->fetch(PDO::FETCH_OBJ)) { ?>
-                            <option value="<?= $repoDb->repo_gedcomnr; ?>" <?= $repoDb->repo_gedcomnr == $editSource['data']['repo_gedcomnr'] ? ' selected' : ''; ?>>
-                                <?= $repoDb->repo_gedcomnr; ?>, <?= $repoDb->repo_name; ?> <?= $repoDb->repo_place; ?></option>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $repoDb->repo_gedcomnr); ?>" <?= $repoDb->repo_gedcomnr == $editSource['data']['repo_gedcomnr'] ? ' selected' : ''; ?>>
+                                <?= $HtmlEscaper->escHtml((string) $repoDb->repo_gedcomnr); ?>, <?= $HtmlEscaper->escHtml((string) $repoDb->repo_name); ?> <?= $HtmlEscaper->escHtml((string) $repoDb->repo_place); ?></option>
                         <?php } ?>
                     </select>
                     <!-- For new repository in new database... -->
@@ -267,7 +267,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Repository call number'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_repo_caln" value="<?= $editSource['data']['repo_caln']; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_repo_caln" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['repo_caln']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -275,7 +275,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Repository page'); ?></div>
                 <div class="col-md-4">
-                    <input type="text" name="source_repo_page" value="<?= $editSource['data']['repo_page']; ?>" size="60" class="form-control form-control-sm">
+                    <input type="text" name="source_repo_page" value="<?= $HtmlEscaper->escHtml((string) $editSource['data']['repo_page']); ?>" size="60" class="form-control form-control-sm">
                 </div>
             </div>
 
@@ -283,7 +283,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                 <div class="col-md-1"></div>
                 <div class="col-md-2"><?= __('Text'); ?></div>
                 <div class="col-md-4">
-                    <textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $editSource['editor_cls']->text_show($editSource['data']['text']); ?></textarea>
+                    <textarea rows="6" cols="80" name="source_text" <?= $field_text_large; ?> class="form-control form-control-sm"><?= $HtmlEscaper->escHtml($editSource['editor_cls']->text_show($editSource['data']['text'])); ?></textarea>
                 </div>
             </div>
 
@@ -319,7 +319,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                     <div class="col-md-1"></div>
                     <div class="col-md-2"><?= __('Added by'); ?></div>
                     <div class="col-md-4">
-                        <?= $languageDate->show_datetime($editSource['data']['new_datetime']) . ' ' . $db_functions->get_user_name($editSource['data']['new_user_id']); ?>
+                        <?= $HtmlEscaper->escHtml((string) $languageDate->show_datetime($editSource['data']['new_datetime'])); ?> <?= $HtmlEscaper->escHtml((string) $db_functions->get_user_name($editSource['data']['new_user_id'])); ?>
                     </div>
                 </div>
             <?php
@@ -332,7 +332,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
                     <div class="col-md-1"></div>
                     <div class="col-md-2"><?= __('Changed by'); ?></div>
                     <div class="col-md-4">
-                        <?= $languageDate->show_datetime($editSource['data']['changed_datetime']) . ' ' . $db_functions->get_user_name($editSource['data']['changed_user_id']); ?>
+                        <?= $HtmlEscaper->escHtml((string) $languageDate->show_datetime($editSource['data']['changed_datetime'])); ?> <?= $HtmlEscaper->escHtml((string) $db_functions->get_user_name($editSource['data']['changed_user_id'])); ?>
                     </div>
                 </div>
             <?php } ?>
@@ -363,7 +363,7 @@ if ($editSource['source_id'] || isset($_POST['add_source'])) {
         $sourcestring = $processLinks->get_link('../', 'source', $tree_id, false, $vars);
     ?>
         <br><br><?= __('Preview'); ?><br>
-        <iframe src="<?= $sourcestring; ?>" class="iframe">
+        <iframe src="<?= $HtmlEscaper->escHtml($sourcestring); ?>" class="iframe">
             <p>Your browser does not support iframes.</p>
         </iframe>
     <?php } ?>

@@ -7,13 +7,9 @@ use PDO;
 
 class CmsPagesModel extends BaseModel
 {
-    public function getCMS_pagesAuthorised(): string
+    public function getCMS_pagesAuthorised(): bool
     {
-        $authorised = '';
-        if ($this->user['group_menu_cms'] != 'y') {
-            $authorised = __('You are not authorised to see this page.');
-        }
-        return $authorised;
+        return $this->user['group_menu_cms'] == 'y';
     }
 
     // *** Get pages without menu ***

@@ -96,8 +96,8 @@ if (isset($_SESSION['search_indi2'])) {
 <br><?= __('Pick the two persons you want to check for merging'); ?>. <?= __('You can enter names (or part of names) or GEDCOM no. (INDI), or leave boxes empty'); ?><br>
 <?= __('<b>TIP: when you click "search" with all boxes left empty you will get a list with all persons in the database. (May take a few seconds)</b>'); ?><br><br>
 
-<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>" style="display : inline;">
-    <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= htmlspecialchars((string)$trees['menu_tab'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" style="display : inline;">
+    <input type="hidden" name="tree_id" value="<?= htmlspecialchars((string)$trees['tree_id'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
     <table class="table table-light" style="text-align:center; width:100%;">
         <tr class="table-primary">
             <td>&nbsp;</td>
@@ -112,10 +112,10 @@ if (isset($_SESSION['search_indi2'])) {
         <tr>
             <td style="white-space:nowrap"><?= __('Person'); ?> 1</td>
             <td>
-                <input type="text" name="search_name" value="<?= $search_name; ?>" size="30" class="form-control form-control-sm">
+                <input type="text" name="search_name" value="<?= htmlspecialchars((string)$search_name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="30" class="form-control form-control-sm">
             </td>
             <td>
-                <input type="text" name="search_indi" value="<?= $search_indi; ?>" size="10" class="form-control form-control-sm">
+                <input type="text" name="search_indi" value="<?= htmlspecialchars((string)$search_indi, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="10" class="form-control form-control-sm">
             </td>
             <td>
                 <input type="submit" name="search1" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
@@ -163,8 +163,8 @@ if (isset($_SESSION['search_indi2'])) {
                                         if (isset($left) && ($searchDb->pers_id == $left && !(isset($_POST["search1"]) && $search_lastname == '' && $search_firstname == ''))) {
                                             echo ' selected';
                                         }
-                                        echo ' value="' . $searchDb->pers_id . '">';
-                                        echo $name["index_name"] . ' [' . $searchDb->pers_gedcomnumber . ']</option>';
+                                        echo ' value="' . htmlspecialchars((string)$searchDb->pers_id, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">';
+                                        echo htmlspecialchars((string)$name["index_name"], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ' [' . htmlspecialchars((string)$searchDb->pers_gedcomnumber, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ']</option>';
                                     }
                                 }
                                 ?>
@@ -197,10 +197,10 @@ if (isset($_SESSION['search_indi2'])) {
                 <?= __('Person'); ?> 2
             </td>
             <td>
-                <input type="text" name="search_name2" value="<?= $search_name2; ?>" size="30" class="form-control form-control-sm">
+                <input type="text" name="search_name2" value="<?= htmlspecialchars((string)$search_name2, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="30" class="form-control form-control-sm">
             </td>
             <td>
-                <input type="text" name="search_indi2" value="<?= $search_indi2; ?>" size="10" class="form-control form-control-sm">
+                <input type="text" name="search_indi2" value="<?= htmlspecialchars((string)$search_indi2, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="10" class="form-control form-control-sm">
             </td>
             <td>
                 <input type="submit" name="search2" value="<?= __('Search'); ?>" class="btn btn-sm btn-secondary">
@@ -246,8 +246,8 @@ if (isset($_SESSION['search_indi2'])) {
                                         if (isset($right) && ($searchDb2->pers_id == $right && !(isset($_POST["search2"]) && $search_lastname2 == '' && $search_firstname2 == ''))) {
                                             echo ' selected';
                                         }
-                                        echo ' value="' . $searchDb2->pers_id . '">';
-                                        echo $name["index_name"] . ' [' . $searchDb2->pers_gedcomnumber . ']</option>';
+                                        echo ' value="' . htmlspecialchars((string)$searchDb2->pers_id, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">';
+                                        echo htmlspecialchars((string)$name["index_name"], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ' [' . htmlspecialchars((string)$searchDb2->pers_gedcomnumber, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ']</option>';
                                     }
                                 }
                                 ?>

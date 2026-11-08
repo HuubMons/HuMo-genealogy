@@ -127,8 +127,8 @@ if (isset($_POST['duplicate_compare'])) {
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
-            <input type="hidden" name="left" value="<?= $_POST['right']; ?>">
-            <input type="hidden" name="right" value="<?= $_POST['left']; ?>">
+            <input type="hidden" name="left" value="<?= htmlspecialchars((string) $_POST['right'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+            <input type="hidden" name="right" value="<?= htmlspecialchars((string) $_POST['left'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
             <input type="submit" name="manual_compare" value="<?= __('<- Switch left and right ->'); ?>" class="btn btn-sm btn-success">
         </form>
 
@@ -142,8 +142,8 @@ if (isset($_POST['duplicate_compare'])) {
         <form method="post" action="index.php?page=tree&amp;menu_admin=tree_merge" style="display : inline;">
             <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
             <input type="hidden" name="manu" value="1">
-            <input type="hidden" name="left" value="<?= $_POST['left']; ?>">
-            <input type="hidden" name="right" value="<?= $_POST['right']; ?>">
+            <input type="hidden" name="left" value="<?= htmlspecialchars((string) $_POST['left'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+            <input type="hidden" name="right" value="<?= htmlspecialchars((string) $_POST['right'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
             <input type="submit" name="merge" value="<?= __('Merge right into left'); ?>" class="btn btn-sm btn-secondary"><br><br>
 
             <?php $treeMerge->show_pair($_POST['left'], $_POST['right'], 'manual'); ?><br>
@@ -208,7 +208,7 @@ if (isset($_POST['duplicate_compare'])) {
     // do merge and allow to continue with comparing duplicates
     // this is called up by the "Merge" button in manual and duplicate merge modes
 
-    echo '<br>' . $trees['name2'] . __(' was successfully merged into ') . $trees['name1'] . '<br><br>';  // john was successfully merged into jack
+    echo '<br>' . htmlspecialchars((string) $trees['name2'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . __(' was successfully merged into ') . htmlspecialchars((string) $trees['name1'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '<br><br>';  // john was successfully merged into jack
     if ($trees['rela'] > 0) {
         printf(__('After this merge there are %d surrounding relatives to be checked for merging!'), $trees['rela']);
         echo '<br><br>';
@@ -313,7 +313,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
     <?php
         for ($i = 0; $i < count($trees['mergedlist']); $i++) {
             $resultDb = $db_functions->get_person_with_id($trees['mergedlist'][$i]);
-            echo $resultDb->pers_lastname . ', ' . $resultDb->pers_firstname . ' ' . strtolower(str_replace("_", " ", $resultDb->pers_prefix)) . ' (#' . $resultDb->pers_gedcomnumber . ')<br>';
+            echo htmlspecialchars((string) $resultDb->pers_lastname, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ', ' . htmlspecialchars((string) $resultDb->pers_firstname, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ' ' . htmlspecialchars(strtolower(str_replace("_", " ", (string) $resultDb->pers_prefix)), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ' (#' . htmlspecialchars((string) $resultDb->pers_gedcomnumber, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ')<br>';
         }
     }
 } else {

@@ -10,18 +10,18 @@
 @set_time_limit(4000);
 ?>
 
-<h2><?= __('Update procedure'); ?></h2>
+<h2><?= $HtmlEscaper->escHtml(__('Update procedure')); ?></h2>
 
-<?= __('Multiple updates will be done. It is recommended to do a database backup!'); ?><br>
+<?= $HtmlEscaper->escHtml(__('Multiple updates will be done. It is recommended to do a database backup!')); ?><br>
 
 <div class="alert alert-danger my-2" role="alert">
-    <b><?= __('NEVER INTERRUPT THE UPDATE PROCEDURE!'); ?></b>
+    <b><?= $HtmlEscaper->escHtml(__('NEVER INTERRUPT THE UPDATE PROCEDURE!')); ?></b>
 </div>
 
-<b><?= __('Please wait until the notice that the update has been completed!'); ?></b>
+<b><?= $HtmlEscaper->escHtml(__('Please wait until the notice that the update has been completed!')); ?></b>
 
 <?php if (!isset($_GET['proceed'])) { ?>
-    <div class="mt-2"><a href="index.php?page=update&proceed=1"><?= __('Start update procedure'); ?></a></div>
+    <div class="mt-2"><a href="index.php?page=update&amp;proceed=1"><?= $HtmlEscaper->escHtml(__('Start update procedure')); ?></a></div>
     <?php
 } else {
     // *** UPDATE PROCEDURES ***
@@ -32,6 +32,8 @@
 
     function show_status($dbh, $humo_option, $version, $version_number)
     {
+        global $HtmlEscaper;
+
         // *** Example: this is version update 19. So check should be > 18 ***
         $check_number = $version_number - 1;
         if ((int)$humo_option["update_status"] > $check_number) {
@@ -39,16 +41,16 @@
             if ($version_number > 14) {
     ?>
                 <tr>
-                    <td>HuMo-genealogy update <?= $version ?></td>
+                    <td>HuMo-genealogy update <?= $HtmlEscaper->escHtml((string) $version); ?></td>
                     <td style="background-color:#00FF00">OK</td>
                 </tr>
             <?php
             }
         } else { ?>
             <tr>
-                <td>HuMo-genealogy update <?= $version ?></td>
+                <td>HuMo-genealogy update <?= $HtmlEscaper->escHtml((string) $version); ?></td>
                 <td style="background-color:#00FF00">
-                    <?= __('Update in progress...'); ?><div id="information <?= str_replace('.', '_', $version) ?>" style="display: inline; font-weight:bold;"></div>
+                    <?= $HtmlEscaper->escHtml(__('Update in progress...')); ?><div id="<?= $HtmlEscaper->escHtml('information ' . str_replace('.', '_', (string) $version)); ?>" style="display: inline; font-weight:bold;"></div>
 
                     <?php
                     $class = '\Genealogy\Admin\Migrations\Migration' . $version_number;
@@ -62,15 +64,24 @@
                     <div class="mt-2">
                         <a
                             class="btn btn-warning"
-                            href="index.php?page=update&proceed=1"
+                            href="index.php?page=update&amp;proceed=1"
                             id="reload-update-btn"
-                            onclick="this.disabled=true; this.innerText='<?= __('Processing...') ?>';"><?= __('Reload for next update') ?></a>
+                        ><?= $HtmlEscaper->escHtml(__('Reload for next update')); ?></a>
                     </div>
 
                     <script>
+                        const processingText = <?= json_encode(__('Processing...'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+
                         // Prevent double click by disabling the button after click, also show spinner icon.
                         function showSpinner(button) {
-                            button.innerHTML = '<div class="spinner-border spinner-border-sm text-light me-2" role="status"><span class="visually-hidden">Loading...</span></div><?= __('Processing...') ?>';
+                            const spinner = document.createElement('span');
+                            spinner.className = 'spinner-border spinner-border-sm text-light me-2';
+                            spinner.setAttribute('role', 'status');
+                            const loadingLabel = document.createElement('span');
+                            loadingLabel.className = 'visually-hidden';
+                            loadingLabel.textContent = 'Loading...';
+                            spinner.appendChild(loadingLabel);
+                            button.replaceChildren(spinner, document.createTextNode(processingText));
                         }
 
                         // Prevent double click by disabling the button after click
@@ -83,7 +94,7 @@
             </tr>
 
             <script>
-                document.getElementById("information <?= str_replace('.', '_', $version) ?>").innerHTML = "<?= __('Database updated!') ?>";
+                document.getElementById(<?= json_encode('information ' . str_replace('.', '_', (string) $version), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>).textContent = <?= json_encode(__('Database updated!'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
             </script>
 
             <?php
@@ -98,7 +109,7 @@
     <table class="table mt-2">
         <tr>
             <th colspan="2">
-                <?php printf(__('%s status'), 'HuMo-genealogy'); ?>
+                <?= $HtmlEscaper->escHtml(sprintf(__('%s status'), 'HuMo-genealogy')); ?>
             </th>
         </tr>
 
@@ -214,7 +225,7 @@
          */
         ?>
     </table><br>
-    <?= __('All updates completed, click at "Mainmenu"'); ?>.
-    <a href="index.php"><?= __('Main menu'); ?></a>
+    <?= $HtmlEscaper->escHtml(__('All updates completed, click at "Mainmenu"')); ?>.
+    <a href="index.php"><?= $HtmlEscaper->escHtml(__('Main menu')); ?></a>
 <?php
 }

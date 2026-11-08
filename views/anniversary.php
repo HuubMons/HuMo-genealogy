@@ -29,17 +29,17 @@ $languageDate = new Genealogy\Include\LanguageDate;
 <!-- *** Center page *** -->
 <div class="center">
     <!-- *** Show month and year *** -->
-    <h1 class="standard_header"><?= ucfirst($data["show_month"]) . ' ' . date("Y"); ?></h1>
+    <h1 class="standard_header"><?= $HtmlEscaper->escHtml(ucfirst((string) $data["show_month"]) . ' ' . date("Y")); ?></h1>
 
     <div>
-        <form name="anniv" id="anniv" action="<?= $path; ?>month=<?= $data["month"]; ?>" method="post">
+        <form name="anniv" id="anniv" action="<?= $HtmlEscaper->escHtml($path); ?>month=<?= $HtmlEscaper->escHtml((string) $data["month"]); ?>" method="post">
             <!-- Show line of months -->
             <div>
                 <?php foreach ($months as $month) { ?>
                     <?php if ($data["month"] == $month) { ?>
                         <b><?= __($month); ?></b>
                     <?php } else { ?>
-                        <a href="<?= $path; ?>month=<?= $month . $data["url_end"]; ?>"><?= __($month); ?></a>
+                        <a href="<?= $HtmlEscaper->escHtml($path); ?>month=<?= $HtmlEscaper->escHtml($month . $data["url_end"]); ?>"><?= __($month); ?></a>
                     <?php } ?>
                     <?php if ($month !== 'dec') {
                         echo '&#124;';
@@ -135,15 +135,15 @@ $languageDate = new Genealogy\Include\LanguageDate;
                     ?>
                             <!-- Highlight present day -->
                             <tr <?= $birth_day == $data["today"] ? 'class="table-primary"' : ''; ?>>
-                                <td><?= $calendar_day == $last_cal_day ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
+                                <td><?= $calendar_day == $last_cal_day ? '<br>' : $HtmlEscaper->escHtml((string) $calendar_day . ' ' . $data["show_month"]); ?></td>
                                 <?php $last_cal_day = $calendar_day; ?>
 
-                                <td><?= $privacy ?  __(' PRIVACY FILTER') : $record->birth_year; ?></td>
+                                <td><?= $privacy ?  __(' PRIVACY FILTER') : $HtmlEscaper->escHtml((string) $record->birth_year); ?></td>
 
-                                <td align="left"><a href="<?= $url; ?>"><?= $name["standard_name"]; ?></a></td>
+                                <td align="left"><a href="<?= $HtmlEscaper->escHtml($url); ?>"><?= $HtmlEscaper->escHtml($name["standard_name"]); ?></a></td>
 
                                 <td>
-                                    <div class="pale"><?= $privacy ? __(' PRIVACY FILTER') : $died; ?>
+                                    <div class="pale"><?= $privacy ? __(' PRIVACY FILTER') : $HtmlEscaper->escHtml($died); ?>
                                 </td>
                             </tr>
                     <?php
@@ -158,7 +158,7 @@ $languageDate = new Genealogy\Include\LanguageDate;
 
 
         <?php if ($privcount) { ?>
-            <br><?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
+            <br><?= $HtmlEscaper->escHtml((string) $privcount) . __(' persons are not shown due to privacy settings'); ?><br>
         <?php
         }
     } else {
@@ -262,7 +262,6 @@ $languageDate = new Genealogy\Include\LanguageDate;
                         if ($data["civil"] && $data["relig"]) {
                             function custom_sort($a, $b)
                             {
-                                //return $a['dayyear']>$b['dayyear']; // DEPRECATED in PHP 8.
                                 return $a['dayyear'] <=> $b['dayyear'];
                             }
                             // Sort the multidimensional array
@@ -282,7 +281,7 @@ $languageDate = new Genealogy\Include\LanguageDate;
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                                 $url = $personLink->get_person_link($manDb);
 
-                                $man_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                                $man_name = '<a href="' . $HtmlEscaper->escHtml($url) . '">' . $HtmlEscaper->escHtml($name["standard_name"]) . '</a>';
                             }
 
                             // get wife
@@ -296,7 +295,7 @@ $languageDate = new Genealogy\Include\LanguageDate;
                                 // *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
                                 $url = $personLink->get_person_link($womanDb);
 
-                                $woman_name = '<a href="' . $url . '">' . $name["standard_name"] . '</a>';
+                                $woman_name = '<a href="' . $HtmlEscaper->escHtml($url) . '">' . $HtmlEscaper->escHtml($name["standard_name"]) . '</a>';
                             }
 
                             $calendar_day = $value['calday'];
@@ -306,12 +305,12 @@ $languageDate = new Genealogy\Include\LanguageDate;
                     ?>
                                 <!-- Highlight present day -->
                                 <tr <?= $marr_day == $data["today"] ? 'class="table-primary"' : ''; ?>>
-                                    <td><?= $calendar_day == $last_cal_day ? '<br>' : $calendar_day . ' ' . $data["show_month"]; ?></td>
+                                    <td><?= $calendar_day == $last_cal_day ? '<br>' : $HtmlEscaper->escHtml((string) $calendar_day . ' ' . $data["show_month"]); ?></td>
                                     <?php $last_cal_day = $calendar_day; ?>
 
-                                    <td><?= $man_privacy and !$woman_privacy ? __(' PRIVACY FILTER') : $value['maryr']; ?></td>
+                                    <td><?= $man_privacy and !$woman_privacy ? __(' PRIVACY FILTER') : $HtmlEscaper->escHtml((string) $value['maryr']); ?></td>
 
-                                    <td align="left"><?= $value['type']; ?></td>
+                                    <td align="left"><?= $HtmlEscaper->escHtml($value['type']); ?></td>
                                     <td align="left"><?= $man_name . ' & ' . $woman_name; ?></td>
                                 </tr>
                         <?php
@@ -330,7 +329,7 @@ $languageDate = new Genealogy\Include\LanguageDate;
             </div>
         </div>
         <?php if ($privcount) { ?>
-            <br><?= $privcount . __(' persons are not shown due to privacy settings'); ?><br>
+            <br><?= $HtmlEscaper->escHtml((string) $privcount) . __(' persons are not shown due to privacy settings'); ?><br>
     <?php
         }
     }

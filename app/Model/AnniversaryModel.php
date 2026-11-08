@@ -116,12 +116,12 @@ class AnniversaryModel
     {
         $url_end = '';
         if ($ann_choice == 'wedding') {
-            $url_end = '&amp;ann_choice=wedding';
+            $url_end = '&ann_choice=wedding';
             if ($civil) {
-                $url_end .= '&amp;civil=civil';
+                $url_end .= '&civil=civil';
             }
             if ($relig) {
-                $url_end .= '&amp;relig=relig';
+                $url_end .= '&relig=relig';
             }
         }
         return $url_end;

@@ -5,6 +5,9 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 $found = false; // if this stays false, displays message that no problems where found
+$escapeHtml = static function ($value) {
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+};
 ?>
 
 <table class="table">
@@ -208,7 +211,7 @@ $found = false; // if this stays false, displays message that no problems where 
 // checks validity with validate_cls.php and displays invalid dates and their details
 function invalid($date, $gednr, $table)
 {
-    global $dbh, $db_functions, $tree_id, $language;
+    global $dbh, $db_functions, $tree_id, $language, $escapeHtml;
 
     $directionMarkers = new \Genealogy\Include\DirectionMarkers($language["dir"]);
     $validateDate = new \Genealogy\Include\ValidateDate;
@@ -231,10 +234,10 @@ function invalid($date, $gednr, $table)
             $name = $personDb->pers_firstname . ' ' . str_replace("_", " ", $personDb->pers_prefix . ' ' . $personDb->pers_lastname);
 ?>
             <tr>
-                <td><?= $gednr; ?></td>
-                <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $personDb->pers_gedcomnumber; ?>" target='_blank'><?= $name; ?></a></td>
-                <td><?= $table; ?></td>
-                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                <td><?= $escapeHtml($gednr); ?></td>
+                <td><a href="../admin/index.php?page=editor&amp;tree_id=<?= rawurlencode((string)$tree_id); ?>&amp;person=<?= rawurlencode((string)$personDb->pers_gedcomnumber); ?>" target="_blank"><?= $escapeHtml($name); ?></a></td>
+                <td><?= $escapeHtml($table); ?></td>
+                <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
             </tr>
         <?php
         }
@@ -257,10 +260,10 @@ function invalid($date, $gednr, $table)
             }
         ?>
             <tr>
-                <td><?= $gednr; ?></td>
-                <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $name1 . $and . $name2; ?></a></td>
-                <td><?= $table; ?></td>
-                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                <td><?= $escapeHtml($gednr); ?></td>
+                <td><a href="../admin/index.php?page=editor&amp;tree_id=<?= rawurlencode((string)$tree_id); ?>&amp;person=<?= rawurlencode((string)$spousegednr); ?>" target="_blank"><?= $escapeHtml($name1 . $and . $name2); ?></a></td>
+                <td><?= $escapeHtml($table); ?></td>
+                <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
             </tr>
             <?php
         }
@@ -279,10 +282,10 @@ function invalid($date, $gednr, $table)
                 }
             ?>
                 <tr>
-                    <td><?= $persDb->pers_gedcomnumber; ?></td>
-                    <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $persDb->pers_gedcomnumber; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by person'); ?>)</td>
-                    <td><?= $evDb['event_kind'] . $evdetail; ?></td>
-                    <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                    <td><?= $escapeHtml($persDb->pers_gedcomnumber); ?></td>
+                    <td><a href="../admin/index.php?page=editor&amp;tree_id=<?= rawurlencode((string)$tree_id); ?>&amp;person=<?= rawurlencode((string)$persDb->pers_gedcomnumber); ?>" target="_blank"><?= $escapeHtml($fullname); ?></a> (<?= __('Click events by person'); ?>)</td>
+                    <td><?= $escapeHtml($evDb['event_kind'] . $evdetail); ?></td>
+                    <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
                 </tr>
             <?php
             } elseif ($evDb['event_connect_kind'] == 'family' && $evDb['event_connect_id'] != '') {
@@ -308,10 +311,10 @@ function invalid($date, $gednr, $table)
                 }
             ?>
                 <tr>
-                    <td><?= $famDb->fam_gedcomnumber; ?></td>
-                    <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $spousegednr; ?>" target='_blank'><?= $fullname; ?></a> (<?= __('Click events by marriage'); ?>)</td>
-                    <td><?= $evDb['event_kind'] . $evdetail; ?></td>
-                    <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                    <td><?= $escapeHtml($famDb->fam_gedcomnumber); ?></td>
+                    <td><a href="../admin/index.php?page=editor&amp;tree_id=<?= rawurlencode((string)$tree_id); ?>&amp;person=<?= rawurlencode((string)$spousegednr); ?>" target="_blank"><?= $escapeHtml($fullname); ?></a> (<?= __('Click events by marriage'); ?>)</td>
+                    <td><?= $escapeHtml($evDb['event_kind'] . $evdetail); ?></td>
+                    <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
                 </tr>
             <?php
             }
@@ -320,13 +323,16 @@ function invalid($date, $gednr, $table)
             $connect = $dbh->query("SELECT * FROM humo_connections WHERE connect_id = '" . $gednr . "'");
             $connectDb = $connect->fetch();
             $name = '';
+            $nameIsHtml = false;
             if (substr($connectDb['connect_sub_kind'], 0, 3) === 'per') {
                 $persDb = $db_functions->get_person($connectDb['connect_connect_id']);
                 if (substr($connectDb['connect_sub_kind'], -6) === 'source') {
-                    $name = '<a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $persDb->pers_gedcomnumber . '" target=\'_blank\'>' . $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix . ' ' . $persDb->pers_lastname) . '</a> (' . __('Click relevant person source') . ')';
+                    $name = '<a href="../admin/index.php?page=editor&amp;tree_id=' . rawurlencode((string)$tree_id) . '&amp;person=' . rawurlencode((string)$persDb->pers_gedcomnumber) . '" target="_blank">' . $escapeHtml($persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix . ' ' . $persDb->pers_lastname)) . '</a> (' . __('Click relevant person source') . ')';
+                    $nameIsHtml = true;
                 }
                 if (substr($connectDb['connect_sub_kind'], -7) === 'address') {
-                    $name = '<a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $persDb->pers_gedcomnumber . '" target=\'_blank\'>' . $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix . ' ' . $persDb->pers_lastname) . '</a> (' . __('Click addresses') . ')';
+                    $name = '<a href="../admin/index.php?page=editor&amp;tree_id=' . rawurlencode((string)$tree_id) . '&amp;person=' . rawurlencode((string)$persDb->pers_gedcomnumber) . '" target="_blank">' . $escapeHtml($persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix . ' ' . $persDb->pers_lastname)) . '</a> (' . __('Click addresses') . ')';
+                    $nameIsHtml = true;
                 }
                 $gedcomnr = $persDb->pers_gedcomnumber;
             }
@@ -345,7 +351,8 @@ function invalid($date, $gednr, $table)
                     $spousegednr = $spouse2Db->pers_gedcomnumber;
                 }
                 if (substr($connectDb['connect_sub_kind'], -6) === 'source') {
-                    $name = '<a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $spousegednr . '" target=\'_blank\'>' . $name . '</a> (' . __('Click relevant family source');
+                    $name = '<a href="../admin/index.php?page=editor&amp;tree_id=' . rawurlencode((string)$tree_id) . '&amp;person=' . rawurlencode((string)$spousegednr) . '" target="_blank">' . $escapeHtml($name) . '</a> (' . __('Click relevant family source');
+                    $nameIsHtml = true;
                 }
                 $gedcomnr = $famDb->fam_gedcomnumber;
             }
@@ -375,15 +382,16 @@ function invalid($date, $gednr, $table)
                     $gedcomnr = $famDb->fam_gedcomnumber; // for first column
                 }
                 if (substr($connectDb['connect_sub_kind'], -6) === 'source') {
-                    $name = '<a href="../admin/index.php?page=editor&tree_id=' . $tree_id . '&person=' . $gednr . '" target=\'_blank\'>' . $name . '</a> (' . __('Click relevant event source') . ')';
+                    $name = '<a href="../admin/index.php?page=editor&amp;tree_id=' . rawurlencode((string)$tree_id) . '&amp;person=' . rawurlencode((string)$gednr) . '" target="_blank">' . $escapeHtml($name) . '</a> (' . __('Click relevant event source') . ')';
+                    $nameIsHtml = true;
                 }
             }
             ?>
             <tr>
-                <td><?= $gedcomnr; ?></td>
-                <td><?= $name; ?></td>
-                <td><?= $connectDb['connect_sub_kind']; ?></td>
-                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                <td><?= $escapeHtml($gedcomnr); ?></td>
+                <td><?= $nameIsHtml ? $name : $escapeHtml($name); ?></td>
+                <td><?= $escapeHtml($connectDb['connect_sub_kind']); ?></td>
+                <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
             </tr>
             <?php
         }
@@ -395,23 +403,23 @@ function invalid($date, $gednr, $table)
                 $name = $persDb->pers_firstname . ' ' . str_replace("_", " ", $persDb->pers_prefix) . ' ' . $persDb->pers_lastname;
             ?>
                 <tr>
-                    <td><?= $persDb->pers_gedcomnumber; ?></td>
-                    <td><a href="../admin/index.php?page=editor&tree_id=<?= $tree_id; ?>&person=<?= $persDb->pers_gedcomnumber; ?>" target='_blank'><?= $name; ?></a> (<?= __('Click addresses'); ?>)</td>
-                    <td><?= $table; ?></td>
-                    <td><?= $date; ?></td>
+                    <td><?= $escapeHtml($persDb->pers_gedcomnumber); ?></td>
+                    <td><a href="../admin/index.php?page=editor&amp;tree_id=<?= rawurlencode((string)$tree_id); ?>&amp;person=<?= rawurlencode((string)$persDb->pers_gedcomnumber); ?>" target="_blank"><?= $escapeHtml($name); ?></a> (<?= __('Click addresses'); ?>)</td>
+                    <td><?= $escapeHtml($table); ?></td>
+                    <td><?= $escapeHtml($date); ?></td>
                 </tr>
             <?php
             }
             if ($addressesDb['address_gedcomnr'] != '') {
             ?>
                 <tr>
-                    <td><?= $gednr; ?></td>
+                    <td><?= $escapeHtml($gednr); ?></td>
                     <td>
                         <a href="index.php?page=edit_addresses" target="_blank"><?= __('Address editor'); ?></a>
-                        (<?= __('search for:'); ?> <?= $addressesDb['address_address']; ?>)
+                        (<?= __('search for:'); ?> <?= $escapeHtml($addressesDb['address_address']); ?>)
                     </td>
-                    <td><?= $table; ?></td>
-                    <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                    <td><?= $escapeHtml($table); ?></td>
+                    <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
                 </tr>
             <?php
             }
@@ -420,13 +428,13 @@ function invalid($date, $gednr, $table)
             $sourcesDb = $db_functions->get_source($gednr);
             ?>
             <tr>
-                <td><?= $gednr; ?></td>
+                <td><?= $escapeHtml($gednr); ?></td>
                 <td>
-                    <a href="index.php?page=edit_sources&amp;source_id=<?= $sourcesDb->source_gedcomnr; ?>" target=" _blank"><?= __('Source editor'); ?></a>
-                    (<?= __('search for:'); ?> <?= $sourcesDb->source_title; ?>)
+                    <a href="index.php?page=edit_sources&amp;source_id=<?= rawurlencode((string)$sourcesDb->source_gedcomnr); ?>" target="_blank"><?= __('Source editor'); ?></a>
+                    (<?= __('search for:'); ?> <?= $escapeHtml($sourcesDb->source_title); ?>)
                 </td>
-                <td><?= $table; ?></td>
-                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                <td><?= $escapeHtml($table); ?></td>
+                <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
             </tr>
         <?php
         }
@@ -434,13 +442,13 @@ function invalid($date, $gednr, $table)
             $reposDb = $db_functions->get_repository($gednr);
         ?>
             <tr>
-                <td><?= $gednr; ?></td>
+                <td><?= $escapeHtml($gednr); ?></td>
                 <td>
                     <a href="index.php?page=edit_repositories" target="_blank"><?= __('Repository editor'); ?></a>
-                    (<?= __('search for:'); ?> <?= $reposDb->repo_name; ?>)
+                    (<?= __('search for:'); ?> <?= $escapeHtml($reposDb->repo_name); ?>)
                 </td>
-                <td><?= $table; ?></td>
-                <td><?= $directionMarkers->dirmark2 . $date; ?></td>
+                <td><?= $escapeHtml($table); ?></td>
+                <td><?= $escapeHtml($directionMarkers->dirmark2 . $date); ?></td>
             </tr>
 <?php
         }

@@ -54,14 +54,19 @@ sort($filenames);
 
 // *** Selected step ***
 $step = 5; // default step - user can choose 1 or 10 instead
-if (isset($_POST['step'])) {
-    $step = $_POST['step'];
+if (isset($_POST['step']) && in_array((int) $_POST['step'], [1, 5, 10], true)) {
+    $step = (int) $_POST['step'];
 }
 
 // *** Selected timeline ***
 $tml = $filenames[0][1]; // if default is not set the first file will be checked
 if (isset($_POST['tml'])) {
-    $tml = $_POST['tml'];
+    foreach ($filenames as $timelineFile) {
+        if ($_POST['tml'] === $timelineFile[1]) {
+            $tml = $timelineFile[1];
+            break;
+        }
+    }
 } elseif (isset($humo_option['default_timeline']) && $humo_option['default_timeline'] != "") {
     // humo_option is: nl!europa@de!Sweitz@en!british  etc.
     $str = explode("@", substr($humo_option['default_timeline'], 0, -1));
@@ -92,16 +97,17 @@ $path = $processLinks->get_link($uri_path, 'timeline', $personDb->pers_tree_id, 
 ?>
 
 <!-- Timeline menu -->
-<form name="tmlstep" method="post" action="<?= $path; ?>">
+<form name="tmlstep" method="post" action="<?= $HtmlEscaper->escHtml((string) $path); ?>">
+    <input type="hidden" name="id" value="<?= $HtmlEscaper->escHtml((string) $personDb->pers_gedcomnumber); ?>">
     <div class="p-2 me-sm-2 genealogy_search">
         <div class="row">
 
             <div class="col-md-auto"><?= __('Steps:'); ?></div>
             <div class="col-md-2">
                 <select size="1" name="step" aria-label="<?= __('Select step'); ?>" class="form-select form-select-sm">
-                    <option value="1" <?php if ($step == 1) echo 'selected'; ?>>1 <?= __('year'); ?></option>
-                    <option value="5" <?php if ($step == 5) echo 'selected'; ?>>5 <?= __('year'); ?></option>
-                    <option value="10" <?php if ($step == 10) echo 'selected'; ?>>10 <?= __('year'); ?></option>
+                    <option value="1" <?= ($step == 1) ? 'selected' : ''; ?>>1 <?= __('year'); ?></option>
+                    <option value="5" <?= ($step == 5) ? 'selected' : ''; ?>>5 <?= __('year'); ?></option>
+                    <option value="10" <?= ($step == 10) ? 'selected' : ''; ?>>10 <?= __('year'); ?></option>
                 </select>
             </div>
 
@@ -135,7 +141,7 @@ $path = $processLinks->get_link($uri_path, 'timeline', $personDb->pers_tree_id, 
                                 }
                             }
                         ?>
-                            <option value="<?= $filenames[$i][1]; ?>" <?= $selected; ?>><?= ucfirst($filenames[$i][1]); ?></option>
+                            <option value="<?= $HtmlEscaper->escHtml((string) $filenames[$i][1]); ?>" <?= $selected; ?>><?= $HtmlEscaper->escHtml(ucfirst((string) $filenames[$i][1])); ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -172,7 +178,7 @@ The timeline menu:<br>
 <li><strong>After choosing the desired step and/or timeline, click the "Change Display" button on the bottom of the menu.</strong></li></ul>'); ?>
                 <?php $popup_text = str_replace('"', "'", $popup_text); ?>
 
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $popup_text; ?>">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="<?= $HtmlEscaper->escHtml((string) $popup_text); ?>">
                     <?= __('Help'); ?>
                 </button>
             </div>
@@ -233,28 +239,28 @@ $eventdir = "ltr"; // default direction of timeline file is ltr (set to rtl late
 $eventLookup = [];
 // Main person events
 if ($data["bornyear"] != '') {
-    $eventLookup[$data["bornyear"]][] = $data["borntext"];
+    $eventLookup[$data["bornyear"]][] = $HtmlEscaper->escHtmlDecoded($data["borntext"]);
 }
 if ($data["baptyear"] != '') {
-    $eventLookup[$data["baptyear"]][] = $data["bapttext"];
+    $eventLookup[$data["baptyear"]][] = $HtmlEscaper->escHtmlDecoded($data["bapttext"]);
 }
 if ($data["deathyear"] != '') {
-    $eventLookup[$data["deathyear"]][] = $data["deathtext"];
+    $eventLookup[$data["deathyear"]][] = $HtmlEscaper->escHtmlDecoded($data["deathtext"]);
 }
 if ($data["burryear"] != '') {
-    $eventLookup[$data["burryear"]][] = $data["burrtext"];
+    $eventLookup[$data["burryear"]][] = $HtmlEscaper->escHtmlDecoded($data["burrtext"]);
 }
 if (isset($data["marryear"])) {
     foreach ($data["marryear"] as $i => $year) {
         if ($year != '') {
-            $eventLookup[$year][] = $data["marrtext"][$i];
+            $eventLookup[$year][] = $HtmlEscaper->escHtmlDecoded($data["marrtext"][$i]);
         }
     }
 }
 if (isset($data["spousedeathyear"])) {
     foreach ($data["spousedeathyear"] as $i => $year) {
         if ($year != '') {
-            $eventLookup[$year][] = $data["spousedeathtext"][$i];
+            $eventLookup[$year][] = $HtmlEscaper->escHtmlDecoded($data["spousedeathtext"][$i]);
         }
     }
 }
@@ -264,7 +270,7 @@ if (isset($data["chbornyear"])) {
         if (is_array($years)) {
             foreach ($years as $m => $year) {
                 if ($year != '') {
-                    $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $data["chborntext"][$i][$m] . "</span>";
+                    $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $HtmlEscaper->escHtmlDecoded($data["chborntext"][$i][$m]) . "</span>";
                 }
             }
         }
@@ -275,7 +281,7 @@ if (isset($data["chdeathyear"])) {
         if (is_array($years)) {
             foreach ($years as $m => $year) {
                 if ($year != '') {
-                    $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $data["chdeathtext"][$i][$m] . "</span>";
+                    $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $HtmlEscaper->escHtmlDecoded($data["chdeathtext"][$i][$m]) . "</span>";
                 }
             }
         }
@@ -288,7 +294,7 @@ if (isset($data["chmarryear"])) {
                 if (is_array($years2)) {
                     foreach ($years2 as $p => $year) {
                         if ($year != '') {
-                            $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $data["chmarrtext"][$i][$m][$p] . "</span>";
+                            $eventLookup[$year][] = "<span style='color:green;font-weight:normal'>" . $HtmlEscaper->escHtmlDecoded($data["chmarrtext"][$i][$m][$p]) . "</span>";
                         }
                     }
                 }
@@ -306,7 +312,7 @@ if (isset($data["grchbornyear"])) {
                         if (is_array($years3)) {
                             foreach ($years3 as $g => $year) {
                                 if ($year != '') {
-                                    $eventLookup[$year][] = "<span style='color:blue;font-weight:normal'>" . $data["grchborntext"][$i][$m][$p][$g] . "</span>";
+                                    $eventLookup[$year][] = "<span style='color:blue;font-weight:normal'>" . $HtmlEscaper->escHtmlDecoded($data["grchborntext"][$i][$m][$p][$g]) . "</span>";
                                 }
                             }
                         }
@@ -325,7 +331,7 @@ if (isset($data["grchdeathyear"])) {
                         if (is_array($years3)) {
                             foreach ($years3 as $g => $year) {
                                 if ($year != '') {
-                                    $eventLookup[$year][] = "<span style='color:blue;font-weight:normal'>" . $data["grchdeathtext"][$i][$m][$p][$g] . "</span>";
+                                    $eventLookup[$year][] = "<span style='color:blue;font-weight:normal'>" . $HtmlEscaper->escHtmlDecoded($data["grchdeathtext"][$i][$m][$p][$g]) . "</span>";
                                 }
                             }
                         }
@@ -340,7 +346,7 @@ if (isset($data["grchdeathyear"])) {
 <table class="table">
     <thead class="table-primary">
         <tr>
-            <th colspan='3'><?= $name["name"]; ?></th>
+            <th colspan='3'><?= $HtmlEscaper->escHtml((string) $name["name"]); ?></th>
         </tr>
     </thead>
 
@@ -425,7 +431,7 @@ if (isset($data["grchdeathyear"])) {
                                         if ($flag_br == 1) {
                                             echo "<br>";
                                         }
-                                        echo $thisyear . $eventdata;
+                                        echo $HtmlEscaper->escHtmlDecoded((string) $thisyear . $eventdata);
                                         $flag_br = 1;
                                     }
                                 } else {
@@ -433,7 +439,7 @@ if (isset($data["grchdeathyear"])) {
                                     if ($flag_br == 1) {
                                         echo "<br>";
                                     }
-                                    echo $thisyear . $eventdata;
+                                    echo $HtmlEscaper->escHtmlDecoded((string) $thisyear . $eventdata);
                                     $flag_br = 1;
                                 }
                             }

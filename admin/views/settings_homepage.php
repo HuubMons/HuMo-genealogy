@@ -58,8 +58,8 @@ if (!defined('ADMIN_PAGE')) {
                 <div class="row">
                     <!-- Active/ inactive with background colour -->
                     <div class="col-md-1 <?= $settings['module_active'][$i] == 'inactive' ? 'bg-info' : ''; ?>">
-                        <input type="hidden" name="<?= $settings['module_setting_id'][$i]; ?>id" value="<?= $settings['module_setting_id'][$i]; ?>">
-                        <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_status" class="form-select form-select-sm">
+                        <input type="hidden" name="<?= (int) $settings['module_setting_id'][$i]; ?>id" value="<?= (int) $settings['module_setting_id'][$i]; ?>">
+                        <select size="1" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_status" class="form-select form-select-sm">
                             <option value="active"><?= __('Active'); ?></option>
                             <option value="inactive" <?php if ($settings['module_active'][$i] == 'inactive') echo ' selected'; ?>><?= __('Inactive'); ?></option>
                         </select>
@@ -67,7 +67,7 @@ if (!defined('ADMIN_PAGE')) {
 
                     <!-- TODO use seperate blocks for editing left/center/right items -->
                     <div class="col-md-1">
-                        <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_column" class="form-select form-select-sm">
+                        <select size="1" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_column" class="form-select form-select-sm">
                             <option value="left"><?= __('Left'); ?></option>
                             <option value="center" <?php if ($settings['module_position'][$i] == 'center') echo ' selected'; ?>><?= __('Center'); ?></option>
                             <option value="right" <?php if ($settings['module_position'][$i] == 'right') echo ' selected'; ?>><?= __('Right'); ?></option>
@@ -76,18 +76,18 @@ if (!defined('ADMIN_PAGE')) {
 
                     <div class="col-md-1">
                         <?php if ($enable_drag) { ?>
-                            <span style="cursor:move;" id="<?= $settings['module_setting_id'][$i]; ?>" class="handle me-4">
+                            <span style="cursor:move;" id="<?= (int) $settings['module_setting_id'][$i]; ?>" class="handle me-4">
                                 <img src="images/drag-icon.gif" border="0" title="<?= __('Drag to change order (saves automatically)'); ?>" alt="<?= __('Drag to change order'); ?>">
                             </span>
                         <?php } ?>
 
-                        <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_module=<?= $settings['module_setting_id'][$i]; ?>">
+                        <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_module=<?= (int) $settings['module_setting_id'][$i]; ?>">
                             <img src="images/button_drop.png" border="0" alt="remove">
                         </a>
                     </div>
 
                     <div class="col-md-3">
-                        <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_item" class="form-select form-select-sm">
+                        <select size="1" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_item" class="form-select form-select-sm">
                             <option value="select_family_tree"><?= __('Select family tree'); ?></option>
                             <option value="selected_family_tree" <?= $settings['module_item'][$i] == 'selected_family_tree' ? ' selected' : ''; ?>><?= __('Selected family tree'); ?></option>
                             <option value="search" <?= $settings['module_item'][$i] == 'search' ? ' selected' : ''; ?>><?= __('Search'); ?></option>
@@ -111,7 +111,7 @@ if (!defined('ADMIN_PAGE')) {
                                     <?= __('Columns'); ?>
                                 </div>
                                 <div class="col-md-auto">
-                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
+                                    <select size="1" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
                                         <option value="1">1</option>
                                         <option value="2" <?= $settings['module_option_1'][$i] === '2' ? 'selected' : ''; ?>>2</option>
                                         <option value="3" <?= $settings['module_option_1'][$i] === '3' ? 'selected' : ''; ?>>3</option>
@@ -123,7 +123,7 @@ if (!defined('ADMIN_PAGE')) {
                                     <?= __('Rows'); ?>
                                 </div>
                                 <div class="col-md-auto">
-                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2" class="form-select form-select-sm">
+                                    <select size="1" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_2" class="form-select form-select-sm">
                                         <option value="1">1</option>
                                         <option value="2" <?= $settings['module_option_2'][$i] === '2' ? 'selected' : ''; ?>>2</option>
                                         <option value="3" <?= $settings['module_option_2'][$i] === '3' ? 'selected' : ''; ?>>3</option>
@@ -145,8 +145,8 @@ if (!defined('ADMIN_PAGE')) {
                         if ($settings['module_item'][$i] === 'text') {
                         ?>
                             <!-- Header text -->
-                            <input type="text" placeholder="<?= __('Header'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $settings['module_option_1'][$i]; ?>" size="30" class="form-control form-control-sm mb-1">
-                            <textarea rows="4" cols="50" placeholder="<?= __('Text'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2" class="form-control form-control-sm mb-1"><?= $settings['module_option_2'][$i]; ?></textarea>
+                            <input type="text" placeholder="<?= $HtmlEscaper->escHtml(__('Header')); ?>" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $HtmlEscaper->escHtml((string) $settings['module_option_1'][$i]); ?>" size="30" class="form-control form-control-sm mb-1">
+                            <textarea rows="4" cols="50" placeholder="<?= $HtmlEscaper->escHtml(__('Text')); ?>" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_2" class="form-control form-control-sm mb-1"><?= $HtmlEscaper->escHtml((string) $settings['module_option_2'][$i]); ?></textarea>
                             <?= __('Show text block, HTML codes can be used.'); ?>
                         <?php
                         }
@@ -154,8 +154,8 @@ if (!defined('ADMIN_PAGE')) {
                         if ($settings['module_item'][$i] === 'own_script') {
                         ?>
                             <!-- Own script -->
-                            <input type="text" placeholder="<?= __('Header'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $settings['module_option_1'][$i]; ?>" size="30" class="form-control form-control-sm mb-1">
-                            <input type="text" placeholder="<?= __('File name'); ?>" name="<?= $settings['module_setting_id'][$i]; ?>module_option_2" value="<?= $settings['module_option_2'][$i]; ?>" size="30" class="form-control form-control-sm mb-1">
+                            <input type="text" placeholder="<?= $HtmlEscaper->escHtml(__('Header')); ?>" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_1" value="<?= $HtmlEscaper->escHtml((string) $settings['module_option_1'][$i]); ?>" size="30" class="form-control form-control-sm mb-1">
+                            <input type="text" placeholder="<?= $HtmlEscaper->escHtml(__('File name')); ?>" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_2" value="<?= $HtmlEscaper->escHtml((string) $settings['module_option_2'][$i]); ?>" size="30" class="form-control form-control-sm mb-1">
                             <?= __('File name (full path) of the file with own script.'); ?>
                         <?php
                         }
@@ -165,9 +165,9 @@ if (!defined('ADMIN_PAGE')) {
                         ?>
                             <div class="row">
                                 <div class="col-md-auto">
-                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
+                                    <select size="1" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
                                         <?php while ($pageDb = $qry->fetch(PDO::FETCH_OBJ)) { ?>
-                                            <option value="<?= $pageDb->page_id; ?>" <?= $settings['module_option_1'][$i] == $pageDb->page_id ? 'selected' : ''; ?>><?= $pageDb->page_title; ?></option>
+                                            <option value="<?= (int) $pageDb->page_id; ?>" <?= $settings['module_option_1'][$i] == $pageDb->page_id ? 'selected' : ''; ?>><?= $HtmlEscaper->escHtml((string) $pageDb->page_title); ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
@@ -185,7 +185,7 @@ if (!defined('ADMIN_PAGE')) {
                                     <?= __('View'); ?>
                                 </div>
                                 <div class="col-md-auto">
-                                    <select size="1" name="<?= $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
+                                    <select size="1" name="<?= (int) $settings['module_setting_id'][$i]; ?>module_option_1" class="form-select form-select-sm">
                                         <option value="with_table"><?= __('with table'); ?></option>
                                         <option value="without_table" <?= $settings['module_option_1'][$i] === 'without_table' ? 'selected' : ''; ?>><?= __('without table'); ?></option>
                                     </select>
@@ -204,7 +204,7 @@ if (!defined('ADMIN_PAGE')) {
             <div class="row">
                 <!-- Active/ inactive with background colour -->
                 <div class="col-md-1">
-                    <input type="hidden" name="module_order" value="<?= $settings['nr_modules'] + 1; ?>">
+                    <input type="hidden" name="module_order" value="<?= (int) $settings['nr_modules'] + 1; ?>">
                     <select size="1" name="module_status" class="form-select form-select-sm">
                         <option value="active"><?= __('Active'); ?></option>
                         <option value="inactive"><?= __('Inactive'); ?></option>
@@ -290,13 +290,13 @@ if (!defined('ADMIN_PAGE')) {
         ?>
                 <tr>
                     <td>
-                        <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_link=<?= $link->setting_id; ?>">
+                        <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_link=<?= (int) $link->setting_id; ?>">
                             <img src="images/button_drop.png" border="0" alt="remove">
                         </a>
 
-                        <input type="hidden" name="<?= $link->setting_id; ?>id" value="<?= $link->setting_id; ?>"><?= __('Link') . ' ' . $teller; ?>
+                        <input type="hidden" name="<?= (int) $link->setting_id; ?>id" value="<?= (int) $link->setting_id; ?>"><?= __('Link') . ' ' . (int) $teller; ?>
                         <?php if ($link->setting_order != '1') { ?>
-                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;up=1&amp;link_order=<?= $link->setting_order; ?>&amp;id=<?= $link->setting_id; ?>">
+                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;up=1&amp;link_order=<?= (int) $link->setting_order; ?>&amp;id=<?= (int) $link->setting_id; ?>">
                                 <img src="images/arrow_up.gif" border="0" alt="up">
                             </a>
                         <?php
@@ -304,13 +304,13 @@ if (!defined('ADMIN_PAGE')) {
 
                         if ($link->setting_order != $count_links) {
                         ?>
-                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;down=1&amp;link_order=<?= $link->setting_order; ?>&amp;id=<?= $link->setting_id; ?>">
+                            <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;down=1&amp;link_order=<?= (int) $link->setting_order; ?>&amp;id=<?= (int) $link->setting_id; ?>">
                                 <img src="images/arrow_down.gif" border="0" alt="down">
                             </a>
                         <?php } ?>
                     </td>
-                    <td><input type="text" name="<?= $link->setting_id; ?>own_code" value="<?= $lijst[0]; ?>" size="5" class="form-control form-control-sm"></td>
-                    <td><input type="text" name="<?= $link->setting_id; ?>link_text" value="<?= $lijst[1]; ?>" size="20" class="form-control form-control-sm"></td>
+                    <td><input type="text" name="<?= (int) $link->setting_id; ?>own_code" value="<?= $HtmlEscaper->escHtml((string) ($lijst[0] ?? '')); ?>" size="5" class="form-control form-control-sm"></td>
+                    <td><input type="text" name="<?= (int) $link->setting_id; ?>link_text" value="<?= $HtmlEscaper->escHtml((string) ($lijst[1] ?? '')); ?>" size="20" class="form-control form-control-sm"></td>
                     <td><br></td>
                 </tr>
             <?php
@@ -321,7 +321,7 @@ if (!defined('ADMIN_PAGE')) {
             <!-- Add new link -->
             <tr class="table-secondary">
                 <td><br></td>
-                <input type="hidden" name="link_order" value="<?= $new_number; ?>">
+                <input type="hidden" name="link_order" value="<?= (int) $new_number; ?>">
                 <td><input type="text" name="own_code" value="Code" size="5" class="form-control form-control-sm"></td>
                 <td><input type="text" name="link_text" value="<?= __('Owner of tree'); ?>" size="20" class="form-control form-control-sm"></td>
                 <td><input type="submit" name="add_link" value="<?= __('Add'); ?>" class="btn btn-sm btn-primary"></td>
@@ -376,32 +376,32 @@ $slideshow_04 = explode('|', $humo_option["slideshow_04"]);
         <!-- Picture 1 -->
         <tr>
             <td><?= __('Link to image'); ?> 1<br><?= __('Link description'); ?> 1</td>
-            <td><input type="text" name="slideshow_slide_01" value="<?= $slideshow_01[0]; ?>" size="40" class="form-control form-control-sm mb-1">
-                <input type="text" name="slideshow_text_01" value="<?= $slideshow_01[1]; ?>" size="40" class="form-control form-control-sm">
+            <td><input type="text" name="slideshow_slide_01" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_01[0] ?? '')); ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_01" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_01[1] ?? '')); ?>" size="40" class="form-control form-control-sm">
             </td>
             <td>media/slideshow/slide01.jpg</td>
         </tr>
         <!-- Picture 2 -->
         <tr>
             <td><?= __('Link to image'); ?> 2<br><?= __('Link description'); ?> 2</td>
-            <td><input type="text" name="slideshow_slide_02" value="<?= $slideshow_02[0]; ?>" size="40" class="form-control form-control-sm mb-1">
-                <input type="text" name="slideshow_text_02" value="<?= $slideshow_02[1]; ?>" size="40" class="form-control form-control-sm">
+            <td><input type="text" name="slideshow_slide_02" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_02[0] ?? '')); ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_02" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_02[1] ?? '')); ?>" size="40" class="form-control form-control-sm">
             </td>
             <td>media/slideshow/slide02.jpg</td>
         </tr>
         <!-- Picture 3 -->
         <tr>
             <td><?= __('Link to image'); ?> 3<br><?= __('Link description'); ?> 3</td>
-            <td><input type="text" name="slideshow_slide_03" value="<?= $slideshow_03[0]; ?>" size="40" class="form-control form-control-sm mb-1">
-                <input type="text" name="slideshow_text_03" value="<?= $slideshow_03[1]; ?>" size="40" class="form-control form-control-sm">
+            <td><input type="text" name="slideshow_slide_03" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_03[0] ?? '')); ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_03" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_03[1] ?? '')); ?>" size="40" class="form-control form-control-sm">
             </td>
             <td>media/slideshow/slide03.jpg</td>
         </tr>
         <!-- Picture 4 -->
         <tr>
             <td><?= __('Link to image'); ?> 4<br><?= __('Link description'); ?> 4</td>
-            <td><input type="text" name="slideshow_slide_04" value="<?= $slideshow_04[0]; ?>" size="40" class="form-control form-control-sm mb-1">
-                <input type="text" name="slideshow_text_04" value="<?= $slideshow_04[1]; ?>" size="40" class="form-control form-control-sm">
+            <td><input type="text" name="slideshow_slide_04" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_04[0] ?? '')); ?>" size="40" class="form-control form-control-sm mb-1">
+                <input type="text" name="slideshow_text_04" value="<?= $HtmlEscaper->escHtml((string) ($slideshow_04[1] ?? '')); ?>" size="40" class="form-control form-control-sm">
             </td>
             <td>media/slideshow/slide04.jpg</td>
         </tr>

@@ -31,10 +31,10 @@ if (isset($_POST['save_language'])) {
 
     <?php if ($message) { ?>
         <div class="alert alert-secondary mt-2" role="alert">
-            <?= $message; ?>
+            <?= $HtmlEscaper->escHtml((string) $message); ?>
         </div>
     <?php } ?>
 
-    <textarea rows="35" cols="120" name="language_text" class="mt-2"><?= file_get_contents($file); ?></textarea>
+    <textarea rows="35" cols="120" name="language_text" class="mt-2"><?= $HtmlEscaper->escHtml((string) file_get_contents($file)); ?></textarea>
 </form>
 <br>

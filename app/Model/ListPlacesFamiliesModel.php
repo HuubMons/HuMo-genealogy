@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Aug. 2026. Improved performance by using STRAIGHT_JOIN and FORCE INDEX to optimize the query execution plan.
+ * This change aims to reduce the time taken for complex queries involving multiple joins and conditions,
+ * especially when filtering by place names in marriage-related events.
+ * The use of STRAIGHT_JOIN ensures that the join order is preserved as specified,
+ * while FORCE INDEX directs the database to use specific indexes, improving retrieval speed for large datasets.
+ */
+
 namespace Genealogy\App\Model;
 
 use Genealogy\App\Model\BaseModel;
@@ -92,19 +100,18 @@ class ListPlacesFamiliesModel extends BaseModel
         $buildCondition = new BuildCondition();
 
         $query = '';
-
         $data = $this->getSelection();
 
-        //*** Places index ***
-        // *** EXAMPLE of a UNION querie ***
-        //$qry = "(SELECT * FROM humo1_person ".$query.') ';
-        //$qry.= " UNION (SELECT * FROM humo2_person ".$query.')';
-        //$qry.= " ORDER BY pers_lastname, pers_firstname";
-
-        $query = '';
         $start = false;
 
-        $base_query = "
+        /*
+         * Search marriage place
+         */
+        if ($data["select_marriage"] == '1') {
+
+            $query = "(SELECT SQL_CALC_FOUND_ROWS *,
+            marriage_location.location_location AS place_order,
+
             marr_notice_location.location_location AS fam_marr_notice_place,
             marr_notice.event_date AS fam_marr_notice_date,
 
@@ -122,119 +129,328 @@ class ListPlacesFamiliesModel extends BaseModel
             woman_rel.person_id AS partner2_id,
             woman_rel.person_gedcomnumber AS partner2_gedcomnumber
 
-            FROM humo_families
+            FROM humo_events AS marriage FORCE INDEX (idx_kind_relation_place)
+
+            STRAIGHT_JOIN humo_location AS marriage_location FORCE INDEX (PRIMARY)
+                ON marriage.place_id = marriage_location.location_id
+
+            STRAIGHT_JOIN humo_families
+                ON humo_families.fam_id = marriage.relation_id
+                AND humo_families.fam_tree_id = '" . $this->tree_id . "'
 
             LEFT JOIN humo_events AS marr_notice
-            ON humo_families.fam_id = marr_notice.relation_id AND marr_notice.event_kind = 'marriage_notice'
-            LEFT JOIN humo_location AS marr_notice_location
-            ON marr_notice.place_id = marr_notice_location.location_id
+                ON humo_families.fam_id = marr_notice.relation_id
+                AND marr_notice.event_kind = 'marriage_notice'
 
-            LEFT JOIN humo_events AS marriage
-            ON humo_families.fam_id = marriage.relation_id AND marriage.event_kind = 'marriage'
-            LEFT JOIN humo_location AS marriage_location
-            ON marriage.place_id = marriage_location.location_id
+            LEFT JOIN humo_location AS marr_notice_location FORCE INDEX (PRIMARY)
+                ON marr_notice.place_id = marr_notice_location.location_id
 
             LEFT JOIN humo_events AS marr_church_notice
-            ON humo_families.fam_id = marr_church_notice.relation_id AND marr_church_notice.event_kind = 'marr_church_notice'
-            LEFT JOIN humo_location AS marr_church_notice_location
-            ON marr_church_notice.place_id = marr_church_notice_location.location_id
+                ON humo_families.fam_id = marr_church_notice.relation_id
+                AND marr_church_notice.event_kind = 'marr_church_notice'
+
+            LEFT JOIN humo_location AS marr_church_notice_location FORCE INDEX (PRIMARY)
+                ON marr_church_notice.place_id = marr_church_notice_location.location_id
 
             LEFT JOIN humo_events AS marr_church
-            ON humo_families.fam_id = marr_church.relation_id AND marr_church.event_kind = 'marr_church'
-            LEFT JOIN humo_location AS marr_church_location
-            ON marr_church.place_id = marr_church_location.location_id
+                ON humo_families.fam_id = marr_church.relation_id
+                AND marr_church.event_kind = 'marr_church'
 
-            LEFT JOIN humo_relations_persons man_rel ON man_rel.relation_id = humo_families.fam_id AND man_rel.relation_type = 'partner' AND man_rel.partner_order = 1
-            LEFT JOIN humo_relations_persons woman_rel ON woman_rel.relation_id = humo_families.fam_id AND woman_rel.relation_type = 'partner' AND woman_rel.partner_order = 2
-        ";
+            LEFT JOIN humo_location AS marr_church_location FORCE INDEX (PRIMARY)
+                ON marr_church.place_id = marr_church_location.location_id
 
-        // *** Search marriage place ***
-        if ($data["select_marriage"] == '1') {
-            //$query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order FROM humo_families";
+            LEFT JOIN humo_relations_persons AS man_rel
+                ON man_rel.relation_id = humo_families.fam_id
+                AND man_rel.relation_type = 'partner'
+                AND man_rel.partner_order = 1
 
-            $query = "(SELECT SQL_CALC_FOUND_ROWS *, marriage_location.location_location as place_order,";
-            $query .= $base_query;
+            LEFT JOIN humo_relations_persons AS woman_rel
+                ON woman_rel.relation_id = humo_families.fam_id
+                AND woman_rel.relation_type = 'partner'
+                AND woman_rel.partner_order = 2
+
+            WHERE marriage.event_kind = 'marriage'";
 
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marriage_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " AND marriage_location.location_location " .
+                    $buildCondition->build(
+                        $data["place_name"],
+                        $data["part_place_name"]
+                    );
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marriage_location.location_location LIKE '_%'";
+                $query .= " AND marriage_location.location_location LIKE '_%'";
             }
+
             $query .= ')';
             $start = true;
         }
 
-        // *** Search marriage church place ***
+        /*
+         * Search religious marriage place
+         */
         if ($data["select_marriage_religious"] == '1') {
-            if ($start == true) {
+
+            if ($start) {
                 $query .= ' UNION ';
                 $calc = '';
             } else {
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
-            //$query .= "(SELECT " . $calc . "*, fam_marr_church_place as place_order FROM humo_families";
 
-            $query .= "(SELECT " . $calc . "*, marr_church_location.location_location as place_order,";
-            $query .= $base_query;
+            $query .= "(SELECT " . $calc . "*,
+            marr_church_location.location_location AS place_order,
+
+            marr_notice_location.location_location AS fam_marr_notice_place,
+            marr_notice.event_date AS fam_marr_notice_date,
+
+            marriage_location.location_location AS fam_marr_place,
+            marriage.event_date AS fam_marr_date,
+
+            marr_church_notice_location.location_location AS fam_marr_church_notice_place,
+            marr_church_notice.event_date AS fam_marr_church_notice_date,
+
+            marr_church_location.location_location AS fam_marr_church_place,
+            marr_church.event_date AS fam_marr_church_date,
+
+            man_rel.person_id AS partner1_id,
+            man_rel.person_gedcomnumber AS partner1_gedcomnumber,
+            woman_rel.person_id AS partner2_id,
+            woman_rel.person_gedcomnumber AS partner2_gedcomnumber
+
+            FROM humo_events AS marr_church FORCE INDEX (idx_kind_relation_place)
+
+            STRAIGHT_JOIN humo_location AS marr_church_location FORCE INDEX (PRIMARY)
+                ON marr_church.place_id = marr_church_location.location_id
+
+            STRAIGHT_JOIN humo_families
+                ON humo_families.fam_id = marr_church.relation_id
+                AND humo_families.fam_tree_id = '" . $this->tree_id . "'
+
+            LEFT JOIN humo_events AS marr_notice
+                ON humo_families.fam_id = marr_notice.relation_id
+                AND marr_notice.event_kind = 'marriage_notice'
+
+            LEFT JOIN humo_location AS marr_notice_location FORCE INDEX (PRIMARY)
+                ON marr_notice.place_id = marr_notice_location.location_id
+
+            LEFT JOIN humo_events AS marriage
+                ON humo_families.fam_id = marriage.relation_id
+                AND marriage.event_kind = 'marriage'
+
+            LEFT JOIN humo_location AS marriage_location FORCE INDEX (PRIMARY)
+                ON marriage.place_id = marriage_location.location_id
+
+            LEFT JOIN humo_events AS marr_church_notice
+                ON humo_families.fam_id = marr_church_notice.relation_id
+                AND marr_church_notice.event_kind = 'marr_church_notice'
+
+            LEFT JOIN humo_location AS marr_church_notice_location FORCE INDEX (PRIMARY)
+                ON marr_church_notice.place_id = marr_church_notice_location.location_id
+
+            LEFT JOIN humo_relations_persons AS man_rel
+                ON man_rel.relation_id = humo_families.fam_id
+                AND man_rel.relation_type = 'partner'
+                AND man_rel.partner_order = 1
+
+            LEFT JOIN humo_relations_persons AS woman_rel
+                ON woman_rel.relation_id = humo_families.fam_id
+                AND woman_rel.relation_type = 'partner'
+                AND woman_rel.partner_order = 2
+
+            WHERE marr_church.event_kind = 'marr_church'";
 
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " AND marr_church_location.location_location " .
+                    $buildCondition->build(
+                        $data["place_name"],
+                        $data["part_place_name"]
+                    );
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_location.location_location LIKE '_%'";
+                $query .= " AND marr_church_location.location_location LIKE '_%'";
             }
+
             $query .= ')';
             $start = true;
         }
 
-        // *** Search marriage notice place ***
+        /*
+         * Search marriage notice place
+         */
         if ($data["select_marriage_notice"] == '1') {
-            if ($start == true) {
+
+            if ($start) {
                 $query .= ' UNION ';
                 $calc = '';
             } else {
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
 
-            //$query .= "(SELECT " . $calc . "*, fam_marr_notice_place as place_order FROM humo_families";
+            $query .= "(SELECT " . $calc . "*,
+            marr_notice_location.location_location AS place_order,
 
-            $query .= "(SELECT " . $calc . "*, marr_notice_location.location_location as place_order,";
-            $query .= $base_query;
+            marr_notice_location.location_location AS fam_marr_notice_place,
+            marr_notice.event_date AS fam_marr_notice_date,
+
+            marriage_location.location_location AS fam_marr_place,
+            marriage.event_date AS fam_marr_date,
+
+            marr_church_notice_location.location_location AS fam_marr_church_notice_place,
+            marr_church_notice.event_date AS fam_marr_church_notice_date,
+
+            marr_church_location.location_location AS fam_marr_church_place,
+            marr_church.event_date AS fam_marr_church_date,
+
+            man_rel.person_id AS partner1_id,
+            man_rel.person_gedcomnumber AS partner1_gedcomnumber,
+            woman_rel.person_id AS partner2_id,
+            woman_rel.person_gedcomnumber AS partner2_gedcomnumber
+
+            FROM humo_events AS marr_notice FORCE INDEX (idx_kind_relation_place)
+
+            STRAIGHT_JOIN humo_location AS marr_notice_location FORCE INDEX (PRIMARY)
+                ON marr_notice.place_id = marr_notice_location.location_id
+
+            STRAIGHT_JOIN humo_families
+                ON humo_families.fam_id = marr_notice.relation_id
+                AND humo_families.fam_tree_id = '" . $this->tree_id . "'
+
+            LEFT JOIN humo_events AS marriage
+                ON humo_families.fam_id = marriage.relation_id
+                AND marriage.event_kind = 'marriage'
+
+            LEFT JOIN humo_location AS marriage_location FORCE INDEX (PRIMARY)
+                ON marriage.place_id = marriage_location.location_id
+
+            LEFT JOIN humo_events AS marr_church_notice
+                ON humo_families.fam_id = marr_church_notice.relation_id
+                AND marr_church_notice.event_kind = 'marr_church_notice'
+
+            LEFT JOIN humo_location AS marr_church_notice_location FORCE INDEX (PRIMARY)
+                ON marr_church_notice.place_id = marr_church_notice_location.location_id
+
+            LEFT JOIN humo_events AS marr_church
+                ON humo_families.fam_id = marr_church.relation_id
+                AND marr_church.event_kind = 'marr_church'
+
+            LEFT JOIN humo_location AS marr_church_location FORCE INDEX (PRIMARY)
+                ON marr_church.place_id = marr_church_location.location_id
+
+            LEFT JOIN humo_relations_persons AS man_rel
+                ON man_rel.relation_id = humo_families.fam_id
+                AND man_rel.relation_type = 'partner'
+                AND man_rel.partner_order = 1
+
+            LEFT JOIN humo_relations_persons AS woman_rel
+                ON woman_rel.relation_id = humo_families.fam_id
+                AND woman_rel.relation_type = 'partner'
+                AND woman_rel.partner_order = 2
+
+            WHERE marr_notice.event_kind = 'marriage_notice'";
 
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_notice_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " AND marr_notice_location.location_location " .
+                    $buildCondition->build(
+                        $data["place_name"],
+                        $data["part_place_name"]
+                    );
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_notice_location.location_location LIKE '_%'";
+                $query .= " AND marr_notice_location.location_location LIKE '_%'";
             }
+
             $query .= ')';
             $start = true;
         }
 
-        // *** Search marriage notice place ***
+        /*
+         * Search religious marriage notice place
+         */
         if ($data["select_marriage_notice_religious"] == '1') {
-            if ($start == true) {
+
+            if ($start) {
                 $query .= ' UNION ';
                 $calc = '';
             } else {
                 $calc = 'SQL_CALC_FOUND_ROWS ';
             }
 
-            //$query .= "(SELECT " . $calc . "*, fam_marr_church_notice_place as place_order FROM humo_families";
+            $query .= "(SELECT " . $calc . "*,
+            marr_church_notice_location.location_location AS place_order,
 
-            $query .= "(SELECT " . $calc . "*, marr_church_notice_location.location_location as place_order,";
-            $query .= $base_query;
+            marr_notice_location.location_location AS fam_marr_notice_place,
+            marr_notice.event_date AS fam_marr_notice_date,
+
+            marriage_location.location_location AS fam_marr_place,
+            marriage.event_date AS fam_marr_date,
+
+            marr_church_notice_location.location_location AS fam_marr_church_notice_place,
+            marr_church_notice.event_date AS fam_marr_church_notice_date,
+
+            marr_church_location.location_location AS fam_marr_church_place,
+            marr_church.event_date AS fam_marr_church_date,
+
+            man_rel.person_id AS partner1_id,
+            man_rel.person_gedcomnumber AS partner1_gedcomnumber,
+            woman_rel.person_id AS partner2_id,
+            woman_rel.person_gedcomnumber AS partner2_gedcomnumber
+
+            FROM humo_events AS marr_church_notice FORCE INDEX (idx_kind_relation_place)
+
+            STRAIGHT_JOIN humo_location AS marr_church_notice_location FORCE INDEX (PRIMARY)
+                ON marr_church_notice.place_id = marr_church_notice_location.location_id
+
+            STRAIGHT_JOIN humo_families
+                ON humo_families.fam_id = marr_church_notice.relation_id
+                AND humo_families.fam_tree_id = '" . $this->tree_id . "'
+
+            LEFT JOIN humo_events AS marr_notice
+                ON humo_families.fam_id = marr_notice.relation_id
+                AND marr_notice.event_kind = 'marriage_notice'
+
+            LEFT JOIN humo_location AS marr_notice_location FORCE INDEX (PRIMARY)
+                ON marr_notice.place_id = marr_notice_location.location_id
+
+            LEFT JOIN humo_events AS marriage
+                ON humo_families.fam_id = marriage.relation_id
+                AND marriage.event_kind = 'marriage'
+
+            LEFT JOIN humo_location AS marriage_location FORCE INDEX (PRIMARY)
+                ON marriage.place_id = marriage_location.location_id
+
+            LEFT JOIN humo_events AS marr_church
+                ON humo_families.fam_id = marr_church.relation_id
+                AND marr_church.event_kind = 'marr_church'
+
+            LEFT JOIN humo_location AS marr_church_location FORCE INDEX (PRIMARY)
+                ON marr_church.place_id = marr_church_location.location_id
+
+            LEFT JOIN humo_relations_persons AS man_rel
+                ON man_rel.relation_id = humo_families.fam_id
+                AND man_rel.relation_type = 'partner'
+                AND man_rel.partner_order = 1
+
+            LEFT JOIN humo_relations_persons AS woman_rel
+                ON woman_rel.relation_id = humo_families.fam_id
+                AND woman_rel.relation_type = 'partner'
+                AND woman_rel.partner_order = 2
+
+            WHERE marr_church_notice.event_kind = 'marr_church_notice'";
 
             if ($data["place_name"]) {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_notice_location.location_location " . $buildCondition->build($data["place_name"], $data["part_place_name"]);
+                $query .= " AND marr_church_notice_location.location_location " .
+                    $buildCondition->build(
+                        $data["place_name"],
+                        $data["part_place_name"]
+                    );
             } else {
-                $query .= " WHERE fam_tree_id='" . $this->tree_id . "' AND marr_church_notice_location.location_location LIKE '_%'";
+                $query .= " AND marr_church_notice_location.location_location LIKE '_%'";
             }
+
             $query .= ')';
             $start = true;
         }
 
-        // *** Order by place and marriage date ***
-        //$query .= ' ORDER BY place_order, substring(fam_marr_date,-4)';
         $query .= ' ORDER BY place_order';
+
         return $query;
     }
 }

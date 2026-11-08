@@ -10,7 +10,7 @@ use Genealogy\Include\PersonLink;
 use Genealogy\Include\PersonName;
 use Genealogy\Include\PersonPrivacy;
 use Genealogy\Include\ProcessLinks;
-use Genealogy\Include\SafeTextShow;
+use Genealogy\Include\HtmlEscaper;
 use Genealogy\Include\ShowTreeDate;
 use Genealogy\Include\ShowTreeText;
 use PDO;
@@ -313,15 +313,16 @@ class TreeIndexModel extends BaseModel
     public function owner(): string
     {
         $tree_owner = '';
+        $htmlEscaper = new HtmlEscaper();
 
         if (isset($this->selectedFamilyTree->tree_owner) && $this->selectedFamilyTree->tree_owner) {
             $tree_owner = __('Owner family tree:') . ' ';
             // *** Show owner e-mail address ***
             if ($this->selectedFamilyTree->tree_email) {
                 $path_tmp = $this->humo_option["url_rewrite"] == "j" ? 'mailform.php' : 'index.php?page=mailform';
-                $tree_owner .= '<a href="' . $path_tmp . '">' . $this->selectedFamilyTree->tree_owner . "</a>\n";
+                $tree_owner .= '<a href="' . $path_tmp . '">' . $htmlEscaper->escHtml($this->selectedFamilyTree->tree_owner) . "</a>\n";
             } else {
-                $tree_owner .= $this->selectedFamilyTree->tree_owner . "\n";
+                $tree_owner .= $htmlEscaper->escHtml($this->selectedFamilyTree->tree_owner) . "\n";
             }
         }
         return $tree_owner;
@@ -532,7 +533,7 @@ class TreeIndexModel extends BaseModel
     // *** Search field ***
     public function search_box(): string
     {
-        $safeTextShow = new SafeTextShow();
+        $HtmlEscaper = new HtmlEscaper();
 
         $text = '';
 
@@ -589,7 +590,7 @@ class TreeIndexModel extends BaseModel
         $quicksearch = '';
         if (isset($_POST['quicksearch'])) {
             //$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
-            $quicksearch = $safeTextShow->safe_text_show($_POST['quicksearch']);
+            $quicksearch = $HtmlEscaper->escHtml($_POST['quicksearch']);
             $_SESSION["save_quicksearch"] = $quicksearch;
         }
         if (isset($_SESSION["save_quicksearch"])) {

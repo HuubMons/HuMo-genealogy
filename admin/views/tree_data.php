@@ -5,15 +5,15 @@ if (!defined('ADMIN_PAGE')) {
 }
 ?>
 
-<form method="post" action="index.php?page=tree&amp;menu_admin=<?= $trees['menu_tab']; ?>">
-    <input type="hidden" name="tree_id" value="<?= $trees['tree_id']; ?>">
+<form method="post" action="index.php?page=tree&amp;menu_admin=<?= htmlspecialchars((string) $trees['menu_tab'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+    <input type="hidden" name="tree_id" value="<?= htmlspecialchars((string) $trees['tree_id'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
 
     <div class="p-2 me-sm-2 genealogy_search">
 
         <div class="row mb-2">
             <div class="col-md-3"><?= __('E-mail address'); ?></div>
             <div class="col-md-7">
-                <input type="text" name="tree_email" value="<?= $data2Db->tree_email; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="tree_email" value="<?= htmlspecialchars((string) $data2Db->tree_email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="40" class="form-control form-control-sm">
                 <span style="font-size: 13px;"><?= __('E-mail address will not be shown on the site: an e-mail form will be generated!'); ?></span>
             </div>
         </div>
@@ -21,7 +21,7 @@ if (!defined('ADMIN_PAGE')) {
         <div class="row mb-2">
             <div class="col-md-3"><?= __('Owner of tree'); ?></div>
             <div class="col-md-7">
-                <input type="text" name="tree_owner" value="<?= $data2Db->tree_owner; ?>" size="40" class="form-control form-control-sm">
+                <input type="text" name="tree_owner" value="<?= htmlspecialchars((string) $data2Db->tree_owner, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="40" class="form-control form-control-sm">
             </div>
         </div>
 
@@ -35,7 +35,7 @@ if (!defined('ADMIN_PAGE')) {
                 <div class="form-check">
                     <input type="radio" class="form-check-input" value="no" name="default_path" id="default_path" <?= !$trees['default_path'] ? 'checked' : ''; ?>>
                     <label class="form-check-label" for="default_path">
-                        <input type="text" name="tree_pict_path" value="<?= $trees['tree_pict_path']; ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
+                        <input type="text" name="tree_pict_path" value="<?= htmlspecialchars((string)$trees['tree_pict_path'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" size="40" placeholder="../pictures/" class="form-control form-control-sm">
                     </label>
                 </div>
 

@@ -2,15 +2,18 @@
 // TODO show fixed number of columns and lastnames. Also use pagination.
 
 // MAIN SETTINGS
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
+$allowedMaxcols = [1, 2, 3, 4, 5, 6];
+$allowedMaxnames = [25, 51, 75, 100, 201, 300, 100000];
 $maxcols = 3; // number of name & nr. colums in table. For example 3 means 3x name col + nr col
-if (isset($_POST['maxcols'])) {
-    $maxcols = $_POST['maxcols'];
+if (isset($_POST['maxcols']) && in_array((int) $_POST['maxcols'], $allowedMaxcols, true)) {
+    $maxcols = (int) $_POST['maxcols'];
 }
 $col_width = ((round(100 / $maxcols)) - 6) . "%";
 
 $maxnames = 51;
-if (isset($_POST['freqsurnames'])) {
-    $maxnames = $_POST['freqsurnames'];
+if (isset($_POST['freqsurnames']) && in_array((int) $_POST['freqsurnames'], $allowedMaxnames, true)) {
+    $maxnames = (int) $_POST['freqsurnames'];
 }
 
 // *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
@@ -30,9 +33,10 @@ $row = round(count($freq_last_names) / $maxcols);
 
 $processLinks = new \Genealogy\Include\ProcessLinks($uri_path);
 $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
+$form_action = $processLinks->get_link($uri_path, 'statistics', $tree_id, true) . 'menu_tab=stats_surnames';
 ?>
 
-<form method="POST" action="<?= $path2; ?>menu_tab=stats_surnames&amp;tree_id=<?= $tree_id; ?>" id="frqnames" class="my-3">
+<form method="POST" action="<?= $HtmlEscaper->escHtml($form_action); ?>" id="frqnames" class="my-3">
     <div class="mb-2 row me-1">
         <div class="col-md-1"></div>
 
@@ -93,21 +97,24 @@ $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
                             $top_pers_lastname = str_replace("_", " ", $freq_pers_prefix[$nr]);
                         }
                         $top_pers_lastname .= $freq_last_names[$nr];
+                        $lastName = (string) $freq_last_names[$nr];
+                        $prefix = (string) $freq_pers_prefix[$nr];
+                        $personLink = $path_tmp . 'pers_lastname=' . rawurlencode(str_replace('&', '|', $lastName));
                         if ($user['group_kindindex'] == "j") {
-                            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("_", " ", $freq_pers_prefix[$nr]) . str_replace("&", "|", $freq_last_names[$nr]);
+                            $personLink .= rawurlencode(str_replace("_", " ", $prefix));
                         } else {
-                            $top_pers_lastname = $freq_last_names[$nr];
-                            if ($freq_pers_prefix[$nr]) {
-                                $top_pers_lastname .= ', ' . str_replace("_", " ", $freq_pers_prefix[$nr]);
+                            $top_pers_lastname = $lastName;
+                            if ($prefix) {
+                                $top_pers_lastname .= ', ' . str_replace("_", " ", $prefix);
                             }
-                            echo '<a href="' . $path_tmp . 'pers_lastname=' . str_replace("&", "|", $freq_last_names[$nr]);
-                            if ($freq_pers_prefix[$nr]) {
-                                echo '&amp;pers_prefix=' . $freq_pers_prefix[$nr];
+                            if ($prefix) {
+                                $personLink .= '&pers_prefix=' . rawurlencode($prefix);
                             } else {
-                                echo '&amp;pers_prefix=EMPTY';
+                                $personLink .= '&pers_prefix=EMPTY';
                             }
                         }
-                        echo '&amp;part_lastname=equals">' . $top_pers_lastname . "</a>";
+                        $personLink .= '&part_lastname=equals';
+                        echo '<a href="' . $HtmlEscaper->escHtml($personLink) . '">' . $HtmlEscaper->escHtml($top_pers_lastname) . "</a>";
                     } else {
                         echo '~';
                     }
@@ -117,7 +124,7 @@ $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
                 <td class="namenr" style="text-align:center; <?= $n != $maxcols - 1 ? 'border-right-width:3px;' : ''; ?>">
                     <?php
                     if (isset($freq_last_names[$nr])) {
-                        echo $freq_count_last_names[$nr];
+                        echo (int) $freq_count_last_names[$nr];
                     } else {
                         echo '~';
                     }
@@ -130,6 +137,6 @@ $path_tmp = $processLinks->get_link($uri_path, 'list', $tree_id, true);
 
 <!--Show gray bar in name box. Graphical indication of number of names -->
 <script>
-    var baseperc = <?= (int)$freq_count_last_names[0]; ?>;
+    var baseperc = <?= (int) ($freq_count_last_names[0] ?? 0); ?>;
 </script>
 <script src="assets/js/stats_graphical_bar.js"></script>

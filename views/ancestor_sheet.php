@@ -19,48 +19,33 @@ $db_functions->check_person($data["main_person"]);
 $personDb = $db_functions->get_person($data["gedcomnumber"][1]);
 $pers_privacy = $personPrivacy->get_privacy($personDb);
 $name = $personName->get_person_name($personDb, $pers_privacy);
+$safeName = $HtmlEscaper->escHtml($name["name"]);
 ?>
 
-<?= $data["ancestor_header"]; ?>
+<?php include __DIR__ . '/partial/ancestor_header.php'; ?>
 
 <h4 class="text-center m-3">
     <?php /*
     <?= __('Ancestor sheet') . __(' of ') . $ancestorBox->ancestorBox(1, "ancestor_header"); ?>
     */ ?>
 
-    <?= __('Ancestor sheet') . __(' of ') . $name["name"] . $name["colour_mark"]; ?>
+    <?= __('Ancestor sheet') . __(' of ') . $safeName . $name["colour_mark"]; ?>
 
     <!-- Show pdf button -->
     <?php if ($user["group_pdf_button"] == 'y' and $language["dir"] != "rtl" and $language["name"] != "简体中文") { ?>
         <?php
-        if ($humo_option["url_rewrite"] == "j") {
-            $link = $uri_path . 'ancestor_sheet_pdf/' . $tree_id . '?main_person=' . $data["main_person"];
-        } else {
-            $link = $uri_path . 'index.php?page=ancestor_sheet_pdf&amp;tree_id=' . $tree_id . '&amp;main_person=' . $data["main_person"];
-        }
+        $processLinks = new \Genealogy\Include\ProcessLinks();
+        $vars['id'] = $data['main_person'];
+        $link = $processLinks->get_link($uri_path, 'ancestor_sheet_pdf', $tree_id, false, $vars);
         ?>
-        <form method="POST" action="<?= $link; ?>" style="display:inline-block; vertical-align:middle;" class="ms-3">
+        <form method="POST" action="<?= $HtmlEscaper->escHtml($link); ?>" style="display:inline-block; vertical-align:middle;" class="ms-3">
             <input type="hidden" name="screen_mode" value="ASPDF">
-            <input type="submit" class="btn btn-sm btn-info" value="<?= __('PDF'); ?>" name="submit">
+            <input type="submit" class="btn btn-sm btn-info" value="<?= $HtmlEscaper->escHtml(__('PDF')); ?>" name="submit">
         </form>
     <?php } ?>
 </h4>
 
-<!-- TEST improved layout -->
-<!--
-<style>
-    .box_ancestor_sheet {
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
-        padding: 8px 4px;
-        min-width: 120px;
-        background: #f8f9fa;
-    }
-</style>
--->
-
 <div class="table-responsive">
-    <!-- <table class="ancestor_sheet"> -->
     <table class="table table-bordered table-sm text-center align-middle">
         <?php
         $gen = check_gen(16, 32);

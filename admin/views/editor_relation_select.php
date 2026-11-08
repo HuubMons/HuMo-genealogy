@@ -8,19 +8,18 @@ $editor_cls = new \Genealogy\Include\Editor_cls;
 $personPrivacy = new \Genealogy\Include\PersonPrivacy();
 $personName = new \Genealogy\Include\PersonName();
 $validateGedcomnumber = new \Genealogy\Include\ValidateGedcomnumber();
+$HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
 
 // *** Used to select adoption parents ***
 $adoption_id = '';
 if (isset($_GET['adoption_id']) && is_numeric($_GET['adoption_id'])) {
-    $adoption_id = $_GET['adoption_id'];
+    $adoption_id = (string) (int) $_GET['adoption_id'];
 }
 
 if ($adoption_id) {
     $place_item = 'text_event' . $adoption_id;
-    $form = 'form1';
 } else {
     $place_item = 'add_parents';
-    $form = 'form1';
 }
 
 $search_quicksearch_parent = '';
@@ -146,16 +145,16 @@ if ($adoption_id) {
     <h1 class="center"><?= __('Select parents'); ?></h1>
 <?php } ?>
 
-<form method="POST" action="index.php?page=editor_relation_select<?= $adoption_id ? '&amp;adoption_id=' . $adoption_id : ''; ?>" style="display : inline;">
+<form method="POST" action="index.php?page=editor_relation_select<?= $adoption_id ? '&amp;adoption_id=' . rawurlencode($adoption_id) : ''; ?>" style="display : inline;">
     <div class="row mb-2">
         <div class="col-md-4">
-            <input type="text" name="search_quicksearch_parent" placeholder="<?= __('Name'); ?>" value="<?= $search_quicksearch_parent; ?>" size="15" class="form-control form-control-sm">
+            <input type="text" name="search_quicksearch_parent" placeholder="<?= $HtmlEscaper->escHtml(__('Name')); ?>" value="<?= $HtmlEscaper->escHtml((string) $search_quicksearch_parent); ?>" size="15" class="form-control form-control-sm">
         </div>
         <div class="col-md-auto">
             <?= __('or ID:'); ?>
         </div>
         <div class="col-md-3">
-            <input type="text" name="search_person_id" value="<?= $search_person_id; ?>" size="5" class="form-control form-control-sm">
+            <input type="text" name="search_person_id" value="<?= $HtmlEscaper->escHtml((string) $search_person_id); ?>" size="5" class="form-control form-control-sm">
         </div>
         <div class="col-md-2">
             <input type="submit" value="<?= __('Search'); ?>" class="btn btn-primary btn-sm">
@@ -185,7 +184,7 @@ while ($parentsDb = $parents_result->fetch(PDO::FETCH_OBJ)) {
     $name = $personName->get_person_name($persDb, $privacy);
     $parent2_text .= $name["standard_name"];
 
-    echo '<a href="" onClick=\'return select_item("' . str_replace("'", "&prime;", $parentsDb->fam_gedcomnumber) . '")\'>[' . $parentsDb->fam_gedcomnumber . '] ' . $parent2_text . '</a><br>';
+    echo '<a href="#" class="relation-select-link" data-relation-id="' . $HtmlEscaper->escHtml((string) $parentsDb->fam_gedcomnumber) . '">[' . $HtmlEscaper->escHtml((string) $parentsDb->fam_gedcomnumber) . '] ' . $HtmlEscaper->escHtml((string) $parent2_text) . '</a><br>';
 }
 
 if ($search_quicksearch_parent == '' && $search_person_id == '') {
@@ -194,9 +193,28 @@ if ($search_quicksearch_parent == '' && $search_person_id == '') {
 ?>
 
 <script>
+    const targetFormName = 'form1';
+    const targetFieldName = <?= json_encode($place_item, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+
     function select_item(item) {
-        window.opener.document.<?= $form; ?>.<?= $place_item; ?>.value = item;
+        if (!window.opener || !window.opener.document.forms[targetFormName]) {
+            return false;
+        }
+
+        const targetField = window.opener.document.forms[targetFormName].elements.namedItem(targetFieldName);
+        if (!targetField) {
+            return false;
+        }
+
+        targetField.value = item;
         top.close();
         return false;
     }
+
+    document.querySelectorAll('.relation-select-link').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            select_item(link.dataset.relationId);
+        });
+    });
 </script>

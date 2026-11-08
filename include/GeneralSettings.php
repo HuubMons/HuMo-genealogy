@@ -18,7 +18,7 @@ class GeneralSettings
 
         // *** Version line, DO NOT CHANGE THIS LINE ***
         // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-        $humo_option["version"] = '7.0.6';  // Version line, DO NOT CHANGE THIS LINE
+        $humo_option["version"] = '7.1';  // Version line, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update check using GitHub.
 
         // *** Beta (not stable enough for production, but it's functional ***
@@ -27,7 +27,7 @@ class GeneralSettings
 
         // *** Version date, needed for update check ***
         //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-        $humo_option["version_date"] = '2026-07-16';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+        $humo_option["version_date"] = '2026-11-08';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
         // *** Test lines for update procedure ***
@@ -35,9 +35,71 @@ class GeneralSettings
         //$humo_option["version_date"]='2012-11-30';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 
-        // *** Database updates (can be moved to database update script later) ***
+        // *** Database updates (will be moved to a Migration update script later) ***
         // ..............................
 
+        // *** Sept. 2026: add indexes to tables humo_events and humo_relations_persons for better performance ***
+        // *** Oct. 2026: Don't remove this script here. Otherwise update could fail ***
+        $eventsTableExists = $dbh->query("SHOW TABLES LIKE 'humo_events'")->fetchColumn();
+        if ($eventsTableExists) {
+            $eventColumns = [];
+            $columnQry = $dbh->query('SHOW COLUMNS FROM humo_events');
+            while ($columnDb = $columnQry->fetch(PDO::FETCH_ASSOC)) {
+                $eventColumns[$columnDb['Field']] = true;
+            }
+
+            if (isset($eventColumns['relation_id'], $eventColumns['event_kind'], $eventColumns['place_id'])) {
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_relation_kind_place'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_events
+                        ADD INDEX idx_relation_kind_place
+                        (relation_id, event_kind, place_id);
+                    ");
+                }
+
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_events WHERE Key_name = 'idx_kind_relation_place'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_events
+                        ADD INDEX idx_kind_relation_place
+                        (event_kind, relation_id, place_id);
+                    ");
+                }
+            }
+        }
+
+        // *** Oct. 2026: Don't remove this script here. Otherwise update could fail ***
+        $relationsTableExists = $dbh->query("SHOW TABLES LIKE 'humo_relations_persons'")->fetchColumn();
+        if ($relationsTableExists) {
+            $relationColumns = [];
+            $columnQry = $dbh->query('SHOW COLUMNS FROM humo_relations_persons');
+            while ($columnDb = $columnQry->fetch(PDO::FETCH_ASSOC)) {
+                $relationColumns[$columnDb['Field']] = true;
+            }
+
+            if (isset($relationColumns['relation_id'], $relationColumns['relation_type'], $relationColumns['partner_order'])) {
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_relations_persons WHERE Key_name = 'idx_relation_type_order'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_relations_persons
+                        ADD INDEX idx_relation_type_order
+                        (relation_id, relation_type, partner_order);
+                    ");
+                }
+            }
+        }
+
+        // *** Sept. 2026: create table humo_active_visitors for counting active visitors. Needed to block bots ***
+        $dbh->exec("
+            CREATE TABLE IF NOT EXISTS humo_active_visitors (
+                visitor_ip VARCHAR(45) NOT NULL,
+                last_activity INT UNSIGNED NOT NULL,
+                user_agent VARCHAR(255) NOT NULL,
+                PRIMARY KEY (visitor_ip),
+                INDEX (last_activity)
+            );
+        ");
 
         // *** If needed: translate setting_variabele into setting variable ***
         $update_setting_qry = $dbh->query("SELECT * FROM humo_settings");
@@ -408,6 +470,34 @@ class GeneralSettings
         if (!isset($humo_option["debug_show_deprecated"])) {
             $humo_option["debug_show_deprecated"] = 'n';
             $dbh->query("INSERT INTO humo_settings SET setting_variable='debug_show_deprecated', setting_value='n'");
+        }
+
+        // *** Limit visitors per time frame ***
+        if (!isset($humo_option["max_visitors"])) {
+            $humo_option["max_visitors"] = 200;
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors', setting_value='200'");
+        }
+        if (!isset($humo_option["max_visitors_seconds"])) {
+            $humo_option["max_visitors_seconds"] = 600;
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors_seconds', setting_value='600'");
+        }
+        if (!isset($humo_option["max_visitors_email_address"])) {
+            $humo_option["max_visitors_email_address"] = '';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors_email_address', setting_value=''");
+        }
+        if (!isset($humo_option["max_visitors_action"])) {
+            $humo_option["max_visitors_action"] = 'close_pages';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='max_visitors_action', setting_value='close_pages'");
+        }
+
+        if (!isset($humo_option["website_status"])) {
+            $humo_option["website_status"] = 'active';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='website_status', setting_value='active'");
+        }
+
+        if (!isset($humo_option["visitor_website_limited"])) {
+            $humo_option["visitor_website_limited"] = 'n';
+            $dbh->query("INSERT INTO humo_settings SET setting_variable='visitor_website_limited', setting_value='n'");
         }
 
         if (!isset($humo_option["hide_languages"])) {

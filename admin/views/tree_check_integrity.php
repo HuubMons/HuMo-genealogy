@@ -11,10 +11,7 @@ if (!defined('ADMIN_PAGE')) {
 $wrong_indexnr = 0;
 $wrong_famc = 0;
 $wrong_fams = 0;
-$removed = '';
-if (isset($_POST['remove'])) {
-    $removed = ' <b>Link is removed.</b>';
-}
+$removed = isset($_POST['remove']);
 ?>
 
 <h3><?= __('Checking database tables...'); ?></h3>
@@ -60,8 +57,8 @@ if (isset($_POST['remove'])) {
     ?>
                 <tr>
                     <td><b>Missing person record</b></td>
-                    <td>Connection record: <?= $connect->connect_id; ?>/ <?= $connect->connect_sub_kind; ?></td>
-                    <td>Missing person gedcomnr: <?= $connect->connect_connect_id . $removed; ?></td>
+                    <td>Connection record: <?= $htmlEscaper->escHtml($connect->connect_id); ?>/ <?= $htmlEscaper->escHtml($connect->connect_sub_kind); ?></td>
+                    <td>Missing person gedcomnr: <?= $htmlEscaper->escHtml($connect->connect_connect_id); ?><?= $removed ? ' <b>Link is removed.</b>' : ''; ?></td>
                 </tr>
             <?php
             }
@@ -81,8 +78,8 @@ if (isset($_POST['remove'])) {
             ?>
                 <tr>
                     <td><b>Missing family record</b></td>
-                    <td>Connection record: <?= $connect->connect_id; ?>/ <?= $connect->connect_sub_kind; ?></td>
-                    <td>Missing family gedcomnr: <?= $connect->connect_connect_id . $removed; ?></td>
+                    <td>Connection record: <?= $htmlEscaper->escHtml($connect->connect_id); ?>/ <?= $htmlEscaper->escHtml($connect->connect_sub_kind); ?></td>
+                    <td>Missing family gedcomnr: <?= $htmlEscaper->escHtml($connect->connect_connect_id); ?><?= $removed ? ' <b>Link is removed.</b>' : ''; ?></td>
                 </tr>
             <?php
                 // NO RESTORE YET (not possible?)
@@ -113,8 +110,8 @@ if (isset($_POST['remove'])) {
             ?>
                 <tr>
                     <td><b>Missing person record</b></td>
-                    <td>Event record: <?= $connect->event_id; ?>/ <?= $connect->event_kind; ?></td>
-                    <td>Missing person gedcomnr: <?= $connect->event_connect_id . $removed; ?></td>
+                    <td>Event record: <?= $htmlEscaper->escHtml($connect->event_id); ?>/ <?= $htmlEscaper->escHtml($connect->event_kind); ?></td>
+                    <td>Missing person gedcomnr: <?= $htmlEscaper->escHtml($connect->event_connect_id); ?><?= $removed ? ' <b>Link is removed.</b>' : ''; ?></td>
                 </tr>
             <?php
             }
@@ -131,8 +128,8 @@ if (isset($_POST['remove'])) {
             ?>
                 <tr>
                     <td><b>Missing family record</b></td>
-                    <td>Event record: <?= $connect->event_id; ?>/ <?= $connect->event_kind; ?></td>
-                    <td>Missing family gedcomnr: <?= $connect->event_connect_id; ?></td>
+                    <td>Event record: <?= $htmlEscaper->escHtml($connect->event_id); ?>/ <?= $htmlEscaper->escHtml($connect->event_kind); ?></td>
+                    <td>Missing family gedcomnr: <?= $htmlEscaper->escHtml($connect->event_connect_id); ?></td>
                 </tr>
         <?php
             }
