@@ -21,7 +21,7 @@ class TreesController
     {
         $treesModel = new TreesModel($this->admin_config);
 
-        $treesModel->set_tree_id();
+        $treesModel->set_selected_tree_id_from_request();
         $treesModel->update_tree();
         $trees['tree_id'] = $treesModel->get_tree_id();
         $trees['language'] = $treesModel->get_language($selected_language);

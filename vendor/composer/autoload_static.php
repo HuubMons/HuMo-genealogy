@@ -70,6 +70,7 @@ class ComposerStaticInit6a6772df2521c6860a448e9115f2793a
         'Genealogy\\Include\\GeneralSettings' => __DIR__ . '/../..' . '/include/GeneralSettings.php',
         'Genealogy\\Include\\GetVisitorIP' => __DIR__ . '/../..' . '/include/GetVisitorIP.php',
         'Genealogy\\Include\\HtmlEscaper' => __DIR__ . '/../..' . '/include/HtmlEscaper.php',
+        'Genealogy\\Include\\HtmlSanitizer' => __DIR__ . '/../..' . '/include/HtmlSanitizer.php',
         'Genealogy\\Include\\LanguageDate' => __DIR__ . '/../..' . '/include/LanguageDate.php',
         'Genealogy\\Include\\LanguageEventName' => __DIR__ . '/../..' . '/include/LanguageEventName.php',
         'Genealogy\\Include\\LanguagePersonName' => __DIR__ . '/../..' . '/include/LanguagePersonName.php',

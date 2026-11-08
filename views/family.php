@@ -523,7 +523,7 @@ else {
                                     for ($k = 0; $k < $counter; $k++) {
                                         $check_double[] = $child_family[$k];
                                         // *** Save "Follows: " text in array, also needed for doubles... ***
-                                        $follows_array[] = $data["number_roman"][$descendant_loop + 2] . '-' . $data["number_generation"][count($descendant_family_id2)];
+                                        $follows_array[] = $data["number_roman"][$descendant_loop + 2] . '-' . $data["number_generation"][count($descendant_family_id2 ?? [])];
                                     }
 
                                     // *** YB: show children first in descendant_report ***

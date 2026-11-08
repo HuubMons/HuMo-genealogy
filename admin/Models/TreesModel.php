@@ -3,18 +3,19 @@
 namespace Genealogy\Admin\Models;
 
 use Genealogy\Admin\Models\AdminBaseModel;
+use Genealogy\Include\HtmlSanitizer;
 use PDO;
 
 class TreesModel extends AdminBaseModel
 {
-    private $selected_tree_id;
+    private int $selected_tree_id = 0;
 
-    public function set_tree_id(): void
+    public function set_selected_tree_id_from_request(): void
     {
-        $this->selected_tree_id = $this->tree_id;
+        $this->selected_tree_id = is_numeric($this->tree_id) ? (int) $this->tree_id : 0;
 
-        if (isset($_POST['tree_id']) && is_numeric(($_POST['tree_id']))) {
-            $this->selected_tree_id = $_POST['tree_id'];
+        if (isset($_POST['tree_id']) && is_numeric($_POST['tree_id'])) {
+            $this->selected_tree_id = (int) $_POST['tree_id'];
         }
     }
     public function get_tree_id(): int
@@ -24,21 +25,39 @@ class TreesModel extends AdminBaseModel
 
     public function get_language($selected_language): string
     {
-        $language = $selected_language; // Default language
-        if (isset($_GET['language_tree'])) {
-            $language = $_GET['language_tree'];
-        }
-        if (isset($_POST['language_tree'])) {
-            $language = $_POST['language_tree'];
+        $language = is_string($selected_language) && $this->is_valid_language($selected_language)
+            ? $selected_language
+            : 'en';
+        foreach ([$_GET['language_tree'] ?? null, $_POST['language_tree'] ?? null] as $requested_language) {
+            if (is_string($requested_language) && $this->is_valid_language($requested_language)) {
+                $language = $requested_language;
+            }
         }
         return $language;
+    }
+
+    private function is_valid_language(string $language): bool
+    {
+        if ($language === 'default') {
+            return true;
+        }
+        if (!preg_match('/\A[a-zA-Z0-9_-]+\z/', $language)) {
+            return false;
+        }
+
+        $language_file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'
+            . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . $language
+            . DIRECTORY_SEPARATOR . 'language_data.php';
+        return is_file($language_file);
     }
 
     public function get_language2($language, $selected_language): string
     {
         $language2 = $language;
         if ($language == 'default') {
-            $language2 = $selected_language;
+            $language2 = is_string($selected_language) && $this->is_valid_language($selected_language)
+                ? $selected_language
+                : 'en';
         }
         return $language2;
     }
@@ -46,13 +65,40 @@ class TreesModel extends AdminBaseModel
     public function get_menu_tab(): string
     {
         $menu_tab = 'tree_main';
-        if (isset($_POST['menu_admin'])) {
-            $menu_tab = $_POST['menu_admin'];
-        }
-        if (isset($_GET['menu_admin'])) {
-            $menu_tab = $_GET['menu_admin'];
+        $allowed_tabs = ['tree_main', 'tree_gedcom', 'tree_data', 'tree_text', 'tree_merge'];
+        foreach ([$_POST['menu_admin'] ?? null, $_GET['menu_admin'] ?? null] as $requested_tab) {
+            if (is_string($requested_tab) && in_array($requested_tab, $allowed_tabs, true)) {
+                $menu_tab = $requested_tab;
+            }
         }
         return $menu_tab;
+    }
+
+    private function get_tree_text_post_values(): array
+    {
+        $sanitizer = new HtmlSanitizer();
+        $values = [];
+        foreach (
+            [
+                'treetext_name',
+                'treetext_mainmenu_text',
+                'treetext_mainmenu_source',
+                'treetext_family_top',
+                'treetext_family_footer'
+            ] as $field
+        ) {
+            if (!isset($_POST[$field]) || !is_string($_POST[$field])) {
+                throw new \InvalidArgumentException('Invalid family tree text value: ' . $field);
+            }
+            $values[$field] = $_POST[$field];
+        }
+
+        $values['treetext_name'] = strip_tags($values['treetext_name']);
+        foreach (['treetext_mainmenu_text', 'treetext_mainmenu_source', 'treetext_family_top', 'treetext_family_footer'] as $field) {
+            $values[$field] = $sanitizer->sanitizeBasicHtml($values[$field]);
+        }
+
+        return $values;
     }
 
     public function get_tree_pict_path()
@@ -123,7 +169,7 @@ class TreesModel extends AdminBaseModel
             $stmt = $this->dbh->prepare($sql);
             $stmt->execute([
                 ':tree_email'    => $_POST['tree_email'],
-                ':tree_owner'    => $_POST['tree_owner'],
+                ':tree_owner'    => strip_tags($_POST['tree_owner']),
                 ':tree_pict_path' => $tree_pict_path,
                 ':tree_privacy'  => $_POST['tree_privacy'],
                 ':tree_id'       => $this->selected_tree_id
@@ -231,6 +277,7 @@ class TreesModel extends AdminBaseModel
         }
 
         if (isset($_POST['add_tree_text'])) {
+            $tree_text_values = $this->get_tree_text_post_values();
             $sql = "INSERT INTO humo_tree_texts (
                 treetext_tree_id,
                 treetext_language,
@@ -252,15 +299,16 @@ class TreesModel extends AdminBaseModel
             $stmt->execute([
                 ':treetext_tree_id'         => $this->selected_tree_id,
                 ':treetext_language'        => $_POST['language_tree'],
-                ':treetext_name'            => $_POST['treetext_name'],
-                ':treetext_mainmenu_text'   => $_POST['treetext_mainmenu_text'],
-                ':treetext_mainmenu_source' => $_POST['treetext_mainmenu_source'],
-                ':treetext_family_top'      => $_POST['treetext_family_top'],
-                ':treetext_family_footer'   => $_POST['treetext_family_footer']
+                ':treetext_name'            => $tree_text_values['treetext_name'],
+                ':treetext_mainmenu_text'   => $tree_text_values['treetext_mainmenu_text'],
+                ':treetext_mainmenu_source' => $tree_text_values['treetext_mainmenu_source'],
+                ':treetext_family_top'      => $tree_text_values['treetext_family_top'],
+                ':treetext_family_footer'   => $tree_text_values['treetext_family_footer']
             ]);
         }
 
         if (isset($_POST['change_tree_text'])) {
+            $tree_text_values = $this->get_tree_text_post_values();
             $sql = "UPDATE humo_tree_texts SET
                 treetext_tree_id = :treetext_tree_id,
                 treetext_language = :treetext_language,
@@ -274,11 +322,11 @@ class TreesModel extends AdminBaseModel
             $stmt->execute([
                 ':treetext_tree_id'         => $this->selected_tree_id,
                 ':treetext_language'        => $_POST['language_tree'],
-                ':treetext_name'            => $_POST['treetext_name'],
-                ':treetext_mainmenu_text'   => $_POST['treetext_mainmenu_text'],
-                ':treetext_mainmenu_source' => $_POST['treetext_mainmenu_source'],
-                ':treetext_family_top'      => $_POST['treetext_family_top'],
-                ':treetext_family_footer'   => $_POST['treetext_family_footer'],
+                ':treetext_name'            => $tree_text_values['treetext_name'],
+                ':treetext_mainmenu_text'   => $tree_text_values['treetext_mainmenu_text'],
+                ':treetext_mainmenu_source' => $tree_text_values['treetext_mainmenu_source'],
+                ':treetext_family_top'      => $tree_text_values['treetext_family_top'],
+                ':treetext_family_footer'   => $tree_text_values['treetext_family_footer'],
                 ':treetext_id'              => $_POST['treetext_id']
             ]);
         }

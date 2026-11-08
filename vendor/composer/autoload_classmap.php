@@ -32,6 +32,7 @@ return array(
     'Genealogy\\Include\\GeneralSettings' => $baseDir . '/include/GeneralSettings.php',
     'Genealogy\\Include\\GetVisitorIP' => $baseDir . '/include/GetVisitorIP.php',
     'Genealogy\\Include\\HtmlEscaper' => $baseDir . '/include/HtmlEscaper.php',
+    'Genealogy\\Include\\HtmlSanitizer' => $baseDir . '/include/HtmlSanitizer.php',
     'Genealogy\\Include\\LanguageDate' => $baseDir . '/include/LanguageDate.php',
     'Genealogy\\Include\\LanguageEventName' => $baseDir . '/include/LanguageEventName.php',
     'Genealogy\\Include\\LanguagePersonName' => $baseDir . '/include/LanguagePersonName.php',

@@ -313,15 +313,16 @@ class TreeIndexModel extends BaseModel
     public function owner(): string
     {
         $tree_owner = '';
+        $htmlEscaper = new HtmlEscaper();
 
         if (isset($this->selectedFamilyTree->tree_owner) && $this->selectedFamilyTree->tree_owner) {
             $tree_owner = __('Owner family tree:') . ' ';
             // *** Show owner e-mail address ***
             if ($this->selectedFamilyTree->tree_email) {
                 $path_tmp = $this->humo_option["url_rewrite"] == "j" ? 'mailform.php' : 'index.php?page=mailform';
-                $tree_owner .= '<a href="' . $path_tmp . '">' . $this->selectedFamilyTree->tree_owner . "</a>\n";
+                $tree_owner .= '<a href="' . $path_tmp . '">' . $htmlEscaper->escHtml($this->selectedFamilyTree->tree_owner) . "</a>\n";
             } else {
-                $tree_owner .= $this->selectedFamilyTree->tree_owner . "\n";
+                $tree_owner .= $htmlEscaper->escHtml($this->selectedFamilyTree->tree_owner) . "\n";
             }
         }
         return $tree_owner;
