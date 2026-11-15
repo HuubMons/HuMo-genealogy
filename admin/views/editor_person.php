@@ -714,7 +714,7 @@ Don't use this link, witness and other buttons won't work anymore
             </td>
             <td colspan="2">
                 <?php
-                $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($pers_birth_date, $pers_birth_place));
+                $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($pers_birth_date, $pers_birth_place));
                 if ($pers_birth_time) {
                     $hideshow_text .= ' ' . __('at') . ' ' . $HtmlEscaper->escHtml((string) $pers_birth_time) . ' ' . __('hour');
                 }
@@ -816,7 +816,7 @@ Don't use this link, witness and other buttons won't work anymore
 
             <td colspan="2">
                 <?php
-                $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($birth_decl_date, $birth_decl_place));
+                $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($birth_decl_date, $birth_decl_place));
                 if ($pers_gedcomnumber) {
                     $check_sources_text = check_sources('birth_decl', 'birth_decl_source', $pers_gedcomnumber);
                     $hideshow_text .= $check_sources_text;
@@ -915,7 +915,7 @@ Don't use this link, witness and other buttons won't work anymore
                 </td>
                 <td colspan="2">
                     <?php
-                    $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($britdate, $britplace));
+                    $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($britdate, $britplace));
                     if ($pers_gedcomnumber and $britid) {
                         $check_sources_text = check_sources('person', 'pers_event_source', $britid);
                         $hideshow_text .= $check_sources_text;
@@ -1014,7 +1014,7 @@ Don't use this link, witness and other buttons won't work anymore
 
                 <td colspan="2">
                     <?php
-                    $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($bardate, $barplace));
+                    $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($bardate, $barplace));
                     if ($pers_gedcomnumber and $barid) {
                         $check_sources_text = check_sources('person', 'pers_event_source', $barid);
                         $hideshow_text .= $check_sources_text;
@@ -1083,7 +1083,7 @@ Don't use this link, witness and other buttons won't work anymore
             <td><a name="baptised"></a><b><?= ucfirst(__('baptised')); ?></b></td>
             <td colspan="2">
                 <?php
-                $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($pers_bapt_date, $pers_bapt_place));
+                $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($pers_bapt_date, $pers_bapt_place));
                 if ($pers_religion) {
                     $hideshow_text .= ' (' . __('religion') . ': ' . $HtmlEscaper->escHtml((string) $pers_religion) . ')';
                 }
@@ -1171,7 +1171,7 @@ Don't use this link, witness and other buttons won't work anymore
             </td>
             <td colspan="2">
                 <?php
-                $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($pers_death_date, $pers_death_place));
+                $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($pers_death_date, $pers_death_place));
 
                 if ($pers_death_time) {
                     $hideshow_text .= ' ' . __('at') . ' ' . $HtmlEscaper->escHtml((string) $pers_death_time) . ' ' . __('hour');
@@ -1364,7 +1364,7 @@ Don't use this link, witness and other buttons won't work anymore
 
             <td colspan="2">
                 <?php
-                $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($death_decl_date, $death_decl_place));
+                $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($death_decl_date, $death_decl_place));
                 if ($pers_gedcomnumber) {
                     $check_sources_text = check_sources('death_decl', 'death_decl_source', $pers_gedcomnumber);
                     $hideshow_text .= $check_sources_text;
@@ -1440,7 +1440,7 @@ Don't use this link, witness and other buttons won't work anymore
             </td>
             <td colspan="2">
                 <?php
-                $hideshow_text = $HtmlEscaper->escHtml(hideshow_date_place($pers_buried_date, $pers_buried_place));
+                $hideshow_text = $HtmlEscaper->escHtmlDecoded(hideshow_date_place($pers_buried_date, $pers_buried_place));
                 if ($pers_gedcomnumber) {
                     $check_sources_text = check_sources('person', 'pers_buried_source', $pers_gedcomnumber);
                     $hideshow_text .= $check_sources_text;
