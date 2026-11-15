@@ -184,7 +184,7 @@ if ($person->pers_sexe == 'M') {
                                 <b><?= show_person_with_id($relationDb->partner1_id) . ' ' . __('and') . ' ' . show_person_with_id($relationDb->partner2_id); ?></b>
                                 <?php
                                 if ($relationDb->fam_marr_date) {
-                                    echo ' X ' . $HtmlEscaper->escHtml((string) $datePlace->date_place($relationDb->fam_marr_date, ''));
+                                    echo ' X ' . $HtmlEscaper->escHtmlDecoded((string) $datePlace->date_place($relationDb->fam_marr_date, ''));
                                 }
                                 ?>
                             </div>
@@ -650,7 +650,7 @@ if ($person->pers_sexe == 'M') {
                         $hideshow_text .= '<span style="background-color:#FFAA80">' . __('Marriage/ Related') . '</span>';
                     }
 
-                    $dateplace = $datePlace->date_place($fam_marr_date, $HtmlEscaper->escHtml((string) $fam_marr_place));
+                    $dateplace = $HtmlEscaper->escHtmlDecoded($datePlace->date_place($fam_marr_date, $fam_marr_place));
                     if ($dateplace) {
                         if ($hideshow_text) {
                             $hideshow_text .= ', ';
