@@ -125,7 +125,7 @@
 function render_person_link($person_data)
 {
     $HtmlEscaper = new \Genealogy\Include\HtmlEscaper();
-    $name = $HtmlEscaper->escHtml((string) $person_data['name']);
+    $name = $HtmlEscaper->escHtmlDecoded((string) $person_data['name']);
     if ($person_data['url']) {
         return '<a href="' . $HtmlEscaper->escHtml((string) $person_data['url']) . '"><b>' . $name . '</b></a>';
     } else {
