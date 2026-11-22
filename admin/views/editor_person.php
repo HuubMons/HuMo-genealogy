@@ -254,10 +254,10 @@ Don't use this link, witness and other buttons won't work anymore
                 if ($OAfromyear || $OAuntilyear) {
                     $OAyear_or_period = '';
                     if ($OAfromyear !== '' && $OAuntilyear === '') {
-                        $OAyear_or_period = ' ' . $OAfromyear . '-' . ($OAfromyear + 100);
+                        $OAyear_or_period = ' ' . $OAfromyear . '-' . ((int)$OAfromyear + 100);
                     }
                     if ($OAfromyear === '' && $OAuntilyear !== '') {
-                        $OAyear_or_period = ' ' . ($OAuntilyear - 100) . '-' . $OAuntilyear;
+                        $OAyear_or_period = ' ' . ((int)$OAuntilyear - 100) . '-' . $OAuntilyear;
                     }
                     if ($OAfromyear !== '' && $OAuntilyear !== '') {
                         $OAyear_or_period = ' ' . $OAfromyear . '-' . $OAuntilyear;
