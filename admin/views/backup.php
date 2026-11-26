@@ -219,8 +219,8 @@ function backup_tables($dbh)
     </div>
 
     <?php
-    // This is for the buffer achieve the minimum size in order to flush data
-    echo str_repeat(' ', 1024 * 64);
+    // Small padding to ensure output flush in some server configurations
+    echo str_repeat(' ', 256);
     // Send output to browser immediately
     if (ob_get_level() > 0) {
         ob_flush();
@@ -304,9 +304,8 @@ function backup_tables($dbh)
                         bar.innerText = ' . $perc . ' + "%";
                     </script>';
 
-                    // This is for the buffer achieve the minimum size in order to flush data
-                    echo str_repeat(' ', 1024 * 64);
-
+                    // Small padding to ensure output flush in some server configurations
+                    echo str_repeat(' ', 256);
                     // Send output to browser immediately
                     if (ob_get_level() > 0) {
                         ob_flush();

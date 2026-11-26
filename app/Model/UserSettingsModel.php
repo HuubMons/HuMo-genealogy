@@ -63,7 +63,7 @@ class UserSettingsModel extends BaseModel
                 $result_message = __('Your settings are updated!');
 
                 // *** Only update 2FA settings if database is updated and 2FA settings are changed ***
-                if ($this->userDb->user_2fa_enabled && isset($_POST['user_2fa_check'])) {
+                if (isset($_POST['user_2fa_check'])) {
                     // *** 2FA Authenticator (2fa_code = code from 2FA authenticator) ***
                     if (!isset($_POST['user_2fa_enabled']) && $this->userDb->user_2fa_enabled) {
                         // *** Disable 2FA ***

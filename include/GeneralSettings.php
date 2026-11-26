@@ -18,7 +18,7 @@ class GeneralSettings
 
         // *** Version line, DO NOT CHANGE THIS LINE ***
         // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-        $humo_option["version"] = '7.1';  // Version line, DO NOT CHANGE THIS LINE
+        $humo_option["version"] = '7.1.1';  // Version line, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update check using GitHub.
 
         // *** Beta (not stable enough for production, but it's functional ***
@@ -27,7 +27,7 @@ class GeneralSettings
 
         // *** Version date, needed for update check ***
         //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-        $humo_option["version_date"] = '2026-11-08';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+        $humo_option["version_date"] = '2026-11-26';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
         // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
         // *** Test lines for update procedure ***
@@ -85,6 +85,27 @@ class GeneralSettings
                         ALTER TABLE humo_relations_persons
                         ADD INDEX idx_relation_type_order
                         (relation_id, relation_type, partner_order);
+                    ");
+                }
+            }
+        }
+
+        // *** Nov. 2026: Add an index for looking up sources by tree and GEDCOM number ***
+        $sourcesTableExists = $dbh->query("SHOW TABLES LIKE 'humo_sources'")->fetchColumn();
+        if ($sourcesTableExists) {
+            $sourceColumns = [];
+            $columnQry = $dbh->query('SHOW COLUMNS FROM humo_sources');
+            while ($columnDb = $columnQry->fetch(PDO::FETCH_ASSOC)) {
+                $sourceColumns[$columnDb['Field']] = true;
+            }
+
+            if (isset($sourceColumns['source_tree_id'], $sourceColumns['source_gedcomnr'])) {
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_sources WHERE Key_name = 'idx_source_tree_gedcom'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_sources
+                        ADD INDEX idx_source_tree_gedcom
+                        (source_tree_id, source_gedcomnr);
                     ");
                 }
             }
