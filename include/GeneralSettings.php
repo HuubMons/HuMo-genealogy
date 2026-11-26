@@ -90,6 +90,27 @@ class GeneralSettings
             }
         }
 
+        // *** Nov. 2026: Add an index for looking up sources by tree and GEDCOM number ***
+        $sourcesTableExists = $dbh->query("SHOW TABLES LIKE 'humo_sources'")->fetchColumn();
+        if ($sourcesTableExists) {
+            $sourceColumns = [];
+            $columnQry = $dbh->query('SHOW COLUMNS FROM humo_sources');
+            while ($columnDb = $columnQry->fetch(PDO::FETCH_ASSOC)) {
+                $sourceColumns[$columnDb['Field']] = true;
+            }
+
+            if (isset($sourceColumns['source_tree_id'], $sourceColumns['source_gedcomnr'])) {
+                $indexExists = $dbh->query("SHOW INDEX FROM humo_sources WHERE Key_name = 'idx_source_tree_gedcom'")->fetch(PDO::FETCH_ASSOC);
+                if (!$indexExists) {
+                    $dbh->exec("
+                        ALTER TABLE humo_sources
+                        ADD INDEX idx_source_tree_gedcom
+                        (source_tree_id, source_gedcomnr);
+                    ");
+                }
+            }
+        }
+
         // *** Sept. 2026: create table humo_active_visitors for counting active visitors. Needed to block bots ***
         $dbh->exec("
             CREATE TABLE IF NOT EXISTS humo_active_visitors (

@@ -844,7 +844,8 @@ if (isset($_POST['install_tables2'])) {
             source_changed_user_id smallint NULL DEFAULT NULL,
             source_changed_datetime datetime on update CURRENT_TIMESTAMP NULL DEFAULT NULL,
             PRIMARY KEY (`source_id`),
-            KEY (source_tree_id)
+            KEY (source_tree_id),
+            KEY idx_source_tree_gedcom (source_tree_id, source_gedcomnr)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
         // *** Texts ***
