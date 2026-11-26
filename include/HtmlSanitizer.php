@@ -56,14 +56,24 @@ class HtmlSanitizer
             $children .= $this->sanitizeNode($child, $htmlEscaper);
         }
 
-        if (!in_array($tag, ['a', 'b', 'strong', 'i', 'em', 'br', 'small'], true)) {
+        if (!in_array($tag, ['a', 'b', 'strong', 'i', 'em', 'br', 'small', 'div', 'p'], true)) {
             return $children;
         }
         if ($tag === 'br') {
             return '<br>';
         }
         if ($tag !== 'a') {
-            return '<' . $tag . '>' . $children . '</' . $tag . '>';
+            $openTag = '<' . $tag;
+            if (in_array($tag, ['div', 'p'], true)) {
+                $style = trim($node->getAttribute('style'));
+                if ($style !== '') {
+                    if (preg_match('/^(text-align\s*:\s*(left|center|right|justify);?\s*)+$/i', $style)) {
+                        $openTag .= ' style="' . $htmlEscaper->escHtml($style) . '"';
+                    }
+                }
+            }
+            $openTag .= '>';
+            return $openTag . $children . '</' . $tag . '>';
         }
 
         $href = trim($node->getAttribute('href'));
